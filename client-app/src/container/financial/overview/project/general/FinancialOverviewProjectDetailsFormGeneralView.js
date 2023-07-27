@@ -20,11 +20,11 @@ const FinancialOverviewProjectDetailsFormGeneralView = props => {
                     {(props.totalQuantityStartValue !== null || props.totalQuantityEndValue !== null) && (
                         <div className="row">
                             <ViewText
-                                label={'Totaal aantal per ' + moment(props.startDate).format('DD-MM-Y')}
+                                label={'Totaal aantal deelnames per ' + moment(props.startDate).format('DD-MM-Y')}
                                 value={props.totalQuantityStartValue}
                             />
                             <ViewText
-                                label={'Totaal aantal per ' + moment(props.endDate).format('DD-MM-Y')}
+                                label={'Totaal aantal deelnames per ' + moment(props.endDate).format('DD-MM-Y')}
                                 value={props.totalQuantityEndValue}
                             />
                         </div>

@@ -170,9 +170,8 @@ function StepOnePcr({
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label required'}>Je postcode</Form.Label>
-                                    <Field
-                                        name="pcrPostalCode"
-                                        render={({ field }) => (
+                                    <Field name="pcrPostalCode">
+                                        {({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
@@ -180,7 +179,7 @@ function StepOnePcr({
                                                 id="pcr_postal_code"
                                             />
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label'}>Deelnemende postcodes</Form.Label>
@@ -190,9 +189,8 @@ function StepOnePcr({
                                     <Form.Label className={'field-label required'}>
                                         Je (geschatte) jaarlijks verbruik (in kWh)
                                     </Form.Label>
-                                    <Field
-                                        name="pcrYearlyPowerKwhConsumption"
-                                        render={({ field }) => (
+                                    <Field name="pcrYearlyPowerKwhConsumption">
+                                        {({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
@@ -200,7 +198,7 @@ function StepOnePcr({
                                                 id="pcr_yearly_power_kwh_consumption"
                                             />
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                             </Row>
 
@@ -214,9 +212,8 @@ function StepOnePcr({
 
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <Field
-                                        name="pcrHasSolarPanels"
-                                        render={({ field }) => (
+                                    <Field name="pcrHasSolarPanels">
+                                        {({ field }) => (
                                             <>
                                                 <div className="form-check form-check-inline">
                                                     <label className="radio-inline">
@@ -248,7 +245,7 @@ function StepOnePcr({
                                                 </div>
                                             </>
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                             </Row>
 
@@ -258,9 +255,8 @@ function StepOnePcr({
                                         <Form.Label className={'field-label'}>
                                             Hoeveel zonnepanelen wekken al stroom voor je op
                                         </Form.Label>
-                                        <Field
-                                            name="pcrNumberOfSolarPanels"
-                                            render={({ field }) => (
+                                        <Field name="pcrNumberOfSolarPanels">
+                                            {({ field }) => (
                                                 <InputText
                                                     field={field}
                                                     errors={errors}
@@ -268,7 +264,7 @@ function StepOnePcr({
                                                     id="pcr_number_of_solar_panels"
                                                 />
                                             )}
-                                        />
+                                        </Field>
                                     </Col>
                                 </Row>
                             ) : (
@@ -293,9 +289,8 @@ function StepOnePcr({
 
                             <Row>
                                 <Col xs={12} md={10}>
-                                    <Field
-                                        name="pcrEstimatedRevenueOk"
-                                        render={({ field }) => (
+                                    <Field name="pcrEstimatedRevenueOk">
+                                        {({ field }) => (
                                             <>
                                                 <div className="form-check form-check-inline">
                                                     <label className="radio-inline">
@@ -327,7 +322,7 @@ function StepOnePcr({
                                                 </div>
                                             </>
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                             </Row>
 
@@ -338,9 +333,8 @@ function StepOnePcr({
                                             <Form.Label className={'field-label'}>
                                                 Wat is de jaarlijkse opbrengst van jouw panelen (in kWh)
                                             </Form.Label>
-                                            <Field
-                                                name="pcrInputGeneratedNumberOfKwh"
-                                                render={({ field }) => (
+                                            <Field name="pcrInputGeneratedNumberOfKwh">
+                                                {({ field }) => (
                                                     <InputText
                                                         field={field}
                                                         errors={errors}
@@ -348,7 +342,7 @@ function StepOnePcr({
                                                         id="pcr_input_generated_number_of_kwh"
                                                     />
                                                 )}
-                                            />
+                                            </Field>
                                         </Col>
                                     </Row>
                                 </>
@@ -381,9 +375,8 @@ function StepOnePcr({
                                     <Form.Label className={'field-label required'}>
                                         Gewenst aantal participaties
                                     </Form.Label>
-                                    <Field
-                                        name="participationsOptioned"
-                                        render={({ field }) => (
+                                    <Field name="participationsOptioned">
+                                        {({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
@@ -391,7 +384,7 @@ function StepOnePcr({
                                                 id="participations_optioned"
                                             />
                                         )}
-                                    />
+                                    </Field>
                                 </Col>
                                 <Col xs={12} md={6}>
                                     <FormLabel className={'field-label'}>
@@ -417,9 +410,8 @@ function StepOnePcr({
                                     {!contactProjectData.belongsToMembershipGroup ? (
                                         <Row>
                                             <Col xs={12} md={10}>
-                                                <Field
-                                                    name="choiceMembership"
-                                                    render={({ field }) => (
+                                                <Field name="choiceMembership">
+                                                    {({ field }) => (
                                                         <>
                                                             {get(errors, field.name, '') &&
                                                                 get(touched, field.name, '') && (
@@ -457,7 +449,7 @@ function StepOnePcr({
                                                             </div>
                                                         </>
                                                     )}
-                                                />
+                                                </Field>
                                             </Col>
                                         </Row>
                                     ) : null}

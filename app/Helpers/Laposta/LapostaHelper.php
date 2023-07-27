@@ -66,7 +66,7 @@ class LapostaHelper
                     if($contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->exists()){
                         $contactGroupsPivot= $contactGroup->contacts()->where('laposta_member_id', $lapostaMemberId)->first()->pivot;
                         if($contactGroupsPivot != null) {
-                            $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState]);
+                            $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState, 'laposta_last_error_message' => null]);
                         }
                     }
                 }
@@ -155,12 +155,14 @@ class LapostaHelper
             $processState = $checkContactGroup->laposta_list_id ? 'inprogress' : 'unknown';
             $lapostaContacts = $checkContactGroup->contacts->whereNotNull('pivot.laposta_member_id');
             foreach ($lapostaContacts as $lapostaContact) {
-                $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => $processState]);
+                $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => $processState, 'laposta_last_error_message' => null]);
             }
         }
 
         // Sync state all members from laposta
         $this->syncStateAllMembersLaposta();
+
+        Log::info("SyncLapostaList start voor alle groepen");
 
         $allContactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->get();
         foreach ($allContactGroups as $contactGroup) {
@@ -172,19 +174,27 @@ class LapostaHelper
                     if ($checkContactGroup->type_id == 'simulated') {
                         $checkContactGroup->contacts()->detach($lapostaContact);
                     } else {
-                        $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown']);
+                        $checkContactGroup->contacts()->updateExistingPivot($lapostaContact->id, ['laposta_member_state' => 'unknown', 'laposta_last_error_message' => null]);
                     }
                 }
-
                 //find contactgroup again, because data of check group can be changed.
                 $syncContactGroup = ContactGroup::find($contactGroup->id);
 
                 $contactGroupController = new ContactGroupController();
                 $contactGroupController->syncLapostaList($syncContactGroup);
 
+                if (count($contactGroupController->getErrorMessagesLaposta())) {
+                    Log::info("SyncLapostaList voor " . $contactGroup->name . " geeft fouten");
+                }
+                // tussen elke update list xx seconden niets
+                $sleep = 60;
+                Log::info("SyncLapostaList klaar voor : " . $contactGroup->name . " . Wacht " . $sleep . " seconden...");
+                sleep($sleep);
+
                 $messages = array_merge($messages, $contactGroupController->getErrorMessagesLaposta());
             }
         }
+        Log::info("SyncLapostaList klaar voor alle groepen");
         return $messages;
     }
 

@@ -5,11 +5,9 @@ namespace App\Eco\RevenuesKwh;
 use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProject\ParticipantProject;
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueDistributionKwh extends Model
 {
-    use RevisionableTrait;
 
     protected $table = 'revenue_distribution_kwh';
 
@@ -48,13 +46,13 @@ class RevenueDistributionKwh extends Model
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'distribution_id')->whereIn('status', ['new', 'concept']);
     }
     public function newOrConceptDistributionValuesKwh(){
-        return $this->hasMany(RevenueDistributionValuesKwh::class, 'distribution_id')->whereIn('status', ['new', 'çoncept']);
+        return $this->hasMany(RevenueDistributionValuesKwh::class, 'distribution_id')->whereIn('status', ['new', 'concept']);
     }
     public function conceptDistributionPartsKwh(){
         return $this->hasMany(RevenueDistributionPartsKwh::class, 'distribution_id')->where('status', 'concept');
     }
     public function conceptDistributionValuesKwh(){
-        return $this->hasMany(RevenueDistributionValuesKwh::class, 'distribution_id')->where('status', 'çoncept');
+        return $this->hasMany(RevenueDistributionValuesKwh::class, 'distribution_id')->where('status', 'concept');
     }
 
     //Appended fields
@@ -86,6 +84,22 @@ class RevenueDistributionKwh extends Model
     public function getDeliveredTotalStringAttribute()
     {
         return number_format( ($this->delivered_total_concept + $this->delivered_total_confirmed + $this->delivered_total_processed), '2',',', '.' );
+    }
+
+    public function getDateEndLastConfirmedPartsKwhAttribute()
+    {
+        $lastConfirmedPartsKwh = $this->distributionPartsKwh()
+            ->join('revenue_parts_kwh', 'parts_id', '=', 'revenue_parts_kwh.id')
+            ->whereIn('revenue_distribution_parts_kwh.status', ['confirmed', 'processed'])->orderByDesc('revenue_parts_kwh.date_end')->first();
+        return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
+    }
+
+    public function getParticipationsQuantityLastConfirmedPartsKwhAttribute()
+    {
+        $lastConfirmedPartsKwh = $this->distributionPartsKwh()
+            ->join('revenue_parts_kwh', 'parts_id', '=', 'revenue_parts_kwh.id')
+            ->whereIn('revenue_distribution_parts_kwh.status', ['confirmed', 'processed'])->orderByDesc('revenue_parts_kwh.date_end')->first();
+        return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->participations_quantity : 0;
     }
 
 }

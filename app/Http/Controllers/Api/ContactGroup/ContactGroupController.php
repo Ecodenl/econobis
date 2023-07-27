@@ -53,23 +53,16 @@ class ContactGroupController extends Controller
 
     public function peek()
     {
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if($teamContactGroupIds){
-            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->whereIn('contact_groups.id', $teamContactGroupIds)->orderBy('name')->get();
-        } else {
-            $contactGroups = ContactGroup::whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
-        }
+        $contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+        ->whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
 
         return ContactGroupPeek::collection($contactGroups);
     }
 
     public function peekStatic($active = null)
     {
-        $contactGroups = ContactGroup::where('type_id', 'static')->orderBy('name');
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if($teamContactGroupIds){
-            $contactGroups->whereIn('contact_groups.id', $teamContactGroupIds);
-        }
+        $contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('type_id', 'static')->orderBy('name');
         if($active == "active") {
             $contactGroups->where('closed', '!=', 1);
         }
@@ -80,8 +73,13 @@ class ContactGroupController extends Controller
     {
         $this->authorize('view', ContactGroup::class);
 
+        $contactGroupAutorized = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('id', $contactGroup->id)->first();
+
+        if(!$contactGroupAutorized){
+            abort(403, 'Niet geautoriseerd.');
+        }
         $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
-        return FullContactGroup::make($contactGroup);
+        return FullContactGroup::make($contactGroupAutorized);
     }
 
     public function store(Request $request, RequestInput $requestInput)
@@ -312,7 +310,7 @@ class ContactGroupController extends Controller
     {
         set_time_limit(0);
 
-        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts);
+        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts, $contactGroup);
 
         return $contactCSVHelper->downloadCSV();
     }
@@ -320,7 +318,9 @@ class ContactGroupController extends Controller
     public function excelGroupReport()
     {
         set_time_limit(0);
-        $contacts = Contact::whereHas('selectedGroups')->get();
+        $contacts = Contact::whereHas('selectedGroups', function($query){
+                $query->whereTeamContactGroupIds(Auth::user());
+            })->get();
 
         $exportGroupReportExcelHelper = new ExportGroupReportExcelHelper($contacts);
 
@@ -379,7 +379,12 @@ class ContactGroupController extends Controller
 
     public function syncContactGroupLapostaList(ContactGroup $contactGroup)
     {
-        $this->syncLapostaList($contactGroup);
+        $syncLapostaListId = $this->syncLapostaList($contactGroup);
+//        if($syncLapostaListId == false){
+//            Log::info('syncContactGroupLapostaList NIET ok');
+//        } else {
+//            Log::info('syncContactGroupLapostaList Ok for id: ' . $syncLapostaListId);
+//        }
 
         if (count($this->getErrorMessagesLaposta())) {
             throw ValidationException::withMessages(array("econobis" => $this->getErrorMessagesLaposta()));
@@ -399,6 +404,9 @@ class ContactGroupController extends Controller
                 $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup, true);
                 $lapostaListId = $lapostaListHelper->updateList();
                 $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+                if($lapostaListId == false){
+                    return false;
+                }
 
                 $contactGroupToAdd = $contactGroup->getAllContacts()->diff($contactGroup->simulatedGroup->getAllContacts());
                 foreach ($contactGroupToAdd as $contact){
@@ -435,6 +443,9 @@ class ContactGroupController extends Controller
                 $lapostaListHelper = new LapostaListHelper($contactGroup, true);
                 $lapostaListId = $lapostaListHelper->updateList();
                 $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+                if($lapostaListId == false){
+                    return false;
+                }
 
                 if($contactGroup->laposta_list_id){
                     $contactGroupToUpdate = $contactGroup->contacts->whereNull('pivot.laposta_member_id');
@@ -522,7 +533,7 @@ class ContactGroupController extends Controller
             if($contactGroup->simulatedGroup){
                 $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNotNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact) {
-                    $contactGroup->simulatedGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                    $contactGroup->simulatedGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null, 'laposta_last_error_message' => null]);
                 }
                 $contactGroup->simulatedGroup->laposta_list_id = null;
                 $contactGroup->simulatedGroup->laposta_list_created_at = null;
@@ -530,7 +541,7 @@ class ContactGroupController extends Controller
             }else{
                 $contactGroupToUpdate = $contactGroup->contacts->whereNotNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact) {
-                    $contactGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                    $contactGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null, 'laposta_last_error_message' => null]);
                 }
                 $contactGroup->laposta_list_id = null;
                 $contactGroup->laposta_list_created_at = null;

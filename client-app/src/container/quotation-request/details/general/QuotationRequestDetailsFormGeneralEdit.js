@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -215,6 +214,12 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 this.props.fetchQuotationRequestDetails(quotationRequest.id);
                 this.props.switchToView();
             });
+    };
+
+    toggleModal = () => {
+        this.setState({
+            showModal: !this.state.showModal,
+        });
     };
 
     render() {
@@ -437,13 +442,17 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     {datePlanned ? (
                         <InputTime
                             label={'Tijd afspraak'}
-                            size={'col-sm-6'}
+                            size={'col-sm-3'}
                             name="timePlanned"
                             value={timePlanned}
                             start={'06:00'}
                             end={'23:00'}
                             onChangeAction={this.handleInputChangeDate}
                             readOnly={this.props.quotationRequestDetails.usesPlanning}
+                            nullableSize={'col-sm-3'}
+                            nullable={true}
+                            nullableLabel={'Onbekend'}
+                            nullableChecked={timePlanned == '00:00' ? true : false}
                         />
                     ) : null}
                 </div>

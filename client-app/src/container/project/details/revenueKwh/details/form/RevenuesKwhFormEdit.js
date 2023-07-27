@@ -190,9 +190,10 @@ class RevenuesKwhFormEdit extends Component {
         if (!hasErrors) {
             this.setState({ isSaving: true });
             RevenuesKwhAPI.updateRevenuesKwh(revenuesKwh.id, revenuesKwh).then(payload => {
-                this.props.fetchRevenuesKwh(revenuesKwh.id);
+                // this.props.fetchRevenuesKwh(revenuesKwh.id);
 
                 setTimeout(() => {
+                    this.props.fetchRevenuesKwh(revenuesKwh.id);
                     this.props.getDistributionKwh(revenuesKwh.id, 0);
                 }, 250);
                 this.setState({ isSaving: true });

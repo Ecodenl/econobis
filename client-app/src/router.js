@@ -72,6 +72,9 @@ const Forgot = React.lazy(() => import('./container/auth/Forgot'));
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
 const HousingFileNewApp = React.lazy(() => import('./container/housing-file/new/HousingFileNewApp'));
 const HousingFilesListApp = React.lazy(() => import('./container/housing-file/list/HousingFilesListApp'));
+const HousingFileSpecificationsListApp = React.lazy(() =>
+    import('./container/housing-file-specification/list/HousingFileSpecificationsListApp')
+);
 const QuotationRequestDetailsApp = React.lazy(() =>
     import('./container/quotation-request/details/QuotationRequestDetailsApp')
 );
@@ -235,6 +238,7 @@ const OpportunityStatusDetailsApp = React.lazy(() =>
 );
 const ProcessesListApp = React.lazy(() => import('./container/processes/list'));
 const TwinfieldListApp = React.lazy(() => import('./container/twinfield/list'));
+const HousingFileListApp = React.lazy(() => import('./container/housing-file/log'));
 const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/details'));
 const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorActivate'));
 const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
@@ -316,7 +320,10 @@ const Routes = () => {
                     <Route path="document/nieuw/:type/contact-groep/:contactGroupId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/contact/:contactId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/order/:orderId" component={DocumentNewApp} />
-                    <Route path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
@@ -440,6 +447,7 @@ const Routes = () => {
                     />
                     <Route path="woningdossier/:id" component={HousingFileDetailsApp} />
                     <Route path="woningdossiers" component={HousingFilesListApp} />
+                    <Route path="woningdossier-specificaties" component={HousingFileSpecificationsListApp} />
                     /* Quotation Request */
                     <Route
                         path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"
@@ -515,6 +523,8 @@ const Routes = () => {
                     <route path="processen" component={ProcessesListApp} />
                     /* Twinfield */
                     <route path="twinfield" component={TwinfieldListApp} />
+                    /* Housingfile Log */
+                    <route path="housing-file/log" component={HousingFileListApp} />
                     /* Task / notes */
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />

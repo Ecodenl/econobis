@@ -3,10 +3,22 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ViewText from '../../../components/form/ViewText';
 import PanelHeader from '../../../components/panel/PanelHeader';
+import moment from 'moment/moment';
+import { connect } from 'react-redux';
 
-function CooperationDetailsFormView({ formData, toggleEdit }) {
+function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
     return (
         <section className={'panel-hover'} onClick={toggleEdit}>
+            {formData.createContactsForReportTableInProgress == true && (
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5" style={{ color: '#e64a4a' }}>
+                            Contactgroep/contact koppelingen report tabel wordt momenteel bijgewerkt…
+                        </span>
+                    </PanelHeader>
+                </Panel>
+            )}
+
             <Panel>
                 <PanelBody>
                     <div className="row">
@@ -40,6 +52,10 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                     <div className="row">
                         <ViewText label={'Hoom link'} value={formData.hoomLink} />
                         <ViewText label={'Hoom key'} value={formData.hoomKey} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Hoom bewoner/coach link'} value={formData.hoomConnectCoachLink} />
+                        <ViewText label={'Hoom campagne'} value={formData.hoomCampaign && formData.hoomCampaign.name} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -112,6 +128,42 @@ function CooperationDetailsFormView({ formData, toggleEdit }) {
                         />
                     </div>
                 </PanelBody>
+
+                {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText
+                                    label={'Vullen report tabel (tbv Power BI)'}
+                                    value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
+                                    size={'col-sm-5'}
+                                    name={'createContactsForReportTable'}
+                                    textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                                />
+                                {formData.createContactsForReportTable == true && (
+                                    <ViewText
+                                        label={'Email vullen report table problemen'}
+                                        value={formData.emailReportTableProblems}
+                                    />
+                                )}
+                                {formData.createContactsForReportTable == true && (
+                                    <ViewText
+                                        label={'Datum laatste keer gevuld'}
+                                        value={
+                                            formData.createContactsForReportTableLastCreated
+                                                ? moment(formData.createContactsForReportTableLastCreated).format('L')
+                                                : ''
+                                        }
+                                    />
+                                )}
+                            </div>
+                        </PanelBody>
+                    </>
+                )}
+
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
@@ -154,4 +206,10 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
     );
 }
 
-export default CooperationDetailsFormView;
+const mapStateToProps = state => {
+    return {
+        meDetails: state.meDetails,
+    };
+};
+
+export default connect(mapStateToProps, null)(CooperationDetailsFormView);

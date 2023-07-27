@@ -27,4 +27,5 @@ export default [
     { id: 25, name: 'op ten' },
     { id: 26, name: 'op de' },
     { id: 27, name: 'uit den' },
+    { id: 28, name: 'di' },
 ];

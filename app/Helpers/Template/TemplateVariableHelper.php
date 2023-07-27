@@ -1835,7 +1835,8 @@ class TemplateVariableHelper
     public static function getRevenuesKwhVar($model, $varname){
         $valuesStart = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_begin)->format('Y-m-d'))->first();
         $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
-        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end)->addDay()->format('Y-m-d'))->first();
+
+        $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->id)->where('date_registration', Carbon::parse($model->date_end_last_confirmed_parts_kwh)->addDay()->format('Y-m-d'))->first();
         $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
 
         switch ($varname) {
@@ -1998,7 +1999,8 @@ class TemplateVariableHelper
                 }
                 break;
             case 'participaties':
-                return $model->participations_quantity;
+//                return $model->participations_quantity;
+                return $model->participations_quantity_last_confirmed_parts_kwh;
                 break;
             case 'energieleverancier':
                 $esNames = implode(',', array_unique($model->distributionPartsKwh()
@@ -2010,7 +2012,8 @@ class TemplateVariableHelper
                 return $esNames;
                 break;
             case 'kwh':
-                return $model->delivered_total_string;
+//                return $model->delivered_total_string;
+                return $model->delivered_total_confirmed_string;
                 break;
             case 'teruggave_energiebelasting':
                 return number_format($model->kwh_return, 2, ',', '');
@@ -2031,7 +2034,8 @@ class TemplateVariableHelper
                 return $model->revenuesKwh->date_begin ? Carbon::parse($model->revenuesKwh->date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
-                return $model->revenuesKwh->date_end ? Carbon::parse($model->revenuesKwh->date_end)->format('d-m-Y') : null;
+//                return $model->revenuesKwh->date_end ? Carbon::parse($model->revenuesKwh->date_end)->format('d-m-Y') : null;
+                return $model->date_end_last_confirmed_parts_kwh ? Carbon::parse($model->date_end_last_confirmed_parts_kwh)->format('d-m-Y') : null;
                 break;
             case 'opbrengst_kwh_euro':
                 return $model->revenuesKwh->payout_kwh;
@@ -2079,10 +2083,25 @@ class TemplateVariableHelper
                 return optional($model->energySupplier)->name;
                 break;
             case 'kwh':
-                return $model->delivered_total_string;
+//                return $model->delivered_total_string;
+                return $model->not_reported_delivered_kwh_string;
+                break;
+            case 'kwh_totaal':
+                $dateBegin = $model->not_reported_date_begin ? $model->not_reported_date_begin : null;
+                $dateEnd = $model->partsKwh->date_end ? $model->partsKwh->date_end : null;
+                $kwhTotaal = 0;
+                if($dateBegin && $dateEnd){
+                    $valuesStart = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($dateBegin)->format('Y-m-d'))->first();
+                    $startKhw = $valuesStart ? $valuesStart->kwh_start : 0;
+                    $valuesEnd = RevenueValuesKwh::where('revenue_id', $model->revenue_id)->where('date_registration', Carbon::parse($dateEnd)->addDay()->format('Y-m-d'))->first();
+                    $endKhw = $valuesEnd ? $valuesEnd->kwh_start : 0;
+                    $kwhTotaal = $endKhw - $startKhw;
+                }
+                return $kwhTotaal;
                 break;
             case 'teruggave_energiebelasting':
-                return number_format($model->kwh_return, 2, ',', '');
+//                return number_format($model->kwh_return, 2, ',', '');
+                return $model->not_reported_kwh_return_string;
                 break;
             case 'energieleverancier_ean_elektra':
                 return $model->distributionKwh->energy_supplier_ean_electricity;
@@ -2091,7 +2110,8 @@ class TemplateVariableHelper
                 return $model->energy_supplier_number;
                 break;
             case 'begindatum':
-                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
+//                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
+                return $model->not_reported_date_begin ? Carbon::parse($model->not_reported_date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
                 return $model->partsKwh->date_end ? Carbon::parse($model->partsKwh->date_end)->format('d-m-Y') : null;
@@ -2206,6 +2226,24 @@ class TemplateVariableHelper
             case 'organisatie_of_coach_naam':
                 return optional($model->organisationOrCoach)->full_name_fnf;
                 break;
+            case 'organisatie_of_coach_voornaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+                    return optional($model->organisationOrCoach)->first_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return '';
+                }
+                break;
+            case 'organisatie_of_coach_achternaam':
+                if(optional($model->organisationOrCoach)->type_id == 'person'){
+
+                    $prefix = optional($model->organisationOrCoach)->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . optional($model->organisationOrCoach)->last_name : optional($model->organisationOrCoach)->last_name;
+                }
+                elseif(optional($model->organisationOrCoach)->type_id == 'organisation'){
+                    return optional($model->organisationOrCoach)->full_name;
+                }
+                break;
             case 'organisatie_of_coach_adres':
                 return optional(optional($model->organisationOrCoach)->primaryAddress)->street . ' ' . optional(optional($model->organisationOrCoach)->primaryAddress)->number . (optional(optional($model->organisationOrCoach)->primaryAddress)->addition ? ('-' . optional(optional($model->organisationOrCoach)->primaryAddress)->addition) : '');
                 break;
@@ -2222,6 +2260,13 @@ class TemplateVariableHelper
             case 'projectmanager_naam':
                 return optional($model->projectManager)->full_name;
                 break;
+            case 'projectmanager_voornaam':
+                return optional($model->projectManager)->first_name;
+                break;
+            case 'projectmanager_achternaam':
+                $prefix = optional($model->projectManager)->last_name_prefix;
+                return $prefix ? $prefix . ' ' . optional($model->projectManager)->last_name : optional($model->projectManager)->last_name;
+                break;
             case 'projectmanager_adres':
                 return optional(optional($model->projectManager)->primaryAddress)->street . ' ' . optional(optional($model->projectManager)->primaryAddress)->number . (optional(optional($model->projectManager)->primaryAddress)->addition ? ('-' . optional(optional($model->projectManager)->primaryAddress)->addition) : '');
                 break;
@@ -2237,6 +2282,13 @@ class TemplateVariableHelper
 
             case 'externe_partij_naam':
                 return optional($model->externalParty)->full_name;
+                break;
+            case 'externe_partij_voornaam':
+                return optional($model->externalParty)->first_name;
+                break;
+            case 'externe_partij_achternaam':
+                $prefix = optional($model->externalParty)->last_name_prefix;
+                return $prefix ? $prefix . ' ' . optional($model->externalParty)->last_name : optional($model->externalParty)->last_name;
                 break;
             case 'externe_partij_adres':
                 return optional(optional($model->externalParty)->primaryAddress)->street . ' ' . optional(optional($model->externalParty)->primaryAddress)->number . (optional(optional($model->externalParty)->primaryAddress)->addition ? ('-' . optional(optional($model->externalParty)->primaryAddress)->addition) : '');

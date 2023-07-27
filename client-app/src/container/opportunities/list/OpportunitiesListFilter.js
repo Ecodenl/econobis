@@ -144,6 +144,7 @@ const OpportunitiesListFilter = props => {
                     onChange={onCampaignChange}
                 />
             </th>
+            <th></th>
             <th>
                 <select
                     className="form-control input-sm"

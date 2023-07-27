@@ -51,6 +51,7 @@ class OpportunitiesListItem extends Component {
             measureCategoryName,
             measures,
             campaignName,
+            areaName,
             statusName,
             amountQuotations,
         } = this.props;
@@ -81,6 +82,7 @@ class OpportunitiesListItem extends Component {
                         : ''}
                 </td>
                 <td>{campaignName}</td>
+                <td>{areaName}</td>
                 <td>{statusName}</td>
                 <td>{amountQuotations}</td>
                 <td>

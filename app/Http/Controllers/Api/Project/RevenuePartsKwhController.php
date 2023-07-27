@@ -19,6 +19,7 @@ use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
+use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
@@ -41,6 +42,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
@@ -72,12 +74,19 @@ class RevenuePartsKwhController extends ApiController
 
     public function getRevenueDistributionParts(RevenuePartsKwh $revenuePartsKwh, Request $request)
     {
+//        todo origineel 100: voor testen op 10
         $limit = 100;
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
-        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
-        $distributionPartsKwhIdsTotal = $revenuePartsKwh->distributionPartsKwhVisible()->pluck('id')->toArray();
         $total = $revenuePartsKwh->distributionPartsKwhVisible()->count();
+        $distributionPartsKwh = $revenuePartsKwh->distributionPartsKwhVisible()->limit($limit)->offset($offset)->orderBy('status')->get();
+        $distributionPartsKwhTotal = $revenuePartsKwh->distributionPartsKwhVisible()->whereNull('date_participant_report')->get();
+        $distributionPartsKwhIdsTotal = [];
+        foreach ($distributionPartsKwhTotal as $distributionPartKwhTotal){
+            if($distributionPartKwhTotal->is_previous_visible_part_reported){
+                $distributionPartsKwhIdsTotal[] = $distributionPartKwhTotal->id;
+            }
+        }
 
         return FullRevenueDistributionPartsKwh::collection($distributionPartsKwh)
             ->additional(['meta' => [
@@ -129,6 +138,41 @@ class RevenuePartsKwhController extends ApiController
         return FullRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $revenuePartsKwh->revenue_id)
             ->with('distributionPartsKwh')
             ->orderBy('date_begin')->get());
+    }
+
+    public function destroy(RevenuePartsKwh $revenuePartsKwh)
+    {
+        $this->authorize('manage', RevenuesKwh::class);
+
+        $newEndDate = Carbon::parse($revenuePartsKwh->date_begin)->subDay(1)->format('Y-m-d');
+
+        try {
+            DB::beginTransaction();
+
+            $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($revenuePartsKwh);
+            $result = $deleteRevenuePartsKwh->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\PDOException $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        $revenuePartsKwh->revenuesKwh->date_end = $newEndDate;
+        $revenuePartsKwh->revenuesKwh->save();
+        if($revenuePartsKwh->previous_revenue_parts_kwh){
+            foreach ($revenuePartsKwh->previous_revenue_parts_kwh->distributionPartsKwh as $distributionPartsKwh) {
+                $distributionPartsKwh->is_end_total_period = true;
+                $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+                $distributionPartsKwh->save();
+            }
+        }
     }
 
     public function reportEnergySupplier(
@@ -798,6 +842,18 @@ class RevenuePartsKwhController extends ApiController
         }
         else
         {
+            // Geen fouten bijwerken datum rapportage
+            $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
+            $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
+            $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;
+            $endDateParticipantReport = $distributionPartsKwh->partsKwh->date_end;;
+
+            foreach ($upToDistributionPartsKwh as $distributionPartToUpdate) {
+                $distributionPartToUpdate->date_participant_report = Carbon::today();
+                $distributionPartToUpdate->begin_date_participant_report = $beginDateParticipantReport;
+                $distributionPartToUpdate->end_date_participant_report = $endDateParticipantReport;
+                $distributionPartToUpdate->save();
+            }
             return null;
         }
     }
@@ -870,6 +926,20 @@ class RevenuePartsKwhController extends ApiController
                     if ($distributionPartsKwh->status === 'in-progress-process') {
                         $distributionPartsKwh->status = 'confirmed';
                         $distributionPartsKwh->save();
+                        // Indien part visible en nog niet gerapporteerd (zou ook nog niet gedaan moeten zijn bij definitief maken, want deelnemer rapportage kan je niet maken van concepten)
+                        // en) not_reported_delivered_kwh is 0, dan gaan we t/m deze deelperiode uitsluiten van deelnemer rapportage. We willen niet delivered_kwh 0 rapporteren nl.
+                        if( $distributionPartsKwh->is_visible == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
+                            $upToPartsKwhExcludeForReportIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
+                            $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhExcludeForReportIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
+                            $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;
+                            $endDateParticipantReport = $distributionPartsKwh->partsKwh->date_end;;
+                            foreach ($upToDistributionPartsKwh as $distributionPartToUpdate) {
+                                $distributionPartToUpdate->date_participant_report = '1900-01-01';
+                                $distributionPartToUpdate->begin_date_participant_report = $beginDateParticipantReport;
+                                $distributionPartToUpdate->end_date_participant_report = $endDateParticipantReport;
+                                $distributionPartToUpdate->save();
+                            }
+                        }
                     }
                 }
                 $distributionsValuesKwh = $distributionKwh->distributionValuesKwh->whereIn('parts_id', $upToPartsKwhIds);
@@ -949,6 +1019,21 @@ class RevenuePartsKwhController extends ApiController
             (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
         }
         return $mailboxToSendFrom;
+    }
+
+    /**
+     * @param RevenueDistributionPartsKwh $distributionPartsKwh
+     */
+    protected function determineIsVisible(RevenueDistributionPartsKwh $distributionPartsKwh): bool
+    {
+        if ($distributionPartsKwh->is_energy_supplier_switch
+            || $distributionPartsKwh->is_end_participation
+            || $distributionPartsKwh->is_end_total_period
+            || $distributionPartsKwh->is_end_year_period) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     protected function translateToValidCharacterSet($field){

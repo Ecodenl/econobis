@@ -9,6 +9,8 @@ import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import { hashHistory } from 'react-router';
+import ViewText from '../../../components/form/ViewText';
+import validator from 'validator';
 
 const ParticipantDetailsTerminate = ({
     participantProject,
@@ -18,9 +20,38 @@ const ParticipantDetailsTerminate = ({
     fetchParticipantProjectDetails,
     projectRevenueCategories,
 }) => {
-    const [dateTerminated, setDateTerminated] = useState(moment().format('Y-MM-DD'));
+    const [dateTerminated, setDateTerminated] = useState(
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+    );
+    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+    );
+    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
+        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
+            ? moment(participantProject.dateEntryLastMutation)
+                  .subtract(1, 'days')
+                  .format('Y-MM-DD')
+            : moment()
+                  .add(1, 'years')
+                  .format('Y-MM-DD')
+    );
+
     const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
+    const [errors, setErrors] = useState({
+        dateTerminated: false,
+    });
+    const [errorMessages, setErrorMessages] = useState({
+        dateTerminated: '',
+    });
 
     const onChangeDateTerminated = value => {
         setDateTerminated(value);
@@ -41,7 +72,24 @@ const ParticipantDetailsTerminate = ({
     ).id;
 
     const confirmAction = () => {
-        if (dateTerminated) {
+        let errors = {
+            dateTerminated: false,
+        };
+        let errorMessages = {
+            dateTerminated: '',
+        };
+        let hasErrors = false;
+
+        if (validator.isEmpty(dateTerminated)) {
+            errors.dateTerminated = true;
+            errorMessages.dateTerminated = 'Ongeldige datum';
+            hasErrors = true;
+        }
+
+        setErrors(errors);
+        setErrorMessages(errorMessages);
+
+        if (!hasErrors) {
             ParticipantProjectDetailsAPI.terminateParticipantProject(participantProject.id, {
                 dateTerminated,
                 payoutPercentageTerminated,
@@ -70,21 +118,6 @@ const ParticipantDetailsTerminate = ({
 
     return (
         <>
-            {/*{participantProject.participantInDefinitiveRevenue ? (*/}
-            {/*    <Modal*/}
-            {/*        buttonConfirmText="Deelname beëindigen"*/}
-            {/*        buttonClassName={'btn-danger'}*/}
-            {/*        closeModal={closeDeleteItemModal}*/}
-            {/*        showConfirmAction={false}*/}
-            {/*        title="Beëindigen"*/}
-            {/*        modalClassName={'modal-lg'}*/}
-            {/*    >*/}
-            {/*        <p>*/}
-            {/*            Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging nog niet*/}
-            {/*            mogelijk.*/}
-            {/*        </p>*/}
-            {/*    </Modal>*/}
-            {/*) : (*/}
             <Modal
                 buttonConfirmText="Deelname beëindigen"
                 buttonClassName={'btn-danger'}
@@ -95,13 +128,26 @@ const ParticipantDetailsTerminate = ({
             >
                 <p>Weet u zeker dat u deze deelname wilt beëindigen?</p>
                 <div className="row">
+                    <ViewText
+                        label={'Datum laatste mutatie storting/terugbetaling'}
+                        value={
+                            participantProject.dateEntryLastMutation
+                                ? moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')
+                                : ''
+                        }
+                    />
+                </div>
+                <div className="row">
                     <InputDate
                         label={'Datum beëindigen'}
                         name="dateTerminated"
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(participantProject.dateEntryFirstDeposit).format('Y-MM-DD')}
-                        disabledAfter={moment().format('Y-MM-DD')}
+                        disabledBefore={dateTerminatedAllowedFrom}
+                        disabledAfter={dateTerminatedAllowedTo}
+                        error={errors.dateTerminated}
+                        errorMessage={errorMessages.dateTerminated}
+                        // readOnly={participantProject.participationsDefinitive == 0  && participantProject.amountDefinitive == 0}
                     />
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                         <InputText

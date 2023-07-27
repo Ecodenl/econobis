@@ -4,6 +4,7 @@ namespace App\Eco\Opportunity;
 
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
+use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\Intake\Intake;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
@@ -52,6 +53,11 @@ class Opportunity extends Model
     public function evaluationStatisfied()
     {
         return $this->belongsTo(OpportunityEvaluationStatus::class,'evaluation_is_statisfied');
+    }
+
+    public function housingFileSpecification()
+    {
+        return $this->belongsTo(HousingFileSpecification::class);
     }
 
     public function evaluationRecommendOrganisation()

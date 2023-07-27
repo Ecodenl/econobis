@@ -2,15 +2,12 @@
 
 namespace App\Eco\RevenuesKwh;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
 
 class RevenueDistributionPartsKwh extends Model
 {
-    use RevisionableTrait;
 
     protected $table = 'revenue_distribution_parts_kwh';
 
@@ -47,7 +44,9 @@ class RevenueDistributionPartsKwh extends Model
     public function getDateBeginFromTillVisibleAttribute()
     {
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->orderBy('date_end', 'desc')->get();
+        // beginnen bij huidige part
         $dateBegin = $this->partsKwh->date_begin;
+        // aflopend upToPartsKwhIds doorlopen opzoek naar een visible part
         foreach ($upToPartsKwhIds as $part){
             $deliveredDistributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
             if($deliveredDistributionPart && ($deliveredDistributionPart->id == $this->id || $deliveredDistributionPart->is_visible == false)){
@@ -58,8 +57,8 @@ class RevenueDistributionPartsKwh extends Model
             }
         }
         return Carbon::parse($dateBegin)->format('Y-m-d');
-        ;
     }
+
     public function getDeliveredKwhFromTillVisibleAttribute()
     {
         $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->orderBy('date_end', 'desc')->get();
@@ -114,4 +113,61 @@ class RevenueDistributionPartsKwh extends Model
         return implode('<br/>', $remarks);
     }
 
+    public function getPreviousVisiblePartNotReportedDateBeginAttribute()
+    {
+        $distributionPartsNotReported = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('is_visible', true)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get()->pluck('parts_id')->toArray();
+        $previousVisiblePartNotReportedDateBegin = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->whereIn('id', $distributionPartsNotReported)->orderBy('date_begin', 'asc')->first();
+        return $previousVisiblePartNotReportedDateBegin ? $previousVisiblePartNotReportedDateBegin->date_begin : null;
+    }
+    public function getIsPreviousVisiblePartReportedAttribute()
+    {
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->orderBy('date_end', 'desc')->get();
+        // beginnen bij huidige distribution part
+        $distributionPart = $this;
+        // aflopend upToPartsKwhIds doorlopen opzoek naar een visible part
+        foreach ($upToPartsKwhIds as $part){
+            $distributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
+            if($distributionPart){
+                $isVisibleNotEndOfYear = $distributionPart->is_end_participation || $distributionPart->is_energy_supplier_switch || $distributionPart->is_end_total_period;
+                if($distributionPart && $distributionPart->id != $this->id && $isVisibleNotEndOfYear == true){
+                    return $distributionPart->date_participant_report != null;
+                }
+                if($part->is_first_revenue_parts_kwh){
+                    return true;
+                }
+            }
+        }
+        // Geen enkele visible part gevonden en ook niet eerste periode, dan return voorlopig false.
+        // Dit komt bijv. voor als er eerdere distribution part records ontbreken, ik denk als een deelnemer toegevoegd wordt als er al definitieve deelperiode zijn.
+        // We moeten eerst uitzoeken hoe we hier mee omgaan ?!
+        if(!$distributionPart){
+            return false;
+        }
+
+        return $distributionPart->partsKwh->is_first_revenue_parts_kwh ? true : $distributionPart->date_participant_report != null;
+    }
+
+    public function getNotReportedDateBeginAttribute()
+    {
+        $distributionPartsNotReported = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get()->pluck('parts_id')->toArray();
+        $notReportedDateBegin = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->whereIn('id', $distributionPartsNotReported)->orderBy('date_begin', 'asc')->first();
+        return $notReportedDateBegin ? $notReportedDateBegin->date_begin : null;
+    }
+    public function getNotReportedDeliveredKwhAttribute()
+    {
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->get()->pluck('id')->toArray();
+        return RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->whereIn('parts_id', $upToPartsKwhIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->sum('delivered_kwh');
+    }
+    public function getNotReportedDeliveredKwhStringAttribute()
+    {
+        return number_format( $this->not_reported_delivered_kwh, '2',',', '.' );
+    }
+    public function getNotReportedKwhReturnAttribute(){
+        $payoutKwh = $this->partsKwh->payout_kwh ? $this->partsKwh->payout_kwh : 0;
+        return $this->not_reported_delivered_kwh * $payoutKwh;
+    }
+    public function getNotReportedKwhReturnStringAttribute()
+    {
+        return number_format( $this->not_reported_kwh_return, '2',',', '.' );
+    }
 }

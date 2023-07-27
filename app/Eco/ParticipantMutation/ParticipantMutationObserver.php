@@ -51,28 +51,40 @@ class ParticipantMutationObserver
             $participantMutationStatusLog->save();
 
         }
+
         // If date_entry is changed, than determine date_register (is earliest first deposit date entry) by participant again.
+        $dateEntry = $participantMutation->date_entry;
+        // Changed DateEntry not null
+        if($dateEntry != null) {
+            $dateEntryFormated = Carbon::parse($dateEntry)->format('Y-m-d');
 
-        $dateEntry = Carbon::parse($participantMutation->date_entry)->format('Y-m-d');
-        $dateEntryOriginal = Carbon::parse($participantMutation->getOriginal('date_entry'))->format('Y-m-d');
-        if($dateEntry!=$dateEntryOriginal)
-        {
-            $participantProject = $participantMutation->participation;
-            $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
-            $participantProject->save();
+            // Get original DateEntry. If null then use 01-01-1900 as original date.
+            $dateEntryOriginal = $participantMutation->getOriginal('date_entry');
+            if($dateEntryOriginal != null){
+                $dateEntryOriginalFormated = Carbon::parse($dateEntryOriginal)->format('Y-m-d');
+            } else {
+                $dateEntryOriginalFormated = Carbon::parse('1900-01-01')->format('Y-m-d');
+            }
 
-            $revenuesKwhController = new RevenuesKwhController();
-            foreach($participantProject->project->revenuesKwh as $revenuesKwh) {
-                // If project revenue is already confirmed then continue
-                if($revenuesKwh->confirmed) continue;
+            if ($dateEntryFormated != $dateEntryOriginalFormated)
+            {
+                $participantProject = $participantMutation->participation;
+                $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
+                $participantProject->save();
 
-                $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
-                $partsUpFromDate = $dateEntry < $dateEntryOriginal ? $dateEntry : $dateEntryOriginal;
-                $parts = $revenuesKwh->partsKwh->where('date_begin', '>=', $partsUpFromDate);
-                foreach($parts as $revenuePartsKwh) {
-                    if($revenuePartsKwh->status == 'concept'){
-                        $revenuePartsKwh->status = 'concept-to-update';
-                        $revenuePartsKwh->save();
+                $revenuesKwhController = new RevenuesKwhController();
+                foreach ($participantProject->project->revenuesKwh as $revenuesKwh) {
+                    // If project revenue is already confirmed then continue
+                    if ($revenuesKwh->confirmed) continue;
+
+                    $revenuesKwhController->saveDistributionKwh($revenuesKwh, $participantProject);
+                    $partsUpFromDate = $dateEntryFormated < $dateEntryOriginalFormated ? $dateEntryFormated : $dateEntryOriginalFormated;
+                    $parts = $revenuesKwh->partsKwh->where('date_begin', '>=', $partsUpFromDate);
+                    foreach ($parts as $revenuePartsKwh) {
+                        if ($revenuePartsKwh->status == 'concept') {
+                            $revenuePartsKwh->status = 'concept-to-update';
+                            $revenuePartsKwh->save();
+                        }
                     }
                 }
             }

@@ -14,6 +14,8 @@ export const CooperationValidation = Yup.object().shape({
             return value ? Number.isInteger(+value) : true;
         }),
     email: Yup.string().email('Ongeldige e-mail'),
+    emailReportTableProblems: Yup.string().email('Ongeldige vullen report table problemen e-mail '),
     website: Yup.string().url('Ongeldige url'),
     hoomLink: Yup.string().url('Ongeldige url'),
+    hoomConnectCoachLink: Yup.string().url('Ongeldige url'),
 });

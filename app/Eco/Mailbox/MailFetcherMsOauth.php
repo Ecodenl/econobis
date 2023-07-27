@@ -77,7 +77,7 @@ class MailFetcherMsOauth
 //                Log::info('Aantal messages: ' . $messages->count());
                 $moreAvailable = $this->processMessages($messages, $dateLastFetched);
                 if($moreAvailable){
-                    Log::error('Niet alle email ingelezen, totaal messages was: ' . $messages->count());
+                    Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
                 Log::error('Error getting user\'s inbox: '.$e->getMessage());

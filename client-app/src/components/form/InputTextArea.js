@@ -14,6 +14,7 @@ const InputTextArea = props => {
         value,
         onChangeAction,
         required,
+        disabled,
         error,
         errorMessage,
         rows,
@@ -38,6 +39,7 @@ const InputTextArea = props => {
                         className={'form-control input-sm ' + (error ? 'has-error' : '')}
                         rows={rows}
                         data-item-id={props.itemId ?? ''}
+                        disabled={disabled}
                     />
                 </div>
                 { textToolTip && (
@@ -74,6 +76,7 @@ InputTextArea.defaultProps = {
     sizeInput: 'col-sm-9',
     value: '',
     required: '',
+    disabled: false,
     error: false,
     errorMessage: '',
     rows: '5',
@@ -91,6 +94,7 @@ InputTextArea.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
     required: PropTypes.string,
+    disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
     textToolTip: PropTypes.string,

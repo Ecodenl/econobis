@@ -306,7 +306,8 @@ class RevenuePartsKwhFormEdit extends Component {
             }
         }
 
-        if (!revenuePartsKwh.payoutKwh) {
+        // Edit payoutKwh nu afhankelijk van payoutKwh allowEditEnd (voor mooie zou hier een aparte boolean moet komen).
+        if (revenuePartsKwh.valuesKwh.allowEditEnd && !revenuePartsKwh.payoutKwh) {
             errors.payoutKwh = true;
             errorMessage.payoutKwh = 'Verplicht';
             hasErrors = true;

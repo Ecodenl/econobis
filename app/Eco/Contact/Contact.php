@@ -167,12 +167,7 @@ class Contact extends Model
 
     public function groups()
     {
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-        if ($teamContactGroupIds) {
-            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->whereIn('contact_groups.id', $teamContactGroupIds)->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
-        } else {
-            return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
-        }
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
 
     public function selectedGroups()
@@ -180,7 +175,7 @@ class Contact extends Model
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
             ->where('contact_groups.type_id', 'static')
             ->where('contact_groups.include_into_export_group_report', true)
-            ->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')
+            ->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')
             ->orderBy('contact_groups.id', 'desc');
     }
 
@@ -447,25 +442,27 @@ class Contact extends Model
         return null;
     }
 
-    public function getAllStaticAndDynamicGroups()
-    {
-        //statische groepen
-        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
-
-        //dynamische groepen
-        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
-
-        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
-            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
-                    return true;
-                }
-            }
-            return false;
-        })->pluck('id')->toArray();
-
-        return array_merge($staticGroups, $dynamicGroupsForContact);
-    }
+// todo WM: opschonen, deze function wordt volgens mij nergens gebruikt!
+//
+//    public function getAllStaticAndDynamicGroups()
+//    {
+//        //statische groepen
+//        $staticGroups = $this->groups()->get()->pluck('id')->toArray();
+//
+//        //dynamische groepen
+//        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
+//
+//        $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
+//            foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
+//                if ($dynamic_contact->id === $this->id) {
+//                    return true;
+//                }
+//            }
+//            return false;
+//        })->pluck('id')->toArray();
+//
+//        return array_merge($staticGroups, $dynamicGroupsForContact);
+//    }
 
     public function getAllGroups()
     {
@@ -473,7 +470,7 @@ class Contact extends Model
         $staticGroups = $this->groups()->get()->pluck('id')->toArray();
 
         //dynamische groepen
-        $dynamicGroups = ContactGroup::where('type_id', 'dynamic')->get();
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -485,7 +482,7 @@ class Contact extends Model
         })->pluck('id')->toArray();
 
         //samengestelde groepen
-        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())->where('type_id', 'composed')->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
@@ -501,22 +498,12 @@ class Contact extends Model
 
     public function getVisibleGroups()
     {
-
-        $teamContactGroupIds = Auth::user()->getTeamContactGroupIds();
-
         //statische groepen
-        if ($teamContactGroupIds) {
-            $staticGroups = $this->groups()->where('show_contact_form', true)->whereIn('contact_groups.id', $teamContactGroupIds)->get();
-        } else {
-            $staticGroups = $this->groups()->where('show_contact_form', true)->get();
-        }
+        $staticGroups = $this->groups()->where('show_contact_form', true)->get();
 
         //dynamische groepen
-        if ($teamContactGroupIds) {
-            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->whereIn('contact_groups.id', $teamContactGroupIds)->get();
-        } else {
-            $dynamicGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'dynamic')->get();
-        }
+        $dynamicGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('show_contact_form', true)->where('type_id', 'dynamic')->get();
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
@@ -530,11 +517,8 @@ class Contact extends Model
         $allGroups = $staticGroups->merge($dynamicGroupsForContact);
 
         //samengestelde groepen
-        if ($teamContactGroupIds) {
-            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get()->whereIn('contact_groups.id', $teamContactGroupIds);
-        } else {
-            $composedGroups = ContactGroup::where('show_contact_form', true)->where('type_id', 'composed')->get();
-        }
+        $composedGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
+            ->where('show_contact_form', true)->where('type_id', 'composed')->get();
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
@@ -708,7 +692,7 @@ class Contact extends Model
     public function getIsParticipantPcrProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
                 return true;
             }
         }
@@ -718,7 +702,7 @@ class Contact extends Model
     public function getIsParticipantSceProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->is_sce_project) {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->is_sce_project) {
                 return true;
             }
         }
@@ -747,7 +731,7 @@ class Contact extends Model
                 ->exists();
         }
 
-        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
+        return false;
     }
 
     public function getBlockChangeAddressNumberAttribute()

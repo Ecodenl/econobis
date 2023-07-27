@@ -18,6 +18,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
+        isParticipantPcrProject,
     } = initialContact;
     return (
         <Row>
@@ -106,19 +107,24 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                         {primaryAddress.country ? primaryAddress.country.name : ''}
                     </TextBlock>
                 </Row>
-                <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
-                        {primaryAddress.eanElectricity}
-                    </TextBlock>
-                </Row>
-                <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                        {primaryAddress.eanGas}
-                    </TextBlock>
-                </Row>
-
+                {isParticipantPcrProject ? (
+                    <>
+                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                                {primaryAddress.eanElectricity}
+                            </TextBlock>
+                        </Row>
+                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                        <Row>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                                {primaryAddress.eanGas}
+                            </TextBlock>
+                        </Row>
+                    </>
+                ) : (
+                    ''
+                )}
                 <FormLabel className={'field-label'}>Contactnummer</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>

@@ -116,7 +116,15 @@ class ContactDetailsFormAddressItem extends Component {
             },
         });
 
-        if (name == 'typeId' && value == 'old' && this.state.address.usedInActiveParticipation) {
+        //if this is the primary address or used in Sce participation
+        // todo WM: cleanup
+        //         console.log('usedInActiveParticipationInSceOrPcrProject');
+        //         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
+        if (
+            name == 'typeId' &&
+            value == 'old' &&
+            (this.state.address.usedInActiveParticipationInSceOrPcrProject || this.state.address.primary)
+        ) {
             this.setState({
                 showModal: true,
                 modalTitle: 'Waarschuwing',
@@ -125,7 +133,26 @@ class ContactDetailsFormAddressItem extends Component {
                 modalConfirmAction: {},
                 modalButtonConfirmText: '',
                 modalText:
-                    'Er is een deelname in een project op dit adres. Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt. Er zal een taak aangemaakt worden.',
+                    'Er is een deelname in een SCE of Postcoderoos project op dit adres. Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt. Er zal een taak aangemaakt worden.',
+            });
+        }
+
+        //if this is not the primary address and its used in a non SCE project
+        if (
+            name == 'typeId' &&
+            value == 'old' &&
+            this.state.address.usedInActiveParticipationNotInSceOrPcrProject &&
+            !this.state.address.primary
+        ) {
+            this.setState({
+                showModal: true,
+                modalTitle: 'Waarschuwing',
+                modalButtonCancelText: 'Ok',
+                modalShowConfirmAction: false,
+                modalConfirmAction: {},
+                modalButtonConfirmText: '',
+                modalText:
+                    'Er is een deelname in een project op dit adres. Deze deelname zal worden overgezet naar het primaire adres.',
             });
         }
     };

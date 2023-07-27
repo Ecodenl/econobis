@@ -66,7 +66,11 @@ export default (type, field) => {
                     return 'Intake - Status';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
-                case 'housingFile':
+                case 'housingFileFieldName':
+                    return 'Woningdossier - veldnaam';
+                case 'housingFileFieldValue':
+                    return 'Woningdossier - status / waarde';
+                case 'housingFileExists':
                     return 'Woningdossier aanwezig';
                 case 'inspectionPersonType':
                     return 'Rol in buurtaanpak';

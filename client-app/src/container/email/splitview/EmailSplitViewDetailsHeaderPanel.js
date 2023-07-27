@@ -152,6 +152,16 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                         onChangeAction={updateEmailAttributes}
                     />
                 </div>
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label className="col-sm-12">
+                            Opmerking
+                        </label>
+                    </div>
+                    <div className="col-sm-9">
+                        {email.note}
+                    </div>
+                </div>
             </div>
         </div>
     );

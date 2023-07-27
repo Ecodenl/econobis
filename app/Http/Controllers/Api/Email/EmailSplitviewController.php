@@ -68,6 +68,7 @@ class EmailSplitviewController extends Controller
             'ccAddresses' => $email->getCcRecipients()->toReactArray(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'folder' => $email->folder,
+            'note' => $email->note,
         ]);
     }
 }

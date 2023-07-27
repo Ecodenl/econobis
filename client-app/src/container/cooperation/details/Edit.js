@@ -17,10 +17,10 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import InputTextColorPicker from "../../../components/form/InputTextColorPicker";
 import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
+import InputTextColorPicker from "../../../components/form/InputTextColorPicker";
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails }) {
     const [campaigns, setCampaigns] = useState([]);
@@ -43,6 +43,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     useEffect(function() {
         axios
             .all([
+                CampaignsAPI.peekCampaigns(),
                 EmailTemplateAPI.fetchEmailTemplatesPeek(),
                 MailboxAPI.fetchMailboxesLoggedInUserPeek(),
                 ContactGroupAPI.peekStaticContactGroups(),

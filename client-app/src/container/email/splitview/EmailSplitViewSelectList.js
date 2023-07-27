@@ -54,6 +54,13 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         });
     }
 
+    const onUpdatedBulkEmails = () => {
+        setSelectedEmailIds([]);
+        setSelectEnabled(false);
+
+        onUpdated();
+    }
+
     useEffect(() => {
         if (selectedEmailId) {
             return;
@@ -85,7 +92,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                         Selecteer alles
                                     </div>
                                 <div className="btn-group margin-small" role="group">
-                                    <EmailSplitViewBulkEditModal emailIds={selectedEmailIds} onSaved={onUpdated}/>
+                                    <EmailSplitViewBulkEditModal emailIds={selectedEmailIds} onSaved={onUpdatedBulkEmails}/>
                                     <button
                                         type="button"
                                         title="Verwijderen"

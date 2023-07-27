@@ -165,6 +165,19 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                 )}
 
                 <PanelHeader>
+                    <span className="h5 text-bold">Styling E-mail</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Lettertype'} value={formData.fontFamilyDefault} />
+                        <ViewText label={'Lettergrootte'} value={formData.fontSizeDefault} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
+                    </div>
+                </PanelBody>
+
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>
@@ -198,27 +211,6 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
-                        />
-                    </div>
-                </PanelBody>
-                <PanelHeader>
-                    <span className="h5 text-bold">Styling</span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText
-                            label={'Lettertype'}
-                            value={formData.fontFamilyDefault}
-                        />
-                        <ViewText
-                            label={'Lettergrootte'}
-                            value={formData.fontSizeDefault}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={'Letterkleur'}
-                            value={formData.fontColorDefault}
                         />
                     </div>
                 </PanelBody>

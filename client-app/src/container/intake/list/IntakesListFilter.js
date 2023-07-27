@@ -91,6 +91,9 @@ const IntakesListFilter = props => {
             </th>
 
             <th>
+            </th>
+
+            <th>
                 <select
                     className="form-control input-sm"
                     value={props.filters.measureRequested.data}

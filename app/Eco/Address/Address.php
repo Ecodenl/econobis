@@ -175,7 +175,7 @@ class Address extends Model
         return $memberSinceDisabledBefore;
     }
 
-    public function sharedPostalCodesHouseNumber(){
+    public function getSharedPostalCodesHouseNumber(){
         return SharedPostalCodesHouseNumber::where('postal_code', str_replace(' ', '', $this->postal_code))->where('house_number', $this->number)->first();
     }
 }

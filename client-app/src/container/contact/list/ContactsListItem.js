@@ -76,8 +76,10 @@ class ContactsListItem extends Component {
                 <td>{fullName}</td>
                 <td className="hidden-xs">{streetAndNumber}</td>
                 <td className="hidden-xs">{postalCode}</td>
-                <td className="hidden-xs">{city}</td>
-                <td className="hidden-xs">{areaName}</td>
+                <td className="hidden-xs" title={'Buurt: ' + areaName}>
+                    {city}
+                </td>
+                {/*<td className="hidden-xs">{areaName}</td>*/}
                 <td className="hidden-xs">{emailAddress}</td>
                 <td>{phoneNumber}</td>
                 <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>

@@ -212,8 +212,8 @@ class AddressController extends ApiController
 
         if(isSet($sharedPostalCodesHouseNumber)) {
             return [
-                'areaName' => $sharedPostalCodesHouseNumber->sharedArea()->area_name,
-                'districtName' => $sharedPostalCodesHouseNumber->sharedArea()->district_name
+                'areaName' => $sharedPostalCodesHouseNumber->sharedArea->area_name,
+                'districtName' => $sharedPostalCodesHouseNumber->sharedArea->district_name
             ];
         }
 

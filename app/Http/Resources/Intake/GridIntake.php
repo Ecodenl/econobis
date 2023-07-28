@@ -25,7 +25,7 @@ class GridIntake extends JsonResource
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
                 'status' => optional($this->status)->name,
                 'contactId' => $this->contact->id,
-                'areaName' => optional(optional(optional($this->address)->sharedPostalCodesHouseNumber())->sharedArea())->area_name,
+                'areaName' => optional(optional(optional($this->address)->getSharedPostalCodesHouseNumber())->sharedArea)->area_name,
             ];
     }
 }

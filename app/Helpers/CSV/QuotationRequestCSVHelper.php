@@ -76,6 +76,8 @@ class QuotationRequestCSVHelper
                 $quotationRequest->addition = ($address ? $address->addition : '');
                 $quotationRequest->postal_code = ($address ? $address->postal_code : '');
                 $quotationRequest->city = ($address ? $address->city : '');
+                $quotationRequest->area_name = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->area_name : '');
+                $quotationRequest->district_name = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                 $quotationRequest->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/$quotationRequest fields
@@ -114,6 +116,8 @@ class QuotationRequestCSVHelper
                 'addition' => 'Toevoeging',
                 'postal_code' => 'Postcode',
                 'city' => 'Plaats',
+                'area_name' => 'Buurt',
+                'district_name' => 'Wijk',
                 'country' => 'Land',
                 'opportunity.number' => 'Kans ID',
                 'opportunity.measureCategory.name' => 'Maatregel categorie',

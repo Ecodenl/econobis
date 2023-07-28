@@ -54,3 +54,20 @@ CREATE TABLE `shared_postal_codes_house_numbers` (
   `municipality_code` int(11) NOT NULL DEFAULT 0,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+-- ----------------------------
+-- Create indexen
+-- ----------------------------
+DROP INDEX IF EXISTS index_shared_postal_codes_house_numbers ON shared_postal_codes_house_numbers;
+CREATE INDEX index_shared_postal_codes_house_numbers
+ON shared_postal_codes_house_numbers (postal_code, house_number);
+DROP INDEX IF EXISTS index_shared_areas ON shared_areas;
+CREATE INDEX index_shared_areas
+ON shared_areas (area_code);
+DROP INDEX IF EXISTS index_shared_districts ON shared_districts;
+CREATE INDEX index_shared_districts
+ON shared_districts (district_code);
+DROP INDEX IF EXISTS index_shared_municipalities ON shared_municipalities;
+CREATE INDEX index_shared_municipalities
+ON shared_municipalities (municipality_code);
+

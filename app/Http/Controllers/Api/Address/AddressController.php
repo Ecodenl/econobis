@@ -21,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
-use App\EcoShared\SharedPostalcodehousenumber\SharedPostalcodehousenumber;
+use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
 
 class AddressController extends ApiController
 {
@@ -208,12 +208,12 @@ class AddressController extends ApiController
             $pc = strtoupper(preg_replace('/\s+/', '', $pc));
         }
 
-        $sharedPostalcodehousenumber = SharedPostalcodehousenumber::where('postal_code', $pc)->where('house_number', $request->input('number'))->first();
+        $sharedPostalCodesHouseNumber = SharedPostalCodesHouseNumber::where('postal_code', $pc)->where('house_number', $request->input('number'))->first();
 
-        if(isSet($sharedPostalcodehousenumber)) {
+        if(isSet($sharedPostalCodesHouseNumber)) {
             return [
-                'areaName' => $sharedPostalcodehousenumber->sharedArea()->area_name,
-                'districtName' => $sharedPostalcodehousenumber->sharedArea()->district_name
+                'areaName' => $sharedPostalCodesHouseNumber->sharedArea->area_name,
+                'districtName' => $sharedPostalCodesHouseNumber->sharedArea->district_name
             ];
         }
 

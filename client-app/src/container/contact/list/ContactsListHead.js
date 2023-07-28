@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
+// import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setContactsSortsFilter } from '../../../actions/contact/ContactsSortsActions';
 
 const ContactsListHead = props => {
@@ -53,12 +53,12 @@ const ContactsListHead = props => {
                 width={'10%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitle
-                RowClassName={'hidden-xs'}
-                sortColumn={'areaName'}
-                title={'Buurt'}
-                width={'10%'}
-            />
+            {/*<DataTableHeadTitle*/}
+            {/*    RowClassName={'hidden-xs'}*/}
+            {/*    sortColumn={'areaName'}*/}
+            {/*    title={'Buurt'}*/}
+            {/*    width={'10%'}*/}
+            {/*/>*/}
             <DataTableHeadTitleAndSort
                 RowClassName={'hidden-xs'}
                 sortColumn={'emailAddress'}

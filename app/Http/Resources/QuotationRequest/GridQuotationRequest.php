@@ -19,20 +19,18 @@ class GridQuotationRequest extends JsonResource
 {
     public function toArray($request)
     {
-        $opportunity = OpportunityByQuotationRequest::make($this->whenLoaded('opportunity'));
-
-           return [
-               'id' => $this->id,
-               'datePlanned' => $this->date_planned,
-               'dateRecorded' => $this->date_recorded,
-               'dateReleased' => $this->date_released,
-               'quotationText' => $this->quotation_text,
-               'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
-               'opportunity' => $opportunity,
-               'status' => GenericResource::make($this->whenLoaded('status')),
-               'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
-               'createdAt' => $this->created_at,
-               'areaName' => optional(optional(optional(optional($opportunity->intake)->address)->sharedPostalcodehousenumber())->sharedArea())->area_name
-            ];
+        return [
+            'id' => $this->id,
+            'datePlanned' => $this->date_planned,
+            'dateRecorded' => $this->date_recorded,
+            'dateReleased' => $this->date_released,
+            'quotationText' => $this->quotation_text,
+            'organisationOrCoach' => FullContact::make($this->whenLoaded('organisationOrCoach')),
+            'opportunity' => OpportunityByQuotationRequest::make($this->whenLoaded('opportunity')),
+            'status' => GenericResource::make($this->whenLoaded('status')),
+            'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
+            'createdAt' => $this->created_at,
+            'areaName' => optional(optional(optional(optional($this->opportunity->intake)->address)->getSharedPostalCodesHouseNumber())->sharedArea)->area_name
+        ];
     }
 }

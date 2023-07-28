@@ -70,8 +70,8 @@ class FullAddress extends JsonResource
             'memberSinceGasDisabledBefore' => $memberSinceGasDisabledBefore,
             'memberSinceElectricityDisabledBefore' => $memberSinceElectricityDisabledBefore,
             'memberSinceGasAndElectricityDisabledBefore' => $memberSinceGasAndElectricityDisabledBefore,
-            'areaName' => optional(optional($this->sharedPostalcodehousenumber())->sharedArea())->area_name,
-            'districtName' => optional(optional($this->sharedPostalcodehousenumber())->sharedArea())->district_name,
+            'areaName' => optional(optional($this->sharedPostalCodesHouseNumber())->sharedArea())->area_name,
+            'districtName' => optional(optional($this->sharedPostalCodesHouseNumber())->sharedArea())->district_name,
         ];
     }
 }

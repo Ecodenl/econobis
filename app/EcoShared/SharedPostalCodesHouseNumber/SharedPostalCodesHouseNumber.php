@@ -1,12 +1,12 @@
 <?php
 
-namespace App\EcoShared\SharedPostalcodehousenumber;
+namespace App\EcoShared\SharedPostalCodesHouseNumber;
 
 use App\EcoShared\SharedArea\SharedArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
-class SharedPostalcodehousenumber extends Model
+class SharedPostalCodesHouseNumber extends Model
 {
     protected $connection = 'econobis_shared';
 

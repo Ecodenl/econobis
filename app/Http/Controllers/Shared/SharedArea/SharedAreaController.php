@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 class SharedAreaController
 {
 
-    public function getArea(string $code)
+    public function getSharedArea(string $code)
     {
         return SharedArea::find($code);
     }

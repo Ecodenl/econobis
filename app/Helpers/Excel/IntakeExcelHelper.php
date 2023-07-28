@@ -110,8 +110,8 @@ class IntakeExcelHelper
                 $rowData[8] = ($address ? $address->addition : '');
                 $rowData[9] = ($address ? $address->postal_code : '');
                 $rowData[10] = ($address ? $address->city : '');
-                $rowData[11] = (($address && $address->sharedPostalcodehousenumber() && $address->sharedPostalcodehousenumber()->sharedArea()) ? $address->sharedPostalcodehousenumber()->sharedArea()->area_name : '');
-                $rowData[12] = (($address && $address->sharedPostalcodehousenumber() && $address->sharedPostalcodehousenumber()->sharedArea()) ? $address->sharedPostalcodehousenumber()->sharedArea()->district_name : '');
+                $rowData[11] = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->area_name : '');
+                $rowData[12] = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                 $rowData[13] = (($address && $address->country) ? $address->country->name : '');
                 $rowData[14] = $intake->sources_string;
                 $rowData[15] = $intake->campaign ? $intake->campaign->name : '';

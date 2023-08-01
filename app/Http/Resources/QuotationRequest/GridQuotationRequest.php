@@ -30,7 +30,7 @@ class GridQuotationRequest extends JsonResource
             'status' => GenericResource::make($this->whenLoaded('status')),
             'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
             'createdAt' => $this->created_at,
-            'areaName' => optional(optional(optional(optional($this->opportunity->intake)->address)->getSharedPostalCodesHouseNumber())->sharedArea)->area_name
+            'areaName' => optional(optional($this->opportunity->intake)->addresss)->shared_area_name,
         ];
     }
 }

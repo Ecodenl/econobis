@@ -17,9 +17,9 @@ use App\Eco\Occupation\Occupation;
 use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
+use App\EcoShared\SharedArea\SharedArea;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use JosKolenberg\Enum\EnumNotFoundException;
 
 class DynamicContactGroupFilter extends Model
@@ -145,6 +145,15 @@ class DynamicContactGroupFilter extends Model
                         }
                     }
                 }
+            }
+
+            // sharedArea omzetten
+            if ($this->field == 'sharedArea'){
+                if($this->data){
+                    $sharedArea = SharedArea::find($this->data);
+                    return $sharedArea ? $sharedArea->area_name : '';
+                }
+                return '';
             }
 
             return $this->data;

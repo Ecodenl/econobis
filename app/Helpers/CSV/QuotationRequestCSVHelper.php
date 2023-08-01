@@ -76,7 +76,7 @@ class QuotationRequestCSVHelper
                 $quotationRequest->addition = ($address ? $address->addition : '');
                 $quotationRequest->postal_code = ($address ? $address->postal_code : '');
                 $quotationRequest->city = ($address ? $address->city : '');
-                $quotationRequest->area_name = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->area_name : '');
+                $quotationRequest->area_name = ($address ? $address->shared_area_name : '');
                 $quotationRequest->district_name = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                 $quotationRequest->country = (($address && $address->country) ? $address->country->name : '');
 

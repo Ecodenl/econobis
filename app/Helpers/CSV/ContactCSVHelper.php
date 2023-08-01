@@ -70,7 +70,7 @@ class ContactCSVHelper
                         $addressArr['addition'] = ($address ? $address->addition : '');
                         $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                         $addressArr['city'] = ($address ? $address->city : '');
-                        $addressArr['areaName'] = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->area_name : '');
+                        $addressArr['areaName'] = ($address ? $address->shared_area_name : '');
                         $addressArr['districtName'] = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                         $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
 

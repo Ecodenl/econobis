@@ -12,6 +12,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputDate from '../../../../components/form/InputDate';
+import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 
 class ContactDetailsFormAddressNew extends Component {
     constructor(props) {
@@ -82,7 +83,7 @@ class ContactDetailsFormAddressNew extends Component {
                     });
                 });
 
-                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {
@@ -102,7 +103,7 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isPostalCode(address.postalCode, 'NL') &&
                 !validator.isEmpty(address.number + '')
             ) {
-                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {

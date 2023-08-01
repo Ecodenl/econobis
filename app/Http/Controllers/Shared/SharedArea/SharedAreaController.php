@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Shared\SharedArea;
 
 use App\EcoShared\SharedArea\SharedArea;
+use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
 use App\Http\Resources\SharedArea\SharedAreaSearch;
 use Illuminate\Http\Request;
 
@@ -22,6 +23,29 @@ class SharedAreaController
         $sharedAreas = $sharedAreas->get();
 
         return SharedAreaSearch::collection($sharedAreas);
+    }
+
+    public function getSharedAreaDetails(Request $request){
+        $pc = $request->input('postalCode');
+
+        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
+            $pc = strtoupper(preg_replace('/\s+/', '', $pc));
+        }
+
+        $sharedPostalCodesHouseNumber = SharedPostalCodesHouseNumber::where('postal_code', $pc)->where('house_number', $request->input('number'))->first();
+
+        if(isSet($sharedPostalCodesHouseNumber)) {
+            return [
+                'areaName' => $sharedPostalCodesHouseNumber->sharedArea->area_name,
+                'districtName' => $sharedPostalCodesHouseNumber->sharedArea->district_name
+            ];
+        }
+
+        return [
+            'areaName' => '',
+            'districtName' => ''
+        ];
+
     }
 
 

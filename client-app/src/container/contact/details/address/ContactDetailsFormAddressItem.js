@@ -11,6 +11,7 @@ import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
 import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
+import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 
 class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
@@ -185,7 +186,7 @@ class ContactDetailsFormAddressItem extends Component {
                 validator.isPostalCode(address.postalCode, 'NL') &&
                 !validator.isEmpty(address.number + '')
             ) {
-                AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
+                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {

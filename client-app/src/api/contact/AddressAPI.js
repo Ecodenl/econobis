@@ -33,17 +33,4 @@ export default {
                 return error.response;
             });
     },
-
-    getSharedAddressDetails: (postalCode, number) => {
-        const requestUrl = `${URL_ADDRESS}/sharedaddressdetails`;
-
-        return axiosInstance
-            .post(requestUrl, { postalCode: postalCode, number: number })
-            .then(function(response) {
-                return response.data;
-            })
-            .catch(function(error) {
-                return error.response;
-            });
-    },
 };

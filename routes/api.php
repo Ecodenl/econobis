@@ -32,6 +32,7 @@ Route::namespace('Api')
 
         Route::get('/shared-area/search', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@searchArea');
         Route::get('/shared-area/{sharedArea}', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@show');
+        Route::post('/shared-area/shared-area-details', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@getSharedAreaDetails');
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');
 
@@ -148,7 +149,6 @@ Route::namespace('Api')
         Route::post('/user/{user}/reset-two-factor', 'User\UserController@resetTwoFactor');
 
         Route::post('/address/lvbag', 'Address\AddressController@getLvbagAddress');
-        Route::post('/address/sharedaddressdetails', 'Address\AddressController@getSharedAddressDetails');
         Route::post('/address', 'Address\AddressController@store');
         Route::post('/address/{address}', 'Address\AddressController@update');
         Route::post('/address/{address}/delete', 'Address\AddressController@destroy');

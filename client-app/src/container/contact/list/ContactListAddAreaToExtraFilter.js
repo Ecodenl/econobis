@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 
-import ContactsAPI from '../../../api/contact/ContactsAPI';
 import Modal from '../../../components/modal/Modal';
 import AsyncSelectSet from '../../../components/form/AsyncSelectSet';
+import SharedAreaAPI from '../../../api/shared-area/SharedAreaAPI';
 
 function ContactListAddAreaToExtraFilter(props) {
     const [selectedContactArea, setSelectedContactArea] = useState({});
@@ -17,7 +17,7 @@ function ContactListAddAreaToExtraFilter(props) {
         setLoadingContactArea(true);
 
         try {
-            const results = await ContactsAPI.fetchContactAreaSearch(searchTermContactArea);
+            const results = await SharedAreaAPI.fetchContactAreaSearch(searchTermContactArea);
             setLoadingContactArea(false);
             return results.data.data;
         } catch (error) {

@@ -194,6 +194,7 @@ class ProjectRevenueController extends ApiController
         $projectRevenue->fill($data);
 
         $projectRevenueConfirmedIsDirty = false;
+        // isDirty werkt hier niet goed op boolean veld. Geeft altijd TRUE !?!?
         if($projectRevenue->isDirty('confirmed')){
             $projectRevenueConfirmedIsDirty = true;
         }

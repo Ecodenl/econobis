@@ -265,8 +265,8 @@ class QuotationRequestController
                         'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,
                     ],
                     'address' => [
-                        'id' => $quotationRequest->opportunity->intake->address->id,
-                        'streetPostalCodeCity' => $quotationRequest->opportunity->intake->address->getStreetPostalCodeCityAttribute(),
+                        'id' => optional($quotationRequest->opportunity->intake->address)->id,
+                        'streetPostalCodeCity' => $quotationRequest->opportunity->intake->address ? $quotationRequest->opportunity->intake->address->getStreetPostalCodeCityAttribute() : 'onbekend',
                     ],
                 ],
                 'status' => [

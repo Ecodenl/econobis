@@ -167,7 +167,7 @@ class TaskController extends Controller
 
         $task->fill($data);
 
-        if($task->isDirty('finished') && $task->finished){
+        if( $task->getOriginal('finished') != $task->finished && $task->finished ){
             $task->date_finished = Carbon::today();
             $task->finished_by_id = Auth::id();
         }

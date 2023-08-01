@@ -99,6 +99,23 @@ export default {
         });
     },
 
+    // todo WM: fetchContactAreaSearch naar SharedAreaAPI ?
+    fetchContactAreaSearch: searchTermContactArea => {
+        const requestUrl = `${URL_API}/api/shared-area/search/?searchTerm=${searchTermContactArea}`;
+
+        if (typeof cancelToken != typeof undefined) {
+            //Check if there are any previous pending requests
+            cancelToken.cancel('Api call canceled due to new request.');
+        }
+
+        //Save the cancel token for the current request
+        cancelToken = axios.CancelToken.source();
+
+        return axiosInstance.get(requestUrl, {
+            cancelToken: cancelToken.token,
+        });
+    },
+
     getCSV: ({ filters, extraFilters, sorts }) => {
         const requestUrl = `${URL_API}/api/contact/csv`;
 

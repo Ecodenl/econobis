@@ -10,6 +10,8 @@ namespace App\Http\RequestQueries\Contact\Grid;
 
 
 use App\Eco\HousingFile\HousingFileHoomLink;
+use App\EcoShared\SharedArea\SharedArea;
+use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
 
@@ -52,6 +54,7 @@ class ExtraFilter extends RequestExtraFilter
         'housingFileFieldName',
         'housingFileFieldValue',
         'inspectionPersonType',
+        'sharedArea',
     ];
 
     protected $mapping = [
@@ -1040,5 +1043,35 @@ class ExtraFilter extends RequestExtraFilter
         }
 
     }
+
+    protected function applySharedAreaFilter($query, $type, $data)
+    {
+        if(empty($data)){
+            return;
+
+        }else {
+            $postalCodeHouseNumbersArray = [];
+            $postalCodeHouseNumbersList = SharedPostalCodesHouseNumber::where('area_code', SharedArea::find($data)->area_code)->selectRaw('concat(`postal_code`, `house_number`) as "pchn"')->get();
+            foreach ($postalCodeHouseNumbersList as $postalCodeHouseNumber){
+                $postalCodeHouseNumbersArray[] = '"' . $postalCodeHouseNumber->pchn . '"';
+            }
+            $postalCodeHouseNumbersString = implode(',', $postalCodeHouseNumbersArray);
+
+            switch ($type) {
+                case 'neq':
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $postalCodeHouseNumbersString) {
+                            $query->whereRaw('concat(`postal_code`, `number`) not in (' . $postalCodeHouseNumbersString . ')');
+                        });
+                    break;
+                default:
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $postalCodeHouseNumbersString) {
+                        $query->whereRaw('concat(`postal_code`, `number`) in (' . $postalCodeHouseNumbersString . ')');
+                    });
+                    break;
+            }
+        }
+    }
+
 
 }

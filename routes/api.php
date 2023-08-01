@@ -28,6 +28,11 @@ Route::namespace('Api')
     ->middleware(['auth:api', 'scopes:use-app', 'two-factor'])
     ->group(function () {
 
+// Todo WM: check rewrite code:  Shared api's. Naar namespce 'Shared' ??
+
+        Route::get('/shared-area/search', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@searchArea');
+        Route::get('/shared-area/{sharedArea}', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@show');
+
         Route::get('/jobs', 'Job\JobController@getLastJobs');
 
         Route::get('/twinfield', 'Twinfield\TwinfieldController@twinfield');

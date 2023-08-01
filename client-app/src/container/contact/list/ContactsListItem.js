@@ -76,7 +76,7 @@ class ContactsListItem extends Component {
                 <td>{fullName}</td>
                 <td className="hidden-xs">{streetAndNumber}</td>
                 <td className="hidden-xs">{postalCode}</td>
-                <td className="hidden-xs" title={'Buurt: ' + areaName}>
+                <td className="hidden-xs" title={'Buurt: ' + (areaName ? areaName : 'onbekend')}>
                     {city}
                 </td>
                 {/*<td className="hidden-xs">{areaName}</td>*/}

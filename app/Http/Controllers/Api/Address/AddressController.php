@@ -21,7 +21,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Ecodenl\LvbagPhpWrapper\Client;
 use Ecodenl\LvbagPhpWrapper\Lvbag;
-use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
 
 class AddressController extends ApiController
 {
@@ -199,29 +198,6 @@ class AddressController extends ApiController
             'street' => $street,
             'city' => $city
         ];
-    }
-
-    public function getSharedAddressDetails(Request $request){
-        $pc = $request->input('postalCode');
-
-        if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
-            $pc = strtoupper(preg_replace('/\s+/', '', $pc));
-        }
-
-        $sharedPostalCodesHouseNumber = SharedPostalCodesHouseNumber::where('postal_code', $pc)->where('house_number', $request->input('number'))->first();
-
-        if(isSet($sharedPostalCodesHouseNumber)) {
-            return [
-                'areaName' => $sharedPostalCodesHouseNumber->sharedArea->area_name,
-                'districtName' => $sharedPostalCodesHouseNumber->sharedArea->district_name
-            ];
-        }
-
-        return [
-            'areaName' => '',
-            'districtName' => ''
-        ];
-
     }
 
     public function createTaskEndDateAddress(Address $address)

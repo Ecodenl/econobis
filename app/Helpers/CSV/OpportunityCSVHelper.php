@@ -73,7 +73,7 @@ class OpportunityCSVHelper
                 $opportunity->postal_code = ($address ? $address->postal_code : '');
                 $opportunity->city = ($address ? $address->city : '');
 
-                $opportunity->area_name = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->area_name : '');
+                $opportunity->area_name = ($address ? $address->shared_area_name : '');
                 $opportunity->district_name = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
 
                 $opportunity->country = (($address && $address->country) ? $address->country->name : '');

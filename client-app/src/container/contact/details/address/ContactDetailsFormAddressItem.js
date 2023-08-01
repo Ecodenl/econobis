@@ -159,11 +159,11 @@ class ContactDetailsFormAddressItem extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
-                !validator.isEmpty(address.postalCode) &&
+                !validator.isEmpty(address.postalCode + '') &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number) &&
-                validator.isEmpty(address.city) &&
-                validator.isEmpty(address.street)
+                !validator.isEmpty(address.number + '') &&
+                validator.isEmpty(address.city + '') &&
+                validator.isEmpty(address.street + '')
             ) {
                 AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
                     this.setState({
@@ -181,9 +181,9 @@ class ContactDetailsFormAddressItem extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
-                !validator.isEmpty(address.postalCode) &&
+                !validator.isEmpty(address.postalCode + '') &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number)
+                !validator.isEmpty(address.number + '')
             ) {
                 AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
                     this.setState({

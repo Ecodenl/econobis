@@ -65,11 +65,11 @@ class ContactDetailsFormAddressNew extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
-                !validator.isEmpty(address.postalCode) &&
+                !validator.isEmpty(address.postalCode + '') &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number) &&
-                validator.isEmpty(address.city) &&
-                validator.isEmpty(address.street)
+                !validator.isEmpty(address.number + '') &&
+                validator.isEmpty(address.city + '') &&
+                validator.isEmpty(address.street + '')
             ) {
                 AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
                     this.setState({
@@ -98,9 +98,9 @@ class ContactDetailsFormAddressNew extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
-                !validator.isEmpty(address.postalCode) &&
+                !validator.isEmpty(address.postalCode + '') &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number)
+                !validator.isEmpty(address.number + '')
             ) {
                 AddressAPI.getSharedAddressDetails(address.postalCode, address.number).then(payload => {
                     this.setState({
@@ -151,7 +151,7 @@ class ContactDetailsFormAddressNew extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(address.postalCode)) {
+        if (validator.isEmpty(address.postalCode + '')) {
             errors.postalCode = true;
             hasErrors = true;
         }
@@ -174,12 +174,12 @@ class ContactDetailsFormAddressNew extends Component {
             }
         }
 
-        if (validator.isEmpty(address.number)) {
+        if (validator.isEmpty(address.number + '')) {
             errors.number = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(address.typeId)) {
+        if (validator.isEmpty(address.typeId + '')) {
             errors.typeId = true;
             hasErrors = true;
         }
@@ -328,7 +328,6 @@ class ContactDetailsFormAddressNew extends Component {
                                 disabled={true}
                             />
                         </div>
-
 
                         <div className="row">
                             <InputSelect

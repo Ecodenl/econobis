@@ -325,7 +325,9 @@ const DataTableCustomFilter = props => {
                             )}
                             {fieldType === 'searchWithAsync' && (
                                 <a role="button" onClick={() => setShowModalAddAreaToFilter(true)}>
-                                    {props.filter.showValue ? props.filter.showValue : 'Zoeken'}
+                                    <span>
+                                        {props.filter.showValue ? props.filter.showValue : '--Willekeurige waarde--'}
+                                    </span>
                                 </a>
                             )}
                             {showModalAddAreaToFilter && (

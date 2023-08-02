@@ -86,10 +86,13 @@ class QuotationRequestController
             'dateApprovedProjectManager' => ['nullable', 'date'],
             'dateApprovedExternal' => ['nullable', 'date'],
             'opportunityStatusId' => ['integer'],
+            'coachOrOrganisationNote' => ['nullable', 'string'],
             'externalpartyNote' => ['nullable', 'string'],
             'statusId' => ['integer'],
             'dateUnderReview' => ['nullable', 'date'],
+            'dateExecuted' => ['nullable', 'date'],
             'quotationText' => ['nullable', 'string'],
+            'quotationAmount' => ['nullable', 'string'],
         ]);
 
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
@@ -98,10 +101,13 @@ class QuotationRequestController
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
-        $quotationRequest->externalparty_note = $request->input('externalpartyNote');
         $quotationRequest->quotation_text = $request->input('quotationText');
+        $quotationRequest->coach_or_organisation_note = $request->input('coachOrOrganisationNote');
+        $quotationRequest->externalparty_note = $request->input('externalpartyNote');
         $quotationRequest->status_id = $request->input('statusId');
         $quotationRequest->date_under_review = $request->input('dateUnderReview') ?: null;
+        $quotationRequest->date_executed = $request->input('dateExecuted') ?: null;
+        $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
@@ -281,6 +287,7 @@ class QuotationRequestController
             'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager,
             'dateApprovedClient' => $quotationRequest->date_approved_client,
             'quotationText' => $quotationRequest->quotation_text,
+            'coachOrOrganisationNote' => $quotationRequest->coach_or_organisation_note,
             'externalpartyNote' => $quotationRequest->externalparty_note,
             'status' => [
                 'id' => $quotationRequest->status->id,
@@ -288,6 +295,8 @@ class QuotationRequestController
                 'codeRef' => $quotationRequest->status->code_ref,
             ],
             'dateUnderReview' => $quotationRequest->date_under_review,
+            'dateExecuted' => $quotationRequest->date_executed,
+            'quotationAmount' => $quotationRequest->quotation_amount,
         ];
     }
 

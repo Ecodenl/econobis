@@ -103,6 +103,7 @@ class QuotationRequestCSVHelper
                 'date_under_review' => 'Datum in behandeling',
                 'date_approved_external' => 'Datum akkoord extern',
                 'quotation_text' => 'Offerte omschrijving',
+                'quotation_amount' => 'Offerte bedrag',
                 'opportunity.intake.contact.full_name' => 'Contact',
                 'title.name' => 'Persoon titel',
                 'initials' => 'Persoon initialen',

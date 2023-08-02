@@ -36,9 +36,12 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
+            dateExecuted,
             quotationText,
+            quotationAmount,
             opportunity,
             relatedQuotationRequestsStatuses,
+            coachOrOrganisationNote,
             externalpartyNote,
         } = props.quotationRequestDetails;
 
@@ -105,7 +108,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 dateUnderReview: dateUnderReview ? dateUnderReview : '',
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
+                dateExecuted: dateExecuted ? dateExecuted : '',
                 quotationText: quotationText ? quotationText : '',
+                quotationAmount: quotationAmount ? quotationAmount : 0,
+                coachOrOrganisationNote: coachOrOrganisationNote ? coachOrOrganisationNote : '',
                 externalpartyNote: externalpartyNote ? externalpartyNote : '',
                 relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
                     ? relatedQuotationRequestsStatuses
@@ -243,7 +249,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             dateUnderReview,
             dateApprovedProjectManager,
             dateApprovedClient,
+            dateExecuted,
             quotationText,
+            quotationAmount,
+            coachOrOrganisationNote,
             externalpartyNote,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
@@ -550,6 +559,18 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         />
                     </div>
                 ) : null}
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum uitgevoerd"
+                            size={'col-sm-6'}
+                            name="dateExecuted"
+                            value={dateExecuted}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
                 <div className="row">
                     <InputTextArea
                         label={'Omschrijving'}
@@ -557,6 +578,39 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         value={quotationText}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+                {opportunityAction.codeRef === 'quotation-request' ? (
+                    <div className="row">
+                        <InputText
+                            label="Offerte bedrag"
+                            size={'col-sm-6'}
+                            name="quotationAmount"
+                            value={quotationAmount}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                ) : null}
+                {opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputText
+                            label="Budget bedrag"
+                            size={'col-sm-6'}
+                            name="quotationAmount"
+                            value={quotationAmount}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                ) : null}
+
+                <div className="row">
+                    <div className="col-sm-3">
+                        <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
+                            Opmerkingen coach of organisatie
+                        </label>
+                    </div>
+                    <div className="col-sm-9" id="coachOrOrganisationNote">
+                        {coachOrOrganisationNote}
+                    </div>
                 </div>
 
                 <div className="row">

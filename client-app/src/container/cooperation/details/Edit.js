@@ -412,7 +412,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     />
                                     {values.createContactsForReportTable == true && (
                                         <InputText
-                                            label="Email vullen report table problemen"
+                                            label="Email bij problemen vullen report tabel"
                                             name={'emailReportTableProblems'}
                                             value={values.emailReportTableProblems}
                                             onChangeAction={handleChange}
@@ -423,19 +423,17 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     )}
                                 </div>
                                 <div className="row">
-                                    {formData.createContactsForReportTable == true && (
+                                    {values.createContactsForReportTable == true && (
                                         <ViewText
                                             label={'Datum laatste keer gevuld'}
                                             value={
-                                                formData.createContactsForReportTableLastCreated
-                                                    ? moment(formData.createContactsForReportTableLastCreated).format(
-                                                          'L'
-                                                      )
+                                                values.createContactsForReportTableLastCreated
+                                                    ? moment(values.createContactsForReportTableLastCreated).format('L')
                                                     : ''
                                             }
                                         />
                                     )}
-                                    {formData.createContactsForReportTableInProgress == true && (
+                                    {values.createContactsForReportTableInProgress == true && (
                                         <span class="form-group col-sm-6">
                                             <span class="form-group col-sm-12" style={{ color: '#e64a4a' }}>
                                                 Report tabel wordt momenteel bijgewerkt…

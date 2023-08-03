@@ -4,7 +4,6 @@ import LoadingView from '../../../components/general/LoadingView';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
 import InspectDetailsDocumentTable from './document-table';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
-import DropZone from '../../../components/dropzone/DropZone';
 import VisitCoach from './action-visit/VisitCoach';
 import VisitProjectManager from './action-visit/VisitProjectManager';
 import VisitExternalParty from './action-visit/VisitExternalParty';
@@ -17,24 +16,7 @@ function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
     const [statuses, setStatuses] = useState([]);
-    const [showUpload, setShowUpload] = useState(false);
     const [reload, setReload] = useState(false);
-
-    const toggleShowUpload = () => {
-        setShowUpload(!showUpload);
-    };
-    const addUpload = files => {
-        const data = new FormData();
-        files.map((file, key) => {
-            data.append('uploads[' + key + ']', file);
-        });
-
-        QuotationRequestAPI.addUploads(match.params.id, data)
-            .then(() => {
-                setReload(true);
-            })
-            .catch(function(error) {});
-    };
 
     const handleSubmit = (values, actions) => {
         QuotationRequestAPI.update({
@@ -48,7 +30,8 @@ function InspectDetails({ match, history, user }) {
             opportunityActionId: values.opportunityAction.id,
             coachOrOrganisationNote: values.coachOrOrganisationNote,
             externalpartyNote: values.externalpartyNote,
-            quotationText: values.quotationText,
+            // quotationText: values.quotationText,
+            quotationAmount: values.quotationAmount ? values.quotationAmount.toString().replace(',', '.') : '',
             statusId: values.status.id,
             dateUnderReview: values.dateUnderReview,
             dateExecuted: values.dateExecuted,
@@ -169,19 +152,9 @@ function InspectDetails({ match, history, user }) {
                             quotationRequestId={match.params.id}
                             documents={initialQuotationRequest.documents}
                             previewDocument={previewDocument}
-                            toggleShowUpload={toggleShowUpload}
                             setReload={setReload}
                         />
                     ) : null}
-                    {/* todo WM: showUpload verplaatsen naar InspectDetailsDocumentTable ? */}
-                    {showUpload && (
-                        <DropZone
-                            maxSize={5767168}
-                            maxSizeText={'5MB'}
-                            toggleShowUpload={toggleShowUpload}
-                            addUpload={addUpload}
-                        />
-                    )}
                 </>
             )}
         </Container>

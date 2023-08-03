@@ -10,6 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import Select from '../../../../components/form/Select';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
+import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
 function QuotationRequestCoach({
     history,
@@ -21,7 +22,7 @@ function QuotationRequestCoach({
     // const [underReview, setUnderReview] = useState(false);
     const [approved, setApproved] = useState(false);
 
-    const validationSchema = Yup.object().shape({});
+    const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (
         <>
@@ -88,7 +89,7 @@ function QuotationRequestCoach({
                                                 field={field}
                                                 errors={errors}
                                                 touched={touched}
-                                                id="amount_optioned"
+                                                id="quotation_amount"
                                             />
                                         )}
                                     </Field>

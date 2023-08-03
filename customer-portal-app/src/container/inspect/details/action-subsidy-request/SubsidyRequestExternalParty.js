@@ -10,13 +10,14 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
+import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
 function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
     const [underReview, setUnderReview] = useState(false);
     const [approved, setApproved] = useState(false);
     const [notApproved, setNotApproved] = useState(false);
 
-    const validationSchema = Yup.object().shape({});
+    const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (
         <>
@@ -79,7 +80,7 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                                 field={field}
                                                 errors={errors}
                                                 touched={touched}
-                                                id="amount_optioned"
+                                                id="quotation_amount"
                                             />
                                         )}
                                     </Field>

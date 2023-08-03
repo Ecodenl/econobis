@@ -6,10 +6,29 @@ import { FaFileDownload, FiZoomIn, FaTrash } from 'react-icons/all';
 import fileDownload from 'js-file-download';
 import QuotationRequestAPI from '../../../../api/quotation-request/QuotationRequestAPI';
 import Modal from '../../../../components/modal/Modal';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
+import DropZone from '../../../../components/dropzone/DropZone';
 
 function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument, setReload }) {
     const [showDelete, setShowDelete] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState({});
+    const [showUpload, setShowUpload] = useState(false);
+    const toggleShowUpload = () => {
+        setShowUpload(!showUpload);
+    };
+    const addUpload = files => {
+        const data = new FormData();
+        files.map((file, key) => {
+            data.append('uploads[' + key + ']', file);
+        });
+
+        QuotationRequestAPI.addUploads(quotationRequestId, data)
+            .then(() => {
+                setReload(true);
+            })
+            .catch(function(error) {});
+    };
 
     const hideShowDelete = () => {
         setShowDelete(false);
@@ -48,6 +67,17 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
     if (documents && documents.length !== 0) {
         return (
             <>
+                <Row>
+                    <Col>
+                        <ButtonGroup className="float-left">
+                            <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
+                                Upload PDF of afbeelding
+                            </Button>
+                        </ButtonGroup>
+                        <br />
+                        <br />
+                    </Col>
+                </Row>
                 <Row>
                     <Col>
                         <div className="content-subheading">Documenten</div>
@@ -104,6 +134,14 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
                         Verwijderen document "{documentToDelete.filename}" ?
                     </Modal>
                 ) : null}
+                {showUpload && (
+                    <DropZone
+                        maxSize={5767168}
+                        maxSizeText={'5MB'}
+                        toggleShowUpload={toggleShowUpload}
+                        addUpload={addUpload}
+                    />
+                )}
             </>
         );
     }

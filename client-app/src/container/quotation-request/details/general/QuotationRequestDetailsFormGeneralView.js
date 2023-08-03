@@ -20,8 +20,11 @@ const QuotationRequestDetailsFormGeneralView = props => {
         dateUnderReview,
         dateApprovedProjectManager,
         dateApprovedClient,
+        dateExecuted,
         quotationText,
+        quotationAmount,
         opportunity,
+        coachOrOrganisationNote,
         externalpartyNote,
     } = props.quotationRequestDetails;
 
@@ -213,6 +216,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </div>
             ) : null}
 
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText label={'Datum uitgevoerd'} value={dateExecuted ? moment(dateExecuted).format('L') : ''} />
+                </div>
+            ) : null}
+
             <div className="row">
                 <div className="col-sm-3">
                     <label htmlFor="quotationText" className="col-sm-12">
@@ -221,6 +230,27 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 </div>
                 <div className="col-sm-9" id="quotationText">
                     {quotationText}
+                </div>
+            </div>
+            {opportunityAction.codeRef === 'quotation-request' ? (
+                <div className="row">
+                    <ViewText label={'Offerte bedrag'} value={quotationAmount ? quotationAmount : ''} />
+                </div>
+            ) : null}
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <div className="row">
+                    <ViewText label={'Budget bedrag'} value={quotationAmount ? quotationAmount : ''} />
+                </div>
+            ) : null}
+
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
+                        Opmerkingen coach of organisatie
+                    </label>
+                </div>
+                <div className="col-sm-9" id="coachOrOrganisationNote">
+                    {coachOrOrganisationNote}
                 </div>
             </div>
 

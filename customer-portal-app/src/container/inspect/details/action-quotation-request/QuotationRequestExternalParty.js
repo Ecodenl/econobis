@@ -78,6 +78,23 @@ function QuotationRequestExternalParty({ history, initialQuotationRequest, handl
                                         value={initialQuotationRequest.quotationAmount}
                                         readOnly={true}
                                     />
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_under_review" className={'field-label'}>
                                         Datum in behandeling
                                     </FormLabel>
@@ -184,6 +201,28 @@ function QuotationRequestExternalParty({ history, initialQuotationRequest, handl
                                             </Button>
                                         </div>
                                     </div>
+                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
+                                        Datum uitgevoerd
+                                    </FormLabel>
+                                    <Field name="dateExecuted">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="date_executed"
+                                                placeholder={'Datum uitgevoerd'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
+                                    {initialQuotationRequest.coachOrOrganisationNote
+                                        ? initialQuotationRequest.coachOrOrganisationNote
+                                        : 'Geen'}
+
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
                                         name="externalpartyNote"

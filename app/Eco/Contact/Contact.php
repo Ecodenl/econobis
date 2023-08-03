@@ -194,7 +194,7 @@ class Contact extends Model
     {
         return $this->inspection_person_type_id == 'coach';
     }
-    public function getOrganisationContact()
+    public function getIsOrganisationContactAttribute()
     {
         $contactOrganisationOccupations = $this->occupations()
             ->whereHas('primaryContact', function ($query) {
@@ -202,7 +202,7 @@ class Contact extends Model
                     ->where('primary', true);
             })->first();
         if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
-            return $contactOrganisationOccupations->primaryContact;
+            return $contactOrganisationOccupations->primaryContact->exists();
         }
         return false;
     }
@@ -215,6 +215,19 @@ class Contact extends Model
     public function isExternalParty()
     {
         return $this->inspection_person_type_id == 'externalparty';
+    }
+
+    public function getOrganisationContact()
+    {
+        $contactOrganisationOccupations = $this->occupations()
+            ->whereHas('primaryContact', function ($query) {
+                $query->where('type_id', 'organisation')
+                    ->where('primary', true);
+            })->first();
+        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
+            return $contactOrganisationOccupations->primaryContact;
+        }
+        return false;
     }
 
     public function getIsInInspectionPersonTypeGroupAttribute()

@@ -6,8 +6,10 @@ import { FaFileDownload, FiZoomIn, FaTrash } from 'react-icons/all';
 import fileDownload from 'js-file-download';
 import QuotationRequestAPI from '../../../../api/quotation-request/QuotationRequestAPI';
 import Modal from '../../../../components/modal/Modal';
+import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import Button from 'react-bootstrap/Button';
 
-function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument, setReload }) {
+function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument, toggleShowUpload, setReload }) {
     const [showDelete, setShowDelete] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState({});
 
@@ -48,6 +50,17 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
     if (documents && documents.length !== 0) {
         return (
             <>
+                <Row>
+                    <Col>
+                        <ButtonGroup className="float-left">
+                            <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
+                                Upload PDF of afbeelding
+                            </Button>
+                        </ButtonGroup>
+                        <br />
+                        <br />
+                    </Col>
+                </Row>
                 <Row>
                     <Col>
                         <div className="content-subheading">Documenten</div>

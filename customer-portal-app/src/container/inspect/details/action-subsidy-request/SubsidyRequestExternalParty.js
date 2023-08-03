@@ -9,6 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
+import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 
 function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
     const [underReview, setUnderReview] = useState(false);
@@ -72,12 +73,33 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                         readOnly={true}
                                     />
                                     <FormLabel className={'field-label'}>Budget bedrag</FormLabel>
-                                    <input
-                                        type="text"
-                                        className={`text-input w-input content`}
-                                        value={initialQuotationRequest.quotationAmount}
-                                        readOnly={true}
-                                    />
+                                    <Field name="quotationAmount">
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="amount_optioned"
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_under_review" className={'field-label'}>
                                         Datum in behandeling
                                     </FormLabel>
@@ -184,6 +206,28 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                             </Button>
                                         </div>
                                     </div>
+                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
+                                        Datum uitgevoerd
+                                    </FormLabel>
+                                    <Field name="dateExecuted">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="date_executed"
+                                                placeholder={'Datum uitgevoerd'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
+                                    {initialQuotationRequest.coachOrOrganisationNote
+                                        ? initialQuotationRequest.coachOrOrganisationNote
+                                        : 'Geen'}
+
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
                                         name="externalpartyNote"

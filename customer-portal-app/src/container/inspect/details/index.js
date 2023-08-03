@@ -2,8 +2,6 @@ import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
 import LoadingView from '../../../components/general/LoadingView';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
 import InspectDetailsDocumentTable from './document-table';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import DropZone from '../../../components/dropzone/DropZone';
@@ -92,10 +90,12 @@ function InspectDetails({ match, history, user }) {
                 <>
                     {initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' ? (
                         <>
-                            {user.inspectionPersonTypeId === 'coach' ? (
+                            {user.inspectionPersonTypeId === 'coach' ||
+                            (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                 <QuotationRequestCoach
                                     history={history}
                                     initialQuotationRequest={initialQuotationRequest}
+                                    isOrganisationContact={user.isOrganisationContact}
                                     handleSubmit={handleSubmit}
                                     getStatusOptions={getStatusOptions}
                                 />
@@ -112,7 +112,8 @@ function InspectDetails({ match, history, user }) {
                         </>
                     ) : initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
                         <>
-                            {user.inspectionPersonTypeId === 'coach' ? (
+                            {user.inspectionPersonTypeId === 'coach' ||
+                            (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                 <p>Voor coach of organisatie verwachten we geen budgetaanvraag</p>
                             ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                 <SubsidyRequestExternalParty
@@ -132,10 +133,12 @@ function InspectDetails({ match, history, user }) {
                         </>
                     ) : initialQuotationRequest.opportunityAction.codeRef === 'visit' ? (
                         <>
-                            {user.inspectionPersonTypeId === 'coach' ? (
+                            {user.inspectionPersonTypeId === 'coach' ||
+                            (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                 <VisitCoach
                                     history={history}
                                     initialQuotationRequest={initialQuotationRequest}
+                                    isOrganisationContact={user.isOrganisationContact}
                                     handleSubmit={handleSubmit}
                                     getStatusOptions={getStatusOptions}
                                 />
@@ -156,6 +159,21 @@ function InspectDetails({ match, history, user }) {
                             ) : null}
                         </>
                     ) : null}
+
+                    {initialQuotationRequest.opportunityAction.codeRef === 'visit' ||
+                    (initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' &&
+                        user.inspectionPersonTypeId !== 'projectmanager') ||
+                    (initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' &&
+                        user.inspectionPersonTypeId !== 'coach') ? (
+                        <InspectDetailsDocumentTable
+                            quotationRequestId={match.params.id}
+                            documents={initialQuotationRequest.documents}
+                            previewDocument={previewDocument}
+                            toggleShowUpload={toggleShowUpload}
+                            setReload={setReload}
+                        />
+                    ) : null}
+                    {/* todo WM: showUpload verplaatsen naar InspectDetailsDocumentTable ? */}
                     {showUpload && (
                         <DropZone
                             maxSize={5767168}
@@ -164,19 +182,6 @@ function InspectDetails({ match, history, user }) {
                             addUpload={addUpload}
                         />
                     )}
-
-                    <ButtonGroup className="float-left">
-                        <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
-                            Upload PDF of afbeelding
-                        </Button>
-                    </ButtonGroup>
-
-                    <InspectDetailsDocumentTable
-                        quotationRequestId={match.params.id}
-                        documents={initialQuotationRequest.documents}
-                        previewDocument={previewDocument}
-                        setReload={setReload}
-                    />
                 </>
             )}
         </Container>

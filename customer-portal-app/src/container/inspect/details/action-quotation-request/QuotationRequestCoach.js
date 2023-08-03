@@ -9,8 +9,16 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import Select from '../../../../components/form/Select';
+import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 
-function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
+function QuotationRequestCoach({
+    history,
+    initialQuotationRequest,
+    isOrganisationContact,
+    handleSubmit,
+    getStatusOptions,
+}) {
+    // const [underReview, setUnderReview] = useState(false);
     const [approved, setApproved] = useState(false);
 
     const validationSchema = Yup.object().shape({});
@@ -74,12 +82,33 @@ function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit,
                                         )}
                                     </Field>
                                     <FormLabel className={'field-label'}>Offerte bedrag</FormLabel>
-                                    <input
-                                        type="text"
-                                        className={`text-input w-input content`}
-                                        value={initialQuotationRequest.quotationAmount}
-                                        readOnly={true}
-                                    />
+                                    <Field name="quotationAmount">
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="amount_optioned"
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_planned" className={'field-label'}>
                                         Datum afspraak
                                     </FormLabel>
@@ -135,52 +164,68 @@ function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit,
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel htmlFor="date_under_review" className={'field-label'}>
+                                        Datum in behandeling
+                                    </FormLabel>
+                                    <Field name="dateUnderReview">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="date_under_review"
+                                                placeholder={'Datum in behandeling'}
+                                                // readOnly={
+                                                //     underReview || values.status?.codeRef === 'under-review'
+                                                //         ? false
+                                                //         : true
+                                                // }
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_approved_external" className={'field-label'}>
                                         Datum akkoord extern
                                     </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateApprovedExternal">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_approved_external"
-                                                        placeholder={'Datum akkoord extern'}
-                                                        readOnly={
-                                                            approved || values.status?.codeRef === 'approved'
-                                                                ? false
-                                                                : true
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                    </div>
+                                    <Field name="dateApprovedExternal">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id="date_approved_external"
+                                                placeholder={'Datum akkoord extern'}
+                                                readOnly={
+                                                    approved || values.status?.codeRef === 'approved' ? false : true
+                                                }
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_executed" className={'field-label'}>
                                         Datum uitgevoerd
                                     </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateExecuted">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_executed"
-                                                        placeholder={'Datum uitgevoerd'}
-                                                        readOnly={false}
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                    </div>
+                                    <Field name="dateExecuted">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id="date_executed"
+                                                placeholder={'Datum uitgevoerd'}
+                                                readOnly={false}
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
+                                    {initialQuotationRequest.externalpartyNote
+                                        ? initialQuotationRequest.externalpartyNote
+                                        : 'Geen'}
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
                                         name="coachOrOrganisationNote"

@@ -301,7 +301,6 @@ class QuotationRequestController extends ApiController
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
-            'quotationAmount' => 'string',
         ]);
 
         //required

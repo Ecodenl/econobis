@@ -10,7 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import Select from '../../../../components/form/Select';
 
-function VisitCoach({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
+function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, handleSubmit, getStatusOptions }) {
     const [approved, setApproved] = useState(false);
     const validationSchema = Yup.object().shape({});
 
@@ -72,6 +72,23 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit, getStatusO
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_planned" className={'field-label'}>
                                         Datum afspraak
                                     </FormLabel>
@@ -108,50 +125,6 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit, getStatusO
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_released" className={'field-label'}>
-                                        Datum uitgebracht
-                                    </FormLabel>
-                                    <Field name="dateReleased">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                name="dateReleased"
-                                                field={field}
-                                                type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
-                                                id="date_released"
-                                                placeholder={'Datum uitgebracht'}
-                                                readOnly={false}
-                                                step="900"
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_approved_external" className={'field-label'}>
-                                        Datum akkoord extern
-                                    </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateApprovedExternal">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_approved_external"
-                                                        placeholder={'Datum akkoord extern'}
-                                                        readOnly={
-                                                            approved || values.status?.codeRef === 'approved'
-                                                                ? false
-                                                                : true
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                    </div>
                                 </Col>
                             </Row>
                             <br />

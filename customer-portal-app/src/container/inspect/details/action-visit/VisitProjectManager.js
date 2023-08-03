@@ -66,6 +66,23 @@ function VisitProjectManager({ history, initialQuotationRequest, handleSubmit, g
                                         }
                                         readOnly={true}
                                     />
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_planned" className={'field-label'}>
                                         Datum afspraak
                                     </FormLabel>

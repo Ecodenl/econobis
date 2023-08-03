@@ -280,6 +280,7 @@ class QuotationRequestController
                     'name' => $quotationRequest->opportunity->status->name,
                 ]
             ],
+            'createdAt' => Carbon::parse($quotationRequest->created_at)->format('Y-m-d H:i:s'),
             'dateRecorded' => $quotationRequest->date_recorded,
             'dateReleased' => $quotationRequest->date_released,
             'datePlanned' => $quotationRequest->date_planned,

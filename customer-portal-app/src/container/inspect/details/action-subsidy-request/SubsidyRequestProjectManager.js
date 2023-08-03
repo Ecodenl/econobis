@@ -78,6 +78,23 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                         value={initialQuotationRequest.quotationAmount}
                                         readOnly={true}
                                     />
+                                    <FormLabel htmlFor="created_at" className={'field-label'}>
+                                        Datum gemaakt op
+                                    </FormLabel>
+                                    <Field name="createdAt">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="created_at"
+                                                placeholder={'Datum gemaakt op'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_released" className={'field-label'}>
                                         Datum uitgebracht
                                     </FormLabel>
@@ -87,9 +104,9 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                                 name="dateReleased"
                                                 field={field}
                                                 type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
                                                 id="date_released"
                                                 placeholder={'Datum uitgebracht'}
                                                 readOnly={true}
@@ -172,49 +189,65 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                     <FormLabel htmlFor="date_under_review" className={'field-label'}>
                                         Datum in behandeling
                                     </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateUnderReview">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_under_review"
-                                                        placeholder={'Datum in behandeling'}
-                                                        readOnly={true}
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                    </div>
+                                    <Field name="dateUnderReview">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="date_under_review"
+                                                placeholder={'Datum in behandeling'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_approved_external" className={'field-label'}>
                                         Datum akkoord extern
                                     </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateApprovedExternal">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_approved_external"
-                                                        placeholder={'Datum akkoord extern'}
-                                                        readOnly={
-                                                            approved || values.status?.codeRef === 'approved'
-                                                                ? false
-                                                                : true
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                    </div>
+                                    <Field name="dateApprovedExternal">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id="date_approved_external"
+                                                placeholder={'Datum akkoord extern'}
+                                                readOnly={
+                                                    approved || values.status?.codeRef === 'approved' ? false : true
+                                                }
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
+                                        Datum uitgevoerd
+                                    </FormLabel>
+                                    <Field name="dateExecuted">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                // errors={errors}
+                                                // touched={touched}
+                                                // onChangeAction={setFieldValue}
+                                                id="date_executed"
+                                                placeholder={'Datum uitgevoerd'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
+                                    {initialQuotationRequest.coachOrOrganisationNote
+                                        ? initialQuotationRequest.coachOrOrganisationNote
+                                        : 'Geen'}
+
+                                    <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
+                                    {initialQuotationRequest.externalpartyNote
+                                        ? initialQuotationRequest.externalpartyNote
+                                        : 'Geen'}
                                 </Col>
                             </Row>
                             <br />

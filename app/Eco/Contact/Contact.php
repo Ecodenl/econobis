@@ -744,7 +744,7 @@ class Contact extends Model
                 ->exists();
         }
 
-        return false;
+        return $hasIntakeOnPortalCheckAddress || $hasHousingFileOnPortalCheckAddress;
     }
 
     public function getBlockChangeAddressNumberAttribute()

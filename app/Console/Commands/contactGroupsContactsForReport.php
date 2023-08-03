@@ -108,6 +108,11 @@ class contactGroupsContactsForReport extends Command
      */
     private function sendMail($cooperation): void
     {
+        if(!$cooperation->email_report_table_problems || empty($cooperation->email_report_table_problems)){
+            Log::info('Mailen van probleem niet mogelijk i.v.m. ontbreken email bij problemen vullen report tabel.');
+            return;
+        }
+
         (new EmailHelper())->setConfigToDefaultMailbox();
 
         $mail = Mail::to($cooperation->email_report_table_problems);

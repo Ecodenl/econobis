@@ -267,9 +267,6 @@ class AdministrationController extends ApiController
             $administration->twinfield_is_valid = 0;
             $administration->twinfield_refresh_token = null;
         }
-        // We bewaren even of uses_twinfield was gewijzigd.
-        $isUsesTwinfieldDirty = $administration->isDirty('uses_twinfield');
-
         $administration->save();
 
         $this->checkStorageDir($administration->id);

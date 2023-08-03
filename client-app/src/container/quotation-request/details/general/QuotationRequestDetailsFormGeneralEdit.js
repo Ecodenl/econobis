@@ -212,6 +212,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (isNaN(quotationRequest.quotationAmount)) {
+            quotationRequest.quotationAmount = quotationRequest.quotationAmount.replace(/,/g, '.');
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form

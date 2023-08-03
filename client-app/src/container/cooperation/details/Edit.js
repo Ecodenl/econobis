@@ -411,7 +411,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     />
                                     {values.createContactsForReportTable == true && (
                                         <InputText
-                                            label="Email vullen report table problemen"
+                                            label="Email bij problemen vullen report tabel"
                                             name={'emailReportTableProblems'}
                                             value={values.emailReportTableProblems}
                                             onChangeAction={handleChange}

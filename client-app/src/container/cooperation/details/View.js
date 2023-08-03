@@ -145,7 +145,7 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                                 />
                                 {formData.createContactsForReportTable == true && (
                                     <ViewText
-                                        label={'Email vullen report table problemen'}
+                                        label={'Email bij problemen vullen report tabel'}
                                         value={formData.emailReportTableProblems}
                                     />
                                 )}

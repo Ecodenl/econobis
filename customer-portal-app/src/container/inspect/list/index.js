@@ -102,7 +102,11 @@ function Inspectlist(props) {
                                                 {quotationRequest.opportunity.intake.address.streetPostalCodeCity}
                                             </Link>
                                         </td>
-                                        <td>{quotationRequest.opportunity.status.name}</td>
+                                        <td>
+                                            {quotationRequest.opportunityAction.name +
+                                                ' - ' +
+                                                quotationRequest.opportunity.status.name}
+                                        </td>
                                         <td>
                                             {quotationRequest.datePlanned
                                                 ? moment(quotationRequest.datePlanned).format('L HH:mm')

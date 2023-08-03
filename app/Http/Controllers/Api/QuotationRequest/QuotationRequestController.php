@@ -161,9 +161,11 @@ class QuotationRequestController extends ApiController
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
             'dateUnderReview' => 'string',
+            'dateExecuted' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
             'quotationText' => 'string',
+            'quotationAmount' => 'string',
             'durationMinutes' => 'integer',
             'usesPlanning' => 'boolean',
             'districtId' => 'nullable',
@@ -241,8 +243,16 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 
+        if (isset($data['dateExecuted']) && $data['dateExecuted']) {
+            $quotationRequest->date_executed = $data['dateExecuted'];
+        }
+
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
+        }
+
+        if (isset($data['quotationAmount'])) {
+            $quotationRequest->quotation_amount = $data['quotationAmount'];
         }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
@@ -287,9 +297,11 @@ class QuotationRequestController extends ApiController
             'dateApprovedProjectManager' => 'string',
             'dateApprovedExternal' => 'string',
             'dateUnderReview' => 'string',
+            'dateExecuted' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
+            'quotationAmount' => 'string',
         ]);
 
         //required
@@ -366,8 +378,16 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 
+        if ($data['dateExecuted']) {
+            $quotationRequest->date_executed = $data['dateExecuted'];
+        }
+
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
+        }
+
+        if (isset($data['quotationAmount'])) {
+            $quotationRequest->quotation_amount = $data['quotationAmount'];
         }
         $quotationRequest->save();
 

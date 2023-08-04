@@ -148,6 +148,16 @@ class QuotationRequestController
         $this->storeQuotationRequestUploads($quotationRequest, $uploads, $portalUser);
 
     }
+
+    public function viewDocumenten(QuotationRequest $quotationRequest)
+    {
+        $portalUser = Auth::user();
+
+        $this->authorizeQuotationRequest($portalUser, $quotationRequest);
+
+        return response()->json($this->getDocumentenJson($portalUser->id, $quotationRequest));
+    }
+
     public function downloadDocument(QuotationRequest $quotationRequest, Document $document)
     {
         $portalUser = Auth::user();
@@ -305,6 +315,11 @@ class QuotationRequestController
     {
         $data = $this->getJson($quotationRequest);
 
+        return $data;
+    }
+
+    private function getDocumentenJson($portalUserId, QuotationRequest $quotationRequest)
+    {
         $data['documents'] = $this->getPortalDocuments($quotationRequest)->map(function (Document $document) use ($portalUserId){
             return [
                 'id' => $document->id,

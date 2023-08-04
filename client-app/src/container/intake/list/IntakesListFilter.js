@@ -9,6 +9,7 @@ import {
     setIntakeEndDateFilter,
     setFilterFullName,
     setFilterIntakeAddress,
+    setFilterIntakeAreaName,
     setFilterIntakeCampaign,
     setFilterMeasureRequested,
     setFilterIntakeStatus,
@@ -37,6 +38,10 @@ const IntakesListFilter = props => {
 
     const onAddressChange = e => {
         props.setFilterIntakeAddress(e.target.value);
+    };
+
+    const onAreaNameChange = e => {
+        props.setFilterIntakeAreaName(e.target.value);
     };
 
     const onCampaignChange = e => {
@@ -91,6 +96,12 @@ const IntakesListFilter = props => {
             </th>
 
             <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.areaName.data}
+                    onChange={onAreaNameChange}
+                />
             </th>
 
             <th>
@@ -148,6 +159,7 @@ const mapDispatchToProps = dispatch => {
             setIntakeEndDateFilter,
             setFilterFullName,
             setFilterIntakeAddress,
+            setFilterIntakeAreaName,
             setFilterIntakeCampaign,
             setFilterMeasureRequested,
             setFilterIntakeStatus,

@@ -12,7 +12,6 @@ namespace App\Http\Resources\QuotationRequest;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Opportunity\OpportunityByQuotationRequest;
-use App\Http\Resources\Organisation\FullOrganisation;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GridQuotationRequest extends JsonResource
@@ -30,7 +29,6 @@ class GridQuotationRequest extends JsonResource
             'status' => GenericResource::make($this->whenLoaded('status')),
             'opportunityAction' => GenericResource::make($this->whenLoaded('opportunityAction')),
             'createdAt' => $this->created_at,
-            'areaName' => optional(optional($this->opportunity->intake)->addresss)->shared_area_name,
         ];
     }
 }

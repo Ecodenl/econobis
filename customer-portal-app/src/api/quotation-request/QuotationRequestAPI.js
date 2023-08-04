@@ -14,6 +14,10 @@ export default {
         return axiosInstance.get('quotation-request/' + id);
     },
 
+    fetchDocumentenById: function(id) {
+        return axiosInstance.get('quotation-request/' + id + '/documenten');
+    },
+
     fetchQuotationRequestStatus: function(opportunityActionId) {
         const requestUrl = `jory/quotation-request-status`;
 

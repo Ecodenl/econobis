@@ -10,7 +10,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import DropZone from '../../../../components/dropzone/DropZone';
 
-function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument, setReload }) {
+function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDocument, setReloadDocumenten }) {
     const [showDelete, setShowDelete] = useState(false);
     const [documentToDelete, setDocumentToDelete] = useState({});
     const [showUpload, setShowUpload] = useState(false);
@@ -25,7 +25,7 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
 
         QuotationRequestAPI.addUploads(quotationRequestId, data)
             .then(() => {
-                setReload(true);
+                setReloadDocumenten(true);
             })
             .catch(function(error) {});
     };
@@ -56,7 +56,7 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
         QuotationRequestAPI.quotationRequestDeleteDocument(quotationRequestId, id)
             .then(payload => {
                 setShowDelete(false);
-                setReload(true);
+                setReloadDocumenten(true);
             })
             .catch(() => {
                 setShowDelete(false);

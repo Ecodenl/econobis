@@ -80,10 +80,10 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
             $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
             $quotationRequest->status_id = $bezoekStatusDone->id;
             $quotationRequest->save();
-            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' op gedaan voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf);
+            $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' op gedaan voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . $this->contact->full_name_fnf);
         } else {
             $StatusFromContent = (isset($dataContent->status->name) ? $dataContent->status->name : 'onbekend');
-            $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' niet bijgewerkt voor bezoek coach ' . $quotationRequest->organisationOrCoach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf . ' i.v.m. status: '. $StatusFromContent);
+            $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' niet bijgewerkt voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . ($this->contact ? $this->contact->full_name_fnf : 'onbekend') . ' i.v.m. status: '. $StatusFromContent);
         }
     }
 

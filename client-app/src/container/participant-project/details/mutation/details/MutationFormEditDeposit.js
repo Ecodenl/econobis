@@ -80,10 +80,6 @@ function MutationFormEditDeposit({
                 amountMutation = participantMutationFromState.amountFinal;
             }
         } else {
-            // todo WM: check of we hier nog wat mee moeten ?!
-            //                 participantMutationFromProps.status.codeRef === 'final'
-            //                     ? participantMutationFromProps.participationWorth
-            //                     : participantMutationFromProps.quantity * projectCurrentBookWorth
             amountMutation = quantityMutation * projectCurrentBookWorth;
         }
 
@@ -135,16 +131,10 @@ function MutationFormEditDeposit({
         // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
         //   nb: indien in definitieve waardestaat dan is hier readOnly al true
         if (readOnly || (participantMutationFromProps.status.codeRef === 'final' && participantInDefinitiveRevenue)) {
-            return projectTransactionCostsCodeRef;
+            return participantMutationFromProps.transactionCostsAmount
+                ? participantMutationFromProps.transactionCostsAmount
+                : 0;
         }
-
-        // todo WM: opschonen
-        // console.log(
-        //     'useTransactionCostsWithMembership: ' + (project.useTransactionCostsWithMembership ? 'true' : 'false')
-        // );
-        // console.log('showQuestionAboutMembership: ' + (project.showQuestionAboutMembership ? 'true' : 'false'));
-        // console.log('belongsToMembershipGroup: ' + (participantBelongsToMembershipGroup ? 'true' : 'false'));
-        // console.log('choiceMembership: ' + (participantChoiceMembership ? participantChoiceMembership : 'geen'));
 
         //Vragen over lid worden aan en Transactie kosten ook bij lidmaatschap Uit (keuze 1)
         if (project.showQuestionAboutMembership && !project.useTransactionCostsWithMembership) {
@@ -183,21 +173,6 @@ function MutationFormEditDeposit({
                     />
                 )}
             </div>
-            {/*{projectTypeCodeRef === 'loan' ? (*/}
-            {/*    <div className="row">*/}
-            {/*        <ViewText*/}
-            {/*            label={*/}
-            {/*                'Bedrag ' +*/}
-            {/*                (participantMutationFromProps.status.codeRef === 'final'*/}
-            {/*                    ? '(definitief)'*/}
-            {/*                    : '(nog niet definitief)')*/}
-            {/*            }*/}
-            {/*            id={'participationWorth'}*/}
-            {/*            className={'col-sm-6 form-group'}*/}
-            {/*            value={MoneyPresenter(calculateAmount())}*/}
-            {/*        />*/}
-            {/*    </div>*/}
-            {/*) : (*/}
             <div className="row">
                 <ViewText
                     label={
@@ -211,27 +186,8 @@ function MutationFormEditDeposit({
                     value={MoneyPresenter(calculateAmount())}
                 />
             </div>
-            {/*)}*/}
             {projectTransactionCostsCodeRef === 'none' ? null : (
                 <>
-                    {/* todo WM: opschonen en calculateAmount naar hierboven? */}
-                    {/*<div className="row">*/}
-                    {/*    <ViewText*/}
-                    {/*        label={'Test Bedrag'}*/}
-                    {/*        id={'testBedrag'}*/}
-                    {/*        className={'col-sm-6 form-group'}*/}
-                    {/*        value={MoneyPresenter(calculateAmount())}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-                    {/*<div className="row">*/}
-                    {/*    <ViewText*/}
-                    {/*        label={'Test Aantal'}*/}
-                    {/*        id={'testAantal'}*/}
-                    {/*        className={'col-sm-6 form-group'}*/}
-                    {/*        value={calculateQuantity()}*/}
-                    {/*    />*/}
-                    {/*</div>*/}
-
                     <div className="row">
                         <ViewText
                             label={'Transactiekosten'}

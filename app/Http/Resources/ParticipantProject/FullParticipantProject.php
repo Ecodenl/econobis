@@ -78,6 +78,8 @@ class FullParticipantProject extends JsonResource
                 'dateEntryLastMutation' => $this->dateEntryLastMutation,
                 'dateTerminatedAllowedFrom' => $this->dateTerminatedAllowedFrom,
                 'participantInDefinitiveRevenue' => $this->participantInDefinitiveRevenue,
+                'participantBelongsToMembershipGroup' => in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() ),
+                'participantChoiceMembership' => $this->choice_membership,
                 'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
             ];
     }

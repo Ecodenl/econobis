@@ -58,7 +58,6 @@ const MutationFormEditStatusFinal = ({
                     id={'quantityOption'}
                     className={'col-sm-6 form-group'}
                     value={participantMutationFromProps.quantityOption}
-                    onChangeAction={handleInputChange}
                 />
             )}
             <ViewText

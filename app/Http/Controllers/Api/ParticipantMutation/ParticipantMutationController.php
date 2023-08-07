@@ -308,12 +308,26 @@ class ParticipantMutationController extends ApiController
 
     protected function calculationTransactionCosts($participantMutation)
     {
+        // TransactionCosts only for (first_)deposit mutation types, otherwise return 0.
+        if(!$participantMutation->type || !in_array($participantMutation->type->code_ref, ['deposit', 'first_deposit'])) {
+            return 0;
+        }
+
         $project = $participantMutation->participation->project;
+        $participation = $participantMutation->participation;
+
+        // indien transactie_costs niet meer gewijzigd mag worden, dan laten we transaction_costs_amount zoals het was.
+        // voorwaarde voor niet meer wijzigen:
+        // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
+        if($participantMutation->status->code_ref == 'final' &&
+            ( $participation->participant_in_definitive_revenue || $participantMutation->financial_overview_definitive )
+        ){
+            return $participantMutation->transaction_costs_amount;
+        }
 
         // Indien Transactie kosten ook bij lidmaatschap (use_transaction_costs_with_membership) = false
         if (!$project->use_transaction_costs_with_membership) {
 
-            $participation = $participantMutation->participation;
             $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
 
             // Indien Vragen over lid worden aan of uit (show_question_about_membership) = true en deelnemer zit al in leden groep, dan Transactioncosts = 0
@@ -334,61 +348,29 @@ class ParticipantMutationController extends ApiController
         switch ($participantMutation->status->code_ref) {
             case 'interest':
                 if ($project->projectType->code_ref === 'loan' ) {
-                    // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('amount_interest') == $participantMutation->amount_interest){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varAmount = $participantMutation->amount_interest;
                 } else {
-                    // indien quantity niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('quantity_interest') == $participantMutation->quantity_interest){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varQuantity = $participantMutation->quantity_interest;
                 }
                 break;
             case 'option':
                 if ($project->projectType->code_ref === 'loan' ) {
-                    // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('amount_option') == $participantMutation->amount_option){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varAmount = $participantMutation->amount_option;
                 } else {
-                    // indien quantity niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('quantity_option') == $participantMutation->quantity_option){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varQuantity = $participantMutation->quantity_option;
                 }
                 break;
             case 'granted':
                 if ($project->projectType->code_ref === 'loan' ) {
-                    // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('amount_granted') == $participantMutation->amount_granted){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varAmount = $participantMutation->amount_granted;
                 } else {
-                    // indien quantity niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('quantity_granted') == $participantMutation->quantity_granted){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varQuantity = $participantMutation->quantity_granted;
                 }
                 break;
             case 'final':
                 if ($project->projectType->code_ref === 'loan' ) {
-                    // indien amount niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('amount_final') == $participantMutation->amount_final){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varAmount = $participantMutation->amount_final;
                 } else {
-                    // indien quantity niet gewijzigd is dan laten we transaction_costs_amount zoals het was.
-                    if($participantMutation->getOriginal('quantity_final') == $participantMutation->quantity_final){
-                        return $participantMutation->transaction_costs_amount;
-                    }
                     $varQuantity = $participantMutation->quantity_final;
                 }
                 break;
@@ -429,15 +411,13 @@ class ParticipantMutationController extends ApiController
                 break;
         }
 
-        if ($project->getTransactionCostsCodeRef() !== 'none' && $participantMutation->type->code_ref !== 'withDrawal') {
+        if ($project->getTransactionCostsCodeRef() && $project->getTransactionCostsCodeRef() !== 'none') {
             if ($project->transaction_costs_amount_min !== null && $transactionCosts < $project->transaction_costs_amount_min) {
                 $transactionCosts = $project->transaction_costs_amount_min;
             }
             if ($project->transaction_costs_amount_max !== null && $transactionCosts > $project->transaction_costs_amount_max) {
                 $transactionCosts = $project->transaction_costs_amount_max;
             }
-        } else if($participantMutation->type->code_ref === 'withDrawal') {
-            $transactionCosts = 0;
         }
 
         return $transactionCosts;

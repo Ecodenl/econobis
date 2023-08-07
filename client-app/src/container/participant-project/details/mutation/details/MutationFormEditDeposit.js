@@ -33,6 +33,8 @@ function MutationFormEditDeposit({
     buttonText,
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
+    participantBelongsToMembershipGroup,
+    participantChoiceMembership,
     projectDateInterestBearingKwh,
     project,
 }) {
@@ -43,25 +45,116 @@ function MutationFormEditDeposit({
         }
     }
 
-    function calculateAmount(participationsOptioned) {
-        return participationsOptioned ? participationsOptioned * projectCurrentBookWorth : 0;
-    }
-    function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
-        if (!project.useTransactionCostsWithMembership) {
-            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
-                return 0;
+    function calculateAmount() {
+        let amountMutation = participantMutationFromState.amount;
+        let quantityMutation = calculateQuantity();
+
+        if (projectTypeCodeRef === 'loan') {
+            if (participantMutationFromProps.status.codeRef === 'interest') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    amountMutation = participantMutationFromState.amountOption;
+                } else {
+                    amountMutation = participantMutationFromState.amountInterest;
+                }
             }
-            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+            if (participantMutationFromProps.status.codeRef === 'option') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    amountMutation = participantMutationFromState.amountGranted;
+                } else {
+                    amountMutation = participantMutationFromState.amountOption;
+                }
+            }
+
+            if (participantMutationFromProps.status.codeRef === 'granted') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    amountMutation = participantMutationFromState.amountFinal;
+                } else {
+                    amountMutation = participantMutationFromState.amountGranted;
+                }
+            }
+
+            if (participantMutationFromProps.status.codeRef === 'final') {
+                amountMutation = participantMutationFromState.amountFinal;
+            }
+        } else {
+            // todo WM: check of we hier nog wat mee moeten ?!
+            //                 participantMutationFromProps.status.codeRef === 'final'
+            //                     ? participantMutationFromProps.participationWorth
+            //                     : participantMutationFromProps.quantity * projectCurrentBookWorth
+            amountMutation = quantityMutation * projectCurrentBookWorth;
+        }
+
+        return amountMutation;
+    }
+    function calculateQuantity() {
+        let quantityMutation = participantMutationFromState.quantity;
+
+        if (projectTypeCodeRef === 'loan') {
+            quantityMutation = 0;
+        } else {
+            if (participantMutationFromProps.status.codeRef === 'interest') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    quantityMutation = participantMutationFromState.quantityOption;
+                } else {
+                    quantityMutation = participantMutationFromState.quantityInterest;
+                }
+            }
+
+            if (participantMutationFromProps.status.codeRef === 'option') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    quantityMutation = participantMutationFromState.quantityGranted;
+                } else {
+                    quantityMutation = participantMutationFromState.quantityOption;
+                }
+            }
+
+            if (participantMutationFromProps.status.codeRef === 'granted') {
+                // next status alread selected
+                if (participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId)) {
+                    quantityMutation = participantMutationFromState.quantityFinal;
+                } else {
+                    quantityMutation = participantMutationFromState.quantityGranted;
+                }
+            }
+
+            if (participantMutationFromProps.status.codeRef === 'final') {
+                quantityMutation = participantMutationFromState.quantityFinal;
+            }
+        }
+
+        return quantityMutation;
+    }
+    function calculateTransactionCostsAmount() {
+        // indien transactie_costs niet meer gewijzigd mag worden, dan laten we transaction_costs_amount zoals het was.
+        // voorwaarde voor niet meer wijzigen:
+        // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
+        //   nb: indien in definitieve waardestaat dan is hier readOnly al true
+        if (readOnly || (participantMutationFromProps.status.codeRef === 'final' && participantInDefinitiveRevenue)) {
+            return projectTransactionCostsCodeRef;
+        }
+
+        // todo WM: opschonen
+        // console.log(
+        //     'useTransactionCostsWithMembership: ' + (project.useTransactionCostsWithMembership ? 'true' : 'false')
+        // );
+        // console.log('showQuestionAboutMembership: ' + (project.showQuestionAboutMembership ? 'true' : 'false'));
+        // console.log('belongsToMembershipGroup: ' + (participantBelongsToMembershipGroup ? 'true' : 'false'));
+        // console.log('choiceMembership: ' + (participantChoiceMembership ? participantChoiceMembership : 'geen'));
+
+        //Vragen over lid worden aan en Transactie kosten ook bij lidmaatschap Uit (keuze 1)
+        if (project.showQuestionAboutMembership && !project.useTransactionCostsWithMembership) {
+            //Indien al lid of indien keuze 1 (wil lid worden) dan geen transactiekosten,
+            if (participantBelongsToMembershipGroup || participantChoiceMembership === 1) {
                 return 0;
             }
         }
-        return calculateTransactionCosts(project, null, participationsOptioned);
-    }
-    function calculateTotalAmount(participationsOptioned, choiceMembership) {
-        return (
-            calculateAmount(participationsOptioned) +
-            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
-        ).toFixed(2);
+
+        return calculateTransactionCosts(project, calculateAmount(), calculateQuantity());
     }
 
     return (
@@ -90,50 +183,64 @@ function MutationFormEditDeposit({
                     />
                 )}
             </div>
-            {projectTypeCodeRef === 'loan' ? (
-                <div className="row">
-                    <ViewText
-                        label={
-                            'Bedrag ' +
-                            (participantMutationFromProps.status.codeRef === 'final'
-                                ? '(definitief)'
-                                : '(nog niet definitief)')
-                        }
-                        id={'participationWorth'}
-                        className={'col-sm-6 form-group'}
-                        value={MoneyPresenter(participantMutationFromProps.amount)}
-                    />
-                </div>
-            ) : (
-                <div className="row">
-                    <ViewText
-                        label={
-                            'Bedrag ' +
-                            (participantMutationFromProps.status.codeRef === 'final'
-                                ? '(definitief)'
-                                : '(nog niet definitief)')
-                        }
-                        id={'participationWorth'}
-                        className={'col-sm-6 form-group'}
-                        value={MoneyPresenter(
-                            participantMutationFromProps.status.codeRef === 'final'
-                                ? participantMutationFromProps.participationWorth
-                                : participantMutationFromProps.quantity * projectCurrentBookWorth
-                        )}
-                    />
-                </div>
-            )}
+            {/*{projectTypeCodeRef === 'loan' ? (*/}
+            {/*    <div className="row">*/}
+            {/*        <ViewText*/}
+            {/*            label={*/}
+            {/*                'Bedrag ' +*/}
+            {/*                (participantMutationFromProps.status.codeRef === 'final'*/}
+            {/*                    ? '(definitief)'*/}
+            {/*                    : '(nog niet definitief)')*/}
+            {/*            }*/}
+            {/*            id={'participationWorth'}*/}
+            {/*            className={'col-sm-6 form-group'}*/}
+            {/*            value={MoneyPresenter(calculateAmount())}*/}
+            {/*        />*/}
+            {/*    </div>*/}
+            {/*) : (*/}
+            <div className="row">
+                <ViewText
+                    label={
+                        'Bedrag ' +
+                        (participantMutationFromProps.status.codeRef === 'final'
+                            ? '(definitief)'
+                            : '(nog niet definitief)')
+                    }
+                    id={'participationWorth'}
+                    className={'col-sm-6 form-group'}
+                    value={MoneyPresenter(calculateAmount())}
+                />
+            </div>
+            {/*)}*/}
             {projectTransactionCostsCodeRef === 'none' ? null : (
-                <div className="row">
-                    <ViewText
-                        label={'Transactiekosten'}
-                        id={'transactionCostsAmount'}
-                        className={'col-sm-6 form-group'}
-                        value={MoneyPresenter(
-                            calculateTransactionCostsAmount(participantMutationFromState.quantityOption, 0)
-                        )}
-                    />
-                </div>
+                <>
+                    {/* todo WM: opschonen en calculateAmount naar hierboven? */}
+                    {/*<div className="row">*/}
+                    {/*    <ViewText*/}
+                    {/*        label={'Test Bedrag'}*/}
+                    {/*        id={'testBedrag'}*/}
+                    {/*        className={'col-sm-6 form-group'}*/}
+                    {/*        value={MoneyPresenter(calculateAmount())}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
+                    {/*<div className="row">*/}
+                    {/*    <ViewText*/}
+                    {/*        label={'Test Aantal'}*/}
+                    {/*        id={'testAantal'}*/}
+                    {/*        className={'col-sm-6 form-group'}*/}
+                    {/*        value={calculateQuantity()}*/}
+                    {/*    />*/}
+                    {/*</div>*/}
+
+                    <div className="row">
+                        <ViewText
+                            label={'Transactiekosten'}
+                            id={'transactionCostsAmount'}
+                            className={'col-sm-6 form-group'}
+                            value={MoneyPresenter(calculateTransactionCostsAmount())}
+                        />
+                    </div>
+                </>
             )}
             {participantMutationFromProps.status.codeRef === 'interest' && (
                 <MutationFormEditStatusInterest
@@ -239,10 +346,11 @@ MutationFormEditDeposit.propTypes = {
     handleSubmit: PropTypes.any,
     participantProjectDateRegister: PropTypes.any,
     participantInDefinitiveRevenue: PropTypes.bool,
+    participantBelongsToMembershipGroup: PropTypes.bool,
+    participantChoiceMembership: PropTypes.any,
 };
 
 const mapStateToProps = state => {
-    console.log(state.participantProjectDetails.project);
     return {
         project: state.participantProjectDetails.project,
     };

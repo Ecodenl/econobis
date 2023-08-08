@@ -64,25 +64,25 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
             });
     }
 
-    if (documents && documents.length !== 0) {
-        return (
-            <>
-                <Row>
-                    <Col>
-                        <ButtonGroup className="float-left">
-                            <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
-                                Upload PDF of afbeelding
-                            </Button>
-                        </ButtonGroup>
-                        <br />
-                        <br />
-                    </Col>
-                </Row>
-                <Row>
-                    <Col>
-                        <div className="content-subheading">Documenten</div>
-                    </Col>
-                </Row>
+    return (
+        <>
+            <Row>
+                <Col>
+                    <div className="content-subheading">Documenten</div>
+                </Col>
+            </Row>
+            <Row>
+                <Col>
+                    <ButtonGroup className="float-right">
+                        <Button className={'w-button'} size="sm" onClick={toggleShowUpload}>
+                            Upload PDF of afbeelding
+                        </Button>
+                    </ButtonGroup>
+                    <br />
+                    <br />
+                </Col>
+            </Row>
+            {documents && documents.length !== 0 ? (
                 <Table>
                     <thead>
                         <tr>
@@ -124,29 +124,31 @@ function InspectDetailsDocumentTable({ quotationRequestId, documents, previewDoc
                         ))}
                     </tbody>
                 </Table>
-                {showDelete ? (
-                    <Modal
-                        closeModal={hideShowDelete}
-                        confirmAction={e => deleteFile(e, documentToDelete.id)}
-                        buttonConfirmText="Verwijderen"
-                        title="Verwijderen document"
-                    >
-                        Verwijderen document "{documentToDelete.filename}" ?
-                    </Modal>
-                ) : null}
-                {showUpload && (
-                    <DropZone
-                        maxSize={5767168}
-                        maxSizeText={'5MB'}
-                        toggleShowUpload={toggleShowUpload}
-                        addUpload={addUpload}
-                    />
-                )}
-            </>
-        );
-    }
-
-    return null;
+            ) : (
+                <Row>
+                    <Col>Geen documenten gevonden.</Col>
+                </Row>
+            )}
+            {showDelete ? (
+                <Modal
+                    closeModal={hideShowDelete}
+                    confirmAction={e => deleteFile(e, documentToDelete.id)}
+                    buttonConfirmText="Verwijderen"
+                    title="Verwijderen document"
+                >
+                    Verwijderen document "{documentToDelete.filename}" ?
+                </Modal>
+            ) : null}
+            {showUpload && (
+                <DropZone
+                    maxSize={5767168}
+                    maxSizeText={'5MB'}
+                    toggleShowUpload={toggleShowUpload}
+                    addUpload={addUpload}
+                />
+            )}
+        </>
+    );
 }
 
 export default InspectDetailsDocumentTable;

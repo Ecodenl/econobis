@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
 use App\Http\Requests\Cooperation\UpdateCooperation;
 use App\Http\Resources\Cooperation\FullCooperation;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CooperationController extends ApiController
@@ -62,6 +63,9 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
 
         // Store attachment when given
@@ -76,6 +80,8 @@ class CooperationController extends ApiController
     public function update(UpdateCooperation $request, Cooperation $cooperation)
     {
         $this->authorize('manage', Cooperation::class);
+
+        $currentCreateContactsForReportTable = $cooperation->create_contacts_for_report_table;
 
         $cooperation->fill($request->validatedSnake());
         if($cooperation->hoom_campaign_id == '') {
@@ -104,7 +110,17 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
+
+        //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
+        if($currentCreateContactsForReportTable === true && $cooperation->create_contacts_for_report_table === false) {
+            DB::table('contact_groups_contacts_for_report')->truncate();
+            $cooperation->create_contacts_for_report_table_last_created = null;
+            $cooperation->save();
+        }
 
         // Store attachment when given
         if($request->file('attachment')){

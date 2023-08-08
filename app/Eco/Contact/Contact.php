@@ -167,7 +167,7 @@ class Contact extends Model
 
     public function groups()
     {
-        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
+        return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')->orderBy('contact_groups.id', 'desc');
     }
 
     public function selectedGroups()
@@ -175,7 +175,7 @@ class Contact extends Model
         return $this->belongsToMany(ContactGroup::class, 'contact_groups_pivot')
             ->where('contact_groups.type_id', 'static')
             ->where('contact_groups.include_into_export_group_report', true)
-            ->withPivot('laposta_member_id', 'laposta_member_state', 'member_created_at', 'member_to_group_since')
+            ->withPivot('laposta_member_id', 'laposta_member_state', 'laposta_last_error_message', 'member_created_at', 'member_to_group_since')
             ->orderBy('contact_groups.id', 'desc');
     }
 
@@ -692,7 +692,7 @@ class Contact extends Model
     public function getIsParticipantPcrProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->projectType->code_ref == 'postalcode_link_capital') {
                 return true;
             }
         }
@@ -702,7 +702,7 @@ class Contact extends Model
     public function getIsParticipantSceProjectAttribute()
     {
         foreach ($this->participations as $participation) {
-            if ($participation->project && $participation->project->is_sce_project) {
+            if (!isset($participation->date_terminated) && $participation->project && $participation->project->is_sce_project) {
                 return true;
             }
         }

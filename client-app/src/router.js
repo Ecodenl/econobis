@@ -95,6 +95,7 @@ const DistrictsListApp = React.lazy(() => import('./container/district/list/Dist
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
 const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
+const MailgunEventListApp = React.lazy(() => import('./container/mailgun-event/list/MailgunEventListApp'));
 const ContactAvailabilityListApp = React.lazy(() =>
     import('./container/contact-availability/list/ContactAvailabilityListApp')
 );
@@ -440,6 +441,8 @@ const Routes = () => {
                     /* Availabilities */
                     <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
                     <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />
+                    /* Mailgun Events */
+                    <Route path="mailgun/log" component={MailgunEventListApp} />
                     /* Housing File */
                     <Route
                         path="woningdossier/nieuw/contact/:contactId/adres/:addressId"

@@ -119,6 +119,12 @@ class Kernel extends ConsoleKernel
         $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:05');
         $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:10');
         $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('05:15');
+
+        /**
+         * Cronjob draait elk uur maar sommige events kunnen pas later beschikbaar komen daarom 10 minuten extra marge voor de zekerheid.
+         * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
+         */
+        $schedule->command('mailgun:fetch-events --minutes=70')->timezone('Europe/Amsterdam')->hourly();
     }
 
     /**

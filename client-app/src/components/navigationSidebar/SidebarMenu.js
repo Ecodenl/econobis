@@ -374,6 +374,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </Link>
                         </NavText>
                     </Nav>
+                    <Nav key={'nav-mailgun-log'} id={`mailgun-log`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="mailgun/log">
+                                Mailgun
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
 

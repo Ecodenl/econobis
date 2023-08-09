@@ -22,16 +22,16 @@ class CooperationHoomCampaign extends Model
         'id'
     ];
 
-    public function cooperations()
+    public function cooperation()
     {
-        return $this->hasMany(Cooperation::class);
+        return $this->belongsTo(Cooperation::class);
     }
-    public function campaigns()
+    public function campaign()
     {
-        return $this->hasMany(Campaign::class);
+        return $this->belongsTo(Campaign::class);
     }
-    public function measures()
+    public function measure()
     {
-        return $this->hasMany(Measure::class);
+        return $this->belongsTo(Measure::class);
     }
 }

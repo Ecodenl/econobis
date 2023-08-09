@@ -24,8 +24,6 @@ class CreateCooperation extends FormRequest
      */
     public function rules()
     {
-        //        todo WM: hoom
-
         return [
             'name' => ['required'],
             'address' => [''],
@@ -42,7 +40,6 @@ class CreateCooperation extends FormRequest
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
-//            'hoomCampaignId' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
             'useLaposta' => [''],

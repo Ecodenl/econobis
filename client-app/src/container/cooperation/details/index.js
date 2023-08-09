@@ -8,7 +8,6 @@ import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
-// todo WM: hoom
 const INITIAL_STATE = {
     result: {
         id: null,
@@ -27,7 +26,7 @@ const INITIAL_STATE = {
         hoomLink: '',
         hoomConnectCoachLink: '',
         hoomKey: '',
-        // hoomCampaignId: '',
+        hoomCampaigns: {},
         hoomEmailTemplateId: '',
         hoomGroupId: '',
         useLaposta: false,

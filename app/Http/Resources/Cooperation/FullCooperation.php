@@ -15,6 +15,8 @@ class FullCooperation extends JsonResource
      */
     public function toArray($request)
     {
+        //        todo WM: hoom
+
         return [
             'id' => $this->id,
             'name' => $this->name,
@@ -32,8 +34,8 @@ class FullCooperation extends JsonResource
             'hoomLink' => $this->hoom_link ? $this->hoom_link : '',
             'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
-            'hoomCampaignId' => $this->hoom_campaign_id ? $this->hoom_campaign_id : '',
-            'hoomCampaign' => ['name' => $this->hoomCampaign ? $this->hoomCampaign->name : ''],
+//            'hoomCampaignId' => $this->hoom_campaign_id ? $this->hoom_campaign_id : '',
+//            'hoomCampaign' => ['name' => $this->hoomCampaign ? $this->hoomCampaign->name : ''],
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],

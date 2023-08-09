@@ -55,7 +55,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </div>
                     <div className="row">
                         <ViewText label={'Hoom bewoner/coach link'} value={formData.hoomConnectCoachLink} />
-                        <ViewText label={'Hoom campagne'} value={formData.hoomCampaign && formData.hoomCampaign.name} />
+                        {/*//        todo WM: hoom*/}
+                        {/*<ViewText label={'Hoom campagne'} value={formData.hoomCampaign && formData.hoomCampaign.name} />*/}
                     </div>
                     <div className="row">
                         <ViewText

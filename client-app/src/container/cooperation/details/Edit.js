@@ -60,10 +60,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
 
     function processSubmit(values) {
         // Cleanup value data
+        //        todo WM: hoom
         const cleanUpFormFields = [
             'hoomGroup',
             'hoomEmailTemplate',
-            'hoomCampaign',
+            // 'hoomCampaign',
             'createdAt',
             'createdBy',
             'createdById',
@@ -252,15 +253,17 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 error={errors.hoomConnectCoachLink && touched.hoomConnectCoachLink}
                                 errorMessage={errors.hoomConnectCoachLink}
                             />
-                            <InputReactSelect
-                                label={'Hoom campagne'}
-                                name={'hoomCampaignId'}
-                                options={campaigns}
-                                value={values.hoomCampaignId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
-                            />
+                            {/*//        todo WM: hoom*/}
+
+                            {/*<InputReactSelect*/}
+                            {/*    label={'Hoom campagne'}*/}
+                            {/*    name={'hoomCampaignId'}*/}
+                            {/*    options={campaigns}*/}
+                            {/*    value={values.hoomCampaignId}*/}
+                            {/*    onChangeAction={(value, name) => setFieldValue(name, value)}*/}
+                            {/*    isLoading={isLoading}*/}
+                            {/*    clearable={true}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputReactSelect

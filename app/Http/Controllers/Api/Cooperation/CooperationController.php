@@ -37,9 +37,10 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation = new Cooperation($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
+//        todo WM: hoom
+//        if($cooperation->hoom_campaign_id == '') {
+//            $cooperation->hoom_campaign_id = null;
+//        }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -84,9 +85,10 @@ class CooperationController extends ApiController
         $currentCreateContactsForReportTable = $cooperation->create_contacts_for_report_table;
 
         $cooperation->fill($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
+//        todo WM: hoom
+//        if($cooperation->hoom_campaign_id == '') {
+//            $cooperation->hoom_campaign_id = null;
+//        }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }

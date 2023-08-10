@@ -10,7 +10,6 @@
         "cmpayments/iban": "^1.1",
         "doctrine/dbal": "^2.6",
         "ecodenl/lvbag-php-wrapper": "^2.1",
-        "ecodenl/pico-wrapper": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "google/apiclient": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
@@ -87,12 +86,6 @@
         "sort-packages": true,
         "optimize-autoloader": true
     },
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/Ecodenl/PicoWrapper"
-        }
-    ],
     "extra": {
         "laravel": {
             "dont-discover": [

@@ -58,7 +58,7 @@ class DeleteOpportunity implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->opportunity->status_id == 3 || $this->opportunity->status_id == 4 || $this->opportunity->status_id == 5 )){
+        if(!($this->opportunity->status->code_ref == 'inactive' || $this->opportunity->status->code_ref == 'executed' || $this->opportunity->status->code_ref == 'executed-do-it-yourself' || $this->opportunity->status->code_ref == 'no_execution' )){
             array_push($this->errorMessage, "Er is nog een openstaande kans.");
         }
     }

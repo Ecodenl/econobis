@@ -50,8 +50,10 @@ class checkMailboxes extends Command
                 new MailFetcherGmail($mailbox);
             } else if ($mailbox->incoming_server_type === 'ms-oauth') {
                 new MailFetcherMsOauth($mailbox);
-            } else {
+            } else if ($mailbox->incoming_server_type !== 'mailgun'){
                 new MailFetcher($mailbox);
+            } else {
+                return;
             }
         }
 

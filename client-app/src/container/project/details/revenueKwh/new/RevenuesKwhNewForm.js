@@ -51,7 +51,21 @@ const RevenuesKwhNew = props => {
 
             <div className="row">
                 <InputDate
-                    label={'Begin periode'}
+                    label={
+                        <span>
+                            Begin periode
+                            {props.project.dateInterestBearingKwhWrong
+                                ?
+                                <>
+                                    <br />
+                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                        Afwijkende begindatum verwacht
+                                    </small>
+                                </>
+                                : null
+                            }
+                        </span>
+                    }
                     name={'dateBegin'}
                     value={dateBegin}
                     onChangeAction={props.handleInputChangeDate}
@@ -60,6 +74,7 @@ const RevenuesKwhNew = props => {
                     errorMessage={props.errorMessage.dateBegin}
                     disabledBefore={props.project.dateInterestBearingKwh}
                 />
+
                 <InputDate
                     label={'Eind periode'}
                     name={'dateEnd'}
@@ -224,7 +239,21 @@ const RevenuesKwhNew = props => {
                     {props.project.kwhStartHighNextRevenue > 0 ? (
                         <InputText
                             type={'number'}
-                            label={'Beginstand kWh hoog'}
+                            label={
+                                <span>
+                                Beginstand kWh hoog
+                                    {props.project.kwhStartHighNextRevenueWrong
+                                        ?
+                                        <>
+                                            <br />
+                                            <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                Afwijkende beginstand kWh hoog verwacht
+                                            </small>
+                                        </>
+                                        : null
+                                    }
+                                </span>
+                            }
                             name={'kwhStartHigh'}
                             value={kwhStartHigh}
                             readOnly={true}
@@ -252,7 +281,21 @@ const RevenuesKwhNew = props => {
                     {props.project.kwhStartHighNextRevenue > 0 ? (
                         <InputText
                             type={'number'}
-                            label={'Beginstand kWh laag'}
+                            label={
+                                <span>
+                                Beginstand kWh laag
+                                    {props.project.kwhStartLowNextRevenueWrong
+                                        ?
+                                        <>
+                                            <br />
+                                            <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                Afwijkende beginstand kWh laag verwacht
+                                            </small>
+                                        </>
+                                        : null
+                                    }
+                                </span>
+                            }
                             name={'kwhStartLow'}
                             value={kwhStartLow}
                             readOnly={true}
@@ -260,7 +303,21 @@ const RevenuesKwhNew = props => {
                     ) : (
                         <InputText
                             type={'number'}
-                            label={'Beginstand kWh laag'}
+                            label={
+                                <span>
+                                Beginstand kWh laag
+                                    {props.project.kwhStartLowNextRevenueWrong
+                                        ?
+                                        <>
+                                            <br />
+                                            <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                Afwijkende beginstand kWh laag verwacht
+                                            </small>
+                                        </>
+                                        : null
+                                    }
+                                </span>
+                            }
                             name={'kwhStartLow'}
                             value={kwhStartLow}
                             onChangeAction={props.handleInputChangeValuesKwh}

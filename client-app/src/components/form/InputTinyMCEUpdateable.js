@@ -46,7 +46,7 @@ class InputTinyMCEUpdateable extends Component {
                             plugins: 'paste lists advlist link image code table pagebreak',
                             toolbar:
                                 'undo redo | formatselect fontselect | bold italic forecolor | alignleft aligncenter alignright | pagebreak | bullist numlist outdent indent | table | link image | code',
-                            // paste_data_images: true,
+                            paste_data_images: true,
                             contextmenu: false,
                             height: '300',
                             browser_spellcheck: true,

@@ -19,17 +19,27 @@ use Illuminate\Support\Facades\Storage;
 
 class QuotationRequestController
 {
-    public function index()
+    public function index(Request $request)
     {
         $portalUser = Auth::user();
 
         if ($portalUser->contact->isExternalParty()) {
-            $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
+            $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsExternalParty();
         } elseif ($portalUser->contact->isProjectManager()) {
-            $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
+            $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsProjectManager();
         } else {
-            $quotationRequests = $portalUser->contact->quotationRequests;
+            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
         }
+
+        /**
+         * Optioneel filteren op campagne
+         */
+        $campaignId = $request->input('campaignId');
+        $quotationRequests = $quotationRequestsQuery->when($campaignId, function ($query) use ($campaignId) {
+            return $query->whereHas('opportunity.intake', function ($query) use ($campaignId) {
+                return $query->where('campaign_id', $campaignId);
+            });
+        })->get();
 
         return response()->json($quotationRequests->sortByDesc('date_planned')->map(function (QuotationRequest $quotationRequest) {
             return $this->getJson($quotationRequest);
@@ -114,7 +124,7 @@ class QuotationRequestController
         }
 
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if($document->alfresco_node_id == null){
+            if ($document->alfresco_node_id == null) {
                 $filePath = Storage::disk('documents')
                     ->path($document->filename);
                 header('X-Filename:' . $document->filename);
@@ -148,8 +158,8 @@ class QuotationRequestController
                         'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,
                     ],
                     'address' => [
-                        'id' => $quotationRequest->opportunity->intake->address->id,
-                        'streetPostalCodeCity' => $quotationRequest->opportunity->intake->address->getStreetPostalCodeCityAttribute(),
+                        'id' => optional($quotationRequest->opportunity->intake->address)->id,
+                        'streetPostalCodeCity' => $quotationRequest->opportunity->intake->address ? $quotationRequest->opportunity->intake->address->getStreetPostalCodeCityAttribute() : 'onbekend',
                     ],
                 ],
                 'status' => [
@@ -210,11 +220,14 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
-        if($cooperation->inspection_planned_mailbox_id){
+        if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
             (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
-        }else{
+        } else {
             (new EmailHelper())->setConfigToDefaultMailbox();
         }
 
@@ -237,11 +250,14 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
-        if($cooperation->inspection_planned_mailbox_id){
+        if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
             (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
-        }else{
+        } else {
             (new EmailHelper())->setConfigToDefaultMailbox();
         }
 
@@ -264,11 +280,14 @@ class QuotationRequestController
         }
 
         $contact = $quotationRequest->opportunity->intake->contact;
+        if (!$contact->primaryEmailAddress) {
+            return;
+        }
 
-        if($cooperation->inspection_planned_mailbox_id){
+        if ($cooperation->inspection_planned_mailbox_id) {
             $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
             (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
-        }else{
+        } else {
             (new EmailHelper())->setConfigToDefaultMailbox();
         }
 

@@ -48,7 +48,7 @@ class ContactDetailsFormAddressNew extends Component {
         };
     }
 
-    handleInputPicoChange = event => {
+    handleInputLvbagChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
@@ -69,7 +69,7 @@ class ContactDetailsFormAddressNew extends Component {
                 validator.isEmpty(address.city) &&
                 validator.isEmpty(address.street)
             ) {
-                AddressAPI.getPicoAddress(address.postalCode, address.number).then(payload => {
+                AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
                     this.setState({
                         ...this.state,
                         address: {
@@ -203,7 +203,7 @@ class ContactDetailsFormAddressNew extends Component {
                                 size={'col-sm-4'}
                                 name={'postalCode'}
                                 value={postalCode}
-                                onChangeAction={this.handleInputPicoChange}
+                                onChangeAction={this.handleInputLvbagChange}
                                 required={'required'}
                                 error={errors.postalCode}
                             />
@@ -218,7 +218,7 @@ class ContactDetailsFormAddressNew extends Component {
                                         id={'number'}
                                         name={'number'}
                                         value={number}
-                                        onChange={this.handleInputPicoChange}
+                                        onChange={this.handleInputLvbagChange}
                                     />
                                 </div>
                                 <div className={`col-sm-2`}>

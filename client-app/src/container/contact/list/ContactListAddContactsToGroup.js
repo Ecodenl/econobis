@@ -2,12 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
-import { addContactToGroup } from '../../../actions/contact/ContactGroupsActions';
 import GroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import Modal from '../../../components/modal/Modal';
 import InputSelect from '../../../components/form/InputSelect';
 
-class AddContactToGroup extends Component {
+class ContactListAddContactsToGroup extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -87,10 +86,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    addContactToGroup: contact => {
-        dispatch(addContactToGroup(contact));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(AddContactToGroup);
+export default connect(mapStateToProps, null)(ContactListAddContactsToGroup);

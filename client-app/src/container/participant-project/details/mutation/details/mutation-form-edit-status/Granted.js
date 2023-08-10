@@ -14,6 +14,7 @@ const MutationFormEditStatusGranted = ({
     errors,
     errorMessage,
     projectTypeCodeRef,
+    disableBeforeEntryDate,
 }) => (
     <React.Fragment>
         {readOnly && participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) && (
@@ -132,6 +133,7 @@ const MutationFormEditStatusGranted = ({
                             name={'dateEntry'}
                             value={participantMutationFromState.dateEntry}
                             onChangeAction={handleInputChangeDate}
+                            disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
                         />

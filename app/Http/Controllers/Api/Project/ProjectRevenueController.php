@@ -187,6 +187,7 @@ class ProjectRevenueController extends ApiController
         $projectRevenue->fill($data);
 
         $projectRevenueConfirmedIsDirty = false;
+        // isDirty werkt hier niet goed op boolean veld. Geeft altijd TRUE !?!?
         if($projectRevenue->isDirty('confirmed')){
             $projectRevenueConfirmedIsDirty = true;
         }
@@ -236,8 +237,7 @@ class ProjectRevenueController extends ApiController
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
         $participants = ParticipantProject::where('project_id', $project->id)
             ->where(function ($query) use($dateBegin) {
-                $query->whereNull('date_terminated')
-                    ->orWhere('date_terminated',  '>=', $dateBegin);
+                $query->whereNull('date_terminated');
             })
             ->where(function ($query) use($mutationType, $mutationStatusFinal) {
                 $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {

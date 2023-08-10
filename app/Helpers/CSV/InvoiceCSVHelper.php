@@ -73,9 +73,7 @@ class InvoiceCSVHelper
                 $invoice->payment_type = $invoice->getPaymentType()->name;
 
                 if($invoice->payment_type_id === 'collection'){
-                    $invoice->collection_iban = $invoice->iban;
                     $invoice->date_collection_formatted = $this->formatDate($invoice->date_collection);
-                    $invoice->collection_iban_attn = $invoice->iban_attn;
                 }
 
                 if($invoice->date_sent){
@@ -137,8 +135,8 @@ class InvoiceCSVHelper
                 'total_incl_vat_incl_reduction_formatted' => 'Notabedrag bruto',
                 'payment_type' => 'Betaalwijze',
                 'date_collection_formatted' => 'Incassodatum',
-                'collection_iban' => 'Ibannr',
-                'collection_iban_attn' => 'Iban t.n.v.',
+                'iban' => 'Ibannr',
+                'iban_attn' => 'Iban t.n.v.',
                 'date_paid' => 'Datum betaald',
                 'amount_paid' => 'Bedrag betaald',
                 'payment_reference' => 'Betalingskenmerk',

@@ -8,6 +8,8 @@ import ButtonText from '../../components/button/ButtonText';
 import { setError } from '../../actions/general/ErrorActions';
 import moment from 'moment/moment';
 import InvoicesSyncFromTwinfield from './InvoicesSyncFromTwinfield';
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
 
 class FinancialToolbar extends Component {
     constructor(props) {
@@ -38,8 +40,8 @@ class FinancialToolbar extends Component {
                 this.props.setError(
                     500,
                     'Er is iets misgegaan met synchroniseren van de gegevens. ' +
-                        'Mocht dit probleem zich blijven voordoen meld dit dan bij Econobis support. ' +
-                        'Meld ons wanneer het voor het laatst fout is gegaan, voor welke administratie en bij welke synchroniseer actie. '
+                    'Mocht dit probleem zich blijven voordoen meld dit dan bij Econobis support. ' +
+                    'Meld ons wanneer het voor het laatst fout is gegaan, voor welke administratie en bij welke synchroniseer actie. '
                 );
                 // alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
             });
@@ -65,8 +67,8 @@ class FinancialToolbar extends Component {
                 this.props.setError(
                     500,
                     'Er is iets misgegaan met synchroniseren van de gegevens. ' +
-                        'Mocht dit probleem zich blijven voordoen meld dit dan bij Econobis support. ' +
-                        'Meld ons wanneer het voor het laatst fout is gegaan, voor welke administratie en bij welke synchroniseer actie. '
+                    'Mocht dit probleem zich blijven voordoen meld dit dan bij Econobis support. ' +
+                    'Meld ons wanneer het voor het laatst fout is gegaan, voor welke administratie en bij welke synchroniseer actie. '
                 );
                 // alert('Er is iets misgegaan met synchroniseren van de gegevens. Probeer het later opnieuw');
             });
@@ -108,7 +110,10 @@ class FinancialToolbar extends Component {
                                     loading={this.state.syncingToInvoices}
                                     loadText={'Aan het synchroniseren'}
                                     buttonText={
-                                        <span>
+                                        <span
+                                            title='Notas naar Twinfield synchroniseren'
+                                        >
+                                            <Icon size={14} icon={refresh} />
                                             &nbsp;Nota's
                                         </span>
                                     }
@@ -121,7 +126,10 @@ class FinancialToolbar extends Component {
                                     loading={this.state.syncingFromInvoices}
                                     loadText={'Betalingen aan het ophalen'}
                                     buttonText={
-                                        <span>
+                                        <span
+                                            title='Betalingen van Twinfield ophalen'
+                                        >
+                                            <Icon size={14} icon={refresh} />
                                             &nbsp;Betalingen
                                         </span>
                                     }

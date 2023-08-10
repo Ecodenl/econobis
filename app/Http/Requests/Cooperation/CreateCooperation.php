@@ -38,7 +38,9 @@ class CreateCooperation extends FormRequest
             'logoFilename' => [''],
             'logoName' => [''],
             'hoomLink' => [''],
+            'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
+            'hoomCampaignId' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
             'useLaposta' => [''],
@@ -49,6 +51,8 @@ class CreateCooperation extends FormRequest
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'createContactsForReportTable' => [''],
+            'emailReportTableProblems' => ['email'],
         ];
     }
 }

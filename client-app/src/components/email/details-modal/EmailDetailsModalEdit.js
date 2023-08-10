@@ -65,6 +65,18 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                     clearable={true}
                 />
             )}
+            manualContactsComponent={(
+                <AsyncSelectSet
+                    label={'Te koppelen contacten'}
+                    name={'manualContacts'}
+                    value={email.manualContacts}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
+                    clearable={true}
+                    textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
+                />
+            )}
             intakeComponent={(
                 <InputReactSelect
                     label={'Intake'}

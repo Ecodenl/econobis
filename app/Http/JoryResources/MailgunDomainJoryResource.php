@@ -14,6 +14,7 @@ class MailgunDomainJoryResource extends JoryResource
         $mailgunDomainController = new MailgunDomainController();
         $mailgunDomainController->authorize('view', MailgunDomain::class);
     }
+
     protected $modelClass = MailgunDomain::class;
 
     protected function configureForApp(): void
@@ -26,6 +27,14 @@ class MailgunDomainJoryResource extends JoryResource
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
     }
+
+    public function authorize($builder, $user = null): void
+    {
+        $builder->whereHas('mailboxes.users', function($query) use ($user){
+            $query->where('users.id', $user->id);
+        });
+    }
+
 
     protected function configureForPortal(): void
     {

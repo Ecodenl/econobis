@@ -71,6 +71,11 @@ class Email extends Model
         return $this->belongsToMany(Contact::class);
     }
 
+    public function manualContacts()
+    {
+        return $this->belongsToMany(Contact::class, 'contact_email_manual');
+    }
+
     public function closedBy()
     {
         return $this->belongsTo(User::class);

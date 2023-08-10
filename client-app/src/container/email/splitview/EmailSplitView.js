@@ -9,7 +9,7 @@ import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import { hashHistory } from 'react-router';
+import {hashHistory, Link} from 'react-router';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
@@ -136,6 +136,10 @@ export default function EmailSplitView({ router }) {
         });
     };
 
+    const hasFilters = () => {
+        return Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
+    };
+
     return (
         <div>
             <div className="row">
@@ -175,6 +179,15 @@ export default function EmailSplitView({ router }) {
             </div>
             <div className="row">
                 <div className="col-md-4 margin-10-top" style={{ paddingRight: '0px' }}>
+                    {
+                        hasFilters() && (
+                            <div className="panel panel-default">
+                                <div className="panel-body panel-small">
+                                    Er worden e-mail filters toegepast, klik <Link className="link-underline" onClick={() => setFilters({...defaultFilters, fetch: true})} style={{cursor: 'pointer'}}>hier</Link> om deze uit te zetten.
+                                </div>
+                            </div>
+                        )
+                    }
                     <EmailSplitViewSelectList
                         emails={emails}
                         folder={router.params.folder}

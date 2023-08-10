@@ -30,6 +30,7 @@ export default function EmailDetailsModalLayout({
                                                     invoiceComponent,
                                                     onRemoved,
                                                     noteComponent,
+                                                    manualContactsComponent,
                                                 }) {
     const statusses = useSelector((state) => state.systemData.emailStatuses);
     const {openEmailSendModal} = useContext(EmailModalContext);
@@ -211,6 +212,10 @@ export default function EmailDetailsModalLayout({
 
             <div className="row">
                 {contactsComponent}
+                {manualContactsComponent}
+            </div>
+
+            <div className="row">
                 {intakeComponent}
             </div>
 

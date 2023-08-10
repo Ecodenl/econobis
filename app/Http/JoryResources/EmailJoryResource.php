@@ -3,8 +3,8 @@
 namespace App\Http\JoryResources;
 
 use App\Http\JoryResources\Base\CallbackFilterScope;
+use App\Http\JoryResources\Base\JoryResource;
 use Illuminate\Support\Facades\Auth;
-use JosKolenberg\LaravelJory\JoryResource;
 use App\Eco\Email\Email;
 
 class EmailJoryResource extends JoryResource
@@ -16,7 +16,7 @@ class EmailJoryResource extends JoryResource
      *
      * @return void
      */
-    protected function configure(): void
+    protected function configureForApp(): void
     {
         // Fields
         $this->field('bcc')->filterable()->sortable();
@@ -65,5 +65,24 @@ class EmailJoryResource extends JoryResource
         $this->filter('eigen_openstaand', new CallbackFilterScope(function ($builder) {
             $builder->whereEigenOpenstaand(Auth::user());
         }));
+    }
+
+    protected function configureForPortal(): void
+    {
+        // TODO: Implement configureForPortal() method.
+    }
+
+    protected function checkAuthorize(): void
+    {
+        if(!Auth::user()->hasPermissionTo('view_email', 'api')){
+            abort(403);
+        }
+    }
+
+    public function authorize($builder, $user = null): void
+    {
+        $builder->whereHas('mailbox.users', function ($query) use ($user) {
+            $query->where('users.id', $user->id);
+        });
     }
 }

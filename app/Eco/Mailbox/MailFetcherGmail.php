@@ -143,7 +143,8 @@ class MailFetcherGmail
         // when encoding isn't UTF-8 encode texthtml to utf8.
         $currentEncodingTextHtml = mb_detect_encoding($textHtml, 'UTF-8', true);
         if (false === $currentEncodingTextHtml) {
-            $textHtml = utf8_encode($textHtml);
+//            $textHtml = utf8_encode($textHtml);
+            $textHtml = mb_convert_encoding($textHtml, 'UTF-8', mb_list_encodings());
         }
 
         if (strlen($textHtml) > 250000) {

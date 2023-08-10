@@ -37,6 +37,12 @@ class EmailDetailsController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
+            'manualContacts' => $email->manualContacts->map(function (Contact $contact) {
+                return [
+                    'id' => $contact->id,
+                    'fullName' => $contact->full_name,
+                ];
+            }),
             'intakeId' => $email->intake_id,
             'intake' => $email->intake ? [
                 'id' => $email->intake->id,

@@ -111,7 +111,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
             to: newEmail.toAddresses.map(to => to.id),
             cc: newEmail.ccAddresses.map(cc => cc.id),
             bcc: newEmail.bccAddresses.map(bcc => bcc.id),
-            contactIds: newEmail.contacts.map(c => c.id),
+            manualContactIds: newEmail.manualContacts.map(c => c.id),
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
             mailContactGroupWithSingleMail: newEmail.mailContactGroupWithSingleMail,
@@ -269,10 +269,10 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                         <AsyncSelectSet
                             label="Te koppelen contacten"
                             name={'contact_email'}
-                            value={email.contacts}
+                            value={email.manualContacts}
                             loadOptions={getContactOptions}
                             optionName={'fullName'}
-                            onChangeAction={(value) => updateEmail({contacts: value ? value : []})}
+                            onChangeAction={(value) => updateEmail({manualContacts: value ? value : []})}
                             allowCreate={false}
                         />
                     </div>

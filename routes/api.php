@@ -638,6 +638,9 @@ Route::namespace('Api')
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
         Route::post('cooperation/{cooperation}/sync-all-with-laposta', 'Cooperation\CooperationController@syncAllWithLaposta');
+        Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
+        Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
+        Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

@@ -219,7 +219,7 @@ class MailFetcher
                 'filename' => $filename,
                 'name' => $attachment->name,
                 'email_id' => $email->id,
-                'cid' => str_contains($email->html_body, $cid) ? $cid : null,
+                'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
             ]);
             $emailAttachment->save();
         }

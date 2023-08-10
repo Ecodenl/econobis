@@ -13,7 +13,7 @@ use Microsoft\Graph\Model\Message;
 use Microsoft\Graph\Model\EmailAddress;
 use Microsoft\Graph\Model\Recipient;
 use Microsoft\Graph\Model\FileAttachment;
-use Symfony\Component\Mime\RawMessage;
+use Symfony\Component\Mime\Email;
 
 class MsoauthapiTransport extends Transport
 {
@@ -28,7 +28,7 @@ class MsoauthapiTransport extends Transport
         $this->initMsOauthConfig();
     }
 
-    public function send(RawMessage $message, &$failedRecipients = null)
+    public function send(Email $message, &$failedRecipients = null)
     {
         $messageGraph = new Message();
         $messageGraph->subject( $message->getSubject());

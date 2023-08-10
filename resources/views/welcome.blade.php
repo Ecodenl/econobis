@@ -1,5 +1,5 @@
-<!doctype html><html lang="{{ app()->getLocale() }}"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Econobis</title><script defer="defer" src="./js/6988.030499a966e7dac29d42.js"></script><script defer="defer" src="./js/bundle.df85487266e35c20b1e4.js"></script></head><body><script src="./js/polyfill.js"></script><script>// Set some global JS variables
-    var URL_APP ="{{ config('app.url') }}";
+<!doctype html><html lang="{{ app()->getLocale() }}"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Econobis</title><script defer="defer" src="./js/871.7e77467c20c63bf6f207.js"></script><script defer="defer" src="./js/bundle.688cdb3257a23f025a9d.js"></script></head><body><script src="./js/polyfill.js"></script><script>// Set some global JS variables
+    {{--var URL_APP ="{{ config('app.url') }}";--}}
     var URL_API ="{{ config('app.url_api') }}";
     var CLIENT_ID ="{{ config('app.oauth_client_id') }}";
     var CLIENT_KEY ="{{ $clientKey }}";</script><div id="root"></div></body></html>

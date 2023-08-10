@@ -13,7 +13,7 @@
 
 <script type="text/javascript">
     // Set some global JS variables
-    var URL_APP ="{{ config('app.url') }}";
+    {{--var URL_APP ="{{ config('app.url') }}";--}}
     var URL_API ="{{ config('app.url_api') }}";
     var CLIENT_ID ="{{ config('app.oauth_client_id') }}";
     var CLIENT_KEY ="{{ $clientKey }}";

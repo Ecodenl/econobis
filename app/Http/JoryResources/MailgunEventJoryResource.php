@@ -29,6 +29,9 @@ class MailgunEventJoryResource extends JoryResource
 
     public function authorize($builder, $user = null): void
     {
+        /**
+         * Alleen events tonen van mailboxen waar de gebruiker toegang tot heeft.
+         */
         $builder->whereHas('domain.mailboxes.users', function($query) use ($user){
             $query->where('users.id', $user->id);
         });

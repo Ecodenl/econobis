@@ -261,8 +261,7 @@ class FinancialOverviewHelper
             ];
         } else {
             $mail->send(new FinancialOverviewContactMail($mail, $htmlBody,
-                Storage::disk('administrations')->getDriver()->getAdapter()
-                    ->applyPathPrefix($financialOverviewContact->filename),
+                Storage::disk('administrations')->path($financialOverviewContact->filename),
                 $financialOverviewContact->name, $defaultAttachmentDocumentId));
 
             $financialOverviewContact->emailed_to = $contactInfo['email'];
@@ -276,7 +275,7 @@ class FinancialOverviewHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

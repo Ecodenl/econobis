@@ -69,7 +69,7 @@ class MailgunMailController
                 'filename' => $filePathAndName,
                 'name' => $file->getClientOriginalName(),
                 'email_id' => $email->id,
-                'cid' => str_contains($email->html_body, $cid) ? $cid : null,
+                'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
             ]);
             $emailAttachment->save();
         }

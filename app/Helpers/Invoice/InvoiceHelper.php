@@ -269,8 +269,7 @@ class InvoiceHelper
             ];
         } else {
             $mail->send(new InvoiceMail($mail, $htmlBody,
-                Storage::disk('administrations')->getDriver()->getAdapter()
-                    ->applyPathPrefix($invoice->document->filename),
+                Storage::disk('administrations')->path($invoice->document->filename),
                 $invoice->document->name, $defaultAttachmentDocumentId));
 
             $invoice->emailed_to = $contactInfo['email'];
@@ -377,7 +376,7 @@ class InvoiceHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name, $defaultAttachmentDocumentId));
+        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->path($invoice->document->filename), $invoice->document->name, $defaultAttachmentDocumentId));
 
         return true;
     }
@@ -474,7 +473,7 @@ class InvoiceHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

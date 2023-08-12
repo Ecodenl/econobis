@@ -2,31 +2,20 @@
 
 namespace App\Mail;
 
-use App\Eco\Mailbox\Mailbox;
 use App\Mail\CustomMailDriver\GmailapiTransport;
 use App\Mail\CustomMailDriver\MsoauthapiTransport;
 use Illuminate\Bus\Queueable;
 use Illuminate\Container\Container;
-use Illuminate\Contracts\Mail\Factory as MailFactory;
-use Illuminate\Contracts\Mail\Mailer;
 use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Transport\MailgunTransport;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
-use Swift_Mailer;
-use Swift_SmtpTransport;
 use GuzzleHttp\Client as HttpClient;
+use Symfony\Component\Mailer\Transport;
 
 class ConfigurableMailable extends Mailable
 {
     use Queueable, SerializesModels;
 
-    /**
-     * Override Mailable functionality to support mailbox settings on the fly
-     *
-     * @param  \Illuminate\Contracts\Mail\Factory|\Illuminate\Contracts\Mail\Mailer  $mailer
-     * @return void
-     */
     public function send($mailer)
     {
         if(config('mail.default') === 'mailgun') {
@@ -42,7 +31,6 @@ class ConfigurableMailable extends Mailable
             if(!$mailboxId) return;
 
             $transport = new GmailapiTransport($mailboxId);
-//todo WM oauth: nog testen !!!
         }elseif(config('mail.default') === 'msoauthapi') {
             // Send mail with msoauthapi?!?!?
             $mailboxId = config('services.msoauthapi.mailbox_id');
@@ -55,24 +43,49 @@ class ConfigurableMailable extends Mailable
             $port      = config('mail.port');
             $security  = config('mail.encryption');
 
-            $transport = new Swift_SmtpTransport( $host, $port, $security);
-            $transport->setUsername(config('mail.username'));
-            $transport->setPassword(config('mail.password'));
+            $password  = config('mail.password');
+            $username  = config('mail.username');
+            $transport = Transport::fromDsn("smtp://{$username}:{$password}@{$host}:{$port}");
         } else {
             return;
         }
 
-        $mailer->setSwiftMailer(new Swift_Mailer($transport));
+//        $mailer->setSwiftMailer(new Swift_Mailer($transport));
 
-        Container::getInstance()->call([$this, 'build']);
+// transport met smpt volgens mij alleen indien geen msoauth en geen mailgun
+//        $mailer->setSymfonyTransport(Transport::fromDsn("smtp://{$username}:{$password}@{$host}:{$port}"));
+          $mailer->setSymfonyTransport( $transport);
 
-        $mailer->send($this->buildView(), $this->buildViewData(), function ($message) {
-            $message->from([config('mail.from.address') => config('mail.from.name')]);
+// het was zo:
+//        Container::getInstance()->call([$this, 'build']);
+//        $mailer->send($this->buildView(), $this->buildViewData(), function ($message) {
+//            $message->from([config('mail.from.address') => config('mail.from.name')]);
+//            $this->buildFrom($message)
+//                ->buildRecipients($message)
+//                ->buildSubject($message)
+//                ->buildAttachments($message)
+//                ->runCallbacks($message);
+//
+// door PK vervangen door maar nu ineens met een return en de callback: in code is niet goed !?:
+//        return $mailer->send([], [], callback: function ($message) {
+//        $message->html($this->html_body);
+//
+//        $this->buildFrom($message)
+//            ->buildRecipients($message)
+//            ->buildSubject($message)
+//            ->runCallbacks($message)
+//            ->buildAttachments($message);
+//    });
+//
+// WM heeft er voorlopig dit van gemaakt (geen rode kringeltjes meer ivm fout in code in ieder geval):
+        $mailer->send([], [], function ($message) {
+            $message->html($this->html_body);
+
             $this->buildFrom($message)
                 ->buildRecipients($message)
                 ->buildSubject($message)
-                ->buildAttachments($message)
-                ->runCallbacks($message);
+                ->runCallbacks($message)
+                ->buildAttachments($message);
         });
     }
 

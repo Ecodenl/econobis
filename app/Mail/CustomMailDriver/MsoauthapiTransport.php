@@ -13,7 +13,7 @@ use Microsoft\Graph\Model\Message;
 use Microsoft\Graph\Model\EmailAddress;
 use Microsoft\Graph\Model\Recipient;
 use Microsoft\Graph\Model\FileAttachment;
-use Swift_Mime_SimpleMessage;
+use Symfony\Component\Mime\Email;
 
 class MsoauthapiTransport extends Transport
 {
@@ -28,14 +28,14 @@ class MsoauthapiTransport extends Transport
         $this->initMsOauthConfig();
     }
 
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Email $message, &$failedRecipients = null)
     {
         $messageGraph = new Message();
-        $messageGraph->setSubject( $message->getSubject());
+        $messageGraph->subject( $message->getSubject());
         $body = new ItemBody();
         $body->setContent($message->getBody());
         $body->setContentType('HTML');
-        $messageGraph->setBody($body);
+        $messageGraph->html($body);
 
         if($message->getTo()) {
             $recipientsTo = array();

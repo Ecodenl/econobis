@@ -40,7 +40,7 @@ class GenericMail extends ConfigurableMailable
 
         //add attachments
         foreach($attachments as $attachment){
-            $mail->attach(Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($attachment->filename), [
+            $mail->attach(Storage::disk('mail_attachments')->path($attachment->filename), [
                 'as' => $attachment->name
             ]);
         }

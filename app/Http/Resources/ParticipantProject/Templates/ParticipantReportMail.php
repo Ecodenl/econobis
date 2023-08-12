@@ -40,8 +40,7 @@ class ParticipantReportMail extends ConfigurableMailable
 
         $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');
 
-        $mail->attach(Storage::disk('documents')->getDriver()->getAdapter()
-            ->applyPathPrefix($this->document->filename), [
+        $mail->attach(Storage::disk('documents')->path($this->document->filename), [
             'as' => $this->document->name
         ]);
 

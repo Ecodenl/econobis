@@ -9,7 +9,7 @@ use Google_Client;
 use Google_Service_Gmail;
 use Google_Service_Gmail_Message;
 use Illuminate\Mail\Transport\Transport;
-use Swift_Mime_SimpleMessage;
+use Symfony\Component\Mime\Email;
 
 class GmailapiTransport extends Transport
 {
@@ -26,7 +26,7 @@ class GmailapiTransport extends Transport
         $this->initGmailConfig();
     }
 
-    public function send(Swift_Mime_SimpleMessage $message, &$failedRecipients = null)
+    public function send(Email $message, &$failedRecipients = null)
     {
         $msg = $this->base64url_encode($message);
         $message = new Google_Service_Gmail_Message();

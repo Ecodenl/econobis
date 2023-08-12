@@ -54,6 +54,9 @@ class UpdateCooperation extends FormRequest
             'inspectionReleasedEmailTemplateId' => [''],
             'createContactsForReportTable' => [''],
             'emailReportTableProblems' => ['email'],
+            'fontFamilyDefault' => [''],
+            'fontSizeDefault' => [''],
+            'fontColorDefault' => [''],
         ];
     }
 }

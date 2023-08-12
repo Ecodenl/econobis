@@ -362,7 +362,7 @@ function MailboxDefaultFormGeneral({
                     </PanelHeader>
                 )}
 
-                {((values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth' || values.incomingServerType === 'imap' || values.incomingServerType === 'gmail') && values.inboundMailgunEnabled) && (
+                {(values.incomingServerType === 'mailgun') && (
                     <PanelBody>
                         <div className="row">
                             <InputToggle

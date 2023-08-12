@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {useState} from 'react';
 import PropTypes from 'prop-types';
 import AsyncCreatableSelect from 'react-select/async-creatable';
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 const AsyncSelectSet = props => {
+    const [isLoading, setIsLoading] = useState(false);
+
     const {
         label,
         size,
@@ -19,10 +23,10 @@ const AsyncSelectSet = props => {
         multi,
         error,
         errorMessage,
-        isLoading,
         disabled,
         placeholder,
         clearable,
+        textToolTip,
     } = props;
 
     const onPromptTextCreator = label => {
@@ -49,7 +53,19 @@ const AsyncSelectSet = props => {
                         name={name}
                         onChange={option => onChangeAction(option)}
                         value={value}
-                        loadOptions={loadOptions}
+                        loadOptions={async (searchTerm) => {
+                            if (searchTerm.length <= 1) {
+                                return;
+                            }
+
+                            setIsLoading(true);
+
+                            let result = await loadOptions(searchTerm);
+
+                            setIsLoading(false);
+
+                            return result;
+                        }}
                         onInputChange={handleInputChange}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
@@ -98,6 +114,24 @@ const AsyncSelectSet = props => {
                         <span className="has-error-message"> {errorMessage}</span>
                     </div>
                 )}
+                { textToolTip && (
+                    <div className="col-sm-1">
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name ? name : id}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                        &nbsp;
+                    </div>
+                )}
             </div>
         </div>
     );
@@ -115,9 +149,9 @@ AsyncSelectSet.defaultProps = {
     errorMessage: '',
     value: '',
     multi: true,
-    isLoading: false,
     placeholder: '',
     clearable: false,
+    textToolTip: '',
 };
 
 AsyncSelectSet.propTypes = {
@@ -127,7 +161,7 @@ AsyncSelectSet.propTypes = {
     size: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
-    loadOptions: PropTypes.array,
+    loadOptions: PropTypes.func,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.email, PropTypes.number]),
@@ -138,9 +172,9 @@ AsyncSelectSet.propTypes = {
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
     multi: PropTypes.bool,
-    isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,
+    textToolTip: PropTypes.string,
 };
 
 export default AsyncSelectSet;

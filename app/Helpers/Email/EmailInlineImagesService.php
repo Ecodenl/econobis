@@ -109,13 +109,7 @@ class EmailInlineImagesService
         /**
          * Kopiëren van bijlages gebeurt altijd voor forwards of replies, daarom opslaan in "outbox".
          */
-        $newFilename = 'mailbox_' . $this->email->mailbox_id . '/outbox' . '/' . Str::random(40) . '.' . pathinfo($attachmentFromOldEmail->filename, PATHINFO_EXTENSION);
-        Storage::disk('mail_attachments')->copy($attachmentFromOldEmail->filename, $newFilename);
-
-        $attachment = $attachmentFromOldEmail->replicate();
-        $attachment->email_id = $this->email->id;
-        $attachment->filename = $newFilename;
-        $attachment->save();
+        EmailAttachmentCopyService::copy($attachmentFromOldEmail, $this->email);
     }
 
     /**

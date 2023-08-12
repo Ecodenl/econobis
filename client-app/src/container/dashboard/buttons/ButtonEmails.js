@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
-
-import EmailAPI from './../../../api/email/EmailAPI';
+import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 
 class ButtonEmails extends Component {
     constructor(props) {
@@ -13,7 +12,7 @@ class ButtonEmails extends Component {
     }
 
     componentWillMount() {
-        EmailAPI.getAmountOpen().then(payload => {
+        EmailGenericAPI.getAmountOpen().then(payload => {
             this.setState({
                 amountOpenEmails: payload,
             });
@@ -22,7 +21,7 @@ class ButtonEmails extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/emails/inbox/eigen`)}>
+            <div className={this.props.size} onClick={() => hashHistory.push(`/mailclient/inbox?eigen=1`)}>
                 <div className="panel panel-default" id="dashboardbutton-1">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">E-MAIL</h4>

@@ -9,6 +9,7 @@ import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
 import { ic_email } from 'react-icons-kit/md/ic_email';
+import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
 import { cog } from 'react-icons-kit/icomoon/cog';
 import { documents } from 'react-icons-kit/ikons/documents';
 import { calendar } from 'react-icons-kit/icomoon/calendar';
@@ -251,6 +252,46 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </Nav>
                 </Nav>
             )}
+            {permissions.menuEmail && (
+                <Nav id="mailclient">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_fiber_new} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="mailclient/inbox">
+                            Mailclient (beta)
+                        </Link>
+                    </NavText>
+                    <Nav id="inbox">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/inbox">
+                                Ontvangen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/sent">
+                                Verzonden
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/concept">
+                                Concepten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="removed">
+                        <NavText>
+                            <Link className="sidebar-link" to="mailclient/removed">
+                                Verwijderd
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
 
             {permissions.menuTasks && (
                 <Nav id="taken">
@@ -330,6 +371,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <NavText>
                             <Link className="sidebar-link-header" to="housing-file/log">
                                 Hoomdossier
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav key={'nav-mailgun-log'} id={`mailgun-log`}>
+                        <NavText>
+                            <Link className="sidebar-link-header" to="mailgun/log">
+                                Mailgun
                             </Link>
                         </NavText>
                     </Nav>

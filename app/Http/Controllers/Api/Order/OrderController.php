@@ -319,13 +319,19 @@ class OrderController extends ApiController
     }
 
 
-    public function peek()
+    public function peek(Request $request)
     {
-        if(Auth::user()->hasPermissionTo('view_order', 'api')){
-            return OrderPeek::collection(Order::all());
-        } else {
-            return OrderPeek::collection(new Collection());
+        $query = Order::query();
+
+        if(!Auth::user()->hasPermissionTo('view_order', 'api')){
+            return [];
         }
+
+        if($request->has('contactIds')){
+            $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+        }
+
+        return OrderPeek::collection($query->get());
     }
 
     public function getContactInfoForOrder(Contact $contact)

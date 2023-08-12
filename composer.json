@@ -25,11 +25,12 @@
         "laravel/tinker": "~2.0",
         "laravel/ui": "^3.0",
         "league/oauth2-client": "^2.4",
+        "mailgun/mailgun-php": "^3.5",
         "microsoft/microsoft-graph": "^1.67",
         "mollie/laravel-mollie": "^2.14",
         "particle/validator": "^2.3",
         "php-imap/php-imap": "^4.0",
-        "php-twinfield/twinfield": "^3.3.0",
+        "php-twinfield/twinfield": "^3.0",
         "phpoffice/phpspreadsheet": "^1.7",
         "spatie/laravel-permission": "^3.0",
         "spatie/valuestore": "^1.2",
@@ -81,7 +82,10 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": true
+        "optimize-autoloader": true,
+        "allow-plugins": {
+            "php-http/discovery": false
+        }
     },
     "extra": {
         "laravel": {

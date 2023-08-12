@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(TwoFactorToken::class);
     }
 
+    public function defaultMailbox()
+    {
+        return $this->belongsTo(Mailbox::class);
+    }
+
     public function requiresTwoFactorAuthentication()
     {
         $cooperation = Cooperation::first();

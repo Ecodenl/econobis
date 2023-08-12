@@ -15,7 +15,9 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
+use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
+use App\Jobs\Email\ProcessSendingEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -35,6 +37,7 @@ class Email extends Model
         'replyTypeId' => 'string',
         'oldEmailId' => 'integer',
         'contactGroupId' => 'integer',
+        'mail_contact_group_with_single_mail' => 'boolean',
     ];
 
     public function mailbox()
@@ -47,9 +50,30 @@ class Email extends Model
         return $this->hasMany(EmailAttachment::class);
     }
 
+    /**
+     * Bijlages met cid zijn de inline images.
+     */
+    public function inlineImageAttachments()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNotNull('cid');
+    }
+
+    /**
+     * De bijlages zonder cid zijn de bijlages die als "echte" bijlage worden meegestuurd.
+     */
+    public function attachmentsWithoutCids()
+    {
+        return $this->hasMany(EmailAttachment::class)->whereNull('cid');
+    }
+
     public function contacts()
     {
         return $this->belongsToMany(Contact::class);
+    }
+
+    public function manualContacts()
+    {
+        return $this->belongsToMany(Contact::class, 'contact_email_manual');
     }
 
     public function closedBy()
@@ -64,7 +88,7 @@ class Email extends Model
 
     public function getStatus()
     {
-        if(!$this->status) return null;
+        if (!$this->status) return null;
 
         return EmailStatus::get($this->status);
     }
@@ -109,15 +133,18 @@ class Email extends Model
         return $this->belongsTo(Invoice::class);
     }
 
-    public function groupEmailAddresses(){
+    public function groupEmailAddresses()
+    {
         return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
     }
 
-    public function sentByUser(){
+    public function sentByUser()
+    {
         return $this->belongsTo(User::class, 'sent_by_user_id');
     }
 
-    public function oldEmail(){
+    public function oldEmail()
+    {
         return $this->belongsTo(Email::class);
     }
 
@@ -140,5 +167,71 @@ class Email extends Model
     public function inlineImagesService(): EmailInlineImagesService
     {
         return new EmailInlineImagesService($this);
+    }
+
+    public function getToRecipients(): EmailRecipientCollection
+    {
+        return EmailRecipientCollection::createFromValues($this->to);
+    }
+
+    public function getCcRecipients(): EmailRecipientCollection
+    {
+        return EmailRecipientCollection::createFromValues($this->cc);
+    }
+
+    public function getBccRecipients(): EmailRecipientCollection
+    {
+        return EmailRecipientCollection::createFromValues($this->bcc);
+    }
+
+    public function getResponsibleName()
+    {
+        if ($this->responsibleUser) {
+            return $this->responsibleUser->present()->fullName();
+        }
+
+        if ($this->responsibleTeam) {
+            return $this->responsibleTeam->name;
+        }
+
+        return null;
+    }
+
+    public function generator()
+    {
+        return new EmailGeneratorService($this);
+    }
+
+    public function copyEmailAddressToContacts()
+    {
+        if (Mailbox::where('email', $this->from)->exists()) {
+            return;
+        }
+
+        if ($this->mailbox->ignoresEmailAddress($this->from)) {
+            return;
+        }
+
+        foreach ($this->contacts as $contact) {
+            if ($contact->emailAddresses()->where('email', $this->from)->exists()) {
+                continue;
+            }
+
+            $emailAddress = new EmailAddress();
+            $emailAddress->email = $this->from;
+            $emailAddress->type_id = 'general';
+            $emailAddress->contact_id = $contact->id;
+            $emailAddress->save();
+        }
+    }
+
+    public function send(User $byUser)
+    {
+        ProcessSendingEmail::dispatch($this, $byUser);
+    }
+
+    public function newEloquentBuilder($query)
+    {
+        return new EmailBuilder($query);
     }
 }

@@ -65,3 +65,24 @@
 .filter-row {
   margin: 0 0 12px 0;
 }
+
+.modal-fullscreen {
+  top: 0px;
+}
+
+.modal-fullscreen .modal-dialog {
+  width: 95vw;
+}
+
+.modal-fullscreen .modal-body {
+  max-height: 80vh;
+  overflow: scroll;
+}
+
+.submodal .modal-dialog {
+  width: 700px;
+}
+
+.modal-align-top {
+  top: 0px;
+}

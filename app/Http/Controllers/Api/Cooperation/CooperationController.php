@@ -41,10 +41,6 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation = new Cooperation($request->validatedSnake());
-//        todo WM: hoom
-//        if($cooperation->hoom_campaign_id == '') {
-//            $cooperation->hoom_campaign_id = null;
-//        }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -79,7 +75,7 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
     }
 
     public function update(UpdateCooperation $request, Cooperation $cooperation)
@@ -131,7 +127,7 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
     }
 
     public function storeHoomCampaign(CreateCooperationHoomCampaign $request)

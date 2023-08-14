@@ -67,7 +67,7 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
             )}
             manualContactsComponent={(
                 <AsyncSelectSet
-                    label={'Te koppelen contacten'}
+                    label={'Eenmalig te koppelen contacten'}
                     name={'manualContacts'}
                     value={email.manualContacts}
                     loadOptions={getContactOptions}

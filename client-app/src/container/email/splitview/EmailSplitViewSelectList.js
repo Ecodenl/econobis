@@ -5,6 +5,7 @@ import {paperclip} from 'react-icons-kit/fa/paperclip';
 import {trash} from 'react-icons-kit/fa/trash';
 import EmailSplitViewBulkEditModal from "./EmailSplitViewBulkEditModal";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import {getStatusIcon} from "../../../helpers/EmailStatusHelpers";
 
 export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated}) {
     const [selectEnabled, setSelectEnabled] = useState(false);
@@ -153,7 +154,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             </div>
                                         )}
                                         <div style={{flex: 1}} onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '15px'}}>{email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
+                                            <span style={{fontSize: '15px'}}>{getStatusIcon(email.status)} {email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
                                         <div style={{

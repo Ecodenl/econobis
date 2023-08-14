@@ -65,6 +65,7 @@ class ConfigurableMailable extends Mailable
 //                ->buildSubject($message)
 //                ->buildAttachments($message)
 //                ->runCallbacks($message);
+//        });
 //
 // door PK vervangen door maar nu ineens met een return en de callback: in code is niet goed !?:
 //        return $mailer->send([], [], callback: function ($message) {
@@ -75,7 +76,6 @@ class ConfigurableMailable extends Mailable
 //            ->buildSubject($message)
 //            ->runCallbacks($message)
 //            ->buildAttachments($message);
-//    });
 //
 // WM heeft er voorlopig dit van gemaakt (geen rode kringeltjes meer ivm fout in code in ieder geval):
         $mailer->send([], [], function ($message) {

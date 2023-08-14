@@ -106,7 +106,18 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     <div className="col-sm-6">
                         <label className="col-sm-6">Aan</label>
                         <div className="col-sm-6">
-                            <EmailAddressList emailAddresses={email.toAddresses}/>
+                            <EmailAddressList emailAddresses={(() => {
+                                let addresses = [...email.toAddresses];
+
+                                if (email.contactGroup) {
+                                    addresses.push({
+                                        email: null,
+                                        name: email.contactGroup.name,
+                                    });
+                                }
+
+                                return addresses;
+                            })()}/>
                         </div>
                     </div>
                 </div>

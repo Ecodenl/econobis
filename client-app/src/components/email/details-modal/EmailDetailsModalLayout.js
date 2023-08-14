@@ -171,7 +171,7 @@ export default function EmailDetailsModalLayout({
                     <label className="col-sm-6">Aan</label>
                     <div className="col-sm-6">
                         <EmailAddressList emailAddresses={(() => {
-                            let addresses = email.toAddresses;
+                            let addresses = [...email.toAddresses];
 
                             if (email.contactGroup) {
                                 addresses.push({

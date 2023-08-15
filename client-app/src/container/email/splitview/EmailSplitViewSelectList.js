@@ -5,6 +5,7 @@ import {paperclip} from 'react-icons-kit/fa/paperclip';
 import {trash} from 'react-icons-kit/fa/trash';
 import EmailSplitViewBulkEditModal from "./EmailSplitViewBulkEditModal";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import {getStatusIcon} from "../../../helpers/EmailStatusHelpers";
 
 export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated}) {
     const [selectEnabled, setSelectEnabled] = useState(false);
@@ -48,7 +49,20 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
     }
 
     const doDelete = () => {
-        EmailGenericAPI.updateMultiple(selectedEmailIds, {folder: 'removed'}).then(() => {
+        if(folder !== 'removed') {
+            EmailGenericAPI.updateMultiple(selectedEmailIds, {folder: 'removed'}).then(() => {
+                setSelectedEmailIds([]);
+                onUpdated();
+            });
+
+            return;
+        }
+
+        if(!confirm('Weet je zeker dat je deze e-mails permanent wilt verwijderen?')) {
+            return;
+        }
+
+        EmailGenericAPI.deleteMultiple(selectedEmailIds).then(() => {
             setSelectedEmailIds([]);
             onUpdated();
         });
@@ -75,6 +89,12 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         selectEmail(emails[lastOpenedEmailIndex === -1 ? 0 : lastOpenedEmailIndex]);
     }, [emails]);
 
+    useEffect(() => {
+        setSelectedEmailIds([]);
+        setSelectEnabled(false);
+
+    }, [folder]);
+
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small"
@@ -96,10 +116,8 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                     <button
                                         type="button"
                                         title="Verwijderen"
-                                        className={'btn btn-success btn-sm'}
-                                        onClick={() => {
-                                            doDelete(true);
-                                        }}
+                                        className={'btn btn-sm ' + (folder === 'removed' ? 'btn-danger' : 'btn-success')}
+                                        onClick={doDelete}
                                     >
                                         <Icon icon={trash} size={13}/>
                                     </button>
@@ -153,7 +171,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             </div>
                                         )}
                                         <div style={{flex: 1}} onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '15px'}}>{email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
+                                            <span style={{fontSize: '15px'}}>{getStatusIcon(email.status)} {email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
                                         <div style={{

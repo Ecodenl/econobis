@@ -111,9 +111,10 @@ class EmailGenericController extends Controller
 
         $this->authorize('create', Email::class);
 
-        $mailbox = Auth::user()->defaultMailbox;
+        $mailbox = Auth::user()->getDefaultMailboxWithFallback();
+
         if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
+            abort(403, 'Geen mailbox gevonden');
         }
 
         $email = new Email([
@@ -136,15 +137,9 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
+        $reply = $email->generator()->reply();
 
-        $reply = $email->generator()->reply([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $email->update(['status' => 'closed']);
 
         return response()->json([
             'id' => $reply->id,
@@ -155,15 +150,9 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
+        $reply = $email->generator()->replyAll();
 
-        $reply = $email->generator()->replyAll([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $email->update(['status' => 'closed']);
 
         return response()->json([
             'id' => $reply->id,
@@ -174,15 +163,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
-
-        $forward = $email->generator()->forward([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $forward = $email->generator()->forward();
 
         return response()->json([
             'id' => $forward->id,
@@ -193,7 +174,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $emailAddress = $email->getToRecipients()->first()->getEmailAddress();
+        $emailAddress = $email->from;
 
         $contact = new Contact();
         $contact->save();

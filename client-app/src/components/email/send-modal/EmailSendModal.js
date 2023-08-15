@@ -267,13 +267,14 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                     )}
                     <div className="row">
                         <AsyncSelectSet
-                            label="Te koppelen contacten"
+                            label="Eenmalig te koppelen contacten"
                             name={'contact_email'}
                             value={email.manualContacts}
                             loadOptions={getContactOptions}
                             optionName={'fullName'}
                             onChangeAction={(value) => updateEmail({manualContacts: value ? value : []})}
                             allowCreate={false}
+                            textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
                         />
                     </div>
                     <div className="row">

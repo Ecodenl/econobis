@@ -15,40 +15,40 @@ use App\Eco\ContactGroup\DynamicContactGroupFilter;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
+use App\Eco\Project\Project;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
+use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
+use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
-use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
-use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
-use App\Http\Resources\Contact\ContactPeek;
-use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Jobs\ParticipationProject\CreateParticipantReport;
-use Barryvdh\DomPDF\Facade\Pdf;
-use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\Project;
-use App\Helpers\Delete\Models\DeleteParticipation;
-use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
+use App\Http\Resources\Contact\ContactPeek;
+use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
+use App\Jobs\ParticipationProject\CreateParticipantReport;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -690,8 +690,37 @@ class ParticipationProjectController extends ApiController
         $subject = $request->input('subject');
         $showOnPortal = $request->input('showOnPortal');
 
+        $participantProject = ParticipantProject::find($participantIds[0]);
+        $project = $participantProject->project;
+
+        $mailbox = optional($project->administration)->mailbox ? $project->administration->mailbox : Mailbox::getDefault();
+
+        $emailModel = null;
+        if($mailbox){
+            /**
+             * Email model aanmaken zodat de email ook zichtbaar wordt onder verzonden items.
+             * Dit is één gezamenlijke email voor alle ontvangers.
+             *
+             * De ontvangers worden later per succesvolle job aan deze mail toegevoegd.
+             */
+            $emailModel = new Email([
+                'mailbox_id' => $mailbox->id,
+                'from' => $mailbox->email,
+                'to' => [],
+                'cc' => [],
+                'bcc' => [],
+                'subject' => $subject,
+                'html_body' => $emailTemplate->html_body,
+                'folder' => 'sent',
+                'date_sent' => Carbon::now(),
+                'project_id' => $project->id,
+                'sent_by_user_id' => Auth::id(),
+            ]);
+            $emailModel->save();
+        }
+
         foreach($participantIds as $participantId) {
-            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, $showOnPortal, Auth::id());
+            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, $showOnPortal, Auth::id(), $emailModel);
         }
 
         return null;

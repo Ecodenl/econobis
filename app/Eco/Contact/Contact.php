@@ -111,6 +111,14 @@ class Contact extends Model
         return $this->belongsToMany(Email::class)->orderBy('emails.id', 'desc');
     }
 
+    /**
+     * Dit zijn de emails die handmatig (eenmalig) aan dit contact zijn toegevoegd zonder dat het emailadres van dit contact ook wordt toegevoegd aan het contact.
+     */
+    public function manualEmails()
+    {
+        return $this->belongsToMany(Email::class, 'contact_email_manual')->orderBy('emails.id', 'desc');
+    }
+
     public function phoneNumbers()
     {
         return $this->hasMany(PhoneNumber::class);

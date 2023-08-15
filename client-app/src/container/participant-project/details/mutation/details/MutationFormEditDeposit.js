@@ -90,7 +90,7 @@ function MutationFormEditDeposit({
         let quantityMutation = participantMutationFromState.quantity;
 
         if (projectTypeCodeRef === 'loan') {
-            quantityMutation = 0;
+            return 0;
         } else {
             if (participantMutationFromProps.status.codeRef === 'interest') {
                 // next status alread selected
@@ -196,13 +196,20 @@ function MutationFormEditDeposit({
                             className={'col-sm-6 form-group'}
                             value={MoneyPresenter(calculateTransactionCostsAmount())}
                         />
-                        {participantMutationFromProps.status.codeRef === 'option' ||
-                        participantMutationFromProps.status.codeRef === 'granted' ? (
+                        {participantMutationFromState.createdWith === 'econobis' &&
+                        (participantMutationFromProps.status.codeRef === 'option' ||
+                            participantMutationFromProps.status.codeRef === 'granted') ? (
                             <InputText
                                 type={'number'}
                                 label={'Transactiekosten (afwijkend)'}
                                 id={'differentTransactionCostsAmount'}
                                 name={'differentTransactionCostsAmount'}
+                                labelClassName={
+                                    calculateTransactionCostsAmount() !=
+                                    participantMutationFromState.differentTransactionCostsAmount
+                                        ? 'text-danger'
+                                        : ''
+                                }
                                 value={participantMutationFromState.differentTransactionCostsAmount}
                                 onChangeAction={handleInputChange}
                                 required={'required'}

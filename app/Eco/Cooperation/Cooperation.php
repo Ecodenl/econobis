@@ -48,9 +48,9 @@ class Cooperation extends Model
         return $this->belongsTo(ContactGroup::class, 'hoom_group_id');
     }
 
-    public function hoomCampaign()
+    public function hoomCampaigns()
     {
-        return $this->belongsTo(Campaign::class, 'hoom_campaign_id');
+        return $this->hasMany(CooperationHoomCampaign::class, );
     }
 
     public function emailTemplate()

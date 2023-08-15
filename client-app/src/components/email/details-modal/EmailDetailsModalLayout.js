@@ -15,6 +15,7 @@ import {trash} from 'react-icons-kit/fa/trash';
 import {pencil} from 'react-icons-kit/fa/pencil';
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
+import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
 
 
 export default function EmailDetailsModalLayout({
@@ -32,7 +33,7 @@ export default function EmailDetailsModalLayout({
                                                     noteComponent,
                                                     manualContactsComponent,
                                                 }) {
-    const statusses = useSelector((state) => state.systemData.emailStatuses);
+    const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
     const {openEmailSendModal} = useContext(EmailModalContext);
 
     const createReply = () => {
@@ -170,7 +171,7 @@ export default function EmailDetailsModalLayout({
                     <label className="col-sm-6">Aan</label>
                     <div className="col-sm-6">
                         <EmailAddressList emailAddresses={(() => {
-                            let addresses = email.toAddresses;
+                            let addresses = [...email.toAddresses];
 
                             if (email.contactGroup) {
                                 addresses.push({

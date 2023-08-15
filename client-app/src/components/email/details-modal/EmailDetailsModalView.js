@@ -37,7 +37,7 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
             )}
             manualContactsComponent={(
                 <div className="col-sm-6">
-                    <label className="col-sm-6">Te koppelen contacten</label>
+                    <label className="col-sm-6">Eenmalig te koppelen contacten</label>
                     <div className="col-sm-6">
                         {
                             email && email.manualContacts &&

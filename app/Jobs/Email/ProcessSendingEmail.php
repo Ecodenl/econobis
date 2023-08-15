@@ -121,9 +121,6 @@ class ProcessSendingEmail implements ShouldQueue
 
         $contactIds = EmailAddress::whereIn('id', $emailAddressIds)->pluck('contact_id');
 
-        /**
-         * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
-         */
-        $email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
+        $email->contacts()->sync($contactIds->unique()->toArray());
     }
 }

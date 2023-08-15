@@ -193,7 +193,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $emailAddress = $email->getToRecipients()->first()->getEmailAddress();
+        $emailAddress = $email->from;
 
         $contact = new Contact();
         $contact->save();

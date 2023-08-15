@@ -49,7 +49,20 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
     }
 
     const doDelete = () => {
-        EmailGenericAPI.updateMultiple(selectedEmailIds, {folder: 'removed'}).then(() => {
+        if(folder !== 'removed') {
+            EmailGenericAPI.updateMultiple(selectedEmailIds, {folder: 'removed'}).then(() => {
+                setSelectedEmailIds([]);
+                onUpdated();
+            });
+
+            return;
+        }
+
+        if(!confirm('Weet je zeker dat je deze e-mails permanent wilt verwijderen?')) {
+            return;
+        }
+
+        EmailGenericAPI.deleteMultiple(selectedEmailIds).then(() => {
             setSelectedEmailIds([]);
             onUpdated();
         });
@@ -76,6 +89,12 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         selectEmail(emails[lastOpenedEmailIndex === -1 ? 0 : lastOpenedEmailIndex]);
     }, [emails]);
 
+    useEffect(() => {
+        setSelectedEmailIds([]);
+        setSelectEnabled(false);
+
+    }, [folder]);
+
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small"
@@ -97,10 +116,8 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                     <button
                                         type="button"
                                         title="Verwijderen"
-                                        className={'btn btn-success btn-sm'}
-                                        onClick={() => {
-                                            doDelete(true);
-                                        }}
+                                        className={'btn btn-sm ' + (folder === 'removed' ? 'btn-danger' : 'btn-success')}
+                                        onClick={doDelete}
                                     >
                                         <Icon icon={trash} size={13}/>
                                     </button>

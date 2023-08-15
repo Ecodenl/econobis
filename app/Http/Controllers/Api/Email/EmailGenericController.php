@@ -137,15 +137,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
-
-        $reply = $email->generator()->reply([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $reply = $email->generator()->reply();
 
         $email->update(['status' => 'closed']);
 
@@ -158,15 +150,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
-
-        $reply = $email->generator()->replyAll([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $reply = $email->generator()->replyAll();
 
         $email->update(['status' => 'closed']);
 
@@ -179,15 +163,7 @@ class EmailGenericController extends Controller
     {
         $this->authorize('manage', $email);
 
-        $mailbox = Auth::user()->defaultMailbox;
-        if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
-        }
-
-        $forward = $email->generator()->forward([
-            'from' => optional($mailbox)->email,
-            'mailbox_id' => optional($mailbox)->id,
-        ]);
+        $forward = $email->generator()->forward();
 
         return response()->json([
             'id' => $forward->id,

@@ -221,7 +221,14 @@ export default function EmailSplitView({router}) {
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">
-                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails}/>
+                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails} folder={router.params.folder} deleted={() => {
+                        localStorage.setItem('lastOpenedEmailId', null);
+
+                        setSelectedEmailId(null);
+
+                        refetchCurrentEmails();
+                    }}
+                    />
                 </div>
             </div>
         </div>

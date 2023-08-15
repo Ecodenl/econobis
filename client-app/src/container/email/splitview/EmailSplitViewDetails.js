@@ -5,7 +5,7 @@ import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 
-export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
+export default function EmailSplitViewDetails({emailId, updatedEmailHandler, deleted, folder}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
     const [email, setEmail] = useState({attachments: [], toAddresses: []});
     const {openEmailSendModal} = useContext(EmailModalContext);
@@ -79,7 +79,25 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler}) {
 
     return (
         <div>
-            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} />
+            { email.folder === 'removed' && folder !== 'removed' && (
+                <div className="panel panel-default">
+                    <div className="panel-body panel-small">
+                        <div className="row" style={{marginLeft: '-5px'}}>
+                            <div className="col-md-12">
+                                <span className="h5" style={{ color: '#e64a4a' }}>
+                                    Deze e-mail is verwijderd.&nbsp;
+                                    <a style={{ color: '#e64a4a', cursor: 'pointer' }} onClick={() => updateEmailAttributes({folder: folder})}>
+                                        <strong>Klik hier om verwijderen ongedaan te maken.</strong>
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            )}
+
+            <EmailSplitViewDetailsHeaderPanel email={email} updateEmailAttributes={updateEmailAttributes} deleted={deleted} />
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}} id="split-view-email-html">

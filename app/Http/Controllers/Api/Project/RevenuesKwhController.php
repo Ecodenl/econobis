@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
@@ -613,8 +614,38 @@ class RevenuesKwhController extends ApiController
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 
+        $distributionKwh = RevenueDistributionKwh::find($distributionKwhIds[0]);
+        $revenuesKwh = $distributionKwh->revenuesKwh;
+        $project = $revenuesKwh->project;
+
+        $mailbox = optional($project->administration)->mailbox ? $project->administration->mailbox : Mailbox::getDefault();
+
+        $emailModel = null;
+        if($mailbox){
+            /**
+             * Email model aanmaken zodat de email ook zichtbaar wordt onder verzonden items.
+             * Dit is één gezamenlijke email voor alle ontvangers.
+             *
+             * De ontvangers worden later per succesvolle job aan deze mail toegevoegd.
+             */
+            $emailModel = new Email([
+                'mailbox_id' => $mailbox->id,
+                'from' => $mailbox->email,
+                'to' => [],
+                'cc' => [],
+                'bcc' => [],
+                'subject' => $subject,
+                'html_body' => EmailTemplate::find($emailTemplateId)->html_body,
+                'folder' => 'sent',
+                'date_sent' => \Illuminate\Support\Carbon::now(),
+                'project_id' => $project->id,
+                'sent_by_user_id' => Auth::id(),
+            ]);
+            $emailModel->save();
+        }
+
         foreach($distributionKwhIds as $distributionKwhId) {
-            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
+            CreateRevenuesKwhReport::dispatch($distributionKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id(), $emailModel);
         }
 
         return null;

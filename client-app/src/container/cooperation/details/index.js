@@ -26,7 +26,7 @@ const INITIAL_STATE = {
         hoomLink: '',
         hoomConnectCoachLink: '',
         hoomKey: '',
-        hoomCampaignId: '',
+        hoomCampaigns: {},
         hoomEmailTemplateId: '',
         hoomGroupId: '',
         useLaposta: false,

@@ -40,7 +40,6 @@ class CreateCooperation extends FormRequest
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
-            'hoomCampaignId' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
             'useLaposta' => [''],

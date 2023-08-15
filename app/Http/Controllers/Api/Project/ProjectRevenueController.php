@@ -6,9 +6,8 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
@@ -18,14 +17,10 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
-use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
-use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
-use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
-use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -715,8 +710,38 @@ class ProjectRevenueController extends ApiController
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 
+        $distribution = ProjectRevenueDistribution::find($distributionIds[0]);
+        $revenue = $distribution->revenue;
+        $project = $revenue->project;
+
+        $mailbox = optional($project->administration)->mailbox ? $project->administration->mailbox : Mailbox::getDefault();
+
+        $emailModel = null;
+        if($mailbox){
+            /**
+             * Email model aanmaken zodat de email ook zichtbaar wordt onder verzonden items.
+             * Dit is één gezamenlijke email voor alle ontvangers.
+             *
+             * De ontvangers worden later per succesvolle job aan deze mail toegevoegd.
+             */
+            $emailModel = new Email([
+                'mailbox_id' => $mailbox->id,
+                'from' => $mailbox->email,
+                'to' => [],
+                'cc' => [],
+                'bcc' => [],
+                'subject' => $subject,
+                'html_body' => EmailTemplate::find($emailTemplateId)->html_body,
+                'folder' => 'sent',
+                'date_sent' => \Illuminate\Support\Carbon::now(),
+                'project_id' => $project->id,
+                'sent_by_user_id' => Auth::id(),
+            ]);
+            $emailModel->save();
+        }
+
         foreach($distributionIds as $distributionId) {
-            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
+            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id(), $emailModel);
         }
 
 // null voor succesboodschap. todo nog even checken of wat nut was om hier ProjectRevenueDistiibution terug te geven.
@@ -842,16 +867,20 @@ class ProjectRevenueController extends ApiController
                     . 'documents/' . $document->filename));
                 file_put_contents($filePath, $pdf);
 
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                    \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
+                        \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                    $document->filename, $document->getDocumentGroup()->name);
-                if($alfrescoResponse == null)
-                {
-                    throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                        $document->filename, $document->getDocumentGroup()->name);
+                    if ($alfrescoResponse == null) {
+                        throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    }
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $document->alfresco_node_id = null;
                 }
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
                 $document->save();
             }
             catch (\Exception $e) {

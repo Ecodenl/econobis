@@ -69,6 +69,10 @@ class EmailSplitviewController extends Controller
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'folder' => $email->folder,
             'note' => $email->note,
+            'contactGroup' => $email->contactGroup ? [
+                'id' => $email->contactGroup->id,
+                'name' => $email->contactGroup->name,
+            ] : null,
         ]);
     }
 }

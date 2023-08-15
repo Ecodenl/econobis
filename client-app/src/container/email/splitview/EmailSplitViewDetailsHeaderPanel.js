@@ -13,10 +13,11 @@ import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailAddressList from "../../../components/email/EmailAddressList";
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 import {EmailModalContext} from "../../../context/EmailModalContext";
+import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
 
 export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttributes}) {
     const { openEmailDetailsModal, openEmailSendModal } = useContext(EmailModalContext);
-    const statusses = useSelector((state) => state.systemData.emailStatuses);
+    const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
@@ -105,7 +106,18 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                     <div className="col-sm-6">
                         <label className="col-sm-6">Aan</label>
                         <div className="col-sm-6">
-                            <EmailAddressList emailAddresses={email.toAddresses}/>
+                            <EmailAddressList emailAddresses={(() => {
+                                let addresses = [...email.toAddresses];
+
+                                if (email.contactGroup) {
+                                    addresses.push({
+                                        email: null,
+                                        name: email.contactGroup.name,
+                                    });
+                                }
+
+                                return addresses;
+                            })()}/>
                         </div>
                     </div>
                 </div>

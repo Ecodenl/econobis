@@ -19,3 +19,8 @@ export const CooperationValidation = Yup.object().shape({
     hoomLink: Yup.string().url('Ongeldige url'),
     hoomConnectCoachLink: Yup.string().url('Ongeldige url'),
 });
+
+export const CreateCooperationHoomCampaignValidation = Yup.object().shape({
+    campaignId: Yup.string().required('Verplicht'),
+});
+export const UpdateCooperationHoomCampaignValidation = Yup.object().shape({});

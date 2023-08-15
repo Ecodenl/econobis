@@ -17,13 +17,12 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
-import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
+import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails }) {
-    const [campaigns, setCampaigns] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
@@ -43,15 +42,13 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     useEffect(function() {
         axios
             .all([
-                CampaignsAPI.peekCampaigns(),
                 EmailTemplateAPI.fetchEmailTemplatesPeek(),
                 MailboxAPI.fetchMailboxesLoggedInUserPeek(),
                 ContactGroupAPI.peekStaticContactGroups(),
             ])
             .then(
-                axios.spread((campaigns, emailTemplates, mailboxAddresses, staticContactGroups) => {
+                axios.spread((emailTemplates, mailboxAddresses, staticContactGroups) => {
                     setMailboxAddresses(mailboxAddresses.data.data);
-                    setCampaigns(campaigns);
                     setEmailTemplates(emailTemplates);
                     setStaticContactGroups(staticContactGroups);
                     setIsLoading(false);
@@ -60,11 +57,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     }, []);
 
     function processSubmit(values) {
-        // Cleanup value data
+        // Cleanup value data. Data don't needed for update.
         const cleanUpFormFields = [
             'hoomGroup',
             'hoomEmailTemplate',
-            'hoomCampaign',
+            'hoomCampaigns',
             'createdAt',
             'createdBy',
             'createdById',
@@ -222,6 +219,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             ) : null}
                         </div>
                     </PanelBody>
+                </Panel>
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Hoom gegevens</span>
                     </PanelHeader>
@@ -252,15 +251,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 onBlurAction={handleBlur}
                                 error={errors.hoomConnectCoachLink && touched.hoomConnectCoachLink}
                                 errorMessage={errors.hoomConnectCoachLink}
-                            />
-                            <InputReactSelect
-                                label={'Hoom campagne'}
-                                name={'hoomCampaignId'}
-                                options={campaigns}
-                                value={values.hoomCampaignId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
                             />
                         </div>
                         <div className="row">
@@ -294,8 +284,14 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 }}
                             />
                         </div>
+                        <HoomCampaigns
+                            cooperationId={formData.id}
+                            showEditCooperation={true}
+                            hoomCampaigns={formData.hoomCampaigns}
+                        />
                     </PanelBody>
-
+                </Panel>
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Laposta gegevens</span>
                     </PanelHeader>
@@ -315,7 +311,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             />
                         </div>
                     </PanelBody>
-
+                </Panel>
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Twee factor authenticatie</span>
                     </PanelHeader>
@@ -331,7 +328,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             />
                         </div>
                     </PanelBody>
-
+                </Panel>
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Buurtaanpak</span>
                     </PanelHeader>
@@ -380,71 +378,73 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             />
                         </div>
                     </PanelBody>
+                </Panel>
 
-                    {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
-                        <>
-                            <PanelHeader>
-                                <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
-                            </PanelHeader>
-                            <PanelBody>
-                                <div className="row">
-                                    <InputToggle
-                                        label={
-                                            <span>
-                                                Vullen report tabel (tbv Power BI)
-                                                {values.createContactsForReportTable ? (
-                                                    <>
-                                                        <br />
-                                                        <small style={{ color: 'red', fontWeight: 'normal' }}>
-                                                            Wanneer je dit uitzet wordt de report tabel geleegd.
-                                                        </small>
-                                                    </>
-                                                ) : null}
-                                            </span>
-                                        }
-                                        name={'createContactsForReportTable'}
-                                        value={!!values.createContactsForReportTable}
-                                        onChangeAction={e =>
-                                            setFieldValue('createContactsForReportTable', e.target.checked)
-                                        }
-                                        size={'col-sm-5'}
-                                        textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
-                                    />
-                                    {values.createContactsForReportTable == true && (
-                                        <InputText
-                                            label="Email bij problemen vullen report tabel"
-                                            name={'emailReportTableProblems'}
-                                            value={values.emailReportTableProblems}
-                                            onChangeAction={handleChange}
-                                            onBlurAction={handleBlur}
-                                            error={errors.emailReportTableProblems && touched.emailReportTableProblems}
-                                            errorMessage={errors.emailReportTableProblems}
-                                        />
-                                    )}
-                                </div>
-                                <div className="row">
-                                    {values.createContactsForReportTable == true && (
-                                        <ViewText
-                                            label={'Datum laatste keer gevuld'}
-                                            value={
-                                                values.createContactsForReportTableLastCreated
-                                                    ? moment(values.createContactsForReportTableLastCreated).format('L')
-                                                    : ''
-                                            }
-                                        />
-                                    )}
-                                    {values.createContactsForReportTableInProgress == true && (
-                                        <span class="form-group col-sm-6">
-                                            <span class="form-group col-sm-12" style={{ color: '#e64a4a' }}>
-                                                Report tabel wordt momenteel bijgewerkt…
-                                            </span>
+                {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
+                    <Panel>
+                        <PanelHeader>
+                            <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <InputToggle
+                                    label={
+                                        <span>
+                                            Vullen report tabel (tbv Power BI)
+                                            {values.createContactsForReportTable ? (
+                                                <>
+                                                    <br />
+                                                    <small style={{ color: 'red', fontWeight: 'normal' }}>
+                                                        Wanneer je dit uitzet wordt de report tabel geleegd.
+                                                    </small>
+                                                </>
+                                            ) : null}
                                         </span>
-                                    )}
-                                </div>
-                            </PanelBody>
-                        </>
-                    )}
+                                    }
+                                    name={'createContactsForReportTable'}
+                                    value={!!values.createContactsForReportTable}
+                                    onChangeAction={e =>
+                                        setFieldValue('createContactsForReportTable', e.target.checked)
+                                    }
+                                    size={'col-sm-5'}
+                                    textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                                />
+                                {values.createContactsForReportTable == true && (
+                                    <InputText
+                                        label="Email bij problemen vullen report tabel"
+                                        name={'emailReportTableProblems'}
+                                        value={values.emailReportTableProblems}
+                                        onChangeAction={handleChange}
+                                        onBlurAction={handleBlur}
+                                        error={errors.emailReportTableProblems && touched.emailReportTableProblems}
+                                        errorMessage={errors.emailReportTableProblems}
+                                    />
+                                )}
+                            </div>
+                            <div className="row">
+                                {values.createContactsForReportTable == true && (
+                                    <ViewText
+                                        label={'Datum laatste keer gevuld'}
+                                        value={
+                                            values.createContactsForReportTableLastCreated
+                                                ? moment(values.createContactsForReportTableLastCreated).format('L')
+                                                : ''
+                                        }
+                                    />
+                                )}
+                                {values.createContactsForReportTableInProgress == true && (
+                                    <span class="form-group col-sm-6">
+                                        <span class="form-group col-sm-12" style={{ color: '#e64a4a' }}>
+                                            Report tabel wordt momenteel bijgewerkt…
+                                        </span>
+                                    </span>
+                                )}
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                )}
 
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Styling E-mail</span>
                     </PanelHeader>
@@ -501,7 +501,9 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             />
                         </div>
                     </PanelBody>
+            </Panel>
 
+                <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Overig</span>
                     </PanelHeader>

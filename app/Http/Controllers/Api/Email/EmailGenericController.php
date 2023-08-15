@@ -147,6 +147,8 @@ class EmailGenericController extends Controller
             'mailbox_id' => optional($mailbox)->id,
         ]);
 
+        $email->update(['status' => 'closed']);
+
         return response()->json([
             'id' => $reply->id,
         ]);
@@ -165,6 +167,8 @@ class EmailGenericController extends Controller
             'from' => optional($mailbox)->email,
             'mailbox_id' => optional($mailbox)->id,
         ]);
+
+        $email->update(['status' => 'closed']);
 
         return response()->json([
             'id' => $reply->id,

@@ -53,6 +53,11 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
         $wrongRevenueDistributionPartsKwh = [];
 
         foreach(RevenueDistributionPartsKwh::where('status', '!=', 'processed')->get() as $revenueDistributionPartKwh) {
+
+            // Indien partsKwh status 'concept-to-update' heeft, dan slaan we hem over. IndicatorFields worden altijd weer opnieuw bepaald als condept partsKwh opnieuw wordt bijgewerkt.
+            if($revenueDistributionPartKwh->partsKwh->status == 'concept-to-update'){
+                continue;
+            }
             $isEnergySupplierSwitch = false;
             $isEndParticipation = false;
             $isEndTotalPeriod = false;

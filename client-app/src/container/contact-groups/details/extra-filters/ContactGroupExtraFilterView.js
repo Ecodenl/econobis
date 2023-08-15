@@ -21,6 +21,8 @@ const ContactGroupExtraFilterView = props => {
             field === 'intakeDateStart' ||
             field === 'intakeDateFinish' ||
             field === 'intakeStatus' ||
+            field === 'quotationRequestStatusOrganisationOrCoach' ||
+            field === 'quotationRequestStatusOccupant' ||
             field === 'occupationPrimary' ||
             field === 'occupation' ||
             field === 'staticContactGroup' ||

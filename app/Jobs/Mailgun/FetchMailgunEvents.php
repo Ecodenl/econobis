@@ -92,11 +92,21 @@ class FetchMailgunEvents implements ShouldQueue
             return;
         }
 
+        $eventCode = $event->getEvent();
+
+        if($eventCode === 'failed'){
+            /**
+             * Onderscheid maken tussen failed permanent en failed temporary.
+             * Deze worden door mailgun beide als 'failed' teruggegeven.
+             */
+            $eventCode = 'failed_' . $event->getSeverity();
+        }
+
         $mailgunEvent = new MailgunEvent([
             'mailgun_domain_id' => $this->mailgunDomain->id,
             'mailgun_id' => $event->getId(),
             'mailgun_message_id' => $event->getMessage()['headers']['message-id'] ?? '',
-            'event' => $event->getEvent(),
+            'event' => $eventCode,
             'recipient' => $event->getRecipient(),
             'subject' => $event->getMessage()['headers']['subject'] ?? '',
             'event_date' => $event->getEventDate(),

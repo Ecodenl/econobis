@@ -12,7 +12,7 @@ import DataTablePagination from "../../../components/dataTable/DataTablePaginati
 
 export default function MailgunEventListApp() {
     const perPage = 100;
-    const errorEvents = ['rejected', 'failed', 'complained', 'unsubscribed'];
+    const errorEvents = ['rejected', 'failed_temporary', 'failed_permanent', 'complained', 'unsubscribed'];
 
     const [isLoading, setLoading] = useState(true);
     const [mailgunEvents, setMailgunEvents] = useState([]);
@@ -177,7 +177,8 @@ export default function MailgunEventListApp() {
                                             'accepted',
                                             'rejected',
                                             'delivered',
-                                            'failed',
+                                            'failed_temporary',
+                                            'failed_permanent',
                                             'opened',
                                             'clicked',
                                             'unsubscribed',

@@ -15,6 +15,7 @@ import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 import moment from 'moment';
 import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
 import { connect } from 'react-redux';
+import InputText from '../../../../../components/form/InputText';
 
 function MutationFormEditDeposit({
     readOnly,
@@ -190,11 +191,25 @@ function MutationFormEditDeposit({
                 <>
                     <div className="row">
                         <ViewText
-                            label={'Transactiekosten'}
+                            label={'Transactiekosten (berekend)'}
                             id={'transactionCostsAmount'}
                             className={'col-sm-6 form-group'}
                             value={MoneyPresenter(calculateTransactionCostsAmount())}
                         />
+                        {participantMutationFromProps.status.codeRef === 'option' ||
+                        participantMutationFromProps.status.codeRef === 'granted' ? (
+                            <InputText
+                                type={'number'}
+                                label={'Transactiekosten (afwijkend)'}
+                                id={'differentTransactionCostsAmount'}
+                                name={'differentTransactionCostsAmount'}
+                                value={participantMutationFromState.differentTransactionCostsAmount}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.differentTransactionCostsAmount}
+                                errorMessage={errorMessage.differentTransactionCostsAmount}
+                            />
+                        ) : null}
                     </div>
                 </>
             )}

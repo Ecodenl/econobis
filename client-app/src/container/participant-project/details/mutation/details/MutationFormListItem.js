@@ -71,6 +71,9 @@ class MutationFormListItem extends Component {
                 amountFinal: props.participantMutation.amountFinal
                     ? props.participantMutation.amountFinal
                     : props.participantMutation.amount,
+                differentTransactionCostsAmount: props.participantMutation.transactionCostsAmount
+                    ? props.participantMutation.transactionCostsAmount
+                    : 0,
             },
             errors: {},
             errorMessage: {},

@@ -52,6 +52,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             }
             values.dateGranted = participantMutation.dateGranted;
         }
+        values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
     if (orginalStatusCodeRef === 'granted') {
@@ -78,6 +79,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             values.paymentReference = participantMutation.paymentReference;
             values.dateEntry = participantMutation.dateEntry;
         }
+        values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
     if (orginalStatusCodeRef === 'final') {

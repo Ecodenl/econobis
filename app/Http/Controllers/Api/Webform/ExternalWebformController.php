@@ -1971,54 +1971,61 @@ class ExternalWebformController extends Controller
 
 
     protected function addContactAttachment($contact, $contactAttachmentUrl) {
-        $fileName = basename($contactAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
+        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
+        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
 
-        $document = new Document();
-        $document->description = 'contact bijlage';
-        $document->document_type = 'upload';
-        $document->document_group = 'general';
-        $document->filename = $fileName;
-        $document->contact_id = $contact->id;
-        // todo WM: dit moet nog anders !!!
-        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
-        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
+        if(in_array($fileType, $allowedFileTypes)) {
+            $fileName = basename($contactAttachmentUrl);
+            $tmpFileName = Str::random(9) . '-' . $fileName;
 
-        $document->document_created_from_id = $documentCreatedFromId;
+            $document = new Document();
+            $document->description = 'contact bijlage';
+            $document->document_type = 'upload';
+            $document->document_group = 'general';
+            $document->filename = $fileName;
+            $document->contact_id = $contact->id;
+            // todo WM: dit moet nog anders !!!
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
 
-        // voor alsnog deze Ids niet vullen
-//        $document->template_id = ??;
-//        $document->campaign_id = ??;
-//        $document->housing_file_id = ??;
-//        $document->quotation_request_id = ??;
-//        $document->measure_id = ??;
+            $document->document_created_from_id = $documentCreatedFromId;
 
-        $document->save();
+            // voor alsnog deze Ids niet vullen
+            //        $document->template_id = ??;
+            //        $document->campaign_id = ??;
+            //        $document->housing_file_id = ??;
+            //        $document->quotation_request_id = ??;
+            //        $document->measure_id = ??;
 
-        $contents = file_get_contents($contactAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+            $document->save();
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
+            $contents = file_get_contents($contactAttachmentUrl);
+            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+            $pos = strrpos($tmpFileName, '/');
+            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
 
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
 
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
 
+                //delete file on server, still saved on alfresco.
+                Storage::disk('documents')->delete($tmpFileName);
+                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+
+            } else {
+                $document->filename = $tmpFileName;
+                $document->alfresco_node_id = null;
+                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+            }
+
+            $document->save();
         } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
         }
-
-        $document->save();
     }
 
     /**

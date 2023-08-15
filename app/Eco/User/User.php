@@ -217,4 +217,24 @@ class User extends Authenticatable
             return $this->teamDocumentCreatedFromIds;
         }
     }
+
+    public function getDefaultMailboxWithFallback()
+    {
+        if($this->defaultMailbox){
+            return $this->defaultMailbox;
+        }
+
+        $cooperationDefaultMailbox = Mailbox::getDefault();
+        $mailboxes = $this->mailboxes()->where('is_active', true)->get();
+
+        if($cooperationDefaultMailbox && $mailboxes->contains($cooperationDefaultMailbox)){
+            return $cooperationDefaultMailbox;
+        }
+
+        if($mailboxes->count() > 0){
+            return $mailboxes->first();
+        }
+
+        return null;
+    }
 }

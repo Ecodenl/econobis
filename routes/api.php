@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Controllers\Api\Mailbox\MailgunDomainBounceController;
+use App\Http\Controllers\Api\Mailbox\MailgunDomainComplaintController;
 use App\Http\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
@@ -610,9 +611,14 @@ Route::namespace('Api')
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
+
         Route::get('mailgun-domain/{mailgunDomain}/bounce', [MailgunDomainBounceController::class, 'index']);
         Route::post('mailgun-domain/{mailgunDomain}/bounce', [MailgunDomainBounceController::class, 'create']);
         Route::post('mailgun-domain/{mailgunDomain}/bounce/{address}/delete', [MailgunDomainBounceController::class, 'delete']);
+
+        Route::get('mailgun-domain/{mailgunDomain}/complaint', [MailgunDomainComplaintController::class, 'index']);
+        Route::post('mailgun-domain/{mailgunDomain}/complaint', [MailgunDomainComplaintController::class, 'create']);
+        Route::post('mailgun-domain/{mailgunDomain}/complaint/{address}/delete', [MailgunDomainComplaintController::class, 'delete']);
 
         Route::get('vat-code/jory', 'VatCode\VatCodeController@jory');
         Route::post('vat-code', 'VatCode\VatCodeController@store');

@@ -111,9 +111,10 @@ class EmailGenericController extends Controller
 
         $this->authorize('create', Email::class);
 
-        $mailbox = Auth::user()->defaultMailbox;
+        $mailbox = Auth::user()->getDefaultMailboxWithFallback();
+
         if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
+            abort(403, 'Geen mailbox gevonden');
         }
 
         $email = new Email([
@@ -146,6 +147,8 @@ class EmailGenericController extends Controller
             'mailbox_id' => optional($mailbox)->id,
         ]);
 
+        $email->update(['status' => 'closed']);
+
         return response()->json([
             'id' => $reply->id,
         ]);
@@ -164,6 +167,8 @@ class EmailGenericController extends Controller
             'from' => optional($mailbox)->email,
             'mailbox_id' => optional($mailbox)->id,
         ]);
+
+        $email->update(['status' => 'closed']);
 
         return response()->json([
             'id' => $reply->id,

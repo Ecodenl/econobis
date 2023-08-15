@@ -12,7 +12,7 @@ export function getStatusIcon(statusId) {
         case 'unread':
             return '✉️'
         case 'read':
-            return '📨';
+            return '📭';
         case 'in_progress':
             return '⏳';
         case 'urgent':

@@ -27,6 +27,7 @@ class EmailSplitviewController extends Controller
             'attachmentsWithoutCids',
             'responsibleUser',
             'responsibleTeam',
+            'mailbox',
         ])->get();
 
         return response()->json([

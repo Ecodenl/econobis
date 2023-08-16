@@ -18,6 +18,19 @@ export default {
         return axiosInstance.get('quotation-request/' + id + '/documenten');
     },
 
+    fetchAllQuotationRequestStatus: function() {
+        const requestUrl = `jory/quotation-request-status`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                jory: {
+                    fld: ['id', 'name', 'codeRef', 'opportunityActionId', 'opportunityActionName', 'order'],
+                    sorts: ['opportunityActionId', 'order'],
+                },
+            },
+        });
+    },
+
     fetchQuotationRequestStatus: function(opportunityActionId) {
         const requestUrl = `jory/quotation-request-status`;
 

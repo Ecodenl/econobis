@@ -9,7 +9,6 @@ import moment from 'moment';
 import { Link } from 'react-router-dom';
 import { FiArrowUp, FiArrowDown } from 'react-icons/all';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
-import OpportunityStatusAPI from '../../../api/opportunity-status/OpportunityStatusAPI';
 
 function Inspectlist(props) {
     const [quotationRequestsArray, setQuotationRequestsArray] = useState([]);
@@ -41,7 +40,7 @@ function Inspectlist(props) {
             setIsLoading(false);
         });
 
-        OpportunityStatusAPI.fetchOpportunityStatus().then(payload => {
+        QuotationRequestAPI.fetchAllQuotationRequestStatus().then(payload => {
             setStatuses(payload.data.data);
         });
     }, [props.user]);
@@ -62,7 +61,7 @@ function Inspectlist(props) {
         }
         if (statusFilter) {
             varQuotationRequestsArray = varQuotationRequestsArray.filter(quotationRequest => {
-                return quotationRequest.opportunity.status.id === parseInt(statusFilter);
+                return quotationRequest.status.id === parseInt(statusFilter);
             });
         }
         if (datePlannedFromFilter) {
@@ -222,8 +221,8 @@ function Inspectlist(props) {
                                     <th>
                                         Status
                                         <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'statusName', desc: false })} />
-                                        <FiArrowDown onClick={() => setSortOn({ col: 'statusName', desc: true })} />
+                                        <FiArrowUp onClick={() => setSortOn({ col: 'statusOrder', desc: false })} />
+                                        <FiArrowDown onClick={() => setSortOn({ col: 'statusOrder', desc: true })} />
                                     </th>
                                     <th>
                                         Datum afspraak
@@ -306,17 +305,13 @@ function Inspectlist(props) {
                                             title={'Filter op status'}
                                         >
                                             <option />
-                                            {statuses
-                                                .filter(status => {
-                                                    return status.active;
-                                                })
-                                                .map(option => {
-                                                    return (
-                                                        <option key={option.id} value={option.id}>
-                                                            {option.name}
-                                                        </option>
-                                                    );
-                                                })}
+                                            {statuses.map(option => {
+                                                return (
+                                                    <option key={option.id} value={option.id}>
+                                                        {option.opportunityActionName} - {option.name}
+                                                    </option>
+                                                );
+                                            })}
                                         </select>
                                     </th>
                                     <th style={{ verticalAlign: ' top' }}>
@@ -429,7 +424,7 @@ function Inspectlist(props) {
                                         <td>
                                             {quotationRequest.opportunityAction.name +
                                                 ' - ' +
-                                                quotationRequest.statusName}
+                                                quotationRequest.status.name}
                                         </td>
                                         <td>
                                             {quotationRequest.datePlanned && quotationRequest.datePlanned != ''

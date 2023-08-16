@@ -52,7 +52,7 @@ class Filter extends RequestFilter
             $query->where(function($query) use ($term) {
                 $query->where('users.last_name', 'LIKE', '%' . $term . '%');
                 $query->orWhere('users.first_name', 'LIKE', '%' . $term . '%');
-                $query->orWhere('last_name_prefixes.name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('econobis_shared.shared_last_name_prefixes.name', 'LIKE', '%' . $term . '%');
             });
         }
 

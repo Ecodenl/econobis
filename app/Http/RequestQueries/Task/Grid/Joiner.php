@@ -22,7 +22,7 @@ class Joiner extends RequestJoiner
     protected function applyUsersJoin($query)
     {
         $query->leftJoin('users', 'tasks.responsible_user_id', '=', 'users.id');
-        $query->leftJoin('last_name_prefixes', 'users.last_name_prefix_id', '=', 'last_name_prefixes.id');
+        $query->leftJoin('econobis_shared.shared_last_name_prefixes', 'users.last_name_prefix_id', '=', 'econobis_shared.shared_last_name_prefixes.id');
     }
 
 

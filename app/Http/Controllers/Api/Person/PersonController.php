@@ -27,6 +27,7 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -44,7 +45,7 @@ class PersonController extends ApiController
                 'initials' => '',
                 'firstName' => '',
                 'lastName' => '',
-                'lastNamePrefixId' => 'exists:last_name_prefixes,id',
+                'lastNamePrefixId' => 'exists:econobis_shared.shared_last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
                 'dateOfBirth' => 'date',
                 'hoomAccountId' => '',

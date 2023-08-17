@@ -89,9 +89,10 @@ class CreateParticipantReport implements ShouldQueue
              * Gekoppelde email bijwerken voor weergave in verzonden items.
              */
             $participantProject = ParticipantProject::find($this->participantId);
-            if($participantProject){
-                $this->email->contacts()->attach($participantProject->contact_id);
-                $this->email->to = array_merge($this->email->to, [$participantProject->contact_id]);
+            $emailAddress = optional(optional($participantProject)->contact)->primaryEmailAddress;
+            if($emailAddress){
+                $this->email->contacts()->attach($emailAddress->contact_id);
+                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
                 $this->email->save();
             }
         }

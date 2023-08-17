@@ -297,139 +297,53 @@ class QuotationRequestNewFormGeneral extends Component {
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                {this.props.opportunityAction.codeRef === 'quotation-request' ? (
-                    <>
-                        <div className="row">
-                            <InputSelect
-                                label={'Organisatie/Coach'}
-                                size={'col-sm-6'}
-                                name="organisationOrCoachId"
-                                value={organisationOrCoachId}
-                                options={organisationsOrCoaches}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.organisation}
-                            />
-                            <InputText
-                                label={'Verzoek voor bewoner'}
-                                name={'fullName'}
-                                value={fullName}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                label={'Externe partij'}
-                                size={'col-sm-6'}
-                                name="externalPartyId"
-                                value={externalPartyId}
-                                options={externalParties}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.externalPartyId}
-                            />
-                            <InputText
-                                label={'Adres'}
-                                name={'address'}
-                                value={fullAddress}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                    </>
-                ) : null}
-
-                {this.props.opportunityAction.codeRef === 'visit' ? (
-                    <>
-                        <div className="row">
-                            <InputSelect
-                                label={'Organisatie/Coach'}
-                                size={'col-sm-6'}
-                                name="organisationOrCoachId"
-                                value={organisationOrCoachId}
-                                options={organisationsOrCoaches}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.organisation}
-                            />
-                            <InputText
-                                label={'Verzoek voor bewoner'}
-                                name={'fullName'}
-                                value={fullName}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                label={'Projectleider'}
-                                size={'col-sm-6'}
-                                name="projectManagerId"
-                                value={projectManagerId}
-                                options={projectManagers}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.projectManagerId}
-                            />
-                            <InputText
-                                label={'Adres'}
-                                name={'address'}
-                                value={fullAddress}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                label={'Externe partij'}
-                                size={'col-sm-6'}
-                                name="externalPartyId"
-                                value={externalPartyId}
-                                options={externalParties}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.externalPartyId}
-                            />
-                        </div>
-                    </>
-                ) : null}
-
-                {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <>
-                        <div className="row">
-                            <InputSelect
-                                label={'Projectleider'}
-                                size={'col-sm-6'}
-                                name="projectManagerId"
-                                value={projectManagerId}
-                                options={projectManagers}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.projectManagerId}
-                            />
-                            <InputText
-                                label={'Verzoek voor bewoner'}
-                                name={'fullName'}
-                                value={fullName}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputSelect
-                                label={'Externe partij'}
-                                size={'col-sm-6'}
-                                name="externalPartyId"
-                                value={externalPartyId}
-                                options={externalParties}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.externalPartyId}
-                            />
-                            <InputText
-                                label={'Adres'}
-                                name={'address'}
-                                value={fullAddress}
-                                onChange={() => {}}
-                                readOnly={true}
-                            />
-                        </div>
-                    </>
-                ) : null}
+                <div className="row">
+                    <InputSelect
+                        label={'Organisatie/Coach'}
+                        size={'col-sm-6'}
+                        name="organisationOrCoachId"
+                        value={organisationOrCoachId}
+                        options={organisationsOrCoaches}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.organisation}
+                    />
+                    <InputText
+                        label={'Verzoek voor bewoner'}
+                        name={'fullName'}
+                        value={fullName}
+                        onChange={() => {}}
+                        readOnly={true}
+                    />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Projectleider'}
+                        size={'col-sm-6'}
+                        name="projectManagerId"
+                        value={projectManagerId}
+                        options={projectManagers}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.projectManagerId}
+                    />
+                    <InputText
+                        label={'Adres'}
+                        name={'address'}
+                        value={fullAddress}
+                        onChange={() => {}}
+                        readOnly={true}
+                    />
+                </div>
+                <div className="row">
+                    <InputSelect
+                        label={'Externe partij'}
+                        size={'col-sm-6'}
+                        name="externalPartyId"
+                        value={externalPartyId}
+                        options={externalParties}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.externalPartyId}
+                    />
+                </div>
 
                 <div className="row">
                     <InputText
@@ -488,29 +402,26 @@ class QuotationRequestNewFormGeneral extends Component {
                         />
                     ) : null}
                 </div>
-                {this.props.opportunityAction.codeRef === 'quotation-request' ||
-                this.props.opportunityAction.codeRef === 'visit' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum opname"
+                <div className="row">
+                    <InputDate
+                        label="Datum opname"
+                        size={'col-sm-6'}
+                        name="dateRecorded"
+                        value={dateRecorded}
+                        onChangeAction={this.handleInputChangeDate}
+                    />
+                    {dateRecorded ? (
+                        <InputTime
+                            label={'Tijd opname'}
                             size={'col-sm-6'}
-                            name="dateRecorded"
-                            value={dateRecorded}
+                            name="timeRecorded"
+                            value={timeRecorded}
+                            start={'06:00'}
+                            end={'23:00'}
                             onChangeAction={this.handleInputChangeDate}
                         />
-                        {dateRecorded ? (
-                            <InputTime
-                                label={'Tijd opname'}
-                                size={'col-sm-6'}
-                                name="timeRecorded"
-                                value={timeRecorded}
-                                start={'06:00'}
-                                end={'23:00'}
-                                onChangeAction={this.handleInputChangeDate}
-                            />
-                        ) : null}
-                    </div>
-                ) : null}
+                    ) : null}
+                </div>
 
                 {this.props.opportunityAction.codeRef === 'quotation-request' ||
                 this.props.opportunityAction.codeRef === 'subsidy-request' ? (
@@ -536,7 +447,8 @@ class QuotationRequestNewFormGeneral extends Component {
                     </div>
                 ) : null}
 
-                {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
                     <div className="row">
                         <InputDate
                             label="Datum akkoord bewoner"
@@ -547,29 +459,29 @@ class QuotationRequestNewFormGeneral extends Component {
                         />
                     </div>
                 ) : null}
-                {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum akkoord projectleider"
-                            size={'col-sm-6'}
-                            name="dateApprovedProjectManager"
-                            value={dateApprovedProjectManager}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
-                    </div>
-                ) : null}
-                {this.props.opportunityAction.codeRef === 'quotation-request' ||
-                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum akkoord extern"
-                            size={'col-sm-6'}
-                            name="dateApprovedExternal"
-                            value={dateApprovedExternal}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
-                    </div>
-                ) : null}
+                {/*{this.props.opportunityAction.codeRef === 'subsidy-request' ? (*/}
+                {/*    <div className="row">*/}
+                {/*        <InputDate*/}
+                {/*            label="Datum akkoord projectleider"*/}
+                {/*            size={'col-sm-6'}*/}
+                {/*            name="dateApprovedProjectManager"*/}
+                {/*            value={dateApprovedProjectManager}*/}
+                {/*            // onChangeAction={this.handleInputChangeDate}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*) : null}*/}
+                {/*{this.props.opportunityAction.codeRef === 'quotation-request' ||*/}
+                {/*this.props.opportunityAction.codeRef === 'subsidy-request' ? (*/}
+                {/*    <div className="row">*/}
+                {/*        <InputDate*/}
+                {/*            label="Datum akkoord extern"*/}
+                {/*            size={'col-sm-6'}*/}
+                {/*            name="dateApprovedExternal"*/}
+                {/*            value={dateApprovedExternal}*/}
+                {/*            onChangeAction={this.handleInputChangeDate}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*) : null}*/}
 
                 <div className="row">
                     <InputTextArea

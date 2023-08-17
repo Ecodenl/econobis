@@ -11,6 +11,8 @@ import SubsidyRequestExternalParty from './action-subsidy-request/SubsidyRequest
 import SubsidyRequestProjectManager from './action-subsidy-request/SubsidyRequestProjectManager';
 import QuotationRequestExternalParty from './action-quotation-request/QuotationRequestExternalParty';
 import QuotationRequestCoach from './action-quotation-request/QuotationRequestCoach';
+import SubsidyRequestCoach from './action-subsidy-request/SubsidyRequestCoach';
+import QuotationRequestProjectManager from './action-quotation-request/QuotationRequestProjectManager';
 
 function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
@@ -102,14 +104,24 @@ function InspectDetails({ match, history, user }) {
                                             getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
-                                        <p>Voor projectleider verwachten we geen offerteverzoek</p>
+                                        <QuotationRequestProjectManager
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                            getStatusOptions={getStatusOptions}
+                                        />
                                     ) : null}
                                 </>
                             ) : initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
                                 <>
                                     {user.inspectionPersonTypeId === 'coach' ||
                                     (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
-                                        <p>Voor coach of organisatie verwachten we geen budgetaanvraag</p>
+                                        <SubsidyRequestCoach
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                            getStatusOptions={getStatusOptions}
+                                        />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <SubsidyRequestExternalParty
                                             history={history}

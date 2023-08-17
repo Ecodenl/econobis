@@ -166,6 +166,7 @@ class QuotationRequestController extends ApiController
             'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
             'quotationText' => 'string',
             'quotationAmount' => 'string',
+            'costAdjustment' => 'string',
             'durationMinutes' => 'integer',
             'usesPlanning' => 'boolean',
             'districtId' => 'nullable',
@@ -255,6 +256,10 @@ class QuotationRequestController extends ApiController
             $quotationRequest->quotation_amount = $data['quotationAmount'];
         }
 
+        if (isset($data['costAdjustment'])) {
+            $quotationRequest->cost_adjustment = $data['costAdjustment'];
+        }
+
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
         $quotationRequest->uses_planning = $request->input('usesPlanning', false);
         $quotationRequest->district_id = $request->input('districtId', null);
@@ -291,6 +296,9 @@ class QuotationRequestController extends ApiController
             'timeRecorded' => 'string',
             'dateReleased' => 'string',
             'timeReleased' => 'string',
+            'datePlannedAttempt1' => 'string',
+            'datePlannedAttempt2' => 'string',
+            'datePlannedAttempt3' => 'string',
             'datePlanned' => 'string',
             'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
@@ -298,10 +306,15 @@ class QuotationRequestController extends ApiController
             'dateApprovedExternal' => 'string',
             'dateUnderReview' => 'string',
             'dateExecuted' => 'string',
+            'dateUnderReviewDetermination' => 'string',
+            'dateApprovedDetermination' => 'string',
             'statusId' => 'required|exists:quotation_request_status,id',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'quotationText' => 'string',
             'quotationAmount' => 'string',
+            'costAdjustment' => 'string',
+            'awardAmount' => 'string',
+            'amountDetermination' => 'string',
         ]);
 
         //required
@@ -348,6 +361,16 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = null;
         }
 
+        if ($data['datePlannedAttempt1']) {
+            $quotationRequest->date_planned_attempt1 = $data['datePlannedAttempt1'];
+        }
+        if ($data['datePlannedAttempt2']) {
+            $quotationRequest->date_planned_attempt2 = $data['datePlannedAttempt2'];
+        }
+        if ($data['datePlannedAttempt3']) {
+            $quotationRequest->date_planned_attempt3 = $data['datePlannedAttempt3'];
+        }
+
         if ($data['datePlanned']) {
             if ($data['timePlanned']) {
                 $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
@@ -382,12 +405,29 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_executed = $data['dateExecuted'];
         }
 
+        if ($data['dateUnderReviewDetermination']) {
+            $quotationRequest->date_under_review_determination = $data['dateUnderReviewDetermination'];
+        }
+        if ($data['dateApprovedDetermination']) {
+            $quotationRequest->date_approved_determination = $data['dateApprovedDetermination'];
+        }
+
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
         }
 
         if (isset($data['quotationAmount'])) {
             $quotationRequest->quotation_amount = $data['quotationAmount'];
+        }
+
+        if (isset($data['costAdjustment'])) {
+            $quotationRequest->cost_adjustment = $data['costAdjustment'];
+        }
+        if (isset($data['awardAmount'])) {
+            $quotationRequest->award_amount = $data['awardAmount'];
+        }
+        if (isset($data['amountDetermination'])) {
+            $quotationRequest->amount_determination = $data['amountDetermination'];
         }
         $quotationRequest->save();
 

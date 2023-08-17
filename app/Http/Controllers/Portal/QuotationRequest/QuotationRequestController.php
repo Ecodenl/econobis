@@ -80,6 +80,9 @@ class QuotationRequestController
         }
 
         $request->validate([
+            'datePlannedAttempt1' => ['nullable', 'date'],
+            'datePlannedAttempt2' => ['nullable', 'date'],
+            'datePlannedAttempt3' => ['nullable', 'date'],
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
@@ -91,10 +94,16 @@ class QuotationRequestController
             'statusId' => ['integer'],
             'dateUnderReview' => ['nullable', 'date'],
             'dateExecuted' => ['nullable', 'date'],
+            'dateUnderReviewDetermination' => ['nullable', 'date'],
+            'dateApprovedDetermination' => ['nullable', 'date'],
             'quotationText' => ['nullable', 'string'],
             'quotationAmount' => ['nullable', 'string'],
+            'awardAmount' => ['nullable', 'string'],
         ]);
 
+        $quotationRequest->date_planned_attempt1 = $request->input('datePlannedAttempt1') ?: null;
+        $quotationRequest->date_planned_attempt2 = $request->input('datePlannedAttempt2') ?: null;
+        $quotationRequest->date_planned_attempt3 = $request->input('datePlannedAttempt3') ?: null;
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
@@ -107,7 +116,10 @@ class QuotationRequestController
         $quotationRequest->status_id = $request->input('statusId');
         $quotationRequest->date_under_review = $request->input('dateUnderReview') ?: null;
         $quotationRequest->date_executed = $request->input('dateExecuted') ?: null;
+        $quotationRequest->date_under_review_determination = $request->input('dateUnderReviewDetermination') ?: null;
+        $quotationRequest->date_approved_determination = $request->input('dateApprovedDetermination') ?: null;
         $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
+        $quotationRequest->award_amount = $request->input('awardAmount') ?: 0;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);
@@ -295,6 +307,9 @@ class QuotationRequestController
 //            'statusName' => $quotationRequest->status->name,
             'statusOrder' => $quotationRequest->status->opportunity_action_name . '-' . $quotationRequest->status->order,
             'createdAt' => Carbon::parse($quotationRequest->created_at)->format('Y-m-d H:i:s'),
+            'datePlannedAttempt1' => $quotationRequest->date_planned_attempt1 ? $quotationRequest->date_planned_attempt1 : '',
+            'datePlannedAttempt2' => $quotationRequest->date_planned_attempt2 ? $quotationRequest->date_planned_attempt2 : '',
+            'datePlannedAttempt3' => $quotationRequest->date_planned_attempt3 ? $quotationRequest->date_planned_attempt3 : '',
             'datePlanned' => $quotationRequest->date_planned ? $quotationRequest->date_planned : '',
             'dateRecorded' => $quotationRequest->date_recorded ? $quotationRequest->date_recorded : '',
             'dateReleased' => $quotationRequest->date_released ? $quotationRequest->date_released : '',
@@ -303,6 +318,8 @@ class QuotationRequestController
             'dateApprovedClient' => $quotationRequest->date_approved_client ? $quotationRequest->date_approved_client : '',
             'dateUnderReview' => $quotationRequest->date_under_review ? $quotationRequest->date_under_review : '',
             'dateExecuted' => $quotationRequest->date_executed ? $quotationRequest->date_executed : '',
+            'dateUnderReviewDetermination' => $quotationRequest->date_under_review_determination ? $quotationRequest->date_under_review_determination : '',
+            'dateApprovedDetermination' => $quotationRequest->date_approved_determination ? $quotationRequest->date_approved_determination : '',
             'quotationText' => $quotationRequest->quotation_text,
             'coachOrOrganisationNote' => $quotationRequest->coach_or_organisation_note,
             'externalpartyNote' => $quotationRequest->externalparty_note,
@@ -312,6 +329,9 @@ class QuotationRequestController
                 'codeRef' => $quotationRequest->status->code_ref,
             ],
             'quotationAmount' => $quotationRequest->quotation_amount,
+            'costAdjustment' => $quotationRequest->cost_adjustment,
+            'awardAmount' => $quotationRequest->award_amount,
+            'amountDetermination' => $quotationRequest->amount_determination,
         ];
     }
 

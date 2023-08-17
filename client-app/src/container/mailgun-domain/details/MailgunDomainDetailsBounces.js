@@ -9,6 +9,8 @@ import axiosInstance from "../../../api/default-setup/AxiosInstance";
 import ButtonText from "../../../components/button/ButtonText";
 import InputText from "../../../components/form/InputText";
 import Modal from "../../../components/modal/Modal";
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 export default function MailgunDomainDetailsBounces({mailgunDomainId}) {
     const [isLoading, setLoading] = useState(true);
@@ -85,7 +87,22 @@ export default function MailgunDomainDetailsBounces({mailgunDomainId}) {
     return (
         <Panel>
             <PanelHeader>
-                <span className="h5 text-bold">Bounces</span>
+                <span className="h5 text-bold">
+                    Bounces &nbsp;
+                    <FaInfoCircle
+                        color={'blue'}
+                        size={'15px'}
+                        data-tip={"De onderstaande lijst bevat e-mail adressen die mailgun niet kon bereiken en zal in de toekomst niet nogmaals aan dit adres e-mail sturen om jouw e-mail reputatie te beschermen.<br>Als je een regel verwijderd d.m.v. het prullenbakje zal er bij de eerstvolgende keer dat dit contact wordt gemailed weer getracht worden naar dit mailadres te mailen.<br>(doe dit alleen bij mailadressen waarvan je weet dat ze weer bereikbaar zijn.)"}
+                        data-for={`tooltip-note`}
+                    />
+                    <ReactTooltip
+                        id={`tooltip-note`}
+                        effect="float"
+                        place="right"
+                        multiline={true}
+                        aria-haspopup="true"
+                    />
+                </span>
                 <a role="button" className="pull-right" onClick={() => setShowNew(true)}>
                     <Icon size={14} icon={plus}/>
                 </a>

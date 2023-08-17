@@ -95,9 +95,10 @@ class CreateRevenueReport implements ShouldQueue
              * Gekoppelde email bijwerken voor weergave in verzonden items.
              */
             $distribution = ProjectRevenueDistribution::find($this->distributionId);
-            if($distribution){
-                $this->email->contacts()->attach($distribution->contact_id);
-                $this->email->to = array_merge($this->email->to, [$distribution->contact_id]);
+            $emailAddress = optional(optional($distribution)->contact)->primaryEmailAddress;
+            if($emailAddress){
+                $this->email->contacts()->attach($emailAddress->contact_id);
+                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
                 $this->email->save();
             }
         }

@@ -73,7 +73,7 @@ export default function MailgunEventListApp() {
         }
 
         if (mailgunEvents.length === 0) {
-            return 'Geen mailgun logs gevonden!';
+            return 'Geen mailgun logs gevonden, kies een domein en type.';
         }
 
         return '';

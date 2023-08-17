@@ -79,7 +79,7 @@ class SendSingleMail
 
     protected function getUpdatedEmail()
     {
-        $email = $this->email->replicate(); // We don't want any side effects on the original email
+        $email = $this->email->fresh(); // We don't want any side effects on the original email object
 
         $email->subject = $this->getNewSubject($email->subject);
         $email->html_body = $this->getNewHtmlBody($email->html_body);

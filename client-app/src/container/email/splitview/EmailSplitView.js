@@ -19,6 +19,7 @@ export default function EmailSplitView({router}) {
     const [emails, setEmails] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
+    const [isRefreshingData, setIsRefreshingData] = useState(false);
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({...defaultFilters});
     const {isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal} = useContext(EmailModalContext);
@@ -140,8 +141,16 @@ export default function EmailSplitView({router}) {
     };
 
     const refreshData = () => {
+        if(isRefreshingData) {
+            return;
+        }
+
+        setIsRefreshingData(true);
+
         MailboxAPI.receiveMailFromMailboxesUser().then(() => {
             refetchCurrentEmails();
+        }).finally(() => {
+            setIsRefreshingData(false);
         });
     };
 
@@ -184,11 +193,11 @@ export default function EmailSplitView({router}) {
                             Nieuwe e-mail
                         </button>
                         <ButtonIcon
-                            iconName={'refresh'}
+                            iconName={isRefreshingData ? 'hourglassHalf' : 'refresh'}
                             onClickAction={refreshData}
                             title={'Alle mappen verzenden/ontvangen'}
                             buttonClassName={'btn-success btn pull-right'}
-
+                            disabled={isRefreshingData}
                         />
                         {
                             hasFilters() && (

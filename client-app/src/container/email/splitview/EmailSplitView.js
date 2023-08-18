@@ -126,6 +126,13 @@ export default function EmailSplitView({router}) {
         }
     };
 
+    const resetFilters = () => {
+        setFilters({
+            ...defaultFilters,
+            fetch: true
+        })
+    };
+
     const createMail = () => {
         EmailGenericAPI.storeNew().then(payload => {
             openEmailSendModal(payload.data.id);
@@ -181,7 +188,20 @@ export default function EmailSplitView({router}) {
                             onClickAction={refreshData}
                             title={'Alle mappen verzenden/ontvangen'}
                             buttonClassName={'btn-success btn pull-right'}
+
                         />
+                        {
+                            hasFilters() && (
+                                <button
+                                    type="button"
+                                    className="btn btn-success pull-right"
+                                    style={{marginRight: '4px'}}
+                                    onClick={resetFilters}
+                                >
+                                    Wis alle filters
+                                </button>
+                            )
+                        }
                     </div>
                 </div>
             )}
@@ -199,10 +219,7 @@ export default function EmailSplitView({router}) {
                             <div className="panel panel-default">
                                 <div className="panel-body panel-small">
                                     Er worden e-mail filters toegepast, klik <Link className="link-underline"
-                                                                                   onClick={() => setFilters({
-                                                                                       ...defaultFilters,
-                                                                                       fetch: true
-                                                                                   })}
+                                                                                   onClick={resetFilters}
                                                                                    style={{cursor: 'pointer'}}>hier</Link> om
                                     deze uit te zetten.
                                 </div>
@@ -221,7 +238,8 @@ export default function EmailSplitView({router}) {
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">
-                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails} folder={router.params.folder} deleted={() => {
+                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails}
+                                           folder={router.params.folder} deleted={() => {
                         localStorage.setItem('lastOpenedEmailId', null);
 
                         setSelectedEmailId(null);

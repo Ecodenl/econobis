@@ -27,6 +27,7 @@ export default function MailgunEventListItem({mailgunLog, hasError}) {
                     <span>{mailgunLog.event}</span>
                 )}
             </td>
+            <td>{mailgunLog.deliveryStatus}</td>
             <td>{mailgunLog.recipient}</td>
             <td>{mailgunLog.subject}</td>
         </tr>

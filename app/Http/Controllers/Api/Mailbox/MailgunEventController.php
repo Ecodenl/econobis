@@ -29,8 +29,6 @@ class MailgunEventController
              */
             $minutes = Carbon::now()->diffInMinutes(Carbon::now()->startOfDay());
 
-            \Log::info($minutes);
-
             try {
                 FetchMailgunEvents::dispatchSync($mailgunDomain, $minutes);
             }catch (\Exception $e){

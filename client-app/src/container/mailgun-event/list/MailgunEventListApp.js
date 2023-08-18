@@ -92,7 +92,7 @@ export default function MailgunEventListApp() {
 
     const getFetchJory = () => {
         return {
-            fld: ['id', 'event', 'recipient', 'subject', 'eventDate'],
+            fld: ['id', 'event', 'recipient', 'subject', 'eventDate', 'deliveryStatus'],
             rlt: {
                 domain: {
                     fld: ['domain'],
@@ -163,8 +163,9 @@ export default function MailgunEventListApp() {
                                 <DataTableHeadTitle title={'Datum'} width={'10%'}/>
                                 <DataTableHeadTitle title={'Domein'} width={'20%'}/>
                                 <DataTableHeadTitle title={'Type'} width={'10%'}/>
-                                <DataTableHeadTitle title={'Aan'} width={'30%'}/>
-                                <DataTableHeadTitle title={'Onderwerp'} width={'30%'}/>
+                                <DataTableHeadTitle title={'Status'} width={'20%'}/>
+                                <DataTableHeadTitle title={'Aan'} width={'20%'}/>
+                                <DataTableHeadTitle title={'Onderwerp'} width={'20%'}/>
                             </tr>
                         </DataTableHead>
                         <DataTableBody>
@@ -202,11 +203,12 @@ export default function MailgunEventListApp() {
                                 </th>
                                 <th/>
                                 <th/>
+                                <th/>
                             </tr>
 
                             {loadingText() ? (
                                 <tr>
-                                    <td colSpan={5}>{loadingText()}</td>
+                                    <td colSpan={6}>{loadingText()}</td>
                                 </tr>
                             ) : (
                                 mailgunEvents.map(mailgunLog => {

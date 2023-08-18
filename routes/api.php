@@ -9,6 +9,7 @@ use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Controllers\Api\Mailbox\MailgunDomainBounceController;
 use App\Http\Controllers\Api\Mailbox\MailgunDomainComplaintController;
+use App\Http\Controllers\Api\Mailbox\MailgunEventController;
 use App\Http\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
@@ -607,6 +608,8 @@ Route::namespace('Api')
         Route::get('webform/{webform}', 'Webform\WebformController@show');
         Route::post('webform/{webform}', 'Webform\WebformController@update');
         Route::post('webform/{webform}/delete', 'Webform\WebformController@delete');
+
+        Route::post('mailgun-event/fetch-from-mailgun', [MailgunEventController::class, 'fetchFromMailgun']);
 
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');

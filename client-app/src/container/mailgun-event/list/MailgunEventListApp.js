@@ -50,6 +50,17 @@ export default function MailgunEventListApp() {
         });
     };
 
+    const fetchFromMailgun = () => {
+        setLoading(true);
+
+        return axiosInstance.post('mailgun-event/fetch-from-mailgun').then(() => {
+            fetch();
+        }).catch(() => {
+            setErrorText('Er is iets misgegaan met ophalen van de mailgun logs bij mailgun.');
+            setLoading(false);
+        });
+    };
+
     const fetchMeta = () => {
         return axiosInstance.get('jory/mailgun-domain', {
             params: {
@@ -131,7 +142,7 @@ export default function MailgunEventListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'refresh'} onClickAction={fetch}/>
+                                <ButtonIcon iconName={'refresh'} onClickAction={fetchFromMailgun}/>
                             </div>
                         </div>
                         <div className="col-md-4">

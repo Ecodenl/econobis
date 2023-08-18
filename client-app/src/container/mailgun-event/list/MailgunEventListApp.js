@@ -9,6 +9,8 @@ import DataTableBody from "../../../components/dataTable/DataTableBody";
 import MailgunEventListItem from "./MailgunEventListItem";
 import axiosInstance from "../../../api/default-setup/AxiosInstance";
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {FaInfoCircle, FaQuestionCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 export default function MailgunEventListApp() {
     const perPage = 100;
@@ -146,7 +148,29 @@ export default function MailgunEventListApp() {
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3 className="text-center table-title">Mailgun logs</h3>
+                            <h3 className="text-center table-title">
+                                Mailgun logs&nbsp;
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={"De mailgun logs worden elke nacht opgehaald,<br>je kan op het ververs icoontje klikken om direct de meest recente logs op te halen"}
+                                    data-for={`tooltip-note`}
+                                />
+                                <ReactTooltip
+                                    id={`tooltip-note`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />&nbsp;
+                                <FaQuestionCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    style={{cursor: 'pointer'}}
+                                    onClick={() => window.open('https://documentation.mailgun.com/en/latest/api-events.html#event-types', '_blank')}
+                                />
+                            </h3>
+
                         </div>
                         <div className="col-md-4">
                             <div className="pull-right">

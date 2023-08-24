@@ -43,12 +43,16 @@ class QuotationRequestNewFormGeneral extends Component {
                 timeRecorded: '',
                 dateReleased: '',
                 timeReleased: '',
+                datePlannedAttempt1: '',
                 datePlanned: '',
                 timePlanned: '',
                 dateApprovedClient: '',
                 dateApprovedProjectManager: '',
                 dateApprovedExternal: '',
                 quotationText: '',
+                quotationAmount: '',
+                costAdjustment: '',
+                awardAmount: '',
             },
             quotationRequestStatuses: [],
             errors: {
@@ -122,12 +126,18 @@ class QuotationRequestNewFormGeneral extends Component {
                     timeRecorded: '',
                     dateReleased: '',
                     timeReleased: '',
+                    datePlannedAttempt1: '',
                     datePlanned: '',
                     timePlanned: '',
                     dateApprovedClient: '',
                     dateApprovedProjectManager: '',
                     dateApprovedExternal: '',
+                    dateUnderReview: '',
+                    dateExecuted: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
+                    quotationAmount: 0,
+                    costAdjustment: 0,
+                    awardAmount: 0,
                 },
                 quotationRequestStatuses: payload.relatedQuotationRequestsStatuses
                     ? payload.relatedQuotationRequestsStatuses
@@ -140,6 +150,7 @@ class QuotationRequestNewFormGeneral extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
         if (
             name === 'statusId' &&
             this.state.opportunityActionCodeRef === 'visit' &&
@@ -220,6 +231,22 @@ class QuotationRequestNewFormGeneral extends Component {
             hasErrors = true;
         }
 
+        if (isNaN(quotationRequest.quotationAmount)) {
+            quotationRequest.quotationAmount = quotationRequest.quotationAmount.replace(/,/g, '.');
+        } else {
+            quotationRequest.quotationAmount = quotationRequest.quotationAmount + '';
+        }
+        if (isNaN(quotationRequest.costAdjustment)) {
+            quotationRequest.costAdjustment = quotationRequest.costAdjustment.replace(/,/g, '.');
+        } else {
+            quotationRequest.costAdjustment = quotationRequest.costAdjustment + '';
+        }
+        if (isNaN(quotationRequest.awardAmount)) {
+            quotationRequest.awardAmount = quotationRequest.awardAmount.replace(/,/g, '.');
+        } else {
+            quotationRequest.awardAmount = quotationRequest.awardAmount + '';
+        }
+
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
@@ -278,12 +305,18 @@ class QuotationRequestNewFormGeneral extends Component {
             timeRecorded,
             dateReleased,
             timeReleased,
+            datePlannedAttempt1,
             datePlanned,
             timePlanned,
             dateApprovedClient,
             dateApprovedProjectManager,
             dateApprovedExternal,
+            dateUnderReview,
+            dateExecuted,
             quotationText,
+            quotationAmount,
+            costAdjustment,
+            awardAmount,
         } = this.state.quotationRequest;
         const {
             fullName,
@@ -379,6 +412,27 @@ class QuotationRequestNewFormGeneral extends Component {
                 </div>
 
                 <div className="row">
+                    <InputTextArea
+                        label={'Omschrijving'}
+                        name={'quotationText'}
+                        value={quotationText}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                {this.props.opportunityAction.codeRef === 'visit' ? (
+                    <div className="row">
+                        <InputDate
+                            label={'Datum afspraakpoging 1'}
+                            size={'col-sm-6'}
+                            name="datePlannedAttempt1"
+                            value={datePlannedAttempt1}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
+
+                <div className="row">
                     <InputDate
                         label="Datum afspraak"
                         size={'col-sm-6'}
@@ -398,10 +452,11 @@ class QuotationRequestNewFormGeneral extends Component {
                             nullableSize={'col-sm-3'}
                             nullable={true}
                             nullableLabel={'Onbekend'}
-                            nullableChecked={''}
+                            nullableChecked={true}
                         />
                     ) : null}
                 </div>
+
                 <div className="row">
                     <InputDate
                         label="Datum opname"
@@ -425,72 +480,116 @@ class QuotationRequestNewFormGeneral extends Component {
 
                 {this.props.opportunityAction.codeRef === 'quotation-request' ||
                 this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum uitgebracht"
-                            size={'col-sm-6'}
-                            name="dateReleased"
-                            value={dateReleased}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
-                        {dateReleased ? (
-                            <InputTime
-                                label={'Tijd uitgebracht'}
+                    <>
+                        <div className="row">
+                            <InputDate
+                                label="Datum uitgebracht"
                                 size={'col-sm-6'}
-                                name="timeReleased"
-                                value={timeReleased}
-                                start={'06:00'}
-                                end={'23:00'}
+                                name="dateReleased"
+                                value={dateReleased}
                                 onChangeAction={this.handleInputChangeDate}
                             />
-                        ) : null}
-                    </div>
+                            {dateReleased ? (
+                                <InputTime
+                                    label={'Tijd uitgebracht'}
+                                    size={'col-sm-6'}
+                                    name="timeReleased"
+                                    value={timeReleased}
+                                    start={'06:00'}
+                                    end={'23:00'}
+                                    onChangeAction={this.handleInputChangeDate}
+                                />
+                            ) : null}
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label="Datum akkoord bewoner"
+                                size={'col-sm-6'}
+                                name="dateApprovedClient"
+                                value={dateApprovedClient}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label="Datum akkoord projectleider"
+                                size={'col-sm-6'}
+                                name="dateApprovedProjectManager"
+                                value={dateApprovedProjectManager}
+                                onChangeAction={this.handleInputChangeDate}
+                                readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label="Datum akkoord extern"
+                                size={'col-sm-6'}
+                                name="dateApprovedExternal"
+                                value={dateApprovedExternal}
+                                onChangeAction={this.handleInputChangeDate}
+                                readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label="Datum in behandeling"
+                                size={'col-sm-6'}
+                                name="dateUnderReview"
+                                value={dateUnderReview}
+                                onChangeAction={this.handleInputChangeDate}
+                                readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label="Datum uitgevoerd"
+                                size={'col-sm-6'}
+                                name="dateExecuted"
+                                value={dateExecuted}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={
+                                    this.props.opportunityAction.codeRef === 'subsidy-request'
+                                        ? 'Budgetaanvraagbedrag'
+                                        : 'Offertebedrag'
+                                }
+                                size={'col-sm-6'}
+                                name="quotationAmount"
+                                value={quotationAmount}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    </>
                 ) : null}
 
-                {this.props.opportunityAction.codeRef === 'quotation-request' ||
-                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum akkoord bewoner"
-                            size={'col-sm-6'}
-                            name="dateApprovedClient"
-                            value={dateApprovedClient}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
-                    </div>
+                {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Kosten aanpassing'}
+                                size={'col-sm-6'}
+                                name="costAdjustment"
+                                value={costAdjustment}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                type={'number'}
+                                label={'Bedrag toekenning'}
+                                size={'col-sm-6'}
+                                name="awardAmount"
+                                value={awardAmount}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                    </>
                 ) : null}
-                {/*{this.props.opportunityAction.codeRef === 'subsidy-request' ? (*/}
-                {/*    <div className="row">*/}
-                {/*        <InputDate*/}
-                {/*            label="Datum akkoord projectleider"*/}
-                {/*            size={'col-sm-6'}*/}
-                {/*            name="dateApprovedProjectManager"*/}
-                {/*            value={dateApprovedProjectManager}*/}
-                {/*            // onChangeAction={this.handleInputChangeDate}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*) : null}*/}
-                {/*{this.props.opportunityAction.codeRef === 'quotation-request' ||*/}
-                {/*this.props.opportunityAction.codeRef === 'subsidy-request' ? (*/}
-                {/*    <div className="row">*/}
-                {/*        <InputDate*/}
-                {/*            label="Datum akkoord extern"*/}
-                {/*            size={'col-sm-6'}*/}
-                {/*            name="dateApprovedExternal"*/}
-                {/*            value={dateApprovedExternal}*/}
-                {/*            onChangeAction={this.handleInputChangeDate}*/}
-                {/*        />*/}
-                {/*    </div>*/}
-                {/*) : null}*/}
-
-                <div className="row">
-                    <InputTextArea
-                        label={'Omschrijving'}
-                        name={'quotationText'}
-                        value={quotationText}
-                        onChangeAction={this.handleInputChange}
-                    />
-                </div>
 
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">

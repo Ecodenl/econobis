@@ -249,6 +249,7 @@ const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorReco
  * Mailclient / Mail in splitview
  * */
 const EmailSplitView = React.lazy(() => import('./container/email/splitview/EmailSplitView'));
+const OpenEmailModal = React.lazy(() => import('./container/email/OpenEmailModalView'));
 
 const Routes = () => {
     return (
@@ -571,6 +572,7 @@ const Routes = () => {
                     <Route path="kans-status/:id" component={OpportunityStatusDetailsApp} />
                     /* Mailclient */
                     <Route path="mailclient/:folder" component={EmailSplitView} />
+                    <Route path="mailclient/email/:id" component={OpenEmailModal} />
                     /* 404 route */
                     <Route path="*" component={NotFoundedPage} />
                 </Route>

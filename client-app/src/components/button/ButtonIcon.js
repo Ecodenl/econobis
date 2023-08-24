@@ -20,6 +20,7 @@ import { eye } from 'react-icons-kit/fa/eye';
 import { euro } from 'react-icons-kit/fa/euro';
 import { bullhorn } from 'react-icons-kit/fa/bullhorn';
 import { remove } from 'react-icons-kit/fa/remove';
+import { hourglassHalf } from 'react-icons-kit/fa/hourglassHalf';
 
 const ButtonIcon = props => {
     const { buttonClassName, iconName, onClickAction, title, disabled } = props;
@@ -52,6 +53,7 @@ const ButtonIcon = props => {
                 iconName === 'euro' ? <Icon size={15} icon={euro} /> :
                 iconName === 'bullhorn' ? <Icon size={15} icon={bullhorn} /> :
                 iconName === 'remove' ? <Icon size={15} icon={remove} /> :
+                iconName === 'hourglassHalf' ? <Icon size={15} icon={hourglassHalf} /> :
                 <span className={`glyphicon ${iconName}`} />
             }
         </button>

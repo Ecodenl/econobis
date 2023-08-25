@@ -182,13 +182,13 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Datum akkoord extern'}
+                            label={'Datum akkoord toekenning'}
                             value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
                         />
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Datum in behandeling'}
+                            label={'Datum toekenning in behandeling'}
                             value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
                         />
                     </div>

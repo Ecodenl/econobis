@@ -10,10 +10,14 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
 
-function QuotationRequestProjectManager({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
-    const [underReview, setUnderReview] = useState(false);
-    const [approved, setApproved] = useState(false);
-    const [notApproved, setNotApproved] = useState(false);
+function QuotationRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
+    const [pmApproved, setPmApproved] = useState(
+        initialQuotationRequest.status?.codeRef === 'pm-approved'
+            ? true
+            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
+            ? false
+            : null
+    );
 
     const validationSchema = Yup.object().shape({});
 
@@ -71,7 +75,7 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                                         }
                                         readOnly={true}
                                     />
-                                    <FormLabel className={'field-label'}>Offerte bedrag</FormLabel>
+                                    <FormLabel className={'field-label'}>Offertebedrag</FormLabel>
                                     <input
                                         type="text"
                                         className={`text-input w-input content`}
@@ -86,21 +90,18 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                                             <InputTextDate
                                                 field={field}
                                                 type="datetime-local"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
                                                 id="created_at"
                                                 placeholder={'Datum gemaakt op'}
                                                 readOnly={true}
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_under_review" className={'field-label'}>
-                                        Datum in behandeling
+                                    <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
+                                        Datum akkoord projectleider
                                     </FormLabel>
                                     <div style={{ display: 'flex' }}>
                                         <div>
-                                            <Field name="dateUnderReview">
+                                            <Field name="dateApprovedProjectManager">
                                                 {({ field }) => (
                                                     <InputTextDate
                                                         field={field}
@@ -108,116 +109,39 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                                                         errors={errors}
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
-                                                        id="date_under_review"
-                                                        placeholder={'Datum in behandeling'}
-                                                        readOnly={
-                                                            underReview || values.status?.codeRef === 'under-review'
-                                                                ? false
-                                                                : true
-                                                        }
+                                                        id="date_approved_project_manager"
+                                                        placeholder={'Datum akkoord projectleider'}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
                                         <div>
                                             <Button
-                                                variant={
-                                                    underReview || values.status?.codeRef === 'under-review'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
+                                                variant={true === pmApproved ? 'dark' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
-                                                    setUnderReview(true);
-                                                    setFieldValue('dateUnderReview', moment().format('YYYY-MM-DD'));
-                                                }}
-                                            >
-                                                {underReview || values.status?.codeRef === 'under-review'
-                                                    ? 'In behandeling'
-                                                    : 'In behandeling nemen'}
-                                            </Button>
-                                        </div>
-                                    </div>
-                                    <FormLabel htmlFor="date_approved_external" className={'field-label'}>
-                                        Datum akkoord extern
-                                    </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateApprovedExternal">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_approved_external"
-                                                        placeholder={'Datum akkoord extern'}
-                                                        readOnly={
-                                                            approved || values.status?.codeRef === 'approved'
-                                                                ? false
-                                                                : true
-                                                        }
-                                                    />
-                                                )}
-                                            </Field>
-                                        </div>
-                                        <div>
-                                            <Button
-                                                variant={
-                                                    approved || values.status?.codeRef === 'approved'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
-                                                size="sm"
-                                                onClick={() => {
-                                                    setApproved(true);
+                                                    setPmApproved(true);
                                                     setFieldValue(
-                                                        'dateApprovedExternal',
+                                                        'dateApprovedProjectManager',
                                                         moment().format('YYYY-MM-DD')
                                                     );
                                                 }}
                                             >
-                                                {approved || values.status?.codeRef === 'approved'
-                                                    ? 'Goedgekeurd'
-                                                    : 'Goedkeuren'}
+                                                {true === pmApproved ? 'Goedgekeurd' : 'Goedkeuren'}
                                             </Button>
-
                                             <Button
-                                                variant={
-                                                    notApproved || values.status?.codeRef === 'not-approved'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
+                                                variant={false === pmApproved ? 'dark' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
-                                                    setNotApproved(true);
-                                                    setFieldValue('dateApprovedExternal', '');
+                                                    setPmApproved(false);
+                                                    setFieldValue('dateApprovedProjectManager', '');
                                                 }}
                                             >
-                                                {notApproved || values.status?.codeRef === 'not-approved'
-                                                    ? 'Afgekeurd'
-                                                    : 'Niet Goedkeuren'}
+                                                {false === pmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
                                             </Button>
                                         </div>
                                     </div>
-                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
-                                        Datum uitgevoerd
-                                    </FormLabel>
-                                    <Field name="dateExecuted">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
-                                                id="date_executed"
-                                                placeholder={'Datum uitgevoerd'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
+
                                     <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
                                     {initialQuotationRequest.coachOrOrganisationNote
                                         ? initialQuotationRequest.coachOrOrganisationNote

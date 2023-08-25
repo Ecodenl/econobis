@@ -18,7 +18,6 @@ function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
     const [initialQuotationRequestDocumenten, setInitialQuotationRequestDocumenten] = useState({});
-    const [statuses, setStatuses] = useState([]);
     const [reload, setReload] = useState(false);
     const [reloadDocumenten, setReloadDocumenten] = useState(false);
 
@@ -26,6 +25,9 @@ function InspectDetails({ match, history, user }) {
         QuotationRequestAPI.update({
             id: match.params.id,
             dateRecorded: values.dateRecorded,
+            datePlannedAttempt1: values.datePlannedAttempt1,
+            datePlannedAttempt2: values.datePlannedAttempt2,
+            datePlannedAttempt3: values.datePlannedAttempt3,
             datePlanned: values.datePlanned,
             dateReleased: values.dateReleased,
             dateApprovedProjectManager: values.dateApprovedProjectManager,
@@ -39,6 +41,12 @@ function InspectDetails({ match, history, user }) {
             statusId: values.status.id,
             dateUnderReview: values.dateUnderReview,
             dateExecuted: values.dateExecuted,
+            awardAmount: values.awardAmount ? values.awardAmount.toString().replace(',', '.') : '',
+            dateUnderReviewDetermination: values.dateUnderReviewDetermination,
+            dateApprovedDetermination: values.dateApprovedDetermination,
+            amountDetermination: values.amountDetermination
+                ? values.amountDetermination.toString().replace(',', '.')
+                : '',
         }).then(response => {
             history.push('/schouwen');
         });
@@ -52,9 +60,6 @@ function InspectDetails({ match, history, user }) {
     useEffect(() => {
         QuotationRequestAPI.fetchById(match.params.id).then(response => {
             setInitialQuotationRequest(response.data);
-            QuotationRequestAPI.fetchQuotationRequestStatus(response.data.opportunityAction.id).then(payload => {
-                setStatuses(payload.data.data);
-            });
             setLoading(false);
             setReload(false);
         });
@@ -67,15 +72,6 @@ function InspectDetails({ match, history, user }) {
             setReloadDocumenten(false);
         });
     }, [reloadDocumenten == true]);
-
-    const getStatusOptions = () => {
-        return statuses.map(status => {
-            return {
-                id: status.id,
-                name: initialQuotationRequest?.opportunityAction.name + ' - ' + status.name,
-            };
-        });
-    };
 
     return (
         <Container className={'content-section'}>
@@ -94,21 +90,18 @@ function InspectDetails({ match, history, user }) {
                                             initialQuotationRequest={initialQuotationRequest}
                                             isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <QuotationRequestExternalParty
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <QuotationRequestProjectManager
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : null}
                                 </>
@@ -119,22 +112,20 @@ function InspectDetails({ match, history, user }) {
                                         <SubsidyRequestCoach
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
+                                            isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <SubsidyRequestExternalParty
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <SubsidyRequestProjectManager
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : null}
                                 </>
@@ -147,31 +138,29 @@ function InspectDetails({ match, history, user }) {
                                             initialQuotationRequest={initialQuotationRequest}
                                             isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <VisitExternalParty
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <VisitProjectManager
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
-                                            getStatusOptions={getStatusOptions}
                                         />
                                     ) : null}
                                 </>
                             ) : null}
 
-                            {initialQuotationRequest.opportunityAction.codeRef === 'visit' ||
+                            {(initialQuotationRequest.opportunityAction.codeRef === 'visit' &&
+                                user.inspectionPersonTypeId !== 'projectmanager' &&
+                                user.inspectionPersonTypeId !== 'externalparty') ||
                             (initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' &&
-                                user.inspectionPersonTypeId !== 'projectmanager') ||
-                            (initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' &&
-                                user.inspectionPersonTypeId !== 'coach') ? (
+                                user.inspectionPersonTypeId !== 'externalparty') ||
+                            initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
                                 <InspectDetailsDocumentTable
                                     quotationRequestId={match.params.id}
                                     documents={initialQuotationRequestDocumenten.documents}

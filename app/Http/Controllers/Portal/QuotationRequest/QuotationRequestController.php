@@ -99,6 +99,7 @@ class QuotationRequestController
             'quotationText' => ['nullable', 'string'],
             'quotationAmount' => ['nullable', 'string'],
             'awardAmount' => ['nullable', 'string'],
+            'amountDetermination' => ['nullable', 'string'],
         ]);
 
         $quotationRequest->date_planned_attempt1 = $request->input('datePlannedAttempt1') ?: null;
@@ -120,6 +121,7 @@ class QuotationRequestController
         $quotationRequest->date_approved_determination = $request->input('dateApprovedDetermination') ?: null;
         $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
         $quotationRequest->award_amount = $request->input('awardAmount') ?: 0;
+        $quotationRequest->amount_determination = $request->input('amountDetermination') ?: 0;
 
         $sendMailPlanned = ($quotationRequest->isDirty('date_planned') && !!$quotationRequest->date_planned);
         $sendMailRecorded = ($quotationRequest->isDirty('date_recorded') && !!$quotationRequest->date_recorded);

@@ -12,10 +12,25 @@ import moment from 'moment/moment';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit, getStatusOptions }) {
-    const [underReview, setUnderReview] = useState(false);
-    const [approved, setApproved] = useState(false);
-    const [notApproved, setNotApproved] = useState(false);
+function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit }) {
+    const [underReview, setUnderReview] = useState(initialQuotationRequest.status?.codeRef === 'under-review');
+    const [approved, setApproved] = useState(
+        initialQuotationRequest.status?.codeRef === 'approved'
+            ? true
+            : initialQuotationRequest.status?.codeRef === 'not-approved'
+            ? false
+            : null
+    );
+    const [underReviewDet, setUnderReviewDet] = useState(
+        initialQuotationRequest.status?.codeRef === 'under-review-det'
+    );
+    const [approvedDet, setApprovedDet] = useState(
+        initialQuotationRequest.status?.codeRef === 'approved-det'
+            ? true
+            : initialQuotationRequest.status?.codeRef === 'not-approved-det'
+            ? false
+            : null
+    );
 
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
@@ -60,8 +75,8 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                         value={initialQuotationRequest.opportunity.intake.contact.primaryEmailAddress}
                                         readOnly={true}
                                     />
-                                    <FormLabel className={'field-label'}>Omschrijving</FormLabel>
-                                    {initialQuotationRequest.quotationText}
+                                    {/*<FormLabel className={'field-label'}>Omschrijving</FormLabel>*/}
+                                    {/*{initialQuotationRequest.quotationText}*/}
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -73,17 +88,13 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                         }
                                         readOnly={true}
                                     />
-                                    <FormLabel className={'field-label'}>Budget bedrag</FormLabel>
-                                    <Field name="quotationAmount">
-                                        {({ field }) => (
-                                            <InputTextCurrency
-                                                field={field}
-                                                errors={errors}
-                                                touched={touched}
-                                                id="quotation_amount"
-                                            />
-                                        )}
-                                    </Field>
+                                    <FormLabel className={'field-label'}>Budgetaanvraagbedrag</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.quotationAmount}
+                                        readOnly={true}
+                                    />
                                     <FormLabel htmlFor="created_at" className={'field-label'}>
                                         Datum gemaakt op
                                     </FormLabel>
@@ -92,17 +103,28 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                             <InputTextDate
                                                 field={field}
                                                 type="datetime-local"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
                                                 id="created_at"
                                                 placeholder={'Datum gemaakt op'}
                                                 readOnly={true}
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                        Datum akkoord bewoner
+                                    </FormLabel>
+                                    <Field name="dateApprovedClient">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                id="date_approved_client"
+                                                placeholder={'Datum akkoord bewoner'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_under_review" className={'field-label'}>
-                                        Datum in behandeling
+                                        Datum toekenning in behandeling
                                     </FormLabel>
                                     <div style={{ display: 'flex' }}>
                                         <div>
@@ -115,37 +137,29 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_under_review"
-                                                        placeholder={'Datum in behandeling'}
-                                                        readOnly={
-                                                            underReview || values.status?.codeRef === 'under-review'
-                                                                ? false
-                                                                : true
-                                                        }
+                                                        placeholder={'Datum toekenning in behandeling'}
+                                                        readOnly={underReview ? false : true}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
                                         <div>
                                             <Button
-                                                variant={
-                                                    underReview || values.status?.codeRef === 'under-review'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
+                                                variant={underReview ? 'dark' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setUnderReview(true);
                                                     setFieldValue('dateUnderReview', moment().format('YYYY-MM-DD'));
                                                 }}
                                             >
-                                                {underReview || values.status?.codeRef === 'under-review'
-                                                    ? 'In behandeling'
-                                                    : 'In behandeling nemen'}
+                                                {underReview
+                                                    ? 'Toekenning in behandeling'
+                                                    : 'Toekenning in behandeling nemen'}
                                             </Button>
                                         </div>
                                     </div>
                                     <FormLabel htmlFor="date_approved_external" className={'field-label'}>
-                                        Datum akkoord extern
+                                        Datum akkoord toekenning
                                     </FormLabel>
                                     <div style={{ display: 'flex' }}>
                                         <div>
@@ -158,23 +172,15 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_external"
-                                                        placeholder={'Datum akkoord extern'}
-                                                        readOnly={
-                                                            approved || values.status?.codeRef === 'approved'
-                                                                ? false
-                                                                : true
-                                                        }
+                                                        placeholder={'Datum akkoord toekenning'}
+                                                        readOnly={approved ? false : true}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
                                         <div>
                                             <Button
-                                                variant={
-                                                    approved || values.status?.codeRef === 'approved'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
+                                                variant={true === approved ? 'dark' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setApproved(true);
@@ -184,26 +190,20 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                                     );
                                                 }}
                                             >
-                                                {approved || values.status?.codeRef === 'approved'
-                                                    ? 'Goedgekeurd'
-                                                    : 'Goedkeuren'}
+                                                {true === approved ? 'Toekenning goedgekeurd' : 'Toekenning goedkeuren'}
                                             </Button>
 
                                             <Button
-                                                variant={
-                                                    notApproved || values.status?.codeRef === 'not-approved'
-                                                        ? 'dark'
-                                                        : 'outline-dark'
-                                                }
+                                                variant={false === approved ? 'dark' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
-                                                    setNotApproved(true);
+                                                    setApproved(false);
                                                     setFieldValue('dateApprovedExternal', '');
                                                 }}
                                             >
-                                                {notApproved || values.status?.codeRef === 'not-approved'
-                                                    ? 'Afgekeurd'
-                                                    : 'Niet Goedkeuren'}
+                                                {false === approved
+                                                    ? 'Toekenning afgekeurd'
+                                                    : 'Toekenning niet goedkeuren'}
                                             </Button>
                                         </div>
                                     </div>
@@ -215,19 +215,138 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                             <InputTextDate
                                                 field={field}
                                                 type="date"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
                                                 id="date_executed"
                                                 placeholder={'Datum uitgevoerd'}
                                                 readOnly={true}
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
-                                    {initialQuotationRequest.coachOrOrganisationNote
-                                        ? initialQuotationRequest.coachOrOrganisationNote
-                                        : 'Geen'}
+
+                                    <FormLabel className={'field-label'}>Kosten aanpassing</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.costAdjustment}
+                                        readOnly={true}
+                                    />
+                                    <FormLabel className={'field-label'}>Bedrag toekenning</FormLabel>
+                                    <Field name="awardAmount">
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="award_amount"
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel htmlFor="date_under_review_determination" className={'field-label'}>
+                                        Datum vaststelling in behandeling
+                                    </FormLabel>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>
+                                            <Field name="dateUnderReviewDetermination">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_under_review_determination"
+                                                        placeholder={'Datum vaststelling in behandeling'}
+                                                        readOnly={underReviewDet ? false : true}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+                                        <div>
+                                            <Button
+                                                variant={underReviewDet ? 'dark' : 'outline-dark'}
+                                                size="sm"
+                                                onClick={() => {
+                                                    setUnderReviewDet(true);
+                                                    setFieldValue(
+                                                        'dateUnderReviewDetermination',
+                                                        moment().format('YYYY-MM-DD')
+                                                    );
+                                                }}
+                                            >
+                                                {underReviewDet
+                                                    ? 'Vaststelling in behandeling'
+                                                    : 'Vaststelling in behandeling nemen'}
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <FormLabel htmlFor="date_approved_determination" className={'field-label'}>
+                                        Datum akkoord vaststelling
+                                    </FormLabel>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>
+                                            <Field name="dateApprovedDetermination">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_approved_determination"
+                                                        placeholder={'Datum akkoord vaststelling'}
+                                                        readOnly={approvedDet ? false : true}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+                                        <div>
+                                            <Button
+                                                variant={true === approvedDet ? 'dark' : 'outline-dark'}
+                                                size="sm"
+                                                onClick={() => {
+                                                    setApprovedDet(true);
+                                                    setFieldValue(
+                                                        'dateApprovedDetermination',
+                                                        moment().format('YYYY-MM-DD')
+                                                    );
+                                                }}
+                                            >
+                                                {true === approvedDet
+                                                    ? 'Vaststelling goedgekeurd'
+                                                    : 'Vaststelling goedkeuren'}
+                                            </Button>
+
+                                            <Button
+                                                variant={false === approvedDet ? 'dark' : 'outline-dark'}
+                                                size="sm"
+                                                onClick={() => {
+                                                    setApprovedDet(false);
+                                                    setFieldValue('dateApprovedDetermination', '');
+                                                }}
+                                            >
+                                                {false === approvedDet
+                                                    ? 'Vaststelling afgekeurd'
+                                                    : 'Vaststelling niet goedkeuren'}
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <FormLabel className={'field-label'}>Bedrag vaststelling</FormLabel>
+                                    <Field name="amountDetermination">
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="amount_determination"
+                                            />
+                                        )}
+                                    </Field>
+
+                                    {/*<FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>*/}
+                                    {/*{initialQuotationRequest.coachOrOrganisationNote*/}
+                                    {/*    ? initialQuotationRequest.coachOrOrganisationNote*/}
+                                    {/*    : 'Geen'}*/}
 
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field

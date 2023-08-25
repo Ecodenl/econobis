@@ -3,25 +3,14 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Field, Form, Formik } from 'formik';
 import FormLabel from 'react-bootstrap/FormLabel';
-import * as Yup from 'yup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
-import Select from '../../../../components/form/Select';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function QuotationRequestCoach({
-    history,
-    initialQuotationRequest,
-    isOrganisationContact,
-    handleSubmit,
-    getStatusOptions,
-}) {
-    // const [underReview, setUnderReview] = useState(false);
-    const [approved, setApproved] = useState(false);
-
+function QuotationRequestCoach({ history, initialQuotationRequest, isOrganisationContact, handleSubmit }) {
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (
@@ -68,21 +57,17 @@ function QuotationRequestCoach({
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
                                     <FormLabel className={'field-label'}>Status</FormLabel>
-                                    <Field name="status.id">
-                                        {({ field }) => (
-                                            <Select
-                                                name="status.id"
-                                                field={field}
-                                                errors={errors}
-                                                touched={touched}
-                                                id="status_id"
-                                                placeholder={'Status'}
-                                                options={getStatusOptions()}
-                                                emptyOption={false}
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel className={'field-label'}>Offerte bedrag</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={
+                                            initialQuotationRequest.opportunityAction.name +
+                                            ' - ' +
+                                            initialQuotationRequest.status.name
+                                        }
+                                        readOnly={true}
+                                    />
+                                    <FormLabel className={'field-label'}>Offertebedrag</FormLabel>
                                     <Field name="quotationAmount">
                                         {({ field }) => (
                                             <InputTextCurrency
@@ -101,9 +86,6 @@ function QuotationRequestCoach({
                                             <InputTextDate
                                                 field={field}
                                                 type="datetime-local"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
                                                 id="created_at"
                                                 placeholder={'Datum gemaakt op'}
                                                 readOnly={true}
@@ -160,37 +142,14 @@ function QuotationRequestCoach({
                                                 onChangeAction={setFieldValue}
                                                 id="date_released"
                                                 placeholder={'Datum uitgebracht'}
-                                                readOnly={false}
                                                 step="900"
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_under_review" className={'field-label'}>
-                                        Datum in behandeling
+                                    <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                        Datum akkoord bewoner
                                     </FormLabel>
-                                    <Field name="dateUnderReview">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
-                                                id="date_under_review"
-                                                placeholder={'Datum in behandeling'}
-                                                // readOnly={
-                                                //     underReview || values.status?.codeRef === 'under-review'
-                                                //         ? false
-                                                //         : true
-                                                // }
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_approved_external" className={'field-label'}>
-                                        Datum akkoord extern
-                                    </FormLabel>
-                                    <Field name="dateApprovedExternal">
+                                    <Field name="dateApprovedClient">
                                         {({ field }) => (
                                             <InputTextDate
                                                 field={field}
@@ -198,11 +157,9 @@ function QuotationRequestCoach({
                                                 errors={errors}
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
-                                                id="date_approved_external"
-                                                placeholder={'Datum akkoord extern'}
-                                                readOnly={
-                                                    approved || values.status?.codeRef === 'approved' ? false : true
-                                                }
+                                                id="date_approved_client"
+                                                placeholder={'Datum akkoord bewoner'}
+                                                step="900"
                                             />
                                         )}
                                     </Field>
@@ -219,14 +176,9 @@ function QuotationRequestCoach({
                                                 onChangeAction={setFieldValue}
                                                 id="date_executed"
                                                 placeholder={'Datum uitgevoerd'}
-                                                readOnly={false}
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
-                                    {initialQuotationRequest.externalpartyNote
-                                        ? initialQuotationRequest.externalpartyNote
-                                        : 'Geen'}
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
                                         name="coachOrOrganisationNote"

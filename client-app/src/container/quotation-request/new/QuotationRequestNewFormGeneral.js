@@ -135,9 +135,9 @@ class QuotationRequestNewFormGeneral extends Component {
                     dateUnderReview: '',
                     dateExecuted: '',
                     quotationText: payload.quotationText ? payload.quotationText : '',
-                    quotationAmount: 0,
-                    costAdjustment: 0,
-                    awardAmount: 0,
+                    quotationAmount: '',
+                    costAdjustment: '',
+                    awardAmount: '',
                 },
                 quotationRequestStatuses: payload.relatedQuotationRequestsStatuses
                     ? payload.relatedQuotationRequestsStatuses
@@ -522,7 +522,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Datum akkoord extern"
+                                label="Datum akkoord toekenning"
                                 size={'col-sm-6'}
                                 name="dateApprovedExternal"
                                 value={dateApprovedExternal}
@@ -532,7 +532,7 @@ class QuotationRequestNewFormGeneral extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Datum in behandeling"
+                                label="Datum toekenning in behandeling"
                                 size={'col-sm-6'}
                                 name="dateUnderReview"
                                 value={dateUnderReview}

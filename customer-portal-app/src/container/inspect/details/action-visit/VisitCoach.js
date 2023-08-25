@@ -8,10 +8,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
-import Select from '../../../../components/form/Select';
 
-function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, handleSubmit, getStatusOptions }) {
-    const [approved, setApproved] = useState(false);
+function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, handleSubmit }) {
+    // const [approved, setApproved] = useState(false);
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -58,20 +57,16 @@ function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, h
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
                                     <FormLabel className={'field-label'}>Status</FormLabel>
-                                    <Field name="status.id">
-                                        {({ field }) => (
-                                            <Select
-                                                name="status.id"
-                                                field={field}
-                                                errors={errors}
-                                                touched={touched}
-                                                id="status_id"
-                                                placeholder={'Status'}
-                                                options={getStatusOptions()}
-                                                emptyOption={false}
-                                            />
-                                        )}
-                                    </Field>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={
+                                            initialQuotationRequest.opportunityAction.name +
+                                            ' - ' +
+                                            initialQuotationRequest.status.name
+                                        }
+                                        readOnly={true}
+                                    />
                                     <FormLabel htmlFor="created_at" className={'field-label'}>
                                         Datum gemaakt op
                                     </FormLabel>
@@ -80,15 +75,70 @@ function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, h
                                             <InputTextDate
                                                 field={field}
                                                 type="datetime-local"
-                                                // errors={errors}
-                                                // touched={touched}
-                                                // onChangeAction={setFieldValue}
                                                 id="created_at"
                                                 placeholder={'Datum gemaakt op'}
                                                 readOnly={true}
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel htmlFor="date_planned_attempt1" className={'field-label'}>
+                                        Datum afspraakpoging 1
+                                    </FormLabel>
+                                    <Field name="datePlannedAttempt1">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id="date_planned_attempt1"
+                                                placeholder={'Datum afspraakpoging 1'}
+                                                readOnly={values.datePlannedAttempt2 ? true : false}
+                                            />
+                                        )}
+                                    </Field>
+                                    {values.datePlannedAttempt1 ? (
+                                        <>
+                                            <FormLabel htmlFor="date_planned_attempt2" className={'field-label'}>
+                                                Datum afspraakpoging 2
+                                            </FormLabel>
+                                            <Field name="datePlannedAttempt2">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_planned_attempt2"
+                                                        placeholder={'Datum afspraakpoging 2'}
+                                                        readOnly={values.datePlannedAttempt3 ? true : false}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </>
+                                    ) : null}
+                                    {values.datePlannedAttempt2 ? (
+                                        <>
+                                            <FormLabel htmlFor="date_planned_attempt3" className={'field-label'}>
+                                                Datum afspraakpoging 3
+                                            </FormLabel>
+                                            <Field name="datePlannedAttempt3">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_planned_attempt3"
+                                                        placeholder={'Datum afspraakpoging 3'}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </>
+                                    ) : null}
                                     <FormLabel htmlFor="date_planned" className={'field-label'}>
                                         Datum afspraak
                                     </FormLabel>
@@ -125,6 +175,12 @@ function VisitCoach({ history, initialQuotationRequest, isOrganisationContact, h
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
+                                    <Field
+                                        name="coachOrOrganisationNote"
+                                        component="textarea"
+                                        className="form-control input-sm mb-2"
+                                    />
                                 </Col>
                             </Row>
                             <br />

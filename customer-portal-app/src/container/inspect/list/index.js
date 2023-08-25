@@ -265,7 +265,7 @@ function Inspectlist(props) {
                                         />
                                     </th>
                                     <th>
-                                        Datum akkoord extern
+                                        Datum akkoord toekenning
                                         <br />
                                         <FiArrowUp
                                             onClick={() => setSortOn({ col: 'dateApprovedExternal', desc: false })}
@@ -400,14 +400,14 @@ function Inspectlist(props) {
                                             className={`text-input w-input content`}
                                             value={dateApprovedExternalFromFilter}
                                             onChange={e => setDateApprovedExternalFromFilter(e.target.value)}
-                                            title={'Filter op datum akkoord extern vanaf'}
+                                            title={'Filter op datum akkoord toekenning vanaf'}
                                         />
                                         <input
                                             type={'date'}
                                             className={`text-input w-input content`}
                                             value={dateApprovedExternalToFilter}
                                             onChange={e => setDateApprovedExternalToFilter(e.target.value)}
-                                            title={'Filter op datum akkoord extern t/m'}
+                                            title={'Filter op datum akkoord toekenning t/m'}
                                         />
                                     </th>
                                 </tr>

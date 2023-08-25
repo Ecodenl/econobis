@@ -528,7 +528,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Datum akkoord extern"
+                                label="Datum akkoord toekenning"
                                 size={'col-sm-6'}
                                 name="dateApprovedExternal"
                                 value={dateApprovedExternal}
@@ -538,7 +538,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputDate
-                                label="Datum in behandeling"
+                                label="Datum toekenning in behandeling"
                                 size={'col-sm-6'}
                                 name="dateUnderReview"
                                 value={dateUnderReview}

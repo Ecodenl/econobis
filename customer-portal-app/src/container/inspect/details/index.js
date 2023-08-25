@@ -88,7 +88,6 @@ function InspectDetails({ match, history, user }) {
                                         <QuotationRequestCoach
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
-                                            isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
@@ -112,7 +111,6 @@ function InspectDetails({ match, history, user }) {
                                         <SubsidyRequestCoach
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
-                                            isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
@@ -136,7 +134,6 @@ function InspectDetails({ match, history, user }) {
                                         <VisitCoach
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
-                                            isOrganisationContact={user.isOrganisationContact}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (

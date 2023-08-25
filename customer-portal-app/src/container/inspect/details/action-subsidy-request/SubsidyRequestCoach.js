@@ -10,7 +10,7 @@ import InputTextDate from '../../../../components/form/InputTextDate';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function SubsidyRequestCoach({ history, initialQuotationRequest, isOrganisationContact, handleSubmit }) {
+function SubsidyRequestCoach({ history, initialQuotationRequest, handleSubmit }) {
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (

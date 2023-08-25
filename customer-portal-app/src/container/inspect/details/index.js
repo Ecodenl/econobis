@@ -36,7 +36,6 @@ function InspectDetails({ match, history, user }) {
             opportunityActionId: values.opportunityAction.id,
             coachOrOrganisationNote: values.coachOrOrganisationNote,
             externalpartyNote: values.externalpartyNote,
-            // quotationText: values.quotationText,
             quotationAmount: values.quotationAmount ? values.quotationAmount.toString().replace(',', '.') : '',
             statusId: values.status.id,
             dateUnderReview: values.dateUnderReview,

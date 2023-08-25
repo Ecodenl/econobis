@@ -10,7 +10,6 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
 function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
-    // const [approved, setApproved] = useState(false);
     const validationSchema = Yup.object().shape({});
 
     return (

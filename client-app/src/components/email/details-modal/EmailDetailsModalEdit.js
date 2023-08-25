@@ -86,7 +86,7 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                     optionName={'fullName'}
                     onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
                     clearable={true}
-                    textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
+                    textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
                 />
             )}
             intakeComponent={(
@@ -172,7 +172,7 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                     name={'note'}
                     value={email.note ? email.note : ''}
                     onChangeAction={(e) => updateEmailAttributes({note: e.target.value})}
-                    textToolTip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                    textToolTip={"Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien."}
                     sizeInput={'col-sm-8'}
                 />
             )}

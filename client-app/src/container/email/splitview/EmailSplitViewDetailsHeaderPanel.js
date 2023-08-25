@@ -4,7 +4,7 @@ import {mailReply} from 'react-icons-kit/fa/mailReply';
 import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
-import {windowRestore} from 'react-icons-kit/fa/windowRestore';
+import {externalLink} from 'react-icons-kit/fa/externalLink';
 import {pencil} from 'react-icons-kit/fa/pencil';
 import {Link} from "react-router";
 import {useSelector} from 'react-redux'
@@ -109,7 +109,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 className={'btn btn-success btn-sm'}
                                 onClick={() => openEmailDetailsModal(email.id)}
                             >
-                                <Icon icon={windowRestore} size={13}/>
+                                <Icon icon={externalLink} size={13}/>
                             </button>
                         </div>
                     </div>

@@ -282,7 +282,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                             optionName={'fullName'}
                             onChangeAction={(value) => updateEmail({manualContacts: value ? value : []})}
                             allowCreate={false}
-                            textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
+                            textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
                         />
                     </div>
                     <div className="row">

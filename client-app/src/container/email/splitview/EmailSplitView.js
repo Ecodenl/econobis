@@ -234,7 +234,7 @@ export default function EmailSplitView({router}) {
                         hasFilters() && (
                             <div className="panel panel-default">
                                 <div className="panel-body panel-small">
-                                    Er worden e-mail filters toegepast, klik <Link className="link-underline"
+                                    Let op: filters actief, klik <Link className="link-underline"
                                                                                    onClick={resetFilters}
                                                                                    style={{cursor: 'pointer'}}>hier</Link> om
                                     deze uit te zetten.

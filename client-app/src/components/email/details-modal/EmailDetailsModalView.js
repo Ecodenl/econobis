@@ -124,7 +124,7 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
                         <FaInfoCircle
                             color={'blue'}
                             size={'15px'}
-                            data-tip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                            data-tip={"Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien."}
                             data-for={`tooltip-note`}
                         />
                         <ReactTooltip

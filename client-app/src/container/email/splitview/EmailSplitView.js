@@ -24,6 +24,7 @@ export default function EmailSplitView({router}) {
     const [filters, setFilters] = useState({...defaultFilters});
     const {isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal} = useContext(EmailModalContext);
     const hasMailboxes = useSelector((state) => state.meDetails.mailboxes.length > 0);
+    const [multiselectEnabled, setMultiselectEnabled] = useState(false);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -39,6 +40,7 @@ export default function EmailSplitView({router}) {
 
     useEffect(() => {
         setFilters({...getFiltersFromStorage(), fetch: true});
+        setSelectedEmailId(null);
     }, [router.params.folder]);
 
     useEffect(() => {
@@ -118,6 +120,10 @@ export default function EmailSplitView({router}) {
     };
 
     const getSorts = () => {
+        if(router.params.folder === 'concept') {
+            return ['-createdAt'];
+        }
+
         return ['-dateSent'];
     };
 
@@ -173,7 +179,23 @@ export default function EmailSplitView({router}) {
                 </div>
             ) : (
                 <div className="row">
-                    <div className="col-md-6" style={{paddingLeft: '20px'}}>
+                    <div className="col-md-4" style={{paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px'}}>
+                        <div className="btn-group" role="group">
+                            <ButtonIcon
+                                iconName={'refresh'}
+                                onClickAction={refreshData}
+                                title={'Alle mappen verzenden/ontvangen'}
+                            />
+                            <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
+                            <ButtonIcon
+                                iconName={'check'}
+                                onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
+                                title="Contactselectie maken"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="col-md-4">
                         {contact && (
                             <p>
                                 Email voor contact <strong>{contact?.fullName}</strong>
@@ -183,22 +205,7 @@ export default function EmailSplitView({router}) {
                             </p>
                         )}
                     </div>
-                    <div className="col-md-6" style={{marginTop: '-10px', marginBottom: '5px'}}>
-                        <button
-                            type="button"
-                            className="btn btn-success pull-right"
-                            style={{marginLeft: '4px'}}
-                            onClick={createMail}
-                        >
-                            Nieuwe e-mail
-                        </button>
-                        <ButtonIcon
-                            iconName={isRefreshingData ? 'hourglassHalf' : 'refresh'}
-                            onClickAction={refreshData}
-                            title={'Alle mappen verzenden/ontvangen'}
-                            buttonClassName={'btn-success btn pull-right'}
-                            disabled={isRefreshingData}
-                        />
+                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
                         {
                             hasFilters() && (
                                 <button
@@ -244,6 +251,8 @@ export default function EmailSplitView({router}) {
                         setSelectedEmailId={setSelectedEmailId}
                         updateEmailAttributes={updateEmailAttributes}
                         onUpdated={refetchCurrentEmails}
+                        multiselectEnabled={multiselectEnabled}
+                        setMultiselectEnabled={setMultiselectEnabled}
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">

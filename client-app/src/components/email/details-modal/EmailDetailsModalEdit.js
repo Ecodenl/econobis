@@ -11,8 +11,10 @@ import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import InputTextArea from "../../form/InputTextArea";
+import Icon from "react-icons-kit";
+import {pencil} from 'react-icons-kit/fa/pencil';
 
-export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved}) {
+export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved, setShowEdit}) {
     const [intakes, setIntakes] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [quotationRequests, setQuotationRequests] = useState([]);
@@ -54,6 +56,16 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
             email={email}
             updateEmailAttributes={updateEmailAttributes}
             onRemoved={onRemoved}
+            editButtonComponent={(
+                <button
+                    type="button"
+                    title="Bewerken annuleren"
+                    className={'btn btn-success btn-sm'}
+                    onClick={() => setShowEdit(false)}
+                >
+                    <Icon icon={pencil} size={13}/>
+                </button>
+            )}
             contactsComponent={(
                 <AsyncSelectSet
                     label={'Contacten'}

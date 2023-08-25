@@ -3,13 +3,26 @@ import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import ViewText from "../../../components/form/ViewText";
 import {FaInfoCircle} from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import Icon from "react-icons-kit";
+import {pencil} from 'react-icons-kit/fa/pencil';
 
-export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo, setShowEdit}) {
     return (
         <EmailDetailsModalLayout
             email={email}
             onRemoved={onRemoved}
             updateEmailAttributes={updateEmailAttributes}
+            createContact={createContact}
+            editButtonComponent={(
+                <button
+                    type="button"
+                    title="Bewerken"
+                    className={'btn btn-success btn-sm'}
+                    onClick={() => setShowEdit(true)}
+                >
+                    <Icon icon={pencil} size={13}/>
+                </button>
+            )}
             contactsComponent={(
                 <div className="col-sm-6">
                     <label className="col-sm-6">Contacten</label>
@@ -25,12 +38,6 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
                                         </span>
                                 )
                             })
-                        }
-                        {
-                            email && email.contacts &&
-                            email.contacts.length === 0 && (
-                                <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
-                            )
                         }
                     </div>
                 </div>

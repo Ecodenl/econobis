@@ -18,7 +18,7 @@ export function getStatusIcon(statusId) {
         case 'urgent':
             return '❗';
         case 'closed':
-            return '✅';
+            return '✔️';
         default:
             return '';
     }

@@ -50,8 +50,8 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small">
-                <div className="row" style={{marginLeft: '-5px'}}>
-                    <div className="col-md-6">
+                <div className="row">
+                    <div className="col-md-6" style={{paddingLeft: '25px'}}>
                         { email.folder !== 'concept' && (
                             <div className="btn-group margin-small margin-10-right" role="group">
                                 <button

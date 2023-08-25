@@ -34,6 +34,8 @@ export default function EmailDetailsModalLayout({
                                                     onRemoved,
                                                     noteComponent,
                                                     manualContactsComponent,
+                                                    editButtonComponent,
+                                                    createContact,
                                                 }) {
     const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
     const {openEmailSendModal} = useContext(EmailModalContext);
@@ -133,7 +135,8 @@ export default function EmailDetailsModalLayout({
                         </div>
                     )}
 
-                    <div className="btn-group margin-small" role="group">
+                    <div className="btn-group margin-small margin-10-right" role="group">
+                        {editButtonComponent}
                         <button
                             type="button"
                             title="Verwijderen"
@@ -152,6 +155,18 @@ export default function EmailDetailsModalLayout({
                             </button>
                         </CopyToClipboard>
                     </div>
+
+                    {createContact && (
+                        <div className="btn-group margin-small" role="group">
+                            {
+                                email && email.contacts &&
+                                email.contacts.length === 0 && (
+                                    <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
+                                )
+                            }
+                        </div>
+                    )}
+
                 </div>
             </div>
 

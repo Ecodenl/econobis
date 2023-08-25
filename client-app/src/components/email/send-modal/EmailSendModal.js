@@ -81,10 +81,19 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     }, [emailTemplateId]);
     const applyEmailTemplate = (templateId) => {
         EmailTemplateAPI.fetchEmailTemplateWithUser(templateId).then(payload => {
-            updateEmail({
-                subject: payload.subject ? payload.subject : email.subject,
-                htmlBody: payload.htmlBody ? payload.htmlBody : email.htmlBody,
-            }).then(() => {
+            let emailData = {
+                subject: email.subject,
+                htmlBody: email.htmlBody,
+            }
+
+            if(email.subject.startsWith('Re: ') || email.subject.startsWith('Fwd: ')) {
+                emailData.htmlBody = payload.htmlBody + '<br />' + email.htmlBody;
+            }else{
+                emailData.subject = payload.subject;
+                emailData.htmlBody = payload.htmlBody;
+            }
+
+            updateEmail(emailData).then(() => {
                 if (payload.defaultAttachmentDocument) {
                     EmailAttachmentAPI.addDocumentsAsAttachments(email.id, [payload.defaultAttachmentDocument.id]).then(() => {
                         fetchEmail();

@@ -520,6 +520,10 @@ class QuotationRequestNewFormGeneral extends Component {
                                 readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
                             />
                         </div>
+                    </>
+                ) : null}
+                {this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
                         <div className="row">
                             <InputDate
                                 label="Datum akkoord toekenning"
@@ -527,7 +531,7 @@ class QuotationRequestNewFormGeneral extends Component {
                                 name="dateApprovedExternal"
                                 value={dateApprovedExternal}
                                 onChangeAction={this.handleInputChangeDate}
-                                readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
+                                readOnly={true}
                             />
                         </div>
                         <div className="row">
@@ -537,9 +541,14 @@ class QuotationRequestNewFormGeneral extends Component {
                                 name="dateUnderReview"
                                 value={dateUnderReview}
                                 onChangeAction={this.handleInputChangeDate}
-                                readOnly={this.props.opportunityAction.codeRef === 'subsidy-request'}
+                                readOnly={true}
                             />
                         </div>
+                    </>
+                ) : null}
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
                         <div className="row">
                             <InputDate
                                 label="Datum uitgevoerd"

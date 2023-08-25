@@ -51,6 +51,7 @@ class AddQuotationRequestStatusAug2023 extends Migration
 
         $budgetaanvraagOpportunityAction = OpportunityAction::where('code_ref', 'subsidy-request')->first();
         $budgetaanvraagGetOrder = QuotationRequestStatus::where('opportunity_action_id', $budgetaanvraagOpportunityAction->id)->where('code_ref', 'not-approved')->first();
+        DB::table('quotation_request_status')->where('opportunity_action_id', $budgetaanvraagOpportunityAction->id)->where('code_ref', 'send')->update(['code_ref' => "under-review-occupant"]);
         DB::table('quotation_request_status')->insert([
                 ['name' => 'Vaststelling in behandeling', 'code_ref' => 'under-review-det', 'opportunity_action_id' => $budgetaanvraagOpportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => $budgetaanvraagGetOrder->order, 'is_pending_status' => 0],
                 ['name' => 'Vaststelling akkoord', 'code_ref' => 'approved-det', 'opportunity_action_id' => $budgetaanvraagOpportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => $budgetaanvraagGetOrder->order, 'is_pending_status' => 0],

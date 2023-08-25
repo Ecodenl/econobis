@@ -526,6 +526,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                                 readOnly={opportunityAction.codeRef === 'subsidy-request'}
                             />
                         </div>
+                    </>
+                ) : null}
+                {opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
                         <div className="row">
                             <InputDate
                                 label="Datum akkoord toekenning"
@@ -546,6 +550,11 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                                 readOnly={opportunityAction.codeRef === 'subsidy-request'}
                             />
                         </div>
+                    </>
+                ) : null}
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <>
                         <div className="row">
                             <InputDate
                                 label="Datum uitgevoerd"

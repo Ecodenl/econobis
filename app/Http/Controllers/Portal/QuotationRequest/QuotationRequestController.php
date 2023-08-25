@@ -8,6 +8,7 @@ use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -128,10 +129,6 @@ class QuotationRequestController
         $sendMailReleased = ($quotationRequest->isDirty('date_released') && !!$quotationRequest->date_released);
 
         $quotationRequest->save();
-
-        $opportunity = $quotationRequest->opportunity;
-        $opportunity->status_id = $request->input('opportunityStatusId');
-        $opportunity->save();
 
         if ($sendMailPlanned) {
             $this->sendInspectionPlannedMail($quotationRequest);

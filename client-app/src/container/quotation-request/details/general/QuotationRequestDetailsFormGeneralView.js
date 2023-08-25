@@ -180,6 +180,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
                         />
                     </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
                     <div className="row">
                         <ViewText
                             label={'Datum akkoord toekenning'}
@@ -192,6 +196,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             value={dateUnderReview ? moment(dateUnderReview).format('L') : ''}
                         />
                     </div>
+                </>
+            ) : null}
+            {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
+                <>
                     <div className="row">
                         <ViewText
                             label={'Datum uitgevoerd'}

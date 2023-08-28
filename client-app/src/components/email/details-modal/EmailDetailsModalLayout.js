@@ -18,12 +18,13 @@ import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
 import CopyToClipboard from "react-copy-to-clipboard";
+import AsyncSelectSet from "../../form/AsyncSelectSet";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 
 export default function EmailDetailsModalLayout({
                                                     email,
                                                     updateEmailAttributes,
-                                                    contactsComponent,
                                                     intakeComponent,
                                                     taskComponent,
                                                     quotationRequestComponent,
@@ -33,7 +34,6 @@ export default function EmailDetailsModalLayout({
                                                     invoiceComponent,
                                                     onRemoved,
                                                     noteComponent,
-                                                    manualContactsComponent,
                                                     editButtonComponent,
                                                     createContact,
                                                 }) {
@@ -88,6 +88,10 @@ export default function EmailDetailsModalLayout({
             }
         }
     }
+
+    const getContactOptions = (searchTerm) => {
+        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
+    };
 
     return (
         <div>
@@ -239,8 +243,25 @@ export default function EmailDetailsModalLayout({
             </div>
 
             <div className="row">
-                {contactsComponent}
-                {manualContactsComponent}
+                <AsyncSelectSet
+                    label={'Contacten'}
+                    name={'contacts'}
+                    value={email.contacts}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
+                    clearable={true}
+                />
+                <AsyncSelectSet
+                    label={'Eenmalig te koppelen contacten'}
+                    name={'manualContacts'}
+                    value={email.manualContacts}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
+                    clearable={true}
+                    textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
+                />
             </div>
 
             <div className="row">

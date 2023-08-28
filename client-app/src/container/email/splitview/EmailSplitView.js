@@ -9,9 +9,9 @@ import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import {hashHistory, Link} from 'react-router';
+import {hashHistory} from 'react-router';
 import Icon from 'react-icons-kit';
-import {trash} from 'react-icons-kit/fa/trash';
+import {undo} from 'react-icons-kit/fa/undo';
 import {useSelector} from "react-redux";
 
 export default function EmailSplitView({router}) {
@@ -134,6 +134,18 @@ export default function EmailSplitView({router}) {
     };
 
     const resetFilters = () => {
+        if(router.location.query.contact){
+            /**
+             * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
+             * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
+             */
+            storeFiltersToStorage(defaultFilters);
+
+            hashHistory.push(router.location.pathname);
+
+            return;
+        }
+
         setFilters({
             ...defaultFilters,
             fetch: true
@@ -194,15 +206,14 @@ export default function EmailSplitView({router}) {
                             />
                         </div>
                     </div>
-
-                    <div className="col-md-4">
+                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
                         {contact && (
-                            <p>
+                            <span style={{marginLeft: '6px'}}>
                                 Email voor contact <strong>{contact?.fullName}</strong>
-                                <a role="button" onClick={() => hashHistory.push(router.location.pathname)}>
-                                    <Icon className="mybtn-danger" size={14} icon={trash}/>
+                                <a role="button" className="btn btn-success btn-sm" onClick={() => hashHistory.push(router.location.pathname)}>
+                                    Filter wissen
                                 </a>
-                            </p>
+                            </span>
                         )}
                     </div>
                     <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
@@ -210,7 +221,7 @@ export default function EmailSplitView({router}) {
                             hasFilters() && (
                                 <button
                                     type="button"
-                                    className="btn btn-success pull-right"
+                                    className="btn btn-success pull-right btn-sm"
                                     style={{marginRight: '4px'}}
                                     onClick={resetFilters}
                                 >
@@ -234,10 +245,10 @@ export default function EmailSplitView({router}) {
                         hasFilters() && (
                             <div className="panel panel-default">
                                 <div className="panel-body panel-small">
-                                    Let op: filters actief, klik <Link className="link-underline"
-                                                                                   onClick={resetFilters}
-                                                                                   style={{cursor: 'pointer'}}>hier</Link> om
-                                    deze uit te zetten.
+                                    Let op: filters actief &nbsp;
+                                    <a role="button" onClick={resetFilters}>
+                                        <Icon size={16} icon={undo}/>
+                                    </a>
                                 </div>
                             </div>
                         )

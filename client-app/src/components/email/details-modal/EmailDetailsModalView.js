@@ -23,44 +23,6 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
                     <Icon icon={pencil} size={13}/>
                 </button>
             )}
-            contactsComponent={(
-                <div className="col-sm-6">
-                    <label className="col-sm-6">Contacten</label>
-                    <div className="col-sm-6">
-                        {
-                            email && email.contacts &&
-                            email.contacts.map(contact => {
-                                return (
-                                    <span key={contact.id}>
-                                        <a className={'link-underline'}
-                                           onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
-                                        <br/>
-                                        </span>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
-            )}
-            manualContactsComponent={(
-                <div className="col-sm-6">
-                    <label className="col-sm-6">Eenmalig te koppelen contacten</label>
-                    <div className="col-sm-6">
-                        {
-                            email && email.manualContacts &&
-                            email.manualContacts.map(contact => {
-                                return (
-                                    <span key={contact.id}>
-                                        <a className={'link-underline'}
-                                           onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
-                                        <br/>
-                                    </span>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
-            )}
             intakeComponent={(
                 <ViewText
                     label={'Intake'}

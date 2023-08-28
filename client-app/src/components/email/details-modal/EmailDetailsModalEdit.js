@@ -47,10 +47,6 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
         });
     }, [email.contacts]);
 
-    const getContactOptions = (searchTerm) => {
-        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
-    };
-
     return (
         <EmailDetailsModalLayout
             email={email}
@@ -65,29 +61,6 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                 >
                     <Icon icon={pencil} size={13}/>
                 </button>
-            )}
-            contactsComponent={(
-                <AsyncSelectSet
-                    label={'Contacten'}
-                    name={'contacts'}
-                    value={email.contacts}
-                    loadOptions={getContactOptions}
-                    optionName={'fullName'}
-                    onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
-                    clearable={true}
-                />
-            )}
-            manualContactsComponent={(
-                <AsyncSelectSet
-                    label={'Eenmalig te koppelen contacten'}
-                    name={'manualContacts'}
-                    value={email.manualContacts}
-                    loadOptions={getContactOptions}
-                    optionName={'fullName'}
-                    onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
-                    clearable={true}
-                    textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
-                />
             )}
             intakeComponent={(
                 <InputReactSelect

@@ -13,15 +13,18 @@ import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
 import {pencil} from 'react-icons-kit/fa/pencil';
+import {copy} from 'react-icons-kit/fa/copy';
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
+import CopyToClipboard from "react-copy-to-clipboard";
+import AsyncSelectSet from "../../form/AsyncSelectSet";
+import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 
 export default function EmailDetailsModalLayout({
                                                     email,
                                                     updateEmailAttributes,
-                                                    contactsComponent,
                                                     intakeComponent,
                                                     taskComponent,
                                                     quotationRequestComponent,
@@ -31,10 +34,12 @@ export default function EmailDetailsModalLayout({
                                                     invoiceComponent,
                                                     onRemoved,
                                                     noteComponent,
-                                                    manualContactsComponent,
+                                                    editButtonComponent,
+                                                    createContact,
                                                 }) {
     const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
     const {openEmailSendModal} = useContext(EmailModalContext);
+    const domain = window.location.origin;
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
@@ -84,6 +89,10 @@ export default function EmailDetailsModalLayout({
         }
     }
 
+    const getContactOptions = (searchTerm) => {
+        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
+    };
+
     return (
         <div>
             <div className="row" style={{marginLeft: '-5px'}}>
@@ -130,7 +139,8 @@ export default function EmailDetailsModalLayout({
                         </div>
                     )}
 
-                    <div className="btn-group margin-small" role="group">
+                    <div className="btn-group margin-small margin-10-right" role="group">
+                        {editButtonComponent}
                         <button
                             type="button"
                             title="Verwijderen"
@@ -139,7 +149,28 @@ export default function EmailDetailsModalLayout({
                         >
                             <Icon icon={trash} size={13}/>
                         </button>
+                        <CopyToClipboard text={domain + '/#/mailclient/email/' + email.id}>
+                            <button
+                                type="button"
+                                title="Haal directe link naar e-mail op"
+                                className={'btn btn-success btn-sm'}
+                            >
+                                <Icon icon={copy} size={13}/>
+                            </button>
+                        </CopyToClipboard>
                     </div>
+
+                    {createContact && (
+                        <div className="btn-group margin-small" role="group">
+                            {
+                                email && email.contacts &&
+                                email.contacts.length === 0 && (
+                                    <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
+                                )
+                            }
+                        </div>
+                    )}
+
                 </div>
             </div>
 
@@ -212,8 +243,25 @@ export default function EmailDetailsModalLayout({
             </div>
 
             <div className="row">
-                {contactsComponent}
-                {manualContactsComponent}
+                <AsyncSelectSet
+                    label={'Contacten'}
+                    name={'contacts'}
+                    value={email.contacts}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
+                    clearable={true}
+                />
+                <AsyncSelectSet
+                    label={'Eenmalig te koppelen contacten'}
+                    name={'manualContacts'}
+                    value={email.manualContacts}
+                    loadOptions={getContactOptions}
+                    optionName={'fullName'}
+                    onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
+                    clearable={true}
+                    textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
+                />
             </div>
 
             <div className="row">

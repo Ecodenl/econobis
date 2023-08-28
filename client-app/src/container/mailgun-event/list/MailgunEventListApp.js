@@ -9,6 +9,8 @@ import DataTableBody from "../../../components/dataTable/DataTableBody";
 import MailgunEventListItem from "./MailgunEventListItem";
 import axiosInstance from "../../../api/default-setup/AxiosInstance";
 import DataTablePagination from "../../../components/dataTable/DataTablePagination";
+import {FaInfoCircle, FaQuestionCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 export default function MailgunEventListApp() {
     const perPage = 100;
@@ -50,6 +52,17 @@ export default function MailgunEventListApp() {
         });
     };
 
+    const fetchFromMailgun = () => {
+        setLoading(true);
+
+        return axiosInstance.post('mailgun-event/fetch-from-mailgun').then(() => {
+            fetch();
+        }).catch(() => {
+            setErrorText('Er is iets misgegaan met ophalen van de mailgun logs bij mailgun.');
+            setLoading(false);
+        });
+    };
+
     const fetchMeta = () => {
         return axiosInstance.get('jory/mailgun-domain', {
             params: {
@@ -73,7 +86,7 @@ export default function MailgunEventListApp() {
         }
 
         if (mailgunEvents.length === 0) {
-            return 'Geen mailgun logs gevonden!';
+            return 'Geen mailgun logs gevonden, kies een domein en type.';
         }
 
         return '';
@@ -81,7 +94,7 @@ export default function MailgunEventListApp() {
 
     const getFetchJory = () => {
         return {
-            fld: ['id', 'event', 'recipient', 'subject', 'eventDate'],
+            fld: ['id', 'event', 'recipient', 'subject', 'eventDate', 'deliveryStatus'],
             rlt: {
                 domain: {
                     fld: ['domain'],
@@ -131,11 +144,33 @@ export default function MailgunEventListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'refresh'} onClickAction={fetch}/>
+                                <ButtonIcon iconName={'refresh'} onClickAction={fetchFromMailgun}/>
                             </div>
                         </div>
                         <div className="col-md-4">
-                            <h3 className="text-center table-title">Mailgun logs</h3>
+                            <h3 className="text-center table-title">
+                                Mailgun logs&nbsp;
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={"De mailgun logs worden elke nacht opgehaald,<br>je kan op het ververs icoontje klikken om direct de meest recente logs op te halen"}
+                                    data-for={`tooltip-note`}
+                                />
+                                <ReactTooltip
+                                    id={`tooltip-note`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />&nbsp;
+                                <FaQuestionCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    style={{cursor: 'pointer'}}
+                                    onClick={() => window.open('https://documentation.mailgun.com/en/latest/api-events.html#event-types', '_blank')}
+                                />
+                            </h3>
+
                         </div>
                         <div className="col-md-4">
                             <div className="pull-right">
@@ -152,8 +187,9 @@ export default function MailgunEventListApp() {
                                 <DataTableHeadTitle title={'Datum'} width={'10%'}/>
                                 <DataTableHeadTitle title={'Domein'} width={'20%'}/>
                                 <DataTableHeadTitle title={'Type'} width={'10%'}/>
-                                <DataTableHeadTitle title={'Aan'} width={'30%'}/>
-                                <DataTableHeadTitle title={'Onderwerp'} width={'30%'}/>
+                                <DataTableHeadTitle title={'Status'} width={'20%'}/>
+                                <DataTableHeadTitle title={'Aan'} width={'20%'}/>
+                                <DataTableHeadTitle title={'Onderwerp'} width={'20%'}/>
                             </tr>
                         </DataTableHead>
                         <DataTableBody>
@@ -191,11 +227,12 @@ export default function MailgunEventListApp() {
                                 </th>
                                 <th/>
                                 <th/>
+                                <th/>
                             </tr>
 
                             {loadingText() ? (
                                 <tr>
-                                    <td colSpan={5}>{loadingText()}</td>
+                                    <td colSpan={6}>{loadingText()}</td>
                                 </tr>
                             ) : (
                                 mailgunEvents.map(mailgunLog => {

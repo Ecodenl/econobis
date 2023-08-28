@@ -42,20 +42,15 @@ class EmailGenericController extends Controller
             'note' => ['nullable', 'string'],
         ]);
 
-        $contactIds = $request->validate([
-            'contactIds' => ['array'],
-            'contactIds.*' => ['integer', 'exists:contacts,id'],
-        ])['contactIds'] ?? [];
-
-        $manualContactIds = $request->validate([
-            'manualContactIds' => ['array'],
-            'manualContactIds.*' => ['integer', 'exists:contacts,id'],
-        ])['manualContactIds'] ?? [];
-
         $email->update(Arr::keysToSnakeCase($data));
 
-        $email->contacts()->sync($contactIds);
-        $email->manualContacts()->sync($manualContactIds);
+        if($request->has('contactIds')){
+            $email->contacts()->sync($request->input('contactIds', []));
+        }
+
+        if($request->has('manualContactIds')){
+            $email->manualContacts()->sync($request->input('manualContactIds', []));
+        }
 
         $email->copyEmailAddressToContacts();
     }

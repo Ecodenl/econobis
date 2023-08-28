@@ -16,7 +16,6 @@ import InputCheckbox from "../../form/InputCheckbox";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 export default function EmailSendModal({emailId, showModal, setShowModal}) {
-    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [email, setEmail] = useState(null);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -31,13 +30,13 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
 
         fetchEmail();
 
-        if(!isFirstLoad){
-            setEmailTemplateId(null);
-            return;
-        }
+        setEmailTemplateId(null);
 
-        setIsFirstLoad(false);
-
+        /**
+         * 20230817 Jos; Besproken met Sjiron
+         * Onderstaande fetches worden elke keer bij openen opnieuw gedaan.
+         * Dit is bewust omdat actuele data hier zwaarder weegt dan het besparen van deze fetches/queries.
+         */
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             setMailboxAddresses(payload.data.data);
         });
@@ -82,10 +81,19 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     }, [emailTemplateId]);
     const applyEmailTemplate = (templateId) => {
         EmailTemplateAPI.fetchEmailTemplateWithUser(templateId).then(payload => {
-            updateEmail({
-                subject: payload.subject ? payload.subject : email.subject,
-                htmlBody: payload.htmlBody ? payload.htmlBody : email.htmlBody,
-            }).then(() => {
+            let emailData = {
+                subject: email.subject,
+                htmlBody: email.htmlBody,
+            }
+
+            if(email.subject.startsWith('Re: ') || email.subject.startsWith('Fwd: ')) {
+                emailData.htmlBody = payload.htmlBody + '<br />' + email.htmlBody;
+            }else{
+                emailData.subject = payload.subject;
+                emailData.htmlBody = payload.htmlBody;
+            }
+
+            updateEmail(emailData).then(() => {
                 if (payload.defaultAttachmentDocument) {
                     EmailAttachmentAPI.addDocumentsAsAttachments(email.id, [payload.defaultAttachmentDocument.id]).then(() => {
                         fetchEmail();
@@ -274,7 +282,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                             optionName={'fullName'}
                             onChangeAction={(value) => updateEmail({manualContacts: value ? value : []})}
                             allowCreate={false}
-                            textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
+                            textToolTip={'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'}
                         />
                     </div>
                     <div className="row">

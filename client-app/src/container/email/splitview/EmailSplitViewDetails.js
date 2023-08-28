@@ -17,20 +17,26 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler, del
     }, [isEmailDetailsModalOpen]);
 
     useEffect(() => {
-        if(!isEmailSendModalOpen && email.id === modalEmailId) {
+        /**
+         * Als het mail verzenden scherm sluit kan dit over de huidige mail (in splitview) gaan maar ook een reply(all), forward of nieuwe mail.
+         * Bij sluiten van het send modal altijd huidige mail vernieuwen omdat bij een reply(all) ook de status van de oorspronkelijke mail wordt gewijzigd.
+         *
+         * Hierdoor wordt de mail ook vernieuwd bij nieuwe email of een forward, dit is eigenlijk niet nodig maar het wordt onnodig complex om dit af te vangen.
+         */
+        if(!isEmailSendModalOpen) {
             fetchEmail();
         }
     }, [isEmailSendModalOpen]);
 
     useEffect(() => {
-        if (!emailId) {
-            return;
-        }
-
         fetchEmail();
     }, [emailId]);
 
     const fetchEmail = () => {
+        if (!emailId) {
+            return;
+        }
+
         EmailSplitviewAPI.fetchEmail(emailId).then(data => {
             setEmail(data);
         });

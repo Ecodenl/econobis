@@ -3,56 +3,25 @@ import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import ViewText from "../../../components/form/ViewText";
 import {FaInfoCircle} from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
+import Icon from "react-icons-kit";
+import {pencil} from 'react-icons-kit/fa/pencil';
 
-export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo, setShowEdit}) {
     return (
         <EmailDetailsModalLayout
             email={email}
             onRemoved={onRemoved}
             updateEmailAttributes={updateEmailAttributes}
-            contactsComponent={(
-                <div className="col-sm-6">
-                    <label className="col-sm-6">Contacten</label>
-                    <div className="col-sm-6">
-                        {
-                            email && email.contacts &&
-                            email.contacts.map(contact => {
-                                return (
-                                    <span key={contact.id}>
-                                        <a className={'link-underline'}
-                                           onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
-                                        <br/>
-                                        </span>
-                                )
-                            })
-                        }
-                        {
-                            email && email.contacts &&
-                            email.contacts.length === 0 && (
-                                <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
-                            )
-                        }
-                    </div>
-                </div>
-            )}
-            manualContactsComponent={(
-                <div className="col-sm-6">
-                    <label className="col-sm-6">Eenmalig te koppelen contacten</label>
-                    <div className="col-sm-6">
-                        {
-                            email && email.manualContacts &&
-                            email.manualContacts.map(contact => {
-                                return (
-                                    <span key={contact.id}>
-                                        <a className={'link-underline'}
-                                           onClick={() => goTo(`/contact/${contact.id}`)}>{contact.fullName}</a>
-                                        <br/>
-                                    </span>
-                                )
-                            })
-                        }
-                    </div>
-                </div>
+            createContact={createContact}
+            editButtonComponent={(
+                <button
+                    type="button"
+                    title="Bewerken"
+                    className={'btn btn-success btn-sm'}
+                    onClick={() => setShowEdit(true)}
+                >
+                    <Icon icon={pencil} size={13}/>
+                </button>
             )}
             intakeComponent={(
                 <ViewText
@@ -117,7 +86,7 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, onR
                         <FaInfoCircle
                             color={'blue'}
                             size={'15px'}
-                            data-tip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                            data-tip={"Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien."}
                             data-for={`tooltip-note`}
                         />
                         <ReactTooltip

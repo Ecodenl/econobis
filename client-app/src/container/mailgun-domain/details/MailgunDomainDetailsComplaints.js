@@ -9,6 +9,8 @@ import axiosInstance from "../../../api/default-setup/AxiosInstance";
 import ButtonText from "../../../components/button/ButtonText";
 import InputText from "../../../components/form/InputText";
 import Modal from "../../../components/modal/Modal";
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 export default function MailgunDomainDetailsComplaints({mailgunDomainId}) {
     const [isLoading, setLoading] = useState(true);
@@ -82,7 +84,25 @@ export default function MailgunDomainDetailsComplaints({mailgunDomainId}) {
     return (
         <Panel>
             <PanelHeader>
-                <span className="h5 text-bold">Complaints</span>
+                <span className="h5 text-bold">
+                    Complaints&nbsp;
+                    <FaInfoCircle
+                        color={'blue'}
+                        size={'15px'}
+                        data-tip={"Deze lijst toont e-mailadressen waarbij de ontvanger het ontvangen mailtje van jullie domein als spam heeft gemarkeerd." +
+                            "<br>Mailgun stuurt geen e-mail meer aan dit adres e-mail, om jouw e-mail reputatie te beschermen." +
+                            "<br>Als je een regel uit deze lijst verwijdert d.m.v. het prullenbakje stuurt Mailgun weer e-mail aan dit adres." +
+                            "<br>Let op: doe dit alleen bij e-mailadressen waarvan je weet dat de ontvanger inmiddels heeft gemarkeerd dat jullie mail geen spam is (e-mailadres is toegevoegd aan vertrouwde afzenders of gemarkeerd als ‘geen spam’)."}
+                        data-for={`tooltip-note`}
+                    />
+                    <ReactTooltip
+                        id={`tooltip-note`}
+                        effect="float"
+                        place="right"
+                        multiline={true}
+                        aria-haspopup="true"
+                    />
+                </span>
                 <a role="button" className="pull-right" onClick={() => setShowNew(true)}>
                     <Icon size={14} icon={plus}/>
                 </a>

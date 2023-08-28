@@ -106,9 +106,10 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
              * Gekoppelde email bijwerken voor weergave in verzonden items.
              */
             $distributionKwh = RevenueDistributionKwh::find($this->distributionId);
-            if($distributionKwh){
-                $this->email->contacts()->attach($distributionKwh->contact_id);
-                $this->email->to = array_merge($this->email->to, [$distributionKwh->contact_id]);
+            $emailAddress = optional(optional($distributionKwh)->contact)->primaryEmailAddress;
+            if($emailAddress){
+                $this->email->contacts()->attach($emailAddress->contact_id);
+                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
                 $this->email->save();
             }
         }

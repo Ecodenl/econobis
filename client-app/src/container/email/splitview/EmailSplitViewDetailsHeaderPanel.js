@@ -4,7 +4,7 @@ import {mailReply} from 'react-icons-kit/fa/mailReply';
 import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
-import {windowRestore} from 'react-icons-kit/fa/windowRestore';
+import {externalLink} from 'react-icons-kit/fa/externalLink';
 import {pencil} from 'react-icons-kit/fa/pencil';
 import {Link} from "react-router";
 import {useSelector} from 'react-redux'
@@ -50,8 +50,8 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small">
-                <div className="row" style={{marginLeft: '-5px'}}>
-                    <div className="col-md-6">
+                <div className="row">
+                    <div className="col-md-6" style={{paddingLeft: '25px'}}>
                         { email.folder !== 'concept' && (
                             <div className="btn-group margin-small margin-10-right" role="group">
                                 <button
@@ -109,7 +109,7 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                                 className={'btn btn-success btn-sm'}
                                 onClick={() => openEmailDetailsModal(email.id)}
                             >
-                                <Icon icon={windowRestore} size={13}/>
+                                <Icon icon={externalLink} size={13}/>
                             </button>
                         </div>
                     </div>

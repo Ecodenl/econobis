@@ -282,6 +282,7 @@ class QuotationRequestController
     {
         return [
             'id' => $quotationRequest->id,
+            'hasExternalParty' => ($quotationRequest->external_party_id == null || $quotationRequest->external_party_id == 0) ? false : true,
             'opportunityAction' => [
                 'id' => $quotationRequest->opportunityAction->id,
                 'name' => $quotationRequest->opportunityAction->name,

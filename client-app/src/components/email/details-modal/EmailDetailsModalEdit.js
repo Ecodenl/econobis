@@ -11,8 +11,10 @@ import AsyncSelectSet from "../../../components/form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import InputTextArea from "../../form/InputTextArea";
+import Icon from "react-icons-kit";
+import {pencil} from 'react-icons-kit/fa/pencil';
 
-export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved}) {
+export default function EmailDetailsModalEdit({email, updateEmailAttributes, onRemoved, setShowEdit}) {
     const [intakes, setIntakes] = useState([]);
     const [tasks, setTasks] = useState([]);
     const [quotationRequests, setQuotationRequests] = useState([]);
@@ -45,37 +47,20 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
         });
     }, [email.contacts]);
 
-    const getContactOptions = (searchTerm) => {
-        return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
-    };
-
     return (
         <EmailDetailsModalLayout
             email={email}
             updateEmailAttributes={updateEmailAttributes}
             onRemoved={onRemoved}
-            contactsComponent={(
-                <AsyncSelectSet
-                    label={'Contacten'}
-                    name={'contacts'}
-                    value={email.contacts}
-                    loadOptions={getContactOptions}
-                    optionName={'fullName'}
-                    onChangeAction={(value) => updateEmailAttributes({contacts: value ? value : []})}
-                    clearable={true}
-                />
-            )}
-            manualContactsComponent={(
-                <AsyncSelectSet
-                    label={'Eenmalig te koppelen contacten'}
-                    name={'manualContacts'}
-                    value={email.manualContacts}
-                    loadOptions={getContactOptions}
-                    optionName={'fullName'}
-                    onChangeAction={(value) => updateEmailAttributes({manualContacts: value ? value : []})}
-                    clearable={true}
-                    textToolTip={'Contacten die je via deze optie koppelt krijgen niet automatische dit mailadres toegewezen in hun contact overzicht.'}
-                />
+            editButtonComponent={(
+                <button
+                    type="button"
+                    title="Bewerken annuleren"
+                    className={'btn btn-success btn-sm'}
+                    onClick={() => setShowEdit(false)}
+                >
+                    <Icon icon={pencil} size={13}/>
+                </button>
             )}
             intakeComponent={(
                 <InputReactSelect
@@ -160,7 +145,7 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes, onR
                     name={'note'}
                     value={email.note ? email.note : ''}
                     onChangeAction={(e) => updateEmailAttributes({note: e.target.value})}
-                    textToolTip={"let op: deze opmerking is alleen zichtbaar bij deze specifieke e-mail. als iemand een reply stuurt is daar de opmerking niet meer te zien"}
+                    textToolTip={"Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien."}
                     sizeInput={'col-sm-8'}
                 />
             )}

@@ -92,7 +92,10 @@ export default function MailgunDomainDetailsBounces({mailgunDomainId}) {
                     <FaInfoCircle
                         color={'blue'}
                         size={'15px'}
-                        data-tip={"De onderstaande lijst bevat e-mail adressen die mailgun niet kon bereiken en zal in de toekomst niet nogmaals aan dit adres e-mail sturen om jouw e-mail reputatie te beschermen.<br>Als je een regel verwijderd d.m.v. het prullenbakje zal er bij de eerstvolgende keer dat dit contact wordt gemailed weer getracht worden naar dit mailadres te mailen.<br>(doe dit alleen bij mailadressen waarvan je weet dat ze weer bereikbaar zijn.)"}
+                        data-tip={"Deze lijst toont e-mailadressen waar Mailgun geen e-mail kon bezorgen." +
+                            "<br>Mailgun stuurt geen e-mail meer aan dit adres, om jouw e-mail reputatie te beschermen." +
+                            "<br>Als je een regel uit deze lijst verwijdert d.m.v. het prullenbakje stuurt Mailgun weer e-mail aan dit adres." +
+                            "<br>Let op: Doe dit alleen bij e-mailadressen waarvan je weet dat ze weer bereikbaar zijn!"}
                         data-for={`tooltip-note`}
                     />
                     <ReactTooltip

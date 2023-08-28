@@ -82,20 +82,13 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
                     buttonConfirmText="Opslaan"
                     closeModal={() => {setShowEdit(false); setShowModal(false);}}
                     confirmAction={save}
-                    title={'Email van ' + email.from}
+                    title={'E-mail van ' + email.from}
                     modalMainClassName="modal-fullscreen"
-                    headerRight={(
-                            <div>
-                                <button type="button" className="btn btn-default" onClick={() => {setShowEdit(true)}}>
-                                    Bewerken
-                                </button>
-                            </div>
-                        )}
                 >
                     {showEdit ? (
-                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} />
+                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} setShowEdit={setShowEdit} />
                     ) : (
-                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} createContact={createContact} goTo={goTo} />
+                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} onRemoved={() => setShowModal(false)} createContact={createContact} goTo={goTo} setShowEdit={setShowEdit} />
                     )}
                 </Modal>
             )}

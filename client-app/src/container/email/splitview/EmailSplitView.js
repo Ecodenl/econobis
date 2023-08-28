@@ -9,9 +9,9 @@ import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import {hashHistory, Link} from 'react-router';
+import {hashHistory} from 'react-router';
 import Icon from 'react-icons-kit';
-import {trash} from 'react-icons-kit/fa/trash';
+import {undo} from 'react-icons-kit/fa/undo';
 import {useSelector} from "react-redux";
 
 export default function EmailSplitView({router}) {
@@ -24,6 +24,7 @@ export default function EmailSplitView({router}) {
     const [filters, setFilters] = useState({...defaultFilters});
     const {isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal} = useContext(EmailModalContext);
     const hasMailboxes = useSelector((state) => state.meDetails.mailboxes.length > 0);
+    const [multiselectEnabled, setMultiselectEnabled] = useState(false);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -39,6 +40,7 @@ export default function EmailSplitView({router}) {
 
     useEffect(() => {
         setFilters({...getFiltersFromStorage(), fetch: true});
+        setSelectedEmailId(null);
     }, [router.params.folder]);
 
     useEffect(() => {
@@ -118,6 +120,10 @@ export default function EmailSplitView({router}) {
     };
 
     const getSorts = () => {
+        if(router.params.folder === 'concept') {
+            return ['-createdAt'];
+        }
+
         return ['-dateSent'];
     };
 
@@ -128,6 +134,18 @@ export default function EmailSplitView({router}) {
     };
 
     const resetFilters = () => {
+        if(router.location.query.contact){
+            /**
+             * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
+             * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
+             */
+            storeFiltersToStorage(defaultFilters);
+
+            hashHistory.push(router.location.pathname);
+
+            return;
+        }
+
         setFilters({
             ...defaultFilters,
             fetch: true
@@ -173,37 +191,37 @@ export default function EmailSplitView({router}) {
                 </div>
             ) : (
                 <div className="row">
-                    <div className="col-md-6" style={{paddingLeft: '20px'}}>
+                    <div className="col-md-4" style={{paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px'}}>
+                        <div className="btn-group" role="group">
+                            <ButtonIcon
+                                iconName={'refresh'}
+                                onClickAction={refreshData}
+                                title={'Alle mappen verzenden/ontvangen'}
+                            />
+                            <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
+                            <ButtonIcon
+                                iconName={'check'}
+                                onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
+                                title="Contactselectie maken"
+                            />
+                        </div>
+                    </div>
+                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
                         {contact && (
-                            <p>
+                            <span style={{marginLeft: '6px'}}>
                                 Email voor contact <strong>{contact?.fullName}</strong>
-                                <a role="button" onClick={() => hashHistory.push(router.location.pathname)}>
-                                    <Icon className="mybtn-danger" size={14} icon={trash}/>
+                                <a role="button" className="btn btn-success btn-sm" onClick={() => hashHistory.push(router.location.pathname)}>
+                                    Filter wissen
                                 </a>
-                            </p>
+                            </span>
                         )}
                     </div>
-                    <div className="col-md-6" style={{marginTop: '-10px', marginBottom: '5px'}}>
-                        <button
-                            type="button"
-                            className="btn btn-success pull-right"
-                            style={{marginLeft: '4px'}}
-                            onClick={createMail}
-                        >
-                            Nieuwe e-mail
-                        </button>
-                        <ButtonIcon
-                            iconName={isRefreshingData ? 'hourglassHalf' : 'refresh'}
-                            onClickAction={refreshData}
-                            title={'Alle mappen verzenden/ontvangen'}
-                            buttonClassName={'btn-success btn pull-right'}
-                            disabled={isRefreshingData}
-                        />
+                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
                         {
                             hasFilters() && (
                                 <button
                                     type="button"
-                                    className="btn btn-success pull-right"
+                                    className="btn btn-success pull-right btn-sm"
                                     style={{marginRight: '4px'}}
                                     onClick={resetFilters}
                                 >
@@ -227,10 +245,10 @@ export default function EmailSplitView({router}) {
                         hasFilters() && (
                             <div className="panel panel-default">
                                 <div className="panel-body panel-small">
-                                    Er worden e-mail filters toegepast, klik <Link className="link-underline"
-                                                                                   onClick={resetFilters}
-                                                                                   style={{cursor: 'pointer'}}>hier</Link> om
-                                    deze uit te zetten.
+                                    Let op: filters actief &nbsp;
+                                    <a role="button" onClick={resetFilters}>
+                                        <Icon size={16} icon={undo}/>
+                                    </a>
                                 </div>
                             </div>
                         )
@@ -244,6 +262,8 @@ export default function EmailSplitView({router}) {
                         setSelectedEmailId={setSelectedEmailId}
                         updateEmailAttributes={updateEmailAttributes}
                         onUpdated={refetchCurrentEmails}
+                        multiselectEnabled={multiselectEnabled}
+                        setMultiselectEnabled={setMultiselectEnabled}
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">

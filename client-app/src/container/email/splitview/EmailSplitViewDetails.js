@@ -29,14 +29,14 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler, del
     }, [isEmailSendModalOpen]);
 
     useEffect(() => {
-        if (!emailId) {
-            return;
-        }
-
         fetchEmail();
     }, [emailId]);
 
     const fetchEmail = () => {
+        if (!emailId) {
+            return;
+        }
+
         EmailSplitviewAPI.fetchEmail(emailId).then(data => {
             setEmail(data);
         });

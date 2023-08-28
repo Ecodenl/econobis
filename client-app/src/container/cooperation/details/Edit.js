@@ -446,7 +446,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
 
                 <Panel>
                     <PanelHeader>
-                        <span className="h5 text-bold">Styling E-mail</span>
+                        <span className="h5 text-bold">E-mail opmaak</span>
                     </PanelHeader>
                     <PanelBody>
                         <div className="row">

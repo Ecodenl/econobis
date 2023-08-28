@@ -43,6 +43,8 @@ class EmailSplitviewController extends Controller
                     'mailbox' => [
                         'name' => $mail->mailbox->name,
                     ],
+                    'folder' => $mail->folder,
+                    'createdAt' => $mail->created_at,
                 ];
             }),
             'total' => $query->count()

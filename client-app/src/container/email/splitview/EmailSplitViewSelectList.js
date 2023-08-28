@@ -7,8 +7,7 @@ import EmailSplitViewBulkEditModal from "./EmailSplitViewBulkEditModal";
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {getStatusIcon} from "../../../helpers/EmailStatusHelpers";
 
-export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated}) {
-    const [selectEnabled, setSelectEnabled] = useState(false);
+export default function EmailSplitViewSelectList({emails, folder, emailCount, fetchMoreEmails, selectedEmailId, setSelectedEmailId, onUpdated, multiselectEnabled, setMultiselectEnabled}) {
     const [selectedEmailIds, setSelectedEmailIds] = useState([]);
 
     const getTitle = () => {
@@ -70,9 +69,17 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
 
     const onUpdatedBulkEmails = () => {
         setSelectedEmailIds([]);
-        setSelectEnabled(false);
+        setMultiselectEnabled(false);
 
         onUpdated();
+    }
+
+    const getEmailDate = (email) => {
+        if(email.folder === 'concept') {
+            return email.createdAt && moment(email.createdAt).format('DD-MM-YYYY HH:mm');
+        }
+
+        return email.date && moment(email.date).format('DD-MM-YYYY HH:mm');
     }
 
     useEffect(() => {
@@ -91,7 +98,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
 
     useEffect(() => {
         setSelectedEmailIds([]);
-        setSelectEnabled(false);
+        setMultiselectEnabled(false);
 
     }, [folder]);
 
@@ -100,7 +107,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
             <div className="panel-body panel-small"
                  style={{height: "calc(100vh - 190px)", overflow: 'auto'}}>
                 {
-                    selectEnabled && (
+                    multiselectEnabled && (
                         <div className="row">
                             <div className="col-xs-12" style={{display: 'flex', justifyContent: 'space-between'}}>
                                     <div style={{flex: 'none', display: 'flex', marginLeft: '6px', alignItems: 'center'}} onClick={toggleSelectAll}>
@@ -134,14 +141,6 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                 <div>
                                 {getTitle()} ({emailCount})
                                 </div>
-                                <div>
-                                    <a href="#" style={{color: '#fff'}} onClick={(e) => {
-                                        e.preventDefault();
-                                        setSelectEnabled(!selectEnabled);
-                                    }}>
-                                        selecteren
-                                    </a>
-                                </div>
                             </div>
                         </th>
                     </tr>
@@ -162,7 +161,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                         fontWeight: email.status === 'unread' ? 'bold' : 'normal',
                                     }}>
                                     <div style={{display: 'flex', justifyContent: 'space-between'}}>
-                                        {selectEnabled && (
+                                        {multiselectEnabled && (
                                             <div style={{flex: 'none', display: 'flex', marginRight: '10px'}} onClick={() => toggleSelectedEmail(email)}>
                                                 <input
                                                     type="checkbox"
@@ -180,7 +179,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             alignItems: 'end',
                                         }}
                                              onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '12px'}}>{email.date && moment(email.date).format('DD-MM-YYYY HH:mm')}</span>
+                                            <span style={{fontSize: '12px'}}>{getEmailDate(email)}</span>
                                             <div>
                                                 <span style={{color: '#999'}}>{email.responsibleName}</span>
                                                 {

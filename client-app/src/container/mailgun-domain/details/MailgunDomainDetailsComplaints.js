@@ -89,7 +89,10 @@ export default function MailgunDomainDetailsComplaints({mailgunDomainId}) {
                     <FaInfoCircle
                         color={'blue'}
                         size={'15px'}
-                        data-tip={"De onderstaande lijst bevat e-mail adressen waarvan de ontvanger van een e-mail heeft geklaagd dat het ontvangen mailtje van jullie domain spam was.<br>Mailgun zal in de toekomst niet nogmaals aan dit adres e-mail sturen om jouw e-mail reputatie te beschermen.<br>Als je een regel verwijderd d.m.v. het prullenbakje zal er bij de eerstvolgende keer dat dit contact wordt gemailed weer getracht worden naar dit mailadres te mailen.<br>(doe dit alleen bij mailadressen waarvan je weet dat de ontvanger heeft aangegeven dat jullie mail geen spam meer is.)"}
+                        data-tip={"Deze lijst toont e-mailadressen waarbij de ontvanger het ontvangen mailtje van jullie domein als spam heeft gemarkeerd." +
+                            "<br>Mailgun stuurt geen e-mail meer aan dit adres e-mail, om jouw e-mail reputatie te beschermen." +
+                            "<br>Als je een regel uit deze lijst verwijdert d.m.v. het prullenbakje stuurt Mailgun weer e-mail aan dit adres." +
+                            "<br>Let op: doe dit alleen bij e-mailadressen waarvan je weet dat de ontvanger inmiddels heeft gemarkeerd dat jullie mail geen spam is (e-mailadres is toegevoegd aan vertrouwde afzenders of gemarkeerd als ‘geen spam’)."}
                         data-for={`tooltip-note`}
                     />
                     <ReactTooltip

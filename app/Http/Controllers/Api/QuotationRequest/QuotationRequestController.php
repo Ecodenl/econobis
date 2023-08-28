@@ -259,14 +259,13 @@ class QuotationRequestController extends ApiController
         }
 
         if (isset($data['quotationAmount'])) {
-            $quotationRequest->quotation_amount = $data['quotationAmount'];
+            $quotationRequest->quotation_amount = trim($data['quotationAmount']) ?: 0;
         }
-
         if (isset($data['costAdjustment'])) {
-            $quotationRequest->cost_adjustment = $data['costAdjustment'];
+            $quotationRequest->cost_adjustment = trim($data['costAdjustment']) ?: 0;
         }
         if (isset($data['awardAmount'])) {
-            $quotationRequest->award_amount = $data['awardAmount'];
+            $quotationRequest->award_amount = trim($data['awardAmount']) ?: 0;
         }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');

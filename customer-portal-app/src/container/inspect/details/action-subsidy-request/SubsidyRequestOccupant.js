@@ -222,7 +222,7 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                                     {initialQuotationRequest.projectmanagerNote
                                         ? initialQuotationRequest.projectmanagerNote
                                         : 'Geen'}
-                                    {!initialQuotationRequest.hasExternalParty ? (
+                                    {initialQuotationRequest.hasExternalParty ? (
                                         <>
                                             <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
                                             {initialQuotationRequest.externalpartyNote

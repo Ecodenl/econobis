@@ -13,6 +13,9 @@ import QuotationRequestExternalParty from './action-quotation-request/QuotationR
 import QuotationRequestCoach from './action-quotation-request/QuotationRequestCoach';
 import SubsidyRequestCoach from './action-subsidy-request/SubsidyRequestCoach';
 import QuotationRequestProjectManager from './action-quotation-request/QuotationRequestProjectManager';
+import QuotationRequestOccupant from './action-quotation-request/QuotationRequestOccupant';
+import SubsidyRequestOccupant from './action-subsidy-request/SubsidyRequestOccupant';
+import VisitOccupant from './action-visit/VisitOccupant';
 
 function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
@@ -103,6 +106,12 @@ function InspectDetails({ match, history, user }) {
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
+                                    ) : user.isOccupant === true ? (
+                                        <QuotationRequestOccupant
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
                                     ) : null}
                                 </>
                             ) : initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
@@ -126,6 +135,12 @@ function InspectDetails({ match, history, user }) {
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
+                                    ) : user.isOccupant === true ? (
+                                        <SubsidyRequestOccupant
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
                                     ) : null}
                                 </>
                             ) : initialQuotationRequest.opportunityAction.codeRef === 'visit' ? (
@@ -145,6 +160,12 @@ function InspectDetails({ match, history, user }) {
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <VisitProjectManager
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.isOccupant === true ? (
+                                        <VisitOccupant
                                             history={history}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}

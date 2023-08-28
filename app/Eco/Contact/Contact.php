@@ -194,6 +194,17 @@ class Contact extends Model
     {
         return $this->inspection_person_type_id == 'coach';
     }
+    public function isOccupant()
+    {
+        return $this->whereHas('opportunities', function ($query) {
+            $query->whereHas('quotationRequests');
+        })->exists();
+    }
+    public function getIsOccupantAttribute()
+    {
+        return $this->isOccupant();
+    }
+
     public function getIsOrganisationContactAttribute()
     {
         $contactOrganisationOccupations = $this->occupations()

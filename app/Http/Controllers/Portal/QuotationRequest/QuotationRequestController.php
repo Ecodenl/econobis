@@ -8,7 +8,6 @@ use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -27,19 +26,25 @@ class QuotationRequestController
         $portalUser = Auth::user();
 
         $quotationRequestsQuery = null;
-        if ($portalUser->contact->isExternalParty()) {
+        $organisationContact = $portalUser->contact->getOrganisationContact();
+        if ($portalUser->contact->isCoach()) {
+            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
+//        } elseif ($portalUser->contact->isOrganisation()) {
+//            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
+        } else if ($organisationContact) {
+            $quotationRequestsQuery = $organisationContact->quotationRequests();
+        } elseif ($portalUser->contact->isExternalParty()) {
             $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsExternalParty();
         } elseif ($portalUser->contact->isProjectManager()) {
             $quotationRequestsQuery = $portalUser->contact->quotationRequestsAsProjectManager();
-        } elseif ($portalUser->contact->isCoach()) {
-            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
-        } elseif ($portalUser->contact->isOrganisation()) {
-            $quotationRequestsQuery = $portalUser->contact->quotationRequests();
-        } else {
-            $organisationContact = $portalUser->contact->getOrganisationContact();
-            if ($organisationContact) {
-                $quotationRequestsQuery = $organisationContact->quotationRequests();
-            }
+        } elseif ($portalUser->contact->isOccupant()) {
+            $contactId = $portalUser->contact->id;
+            $quotationRequestsQuery =  QuotationRequest::whereNotNull('opportunity_action_id')
+                ->where( function ($query) use ($contactId) {
+                return $query->whereHas('opportunity.intake', function ($query) use ($contactId) {
+                    return $query->where('contact_id', $contactId);
+                });
+            });
         }
         if(!$quotationRequestsQuery){
             return;
@@ -81,6 +86,7 @@ class QuotationRequestController
         }
 
         $request->validate([
+//            'quotationText' => ['nullable', 'string'],
             'datePlannedAttempt1' => ['nullable', 'date'],
             'datePlannedAttempt2' => ['nullable', 'date'],
             'datePlannedAttempt3' => ['nullable', 'date'],
@@ -99,12 +105,14 @@ class QuotationRequestController
             'dateExecuted' => ['nullable', 'date'],
             'dateUnderReviewDetermination' => ['nullable', 'date'],
             'dateApprovedDetermination' => ['nullable', 'date'],
-            'quotationText' => ['nullable', 'string'],
             'quotationAmount' => ['nullable', 'string'],
             'awardAmount' => ['nullable', 'string'],
             'amountDetermination' => ['nullable', 'string'],
         ]);
 
+//        if($request->input('quotationText')){
+//            $quotationRequest->quotation_text = $request->input('quotationText');
+//        }
         $quotationRequest->date_planned_attempt1 = $request->input('datePlannedAttempt1') ?: null;
         $quotationRequest->date_planned_attempt2 = $request->input('datePlannedAttempt2') ?: null;
         $quotationRequest->date_planned_attempt3 = $request->input('datePlannedAttempt3') ?: null;
@@ -114,7 +122,6 @@ class QuotationRequestController
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;
-        $quotationRequest->quotation_text = $request->input('quotationText');
         $quotationRequest->coach_or_organisation_note = $request->input('coachOrOrganisationNote');
         $quotationRequest->projectmanager_note = $request->input('projectmanagerNote');
         $quotationRequest->externalparty_note = $request->input('externalpartyNote');
@@ -498,19 +505,25 @@ class QuotationRequestController
     private function authorizeQuotationRequest(PortalUser $portalUser, QuotationRequest $quotationRequest)
     {
         $quotationRequests = null;
-        if ($portalUser->contact->isExternalParty()) {
+        $organisationContact = $portalUser->contact->getOrganisationContact();
+        if ($portalUser->contact->isCoach()) {
+            $quotationRequests = $portalUser->contact->quotationRequests;
+//        } elseif ($portalUser->contact->isOrganisation()) {
+//            $quotationRequests = $portalUser->contact->quotationRequests;
+        } else if ($organisationContact) {
+            $quotationRequests = $organisationContact->quotationRequests;
+        } else if ($portalUser->contact->isExternalParty()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsExternalParty;
         } elseif ($portalUser->contact->isProjectManager()) {
             $quotationRequests = $portalUser->contact->quotationRequestsAsProjectManager;
-        } elseif ($portalUser->contact->isCoach()) {
-            $quotationRequests = $portalUser->contact->quotationRequests;
-        } elseif ($portalUser->contact->isOrganisation()) {
-            $quotationRequests = $portalUser->contact->quotationRequests;
-        } else {
-            $organisationContact = $portalUser->contact->getOrganisationContact();
-            if ($organisationContact) {
-                $quotationRequests = $organisationContact->quotationRequests;
-            }
+        } elseif ($portalUser->contact->isOccupant()) {
+            $contactId = $portalUser->contact->id;
+            $quotationRequests =  QuotationRequest::whereNotNull('opportunity_action_id')
+                ->where( function ($query) use ($contactId) {
+                    return $query->whereHas('opportunity.intake', function ($query) use ($contactId) {
+                        return $query->where('contact_id', $contactId);
+                    });
+                })->get();
         }
 
         if (!$quotationRequests || !$quotationRequests->contains($quotationRequest)) {

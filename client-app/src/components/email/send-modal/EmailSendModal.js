@@ -16,7 +16,6 @@ import InputCheckbox from "../../form/InputCheckbox";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 
 export default function EmailSendModal({emailId, showModal, setShowModal}) {
-    const [isFirstLoad, setIsFirstLoad] = useState(true);
     const [email, setEmail] = useState(null);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -31,13 +30,13 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
 
         fetchEmail();
 
-        if(!isFirstLoad){
-            setEmailTemplateId(null);
-            return;
-        }
+        setEmailTemplateId(null);
 
-        setIsFirstLoad(false);
-
+        /**
+         * 20230817 Jos; Besproken met Sjiron
+         * Onderstaande fetches worden elke keer bij openen opnieuw gedaan.
+         * Dit is bewust omdat actuele data hier zwaarder weegt dan het besparen van deze fetches/queries.
+         */
         MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
             setMailboxAddresses(payload.data.data);
         });

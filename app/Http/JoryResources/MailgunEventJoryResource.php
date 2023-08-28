@@ -22,6 +22,7 @@ class MailgunEventJoryResource extends JoryResource
         $this->field('event_date')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
+        $this->field('delivery_status')->filterable()->sortable();
 
         // Relations
         $this->relation('domain');

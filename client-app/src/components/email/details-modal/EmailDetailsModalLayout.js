@@ -13,9 +13,11 @@ import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
 import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
 import {pencil} from 'react-icons-kit/fa/pencil';
+import {copy} from 'react-icons-kit/fa/copy';
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
+import CopyToClipboard from "react-copy-to-clipboard";
 
 
 export default function EmailDetailsModalLayout({
@@ -35,6 +37,7 @@ export default function EmailDetailsModalLayout({
                                                 }) {
     const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
     const {openEmailSendModal} = useContext(EmailModalContext);
+    const domain = window.location.origin;
 
     const createReply = () => {
         EmailGenericAPI.storeReply(email.id).then(payload => {
@@ -139,6 +142,15 @@ export default function EmailDetailsModalLayout({
                         >
                             <Icon icon={trash} size={13}/>
                         </button>
+                        <CopyToClipboard text={domain + '/#/mailclient/email/' + email.id}>
+                            <button
+                                type="button"
+                                title="Haal directe link naar e-mail op"
+                                className={'btn btn-success btn-sm'}
+                            >
+                                <Icon icon={copy} size={13}/>
+                            </button>
+                        </CopyToClipboard>
                     </div>
                 </div>
             </div>

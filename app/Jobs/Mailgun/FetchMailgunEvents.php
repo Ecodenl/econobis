@@ -110,6 +110,7 @@ class FetchMailgunEvents implements ShouldQueue
             'recipient' => $event->getRecipient(),
             'subject' => $event->getMessage()['headers']['subject'] ?? '',
             'event_date' => $event->getEventDate(),
+            'delivery_status' => $event->getDeliveryStatus()['message'] ?? '',
         ]);
         $mailgunEvent->save();
     }

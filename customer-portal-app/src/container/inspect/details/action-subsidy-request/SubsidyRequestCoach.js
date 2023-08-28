@@ -270,11 +270,16 @@ function SubsidyRequestCoach({ history, initialQuotationRequest, handleSubmit })
                                         component="textarea"
                                         className="form-control input-sm mb-2"
                                     />
-
+                                    <FormLabel className={'field-label'}>Opmerkingen projectleider</FormLabel>
+                                    {initialQuotationRequest.projectmanagerNote
+                                        ? initialQuotationRequest.projectmanagerNote
+                                        : 'Geen'}
                                     <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
                                     {initialQuotationRequest.externalpartyNote
                                         ? initialQuotationRequest.externalpartyNote
                                         : 'Geen'}
+                                    <FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>
+                                    {initialQuotationRequest.clientNote ? initialQuotationRequest.clientNote : 'Geen'}
                                 </Col>
                             </Row>
                             <br />

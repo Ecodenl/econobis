@@ -51,7 +51,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             opportunity,
             relatedQuotationRequestsStatuses,
             coachOrOrganisationNote,
+            projectmanagerNote,
             externalpartyNote,
+            clientNote,
         } = props.quotationRequestDetails;
 
         // this.state.opportunityActionCodeRef                'visit'
@@ -129,7 +131,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 awardAmount: awardAmount ? awardAmount : 0,
                 amountDetermination: amountDetermination ? amountDetermination : 0,
                 coachOrOrganisationNote: coachOrOrganisationNote ? coachOrOrganisationNote : '',
+                projectmanagerNote: projectmanagerNote ? projectmanagerNote : '',
                 externalpartyNote: externalpartyNote ? externalpartyNote : '',
+                clientNote: clientNote ? clientNote : '',
                 relatedQuotationRequestsStatuses: relatedQuotationRequestsStatuses
                     ? relatedQuotationRequestsStatuses
                     : [],
@@ -294,7 +298,9 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             awardAmount,
             amountDetermination,
             coachOrOrganisationNote,
+            projectmanagerNote,
             externalpartyNote,
+            clientNote,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
@@ -654,18 +660,44 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
                 {opportunityAction.codeRef === 'quotation-request' ||
                 opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <div className="form-group col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label htmlFor="externalpartyNote" className="col-sm-12">
-                                        Opmerkingen externe partij
-                                    </label>
+                    <>
+                        <div className="row">
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="projectmanagerNote" className="col-sm-12">
+                                            Opmerkingen projectleider
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9">{projectmanagerNote}</div>
                                 </div>
-                                <div className="col-sm-9">{externalpartyNote}</div>
                             </div>
                         </div>
-                    </div>
+                        <div className="row">
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="externalpartyNote" className="col-sm-12">
+                                            Opmerkingen externe partij
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9">{externalpartyNote}</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="clientNote" className="col-sm-12">
+                                            Opmerkingen bewoner
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9">{clientNote}</div>
+                                </div>
+                            </div>
+                        </div>
+                    </>
                 ) : null}
 
                 <div className="panel-footer">

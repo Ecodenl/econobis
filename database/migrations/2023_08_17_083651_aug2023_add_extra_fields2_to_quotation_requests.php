@@ -22,6 +22,8 @@ class Aug2023AddExtraFields2ToQuotationRequests extends Migration
             $table->date('date_planned_attempt3')->nullable()->default(null)->after('date_planned_attempt2');
             $table->date('date_under_review_determination')->nullable()->default(null)->after('date_executed');
             $table->date('date_approved_determination')->nullable()->default(null)->after('date_under_review_determination');
+            $table->text('projectmanager_note')->nullable();
+            $table->text('client_note')->nullable();
         });
     }
 
@@ -32,6 +34,16 @@ class Aug2023AddExtraFields2ToQuotationRequests extends Migration
      */
     public function down()
     {
+        if (Schema::hasColumn('quotation_requests', 'client_note')) {
+            Schema::table('quotation_requests', function (Blueprint $table) {
+                $table->dropColumn('client_note');
+            });
+        }
+        if (Schema::hasColumn('quotation_requests', 'projectmanager_note')) {
+            Schema::table('quotation_requests', function (Blueprint $table) {
+                $table->dropColumn('projectmanager_note');
+            });
+        }
         if (Schema::hasColumn('quotation_requests', 'date_approved_determination')) {
             Schema::table('quotation_requests', function (Blueprint $table) {
                 $table->dropColumn('date_approved_determination');

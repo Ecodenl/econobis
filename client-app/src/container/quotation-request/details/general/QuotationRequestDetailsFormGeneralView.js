@@ -33,7 +33,9 @@ const QuotationRequestDetailsFormGeneralView = props => {
         amountDetermination,
         opportunity,
         coachOrOrganisationNote,
+        projectmanagerNote,
         externalpartyNote,
+        clientNote,
     } = props.quotationRequestDetails;
 
     const timePlannedFormated = datePlanned ? moment(datePlanned).format('HH:mm') : null;
@@ -260,16 +262,38 @@ const QuotationRequestDetailsFormGeneralView = props => {
             </div>
 
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
-                <div className="row">
-                    <div className="col-sm-3">
-                        <label htmlFor="externalpartyNote" className="col-sm-12">
-                            Opmerkingen externe partij
-                        </label>
+                <>
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="projectmanagerNote" className="col-sm-12">
+                                Opmerkingen projectleider
+                            </label>
+                        </div>
+                        <div className="col-sm-9" id="projectmanagerNote">
+                            {projectmanagerNote}
+                        </div>
                     </div>
-                    <div className="col-sm-9" id="externalpartyNote">
-                        {externalpartyNote}
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="externalpartyNote" className="col-sm-12">
+                                Opmerkingen externe partij
+                            </label>
+                        </div>
+                        <div className="col-sm-9" id="externalpartyNote">
+                            {externalpartyNote}
+                        </div>
                     </div>
-                </div>
+                    <div className="row">
+                        <div className="col-sm-3">
+                            <label htmlFor="clientNote" className="col-sm-12">
+                                Opmerkingen bewoner
+                            </label>
+                        </div>
+                        <div className="col-sm-9" id="clientNote">
+                            {clientNote}
+                        </div>
+                    </div>
+                </>
             ) : null}
         </div>
     );

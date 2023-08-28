@@ -273,10 +273,18 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                     {initialQuotationRequest.coachOrOrganisationNote
                                         ? initialQuotationRequest.coachOrOrganisationNote
                                         : 'Geen'}
+                                    <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
+                                    <Field
+                                        name="projectmanagerNote"
+                                        component="textarea"
+                                        className="form-control input-sm mb-2"
+                                    />
                                     <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
                                     {initialQuotationRequest.externalpartyNote
                                         ? initialQuotationRequest.externalpartyNote
                                         : 'Geen'}
+                                    <FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>
+                                    {initialQuotationRequest.clientNote ? initialQuotationRequest.clientNote : 'Geen'}
                                 </Col>
                             </Row>
                             <br />

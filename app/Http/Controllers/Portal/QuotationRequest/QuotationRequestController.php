@@ -91,7 +91,9 @@ class QuotationRequestController
             'dateApprovedExternal' => ['nullable', 'date'],
             'opportunityStatusId' => ['integer'],
             'coachOrOrganisationNote' => ['nullable', 'string'],
+            'projectmanagerNote' => ['nullable', 'string'],
             'externalpartyNote' => ['nullable', 'string'],
+            'clientNote' => ['nullable', 'string'],
             'statusId' => ['integer'],
             'dateUnderReview' => ['nullable', 'date'],
             'dateExecuted' => ['nullable', 'date'],
@@ -114,7 +116,9 @@ class QuotationRequestController
         $quotationRequest->updated_by_id = $responsibleUserId;
         $quotationRequest->quotation_text = $request->input('quotationText');
         $quotationRequest->coach_or_organisation_note = $request->input('coachOrOrganisationNote');
+        $quotationRequest->projectmanager_note = $request->input('projectmanagerNote');
         $quotationRequest->externalparty_note = $request->input('externalpartyNote');
+        $quotationRequest->client_note = $request->input('clientNote');
         $quotationRequest->status_id = $request->input('statusId');
         $quotationRequest->date_under_review = $request->input('dateUnderReview') ?: null;
         $quotationRequest->date_executed = $request->input('dateExecuted') ?: null;
@@ -321,7 +325,9 @@ class QuotationRequestController
             'dateApprovedDetermination' => $quotationRequest->date_approved_determination ? $quotationRequest->date_approved_determination : '',
             'quotationText' => $quotationRequest->quotation_text,
             'coachOrOrganisationNote' => $quotationRequest->coach_or_organisation_note,
+            'projectmanagerNote' => $quotationRequest->projectmanager_note,
             'externalpartyNote' => $quotationRequest->externalparty_note,
+            'clientNote' => $quotationRequest->client_note,
             'status' => [
                 'id' => $quotationRequest->status->id,
                 'name' => $quotationRequest->status->name,

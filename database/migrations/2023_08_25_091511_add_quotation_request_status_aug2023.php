@@ -16,19 +16,19 @@ class AddQuotationRequestStatusAug2023 extends Migration
      */
     public function up()
     {
-//        $bezoekOpportunityAction = OpportunityAction::where('code_ref', 'visit')->first();
-//        $bezoekGetOrder = QuotationRequestStatus::where('opportunity_action_id', $bezoekOpportunityAction->id)->where('code_ref', 'default')->first();
-//        DB::table('quotation_request_status')->insert([
-//                ['name' => 'Geen afspraak kunnen maken', 'code_ref' => 'not-made', 'opportunity_action_id' => $bezoekOpportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => $bezoekGetOrder->order, 'is_pending_status' => 0],
-//            ]
-//        );
-//        $bezoekQuotationRequestStatuses = QuotationRequestStatus::where('opportunity_action_id', $bezoekOpportunityAction->id)->orderBy('order')->orderBy('id')->get();
-//        $newOrder = 1;
-//        foreach ($bezoekQuotationRequestStatuses as $bezoekItem) {
-//            $bezoekItem->order = $newOrder;
-//            $bezoekItem->save();
-//            $newOrder++;
-//        }
+        $bezoekOpportunityAction = OpportunityAction::where('code_ref', 'visit')->first();
+        $bezoekGetOrder = QuotationRequestStatus::where('opportunity_action_id', $bezoekOpportunityAction->id)->where('code_ref', 'default')->first();
+        DB::table('quotation_request_status')->insert([
+                ['name' => 'Geen afspraak kunnen maken', 'code_ref' => 'not-made', 'opportunity_action_id' => $bezoekOpportunityAction->id, 'uses_wf' => 0, 'email_template_id_wf' => null, 'number_of_days_to_send_email' => 0, 'created_at' => \Carbon\Carbon::now(), 'updated_at' => \Carbon\Carbon::now(), 'order' => $bezoekGetOrder->order, 'is_pending_status' => 0],
+            ]
+        );
+        $bezoekQuotationRequestStatuses = QuotationRequestStatus::where('opportunity_action_id', $bezoekOpportunityAction->id)->orderBy('order')->orderBy('id')->get();
+        $newOrder = 1;
+        foreach ($bezoekQuotationRequestStatuses as $bezoekItem) {
+            $bezoekItem->order = $newOrder;
+            $bezoekItem->save();
+            $newOrder++;
+        }
 
         $offerteverzoekOpportunityAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
         $offerteverzoekGetOrder1 = QuotationRequestStatus::where('opportunity_action_id', $offerteverzoekOpportunityAction->id)->where('code_ref', 'default')->first();

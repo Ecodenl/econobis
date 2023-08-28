@@ -71,7 +71,9 @@ class FullQuotationRequest extends JsonResource
                 'relatedOccupantEmailsSent' => $this->relatedOccupantEmailsSent,
                 'relatedCoachAndOccupantEmailsSent' => $this->relatedCoachAndOccupantEmailsSent,
                 'coachOrOrganisationNote' => $this->coach_or_organisation_note,
+                'projectmanagerNote' => $this->projectmanager_note,
                 'externalpartyNote' => $this->externalparty_note,
+                'clientNote' => $this->client_note,
                 'relatedExternalpartyAndOccupantEmailsSent' => $this->relatedExternalpartyAndOccupantEmailsSent,
                 'relatedExternalpartyEmailsSent' => $this->relatedExternalpartyEmailsSent,
             ];

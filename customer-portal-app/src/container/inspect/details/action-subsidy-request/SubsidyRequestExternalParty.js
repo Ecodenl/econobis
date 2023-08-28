@@ -348,12 +348,22 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                                     {/*    ? initialQuotationRequest.coachOrOrganisationNote*/}
                                     {/*    : 'Geen'}*/}
 
+                                    {/*<FormLabel className={'field-label'}>Opmerkingen projectleider</FormLabel>*/}
+                                    {/*{initialQuotationRequest.projectmanagerNote*/}
+                                    {/*    ? initialQuotationRequest.projectmanagerNote*/}
+                                    {/*    : 'Geen'}*/}
+
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
                                         name="externalpartyNote"
                                         component="textarea"
                                         className="form-control input-sm mb-2"
                                     />
+
+                                    {/*<FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>*/}
+                                    {/*{initialQuotationRequest.clientNote*/}
+                                    {/*    ? initialQuotationRequest.clientNote*/}
+                                    {/*    : 'Geen'}*/}
                                 </Col>
                             </Row>
                             <br />

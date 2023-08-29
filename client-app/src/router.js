@@ -69,6 +69,7 @@ const PartEnergySupplierExcelNewApp = React.lazy(() =>
     )
 );
 const Forgot = React.lazy(() => import('./container/auth/Forgot'));
+const FreeFieldsListApp = React.lazy(() => import('./container/free-fields/list/FreeFieldsListApp'));
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
 const HousingFileNewApp = React.lazy(() => import('./container/housing-file/new/HousingFileNewApp'));
 const HousingFilesListApp = React.lazy(() => import('./container/housing-file/list/HousingFilesListApp'));
@@ -544,6 +545,8 @@ const Routes = () => {
                     <Route path="btw-codes" component={VatCodesListApp} />
                     <Route path="btw-code/nieuw" component={VatCodeNewApp} />
                     <Route path="btw-code/:id" component={VatCodeDetailsApp} />
+                    /* Vrije velden*/
+                    <Route path="vrije-velden" component={FreeFieldsListApp} />
                     /* Webforms */
                     <Route path="webformulieren" component={WebformsListApp} />
                     <Route path="webformulier/nieuw" component={WebformNewApp} />

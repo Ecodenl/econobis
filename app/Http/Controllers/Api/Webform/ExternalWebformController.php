@@ -141,7 +141,9 @@ class ExternalWebformController extends Controller
     private $contactActie = null;
     private $newContactCreated = false;
     private $contactIdToEmailNewContactToGroup = null;
+    private $contactIdToEmailNewContactPersonToGroup = null;
     private $processEmailNewContactToGroup = false;
+    private $processEmailNewContactPersonToGroup = false;
 
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
@@ -214,6 +216,11 @@ class ExternalWebformController extends Controller
         // evt nog ProcessEmailNewContactToGroup uitvoeren
         if ($this->processEmailNewContactToGroup) {
             $this->doProcessEmailNewContactToGroup($data['contact']);
+        }
+
+        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
+        if ($this->processEmailNewContactPersonToGroup) {
+            $this->doProcessEmailNewContactPersonToGroup($data['contact']);
         }
 
         // evt nog processWorkflowEmailNewTask uitvoeren
@@ -2521,8 +2528,8 @@ class ExternalWebformController extends Controller
                             }
 
                             if ($contactGroup->send_email_new_contact_link) {
-                                $this->contactIdToEmailNewContactToGroup = $contact->id;
-                                $this->processEmailNewContactToGroup = true;
+                                $this->contactIdToEmailNewContactPersonToGroup = $contact->id;
+                                $this->processEmailNewContactPersonToGroup = true;
                             }
                             if ($contactGroup->inspection_person_type_id != null) {
                                 $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
@@ -2563,6 +2570,24 @@ class ExternalWebformController extends Controller
                     $processed = $contactGroupHelper->processEmailNewContactToGroup();
                     if ($processed) {
                         $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function doProcessEmailNewContactPersonToGroup(array $data)
+    {
+        $contactPersonToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactPersonToGroup);
+        if($data['contact_group_ids_contactperson']){
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
+            foreach ($contactGroups as $contactGroup)
+            {
+                if ($contactGroup->send_email_new_contact_link) {
+                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactPersonToEmailNewContactGroup);
+                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                    if ($processed) {
+                        $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactPersonToGroup);
                     }
                 }
             }

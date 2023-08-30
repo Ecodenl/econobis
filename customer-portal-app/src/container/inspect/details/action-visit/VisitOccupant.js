@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
-function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
+function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -88,12 +88,9 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                             <InputTextDate
                                                 field={field}
                                                 type="date"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
                                                 id="date_planned_attempt1"
                                                 placeholder={'Datum afspraakpoging 1'}
-                                                readOnly={values.datePlannedAttempt2 ? true : false}
+                                                readOnly={true}
                                             />
                                         )}
                                     </Field>
@@ -107,12 +104,9 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                                     <InputTextDate
                                                         field={field}
                                                         type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
                                                         id="date_planned_attempt2"
                                                         placeholder={'Datum afspraakpoging 2'}
-                                                        readOnly={values.datePlannedAttempt3 ? true : false}
+                                                        readOnly={true}
                                                     />
                                                 )}
                                             </Field>
@@ -128,11 +122,9 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                                     <InputTextDate
                                                         field={field}
                                                         type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
                                                         id="date_planned_attempt3"
                                                         placeholder={'Datum afspraakpoging 3'}
+                                                        readOnly={true}
                                                     />
                                                 )}
                                             </Field>
@@ -144,15 +136,11 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                     <Field name="datePlanned">
                                         {({ field }) => (
                                             <InputTextDate
-                                                name="datePlanned"
                                                 field={field}
                                                 type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
                                                 id="date_planned"
                                                 placeholder={'Datum afspraak'}
-                                                step="900"
+                                                readOnly={true}
                                             />
                                         )}
                                     </Field>
@@ -162,24 +150,18 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                     <Field name="dateRecorded">
                                         {({ field }) => (
                                             <InputTextDate
-                                                name="dateRecorded"
                                                 field={field}
                                                 type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
                                                 id="date_recorded"
                                                 placeholder={'Datum opname'}
-                                                step="900"
+                                                readOnly={true}
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
-                                    <Field
-                                        name="coachOrOrganisationNote"
-                                        component="textarea"
-                                        className="form-control input-sm mb-2"
-                                    />
+                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
+                                    {initialQuotationRequest.coachOrOrganisationNote
+                                        ? initialQuotationRequest.coachOrOrganisationNote
+                                        : 'Geen'}
                                 </Col>
                             </Row>
                             <br />
@@ -193,23 +175,32 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                                 history.push(`/schouwen`);
                                             }}
                                         >
-                                            Annuleren
+                                            Terug naar overzicht
                                         </Button>
-                                        <Button
-                                            className={'w-button'}
-                                            size="sm"
-                                            onClick={handleSubmit}
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? (
-                                                <span>
-                                                    <ClipLoader color={'white'} size={14} />
-                                                    Bezig met opslaan
-                                                </span>
-                                            ) : (
-                                                'Opslaan'
-                                            )}
-                                        </Button>
+                                        {/*<Button*/}
+                                        {/*    variant={'outline-dark'}*/}
+                                        {/*    size="sm"*/}
+                                        {/*    onClick={function() {*/}
+                                        {/*        history.push(`/schouwen`);*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        {/*    Annuleren*/}
+                                        {/*</Button>*/}
+                                        {/*<Button*/}
+                                        {/*    className={'w-button'}*/}
+                                        {/*    size="sm"*/}
+                                        {/*    onClick={handleSubmit}*/}
+                                        {/*    disabled={isSubmitting}*/}
+                                        {/*>*/}
+                                        {/*    {isSubmitting ? (*/}
+                                        {/*        <span>*/}
+                                        {/*            <ClipLoader color={'white'} size={14} />*/}
+                                        {/*            Bezig met opslaan*/}
+                                        {/*        </span>*/}
+                                        {/*    ) : (*/}
+                                        {/*        'Opslaan'*/}
+                                        {/*    )}*/}
+                                        {/*</Button>*/}
                                     </ButtonGroup>
                                 </Col>
                             </Row>
@@ -222,4 +213,4 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
     );
 }
 
-export default VisitCoach;
+export default VisitOccupant;

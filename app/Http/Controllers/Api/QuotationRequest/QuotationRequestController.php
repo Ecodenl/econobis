@@ -151,10 +151,14 @@ class QuotationRequestController extends ApiController
             'projectManagerId' => 'nullable|exists:contacts,id',
             'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
+            'statusId' => 'required|exists:quotation_request_status,id',
+            'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
+            'quotationText' => 'string',
             'dateRecorded' => 'string',
             'timeRecorded' => 'string',
             'dateReleased' => 'string',
             'timeReleased' => 'string',
+            'datePlannedAttempt1' => 'string',
             'datePlanned' => 'string',
             'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
@@ -162,10 +166,9 @@ class QuotationRequestController extends ApiController
             'dateApprovedExternal' => 'string',
             'dateUnderReview' => 'string',
             'dateExecuted' => 'string',
-            'statusId' => 'required|exists:quotation_request_status,id',
-            'opportunityActionId' => [Rule::requiredIf(!$request->has('opportunityActionCodeRef')), 'exists:opportunity_actions,id'],
-            'quotationText' => 'string',
             'quotationAmount' => 'string',
+            'costAdjustment' => 'string',
+            'awardAmount' => 'string',
             'durationMinutes' => 'integer',
             'usesPlanning' => 'boolean',
             'districtId' => 'nullable',
@@ -215,6 +218,10 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $dateReleasedMerged;
         }
 
+        if ($data['datePlannedAttempt1']) {
+            $quotationRequest->date_planned_attempt1 = $data['datePlannedAttempt1'];
+        }
+
         if ($data['datePlanned']) {
             if ($data['timePlanned']) {
                 $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
@@ -252,7 +259,13 @@ class QuotationRequestController extends ApiController
         }
 
         if (isset($data['quotationAmount'])) {
-            $quotationRequest->quotation_amount = $data['quotationAmount'];
+            $quotationRequest->quotation_amount = trim($data['quotationAmount']) ?: 0;
+        }
+        if (isset($data['costAdjustment'])) {
+            $quotationRequest->cost_adjustment = trim($data['costAdjustment']) ?: 0;
+        }
+        if (isset($data['awardAmount'])) {
+            $quotationRequest->award_amount = trim($data['awardAmount']) ?: 0;
         }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
@@ -287,10 +300,15 @@ class QuotationRequestController extends ApiController
             'projectManagerId' => 'nullable|exists:contacts,id',
             'externalPartyId' => 'nullable|exists:contacts,id',
             'opportunityId' => 'required|exists:opportunities,id',
+            'statusId' => 'required|exists:quotation_request_status,id',
+            'quotationText' => 'string',
             'dateRecorded' => 'string',
             'timeRecorded' => 'string',
             'dateReleased' => 'string',
             'timeReleased' => 'string',
+            'datePlannedAttempt1' => 'string',
+            'datePlannedAttempt2' => 'string',
+            'datePlannedAttempt3' => 'string',
             'datePlanned' => 'string',
             'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
@@ -298,10 +316,14 @@ class QuotationRequestController extends ApiController
             'dateApprovedExternal' => 'string',
             'dateUnderReview' => 'string',
             'dateExecuted' => 'string',
-            'statusId' => 'required|exists:quotation_request_status,id',
+            'dateUnderReviewDetermination' => 'string',
+            'dateApprovedDetermination' => 'string',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
-            'quotationText' => 'string',
+            'coachOrOrganisationNote' => 'string',
             'quotationAmount' => 'string',
+            'costAdjustment' => 'string',
+            'awardAmount' => 'string',
+//            'amountDetermination' => 'string',
         ]);
 
         //required
@@ -348,6 +370,16 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = null;
         }
 
+        if ($data['datePlannedAttempt1']) {
+            $quotationRequest->date_planned_attempt1 = $data['datePlannedAttempt1'];
+        }
+        if ($data['datePlannedAttempt2']) {
+            $quotationRequest->date_planned_attempt2 = $data['datePlannedAttempt2'];
+        }
+        if ($data['datePlannedAttempt3']) {
+            $quotationRequest->date_planned_attempt3 = $data['datePlannedAttempt3'];
+        }
+
         if ($data['datePlanned']) {
             if ($data['timePlanned']) {
                 $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
@@ -382,13 +414,33 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_executed = $data['dateExecuted'];
         }
 
+        if ($data['dateUnderReviewDetermination']) {
+            $quotationRequest->date_under_review_determination = $data['dateUnderReviewDetermination'];
+        }
+        if ($data['dateApprovedDetermination']) {
+            $quotationRequest->date_approved_determination = $data['dateApprovedDetermination'];
+        }
+
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
+        }
+        if (isset($data['coachOrOrganisationNote'])) {
+            $quotationRequest->coach_or_organisation_note = $data['coachOrOrganisationNote'];
         }
 
         if (isset($data['quotationAmount'])) {
             $quotationRequest->quotation_amount = $data['quotationAmount'];
         }
+
+        if (isset($data['costAdjustment'])) {
+            $quotationRequest->cost_adjustment = $data['costAdjustment'];
+        }
+        if (isset($data['awardAmount'])) {
+            $quotationRequest->award_amount = $data['awardAmount'];
+        }
+//        if (isset($data['amountDetermination'])) {
+//            $quotationRequest->amount_determination = $data['amountDetermination'];
+//        }
         $quotationRequest->save();
 
         $this->creatEnergyCoachOccupation($quotationRequest);

@@ -8,8 +8,17 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
+import moment from 'moment/moment';
 
-function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
+function QuotationRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
+    const [pmApproved, setPmApproved] = useState(
+        initialQuotationRequest.status?.codeRef === 'pm-approved'
+            ? true
+            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
+            ? false
+            : null
+    );
+
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -66,6 +75,13 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                         }
                                         readOnly={true}
                                     />
+                                    <FormLabel className={'field-label'}>Offertebedrag</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.quotationAmount}
+                                        readOnly={true}
+                                    />
                                     <FormLabel htmlFor="created_at" className={'field-label'}>
                                         Datum gemaakt op
                                     </FormLabel>
@@ -80,29 +96,12 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_planned_attempt1" className={'field-label'}>
-                                        Datum afspraakpoging 1
+                                    <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
+                                        Datum akkoord projectleider
                                     </FormLabel>
-                                    <Field name="datePlannedAttempt1">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
-                                                id="date_planned_attempt1"
-                                                placeholder={'Datum afspraakpoging 1'}
-                                                readOnly={values.datePlannedAttempt2 ? true : false}
-                                            />
-                                        )}
-                                    </Field>
-                                    {values.datePlannedAttempt1 ? (
-                                        <>
-                                            <FormLabel htmlFor="date_planned_attempt2" className={'field-label'}>
-                                                Datum afspraakpoging 2
-                                            </FormLabel>
-                                            <Field name="datePlannedAttempt2">
+                                    <div style={{ display: 'flex' }}>
+                                        <div>
+                                            <Field name="dateApprovedProjectManager">
                                                 {({ field }) => (
                                                     <InputTextDate
                                                         field={field}
@@ -110,76 +109,55 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                                         errors={errors}
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
-                                                        id="date_planned_attempt2"
-                                                        placeholder={'Datum afspraakpoging 2'}
-                                                        readOnly={values.datePlannedAttempt3 ? true : false}
+                                                        id="date_approved_project_manager"
+                                                        placeholder={'Datum akkoord projectleider'}
                                                     />
                                                 )}
                                             </Field>
-                                        </>
-                                    ) : null}
-                                    {values.datePlannedAttempt2 ? (
-                                        <>
-                                            <FormLabel htmlFor="date_planned_attempt3" className={'field-label'}>
-                                                Datum afspraakpoging 3
-                                            </FormLabel>
-                                            <Field name="datePlannedAttempt3">
-                                                {({ field }) => (
-                                                    <InputTextDate
-                                                        field={field}
-                                                        type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_planned_attempt3"
-                                                        placeholder={'Datum afspraakpoging 3'}
-                                                    />
-                                                )}
-                                            </Field>
-                                        </>
-                                    ) : null}
-                                    <FormLabel htmlFor="date_planned" className={'field-label'}>
-                                        Datum afspraak
-                                    </FormLabel>
-                                    <Field name="datePlanned">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                name="datePlanned"
-                                                field={field}
-                                                type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
-                                                id="date_planned"
-                                                placeholder={'Datum afspraak'}
-                                                step="900"
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
-                                    </FormLabel>
-                                    <Field name="dateRecorded">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                name="dateRecorded"
-                                                field={field}
-                                                type="datetime-local"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
-                                                id="date_recorded"
-                                                placeholder={'Datum opname'}
-                                                step="900"
-                                            />
-                                        )}
-                                    </Field>
+                                        </div>
+                                        <div>
+                                            <Button
+                                                variant={true === pmApproved ? 'dark' : 'outline-dark'}
+                                                size="sm"
+                                                onClick={() => {
+                                                    setPmApproved(true);
+                                                    setFieldValue(
+                                                        'dateApprovedProjectManager',
+                                                        moment().format('YYYY-MM-DD')
+                                                    );
+                                                }}
+                                            >
+                                                {true === pmApproved ? 'Goedgekeurd' : 'Goedkeuren'}
+                                            </Button>
+                                            <Button
+                                                variant={false === pmApproved ? 'dark' : 'outline-dark'}
+                                                size="sm"
+                                                onClick={() => {
+                                                    setPmApproved(false);
+                                                    setFieldValue('dateApprovedProjectManager', '');
+                                                }}
+                                            >
+                                                {false === pmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                            </Button>
+                                        </div>
+                                    </div>
+
+                                    <FormLabel className={'field-label'}>Opmerkingen coach/organisatie</FormLabel>
+                                    {initialQuotationRequest.coachOrOrganisationNote
+                                        ? initialQuotationRequest.coachOrOrganisationNote
+                                        : 'Geen'}
                                     <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
                                     <Field
-                                        name="coachOrOrganisationNote"
+                                        name="projectmanagerNote"
                                         component="textarea"
                                         className="form-control input-sm mb-2"
                                     />
+                                    <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
+                                    {initialQuotationRequest.externalpartyNote
+                                        ? initialQuotationRequest.externalpartyNote
+                                        : 'Geen'}
+                                    <FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>
+                                    {initialQuotationRequest.clientNote ? initialQuotationRequest.clientNote : 'Geen'}
                                 </Col>
                             </Row>
                             <br />
@@ -222,4 +200,4 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
     );
 }
 
-export default VisitCoach;
+export default QuotationRequestProjectManager;

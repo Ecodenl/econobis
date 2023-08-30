@@ -25,6 +25,7 @@ export default {
                         'portalSettingsLayoutAssigned',
                         'inspectionPersonTypeId',
                         'isOrganisationContact',
+                        'isOccupant',
                     ],
                     rlt: {
                         occupations: {

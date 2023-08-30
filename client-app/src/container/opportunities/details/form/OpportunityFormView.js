@@ -14,7 +14,7 @@ const OpportunityFormView = props => {
         intake,
         measureCategory,
         measures,
-        amount
+        amount,
     } = props.opportunity;
 
     return (
@@ -47,7 +47,9 @@ const OpportunityFormView = props => {
                 ) : (
                     ''
                 )}
-                <ViewText label={'Aantal'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
+            </div>
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Aantal'} size={'col-sm-5'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

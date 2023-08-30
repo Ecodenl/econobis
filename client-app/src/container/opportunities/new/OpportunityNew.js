@@ -78,7 +78,9 @@ const OpportunityNew = props => {
                     required={'required'}
                     error={props.errors.statusId}
                 />
+            </div>
 
+            <div className="row">
                 <InputText
                     label="Aantal"
                     size={'col-sm-5'}

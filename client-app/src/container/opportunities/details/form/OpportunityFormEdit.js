@@ -29,7 +29,7 @@ class OpportunityFormEdit extends Component {
             quotationText,
             status,
             datePlannedToSendWfEmailStatus,
-            amount
+            amount,
         } = props.opportunity;
 
         this.state = {
@@ -212,7 +212,9 @@ class OpportunityFormEdit extends Component {
                     ) : (
                         ''
                     )}
+                </div>
 
+                <div className="row">
                     <InputText
                         label="Aantal"
                         size={'col-sm-5'}

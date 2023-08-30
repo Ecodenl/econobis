@@ -106,7 +106,7 @@ class DynamicContactGroupFilter extends Model
                 return '';
             }
             // quotationRequestStatusOrganisationOrCoach en quotationRequestStatusOccupant omzetten
-            if ($this->field == 'quotationRequestStatusOrganisationOrCoach' || 'quotationRequestStatusOccupant'){
+            if ($this->field == 'quotationRequestStatusOrganisationOrCoach' || $this->field == 'quotationRequestStatusOccupant'){
                 if($this->data){
                     $quotationRequestStatus = QuotationRequestStatus::find($this->data);
                     return $quotationRequestStatus ? $quotationRequestStatus->name : ''   ;

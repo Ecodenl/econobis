@@ -15,6 +15,7 @@ import ParticipantDetailsMutationMolliePayments from './mollie-payments';
 import moment from 'moment';
 import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
 import { connect } from 'react-redux';
+import InputText from '../../../../../components/form/InputText';
 
 function MutationFormEditDeposit({
     readOnly,
@@ -89,7 +90,7 @@ function MutationFormEditDeposit({
         let quantityMutation = participantMutationFromState.quantity;
 
         if (projectTypeCodeRef === 'loan') {
-            quantityMutation = 0;
+            return 0;
         } else {
             if (participantMutationFromProps.status.codeRef === 'interest') {
                 // next status alread selected
@@ -190,11 +191,32 @@ function MutationFormEditDeposit({
                 <>
                     <div className="row">
                         <ViewText
-                            label={'Transactiekosten'}
+                            label={'Transactiekosten (berekend)'}
                             id={'transactionCostsAmount'}
                             className={'col-sm-6 form-group'}
                             value={MoneyPresenter(calculateTransactionCostsAmount())}
                         />
+                        {participantMutationFromState.createdWith === 'econobis' &&
+                        (participantMutationFromProps.status.codeRef === 'option' ||
+                            participantMutationFromProps.status.codeRef === 'granted') ? (
+                            <InputText
+                                type={'number'}
+                                label={'Transactiekosten (afwijkend)'}
+                                id={'differentTransactionCostsAmount'}
+                                name={'differentTransactionCostsAmount'}
+                                labelClassName={
+                                    calculateTransactionCostsAmount() !=
+                                    participantMutationFromState.differentTransactionCostsAmount
+                                        ? 'text-danger'
+                                        : ''
+                                }
+                                value={participantMutationFromState.differentTransactionCostsAmount}
+                                onChangeAction={handleInputChange}
+                                required={'required'}
+                                error={errors.differentTransactionCostsAmount}
+                                errorMessage={errorMessage.differentTransactionCostsAmount}
+                            />
+                        ) : null}
                     </div>
                 </>
             )}

@@ -40,18 +40,18 @@ class CreateCooperation extends FormRequest
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
-            'hoomCampaignId' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
-            'createContactsForReportTable' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'createContactsForReportTable' => [''],
+            'emailReportTableProblems' => ['email'],
         ];
     }
 }

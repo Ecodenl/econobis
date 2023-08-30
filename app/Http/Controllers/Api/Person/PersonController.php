@@ -47,7 +47,7 @@ class PersonController extends ApiController
                 'lastNamePrefixId' => 'exists:last_name_prefixes,id',
                 'titleId' => 'exists:titles,id',
                 'dateOfBirth' => 'date',
-                'hoomAccountId' => 'string',
+                'hoomAccountId' => '',
             ]);
 
         $contactData = $this->sanitizeData($request['person'], [
@@ -234,7 +234,7 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
-            'hoomAccountId' => 'string',
+            'hoomAccountId' => '',
         ]);
 
         $personData = $request->validate([

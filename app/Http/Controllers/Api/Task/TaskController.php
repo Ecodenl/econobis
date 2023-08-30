@@ -46,8 +46,7 @@ class TaskController extends Controller
 
     public function calendar(Request $request)
     {
-        // Show only tasks which are not finished
-        $tasks = Task::whereBetween('date_planned_start', [$request->startDate, $request->endDate])->where('finished', false)->get();
+        $tasks = Task::whereBetween('date_planned_start', [$request->startDate, $request->endDate])->get();
 
         return CalendarTask::collection($tasks);
     }
@@ -168,7 +167,7 @@ class TaskController extends Controller
 
         $task->fill($data);
 
-        if($task->isDirty('finished') && $task->finished){
+        if( $task->getOriginal('finished') != $task->finished && $task->finished ){
             $task->date_finished = Carbon::today();
             $task->finished_by_id = Auth::id();
         }

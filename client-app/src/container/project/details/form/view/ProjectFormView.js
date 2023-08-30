@@ -21,6 +21,10 @@ const ProjectFormView = props => {
         dateEnd,
         dateEntry,
         dateProduction,
+        dateInterestBearing,
+        dateInterestBearingRedemption,
+        kwhStartHighNextRevenue,
+        kwhStartLowNextRevenue,
         dateInterestBearingKwh,
         dateStartRegistrations,
         dateEndRegistrations,
@@ -144,10 +148,14 @@ const ProjectFormView = props => {
                 dateEntry={dateEntry}
                 dateProduction={dateProduction}
                 dateInterestBearingKwh={dateInterestBearingKwh}
+                dateInterestBearing={dateInterestBearing}
+                dateInterestBearingRedemption={dateInterestBearingRedemption}
                 isMembershipRequired={isMembershipRequired}
                 visibleForAllContacts={visibleForAllContacts}
                 textInfoProjectOnlyMembers={textInfoProjectOnlyMembers}
                 requiresContactGroups={requiresContactGroups}
+                kwhStartHighNextRevenue={kwhStartHighNextRevenue}
+                kwhStartLowNextRevenue={kwhStartLowNextRevenue}
                 documentTemplateAgreement={documentTemplateAgreement}
                 emailTemplateAgreement={emailTemplateAgreement}
                 linkAgreeTerms={linkAgreeTerms}

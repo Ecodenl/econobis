@@ -40,7 +40,6 @@ class UpdateCooperation extends FormRequest
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
-            'hoomCampaignId' => [''],
             'sendEmail' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
@@ -48,11 +47,12 @@ class UpdateCooperation extends FormRequest
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
             'requireTwoFactorAuthentication' => [''],
-            'createContactsForReportTable' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
             'inspectionRecordedEmailTemplateId' => [''],
             'inspectionReleasedEmailTemplateId' => [''],
+            'createContactsForReportTable' => [''],
+            'emailReportTableProblems' => ['email'],
         ];
     }
 }

@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Cooperation;
 
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullCooperation extends JsonResource
@@ -29,11 +28,10 @@ class FullCooperation extends JsonResource
             'website' => $this->website,
             'logoFilename' => $this->logo_filename,
             'logoName' => $this->logo_name,
-            'hoomLink' => $this->hoom_link,
-            'hoomConnectCoachLink' => $this->hoom_connect_coach_link,
+            'hoomLink' => $this->hoom_link ? $this->hoom_link : '',
+            'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
-            'hoomCampaignId' => $this->hoom_campaign_id ? $this->hoom_campaign_id : '',
-            'hoomCampaign' => ['name' => $this->hoomCampaign ? $this->hoomCampaign->name : ''],
+            'hoomCampaigns' => FullCooperationHoomCampaign::collection($this->whenLoaded('hoomCampaigns')),
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
@@ -42,7 +40,6 @@ class FullCooperation extends JsonResource
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
-            'createContactsForReportTable' => $this->create_contacts_for_report_table,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
@@ -58,6 +55,10 @@ class FullCooperation extends JsonResource
             'inspectionReleasedEmailTemplate' => ['name' => $this->inspectionReleasedEmailTemplate ? $this->inspectionReleasedEmailTemplate->name : ''],
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
+            'createContactsForReportTable' => $this->create_contacts_for_report_table,
+            'emailReportTableProblems' => $this->email_report_table_problems ? $this->email_report_table_problems : '',
+            'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_last_created,
+            'createContactsForReportTableInProgress' => $this->create_contacts_for_report_table_in_progress,
         ];
     }
 }

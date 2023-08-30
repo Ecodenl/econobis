@@ -78,7 +78,7 @@ class ContactGroupController extends Controller
         if(!$contactGroupAutorized){
             abort(403, 'Niet geautoriseerd.');
         }
-        $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
+        $contactGroupAutorized->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
         return FullContactGroup::make($contactGroupAutorized);
     }
 
@@ -379,7 +379,12 @@ class ContactGroupController extends Controller
 
     public function syncContactGroupLapostaList(ContactGroup $contactGroup)
     {
-        $this->syncLapostaList($contactGroup);
+        $syncLapostaListId = $this->syncLapostaList($contactGroup);
+//        if($syncLapostaListId == false){
+//            Log::info('syncContactGroupLapostaList NIET ok');
+//        } else {
+//            Log::info('syncContactGroupLapostaList Ok for id: ' . $syncLapostaListId);
+//        }
 
         if (count($this->getErrorMessagesLaposta())) {
             throw ValidationException::withMessages(array("econobis" => $this->getErrorMessagesLaposta()));
@@ -399,6 +404,9 @@ class ContactGroupController extends Controller
                 $lapostaListHelper = new LapostaListHelper($contactGroup->simulatedGroup, true);
                 $lapostaListId = $lapostaListHelper->updateList();
                 $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+                if($lapostaListId == false){
+                    return false;
+                }
 
                 $contactGroupToAdd = $contactGroup->getAllContacts()->diff($contactGroup->simulatedGroup->getAllContacts());
                 foreach ($contactGroupToAdd as $contact){
@@ -435,6 +443,9 @@ class ContactGroupController extends Controller
                 $lapostaListHelper = new LapostaListHelper($contactGroup, true);
                 $lapostaListId = $lapostaListHelper->updateList();
                 $this->errorMessagesLaposta = array_merge($this->errorMessagesLaposta, $lapostaListHelper->getMessages() );
+                if($lapostaListId == false){
+                    return false;
+                }
 
                 if($contactGroup->laposta_list_id){
                     $contactGroupToUpdate = $contactGroup->contacts->whereNull('pivot.laposta_member_id');
@@ -522,7 +533,7 @@ class ContactGroupController extends Controller
             if($contactGroup->simulatedGroup){
                 $contactGroupToUpdate = $contactGroup->simulatedGroup->contacts->whereNotNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact) {
-                    $contactGroup->simulatedGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                    $contactGroup->simulatedGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null, 'laposta_last_error_message' => null]);
                 }
                 $contactGroup->simulatedGroup->laposta_list_id = null;
                 $contactGroup->simulatedGroup->laposta_list_created_at = null;
@@ -530,7 +541,7 @@ class ContactGroupController extends Controller
             }else{
                 $contactGroupToUpdate = $contactGroup->contacts->whereNotNull('pivot.laposta_member_id');
                 foreach ($contactGroupToUpdate as $contact) {
-                    $contactGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null]);
+                    $contactGroup->contacts()->updateExistingPivot($contact->id, ['laposta_member_id' => null, 'laposta_member_state' => null, 'laposta_last_error_message' => null]);
                 }
                 $contactGroup->laposta_list_id = null;
                 $contactGroup->laposta_list_created_at = null;

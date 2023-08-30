@@ -57,8 +57,8 @@ class EndPointAfspraakController extends EndPointHoomDossierController
         if(!$dataContent->appointment_date) {
             $this->error('Geen appointment_date meegegeven', 404);
         }
-        if(!$this->cooperation->hoom_campaign_id) {
-            $this->error('Geen Hoomdossier campagne voor cooperatie gevonden', 404);
+        if(!$this->cooperation->hoomCampaigns) {
+            $this->error('Geen Hoomdossier campagnes voor cooperatie gevonden', 404);
         }
         if(!$dataContent->coaches) {
             $this->error('Geen coach meegegeven', 404);
@@ -75,15 +75,33 @@ class EndPointAfspraakController extends EndPointHoomDossierController
     {
         $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
 
+        $hoomCampaigns = $this->cooperation->hoomCampaigns;
+
         $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
             ->where('contact_id', $this->coach->id)
-            ->WhereHas('opportunity', function($query){
-                $query->WhereHas('intake', function($query2){
-                    $query2->where('contact_id', $this->contact->id)
-                        ->where('campaign_id', $this->cooperation->hoom_campaign_id);
+            ->WhereHas('opportunity', function($query) use ($hoomCampaigns) {
+                $query->where(function ($query2) use ($hoomCampaigns) {
+                    foreach ($hoomCampaigns as $hoomCampaign) {
+                        $query2->orWhere(function ($query3) use ($hoomCampaign) {
+                            $query3->where(function ($query4) use ($hoomCampaign) {
+                                $query4->WhereHas('intake', function ($query5) use ($hoomCampaign) {
+                                    $query5->where('contact_id', $this->contact->id)
+                                        ->where(function ($query6) use ($hoomCampaign) {
+                                            $query6->where('campaign_id', $hoomCampaign->campaign_id);
+                                        });
+                                });
+                            });
+                            if($hoomCampaign->measure_id != null){
+                                $query3->whereHas('measures', function ($query7) use ($hoomCampaign) {
+                                    $query7->where('measure_id', $hoomCampaign->measure_id);
+                                });
+                            }
+                        });
+                    }
                 });
             })
             ->orderby('id', 'desc')->first();
+
         if(!$quotationRequest) {
             $this->error('Afspraak niet gevonden in Econobis', 404);
         }
@@ -91,7 +109,7 @@ class EndPointAfspraakController extends EndPointHoomDossierController
         $quotationRequest->date_planned = Carbon::parse($dataContent->appointment_date);
         $quotationRequest->save();
 
-        $this->log('Afspraak ' .  Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i'). ' bijgewerkt voor bezoek coach ' . $this->coach->full_name_fnf . ' bij bewoner ' . $this->contact->full_name_fnf);
+        $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' bijgewerkt voor bezoek coach ' . ($this->coach ? $this->coach->full_name_fnf : 'onbekend') . ' bij bewoner ' . ($this->contact ? $this->contact->full_name_fnf : 'onbekend') );
     }
 
 }

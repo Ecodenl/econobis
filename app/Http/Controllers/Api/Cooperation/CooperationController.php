@@ -9,11 +9,16 @@
 namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationHoomCampaign;
 use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
+use App\Http\Requests\Cooperation\CreateCooperationHoomCampaign;
 use App\Http\Requests\Cooperation\UpdateCooperation;
+use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
+use App\Http\Resources\Cooperation\FullCooperationHoomCampaign;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
 class CooperationController extends ApiController
@@ -26,7 +31,7 @@ class CooperationController extends ApiController
 
         $cooperation = Cooperation::first();
 
-        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate']);
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns']);
 
         return FullCooperation::make($cooperation);
     }
@@ -36,9 +41,6 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation = new Cooperation($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -62,6 +64,9 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
 
         // Store attachment when given
@@ -70,17 +75,17 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
     }
 
     public function update(UpdateCooperation $request, Cooperation $cooperation)
     {
         $this->authorize('manage', Cooperation::class);
 
+        $currentCreateContactsForReportTable = $cooperation->create_contacts_for_report_table;
+
         $cooperation->fill($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
+
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -104,7 +109,17 @@ class CooperationController extends ApiController
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
+        if($cooperation->email_report_table_problems == '') {
+            $cooperation->email_report_table_problems = null;
+        }
         $cooperation->save();
+
+        //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
+        if($currentCreateContactsForReportTable === true && $cooperation->create_contacts_for_report_table === false) {
+            DB::table('contact_groups_contacts_for_report')->truncate();
+            $cooperation->create_contacts_for_report_table_last_created = null;
+            $cooperation->save();
+        }
 
         // Store attachment when given
         if($request->file('attachment')){
@@ -112,7 +127,39 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
+    }
+
+    public function storeHoomCampaign(CreateCooperationHoomCampaign $request)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign = new CooperationHoomCampaign($request->validatedSnake());
+        if($cooperationHoomCampaign->measure_id == '') {
+            $cooperationHoomCampaign->measure_id = null;
+        }
+        $cooperationHoomCampaign->save();
+
+        return FullCooperationHoomCampaign::make($cooperationHoomCampaign);
+    }
+    public function updateHoomCampaign(UpdateCooperationHoomCampaign $request, CooperationHoomCampaign $cooperationHoomCampaign)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign->fill($request->validatedSnake());
+
+        if($cooperationHoomCampaign->measure_id == '') {
+            $cooperationHoomCampaign->measure_id = null;
+        }
+        $cooperationHoomCampaign->save();
+
+        return FullCooperationHoomCampaign::make($cooperationHoomCampaign);
+    }
+    public function destroyHoomCampaign(CooperationHoomCampaign $cooperationHoomCampaign)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign->delete();
     }
 
     private function checkStorageDir(){

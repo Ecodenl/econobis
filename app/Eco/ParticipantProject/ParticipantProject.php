@@ -13,10 +13,12 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueDistribution;
+use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -210,12 +212,65 @@ class ParticipantProject extends Model
         return $mutationDefinitiveLast ? $mutationDefinitiveLast->date_entry : null;
     }
 
+    public function getDateTerminatedAllowedFromAttribute()
+    {
+        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
+        $dateInterestBearing = $this->project->date_interest_bearing
+            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
+            : null;
+        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
+            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
+            : null;
+        $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
+            ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
+            : null;
+        $dateEntryLastMutation = $this->date_entry_last_mutation
+            ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
+            : null;
+        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
+            $dateTerminatedAllowedFrom = $dateInterestBearing;
+        }
+        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
+            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
+        }
+        if ($dateInterestBearingKwh != null && $dateInterestBearingKwh > $dateTerminatedAllowedFrom) {
+            $dateTerminatedAllowedFrom = $dateInterestBearingKwh;
+        }
+        if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
+            $dateTerminatedAllowedFrom = $dateEntryLastMutation;
+        }
+        return Carbon::parse($dateTerminatedAllowedFrom)->subDay(1)->format('Y-m-d');
+    }
+
+
     // Return if projectparicipant already has a link in a non-concept revenue distribution
     public function getParticipantInDefinitiveRevenueAttribute()
     {
         $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
         $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
         return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
+    }
+
+    // Return if projectparicipant is in a sce or pcr project
+    public function getParticipantInSceOrPcrProjectAttribute()
+    {
+        if($this->date_terminated != null){
+            return false;
+        }
+
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        return ($this->project->is_sce_project == true || $this->project->project_type_id == $pcrTypeId);
+    }
+
+    // Return if projectparicipant is not in a sce and not in pcr project
+    public function getParticipantNotInSceOrPcrProjectAttribute()
+    {
+        if($this->date_terminated != null){
+            return false;
+        }
+
+        $pcrTypeId = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        return ($this->project->is_sce_project == false && $this->project->project_type_id != $pcrTypeId);
     }
 
     public function getHasNotConfirmedRevenuesKwh(){

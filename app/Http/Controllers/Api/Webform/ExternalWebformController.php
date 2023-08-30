@@ -1923,7 +1923,7 @@ class ExternalWebformController extends Controller
         $document->filename = $fileName;
         $document->contact_id = $intake->contact_id;
         $document->intake_id = $intake->id;
-        // todo WM: dit moet nog anders !!!
+
         if($opportunity){
             $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
@@ -1933,13 +1933,6 @@ class ExternalWebformController extends Controller
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
         }
         $document->document_created_from_id = $documentCreatedFromId;
-
-        // voor alsnog deze Ids niet vullen
-//        $document->template_id = ??;
-//        $document->campaign_id = ??;
-//        $document->housing_file_id = ??;
-//        $document->quotation_request_id = ??;
-//        $document->measure_id = ??;
 
         $document->save();
 
@@ -1984,18 +1977,11 @@ class ExternalWebformController extends Controller
             $document->document_group = 'general';
             $document->filename = $fileName;
             $document->contact_id = $contact->id;
-            // todo WM: dit moet nog anders !!!
+
             $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
 
             $document->document_created_from_id = $documentCreatedFromId;
-
-            // voor alsnog deze Ids niet vullen
-            //        $document->template_id = ??;
-            //        $document->campaign_id = ??;
-            //        $document->housing_file_id = ??;
-            //        $document->quotation_request_id = ??;
-            //        $document->measure_id = ??;
 
             $document->save();
 

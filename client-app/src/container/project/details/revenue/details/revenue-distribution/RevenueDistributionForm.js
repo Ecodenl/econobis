@@ -370,7 +370,11 @@ class RevenueDistributionForm extends Component {
                 `". Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief."`;
         }
         document.body.style.cursor = 'wait';
-        ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds, this.state.description)
+        ProjectRevenueAPI.createPaymentInvoices(
+            this.state.datePayout,
+            this.state.distributionIds,
+            this.state.description
+        )
             .then(payload => {
                 document.body.style.cursor = 'default';
                 this.setState({
@@ -541,6 +545,7 @@ class RevenueDistributionForm extends Component {
                                             size={'col-md-7'}
                                             labelSize={'col-md-5'}
                                             divSize={'col-md-12'}
+                                            maxLength={100}
                                             onChangeAction={this.handleInputChange}
                                             value={this.state.description}
                                         />

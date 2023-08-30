@@ -141,7 +141,7 @@ class SepaPaymentHelper
             }
 
             if($invoice->description != "") {
-                $ustrd = $this->translateToValidCharacterSet($invoice->description) . " Ref. ". $invoice->number;
+                $ustrd = substr( $this->translateToValidCharacterSet($invoice->description), 0, 100 ) . " Ref. ". $invoice->number;
             } else {
                 $ustrd = "Ref. ". $invoice->number;
             }

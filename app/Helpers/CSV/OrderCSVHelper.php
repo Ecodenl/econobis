@@ -94,10 +94,10 @@ class OrderCSVHelper
 
                 $order->payment_type = $order->getPaymentType()->name;
                 $order->status = $order->getStatus()->name;
-                $order->btw = $order->total_price_incl_vat - $order->getTotalExclVatInclReductionAttribute();
+                $order->btw = $order->getTotalInclVatInclReductionAttribute() - $order->getTotalExclVatInclReductionAttribute();
 
                 $order->btw_formatted = $this->formatFinancial($order->btw);
-                $order->total_price_incl_vat_formatted = $this->formatFinancial($order->total_price_incl_vat);
+                $order->total_incl_vat_incl_reduction_formatted = $this->formatFinancial($order->getTotalInclVatInclReductionAttribute());
                 $order->total_excl_vat_incl_reduction_formatted = $this->formatFinancial($order->getTotalExclVatInclReductionAttribute());
 
                 foreach ($order->orderProducts as $k => $orderProduct){

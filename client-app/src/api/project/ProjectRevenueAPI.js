@@ -54,12 +54,13 @@ export default {
         });
     },
 
-    createPaymentInvoices: (datePayout, distributionIds) => {
+    createPaymentInvoices: (datePayout, distributionIds, description) => {
         const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
 
         return axiosInstance.post(requestUrl, {
             distributionIds: distributionIds,
             datePayout: datePayout,
+            description : description
         });
     },
 

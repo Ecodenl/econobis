@@ -140,6 +140,12 @@ class SepaPaymentHelper
                 $iban_attn = $invoice->revenueDistribution->contact->full_name;
             }
 
+            if($invoice->description != "") {
+                $ustrd = substr( $this->translateToValidCharacterSet($invoice->description), 0, 100 ) . " Ref. ". $invoice->number;
+            } else {
+                $ustrd = "Ref. ". $invoice->number;
+            }
+
             $xml .= "\n\t\t\t<CdtTrfTxInf>";
             $xml .= "\n\t\t\t\t<PmtId>";
             $xml .= "\n\t\t\t\t\t<EndToEndId>" . $invoice->number . "</EndToEndId>";
@@ -167,7 +173,7 @@ class SepaPaymentHelper
             $xml .= "\n\t\t\t\t</CdtrAcct>";
             //ref info
             $xml .= "\n\t\t\t\t<RmtInf>";
-            $xml .= "\n\t\t\t\t\t<Ustrd>Ref. ". $invoice->number . "</Ustrd>";
+            $xml .= "\n\t\t\t\t\t<Ustrd>" . $ustrd . "</Ustrd>";
             $xml .= "\n\t\t\t\t</RmtInf>";
             $xml .= "\n\t\t\t</CdtTrfTxInf>";
         }

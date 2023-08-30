@@ -97,6 +97,7 @@ class OpportunityController extends ApiController
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
             ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
+            ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
@@ -128,6 +129,7 @@ class OpportunityController extends ApiController
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
+            ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 

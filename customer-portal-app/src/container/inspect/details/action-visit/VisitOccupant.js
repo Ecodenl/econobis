@@ -175,23 +175,32 @@ function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
                                                 history.push(`/schouwen`);
                                             }}
                                         >
-                                            Annuleren
+                                            Terug naar overzicht
                                         </Button>
-                                        <Button
-                                            className={'w-button'}
-                                            size="sm"
-                                            onClick={handleSubmit}
-                                            disabled={isSubmitting}
-                                        >
-                                            {isSubmitting ? (
-                                                <span>
-                                                    <ClipLoader color={'white'} size={14} />
-                                                    Bezig met opslaan
-                                                </span>
-                                            ) : (
-                                                'Opslaan'
-                                            )}
-                                        </Button>
+                                        {/*<Button*/}
+                                        {/*    variant={'outline-dark'}*/}
+                                        {/*    size="sm"*/}
+                                        {/*    onClick={function() {*/}
+                                        {/*        history.push(`/schouwen`);*/}
+                                        {/*    }}*/}
+                                        {/*>*/}
+                                        {/*    Annuleren*/}
+                                        {/*</Button>*/}
+                                        {/*<Button*/}
+                                        {/*    className={'w-button'}*/}
+                                        {/*    size="sm"*/}
+                                        {/*    onClick={handleSubmit}*/}
+                                        {/*    disabled={isSubmitting}*/}
+                                        {/*>*/}
+                                        {/*    {isSubmitting ? (*/}
+                                        {/*        <span>*/}
+                                        {/*            <ClipLoader color={'white'} size={14} />*/}
+                                        {/*            Bezig met opslaan*/}
+                                        {/*        </span>*/}
+                                        {/*    ) : (*/}
+                                        {/*        'Opslaan'*/}
+                                        {/*    )}*/}
+                                        {/*</Button>*/}
                                     </ButtonGroup>
                                 </Col>
                             </Row>

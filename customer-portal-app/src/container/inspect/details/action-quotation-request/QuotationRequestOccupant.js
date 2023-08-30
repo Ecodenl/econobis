@@ -123,6 +123,34 @@ function QuotationRequestOccupant({ history, initialQuotationRequest, handleSubm
                                             />
                                         )}
                                     </Field>
+                                    <FormLabel htmlFor="date_released" className={'field-label'}>
+                                        Datum uitgebracht
+                                    </FormLabel>
+                                    <Field name="dateReleased">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                id="date_released"
+                                                placeholder={'Datum uitgebracht'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
+                                    <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                        Datum akkoord bewoner
+                                    </FormLabel>
+                                    <Field name="dateApprovedClient">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                id="date_approved_client"
+                                                placeholder={'Datum akkoord bewoner'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
                                         Datum akkoord projectleider
                                     </FormLabel>

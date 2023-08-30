@@ -109,6 +109,52 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                                             />
                                         )}
                                     </Field>
+                                    {initialQuotationRequest.hasExternalParty ? (
+                                        <>
+                                            <FormLabel htmlFor="date_recorded" className={'field-label'}>
+                                                Datum opname
+                                            </FormLabel>
+                                            <Field name="dateRecorded">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="datetime-local"
+                                                        id="date_recorded"
+                                                        placeholder={'Datum opname'}
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <FormLabel htmlFor="date_released" className={'field-label'}>
+                                                Datum uitgebracht
+                                            </FormLabel>
+                                            <Field name="dateReleased">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="datetime-local"
+                                                        id="date_released"
+                                                        placeholder={'Datum uitgebracht'}
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                                Datum akkoord bewoner
+                                            </FormLabel>
+                                            <Field name="dateApprovedClient">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        id="date_approved_client"
+                                                        placeholder={'Datum akkoord bewoner'}
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </>
+                                    ) : null}
                                     <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
                                         Datum akkoord projectleider
                                     </FormLabel>
@@ -176,6 +222,13 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                                         type="text"
                                         className={`text-input w-input content`}
                                         value={initialQuotationRequest.costAdjustment}
+                                        readOnly={true}
+                                    />
+                                    <FormLabel className={'field-label'}>Bedrag toekenning</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.awardAmount}
                                         readOnly={true}
                                     />
                                     <FormLabel htmlFor="date_under_review_determination" className={'field-label'}>

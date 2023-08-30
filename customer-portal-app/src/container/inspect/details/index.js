@@ -33,6 +33,7 @@ function InspectDetails({ match, history, user }) {
             datePlannedAttempt3: values.datePlannedAttempt3,
             datePlanned: values.datePlanned,
             dateReleased: values.dateReleased,
+            dateApprovedClient: values.dateApprovedClient,
             dateApprovedProjectManager: values.dateApprovedProjectManager,
             dateApprovedExternal: values.dateApprovedExternal,
             opportunityStatusId: values.opportunity.status.id,

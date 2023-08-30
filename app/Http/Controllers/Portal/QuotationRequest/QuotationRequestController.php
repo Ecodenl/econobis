@@ -93,6 +93,7 @@ class QuotationRequestController
             'datePlanned' => ['nullable', 'date'],
             'dateRecorded' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
+            'dateApprovedClient' => ['nullable', 'date'],
             'dateApprovedProjectManager' => ['nullable', 'date'],
             'dateApprovedExternal' => ['nullable', 'date'],
             'opportunityStatusId' => ['integer'],
@@ -119,6 +120,7 @@ class QuotationRequestController
         $quotationRequest->date_planned = $request->input('datePlanned') ?: null;
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
+        $quotationRequest->date_approved_client = $request->input('dateApprovedClient') ?: null;
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
         $quotationRequest->updated_by_id = $responsibleUserId;

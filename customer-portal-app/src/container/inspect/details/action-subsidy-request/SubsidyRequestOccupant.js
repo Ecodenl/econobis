@@ -8,9 +8,9 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
-import moment from 'moment/moment';
+import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 
-function SubsidyRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit }) {
     const [pmApproved, setPmApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'pm-approved'
             ? true
@@ -76,12 +76,25 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                         readOnly={true}
                                     />
                                     <FormLabel className={'field-label'}>Budgetaanvraagbedrag</FormLabel>
-                                    <input
-                                        type="text"
-                                        className={`text-input w-input content`}
-                                        value={initialQuotationRequest.quotationAmount}
-                                        readOnly={true}
-                                    />
+                                    {initialQuotationRequest.hasExternalParty ? (
+                                        <input
+                                            type="text"
+                                            className={`text-input w-input content`}
+                                            value={initialQuotationRequest.quotationAmount}
+                                            readOnly={true}
+                                        />
+                                    ) : (
+                                        <Field name="quotationAmount">
+                                            {({ field }) => (
+                                                <InputTextCurrency
+                                                    field={field}
+                                                    errors={errors}
+                                                    touched={touched}
+                                                    id="quotation_amount"
+                                                />
+                                            )}
+                                        </Field>
+                                    )}
                                     <FormLabel htmlFor="created_at" className={'field-label'}>
                                         Datum gemaakt op
                                     </FormLabel>
@@ -96,93 +109,66 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
-                                    </FormLabel>
-                                    <Field name="dateRecorded">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="datetime-local"
-                                                id="date_recorded"
-                                                placeholder={'Datum opname'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_released" className={'field-label'}>
-                                        Datum uitgebracht
-                                    </FormLabel>
-                                    <Field name="dateReleased">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="datetime-local"
-                                                id="date_released"
-                                                placeholder={'Datum uitgebracht'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_approved_client" className={'field-label'}>
-                                        Datum akkoord bewoner
-                                    </FormLabel>
-                                    <Field name="dateApprovedClient">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                id="date_approved_client"
-                                                placeholder={'Datum akkoord bewoner'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
-                                    <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
-                                        Datum akkoord projectleider
-                                    </FormLabel>
-                                    <div style={{ display: 'flex' }}>
-                                        <div>
-                                            <Field name="dateApprovedProjectManager">
+                                    {initialQuotationRequest.hasExternalParty ? (
+                                        <>
+                                            <FormLabel htmlFor="date_recorded" className={'field-label'}>
+                                                Datum opname
+                                            </FormLabel>
+                                            <Field name="dateRecorded">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="datetime-local"
+                                                        id="date_recorded"
+                                                        placeholder={'Datum opname'}
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <FormLabel htmlFor="date_released" className={'field-label'}>
+                                                Datum uitgebracht
+                                            </FormLabel>
+                                            <Field name="dateReleased">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="datetime-local"
+                                                        id="date_released"
+                                                        placeholder={'Datum uitgebracht'}
+                                                        readOnly={true}
+                                                    />
+                                                )}
+                                            </Field>
+                                            <FormLabel htmlFor="date_approved_client" className={'field-label'}>
+                                                Datum akkoord bewoner
+                                            </FormLabel>
+                                            <Field name="dateApprovedClient">
                                                 {({ field }) => (
                                                     <InputTextDate
                                                         field={field}
                                                         type="date"
-                                                        errors={errors}
-                                                        touched={touched}
-                                                        onChangeAction={setFieldValue}
-                                                        id="date_approved_project_manager"
-                                                        placeholder={'Datum akkoord projectleider'}
+                                                        id="date_approved_client"
+                                                        placeholder={'Datum akkoord bewoner'}
+                                                        readOnly={true}
                                                     />
                                                 )}
                                             </Field>
-                                        </div>
-                                        <div>
-                                            <Button
-                                                variant={true === pmApproved ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setPmApproved(true);
-                                                    setFieldValue(
-                                                        'dateApprovedProjectManager',
-                                                        moment().format('YYYY-MM-DD')
-                                                    );
-                                                }}
-                                            >
-                                                {true === pmApproved ? 'Goedgekeurd' : 'Goedkeuren'}
-                                            </Button>
-                                            <Button
-                                                variant={false === pmApproved ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setPmApproved(false);
-                                                    setFieldValue('dateApprovedProjectManager', '');
-                                                }}
-                                            >
-                                                {false === pmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
-                                            </Button>
-                                        </div>
-                                    </div>
+                                        </>
+                                    ) : null}
+                                    <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
+                                        Datum akkoord projectleider
+                                    </FormLabel>
+                                    <Field name="dateApprovedProjectManager">
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                id="date_approved_project_manager"
+                                                placeholder={'Datum akkoord projectleider'}
+                                                readOnly={true}
+                                            />
+                                        )}
+                                    </Field>
                                     <FormLabel htmlFor="date_under_review" className={'field-label'}>
                                         Datum toekenning in behandeling
                                     </FormLabel>
@@ -211,26 +197,38 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                             />
                                         )}
                                     </Field>
-                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
-                                        Datum uitgevoerd
-                                    </FormLabel>
-                                    <Field name="dateExecuted">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                id="date_executed"
-                                                placeholder={'Datum uitgevoerd'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
-
+                                    {!initialQuotationRequest.hasExternalParty ? (
+                                        <>
+                                            <FormLabel htmlFor="date_executed" className={'field-label'}>
+                                                Datum uitgevoerd
+                                            </FormLabel>
+                                            <Field name="dateExecuted">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_executed"
+                                                        placeholder={'Datum uitgevoerd'}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </>
+                                    ) : null}
                                     <FormLabel className={'field-label'}>Kosten aanpassing</FormLabel>
                                     <input
                                         type="text"
                                         className={`text-input w-input content`}
                                         value={initialQuotationRequest.costAdjustment}
+                                        readOnly={true}
+                                    />
+                                    <FormLabel className={'field-label'}>Bedrag toekenning</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.awardAmount}
                                         readOnly={true}
                                     />
                                     <FormLabel htmlFor="date_under_review_determination" className={'field-label'}>
@@ -273,18 +271,24 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                     {initialQuotationRequest.coachOrOrganisationNote
                                         ? initialQuotationRequest.coachOrOrganisationNote
                                         : 'Geen'}
-                                    <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
+                                    <FormLabel className={'field-label'}>Opmerkingen projectleider</FormLabel>
+                                    {initialQuotationRequest.projectmanagerNote
+                                        ? initialQuotationRequest.projectmanagerNote
+                                        : 'Geen'}
+                                    {initialQuotationRequest.hasExternalParty ? (
+                                        <>
+                                            <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
+                                            {initialQuotationRequest.externalpartyNote
+                                                ? initialQuotationRequest.externalpartyNote
+                                                : 'Geen'}
+                                        </>
+                                    ) : null}
+                                    <FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>
                                     <Field
-                                        name="projectmanagerNote"
+                                        name="clientNote"
                                         component="textarea"
                                         className="form-control input-sm mb-2"
                                     />
-                                    <FormLabel className={'field-label'}>Opmerkingen externe partij</FormLabel>
-                                    {initialQuotationRequest.externalpartyNote
-                                        ? initialQuotationRequest.externalpartyNote
-                                        : 'Geen'}
-                                    <FormLabel className={'field-label'}>Opmerkingen bewoner</FormLabel>
-                                    {initialQuotationRequest.clientNote ? initialQuotationRequest.clientNote : 'Geen'}
                                 </Col>
                             </Row>
                             <br />
@@ -327,4 +331,4 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
     );
 }
 
-export default SubsidyRequestProjectManager;
+export default SubsidyRequestOccupant;

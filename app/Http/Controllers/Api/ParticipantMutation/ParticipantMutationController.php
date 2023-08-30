@@ -13,6 +13,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
@@ -93,7 +94,7 @@ class ParticipantMutationController extends ApiController
         return $melding;
    }
 
-    public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
+    public function update(RequestInput $requestInput, Request $request, ParticipantMutation $participantMutation)
     {
         $this->authorize('manage', ParticipantMutation::class);
 
@@ -133,7 +134,14 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        if($request->get('differentTransactionCostsAmount')){
+            $participantMutation->transaction_costs_amount = $request->get('differentTransactionCostsAmount');
+        } else {
+            if (($participantMutation->participation->project->projectType->code_ref === 'loan' && $participantMutation->getOriginal('amount') != $participantMutation->amount)
+                || ($participantMutation->participation->project->projectType->code_ref !== 'loan' && $participantMutation->getOriginal('quantity') != $participantMutation->quantity)) {
+                $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+            }
+        }
 
         $result = $this->checkMutationAllowed($participantMutation);
 

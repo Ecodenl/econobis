@@ -643,6 +643,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
         Route::get('free-fields/grid', 'FreeFields\FreeFieldsController@grid');
+        Route::post('free-fields/{id}/delete', 'FreeFields\FreeFieldsController@delete');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

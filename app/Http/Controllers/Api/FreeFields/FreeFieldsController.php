@@ -11,6 +11,9 @@ namespace App\Http\Controllers\Api\FreeFields;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
 use App\Http\Resources\FreeFields\GridFreeFields;
+use App\Helpers\Delete\Models\DeleteFreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsField;
+use Illuminate\Support\Facades\Log;
 
 class FreeFieldsController extends ApiController
 {
@@ -26,4 +29,12 @@ class FreeFieldsController extends ApiController
             ]);
     }
 
+    public function delete($freeFieldsField)
+    {
+        //$this->authorize('manage', FreeFieldsField::class);
+
+        $freeFieldsField = FreeFieldsField::find($freeFieldsField);
+
+        $freeFieldsField->delete();
+    }
 }

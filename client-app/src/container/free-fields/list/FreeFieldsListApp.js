@@ -107,8 +107,17 @@ function FreeFieldsListApp() {
         }
     }
 
-    function deleteFreeFieldsField() {
-        // todo hier verwerken van delete free fields field via API
+    function deleteFreeFieldsField(freeFieldsField) {
+        FreeFieldsAPI.deleteFreeFieldsField(freeFieldsField)
+            .then(payload => {
+                //setShowNewFalse(false);
+                //toggleDelete();
+                fetchFreeFieldsFields();
+            })
+            .catch(error => {
+                setLoading(false);
+                alert('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
+            });
     }
 
     return (

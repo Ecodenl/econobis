@@ -13,4 +13,10 @@ export default {
             },
         });
     },
+
+    deleteFreeFieldsField: id => {
+        const requestUrl = `${URL_API}/api/free-fields/${id}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
 };

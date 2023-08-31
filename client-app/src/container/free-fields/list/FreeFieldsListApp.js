@@ -107,6 +107,10 @@ function FreeFieldsListApp() {
         }
     }
 
+    function deleteFreeFieldsField() {
+        // todo hier verwerken van delete free fields field via API
+    }
+
     return (
         <Panel>
             <PanelBody>
@@ -127,6 +131,7 @@ function FreeFieldsListApp() {
                         handleChangeSort={handleChangeSort}
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
+                        deleteFreeFieldsField={deleteFreeFieldsField}
                     />
                 </div>
             </PanelBody>

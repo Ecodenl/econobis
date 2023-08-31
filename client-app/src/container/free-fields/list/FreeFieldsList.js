@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import FreeFieldsListItem from './FreeFieldsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
@@ -7,6 +7,7 @@ import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import FreeFieldsListHead from './FreeFieldsListHead';
 import FreeFieldsListFilter from './FreeFieldsListFilter';
+import FreeFieldsDeleteItem from './FreeFieldsDeleteItem';
 
 function FreeFieldsList({
     freeFieldsFields,
@@ -18,7 +19,21 @@ function FreeFieldsList({
     handleChangeSort,
     handleChangeFilter,
     handleKeyUp,
+    deleteFreeFieldsField,
 }) {
+    const [showDeleteItem, setShowDeleteItem] = useState(false);
+    const [deleteItem, setDeleteItem] = useState({ id: '', description: '' });
+
+    function showDeleteItemModal(id, description) {
+        setShowDeleteItem(true);
+        setDeleteItem({ id, description });
+    }
+
+    function closeDeleteItemModal() {
+        setShowDeleteItem(false);
+        setDeleteItem({ id: '', description: '' });
+    }
+
     return (
         <div>
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
@@ -30,15 +45,21 @@ function FreeFieldsList({
                     <DataTableBody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan={3}>Bezig met gegevens laden</td>
+                                <td colSpan={4}>Bezig met gegevens laden</td>
                             </tr>
                         ) : freeFieldsFields.length > 0 ? (
                             freeFieldsFields.map(freeFieldsField => {
-                                return <FreeFieldsListItem key={freeFieldsField.id} {...freeFieldsField} />;
+                                return (
+                                    <FreeFieldsListItem
+                                        key={freeFieldsField.id}
+                                        {...freeFieldsField}
+                                        showDeleteItemModal={showDeleteItemModal}
+                                    />
+                                );
                             })
                         ) : (
                             <tr>
-                                <td colSpan={3}>Geen resultaten!</td>
+                                <td colSpan={4}>Geen resultaten!</td>
                             </tr>
                         )}
                     </DataTableBody>
@@ -53,6 +74,13 @@ function FreeFieldsList({
                     />
                 </div>
             </form>
+            {showDeleteItem && (
+                <FreeFieldsDeleteItem
+                    closeDeleteItemModal={closeDeleteItemModal}
+                    {...deleteItem}
+                    deleteFreeFieldsField={deleteFreeFieldsField}
+                />
+            )}
         </div>
     );
 }

@@ -27,6 +27,7 @@ function FreeFieldsListFilter({ filter, handleChangeFilter }) {
                     onChange={e => handleChangeFilter('fieldFormatName', e.target.value)}
                 />
             </th>
+            <th />
         </tr>
     );
 }

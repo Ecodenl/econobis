@@ -16,16 +16,13 @@ class SeedFreeFieldsTables extends Migration
     {
         //
         //make permission and assign to roles inzake nieuw view permission manage_free_fields
-        $permissionManageFreeFields = Permission::findByName('manage_free_fields');
-        if( !$permissionManageFreeFields ){
-            Permission::create(['name' => 'manage_free_fields', 'guard_name' => 'api']);
-            $newViewRoles = [
-                'Key user' => ['manage_free_fields'],
-            ];
-            foreach($newViewRoles as $newViewRoleName => $permissions) {
-                $role =  Role::findByName($newViewRoleName);
-                $role->givePermissionTo($permissions);
-            }
+        Permission::create(['name' => 'manage_free_fields', 'guard_name' => 'api']);
+        $newViewRoles = [
+            'Key user' => ['manage_free_fields'],
+        ];
+        foreach($newViewRoles as $newViewRoleName => $permissions) {
+            $role =  Role::findByName($newViewRoleName);
+            $role->givePermissionTo($permissions);
         }
 
         DB::table('free_fields_tables')->insert([

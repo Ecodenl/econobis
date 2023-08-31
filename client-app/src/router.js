@@ -524,7 +524,6 @@ const Routes = () => {
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed/:type/:id" component={TaskNewApp} />
-                    <Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                     <Route path="taak/:id" component={TaskDetailsApp} />
                     <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                     <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
@@ -532,6 +531,24 @@ const Routes = () => {
                         path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
                         component={TaskNewApp}
                     />
+                    <Route
+                        path="taak/nieuw/:closed/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/nota/:invoiceId/order/:orderId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route path="taak/nieuw/:closed/order/:orderId/contact/:contactId" component={TaskNewApp} />
+                    <Route
+                        path="taak/nieuw/:closed/woningdossier/:housingFileId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    {/*<Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />*/}
                     <Route path="taken" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />

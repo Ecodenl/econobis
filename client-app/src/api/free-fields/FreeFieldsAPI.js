@@ -29,4 +29,16 @@ export default {
 
         return axiosInstance.post(requestUrl, freeField);
     },
+
+    fetchFreeFieldDetails: id => {
+        const requestUrl = `${URL_API}/api/free-fields/${id}`;
+
+        return axiosInstance.get(requestUrl).then(response => {
+            return response.data;
+        });
+    },
+
+    updateFreeField: freeField => {
+        return axiosInstance.post(`${URL_API}/api/free-fields/${freeField.id}/update`, freeField);
+    },
 };

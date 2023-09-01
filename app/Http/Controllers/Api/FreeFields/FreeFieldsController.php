@@ -8,13 +8,13 @@
 
 namespace App\Http\Controllers\Api\FreeFields;
 
-use App\Eco\Document\Document;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
 use App\Http\Resources\FreeFields\GridFreeFields;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
+use Illuminate\Support\Facades\Log;
 
 class FreeFieldsController extends ApiController
 {
@@ -59,15 +59,37 @@ class FreeFieldsController extends ApiController
         return $this->show($freeField);
     }
 
-    public function show(FreeFieldsField $freeField)
+    public function show($freeField)
     {
         //$this->authorize('view', FreeFieldsField::class);
 
-//        $freeField->load([
-//            'freeFieldsTable',
-//            'freeFieldsFieldFormat',
-//        ]);
+        $freeField = FreeFieldsField::find($freeField);
 
-        return FreeFieldsField::make($freeField);
+        $freeField->load([
+            'freeFieldsTable',
+            'freeFieldsFieldFormat',
+        ]);
+
+        return $freeField;
+    }
+
+    public function update(RequestInput $requestInput, $id)
+    {
+        //$this->authorize('manage', FreeFieldsField::class);
+
+        $data = $requestInput->integer('table_id')->whenMissing(null)->onEmpty(null)->next()
+            ->integer('field_format_id')->whenMissing(null)->onEmpty(null)->next()
+            ->string('field_name')->whenMissing(null)->onEmpty(null)->next()
+            ->boolean('mandatory')->next()
+            ->boolean('visible_portal')->next()
+            ->boolean('change_portal')->next()
+            ->string('default_value')->whenMissing(null)->onEmpty(null)->next()
+            ->get();
+
+        $freeField = FreeFieldsField::find($id);
+        $freeField->fill($data);
+        $freeField->save();
+
+        return $this->show($freeField->id);
     }
 }

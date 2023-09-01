@@ -53,7 +53,11 @@ class OrderDetailsHarmonica extends Component {
     }
 
     newTask = type => {
-        hashHistory.push(`/taak/nieuw/${type}/order/${this.props.orderDetails.id}`);
+        if (this.props.orderDetails) {
+            hashHistory.push(
+                `/taak/nieuw/${type}/order/${this.props.orderDetails.id}/contact/${this.props.orderDetails.contactId}`
+            );
+        }
     };
 
     newEmail = () => {
@@ -61,7 +65,9 @@ class OrderDetailsHarmonica extends Component {
     };
 
     newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/order/${this.props.orderDetails.id}`);
+        if (this.props.orderDetails) {
+            hashHistory.push(`/document/nieuw/${type}/order/${this.props.orderDetails.id}`);
+        }
     };
 
     render() {

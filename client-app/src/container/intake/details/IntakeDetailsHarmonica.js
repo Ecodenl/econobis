@@ -48,7 +48,7 @@ class IntakeDetailsHarmonica extends Component {
     newDocument(type) {
         if (this.props.intakeDetails) {
             hashHistory.push(
-                `/document/nieuw/${type}/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`
+                `/document/nieuw/${type}/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
             );
         }
     }

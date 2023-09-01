@@ -57,7 +57,7 @@ class OpportunityDetailsHarmonica extends Component {
     newDocument(type) {
         if (this.props.opportunityDetails) {
             hashHistory.push(
-                `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
+                `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
         }
     }

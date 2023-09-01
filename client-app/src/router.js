@@ -319,12 +319,15 @@ const Routes = () => {
                         path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
                         component={DocumentNewApp}
                     />
-                    <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                     <Route
-                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/contact/:contactId"
+                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
                         component={DocumentNewApp}
                     />
                     {/* todo WM: worden deze nog gebruikt? */}

@@ -19,4 +19,14 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    newFreeField: freeField => {
+        const requestUrl = `${URL_API}/api/free-fields`;
+
+        freeField.jory = JSON.stringify({
+            fld: ['id'],
+        });
+
+        return axiosInstance.post(requestUrl, freeField);
+    },
 };

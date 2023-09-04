@@ -103,14 +103,16 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                             >
                                 <Icon icon={trash} size={13}/>
                             </button>
-                            <button
-                                type="button"
-                                title="Openen"
-                                className={'btn btn-success btn-sm'}
-                                onClick={() => openEmailDetailsModal(email.id)}
-                            >
-                                <Icon icon={externalLink} size={13}/>
-                            </button>
+                            { email.folder !== 'concept' && (
+                                <button
+                                    type="button"
+                                    title="Openen"
+                                    className={'btn btn-success btn-sm'}
+                                    onClick={() => openEmailDetailsModal(email.id)}
+                                >
+                                    <Icon icon={externalLink} size={13}/>
+                                </button>
+                            )}
                         </div>
                     </div>
                     <div className="col-sm-6">

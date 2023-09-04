@@ -56,7 +56,7 @@ class UserDetailsFormMailbox extends Component {
                     <span className="h5 text-bold">Mailbox</span>
                 </PanelHeader>
                 <PanelBody>
-                    {this.state.showEdit && permissions.manageUser ? (
+                    {this.state.showEdit ? (
                         <UserDetailsFormMailboxEdit
                             switchToView={this.switchToView}
                         />

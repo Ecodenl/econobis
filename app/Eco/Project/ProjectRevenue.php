@@ -73,6 +73,25 @@ class ProjectRevenue extends Model
         return ($this->kwh_end - $this->kwh_start);
     }
 
+    public function getAmountRevenueAttribute()
+    {
+        $projectTypeCodeRef = (ProjectType::where('id', $this->project->project_type_id)->first())->code_ref;
+        $amountRevenue = 0;
+        switch ($projectTypeCodeRef) {
+            case 'loan':
+            case 'obligation':
+                foreach ($this->distribution as $item) {
+                    $amountRevenue += $item->payout;
+                }
+                break;
+            case 'capital':
+            case 'postalcode_link_capital':
+                $amountRevenue = $this->revenue;
+                break;
+        }
+        return $amountRevenue;
+    }
+
     public function getDistributionType()
     {
         if(!$this->distribution_type_id) return null;

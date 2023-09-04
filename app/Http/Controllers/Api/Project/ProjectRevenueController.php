@@ -141,10 +141,6 @@ class ProjectRevenueController extends ApiController
 
         $this->saveParticipantsOfDistribution($projectRevenue, false);
 
-        if ($projectRevenue->confirmed) {
-            $projectRevenue->load('distribution');
-        }
-
         $projectRevenue->load('createdBy', 'project');
 
         return FullProjectRevenue::make($projectRevenue);

@@ -44,6 +44,7 @@ class FullProjectRevenue extends JsonResource
                 'kwhEndLow' => $this->kwh_end_low,
                 'kwhResult' => $this->kwh_result,
                 'revenue' => $this->revenue,
+                'amountRevenue' => $this->amount_revenue,
                 'datePayed' => $this->date_payed,
                 'payPercentage' => $this->pay_percentage,
                 'payAmount' => $this->pay_amount,

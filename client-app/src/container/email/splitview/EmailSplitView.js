@@ -210,7 +210,7 @@ export default function EmailSplitView({router}) {
                         {contact && (
                             <span style={{marginLeft: '6px'}}>
                                 Email voor contact <strong>{contact?.fullName}</strong>
-                                <a role="button" className="btn btn-success btn-sm" onClick={() => hashHistory.push(router.location.pathname)}>
+                                <a role="button" style={{marginLeft: '10px'}} className="btn btn-success btn-sm" onClick={() => hashHistory.push(router.location.pathname)}>
                                     Filter wissen
                                 </a>
                             </span>

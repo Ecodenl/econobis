@@ -126,8 +126,13 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     protected function prepareEmailForSending()
     {
-        $this->syncContactsByGroup();
-        $this->attachGroupEmailAddressesFromGroup();
+        // 1-malig ophalen contactGroup->all_contacts !!! (zie voor verder uitleg in _todo comment bij getAllContactsAttribute in model ContactGroup)
+        // Hierna filteren we nog even op primaryEmailAddress aanwezig.
+        $contactGroupAllContacts = $this->email->contactGroup->all_contacts->filter(function ($contact) {
+            return !!$contact->primaryEmailAddress;
+        });
+        $this->syncContactsByGroup($contactGroupAllContacts);
+        $this->attachGroupEmailAddressesFromGroup($contactGroupAllContacts);
 
         $this->email->html_body
             = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
@@ -183,24 +188,21 @@ class ProcessSendingGroupEmail implements ShouldQueue
         }
     }
 
-    protected function attachGroupEmailAddressesFromGroup()
+    protected function syncContactsByGroup($contactGroupAllContacts)
     {
-        foreach ($this->email->contactGroup->all_contacts as $contact) {
-            if (!$contact->primaryEmailAddress) {
-                continue;
-            }
-
-            $this->email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-        }
-    }
-
-    protected function syncContactsByGroup()
-    {
-        $contactIds = $this->email->contactGroup->all_contacts->pluck('id');
+        $contactIds = $contactGroupAllContacts->pluck('id');
 
         /**
          * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
          */
         $this->email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
     }
+
+    protected function attachGroupEmailAddressesFromGroup($contactGroupAllContacts)
+    {
+        $emailAddressIds = $contactGroupAllContacts->pluck('primaryEmailAddress.id');
+
+        $this->email->groupEmailAddresses()->attach($emailAddressIds->unique()->toArray());
+    }
+
 }

@@ -85,6 +85,14 @@ class UserController extends Controller
 
     public function update(User $user, RequestInput $input, Request $request)
     {
+        /**
+         * Aparte functie voor default mailbox aanroepen omdat hier andere permissie check op zit.
+         */
+        $data = $request->all();
+        if(count($data) === 2 && array_key_exists('defaultMailboxId', $data) && array_key_exists('id', $data)) {
+            return $this->updateDefaultMailbox($user, $request);
+        }
+
         $this->authorize('update', $user);
 
         $resetTwoFactorAuthentication = false;
@@ -115,6 +123,18 @@ class UserController extends Controller
         }
 
         return $this->show($user->fresh());
+    }
+
+    public function updateDefaultMailbox(User $user, Request $request)
+    {
+        /**
+         * Mailbox mag elke gebruiker voor zichzelf wijzigen ongeacht zijn rechten.
+         */
+        $this->authorize('update-default-mailbox', $user);
+        $user->default_mailbox_id = $request->input('defaultMailboxId');
+        $user->save();
+
+        return $this->show($user);
     }
 
     public function withPermission(Permission $permission)

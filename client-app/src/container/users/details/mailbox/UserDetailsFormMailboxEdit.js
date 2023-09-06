@@ -41,7 +41,14 @@ class UserDetailsFormMailbox extends Component {
         user.titleId = user.titleId ? user.titleId : '';
         user.lastNamePrefixId = user.lastNamePrefixId ? user.lastNamePrefixId : '';
 
-        this.props.updateUser(user, this.props.switchToView);
+        /**
+         * Alleen id en defaultMailboxId meegeven omdat de gebruiker deze ook voor zichzelf mag wijzigen ongeacht zijn rechten.
+         * Als we alle andere velden ook meegeven heeft de gebruiker meer rechten nodig.
+         */
+        this.props.updateUser({
+            id: user.id,
+            defaultMailboxId: user.defaultMailboxId,
+        }, this.props.switchToView);
     };
 
     componentDidMount() {

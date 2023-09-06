@@ -47,6 +47,7 @@ class ProcessSendingEmail implements ShouldQueue
             $this->prepareEmailForSending();
             $updatedEmail = $this->getMailJob()->handle();
             $this->markEmailAsSent($updatedEmail);
+            $this->convertEmailAddressIdsToEmailAddresses();
         }catch (\Exception $e){
             $hasError = true;
         }
@@ -122,5 +123,16 @@ class ProcessSendingEmail implements ShouldQueue
         $contactIds = EmailAddress::whereIn('id', $emailAddressIds)->pluck('contact_id');
 
         $email->contacts()->sync($contactIds->unique()->toArray());
+    }
+
+    protected function convertEmailAddressIdsToEmailAddresses()
+    {
+        $email = $this->email;
+
+        $email->to = $email->getToRecipients()->getEmailAdresses()->toArray();
+        $email->cc = $email->getCcRecipients()->getEmailAdresses()->toArray();
+        $email->bcc = $email->getBccRecipients()->getEmailAdresses()->toArray();
+
+        $email->save();
     }
 }

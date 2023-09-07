@@ -56,7 +56,9 @@ class EmailJoryResource extends JoryResource
         $this->field('updated_at')->filterable()->sortable();
 
         $this->filter('contacts.full_name');
+        $this->filter('manualContacts.full_name');
         $this->filter('contacts.contact_id');
+        $this->filter('manualContacts.contact_id');
         $this->filter('mailbox.name');
         $this->filter('responsibleUser.first_name');
         $this->filter('responsibleUser.last_name');
@@ -81,8 +83,6 @@ class EmailJoryResource extends JoryResource
 
     public function authorize($builder, $user = null): void
     {
-        $builder->whereHas('mailbox.users', function ($query) use ($user) {
-            $query->where('users.id', $user->id);
-        });
+        $builder->whereAuthorized($user);
     }
 }

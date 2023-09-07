@@ -44,7 +44,7 @@ class MailgunHelper
 
     protected function createInboundForwardRoute(Mailbox $mailbox)
     {
-        $mailbox->inbound_mailgun_email = Str::random(24) . '@' . config('services.mailgun.domain');
+        $mailbox->inbound_mailgun_email = Str::random(24) . '@mailforward.econobis.nl'; // Iedereen gebruikt zelfde domein dus kan nog hardcoded
         $mailbox->inbound_mailgun_post_token = Str::random(32);
 
         $response = (new Client())->post('https://api.eu.mailgun.net/v3/routes', [

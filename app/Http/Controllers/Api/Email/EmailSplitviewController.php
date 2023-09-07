@@ -7,7 +7,6 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class EmailSplitviewController extends Controller
@@ -16,19 +15,19 @@ class EmailSplitviewController extends Controller
     {
         $this->authorize('view', Email::class);
 
-        $baseQuery = Email::whereAuthorized(Auth::user());
-
-        $query = Jory::on($baseQuery)
+        $query = Jory::on(Email::class) // Emails worden al uitgefilterd obv autorisatie in EmailJoryResource
             ->apply($request->input('jory'))
             ->getJoryBuilder()
             ->buildQuery();
 
-        $mails = $query->with([
+        $mails = $query->get();
+
+        $mails->load([
             'attachmentsWithoutCids',
             'responsibleUser',
             'responsibleTeam',
             'mailbox',
-        ])->get();
+        ]);
 
         return response()->json([
             'items' => $mails->map(function (Email $mail) {

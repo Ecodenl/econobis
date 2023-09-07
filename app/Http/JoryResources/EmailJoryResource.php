@@ -81,8 +81,6 @@ class EmailJoryResource extends JoryResource
 
     public function authorize($builder, $user = null): void
     {
-        $builder->whereHas('mailbox.users', function ($query) use ($user) {
-            $query->where('users.id', $user->id);
-        });
+        $builder->whereAuthorized($user);
     }
 }

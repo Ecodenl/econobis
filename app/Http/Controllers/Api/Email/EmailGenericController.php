@@ -160,6 +160,8 @@ class EmailGenericController extends Controller
 
         $forward = $email->generator()->forward();
 
+        $email->update(['status' => 'closed']);
+
         return response()->json([
             'id' => $forward->id,
         ]);

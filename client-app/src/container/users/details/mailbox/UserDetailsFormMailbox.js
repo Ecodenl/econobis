@@ -56,7 +56,7 @@ class UserDetailsFormMailbox extends Component {
                     <span className="h5 text-bold">Mailbox</span>
                 </PanelHeader>
                 <PanelBody>
-                    {this.state.showEdit ? (
+                    {this.state.showEdit && this.props.meDetails.id === this.props.userDetails.id ? (
                         <UserDetailsFormMailboxEdit
                             switchToView={this.switchToView}
                         />
@@ -73,8 +73,8 @@ class UserDetailsFormMailbox extends Component {
 
 const mapStateToProps = state => {
     return {
-        contactDetails: state.contactDetails,
         meDetails: state.meDetails,
+        userDetails: state.userDetails,
     };
 };
 

@@ -138,8 +138,8 @@ export default function EmailSplitViewDetailsHeaderPanel({email, updateEmailAttr
                         <label className="col-sm-6">Gekoppeld contact</label>
                         <div className="col-sm-6">
                             {
-                                email && email.contacts &&
-                                email.contacts.map(contact => {
+                                email &&
+                                [...email.contacts, ...email.manualContacts].map(contact => {
                                     return (
                                         <span key={contact.id}>
                                         <Link to={`/contact/${contact.id}`} className="link-underline">

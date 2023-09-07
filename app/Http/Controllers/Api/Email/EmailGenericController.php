@@ -195,9 +195,10 @@ class EmailGenericController extends Controller
     {
         $this->authorize('create', Email::class);
 
-        $mailbox = Auth::user()->defaultMailbox;
+        $mailbox = Auth::user()->getDefaultMailboxWithFallback();
+
         if(!$mailbox){
-            $mailbox = Mailbox::getDefault();
+            abort(403, 'Geen mailbox gevonden');
         }
 
         $email = new Email([

@@ -66,6 +66,12 @@ class EmailSplitviewController extends Controller
                     'fullName' => $contact->full_name,
                 ];
             }),
+            'manualContacts' => $email->manualContacts->map(function (Contact $contact) {
+                return [
+                    'id' => $contact->id,
+                    'fullName' => $contact->full_name,
+                ];
+            }),
             'toAddresses' => $email->getToRecipients()->toReactArray(),
             'ccAddresses' => $email->getCcRecipients()->toReactArray(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),

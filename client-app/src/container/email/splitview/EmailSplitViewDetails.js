@@ -7,7 +7,7 @@ import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler, deleted, folder}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
-    const [email, setEmail] = useState({attachments: [], toAddresses: []});
+    const [email, setEmail] = useState({attachments: [], toAddresses: [], contacts: [], manualContacts: []});
     const {openEmailSendModal} = useContext(EmailModalContext);
 
     useEffect(() => {

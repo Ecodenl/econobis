@@ -26,9 +26,18 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
 
     if (values.contact) {
         filter.and.push({
-            f: 'contacts.fullName',
-            o: 'like',
-            d: `%${values.contact}%`,
+            or: [
+                {
+                    f: 'contacts.fullName',
+                    o: 'like',
+                    d: `%${values.contact}%`,
+                },
+                {
+                    f: 'manualContacts.fullName',
+                    o: 'like',
+                    d: `%${values.contact}%`,
+                },
+            ]
         })
     }
 
@@ -111,8 +120,16 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
 
     if (contactId) {
         filter.and.push({
-            f: 'contacts.contactId',
-            d: contactId,
+            or: [
+                {
+                    f: 'contacts.contactId',
+                    d: contactId,
+                },
+                {
+                    f: 'manualContacts.contactId',
+                    d: contactId,
+                },
+            ]
         })
     }
 

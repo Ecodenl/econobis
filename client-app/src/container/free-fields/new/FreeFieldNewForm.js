@@ -11,6 +11,8 @@ import Panel from '../../../components/panel/Panel';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputToggle from '../../../components/form/InputToggle';
 import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
+import axios from 'axios';
+import InputReactSelect from '../../../components/form/InputReactSelect';
 
 class FreeFieldNewForm extends Component {
     constructor(props) {
@@ -26,6 +28,8 @@ class FreeFieldNewForm extends Component {
                 mandatory: false,
                 defaultValue: '',
             },
+            freeFieldsTables: [],
+            freeFieldsFieldFormats: [],
             errors: {
                 tableId: false,
                 fieldFormatId: false,
@@ -34,8 +38,22 @@ class FreeFieldNewForm extends Component {
                 changePortal: false,
                 mandatory: false,
                 defaultValue: false,
+                freeFieldsTables: false,
+                freeFieldsFieldFormats: false,
             },
         };
+        this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
+    }
+
+    componentDidMount() {
+        axios.all([FreeFieldsAPI.listFreeFieldsTables(), FreeFieldsAPI.listFreeFieldsFieldFormats()]).then(
+            axios.spread((listFreeFieldsTables, listFreeFieldsFieldFormats) => {
+                this.setState({
+                    freeFieldsTables: listFreeFieldsTables,
+                    freeFieldsFieldFormats: listFreeFieldsFieldFormats,
+                });
+            })
+        );
     }
 
     handleInputChange = event => {
@@ -71,20 +89,20 @@ class FreeFieldNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(freeField.tableId)) {
-            errors.tableId = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(freeField.fieldFormatId)) {
-            errors.fieldFormatId = true;
-            hasErrors = true;
-        }
-
-        if (validator.isEmpty(freeField.fieldName)) {
-            errors.fieldName = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.tableId)) {
+        //     errors.tableId = true;
+        //     hasErrors = true;
+        // }
+        //
+        // if (validator.isEmpty(freeField.fieldFormatId)) {
+        //     errors.fieldFormatId = true;
+        //     hasErrors = true;
+        // }
+        //
+        // if (validator.isEmpty(freeField.fieldName)) {
+        //     errors.fieldName = true;
+        //     hasErrors = true;
+        // }
 
         // if (validator.isEmpty(freeField.visiblePortal)) {
         //     errors.visiblePortal = true;
@@ -101,10 +119,10 @@ class FreeFieldNewForm extends Component {
         //     hasErrors = true;
         // }
 
-        if (validator.isEmpty(freeField.defaultValue)) {
-            errors.defaultValue = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.defaultValue)) {
+        //     errors.defaultValue = true;
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -112,11 +130,10 @@ class FreeFieldNewForm extends Component {
         !hasErrors &&
             FreeFieldsAPI.newFreeField(freeField)
                 .then(payload => {
-                    this.props.fetchSystemData();
-
-                    hashHistory.push(`/free-fields/${payload.data.data.id}`);
+                    hashHistory.push(`/vrije-velden/${payload[0].id}`);
                 })
                 .catch(function(error) {
+                    console.log(error);
                     alert('Er is iets mis gegaan met opslaan!');
                 });
     };
@@ -137,21 +154,26 @@ class FreeFieldNewForm extends Component {
                 <Panel>
                     <PanelBody>
                         <div className="row">
-                            <InputText
-                                label="Op onderdeel"
+                            <InputReactSelect
+                                label={'Op onderdeel'}
+                                id="tableId"
                                 name={'tableId'}
+                                options={this.state.freeFieldsTables.data}
                                 value={tableId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.tableId}
+                                error={this.state.errors.freeFieldsTables}
                             />
-                            <InputText
-                                label="Type"
+                            <InputReactSelect
+                                label={'Type'}
+                                id="fieldFormatId"
                                 name={'fieldFormatId'}
+                                optionName={'format_name'}
+                                options={this.state.freeFieldsFieldFormats.data}
                                 value={fieldFormatId}
-                                onChangeAction={this.handleInputChange}
+                                onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.fieldFormatId}
+                                error={this.state.errors.freeFieldsFieldFormats}
                             />
                         </div>
                         <div className="row">

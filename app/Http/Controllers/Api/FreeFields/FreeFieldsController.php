@@ -8,12 +8,14 @@
 
 namespace App\Http\Controllers\Api\FreeFields;
 
+use App\Eco\FreeFields\FreeFieldsFieldFormat;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
 use App\Http\Resources\FreeFields\GridFreeFields;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use Illuminate\Support\Facades\Log;
 
 class FreeFieldsController extends ApiController
@@ -91,5 +93,13 @@ class FreeFieldsController extends ApiController
         $freeField->save();
 
         return $this->show($freeField->id);
+    }
+
+    public function freeFieldsTablesList() {
+        return FreeFieldsTable::get();
+    }
+
+    public function freeFieldsFieldFormatsList() {
+        return FreeFieldsFieldFormat::get();
     }
 }

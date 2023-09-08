@@ -645,8 +645,10 @@ Route::namespace('Api')
         Route::get('free-fields/grid', 'FreeFields\FreeFieldsController@grid');
         Route::post('free-fields/{id}/delete', 'FreeFields\FreeFieldsController@delete');
         Route::post('free-fields', 'FreeFields\FreeFieldsController@store');
-        Route::get('/free-fields/{id}', 'FreeFields\FreeFieldsController@show');
-        Route::post('/free-fields/{id}/update', 'FreeFields\FreeFieldsController@update');
+        Route::get('free-fields/free-fields-tables/list', 'FreeFields\FreeFieldsController@freeFieldsTablesList');
+        Route::get('free-fields/free-fields-field-formats/list', 'FreeFields\FreeFieldsController@freeFieldsFieldFormatsList');
+        Route::get('free-fields/{id}', 'FreeFields\FreeFieldsController@show');
+        Route::post('free-fields/{id}/update', 'FreeFields\FreeFieldsController@update');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

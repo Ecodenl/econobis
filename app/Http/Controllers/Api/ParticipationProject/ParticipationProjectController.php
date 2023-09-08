@@ -473,18 +473,13 @@ class ParticipationProjectController extends ApiController
         DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
             $participantProject->save();
 
-            $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
-
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
             if ($payoutPercentageTerminated && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
-                $mutationTypeResultId = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $projectType->id)->value('id');
                 // Calculate result from last revenue distribution till date terminate
-                $this->createMutationResult($participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType);
+                $this->createMutationResult($participantProject, $payoutPercentageTerminated, $projectType);
             }
             // Make mutation withdrawal of total participations/loan
-            $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
-
-            $this->createMutationWithDrawal($participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType);
+            $this->createMutationWithDrawal($participantProject, $projectType);
 
             if($payoutPercentageTerminated) {
                 // Remove distributions on active revenue(s)
@@ -1092,17 +1087,18 @@ class ParticipationProjectController extends ApiController
 
     /**
      * @param ParticipantProject $participantProject
-     * @param $mutationTypeWithDrawalId
-     * @param $mutationStatusFinalId
      * @param $projectType
      */
-    protected function createMutationWithDrawal(ParticipantProject $participantProject, $mutationTypeWithDrawalId, $mutationStatusFinalId, $projectType): void
+    protected function createMutationWithDrawal(ParticipantProject $participantProject, $projectType): void
     {
         if ($projectType->code_ref == 'loan') {
             $amountOrParticipationsDefinitive = $participantProject->calculator()->amountDefinitiveForTerminating();
         } else {
             $amountOrParticipationsDefinitive = $participantProject->calculator()->participationsDefinitiveForTerminating();
         }
+
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+        $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id', $projectType->id)->value('id');
 
         if ($amountOrParticipationsDefinitive != 0) {
             $participantMutation = new ParticipantMutation();
@@ -1145,17 +1141,19 @@ class ParticipationProjectController extends ApiController
 
     /**
      * @param ParticipantProject $participantProject
-     * @param $mutationTypeWithDrawalId
-     * @param $mutationStatusFinalId
+     * @param $payoutPercentageTerminated
      * @param $projectType
      */
-    protected function createMutationResult(ParticipantProject $participantProject, $mutationTypeResultId, $mutationStatusFinalId, $payoutPercentageTerminated, $projectType): void
+    protected function createMutationResult(ParticipantProject $participantProject, $payoutPercentageTerminated, $projectType): void
     {
         $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
 
+        $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
+        $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id', $projectType->id)->value('id');
+
         $participantMutation = new ParticipantMutation();
         $participantMutation->participation_id = $participantProject->id;
-        $participantMutation->type_id = $mutationTypeResultId;
+        $participantMutation->type_id = $mutationTypeResultDepositId;
         $participantMutation->status_id = $mutationStatusFinalId;
         if ($projectType->code_ref == 'loan') {
             $participantMutation->amount = $result;

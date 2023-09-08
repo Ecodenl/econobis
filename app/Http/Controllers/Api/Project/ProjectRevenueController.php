@@ -472,7 +472,7 @@ class ProjectRevenueController extends ApiController
                 if ($distribution->payout_type_id === $payoutTypeCreditId) {
                     $participantMutation = new ParticipantMutation();
                     $participantMutation->participation_id = $distribution->participation_id;
-                    $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result')
+                    $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result_deposit')
                         ->where('project_type_id', $distribution->participation->project->project_type_id)->value('id');
                     $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')
                         ->value('id');

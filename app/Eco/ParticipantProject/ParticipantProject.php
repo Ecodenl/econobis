@@ -206,9 +206,22 @@ class ParticipantProject extends Model
     public function getDateEntryLastMutationAttribute()
     {
         $projectType = $this->project->projectType;
-        $lastMutationType = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $depositTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $lastMutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption', 'result_deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-        $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)->where('status_id', $mutationStatusFinal)->whereIn('type_id', $lastMutationType)->orderByDesc('date_entry')->first();
+        $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)
+            ->whereIn('type_id', $lastMutationTypes)
+            ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
+                $query
+                    ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
+                        $query->where('type_id', $depositTypes)
+                            ->where('status_id', $mutationStatusFinal);
+                    })
+                    ->orWhere('type_id', '!=', $depositTypes);
+            })
+            ->orderByDesc('date_entry')
+            ->first();
+
         return $mutationDefinitiveLast ? $mutationDefinitiveLast->date_entry : null;
     }
 

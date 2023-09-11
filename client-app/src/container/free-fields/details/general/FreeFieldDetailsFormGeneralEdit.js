@@ -11,6 +11,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
+import { bindActionCreators } from 'redux';
+import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 
 class FreeFieldDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -140,8 +142,8 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         !hasErrors &&
             FreeFieldsAPI.updateFreeField(freeField)
                 .then(payload => {
-                    console.log(payload.data);
-                    this.props.updateFreeField(payload.data);
+                    // console.log(payload.data);
+                    // this.props.updateFreeField(payload.data);
                     this.props.switchToView();
                 })
                 .catch(error => {
@@ -252,10 +254,12 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    updateFreeField: id => {
-        dispatch(updateFreeField(id));
-    },
-});
+// const mapDispatchToProps = dispatch => ({
+//     updateFreeField: id => {
+//         dispatch(updateFreeField(id));
+//     },
+// });
+
+const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
 export default connect(null, mapDispatchToProps)(FreeFieldDetailsFormGeneralEdit);

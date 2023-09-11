@@ -89,40 +89,40 @@ class FreeFieldNewForm extends Component {
         let errors = {};
         let hasErrors = false;
 
-        // if (validator.isEmpty(freeField.tableId)) {
-        //     errors.tableId = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(freeField.fieldFormatId)) {
-        //     errors.fieldFormatId = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(freeField.fieldName)) {
-        //     errors.fieldName = true;
-        //     hasErrors = true;
-        // }
+        if (validator.isEmpty(freeField.tableId + '')) {
+            errors.tableId = true;
+            hasErrors = true;
+        }
 
-        // if (validator.isEmpty(freeField.visiblePortal)) {
-        //     errors.visiblePortal = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(freeField.changePortal)) {
-        //     errors.changePortal = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty(freeField.mandatory)) {
-        //     errors.mandatory = true;
-        //     hasErrors = true;
-        // }
+        if (validator.isEmpty(freeField.fieldFormatId + '')) {
+            errors.fieldFormatId = true;
+            hasErrors = true;
+        }
 
-        // if (validator.isEmpty(freeField.defaultValue)) {
-        //     errors.defaultValue = true;
-        //     hasErrors = true;
-        // }
+        if (validator.isEmpty(freeField.fieldName)) {
+            errors.fieldName = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.mandatory + '')) {
+            errors.field_name = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.visiblePortal + '')) {
+            errors.visiblePortal = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.changePortal + '')) {
+            errors.changePortal = true;
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.defaultValue)) {
+            errors.defaultValue = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors });
 

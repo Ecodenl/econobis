@@ -1,4 +1,4 @@
-export const fetchFreeFieldDetails = id => {
+export const fetchFreeFieldDetails = freeField => {
     return {
         type: 'FETCH_FREE_FIELD_DETAILS',
         id,

@@ -46,6 +46,7 @@ class UserPolicy
 
     public function updateDefaultMailbox(User $user, User $model)
     {
+        // update default mailbox voor die deze permission hebben (via role_has_permissions) of voor gebruiker zelf
         if($user->id === $model->id){
             return true;
         }

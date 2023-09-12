@@ -23,16 +23,27 @@ class HousingFileDetailsHarmonica extends Component {
     }
 
     newTask() {
-        hashHistory.push(`/taak/nieuw/woningdossier/${this.props.id}`);
+        if (this.props.housingFileDetails) {
+            hashHistory.push(
+                `/taak/nieuw/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
+            );
+        }
     }
 
     newNote() {
-        hashHistory.push(`/taak/nieuw/afgehandeld/woningdossier/${this.props.id}`);
+        if (this.props.housingFileDetails) {
+            hashHistory.push(
+                `/taak/nieuw/afgehandeld/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
+            );
+        }
     }
 
     newDocument(type) {
-        // hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}`);
-        hashHistory.push(`/document/nieuw/${type}/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`);
+        if (this.props.housingFileDetails) {
+            hashHistory.push(
+                `/document/nieuw/${type}/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
+            );
+        }
     }
 
     toggleShowList(name) {

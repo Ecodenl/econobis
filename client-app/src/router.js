@@ -326,12 +326,15 @@ const Routes = () => {
                         path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
                         component={DocumentNewApp}
                     />
-                    <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                     <Route
-                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/contact/:contactId"
+                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
                         component={DocumentNewApp}
                     />
                     {/* todo WM: worden deze nog gebruikt? */}
@@ -533,7 +536,6 @@ const Routes = () => {
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed/:type/:id" component={TaskNewApp} />
-                    <Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                     <Route path="taak/:id" component={TaskDetailsApp} />
                     <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                     <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
@@ -541,6 +543,24 @@ const Routes = () => {
                         path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
                         component={TaskNewApp}
                     />
+                    <Route
+                        path="taak/nieuw/:closed/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/nota/:invoiceId/order/:orderId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route path="taak/nieuw/:closed/order/:orderId/contact/:contactId" component={TaskNewApp} />
+                    <Route
+                        path="taak/nieuw/:closed/woningdossier/:housingFileId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    {/*<Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />*/}
                     <Route path="taken" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />

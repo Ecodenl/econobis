@@ -1,13 +1,13 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 
-import {fetchUserDetails, updateUser} from '../../../../actions/user/UserDetailsActions';
+import { fetchUserDetails, updateUser } from '../../../../actions/user/UserDetailsActions';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
-import MailboxAPI from "../../../../api/mailbox/MailboxAPI";
-import InputSelect from "../../../../components/form/InputSelect";
+import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
+import InputSelect from '../../../../components/form/InputSelect';
 
-class UserDetailsFormMailbox extends Component {
+class UserDetailsFormMailboxEdit extends Component {
     constructor(props) {
         super(props);
 
@@ -36,7 +36,7 @@ class UserDetailsFormMailbox extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const {user} = this.state;
+        const { user } = this.state;
 
         user.titleId = user.titleId ? user.titleId : '';
         user.lastNamePrefixId = user.lastNamePrefixId ? user.lastNamePrefixId : '';
@@ -45,10 +45,13 @@ class UserDetailsFormMailbox extends Component {
          * Alleen id en defaultMailboxId meegeven omdat de gebruiker deze ook voor zichzelf mag wijzigen ongeacht zijn rechten.
          * Als we alle andere velden ook meegeven heeft de gebruiker meer rechten nodig.
          */
-        this.props.updateUser({
-            id: user.id,
-            defaultMailboxId: user.defaultMailboxId,
-        }, this.props.switchToView);
+        this.props.updateUser(
+            {
+                id: user.id,
+                defaultMailboxId: user.defaultMailboxId,
+            },
+            this.props.switchToView
+        );
     };
 
     componentDidMount() {
@@ -59,13 +62,12 @@ class UserDetailsFormMailbox extends Component {
         });
     }
 
-
     render() {
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
                 <div className="row">
                     <InputSelect
-                        label={"Standaard afzender e-mail"}
+                        label={'Standaard afzender e-mail'}
                         id="defaultMailboxId"
                         size={'col-sm-6'}
                         name={'defaultMailboxId'}
@@ -106,9 +108,9 @@ const mapDispatchToProps = dispatch => ({
     updateUser: (id, switchToView) => {
         dispatch(updateUser(id, switchToView));
     },
-    fetchUserDetails: (id) => {
+    fetchUserDetails: id => {
         dispatch(fetchUserDetails(id));
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsFormMailbox);
+export default connect(mapStateToProps, mapDispatchToProps)(UserDetailsFormMailboxEdit);

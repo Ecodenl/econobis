@@ -32,6 +32,7 @@ use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MailboxController extends Controller
@@ -293,7 +294,11 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
+        if(Auth::user()->hasPermissionTo('manage_user', 'api')){
+            $mailboxes = Mailbox::select(DB::raw('id as mailbox_id'), 'email')->where('is_active', 1)->orderBy('name')->get();
+        } else {
+            $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->orderBy('name')->get();
+        }
 
         return LoggedInEmailPeek::collection($mailboxes);
     }

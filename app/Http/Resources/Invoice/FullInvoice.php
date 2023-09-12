@@ -31,6 +31,7 @@ class FullInvoice extends JsonResource
                 'invoiceNumber' => $this->invoice_number,
                 'number' => $this->number,
 
+                'contactId' => $this->order->contact_id,
                 'orderId' => $this->order_id,
                 'order' => FullOrder::make($this->whenLoaded('order')),
 

@@ -112,7 +112,6 @@ class UserController extends Controller
             ->string('mobile')->next()
             ->boolean('active')->next()
             ->string('occupation')->next()
-            ->string('defaultMailboxId')->validate('exists:mailboxes,id')->onEmpty(null)->alias('default_mailbox_id')->next()
             ->get();
 
         $user->fill($data);

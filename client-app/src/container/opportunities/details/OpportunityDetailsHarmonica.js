@@ -38,33 +38,34 @@ class OpportunityDetailsHarmonica extends Component {
     }
 
     newTask() {
-        if (this.props.opportunityDetails.intake) {
+        if (this.props.opportunityDetails) {
             hashHistory.push(
-                `/taak/nieuw/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
+                `/taak/nieuw/open/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
-        } else {
-            hashHistory.push(`/taak/nieuw/kans/${this.props.id}`);
         }
     }
 
     newNote() {
-        if (this.props.opportunityDetails.intake) {
+        if (this.props.opportunityDetails) {
             hashHistory.push(
-                `/taak/nieuw/afgehandeld/kans/${this.props.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
+                `/taak/nieuw/afgehandeld/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
             );
-        } else {
-            hashHistory.push(`/taak/nieuw/afgehandeld/kans/${this.props.id}`);
         }
     }
 
+    // todo hier bij newDocument zouden we eventueel ook campaignId meteen kunnen meegeven en vullen ??
     newDocument(type) {
-        hashHistory.push(
-            `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
-        );
+        if (this.props.opportunityDetails) {
+            hashHistory.push(
+                `/document/nieuw/${type}/kans/${this.props.id}/intake/${this.props.opportunityDetails.intake.id}/campagne/${this.props.opportunityDetails.intake.campaign.id}/contact/${this.props.opportunityDetails.intake.contact.id}`
+            );
+        }
     }
 
     newEmail() {
-        hashHistory.push(`/email/nieuw/kans/${this.props.id}/${this.props.opportunityDetails.intake.contact.id}`);
+        if (this.props.opportunityDetails) {
+            hashHistory.push(`/email/nieuw/kans/${this.props.id}/${this.props.opportunityDetails.intake.contact.id}`);
+        }
     }
 
     render() {

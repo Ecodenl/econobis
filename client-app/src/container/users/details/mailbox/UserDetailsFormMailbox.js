@@ -56,14 +56,11 @@ class UserDetailsFormMailbox extends Component {
                     <span className="h5 text-bold">Mailbox</span>
                 </PanelHeader>
                 <PanelBody>
-                    {this.state.showEdit && this.props.meDetails.id === this.props.userDetails.id ? (
-                        <UserDetailsFormMailboxEdit
-                            switchToView={this.switchToView}
-                        />
+                    {this.state.showEdit &&
+                    (permissions.manageUser || this.props.meDetails.id === this.props.userDetails.id) ? (
+                        <UserDetailsFormMailboxEdit switchToView={this.switchToView} />
                     ) : (
-                        <UserDetailsFormMailboxView
-                            switchToEdit={this.switchToEdit}
-                        />
+                        <UserDetailsFormMailboxView switchToEdit={this.switchToEdit} />
                     )}
                 </PanelBody>
             </Panel>

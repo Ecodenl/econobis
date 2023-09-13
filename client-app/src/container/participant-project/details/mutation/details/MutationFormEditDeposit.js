@@ -30,7 +30,6 @@ function MutationFormEditDeposit({
     errorMessage,
     buttonText,
     participantProjectDateRegister,
-    participantInDefinitiveRevenue,
     projectDateInterestBearingKwh,
 }) {
     let disableBeforeEntryDate = '';
@@ -157,7 +156,6 @@ function MutationFormEditDeposit({
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
-                    participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                     disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
@@ -212,7 +210,6 @@ MutationFormEditDeposit.propTypes = {
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
     participantProjectDateRegister: PropTypes.any,
-    participantInDefinitiveRevenue: PropTypes.bool,
 };
 
 export default MutationFormEditDeposit;

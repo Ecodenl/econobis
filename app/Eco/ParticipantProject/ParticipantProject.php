@@ -214,10 +214,10 @@ class ParticipantProject extends Model
             ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
                 $query
                     ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
-                        $query->where('type_id', $depositTypes)
+                        $query->whereIn('type_id', $depositTypes)
                             ->where('status_id', $mutationStatusFinal);
                     })
-                    ->orWhere('type_id', '!=', $depositTypes);
+                    ->orWhereNotIn('type_id', $depositTypes);
             })
             ->orderByDesc('date_entry')
             ->first();
@@ -253,15 +253,6 @@ class ParticipantProject extends Model
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
         return Carbon::parse($dateTerminatedAllowedFrom)->subDay(1)->format('Y-m-d');
-    }
-
-
-    // Return if projectparicipant already has a link in a non-concept revenue distribution
-    public function getParticipantInDefinitiveRevenueAttribute()
-    {
-        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
-        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
-        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
     }
 
     // Return if projectparicipant is in a sce or pcr project

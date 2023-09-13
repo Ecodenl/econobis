@@ -14,7 +14,6 @@ const MutationFormEditStatusFinal = ({
     errors,
     errorMessage,
     projectTypeCodeRef,
-    participantInDefinitiveRevenue,
     disableBeforeEntryDate,
 }) => (
     <React.Fragment>
@@ -99,7 +98,7 @@ const MutationFormEditStatusFinal = ({
 
         <div className="row">
             {projectTypeCodeRef === 'loan' ? (
-                readOnly || participantInDefinitiveRevenue ? (
+                readOnly ? (
                     <ViewText
                         label={'Bedrag definitief'}
                         id={'amountFinal'}
@@ -115,12 +114,12 @@ const MutationFormEditStatusFinal = ({
                         value={participantMutationFromState.amountFinal}
                         onChangeAction={handleInputChange}
                         required={'required'}
-                        readOnly={participantInDefinitiveRevenue}
+                        readOnly={!participantMutationFromProps.changeAllowed}
                         error={errors.amountFinal}
                         errorMessage={errorMessage.amountFinal}
                     />
                 )
-            ) : readOnly || participantInDefinitiveRevenue ? (
+            ) : readOnly ? (
                 <ViewText
                     label={'Aantal definitief'}
                     id={'quantityFinal'}
@@ -136,12 +135,13 @@ const MutationFormEditStatusFinal = ({
                     value={participantMutationFromState.quantityFinal}
                     onChangeAction={handleInputChange}
                     required={'required'}
-                    readOnly={participantInDefinitiveRevenue}
+                    disabled={!participantMutationFromProps.changeAllowed}
+                    readOnly={!participantMutationFromProps.changeAllowed}
                     error={errors.quantityFinal}
                     errorMessage={errorMessage.quantityFinal}
                 />
             )}
-            {readOnly || participantInDefinitiveRevenue ? (
+            {readOnly ? (
                 <ViewText
                     label={'Ingangsdatum'}
                     id={'dateEntry'}
@@ -156,7 +156,7 @@ const MutationFormEditStatusFinal = ({
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={disableBeforeEntryDate}
                     required={'required'}
-                    readOnly={participantInDefinitiveRevenue}
+                    readOnly={!participantMutationFromProps.changeAllowed}
                     error={errors.dateEntry}
                 />
             )}

@@ -40,7 +40,6 @@ class FullRevenuesKwh extends JsonResource
                 'partsKwh' => GridRevenuePartsKwh::collection(RevenuePartsKwh::where('revenue_id', $this->id)->orderBy('date_begin')->get()),
                 'distributionKwh' => FullRevenueDistributionKwh::collection($this->whenLoaded('distributionKwh')),
                 'payoutKwh' => $this->payout_kwh,
-                'participantInDefinitiveRevenue' => $this->participant ? $this->participant->participantInDefinitiveRevenue : false,
                 'createdAt' => $this->created_at,
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),

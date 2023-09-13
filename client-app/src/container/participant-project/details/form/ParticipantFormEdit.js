@@ -33,13 +33,11 @@ class ParticipantFormEdit extends Component {
             dateDidUnderstandInfo,
             giftedByContactId,
             ibanPayout,
-            legalRepContactId,
             ibanPayoutAttn,
             typeId,
             powerKwhConsumption,
             dateRegister,
             dateTerminated,
-            participantInDefinitiveRevenue,
         } = props.participation;
 
         this.state = {
@@ -52,7 +50,6 @@ class ParticipantFormEdit extends Component {
                 dateDidUnderstandInfo: dateDidUnderstandInfo ? dateDidUnderstandInfo : '',
                 giftedByContactId: giftedByContactId ? giftedByContactId : '',
                 ibanPayout: ibanPayout ? ibanPayout : '',
-                legalRepContactId: legalRepContactId ? legalRepContactId : '',
                 ibanPayoutAttn: ibanPayoutAttn ? ibanPayoutAttn : '',
                 typeId: typeId ? typeId : '',
                 powerKwhConsumption: powerKwhConsumption ? powerKwhConsumption : '',
@@ -62,7 +59,6 @@ class ParticipantFormEdit extends Component {
                     ? this.props.participation.project.dateEntry
                     : '',
                 dateTerminated: dateTerminated ? dateTerminated : '',
-                participantInDefinitiveRevenue: participantInDefinitiveRevenue ? participantInDefinitiveRevenue : true,
             },
             errors: {
                 typeId: false,
@@ -368,7 +364,9 @@ class ParticipantFormEdit extends Component {
                     {dateTerminated ? (
                         <ViewText
                             label={'Datum beëindiging deelname'}
+                            id={'dateTerminated'}
                             value={dateTerminated ? moment(dateTerminated).format('DD-MM-Y') : ''}
+                            className={'col-sm-6 form-group'}
                         />
                     ) : null}
                 </div>

@@ -35,7 +35,6 @@ const MutationFormView = ({
     permissions,
     projectTypeCodeRef,
     participantMutation,
-    participantInDefinitiveRevenue,
     participantProjectDateTerminated,
 }) => {
     const {
@@ -59,9 +58,9 @@ const MutationFormView = ({
     if (status && status.codeRef !== 'final') {
         allowDelete = true;
     } else if (
+        participantMutation.changeAllowed &&
         !isPaidByMollie &&
         !financialOverviewDefinitive &&
-        !participantInDefinitiveRevenue &&
         participantProjectDateTerminated === null
     ) {
         allowDelete = true;
@@ -125,7 +124,6 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
-        participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
         participantProjectDateTerminated: state.participantProjectDetails.dateTerminated,
     };
 };

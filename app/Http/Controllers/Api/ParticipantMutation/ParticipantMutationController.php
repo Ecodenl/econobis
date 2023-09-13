@@ -160,7 +160,7 @@ class ParticipantMutationController extends ApiController
         $dateRegisterOld = $participantProject->dateEntryFirstDeposit;
 
         if($participantMutation->status->code_ref == 'final'){
-            if ($participantProject->participantInDefinitiveRevenue) {
+            if ($participantMutation->changeAllowed == false) {
                 abort(409, 'Deelnemer komt al voor in een definitieve verdeling, definitieve mutaties kunnen niet meer verwijderd worden.');
             }
             if ($participantProject->date_terminated != null) {

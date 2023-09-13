@@ -24,7 +24,6 @@ const MutationFormEdit = ({
     cancelDetails,
     participantMutationStatuses,
     participantProjectDateRegister,
-    participantInDefinitiveRevenue,
     projectDateInterestBearingKwh,
 }) => {
     const { type, statusId } = participantMutationFromState;
@@ -92,7 +91,6 @@ const MutationFormEdit = ({
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
                             participantProjectDateRegister={participantProjectDateRegister}
-                            participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
@@ -110,7 +108,6 @@ const MutationFormEdit = ({
                             cancelDetails={cancelDetails}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
-                            participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
@@ -144,7 +141,6 @@ const mapStateToProps = state => {
         projectTransactionCostsCodeRef: state.participantProjectDetails.project?.transactionCostsCodeRef,
         projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
-        participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
         projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
     };

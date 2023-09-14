@@ -6,7 +6,7 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
-function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDeleteItemModal }) {
+function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDeleteItemModal, permissions }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -20,7 +20,6 @@ function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDel
         setHighlightLine('');
     }
 
-    // todo edit vrijveld schermen moeten nog gemaakt worden
     function openItem(id) {
         hashHistory.push(`/vrije-velden/${id}`);
     }
@@ -31,18 +30,14 @@ function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDel
             <td>{fieldName}</td>
             <td>{fieldFormatName}</td>
             <td>
-                {/* todo permissions.manageFreeFields moet nog gemaakt worden*/}
-                {/*{showActionButtons && permissions.manageFreeFields ? (*/}
-                {showActionButtons ? (
+                {showActionButtons && permissions.manageFreeFields ? (
                     <a role="button" onClick={() => openItem(id)}>
                         <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
                 ) : (
                     ''
                 )}
-                {/* todo permissions.manageFreeFields moet nog gemaakt worden*/}
-                {/*{showActionButtons && permissions.manageFreeFields ? (*/}
-                {showActionButtons ? (
+                {showActionButtons && permissions.manageFreeFields ? (
                     <a role="button" onClick={() => showDeleteItemModal(id, fieldName)}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

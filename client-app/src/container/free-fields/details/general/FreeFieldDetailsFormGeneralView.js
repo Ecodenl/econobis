@@ -6,38 +6,36 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
 const FreeFieldDetailsFormGeneralView = ({
-    table_id,
-    field_format_id,
-    field_name,
+    fieldName,
     mandatory,
-    visible_portal,
-    change_portal,
-    default_value,
+    visiblePortal,
+    changePortal,
+    defaultValue,
     switchToEdit,
-    free_fields_table,
-    free_fields_field_format,
+    table,
+    fieldFormat,
 }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Op onderdeel'} value={free_fields_table.name} />
-                        <ViewText label={'Type'} value={free_fields_field_format.format_name} />
+                        <ViewText label={'Op onderdeel'} value={table.name} />
+                        <ViewText label={'Type'} value={fieldFormat.formatName} />
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Veld naam'} value={field_name} />
+                        <ViewText label={'Veld naam'} value={fieldName} />
                         <ViewText label={'Verplicht'} value={mandatory ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Zichtbaar in portaal'} value={visible_portal ? 'Ja' : 'Nee'} />
-                        <ViewText label={'Aan te passen in portaal'} value={change_portal ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Zichtbaar in portaal'} value={visiblePortal ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Aan te passen in portaal'} value={changePortal ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Standaardwaarde'} value={default_value} />
+                        <ViewText label={'Standaardwaarde'} value={defaultValue} />
                     </div>
                 </PanelBody>
             </Panel>

@@ -6,15 +6,14 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import { browserHistory } from 'react-router';
 import FreeFieldDetailsForm from '../../free-fields/details/FreeFieldDetailsForm';
 
-export default function FreeFieldDetailsApp(props) {
+function FreeFieldDetailsApp(props) {
     const [freeField, setFreeField] = useState(null);
 
     useEffect(() => {
-        fetch();
+        fetchFreeField();
     }, []);
 
-    // console.log(props.params.id);
-    const fetch = () => {
+    function fetchFreeField() {
         FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
             .then(data => {
                 setFreeField(data);
@@ -22,7 +21,7 @@ export default function FreeFieldDetailsApp(props) {
             .catch(error => {
                 alert('Er is iets misgegaan met ophalen van het vrije veld.');
             });
-    };
+    }
 
     if (!freeField) {
         return null;
@@ -50,7 +49,7 @@ export default function FreeFieldDetailsApp(props) {
                 </div>
 
                 <div className="col-md-12">
-                    <FreeFieldDetailsForm freeField={freeField} />
+                    <FreeFieldDetailsForm freeField={freeField} fetchFreeField={fetchFreeField} />
                 </div>
 
                 <div className="col-md-12 margin-10-top"></div>
@@ -58,3 +57,5 @@ export default function FreeFieldDetailsApp(props) {
         </div>
     );
 }
+
+export default FreeFieldDetailsApp;

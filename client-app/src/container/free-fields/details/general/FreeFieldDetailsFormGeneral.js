@@ -42,8 +42,7 @@ class FreeFieldDetailsFormGeneral extends Component {
     }
 
     render() {
-        const { permissions = {} } = this.props.meDetails;
-
+        const { permissions = {} } = this.props;
         return (
             <div
                 className={this.state.activeDiv}
@@ -54,7 +53,7 @@ class FreeFieldDetailsFormGeneral extends Component {
                     <FreeFieldDetailsFormGeneralEdit
                         freeField={this.props.freeField}
                         switchToView={this.switchToView}
-                        updateState={this.props.updateState}
+                        fetchFreeField={this.props.fetchFreeField}
                     />
                 ) : (
                     <FreeFieldDetailsFormGeneralView {...this.props.freeField} switchToEdit={this.switchToEdit} />
@@ -66,7 +65,6 @@ class FreeFieldDetailsFormGeneral extends Component {
 
 const mapStateToProps = state => {
     return {
-        meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
     };
 };

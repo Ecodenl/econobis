@@ -12,16 +12,19 @@ use App\Eco\FreeFields\FreeFieldsFieldFormat;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
+use App\Http\Resources\FreeFields\FullFreeFieldsField;
 use App\Http\Resources\FreeFields\GridFreeFields;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
 use Illuminate\Support\Facades\Log;
 
-class FreeFieldsController extends ApiController
+class FreeFieldsFieldController extends ApiController
 {
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', FreeFieldsField::class);
+
         $freeFields = $requestQuery->get();
 
         return GridFreeFields::collection($freeFields)
@@ -32,18 +35,21 @@ class FreeFieldsController extends ApiController
             ]);
     }
 
-    public function delete($freeFieldsField)
+    public function show(FreeFieldsField $freeFieldsField)
     {
-        //$this->authorize('manage', FreeFieldsField::class);
+        $this->authorize('view', FreeFieldsField::class);
 
-        $freeFieldsField = FreeFieldsField::find($freeFieldsField);
+        $freeFieldsField->load([
+            'freeFieldsTable',
+            'freeFieldsFieldFormat',
+        ]);
 
-        $freeFieldsField->delete();
+        return FullFreeFieldsField::make($freeFieldsField);
     }
 
     public function store(RequestInput $requestInput)
     {
-        //$this->authorize('manage', FreeFieldsField::class);
+        $this->authorize('manage', FreeFieldsField::class);
 
         $data = $requestInput->integer('tableId')->alias('table_id')->whenMissing(null)->onEmpty(null)->next()
             ->integer('fieldFormatId')->alias('field_format_id')->whenMissing(null)->onEmpty(null)->next()
@@ -54,45 +60,36 @@ class FreeFieldsController extends ApiController
             ->string('defaultValue')->alias('default_value')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
-        $freeField = new FreeFieldsField();
-        $freeField->fill($data);
-        $freeField->save();
+        $freeFieldsField = new FreeFieldsField($data);
+        $freeFieldsField->save();
 
-        return $this->show($freeField);
+        return FullFreeFieldsField::make($freeFieldsField);
     }
 
-    public function show($freeField)
+    public function update(RequestInput $requestInput, FreeFieldsField $freeFieldsField)
     {
-        //$this->authorize('view', FreeFieldsField::class);
+        $this->authorize('manage', FreeFieldsField::class);
 
-        $freeField = FreeFieldsField::find($freeField);
-
-        $freeField->load([
-            'freeFieldsTable',
-            'freeFieldsFieldFormat',
-        ]);
-
-        return $freeField;
-    }
-
-    public function update(RequestInput $requestInput, $id)
-    {
-        //$this->authorize('manage', FreeFieldsField::class);
-
-        $data = $requestInput->integer('table_id')->whenMissing(null)->onEmpty(null)->next()
-            ->integer('field_format_id')->whenMissing(null)->onEmpty(null)->next()
-            ->string('field_name')->whenMissing(null)->onEmpty(null)->next()
+        $data = $requestInput->integer('tableId')->alias('table_id')->whenMissing(null)->onEmpty(null)->next()
+            ->integer('fieldFormatId')->alias('field_format_id')->whenMissing(null)->onEmpty(null)->next()
+            ->string('fieldName')->alias('field_name')->whenMissing(null)->onEmpty(null)->next()
             ->boolean('mandatory')->next()
-            ->boolean('visible_portal')->next()
-            ->boolean('change_portal')->next()
-            ->string('default_value')->whenMissing(null)->onEmpty(null)->next()
+            ->boolean('visiblePortal')->alias('visible_portal')->next()
+            ->boolean('changePortal')->alias('change_portal')->next()
+            ->string('defaultValue')->alias('default_value')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
-        $freeField = FreeFieldsField::find($id);
-        $freeField->fill($data);
-        $freeField->save();
+        $freeFieldsField->fill($data);
+        $freeFieldsField->save();
 
-        return $this->show($freeField->id);
+        return FullFreeFieldsField::make($freeFieldsField);
+    }
+
+    public function delete(FreeFieldsField $freeFieldsField)
+    {
+        $this->authorize('manage', FreeFieldsField::class);
+
+        $freeFieldsField->delete();
     }
 
     public function freeFieldsTablesList() {

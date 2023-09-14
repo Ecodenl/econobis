@@ -1,8 +1,8 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchFreeFields: (filters, sorts, pagination) => {
-        const requestUrl = `${URL_API}/api/free-fields/grid`;
+    fetchFreeFieldsFields: (filters, sorts, pagination) => {
+        const requestUrl = `${URL_API}/api/free-fields-field/grid`;
 
         return axiosInstance.get(requestUrl, {
             params: {
@@ -15,16 +15,16 @@ export default {
     },
 
     deleteFreeFieldsField: id => {
-        const requestUrl = `${URL_API}/api/free-fields/${id}/delete`;
+        const requestUrl = `${URL_API}/api/free-fields-field/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
     },
 
-    newFreeField: freeField => {
-        const requestUrl = `${URL_API}/api/free-fields`;
+    newFreeFieldsField: freeFieldsField => {
+        const requestUrl = `${URL_API}/api/free-fields-field`;
 
         return axiosInstance
-            .post(requestUrl, freeField)
+            .post(requestUrl, freeFieldsField)
             .then(function(response) {
                 return response.data;
             })
@@ -34,25 +34,25 @@ export default {
     },
 
     fetchFreeFieldDetails: id => {
-        const requestUrl = `${URL_API}/api/free-fields/${id}`;
+        const requestUrl = `${URL_API}/api/free-fields-field/${id}`;
 
         return axiosInstance.get(requestUrl).then(response => {
-            return response.data;
+            return response.data.data;
         });
     },
 
-    updateFreeField: freeField => {
-        return axiosInstance.post(`${URL_API}/api/free-fields/${freeField.id}/update`, freeField);
+    updateFreeFieldsField: freeFieldsField => {
+        return axiosInstance.post(`${URL_API}/api/free-fields-field/${freeFieldsField.id}/update`, freeFieldsField);
     },
 
-    listFreeFieldsTables: () => {
-        const requestUrl = `${URL_API}/api/free-fields/free-fields-tables/list`;
+    peekFreeFieldsTables: () => {
+        const requestUrl = `${URL_API}/api/free-fields-field/free-fields-tables/peek`;
 
         return axiosInstance.get(requestUrl);
     },
 
-    listFreeFieldsFieldFormats: () => {
-        const requestUrl = `${URL_API}/api/free-fields/free-fields-field-formats/list`;
+    peekFreeFieldsFieldFormats: () => {
+        const requestUrl = `${URL_API}/api/free-fields-field/free-fields-field-formats/peek`;
 
         return axiosInstance.get(requestUrl);
     },

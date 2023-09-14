@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
 
@@ -8,7 +6,6 @@ import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
-import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputToggle from '../../../components/form/InputToggle';
 import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import axios from 'axios';
@@ -46,11 +43,11 @@ class FreeFieldNewForm extends Component {
     }
 
     componentDidMount() {
-        axios.all([FreeFieldsAPI.listFreeFieldsTables(), FreeFieldsAPI.listFreeFieldsFieldFormats()]).then(
-            axios.spread((listFreeFieldsTables, listFreeFieldsFieldFormats) => {
+        axios.all([FreeFieldsAPI.peekFreeFieldsTables(), FreeFieldsAPI.peekFreeFieldsFieldFormats()]).then(
+            axios.spread((payloadFreeFieldsTables, payloadFreeFieldsFieldFormats) => {
                 this.setState({
-                    freeFieldsTables: listFreeFieldsTables,
-                    freeFieldsFieldFormats: listFreeFieldsFieldFormats,
+                    freeFieldsTables: payloadFreeFieldsTables.data.data,
+                    freeFieldsFieldFormats: payloadFreeFieldsFieldFormats.data.data,
                 });
             })
         );
@@ -128,9 +125,9 @@ class FreeFieldNewForm extends Component {
 
         // If no errors send form
         !hasErrors &&
-            FreeFieldsAPI.newFreeField(freeField)
+            FreeFieldsAPI.newFreeFieldsField(freeField)
                 .then(payload => {
-                    hashHistory.push(`/vrije-velden/${payload[0].id}`);
+                    hashHistory.push(`/vrije-velden/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -158,22 +155,22 @@ class FreeFieldNewForm extends Component {
                                 label={'Op onderdeel'}
                                 id="tableId"
                                 name={'tableId'}
-                                options={this.state.freeFieldsTables.data}
+                                options={this.state.freeFieldsTables}
                                 value={tableId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.freeFieldsTables}
+                                error={this.state.errors.tableId}
+                                // errorMessage={this.state.errorsMessage.tableId}
                             />
                             <InputReactSelect
                                 label={'Type'}
                                 id="fieldFormatId"
                                 name={'fieldFormatId'}
-                                optionName={'format_name'}
-                                options={this.state.freeFieldsFieldFormats.data}
+                                options={this.state.freeFieldsFieldFormats}
                                 value={fieldFormatId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.freeFieldsFieldFormats}
+                                error={this.state.errors.fieldFormatId}
                             />
                         </div>
                         <div className="row">
@@ -238,6 +235,4 @@ class FreeFieldNewForm extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
-
-export default connect(null, mapDispatchToProps)(FreeFieldNewForm);
+export default FreeFieldNewForm;

@@ -42,7 +42,7 @@ function FreeFieldsListApp() {
         setFreeFieldsFields([]);
 
         axios
-            .all([FreeFieldsAPI.fetchFreeFields(formatFilterHelper(), sort, pagination)])
+            .all([FreeFieldsAPI.fetchFreeFieldsFields(formatFilterHelper(), sort, pagination)])
             .then(
                 axios.spread(payloadFreeFieldsFields => {
                     setFreeFieldsFields(payloadFreeFieldsFields.data.data);
@@ -110,12 +110,10 @@ function FreeFieldsListApp() {
     function deleteFreeFieldsField(freeFieldsField) {
         FreeFieldsAPI.deleteFreeFieldsField(freeFieldsField)
             .then(payload => {
-                //setShowNewFalse(false);
-                //toggleDelete();
                 fetchFreeFieldsFields();
             })
             .catch(error => {
-                setLoading(false);
+                // setLoading(false);
                 alert('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
             });
     }

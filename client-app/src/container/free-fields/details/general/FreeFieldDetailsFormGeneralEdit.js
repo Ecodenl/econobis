@@ -1,7 +1,5 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import validator from 'validator';
-import { updateFreeField } from '../../../../actions/free-field/FreeFieldDetailsActions';
 import FreeFieldsAPI from '../../../../api/free-fields/FreeFieldsAPI';
 
 import InputText from '../../../../components/form/InputText';
@@ -11,8 +9,6 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
-import { bindActionCreators } from 'redux';
-import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 
 class FreeFieldDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -20,49 +16,47 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
 
         const {
             id,
-            table_id,
-            field_format_id,
-            field_name,
-            visible_portal,
-            change_portal,
+            tableId,
+            fieldFormatId,
+            fieldName,
             mandatory,
-            default_value,
+            visiblePortal,
+            changePortal,
+            defaultValue,
         } = props.freeField;
 
         this.state = {
             freeField: {
                 id,
-                table_id: table_id,
-                field_format_id: field_format_id,
-                field_name: field_name,
-                visible_portal: visible_portal,
-                change_portal: change_portal,
-                mandatory: mandatory,
-                default_value: default_value,
+                tableId,
+                fieldFormatId,
+                fieldName,
+                visiblePortal,
+                changePortal,
+                mandatory,
+                defaultValue,
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
             errors: {
-                table_id: false,
-                field_format_id: false,
-                field_name: false,
+                tableId: false,
+                fieldFormatId: false,
+                fieldName: false,
                 mandatory: false,
-                visible_portal: false,
-                change_portal: false,
-                default_value: false,
-                freeFieldsTables: false,
-                freeFieldsFieldFormats: false,
+                visiblePortal: false,
+                changePortal: false,
+                defaultValue: false,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
     componentDidMount() {
-        axios.all([FreeFieldsAPI.listFreeFieldsTables(), FreeFieldsAPI.listFreeFieldsFieldFormats()]).then(
-            axios.spread((listFreeFieldsTables, listFreeFieldsFieldFormats) => {
+        axios.all([FreeFieldsAPI.peekFreeFieldsTables(), FreeFieldsAPI.peekFreeFieldsFieldFormats()]).then(
+            axios.spread((payloadFreeFieldsTables, payloadFreeFieldsFieldFormats) => {
                 this.setState({
-                    freeFieldsTables: listFreeFieldsTables,
-                    freeFieldsFieldFormats: listFreeFieldsFieldFormats,
+                    freeFieldsTables: payloadFreeFieldsTables.data.data,
+                    freeFieldsFieldFormats: payloadFreeFieldsFieldFormats.data.data,
                 });
             })
         );
@@ -101,38 +95,38 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(freeField.table_id + '')) {
-            errors.table_id = true;
+        if (validator.isEmpty(freeField.tableId + '')) {
+            errors.tableId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.field_format_id + '')) {
-            errors.field_format_id = true;
+        if (validator.isEmpty(freeField.fieldFormatId + '')) {
+            errors.fieldFormatId = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.field_name)) {
-            errors.field_name = true;
+        if (validator.isEmpty(freeField.fieldName)) {
+            errors.fieldName = true;
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.mandatory + '')) {
-            errors.field_name = true;
+            errors.mandatory = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.visible_portal + '')) {
-            errors.field_name = true;
+        if (validator.isEmpty(freeField.visiblePortal + '')) {
+            errors.visiblePortal = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.change_portal + '')) {
-            errors.field_name = true;
+        if (validator.isEmpty(freeField.changePortal + '')) {
+            errors.changePortal = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.default_value)) {
-            errors.field_name = true;
+        if (validator.isEmpty(freeField.defaultValue)) {
+            errors.defaultValue = true;
             hasErrors = true;
         }
 
@@ -140,10 +134,9 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            FreeFieldsAPI.updateFreeField(freeField)
+            FreeFieldsAPI.updateFreeFieldsField(freeField)
                 .then(payload => {
-                    // console.log(payload.data);
-                    // this.props.updateFreeField(payload.data);
+                    this.props.fetchFreeField();
                     this.props.switchToView();
                 })
                 .catch(error => {
@@ -154,13 +147,13 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
 
     render() {
         const {
-            table_id,
-            field_format_id,
-            field_name,
+            tableId,
+            fieldFormatId,
+            fieldName,
             mandatory,
-            visible_portal,
-            change_portal,
-            default_value,
+            visiblePortal,
+            changePortal,
+            defaultValue,
         } = this.state.freeField;
 
         return (
@@ -170,21 +163,20 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputReactSelect
                                 label={'Op onderdeel'}
-                                id="table_id"
-                                name={'table_id'}
-                                options={this.state.freeFieldsTables.data}
-                                value={table_id}
+                                id="tableId"
+                                name={'tableId'}
+                                options={this.state.freeFieldsTables}
+                                value={tableId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
                                 error={this.state.errors.freeFieldsTables}
                             />
                             <InputReactSelect
                                 label={'Type'}
-                                id="field_format_id"
-                                name={'field_format_id'}
-                                optionName={'format_name'}
-                                options={this.state.freeFieldsFieldFormats.data}
-                                value={field_format_id}
+                                id="fieldFormatId"
+                                name={'fieldFormatId'}
+                                options={this.state.freeFieldsFieldFormats}
+                                value={fieldFormatId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
                                 error={this.state.errors.freeFieldsFieldFormats}
@@ -193,11 +185,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputText
                                 label="Veld naam"
-                                name={'field_name'}
-                                value={field_name}
+                                name={'fieldName'}
+                                value={fieldName}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.field_name}
+                                error={this.state.errors.fieldName}
                             />
                             <InputToggle
                                 label={'Verplicht'}
@@ -211,29 +203,29 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         <div className="row">
                             <InputToggle
                                 label={'Zichtbaar in portaal'}
-                                name={'visible_portal'}
-                                value={visible_portal}
+                                name={'visiblePortal'}
+                                value={visiblePortal}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.visible_portal}
+                                error={this.state.errors.visiblePortal}
                             />
                             <InputToggle
                                 label={'Aan te passen in portaal'}
-                                name={'change_portal'}
-                                value={change_portal}
+                                name={'changePortal'}
+                                value={changePortal}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.change_portal}
+                                error={this.state.errors.changePortal}
                             />
                         </div>
                         <div className="row">
                             <InputText
                                 label="Standaard waarde"
-                                name={'default_value'}
-                                value={default_value}
+                                name={'defaultValue'}
+                                value={defaultValue}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
-                                error={this.state.errors.default_value}
+                                error={this.state.errors.defaultValue}
                             />
                         </div>
                     </PanelBody>
@@ -254,12 +246,4 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
     }
 }
 
-// const mapDispatchToProps = dispatch => ({
-//     updateFreeField: id => {
-//         dispatch(updateFreeField(id));
-//     },
-// });
-
-const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
-
-export default connect(null, mapDispatchToProps)(FreeFieldDetailsFormGeneralEdit);
+export default FreeFieldDetailsFormGeneralEdit;

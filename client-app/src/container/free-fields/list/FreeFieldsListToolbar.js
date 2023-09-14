@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-function FreeFieldsListToolbar({ freeFieldsTotal, refreshFreeFieldsFields }) {
+function FreeFieldsListToolbar({ freeFieldsTotal, refreshFreeFieldsFields, permissions }) {
     const newFreeFieldsField = () => {
         hashHistory.push(`/vrije-velden/nieuw`);
     };
@@ -14,9 +14,9 @@ function FreeFieldsListToolbar({ freeFieldsTotal, refreshFreeFieldsFields }) {
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={refreshFreeFieldsFields} />
-                    {/*{permissions.manageFreeFields && (*/}
-                    <ButtonIcon iconName={'plus'} onClickAction={newFreeFieldsField} />
-                    {/*)}*/}
+                    {permissions.manageFreeFields && (
+                        <ButtonIcon iconName={'plus'} onClickAction={newFreeFieldsField} />
+                    )}
                 </div>
             </div>
             <div className="col-md-4">

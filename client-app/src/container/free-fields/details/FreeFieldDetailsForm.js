@@ -3,7 +3,7 @@ import { isEmpty } from 'lodash';
 
 import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
 
-const FreeFieldDetailsForm = ({ freeField, hasError, isLoading, updateState }) => {
+const FreeFieldDetailsForm = ({ freeField, hasError, isLoading, fetchFreeField }) => {
     let loadingText = '';
     let loading = true;
 
@@ -21,7 +21,7 @@ const FreeFieldDetailsForm = ({ freeField, hasError, isLoading, updateState }) =
         <div>{loadingText}</div>
     ) : (
         <div>
-            <FreeFieldDetailsFormGeneral freeField={freeField} updateState={updateState} />
+            <FreeFieldDetailsFormGeneral freeField={freeField} fetchFreeField={fetchFreeField} />
         </div>
     );
 };

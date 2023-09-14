@@ -18,7 +18,12 @@ class FreeFieldsPolicy
      */
     public function view(User $user)
     {
-        return $user->hasPermissionTo('view_audit_trail', 'api');
+        return $user->hasPermissionTo('manage_free_fields', 'api');
+    }
+
+    public function manage(User $user)
+    {
+        return $user->hasPermissionTo('manage_free_fields', 'api');
     }
 
 }

@@ -6,16 +6,13 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipientCollection;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendSingleMail
 {
-
     protected Email $email;
 
     protected EmailRecipientCollection $to;
@@ -54,11 +51,9 @@ class SendSingleMail
         $email = $this->getUpdatedEmail();
 
         try {
-            $this->setConfigToMailbox();
-
-            $mailManager = Mail::to($this->to->getEmailAdresses()->toArray());
-
-            $mailManager->cc($this->cc->getEmailAdresses()->toArray())
+            Mail::fromMailbox($this->email->mailbox)
+                ->to($this->to->getEmailAdresses()->toArray())
+                ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
                 ->send(new GenericMail($email, $email->html_body, null));
         } catch (\Exception $e) {
@@ -110,9 +105,5 @@ class SendSingleMail
         }
 
         return $string;
-    }
-
-    protected function setConfigToMailbox(){
-        (new EmailHelper())->setConfigToMailbox($this->email->mailbox);
     }
 }

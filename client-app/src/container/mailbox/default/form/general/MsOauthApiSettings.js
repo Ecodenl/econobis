@@ -27,7 +27,7 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                         errorMessage={errors.gmailApiSettings?.clientId}
                     />
                     <InputText
-                        label={'Object ID'}
+                        label={'Tenant ID'}
                         name={'gmailApiSettings.projectId'}
                         value={values.gmailApiSettings?.projectId}
                         onChangeAction={handleChange}

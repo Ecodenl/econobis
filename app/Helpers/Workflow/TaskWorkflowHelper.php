@@ -5,7 +5,6 @@ namespace App\Helpers\Workflow;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -27,10 +26,6 @@ class TaskWorkflowHelper
 
     public function processWorkflowEmailCompleteTask(){
         set_time_limit(0);
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         if (!$this->task_type) {
             return false;
@@ -59,10 +54,6 @@ class TaskWorkflowHelper
 
     public function processWorkflowEmailExpiredTask(){
         set_time_limit(0);
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         if (!$this->task_type) {
             return false;
@@ -98,10 +89,6 @@ class TaskWorkflowHelper
 
     public function processWorkflowEmailNewTask(){
         set_time_limit(0);
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         if (!$this->task_type) {
             return false;

@@ -9,7 +9,6 @@ use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Project\Project;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
@@ -160,7 +159,7 @@ class FinancialOverviewHelper
             throw new Exception("Waardestaat contact met ID " . $financialOverviewContact->id . " in error-sending gezet.");
         }
 
-        self::setMailConfigByFinancialOverviewContact($financialOverviewContact);
+        $mailbox = self::getMailboxByFinancialOverviewContact($financialOverviewContact);
 
         $financialOverviewContactController = new FinancialOverviewContactController();
         $contactInfo
@@ -241,13 +240,8 @@ class FinancialOverviewHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::to($contactInfo['email']);
-
-//        $bcc = $financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews;
-//        if($bcc)
-//        {
-//            $mail->bcc($financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews);
-//        }
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
@@ -255,7 +249,6 @@ class FinancialOverviewHelper
         if ($preview) {
             return [
                 'to' => $contactInfo['email'],
-//                'bcc' => $bcc,
                 'subject' => $mail->subject,
                 'htmlBody' => $mail->html_body,
             ];
@@ -282,7 +275,7 @@ class FinancialOverviewHelper
         }
     }
 
-    public static function setMailConfigByFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact)
+    public static function getMailboxByFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();;
@@ -292,10 +285,7 @@ class FinancialOverviewHelper
             $mailboxToSendFrom = $financialOverviewContact->financialOverview->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
+        return $mailboxToSendFrom;
     }
 
     public static function financialOverviewContactInProgress(FinancialOverviewContact $financialOverviewContact)

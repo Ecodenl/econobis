@@ -28,11 +28,9 @@ class SendSingleMailToContact extends SendSingleMail
         $email = $this->getUpdatedEmail();
 
         try {
-            $this->setConfigToMailbox();
-
-            $mailManager = Mail::to($this->emailAddress->email);
-
-            $mailManager->cc($this->cc->getEmailAdresses()->toArray())
+            Mail::fromMailbox($this->email->mailbox)
+                ->to($this->emailAddress->email)
+                ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
                 ->send(new GenericMail($email, $email->html_body, null));
         } catch (\Exception $e) {

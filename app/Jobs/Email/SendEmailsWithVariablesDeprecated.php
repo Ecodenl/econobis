@@ -7,7 +7,6 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -68,8 +67,6 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         $email = $this->email;
         $mailbox = $email->mailbox;
 
-        (new EmailHelper())->setConfigToMailbox($mailbox);
-
         $emailsToContact = [];
         $emailsToEmailAddress = [];
         $tos = $this->tos;
@@ -108,7 +105,8 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
             /**
              * Setup
              */
-            $mail = Mail::to($emailsToEmailAddress);
+            $mail = Mail::fromMailbox($mailbox)
+                ->to($emailsToEmailAddress);
             $subjectWithVariables = 'Econobis';
 
             if($this->ccs != []) $mail->cc($this->ccs);
@@ -165,10 +163,8 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         if (!empty($emailsToContact)) {
             foreach ($emailsToContact as $emailToContact) {
 
-                /**
-                 * Setup
-                 */
-                $mail = Mail::to($emailToContact->email);
+                $mail = Mail::fromMailbox($email->mailbox)
+                    ->to($emailToContact->email);
                 $subjectWithContactVariables = 'Econobis';
 
                 if($this->ccs != []) $mail->cc($this->ccs);
@@ -286,7 +282,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         $jobLog->save();
     }
 
-    public function failed($exception) {
+    public function failed(\Throwable $exception) {
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;

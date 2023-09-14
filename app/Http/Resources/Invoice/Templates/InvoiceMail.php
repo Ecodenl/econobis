@@ -5,9 +5,9 @@ namespace App\Http\Resources\Invoice\Templates;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
-use App\Mail\ConfigurableMailable;
+use Illuminate\Mail\Mailable;
 
-class InvoiceMail extends ConfigurableMailable
+class InvoiceMail extends Mailable
 {
     public $html_body;
     public $subject;
@@ -37,22 +37,23 @@ class InvoiceMail extends ConfigurableMailable
     public function build()
     {
 
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');;
+        $this->subject($this->email->subject)
+            ->view('emails.generic')
+            ->text('emails.genericText')
+            ->attach($this->document_path, [
+                'as' => $this->document_name
+            ]);
 
-        $mail->attach($this->document_path, [
-            'as' => $this->document_name
-        ]);
-
-        if($this->defaultAttachmentDocumentId != null){
+        if ($this->defaultAttachmentDocumentId != null) {
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
-            if($defaultAttachmentDocument){
+            if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
                     'as' => $defaultAttachmentDocument->filename
                 ]);
             }
         }
 
-        return $mail;
+        return $this;
     }
 }

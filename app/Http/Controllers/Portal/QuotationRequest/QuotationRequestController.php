@@ -8,7 +8,6 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -225,13 +224,13 @@ class QuotationRequestController
         }
 
         if ($cooperation->inspection_planned_mailbox_id) {
-            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
-            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
         } else {
-            (new EmailHelper())->setConfigToDefaultMailbox();
+            $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::to($contact->primaryEmailAddress);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
@@ -255,13 +254,13 @@ class QuotationRequestController
         }
 
         if ($cooperation->inspection_planned_mailbox_id) {
-            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
-            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
         } else {
-            (new EmailHelper())->setConfigToDefaultMailbox();
+            $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::to($contact->primaryEmailAddress);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
@@ -285,13 +284,13 @@ class QuotationRequestController
         }
 
         if ($cooperation->inspection_planned_mailbox_id) {
-            $inspectionPlannedMailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
-            (new EmailHelper())->setConfigToMailbox($inspectionPlannedMailbox);
+            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
         } else {
-            (new EmailHelper())->setConfigToDefaultMailbox();
+            $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::to($contact->primaryEmailAddress);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contact->primaryEmailAddress);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
         $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);

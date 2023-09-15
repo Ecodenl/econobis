@@ -3,15 +3,37 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory } from 'react-router';
+import {browserHistory, hashHistory} from 'react-router';
 import FreeFieldDetailsForm from '../../free-fields/details/FreeFieldDetailsForm';
+import FreeFieldsDeleteItem from "../list/FreeFieldsDeleteItem";
 
 function FreeFieldDetailsApp(props) {
     const [freeField, setFreeField] = useState(null);
+    const [showDeleteItem, setShowDeleteItem] = useState(false);
+
+    function showDeleteItemModal(id, description) {
+        setShowDeleteItem(true);
+    }
+
+    function closeDeleteItemModal() {
+        setShowDeleteItem(false);
+    }
 
     useEffect(() => {
         fetchFreeField();
     }, []);
+
+    function deleteFreeFieldsField(freeField) {
+        FreeFieldsAPI.deleteFreeFieldsField(freeField)
+            .then(payload => {
+                hashHistory.push(`/vrije-velden`);
+            })
+            .catch(error => {
+                // setLoading(false);
+                console.log(error);
+                alert('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
+            });
+    }
 
     function fetchFreeField() {
         FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
@@ -37,6 +59,7 @@ function FreeFieldDetailsApp(props) {
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                     </div>
                                 </div>
                                 <div className="col-md-4">
@@ -54,6 +77,14 @@ function FreeFieldDetailsApp(props) {
 
                 <div className="col-md-12 margin-10-top"></div>
             </div>
+            {showDeleteItem && (
+                <FreeFieldsDeleteItem
+                    closeDeleteItemModal={closeDeleteItemModal}
+                    deleteFreeFieldsField={deleteFreeFieldsField}
+                    description={freeField.fieldName}
+                    id={freeField.id}
+                />
+            )}
         </div>
     );
 }

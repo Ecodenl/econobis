@@ -38,6 +38,17 @@ class FreeFieldNewForm extends Component {
                 freeFieldsTables: false,
                 freeFieldsFieldFormats: false,
             },
+            errorsMessage: {
+                tableId: false,
+                fieldFormatId: false,
+                fieldName: false,
+                visiblePortal: false,
+                changePortal: false,
+                mandatory: false,
+                defaultValue: false,
+                freeFieldsTables: false,
+                freeFieldsFieldFormats: false,
+            },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
@@ -84,44 +95,52 @@ class FreeFieldNewForm extends Component {
 
         // Validation
         let errors = {};
+        let errorsMessage = {};
         let hasErrors = false;
 
         if (validator.isEmpty(freeField.tableId + '')) {
             errors.tableId = true;
+            errorsMessage.tableId = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldFormatId + '')) {
             errors.fieldFormatId = true;
+            errorsMessage.fieldFormatId = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldName)) {
             errors.fieldName = true;
+            errorsMessage.fieldName = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.mandatory + '')) {
-            errors.field_name = true;
+            errors.mandatory = true;
+            errorsMessage.mandatory = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.visiblePortal + '')) {
             errors.visiblePortal = true;
+            errorsMessage.visiblePortal = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.changePortal + '')) {
             errors.changePortal = true;
+            errorsMessage.changePortal = "verplicht";
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
+            errorsMessage.defaultValue = "verplicht";
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
         // If no errors send form
         !hasErrors &&
@@ -160,7 +179,7 @@ class FreeFieldNewForm extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
                                 error={this.state.errors.tableId}
-                                // errorMessage={this.state.errorsMessage.tableId}
+                                errorMessage={this.state.errorsMessage.tableId}
                             />
                             <InputReactSelect
                                 label={'Type'}
@@ -171,6 +190,7 @@ class FreeFieldNewForm extends Component {
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
                                 error={this.state.errors.fieldFormatId}
+                                errorMessage={this.state.errorsMessage.fieldFormatId}
                             />
                         </div>
                         <div className="row">
@@ -181,6 +201,7 @@ class FreeFieldNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.fieldName}
+                                errorMessage={this.state.errorsMessage.fieldName}
                             />
                             <InputToggle
                                 label={'Verplicht'}
@@ -188,6 +209,8 @@ class FreeFieldNewForm extends Component {
                                 value={mandatory}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
+                                error={this.state.errors.mandatory}
+                                errorMessage={this.state.errorsMessage.mandatory}
                             />
                         </div>
                         <div className="row">
@@ -197,6 +220,8 @@ class FreeFieldNewForm extends Component {
                                 value={visiblePortal}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
+                                error={this.state.errors.visiblePortal}
+                                errorMessage={this.state.errorsMessage.visiblePortal}
                             />
                             <InputToggle
                                 label={'Aan te passen in portaal'}
@@ -204,6 +229,8 @@ class FreeFieldNewForm extends Component {
                                 value={changePortal}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
+                                error={this.state.errors.changePortal}
+                                errorMessage={this.state.errorsMessage.changePortal}
                             />
                         </div>
 
@@ -215,6 +242,7 @@ class FreeFieldNewForm extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.defaultValue}
+                                errorMessage={this.state.errorsMessage.defaultValue}
                             />
                         </div>
                     </PanelBody>

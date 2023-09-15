@@ -25,7 +25,7 @@ function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDel
     }
 
     return (
-        <tr className={`${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()}>
+        <tr className={`${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()} onDoubleClick={() => openItem(id)}>
             <td>{tableName}</td>
             <td>{fieldName}</td>
             <td>{fieldFormatName}</td>

@@ -68,7 +68,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
             newErrors = {...newErrors, subject: 'Verplicht'};
         }
 
-        if (email.toAddresses.length === 0) {
+        if (!email.contactGroup && email.toAddresses.length === 0) {
             newErrors = {...newErrors, toAddresses: 'Verplicht'};
         }
 

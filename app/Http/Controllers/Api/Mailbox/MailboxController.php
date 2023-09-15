@@ -76,7 +76,6 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->onEmpty(true)->next()
-            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
 
         //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
@@ -160,7 +159,6 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
-            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
 
         //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
@@ -365,7 +363,9 @@ class MailboxController extends Controller
 
         $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
         $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
-        $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        if(isset($inputGmailApiSettings['clientSecret'])){
+            $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        }
         $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
         $gmailApiSettings->token = '';
 

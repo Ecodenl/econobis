@@ -68,9 +68,15 @@ function MailboxDefaultFormGeneral({
         }
         if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
             validationSchema = validationSchema.concat(MailboxValidationGmail);
+            if (isNew) {
+                validationSchema = validationSchema.concat(MailboxValidationClientSecret);
+            }
         }
         if (currentIncomingServerType === 'ms-oauth' || currentOutgoingServerType === 'ms-oauth') {
             validationSchema = validationSchema.concat(MailboxValidationMsOauth);
+            if (isNew) {
+                validationSchema = validationSchema.concat(MailboxValidationClientSecret);
+            }
         }
         return validationSchema;
     }

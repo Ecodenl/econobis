@@ -354,44 +354,32 @@ function MailboxDefaultFormGeneral({
                     />
                 )}
 
-                {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth' || values.incomingServerType === 'imap' || values.incomingServerType === 'gmail') && (
-                    <PanelHeader>
-                        <span className="h5">
-                            <strong>Forward adres..</strong>
-                        </span>
-                    </PanelHeader>
-                )}
-
-                {(values.incomingServerType === 'mailgun') && (
-                    <PanelBody>
-                        <div className="row">
-                            <InputToggle
-                                label={'Actief'}
-                                name={'inboundMailgunEnabled'}
-                                value={values.inboundMailgunEnabled}
-                                onChangeAction={handleChange}
-                                onBlurAction={handleBlur}
-                            />
-
-                            <div className={'col-sm-6'}>
-                                Forward email naar {values.inboundMailgunEmail} om deze in Econobis te ontvangen.
+                {values.incomingServerType === 'mailgun' && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Mailgun instellingen</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText
+                                    className={'form-group col-sm-12'}
+                                    labelSize={'col-sm-3'}
+                                    valueSize={'col-sm-9'}
+                                    label={'Forward email'}
+                                    value={values.inboundMailgunEmail ? values.inboundMailgunEmail : 'Nog niet bepaald'}
+                                    textToolTip={
+                                        'Forward email ' +
+                                        values.email +
+                                        ' naar ' +
+                                        (values.inboundMailgunEmail ? values.inboundMailgunEmail : 'Nog niet bepaald') +
+                                        ' om deze in Econobis te ontvangen.'
+                                    }
+                                />
                             </div>
-                        </div>
-                    </PanelBody>
-                )}
-
-                {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth' || values.incomingServerType === 'imap' || values.incomingServerType === 'gmail') && (
-                    <PanelBody>
-                        <div className="row">
-                            <InputToggle
-                                label={'Actief'}
-                                name={'inboundMailgunEnabled'}
-                                value={values.inboundMailgunEnabled}
-                                onChangeAction={handleChange}
-                                onBlurAction={handleBlur}
-                            />
-                        </div>
-                    </PanelBody>
+                        </PanelBody>
+                    </>
                 )}
 
                 {values.id && (

@@ -146,10 +146,11 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
                 }
 
             } catch (\Exception $e) {
-                Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
+                $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress);
+                Log::error($value);
                 Log::error($e->getMessage());
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
+                $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
                 $this->errors++;
                 $jobLog->user_id = $this->userId;
                 $jobLog->job_category_id = 'email';
@@ -257,10 +258,11 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
                 } catch (\Exception $e) {
-                    Log::error('Mail ' . $email->id . ' naar contact kon niet worden verzonden');
+                    $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres ' . $emailToContact->email;
+                    Log::error($value);
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
-                    $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
+                    $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
                     $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';

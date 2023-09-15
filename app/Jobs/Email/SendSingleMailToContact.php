@@ -34,11 +34,11 @@ class SendSingleMailToContact extends SendSingleMail
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
                 ->send(new GenericMail($email, $email->html_body, null));
         } catch (\Exception $e) {
-            Log::error('Mail ' . $email->id . ' naar contact  kon niet worden verzonden');
+            Log::error('Mail ' . $email->id . ' naar e-mailadres ' . $this->emailAddress->email . ' kon niet worden verzonden');
             Log::error($e->getMessage());
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $this->emailAddress->email . ' kon niet worden verzonden';
+            $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres ' . $this->emailAddress->email . ' kon niet worden verzonden';
             $jobLog->user_id = $this->user->id;
             $jobLog->job_category_id = 'email';
             $jobLog->save();

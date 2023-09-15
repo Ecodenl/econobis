@@ -58,13 +58,23 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const validate = () => {
         setErrors({});
 
+        let newErrors = {};
+
         if (validator.isEmpty('' + email.mailboxId)) {
-            setErrors({...errors, mailboxId: 'Verplicht'});
+            newErrors = {...newErrors, mailboxId: 'Verplicht'};
         }
 
         if (validator.isEmpty('' + email.subject)) {
-            setErrors({...errors, subject: true});
+            newErrors = {...newErrors, subject: 'Verplicht'};
         }
+
+        if (email.toAddresses.length === 0) {
+            newErrors = {...newErrors, toAddresses: 'Verplicht'};
+        }
+
+        setErrors(newErrors);
+
+        return Object.keys(newErrors).length === 0;
     };
 
     const updateEmail = (values) => {
@@ -104,7 +114,9 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     }
 
     const send = () => {
-        validate();
+        if(!validate()){
+            return;
+        }
 
         EmailSendAPI.send(emailId).then(() => {
             setShowModal(false);

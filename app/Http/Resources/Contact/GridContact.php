@@ -27,6 +27,7 @@ class GridContact extends JsonResource
             'streetAndNumber' => optional(optional($address)->present())->streetAndNumber,
             'postalCode' => optional($address)->postal_code,
             'city' => optional($address)->city,
+            'areaName' => optional($address)->shared_area_name,
             'emailAddress' => optional($emailAddress)->email,
             'phoneNumber' => optional($phoneNumber)->number,
             'statusName' => $this->present()->status,

@@ -383,6 +383,10 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.inspectionPersonTypes,
             },
+            sharedArea: {
+                name: 'Buurt',
+                type: 'searchWithAsync',
+            },
         };
 
         // Options only if product is set

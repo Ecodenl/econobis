@@ -23,6 +23,11 @@ class Joiner extends RequestJoiner
         $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
     }
 
+    protected function applyAddressAreaNameJoin($query)
+    {
+        $query->join('addresses as addressAreaName',  'intakes.address_id', '=', 'addressAreaName.id');
+    }
+
     protected function applySourceJoin($query)
     {
         $query->join('intake_source', 'intakes.id', '=', 'intake_source.intake_id');

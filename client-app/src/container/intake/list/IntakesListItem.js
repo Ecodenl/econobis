@@ -46,6 +46,7 @@ class IntakesListItem extends Component {
             fullName,
             createdAt,
             fullAddress,
+            areaName,
             status,
             campaign,
             measuresRequestedNames = [],
@@ -66,6 +67,7 @@ class IntakesListItem extends Component {
                 <td>{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>{fullName}</td>
                 <td>{fullAddress}</td>
+                <td>{areaName}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>
                 <td>{status}</td>
                 <td>{campaign.name}</td>

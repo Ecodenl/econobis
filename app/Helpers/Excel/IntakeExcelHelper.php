@@ -43,6 +43,8 @@ class IntakeExcelHelper
         $headerData[] = 'Toevoeging';
         $headerData[] = 'Postcode';
         $headerData[] = 'Plaats';
+        $headerData[] = 'Buurt';
+        $headerData[] = 'Wijk';
         $headerData[] = 'Land';
         $headerData[] = 'Aanmeldingsbron(nen)';
         $headerData[] = 'Campagne';
@@ -108,41 +110,43 @@ class IntakeExcelHelper
                 $rowData[8] = ($address ? $address->addition : '');
                 $rowData[9] = ($address ? $address->postal_code : '');
                 $rowData[10] = ($address ? $address->city : '');
-                $rowData[11] = (($address && $address->country) ? $address->country->name : '');
-                $rowData[12] = $intake->sources_string;
-                $rowData[13] = $intake->campaign ? $intake->campaign->name : '';
-                $rowData[14] = $intake->status ? $intake->status->name : '';
-                $rowData[15] = $this->formatDate($intake->updated_at);
-                $rowData[16] = $intake->updatedBy ? $intake->updatedBy->present()->fullName() : '';
-                $rowData[17] = $this->formatDate($intake->created_at);
-                $rowData[18] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
-                $rowData[19] = $intake->note ?? '';
-                $rowData[20] = implode(', ', $intake->reasons->pluck('name')->toArray());
+                $rowData[11] = ($address ? $address->shared_area_name : '');
+                $rowData[12] = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
+                $rowData[13] = (($address && $address->country) ? $address->country->name : '');
+                $rowData[14] = $intake->sources_string;
+                $rowData[15] = $intake->campaign ? $intake->campaign->name : '';
+                $rowData[16] = $intake->status ? $intake->status->name : '';
+                $rowData[17] = $this->formatDate($intake->updated_at);
+                $rowData[18] = $intake->updatedBy ? $intake->updatedBy->present()->fullName() : '';
+                $rowData[19] = $this->formatDate($intake->created_at);
+                $rowData[20] = $intake->createdBy ? $intake->createdBy->present()->fullName() : '' ;
+                $rowData[21] = $intake->note ?? '';
+                $rowData[22] = implode(', ', $intake->reasons->pluck('name')->toArray());
 
                 if (count($intake->measuresRequested)>0 AND $withOpportunities == "true") {
 
                     // measuresRequested
                     foreach ($intake->measuresRequested as $measure) {
-                        $rowData[21] = $measure->name;
+                        $rowData[23] = $measure->name;
 
                         // opportunity
                         $opportunity = Opportunity::where('intake_id', $intake->id)->where('measure_category_id', $measure->id)->first();
                         if ($opportunity) {
-                            $rowData[22] = $opportunity->number;
-                            $rowData[23] = $opportunity->status ? $opportunity->status->name : '';
-                            $rowData[24] = $this->formatDate($opportunity->desired_date);
-                            $rowData[25] = $this->formatDate($opportunity->evaluation_agreed_date);
+                            $rowData[24] = $opportunity->number;
+                            $rowData[25] = $opportunity->status ? $opportunity->status->name : '';
+                            $rowData[26] = $this->formatDate($opportunity->desired_date);
+                            $rowData[27] = $this->formatDate($opportunity->evaluation_agreed_date);
                         }
 
                         $completeData[] = $rowData;
 
                     }
                 } else {
-                    $rowData[21] = implode(', ', $intake->measuresRequested->pluck('name')->toArray());
-                    $rowData[22] = '';
-                    $rowData[23] = '';
+                    $rowData[23] = implode(', ', $intake->measuresRequested->pluck('name')->toArray());
                     $rowData[24] = '';
                     $rowData[25] = '';
+                    $rowData[26] = '';
+                    $rowData[27] = '';
                     $completeData[] = $rowData;
                 }
             }

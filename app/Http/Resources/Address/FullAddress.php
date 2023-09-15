@@ -50,6 +50,8 @@ class FullAddress extends JsonResource
             'addition' => $this->addition,
             'city' => $this->city,
             'postalCode' => $this->postal_code,
+            'areaName' => $this->shared_area_name,
+            'districtName' => optional(optional($this->getSharedPostalCodesHouseNumber())->sharedArea)->district_name,
             'primary' => $this->primary,
             'streetPostalCodeCity' => $this->street_postal_code_city,
             'typeAndPrimary' => $this->type_and_primary,

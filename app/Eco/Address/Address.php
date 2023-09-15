@@ -8,6 +8,7 @@ use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\EcoShared\SharedPostalCodesHouseNumber\SharedPostalCodesHouseNumber;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -174,4 +175,7 @@ class Address extends Model
         return $memberSinceDisabledBefore;
     }
 
+    public function getSharedPostalCodesHouseNumber(){
+        return SharedPostalCodesHouseNumber::where('postal_code', str_replace(' ', '', $this->postal_code))->where('house_number', $this->number)->first();
+    }
 }

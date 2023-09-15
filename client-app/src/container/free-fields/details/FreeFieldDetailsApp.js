@@ -40,7 +40,7 @@ function FreeFieldDetailsApp(props) {
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Vrij veld: {freeField.field_name}</h4>
+                                    <h4 className="text-center">Vrij veld: {freeField.table.name} / {freeField.fieldName}</h4>
                                 </div>
                                 <div className="col-md-4" />
                             </div>

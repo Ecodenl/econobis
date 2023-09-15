@@ -8,6 +8,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import { REDIRECT_URL_GMAIL } from '../../../../constants';
+import { REDIRECT_URL_MS_OAUTH } from '../../../../constants';
 
 function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
     const {
@@ -199,10 +200,14 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         <PanelBody>
                             <div className="row">
                                 <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
-                                <ViewText label={'Tenant ID'} value={gmailApiSettings?.projectId} />
+                                <ViewText label={'Object ID'} value={gmailApiSettings?.projectId} />
                             </div>
                             <div className="row">
+                                <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
                                 <ViewText label={'Client secret waarde'} value="••••••••••" />
+                            </div>
+                            <div className="row">
+                                <ViewText label={'Tenant ID'} value={gmailApiSettings?.tenantId} />
                             </div>
                         </PanelBody>
                     </>

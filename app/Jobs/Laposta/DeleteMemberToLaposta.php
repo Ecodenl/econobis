@@ -68,7 +68,7 @@ class DeleteMemberToLaposta implements ShouldQueue
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
     }
 

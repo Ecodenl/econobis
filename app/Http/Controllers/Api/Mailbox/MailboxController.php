@@ -366,6 +366,7 @@ class MailboxController extends Controller
         $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
         $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
         $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
         $gmailApiSettings->token = '';
 
         $gmailApiSettings->save();

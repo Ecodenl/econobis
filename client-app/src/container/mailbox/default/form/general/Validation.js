@@ -54,5 +54,8 @@ export const MailboxValidationMsOauth = Yup.object().shape({
         projectId: Yup.string()
             .trim()
             .required('Verplicht'),
+        tenantId: Yup.string()
+            .trim()
+            .required('Verplicht'),
     }),
 });

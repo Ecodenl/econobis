@@ -17,7 +17,6 @@ use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
@@ -524,16 +523,16 @@ class RevenuesKwhController extends ApiController
 
             //Make preview email
             if ($primaryEmailAddress) {
-                $mailbox = $this->setMailConfigByDistribution($project);
+                $mailbox = $this->getMailboxByDistribution($project);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
-                    $fromName = $mailbox->name;
                 } else {
                     $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = Mail::fromMailbox($mailbox)
+                    ->to($primaryEmailAddress->email);
+
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -795,7 +794,7 @@ class RevenuesKwhController extends ApiController
             //send email
             if ($primaryEmailAddress) {
                 try{
-                    $mailbox = $this->setMailConfigByDistribution($project);
+                    $mailbox = $this->getMailboxByDistribution($project);
                     if ($mailbox) {
                         $fromEmail = $mailbox->email;
                         $fromName = $mailbox->name;
@@ -804,7 +803,9 @@ class RevenuesKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::to($primaryEmailAddress->email);
+                    $email = Mail::fromMailbox($mailbox)
+                        ->to($primaryEmailAddress->email);
+                    
                     if (!$subject) {
                         $subject = 'Participant rapportage Econobis';
                     }
@@ -885,7 +886,7 @@ class RevenuesKwhController extends ApiController
         }
     }
 
-    protected function setMailConfigByDistribution($project)
+    protected function getMailboxByDistribution($project)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();
@@ -894,10 +895,6 @@ class RevenuesKwhController extends ApiController
             $mailboxToSendFrom = $project->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
         return $mailboxToSendFrom;
     }
 

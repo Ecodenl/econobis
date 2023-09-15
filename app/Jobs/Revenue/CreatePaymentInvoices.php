@@ -74,7 +74,7 @@ class CreatePaymentInvoices implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Uitkering nota's mislukt.";

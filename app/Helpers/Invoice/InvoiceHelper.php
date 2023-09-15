@@ -12,7 +12,6 @@ use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -184,7 +183,7 @@ class InvoiceHelper
             throw new Exception("Nota met ID " . $invoice->id . " in error-sending gezet.");
         }
 
-        self::setMailConfigByInvoice($invoice);
+        $mailbox = self::getMailboxByInvoice($invoice);
 
         $orderController = new OrderController();
         $contactInfo
@@ -246,7 +245,8 @@ class InvoiceHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::to($contactInfo['email']);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $bcc = $invoice->administration->email_bcc_notas;
         if($bcc)
@@ -324,7 +324,7 @@ class InvoiceHelper
 
     public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice, $userId)
     {
-        self::setMailConfigByInvoice($invoice);
+        $mailbox = self::getMailboxByInvoice($invoice);
 
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
@@ -333,7 +333,8 @@ class InvoiceHelper
             return false;
         }
 
-        $mail = Mail::to($contactInfo['email']);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $subject = 'Betalingsherinnering';
 
@@ -480,7 +481,7 @@ class InvoiceHelper
         }
     }
 
-    public static function setMailConfigByInvoice(Invoice $invoice)
+    public static function getMailboxByInvoice(Invoice $invoice)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();;
@@ -490,10 +491,7 @@ class InvoiceHelper
             $mailboxToSendFrom = $invoice->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
+        return $mailboxToSendFrom;
     }
 
     public static function invoiceInProgress(Invoice $invoice)

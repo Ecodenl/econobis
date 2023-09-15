@@ -27,7 +27,7 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                         errorMessage={errors.gmailApiSettings?.clientId}
                     />
                     <InputText
-                        label={'Tenant ID'}
+                        label={'Object ID'}
                         name={'gmailApiSettings.projectId'}
                         value={values.gmailApiSettings?.projectId}
                         onChangeAction={handleChange}
@@ -51,6 +51,18 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                         required={'required'}
                         error={errors.gmailApiSettings?.clientSecret && touched.gmailApiSettings?.clientSecret}
                         errorMessage={errors.gmailApiSettings?.clientSecret}
+                    />
+                </div>
+                <div className="row">
+                    <InputText
+                        label={'Tenant ID'}
+                        name={'gmailApiSettings.tenantId'}
+                        value={values.gmailApiSettings?.tenantId}
+                        onChangeAction={handleChange}
+                        onBlurAction={handleBlur}
+                        required={'required'}
+                        error={errors.gmailApiSettings?.tenantId && touched.gmailApiSettings?.tenantId}
+                        errorMessage={errors.gmailApiSettings?.tenantId}
                     />
                 </div>
             </PanelBody>

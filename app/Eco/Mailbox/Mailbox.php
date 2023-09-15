@@ -114,7 +114,7 @@ class Mailbox extends Model
                 'name' => $this->name,
             ],
             'transport' => 'microsoft-graph-custom',
-            'microsoft_graph_tenant_id' => optional($this->gmailApiSettings)->project_id,
+            'microsoft_graph_tenant_id' => optional($this->gmailApiSettings)->tenant_id,
             'microsoft_graph_client_id' => optional($this->gmailApiSettings)->client_id,
             'microsoft_graph_client_secret' => optional($this->gmailApiSettings)->client_secret,
         ];

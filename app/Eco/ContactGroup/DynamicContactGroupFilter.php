@@ -18,6 +18,7 @@ use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
 use App\EcoShared\SharedArea\SharedArea;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
 use JosKolenberg\Enum\EnumNotFoundException;
@@ -102,6 +103,14 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $intakeStatus = IntakeStatus::find($this->data);
                     return $intakeStatus ? $intakeStatus->name : ''   ;
+                }
+                return '';
+            }
+            // quotationRequestStatusOrganisationOrCoach en quotationRequestStatusOccupant omzetten
+            if ($this->field == 'quotationRequestStatusOrganisationOrCoach' || $this->field == 'quotationRequestStatusOccupant'){
+                if($this->data){
+                    $quotationRequestStatus = QuotationRequestStatus::find($this->data);
+                    return $quotationRequestStatus ? $quotationRequestStatus->name : ''   ;
                 }
                 return '';
             }

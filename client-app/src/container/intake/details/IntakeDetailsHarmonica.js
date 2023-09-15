@@ -29,21 +29,34 @@ class IntakeDetailsHarmonica extends Component {
     }
 
     newTask() {
-        hashHistory.push(`/taak/nieuw/intake/${this.props.id}`);
+        if (this.props.intakeDetails) {
+            hashHistory.push(
+                `/taak/nieuw/open/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
+            );
+        }
     }
 
     newNote() {
-        hashHistory.push(`/taak/nieuw/afgehandeld/intake/${this.props.id}`);
+        if (this.props.intakeDetails) {
+            hashHistory.push(
+                `/taak/nieuw/afgehandeld/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
+            );
+        }
     }
 
+    // todo hier bij newDocument zouden we eventueel ook campaignId meteen kunnen meegeven en vullen ??
     newDocument(type) {
-        hashHistory.push(
-            `/document/nieuw/${type}/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`
-        );
+        if (this.props.intakeDetails) {
+            hashHistory.push(
+                `/document/nieuw/${type}/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
+            );
+        }
     }
 
     newEmail() {
-        hashHistory.push(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
+        if (this.props.intakeDetails) {
+            hashHistory.push(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
+        }
     }
 
     toggleShowList(name) {

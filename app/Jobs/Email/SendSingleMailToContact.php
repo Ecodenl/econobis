@@ -32,7 +32,7 @@ class SendSingleMailToContact extends SendSingleMail
                 ->to($this->emailAddress->email)
                 ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
-                ->send(new GenericMail($email, $email->html_body, null));
+                ->send(new GenericMail($email, $email->html_body));
         } catch (\Exception $e) {
             Log::error('Mail ' . $email->id . ' naar e-mailadres ' . $this->emailAddress->email . ' kon niet worden verzonden');
             Log::error($e->getMessage());

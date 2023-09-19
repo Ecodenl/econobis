@@ -292,11 +292,26 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        if(Auth::user()->hasPermissionTo('manage_user', 'api')){
-            $mailboxes = Mailbox::select(DB::raw('id as mailbox_id'), 'email')->where('is_active', 1)->orderBy('name')->get();
-        } else {
-            $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->orderBy('name')->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
+
+        return LoggedInEmailPeek::collection($mailboxes);
+    }
+
+    /**
+     * Geef de mailboxen voor een specifieke gebruiker zodat een andere (key)user d mailbox aan de gebruiker kan koppelen.
+     * In dit geval wil de keyuser dus een lijst met de mailboxen van de gebruiker zien en niet die van zichzelf.
+     */
+    public function forUserEmailPeek(User $user)
+    {
+        if(!Auth::user()->hasPermissionTo('manage_user', 'api') && $user->id !== Auth::id()){
+            /**
+             * Alleen toegankelijk voor 'manage_user' rechten (dit zijn normaal gesproken de keyusers) of voor de eigen gebruiker.
+             * (gebruikers mogen eigen mailbox instellen)
+             */
+            abort(403);
         }
+
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }

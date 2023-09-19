@@ -55,7 +55,7 @@ class UserDetailsFormMailboxEdit extends Component {
     };
 
     componentDidMount() {
-        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
+        MailboxAPI.fetchMailboxesForUserPeek(this.state.user.id).then(payload => {
             this.setState({
                 mailboxes: payload.data.data,
             });

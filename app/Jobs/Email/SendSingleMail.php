@@ -55,7 +55,7 @@ class SendSingleMail
                 ->to($this->to->getEmailAdresses()->toArray())
                 ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
-                ->send(new GenericMail($email, $email->html_body, null));
+                ->send(new GenericMail($email, $email->html_body));
         } catch (\Exception $e) {
             $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres(sen) ' . $this->to->getEmailAdresses()->implode(', ');
             Log::error($value);

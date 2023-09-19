@@ -20,7 +20,7 @@ import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
 import CopyToClipboard from "react-copy-to-clipboard";
 import AsyncSelectSet from "../../form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
-
+import Frame from 'react-frame-component';
 
 export default function EmailDetailsModalLayout({
                                                     email,
@@ -296,7 +296,9 @@ export default function EmailDetailsModalLayout({
 
             <div className="row" style={{paddingLeft: '15px', paddingRight: '15px'}} id="details-modal-email-html">
                 <Panel className="col-sm-12">
-                    <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
+                    <Frame style={{height: 'calc(100vh - 750px)'}}>
+                        <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
+                    </Frame>
                 </Panel>
             </div>
 

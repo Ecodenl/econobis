@@ -20,6 +20,7 @@ export default function EmailSplitView({router}) {
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [isRefreshingData, setIsRefreshingData] = useState(false);
+    const [isFetchingMoreEmails, setIsFetchingMoreEmails] = useState(false);
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({...defaultFilters});
     const {isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal} = useContext(EmailModalContext);
@@ -80,6 +81,11 @@ export default function EmailSplitView({router}) {
     }, [filters.fetch]);
 
     const fetchMoreEmails = () => {
+        if(isFetchingMoreEmails){
+            return;
+        }
+
+        setIsFetchingMoreEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,
@@ -87,7 +93,7 @@ export default function EmailSplitView({router}) {
             sorts: getSorts(),
         }).then(response => {
             setEmails([...emails, ...response.data.items]);
-            setEmailCount(response.data.total);
+            setIsFetchingMoreEmails(false);
         });
     };
 

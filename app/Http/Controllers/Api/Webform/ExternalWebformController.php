@@ -13,6 +13,7 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressEnergyConsumptionElectricity;
 use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
@@ -22,10 +23,9 @@ use App\Eco\Country\Country;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
-use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
@@ -68,7 +68,6 @@ use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
@@ -2966,7 +2965,6 @@ class ExternalWebformController extends Controller
                     $users->push($dummyUser);
                 }
 
-                (new EmailHelper())->setConfigToDefaultMailbox();
                 Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
             }
         } catch (\Exception $e) {

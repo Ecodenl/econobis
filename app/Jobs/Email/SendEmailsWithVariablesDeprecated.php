@@ -7,7 +7,6 @@ use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
@@ -68,8 +67,6 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         $email = $this->email;
         $mailbox = $email->mailbox;
 
-        (new EmailHelper())->setConfigToMailbox($mailbox);
-
         $emailsToContact = [];
         $emailsToEmailAddress = [];
         $tos = $this->tos;
@@ -108,7 +105,8 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
             /**
              * Setup
              */
-            $mail = Mail::to($emailsToEmailAddress);
+            $mail = Mail::fromMailbox($mailbox)
+                ->to($emailsToEmailAddress);
             $subjectWithVariables = 'Econobis';
 
             if($this->ccs != []) $mail->cc($this->ccs);
@@ -139,7 +137,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
             $htmlBodyWithVariables = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithVariables);
 
             try {
-                $mail->send(new GenericMail($email, $htmlBodyWithVariables, null));
+                $mail->send(new GenericMail($email, $htmlBodyWithVariables));
                 $amountOfEmailsSend++;
 
                 if ($amountOfEmailsSend === 1) {
@@ -148,10 +146,11 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
                 }
 
             } catch (\Exception $e) {
-                Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
+                $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress);
+                Log::error($value);
                 Log::error($e->getMessage());
                 $jobLog = new JobsLog();
-                $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
+                $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
                 $this->errors++;
                 $jobLog->user_id = $this->userId;
                 $jobLog->job_category_id = 'email';
@@ -165,10 +164,8 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         if (!empty($emailsToContact)) {
             foreach ($emailsToContact as $emailToContact) {
 
-                /**
-                 * Setup
-                 */
-                $mail = Mail::to($emailToContact->email);
+                $mail = Mail::fromMailbox($email->mailbox)
+                    ->to($emailToContact->email);
                 $subjectWithContactVariables = 'Econobis';
 
                 if($this->ccs != []) $mail->cc($this->ccs);
@@ -253,7 +250,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
                  * Execute
                  */
                 try {
-                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables, null));
+                    $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                     $amountOfEmailsSend++;
 
                     if ($amountOfEmailsSend === 1) {
@@ -261,10 +258,11 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
                         $mergedHtmlBody = $htmlBodyWithContactVariables;
                     }
                 } catch (\Exception $e) {
-                    Log::error('Mail ' . $email->id . ' naar contact kon niet worden verzonden');
+                    $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres ' . $emailToContact->email;
+                    Log::error($value);
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
-                    $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
+                    $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
                     $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';
@@ -286,7 +284,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         $jobLog->save();
     }
 
-    public function failed($exception) {
+    public function failed(\Throwable $exception) {
         $jobLog = new JobsLog();
         $jobLog->value = 'E-mail(s) versturen mislukt.';
         $jobLog->user_id = $this->userId;

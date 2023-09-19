@@ -6,16 +6,13 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipientCollection;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMail;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class SendSingleMail
 {
-
     protected Email $email;
 
     protected EmailRecipientCollection $to;
@@ -54,19 +51,18 @@ class SendSingleMail
         $email = $this->getUpdatedEmail();
 
         try {
-            $this->setConfigToMailbox();
-
-            $mailManager = Mail::to($this->to->getEmailAdresses()->toArray());
-
-            $mailManager->cc($this->cc->getEmailAdresses()->toArray())
+            Mail::fromMailbox($this->email->mailbox)
+                ->to($this->to->getEmailAdresses()->toArray())
+                ->cc($this->cc->getEmailAdresses()->toArray())
                 ->bcc($this->bcc->getEmailAdresses()->toArray())
-                ->send(new GenericMail($email, $email->html_body, null));
+                ->send(new GenericMail($email, $email->html_body));
         } catch (\Exception $e) {
-            Log::error('Mail ' . $email->id . ' naar e-mailadres kon niet worden verzonden');
+            $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres(sen) ' . $this->to->getEmailAdresses()->implode(', ');
+            Log::error($value);
             Log::error($e->getMessage());
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres(sen) ' . $this->to->getEmailAdresses()->implode(', ') . ' kon niet worden verzonden';
+            $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
             $jobLog->user_id = $this->user->id;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
@@ -110,9 +106,5 @@ class SendSingleMail
         }
 
         return $string;
-    }
-
-    protected function setConfigToMailbox(){
-        (new EmailHelper())->setConfigToMailbox($this->email->mailbox);
     }
 }

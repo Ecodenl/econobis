@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Email\Templates;
 
-use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Storage;

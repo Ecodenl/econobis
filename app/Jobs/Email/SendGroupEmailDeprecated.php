@@ -251,10 +251,11 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                 try {
                     $mail->send(new GenericMail($email, $htmlBodyWithVariables));
                 } catch (\Exception $e) {
-                    Log::error('Mail ' . $email->id . '  naar e-mailadres kon niet worden verzonden');
+                    $value = 'Mail ' . $email->id . ' kon niet worden verzonden naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress);
+                    Log::error($value);
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
-                    $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres(sen) ' . implode(',', $emailsToEmailAddress) . ' kon niet worden verzonden';
+                    $jobLog->value = strlen($value)>191 ? (substr($value,0,188) . '...') : $value;
                     $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';
@@ -360,10 +361,10 @@ class SendGroupEmailDeprecated implements ShouldQueue {
                 try {
                     $mail->send(new GenericMail($email, $htmlBodyWithContactVariables));
                 } catch (\Exception $e) {
-                    Log::error('Mail ' . $email->id . ' naar contact kon niet worden verzonden');
+                    Log::error('Mail ' . $email->id . ' naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden');
                     Log::error($e->getMessage());
                     $jobLog = new JobsLog();
-                    $jobLog->value = 'Mail ' . $email->id . '  naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
+                    $jobLog->value = 'Mail ' . $email->id . ' naar e-mailadres ' . $emailToContact->email . ' kon niet worden verzonden';
                     $this->errors++;
                     $jobLog->user_id = $this->userId;
                     $jobLog->job_category_id = 'email';

@@ -124,7 +124,7 @@ class UserController extends Controller
          * Mailbox mag elke gebruiker voor zichzelf wijzigen ongeacht zijn rechten.
          */
         $this->authorize('update-default-mailbox', $user);
-        $user->default_mailbox_id = $request->input('defaultMailboxId');
+        $user->default_mailbox_id = $request->input('defaultMailboxId') ? $request->input('defaultMailboxId') : null;
         $user->save();
 
         return $this->show($user);

@@ -27,7 +27,7 @@ class FullGmailApiSettings extends JsonResource
             'mailboxId' => $this->mailbox_id,
             'clientId' => $this->client_id,
             'projectId' => $this->project_id,
-            'tenantId' => $this->tenant_id,
+            'tenantId' => $this->tenant_id ? $this->tenant_id : '',
         ];
     }
 }

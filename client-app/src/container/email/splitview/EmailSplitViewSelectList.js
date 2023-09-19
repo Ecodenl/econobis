@@ -102,10 +102,29 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
 
     }, [folder]);
 
+    const handleScroll = (e) => {
+        /**
+         * E-mails bijladen als we onderaan de lijst gescrolld zijn
+         */
+        const hitBottom = (e.target.scrollHeight - e.target.scrollTop - e.target.clientHeight) < 10; // Komt niet altijd exact op 0, dus kleine marge inbouwen.
+
+        if(!hitBottom) {
+            return;
+        }
+
+        if(emails.length >= emailCount){
+            return;
+        }
+
+        fetchMoreEmails();
+    }
+
     return (
         <div className="panel panel-default">
             <div className="panel-body panel-small"
-                 style={{height: "calc(100vh - 190px)", overflow: 'auto'}}>
+                 style={{height: "calc(100vh - 190px)", overflow: 'auto'}}
+                 onScroll={handleScroll}
+            >
                 {
                     multiselectEnabled && (
                         <div className="row">
@@ -195,6 +214,8 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                         ))
                     }
                     {emails.length < emailCount && (
+                        // Zou niet meer nodig moeten zijn omdat we nu onScroll gebruiken om te fetchen
+                        // Maar staat verder niet in de weg en is mooie backup mocht de fetch toch niet getriggerd worden.
                         <tr>
                             <td>
                                 <button

@@ -79,7 +79,7 @@ class EmailInlineImagesService
         foreach($this->email->attachments()->whereNotNull('cid')->get() as $attachment){
             $search = 'src="cid:' . $attachment->cid . '"';
 
-            if(strpos($html, $search) === false){
+            if(!str_contains($html, $search)){
                 continue;
             }
 

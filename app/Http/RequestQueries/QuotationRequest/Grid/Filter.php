@@ -18,6 +18,7 @@ class Filter extends RequestFilter
         'organisationOrCoach',
         'contact',
         'address',
+        'areaName',
         'campaign',
         'measure',
         'createdAtStart',
@@ -44,6 +45,7 @@ class Filter extends RequestFilter
         'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',
         'address' => 'address',
+        'areaName' => 'addressAreaName',
         'campaign' => 'campaign',
         'measure' => 'measure',
     ];
@@ -73,6 +75,20 @@ class Filter extends RequestFilter
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
                 $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+    protected function applyAreaNameFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addressAreaName.shared_area_name', 'LIKE', '%' . $term . '%');
             });
         }
 

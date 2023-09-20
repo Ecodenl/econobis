@@ -22,6 +22,7 @@ class Sort extends RequestSort
         'measureCategory',
         'measureName',
         'campaign',
+        'areaName',
         'statusId',
         'amountOfQuotationRequests',
     ];
@@ -34,6 +35,7 @@ class Sort extends RequestSort
         'measureCategory' => 'measure_categories.name',
         'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
+        'areaName' => 'addressAreaName.shared_area_name',
         'statusId'  => 'opportunities.status_id',
     ];
 
@@ -41,6 +43,7 @@ class Sort extends RequestSort
         'measureCategory' => 'measure_categories',
         'measureName' => 'measures',
         'campaign' => 'campaigns',
+        'areaName' => 'addressAreaName',
         'name' => 'contacts',
     ];
 

@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setQuotationRequestsSortsFilter } from '../../../actions/quotation-request/QuotationRequestsSortsActions';
 
 const QuotationRequestsListHead = props => {
@@ -18,24 +19,30 @@ const QuotationRequestsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'organisationOrCoach'}
                 title={'Organisatie/Coach'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Afspraak'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'8%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kansactie'} width={'8%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'14%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'7%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'datePlanned'} title={'Afspraak'} width={'7%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'dateRecorded'} title={'Opname'} width={'7%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'statusId'}
+                title={'Status kansactie'}
+                width={'7%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort
                 sortColumn={'dateReleased'}
                 title={'Uitgebracht'}
-                width={'8%'}
+                width={'7%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
-            <th width="5%" />
+            <th width="4%" />
         </tr>
     );
 };

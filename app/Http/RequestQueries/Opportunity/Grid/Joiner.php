@@ -31,10 +31,16 @@ class Joiner extends RequestJoiner
         $query->join('campaigns', 'intakes.campaign_id', '=', 'campaigns.id');
     }
 
+    protected function applyAddressAreaNameJoin($query)
+    {
+        $query->join('intakes as intakes2', 'opportunities.intake_id', '=', 'intakes2.id');
+        $query->join('addresses as addressAreaName',  'intakes2.address_id', '=', 'addressAreaName.id');
+    }
+
     protected function applyContactsJoin($query)
     {
-        $query->join('intakes', 'opportunities.intake_id', '=', 'intakes.id');
-        $query->join('contacts', 'intakes.contact_id', '=', 'contacts.id');
+        $query->join('intakes as intakes3', 'opportunities.intake_id', '=', 'intakes3.id');
+        $query->join('contacts', 'intakes3.contact_id', '=', 'contacts.id');
     }
 
 }

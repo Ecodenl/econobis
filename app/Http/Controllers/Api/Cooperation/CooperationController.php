@@ -164,8 +164,7 @@ class CooperationController extends ApiController
 
     private function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('cooperation')->getDriver()->getAdapter()->getPathPrefix()
-            . DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo';
+        $storageDir = Storage::disk('cooperation')->path(DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

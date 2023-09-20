@@ -1,5 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import {FaInfoCircle} from "react-icons/fa";
+import ReactTooltip from "react-tooltip";
 
 const InputTextArea = props => {
     const {
@@ -16,6 +18,7 @@ const InputTextArea = props => {
         error,
         errorMessage,
         rows,
+        textToolTip,
     } = props;
 
     return (
@@ -39,6 +42,24 @@ const InputTextArea = props => {
                         disabled={disabled}
                     />
                 </div>
+                { textToolTip && (
+                    <div className="col-sm-1">
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name ? name : id}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                        &nbsp;
+                    </div>
+                )}
             </div>
             {error && (
                 <div className={sizeInput}>
@@ -59,6 +80,7 @@ InputTextArea.defaultProps = {
     error: false,
     errorMessage: '',
     rows: '5',
+    textToolTip: '',
 };
 
 InputTextArea.propTypes = {
@@ -75,6 +97,7 @@ InputTextArea.propTypes = {
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
+    textToolTip: PropTypes.string,
 };
 
 export default InputTextArea;

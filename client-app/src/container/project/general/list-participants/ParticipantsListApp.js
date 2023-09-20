@@ -72,9 +72,9 @@ class ParticipantsListApp extends Component {
             let templates = [];
 
             payload.forEach(function(template) {
-                if (template.group == 'participation' || template.group == 'revenue') {
+                // if (template.group == 'participation' || template.group == 'revenue') {
                     templates.push({ id: template.id, name: template.name });
-                }
+                // }
             });
 
             this.setState({

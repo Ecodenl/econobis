@@ -11,6 +11,7 @@ namespace App\Http\Resources\User;
 
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
+use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\Permission\Models\Permission;
@@ -45,6 +46,9 @@ class FullUser extends JsonResource
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
             'hasTwoFactorActivated' => $this->hasTwoFactorActivated(),
             'showTwoFactorNotification' => $this->show_two_factor_notification,
+            'defaultMailboxId' => $this->default_mailbox_id,
+            'defaultMailbox' => MailboxPeek::make($this->whenLoaded('defaultMailbox')),
+            'mailboxes' => $this->whenLoaded('mailboxes'),
         ];
     }
 

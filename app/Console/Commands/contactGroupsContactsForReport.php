@@ -2,16 +2,15 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use App\Eco\ContactGroup\ContactGroup;
 use Illuminate\Support\Facades\Mail;
 
 class contactGroupsContactsForReport extends Command
@@ -112,8 +111,6 @@ class contactGroupsContactsForReport extends Command
             Log::info('Mailen van probleem niet mogelijk i.v.m. ontbreken email bij problemen vullen report tabel.');
             return;
         }
-
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         $mail = Mail::to($cooperation->email_report_table_problems);
         $subject = "Probleem bij vullen contactgroep/contact koppelingen report tabel - " . \Config::get('app.APP_COOP_NAME');

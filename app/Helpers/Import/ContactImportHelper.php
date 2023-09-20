@@ -104,7 +104,8 @@ class ContactImportHelper
             // when encoding isn't UTF-8 encode lineField to utf8.
             $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
             if(false === $encodingLineField){
-                $line[$k] = utf8_encode($lineField);
+//                $line[$k] = utf8_encode($lineField);
+                $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if(mb_detect_encoding($line[$k]) === false){
                 return [
@@ -166,7 +167,8 @@ class ContactImportHelper
             // when encoding isn't UTF-8 encode lineField to utf8.
             $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
             if(false === $encodingLineField){
-                $line[$k] = utf8_encode($lineField);
+//                $line[$k] = utf8_encode($lineField);
+                $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if (mb_detect_encoding($line[$k]) === false) {
                 array_push($field, self::HEADERS[$k]);
@@ -307,7 +309,8 @@ class ContactImportHelper
                 // when encoding isn't UTF-8 encode lineField to utf8.
                 $encodingLineField= mb_detect_encoding( $field, 'UTF-8', true);
                 if(false === $encodingLineField){
-                    $line[$k] = utf8_encode($field);
+//                    $line[$k] = utf8_encode($field);
+                    $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
                 }
             };
             if ($header) {

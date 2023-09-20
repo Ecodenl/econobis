@@ -26,4 +26,18 @@ class MailboxIgnore extends Model
 
         return MailboxIgnoreType::get($this->type_id);
     }
+
+    public function ignoresEmailAddress(string $emailAddress)
+    {
+        switch ($this->type_id) {
+            case 'e-mail':
+                return $this->value === $emailAddress;
+            case 'domain':
+                $domain = preg_replace( '!^.+?([^@]+)$!', '$1', $emailAddress);
+
+                return $this->value === $domain;
+            default:
+                return false; // Just to be sure
+        }
+    }
 }

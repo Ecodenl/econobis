@@ -4,19 +4,16 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -24,7 +21,8 @@ class UserController extends Controller
 {
     public function me(Request $request)
     {
-        $request->user()->load(['lastNamePrefix', 'title', 'administrations']);
+        $request->user()->load(['lastNamePrefix', 'title', 'administrations', 'mailboxes']);
+
         return FullUser::make($request->user());
     }
 
@@ -32,7 +30,8 @@ class UserController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $user->load(['lastNamePrefix', 'title', 'administrations']);
+        $user->load(['lastNamePrefix', 'title', 'administrations', 'defaultMailbox']);
+
         return FullUser::make($user);
     }
 
@@ -73,9 +72,6 @@ class UserController extends Controller
         $user->assignRole(Role::findByName('Medewerker'));
 
         //Send link to set password
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
@@ -83,6 +79,14 @@ class UserController extends Controller
 
     public function update(User $user, RequestInput $input, Request $request)
     {
+        /**
+         * Aparte functie voor default mailbox aanroepen omdat hier andere permissie check op zit.
+         */
+        $data = $request->all();
+        if(count($data) === 2 && array_key_exists('defaultMailboxId', $data) && array_key_exists('id', $data)) {
+            return $this->updateDefaultMailbox($user, $request);
+        }
+
         $this->authorize('update', $user);
 
         $resetTwoFactorAuthentication = false;
@@ -114,6 +118,18 @@ class UserController extends Controller
         return $this->show($user->fresh());
     }
 
+    public function updateDefaultMailbox(User $user, Request $request)
+    {
+        /**
+         * Mailbox mag elke gebruiker voor zichzelf wijzigen ongeacht zijn rechten.
+         */
+        $this->authorize('update-default-mailbox', $user);
+        $user->default_mailbox_id = $request->input('defaultMailboxId') ? $request->input('defaultMailboxId') : null;
+        $user->save();
+
+        return $this->show($user);
+    }
+
     public function withPermission(Permission $permission)
     {
         $users = User::permission($permission)->with(['lastNamePrefix', 'title'])->where('id', '!=', '1')->where('active', true)->get();
@@ -136,9 +152,6 @@ class UserController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
 

@@ -183,6 +183,7 @@ class ContactDetailsHarmonica extends Component {
                             showEmailsInboxList={this.state.toggleShowList.emailsInbox}
                             newEmail={this.newEmail}
                             emailInboxCount={this.props.contactDetails.emailInboxCount}
+                            contactId={this.props.contactDetails.id}
                         />
 
                         <EmailSentHarmonica
@@ -190,6 +191,7 @@ class ContactDetailsHarmonica extends Component {
                             showEmailsSentList={this.state.toggleShowList.emailsSent}
                             newEmail={this.newEmail}
                             emailSentCount={this.props.contactDetails.emailSentCount}
+                            contactId={this.props.contactDetails.id}
                         />
                     </>
                 ) : null}

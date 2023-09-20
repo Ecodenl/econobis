@@ -67,5 +67,79 @@ class Mailbox extends Model
         return OutgoingServerType::get($this->outgoing_server_type);
     }
 
+    public function ignoresEmailAddress(string $emailAddress)
+    {
+        foreach ($this->mailboxIgnores as $mailboxIgnore) {
+            if ($mailboxIgnore->ignoresEmailAddress($emailAddress)) {
+                return true;
+            }
+        }
 
+        return false;
+    }
+
+    /**
+     * Geef de config om Mailer object mee aan te kunnen maken.
+     */
+    public function getConfig()
+    {
+        return match ($this->outgoing_server_type) {
+            'ms-oauth' => $this->getMicrosoftGraphConfig(),
+            'mailgun' => $this->getMailgunConfig(),
+            default => $this->getSmtpConfig(),
+        };
+    }
+
+    protected function getSmtpConfig()
+    {
+        return [
+            'from' => [
+                'address' => $this->email,
+                'name' => $this->name,
+            ],
+            'transport' => 'smtp',
+            'host' => $this->smtp_host,
+            'port' => $this->smtp_port,
+            'encryption' => $this->smtp_encryption,
+            'username' => $this->username,
+            'password' => $this->password,
+        ];
+    }
+
+    protected function getMicrosoftGraphConfig()
+    {
+        return [
+            'from' => [
+                'address' => $this->email,
+                'name' => $this->name,
+            ],
+            'transport' => 'microsoft-graph-custom',
+            'microsoft_graph_tenant_id' => optional($this->gmailApiSettings)->tenant_id,
+            'microsoft_graph_client_id' => optional($this->gmailApiSettings)->client_id,
+            'microsoft_graph_client_secret' => optional($this->gmailApiSettings)->client_secret,
+        ];
+    }
+
+    protected function getMailgunConfig()
+    {
+        $mailgunDomain = $this->mailgunDomain;
+        if(!$mailgunDomain){
+            throw new \Exception('Mailbox ' . $this->id . ' given to apply Mailgun but mailbox has no Mailgun domain.');
+        }
+        if(!$mailgunDomain->is_verified){
+            throw new \Exception('Mailbox ' . $this->id . ' given to apply Mailgun but Mailgun domain has not been verified.');
+        }
+
+        return [
+            'from' => [
+                'address' => $this->email,
+                'name' => $this->name,
+            ],
+            'transport' => 'mailgun',
+            'domain' => $mailgunDomain->domain,
+            'secret' => $mailgunDomain->secret,
+            'endpoint' => 'api.eu.mailgun.net',
+            'scheme' => 'https',
+        ];
+    }
 }

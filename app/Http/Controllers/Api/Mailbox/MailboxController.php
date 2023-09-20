@@ -32,6 +32,7 @@ use App\Http\Resources\User\UserPeek;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MailboxController extends Controller
@@ -75,7 +76,6 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->onEmpty(true)->next()
-            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
 
         //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
@@ -159,7 +159,6 @@ class MailboxController extends Controller
             ->boolean('primary')->next()
             ->boolean('linkContactFromEmailToAddress')->alias('link_contact_from_email_to_address')->whenMissing(false)->onEmpty(false)->next()
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
-            ->boolean('inboundMailgunEnabled')->alias('inbound_mailgun_enabled')->whenMissing(false)->next()
             ->get();
 
         //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
@@ -298,6 +297,25 @@ class MailboxController extends Controller
         return LoggedInEmailPeek::collection($mailboxes);
     }
 
+    /**
+     * Geef de mailboxen voor een specifieke gebruiker zodat een andere (key)user d mailbox aan de gebruiker kan koppelen.
+     * In dit geval wil de keyuser dus een lijst met de mailboxen van de gebruiker zien en niet die van zichzelf.
+     */
+    public function forUserEmailPeek(User $user)
+    {
+        if(!Auth::user()->hasPermissionTo('manage_user', 'api') && $user->id !== Auth::id()){
+            /**
+             * Alleen toegankelijk voor 'manage_user' rechten (dit zijn normaal gesproken de keyusers) of voor de eigen gebruiker.
+             * (gebruikers mogen eigen mailbox instellen)
+             */
+            abort(403);
+        }
+
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
+
+        return LoggedInEmailPeek::collection($mailboxes);
+    }
+
     //called by cronjob
     static public function receiveAllEmail()
     {
@@ -360,7 +378,14 @@ class MailboxController extends Controller
 
         $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
         $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
-        $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        if(isset($inputGmailApiSettings['clientSecret'])){
+            $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        }
+        if(isset($inputGmailApiSettings['tenantId']) && !empty($inputGmailApiSettings['tenantId'])) {
+            $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
+        } else {
+            $gmailApiSettings->tenant_id = null;
+        }
         $gmailApiSettings->token = '';
 
         $gmailApiSettings->save();

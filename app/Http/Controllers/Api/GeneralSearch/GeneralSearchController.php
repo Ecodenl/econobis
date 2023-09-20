@@ -110,7 +110,7 @@ class GeneralSearchController
                     foreach ($searchWords as $searchWord) {
                         $searchWord = iconv('UTF-8', 'ASCII//TRANSLIT', $searchWord);
 //                        $searchWord = preg_replace('/[^A-Za-z0-9 -]/', '', $searchWord);
-                        if (str_contains(strtolower($searchField),
+                        if ($searchWord && str_contains(strtolower($searchField),
                             $searchWord)
                         ) {
                             $foundInFields[] = $search_field_name;

@@ -152,7 +152,7 @@ class SendAllInvoices implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Nota's definitief maken/verzenden mislukt.";

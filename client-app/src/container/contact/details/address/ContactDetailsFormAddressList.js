@@ -14,10 +14,11 @@ const ContactDetailsFormAddressList = props => {
                 <div className="col-sm-1">Type</div>
                 <div className="col-sm-2">Adres</div>
                 <div className="col-sm-1">Postcode</div>
-                <div className="col-sm-2">Plaats</div>
+                <div className="col-sm-1">Plaats</div>
+                <div className="col-sm-2">Buurt</div>
                 {/*<div className="col-sm-2">Land</div>*/}
                 <div className="col-sm-2">Energieleverancier</div>
-                <div className="col-sm-2">Klantnummer</div>
+                <div className="col-sm-1">Klantnummer</div>
                 <div className="col-sm-1">
                     <span className="pull-right">Primair</span>
                 </div>

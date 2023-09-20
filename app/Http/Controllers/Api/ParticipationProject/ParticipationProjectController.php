@@ -30,7 +30,6 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -660,13 +659,11 @@ class ParticipationProjectController extends ApiController
                 $htmlBodyWithContactVariables
                     = TemplateVariableHelper::stripRemainingVariableTags($htmlBodyWithContactVariables);
 
-                $mailbox = $this->setMailConfigByParticipant($participant);
+                $mailbox = $this->getMailboxByParticipant($participant);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
-                    $fromName = $mailbox->name;
                 } else {
                     $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
                 }
 
                 return [
@@ -826,7 +823,7 @@ class ParticipationProjectController extends ApiController
         //send email
         if($primaryEmailAddress){
             try{
-                $mailbox = $this->setMailConfigByParticipant($participant);
+                $mailbox = $this->getMailboxByParticipant($participant);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
                     $fromName = $mailbox->name;
@@ -835,7 +832,8 @@ class ParticipationProjectController extends ApiController
                     $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = Mail::fromMailbox($mailbox)
+                    ->to($primaryEmailAddress->email);
                 if(!$subject){
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -1215,7 +1213,7 @@ class ParticipationProjectController extends ApiController
         $participantMutation->participation->project->calculator()->run()->save();
     }
 
-    protected function setMailConfigByParticipant(ParticipantProject $participantProject)
+    protected function getMailboxByParticipant(ParticipantProject $participantProject)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();;
@@ -1227,10 +1225,6 @@ class ParticipationProjectController extends ApiController
             $mailboxToSendFrom = $project->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
         return $mailboxToSendFrom;
     }
 
@@ -1317,7 +1311,8 @@ class ParticipationProjectController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use App\Eco\Address\Address;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -93,8 +92,6 @@ class checkOverlappingEnergySuppliers extends Command
 
     private function sendMail($invalidPeriodAddressEnergySuppliers, $overlappingAddresses)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Overlappende energie leveranciers! (' . count($invalidPeriodAddressEnergySuppliers) . '/' . count($overlappingAddresses) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $mail = Mail::to($this->mailTo);

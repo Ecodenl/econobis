@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -102,8 +101,6 @@ class checkFirstStartingDateParticipants extends Command
 
     private function sendMail($wrongParticipantProjects, $doRecover)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Ongeldige eerste ingangsdatum deelnemers! (' . count($wrongParticipantProjects) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongParticipantProjectsHtml = "";

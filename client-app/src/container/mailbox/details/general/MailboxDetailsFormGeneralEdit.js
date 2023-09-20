@@ -40,6 +40,7 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
                           projectId: '',
                           clientId: '',
                           clientSecret: '',
+                          tenantId: '',
                       },
             }}
             processSubmit={processSubmit}

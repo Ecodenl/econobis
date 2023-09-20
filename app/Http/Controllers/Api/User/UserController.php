@@ -4,19 +4,16 @@ namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
 use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
+use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
@@ -75,9 +72,6 @@ class UserController extends Controller
         $user->assignRole(Role::findByName('Medewerker'));
 
         //Send link to set password
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
 
         return $this->show($user->fresh());
@@ -158,9 +152,6 @@ class UserController extends Controller
 
     public function sendResetLinkEmail(Request $request)
     {
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
         (new ForgotPasswordController())->sendResetLinkEmail($request);
     }
 

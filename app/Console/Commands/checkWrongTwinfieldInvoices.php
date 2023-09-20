@@ -2,13 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Helpers\Email\EmailHelper;
+use App\Eco\Invoice\Invoice;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use App\Eco\Invoice\Invoice;
 
 class checkWrongTwinfieldInvoices extends Command
 {
@@ -60,8 +58,6 @@ class checkWrongTwinfieldInvoices extends Command
 
     private function sendMail($wrongTwinfieldInvoices)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Ongeldige twinfield nota\'s gevonden ! (' . count($wrongTwinfieldInvoices) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongTwinfieldInvoicesHtml = "";

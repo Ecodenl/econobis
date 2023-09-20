@@ -150,7 +150,7 @@ class SendAllFinancialOverviewContacts implements ShouldQueue
 
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Waardestaten maken/verzenden mislukt (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";

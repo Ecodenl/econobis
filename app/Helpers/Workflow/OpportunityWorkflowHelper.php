@@ -4,7 +4,6 @@ namespace App\Helpers\Workflow;
 
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Opportunity\Opportunity;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -24,10 +23,6 @@ class OpportunityWorkflowHelper
 
     public function processWorkflowEmail(){
         set_time_limit(0);
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         if (!$this->opportunity_status) {
             return false;

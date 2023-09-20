@@ -7,6 +7,7 @@ import 'react-day-picker/lib/style.css';
 import {
     setFilterOpportunityAmountOfQuotationRequests,
     setFilterOpportunityCampaign,
+    setFilterOpportunityAreaName,
     setFilterOpportunityCreatedAtStart,
     setFilterOpportunityCreatedAtEnd,
     setFilterOpportunityDesiredDateStart,
@@ -70,6 +71,10 @@ const OpportunitiesListFilter = props => {
 
     const onCampaignChange = e => {
         props.setFilterOpportunityCampaign(e.target.value);
+    };
+
+    const onAreaNameChange = e => {
+        props.setFilterOpportunityAreaName(e.target.value);
     };
 
     const onStatusIdChange = e => {
@@ -145,6 +150,14 @@ const OpportunitiesListFilter = props => {
                 />
             </th>
             <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.areaName.data}
+                    onChange={onAreaNameChange}
+                />
+            </th>
+            <th>
                 <select
                     className="form-control input-sm"
                     value={props.filters.statusId.data}
@@ -184,6 +197,7 @@ const mapDispatchToProps = dispatch => {
         {
             setFilterOpportunityAmountOfQuotationRequests,
             setFilterOpportunityCampaign,
+            setFilterOpportunityAreaName,
             setFilterOpportunityCreatedAtStart,
             setFilterOpportunityCreatedAtEnd,
             setFilterOpportunityDesiredDateStart,

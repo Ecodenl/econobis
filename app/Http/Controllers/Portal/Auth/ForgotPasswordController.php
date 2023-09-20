@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Portal\Auth;
 
 use App\Eco\Portal\PortalUser;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Illuminate\Http\Request;
@@ -21,9 +20,7 @@ class ForgotPasswordController extends Controller
     |
     */
 
-    use SendsPasswordResetEmails {
-        sendResetLinkEmail as parentSendResetLinkEmail;
-    }
+    use SendsPasswordResetEmails;
 
     /**
      * Create a new controller instance.
@@ -52,13 +49,4 @@ class ForgotPasswordController extends Controller
     //redirect is handled by react
     protected function sendResetLinkResponse()
     {}
-
-    public function sendResetLinkEmail(Request $request)
-    {
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
-        $this->parentSendResetLinkEmail($request);
-    }
 }

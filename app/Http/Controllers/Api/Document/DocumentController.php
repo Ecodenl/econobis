@@ -163,7 +163,7 @@ class DocumentController extends Controller
 
 
             $file_tmp = $file->store('', 'documents');
-            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($file_tmp);
+            $filePath_tmp = Storage::disk('documents')->path($file_tmp);
 
             if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
                 $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
@@ -295,8 +295,8 @@ class DocumentController extends Controller
 
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if($document->alfresco_node_id == null){
-                $filePath = Storage::disk('documents')->getDriver()
-                    ->getAdapter()->applyPathPrefix($document->filename);
+                $filePath = Storage::disk('documents')
+                    ->path($document->filename);
                 header('X-Filename:' . $document->filename);
                 header('Access-Control-Expose-Headers: X-Filename');
                 return response()->download($filePath, $document->filename);
@@ -332,7 +332,8 @@ class DocumentController extends Controller
 
     protected function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

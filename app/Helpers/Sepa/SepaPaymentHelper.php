@@ -268,8 +268,8 @@ class SepaPaymentHelper
      */
     public function downloadSepa(Sepa $sepa){
 
-        $filePath = Storage::disk('administrations')->getDriver()
-            ->getAdapter()->applyPathPrefix($sepa->filename);
+        $filePath = Storage::disk('administrations')
+            ->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('administrationId:' . $sepa->administration_id);
         header('Access-Control-Expose-Headers: X-Filename, administrationId');
@@ -281,7 +281,7 @@ class SepaPaymentHelper
      */
     public function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -290,7 +290,8 @@ class SepaPaymentHelper
 
     public function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

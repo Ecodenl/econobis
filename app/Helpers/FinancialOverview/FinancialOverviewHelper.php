@@ -9,7 +9,6 @@ use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Project\Project;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
@@ -160,7 +159,7 @@ class FinancialOverviewHelper
             throw new Exception("Waardestaat contact met ID " . $financialOverviewContact->id . " in error-sending gezet.");
         }
 
-        self::setMailConfigByFinancialOverviewContact($financialOverviewContact);
+        $mailbox = self::getMailboxByFinancialOverviewContact($financialOverviewContact);
 
         $financialOverviewContactController = new FinancialOverviewContactController();
         $contactInfo
@@ -241,13 +240,8 @@ class FinancialOverviewHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::to($contactInfo['email']);
-
-//        $bcc = $financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews;
-//        if($bcc)
-//        {
-//            $mail->bcc($financialOverviewContact->financialOverview->administration->email_bcc_financial_overviews);
-//        }
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
@@ -255,14 +249,12 @@ class FinancialOverviewHelper
         if ($preview) {
             return [
                 'to' => $contactInfo['email'],
-//                'bcc' => $bcc,
                 'subject' => $mail->subject,
                 'htmlBody' => $mail->html_body,
             ];
         } else {
             $mail->send(new FinancialOverviewContactMail($mail, $htmlBody,
-                Storage::disk('administrations')->getDriver()->getAdapter()
-                    ->applyPathPrefix($financialOverviewContact->filename),
+                Storage::disk('administrations')->path($financialOverviewContact->filename),
                 $financialOverviewContact->name, $defaultAttachmentDocumentId));
 
             $financialOverviewContact->emailed_to = $contactInfo['email'];
@@ -276,14 +268,14 @@ class FinancialOverviewHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
     }
 
-    public static function setMailConfigByFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact)
+    public static function getMailboxByFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();;
@@ -293,10 +285,7 @@ class FinancialOverviewHelper
             $mailboxToSendFrom = $financialOverviewContact->financialOverview->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
+        return $mailboxToSendFrom;
     }
 
     public static function financialOverviewContactInProgress(FinancialOverviewContact $financialOverviewContact)

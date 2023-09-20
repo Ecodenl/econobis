@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueCategory;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -231,8 +230,6 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
 
     private function sendMail($wrongProjectsDataForLastProjectRevenueEuro, $wrongProjectsDataForLastProjectRedemptionEuro, $wrongProjectsDataForLastProjectRevenueKwh1, $wrongProjectsDataForLastProjectRevenueKwh2)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Ongeldige projectgegevens inzake laatste opbrengstverdelingen! (' . count($wrongProjectsDataForLastProjectRevenueEuro) . '/' . count($wrongProjectsDataForLastProjectRedemptionEuro) . '/' . count($wrongProjectsDataForLastProjectRevenueKwh1) . '/' . count($wrongProjectsDataForLastProjectRevenueKwh2) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongProjectsDataForLastProjectRevenueHtml = "";

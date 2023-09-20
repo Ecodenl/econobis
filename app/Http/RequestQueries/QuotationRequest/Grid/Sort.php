@@ -18,6 +18,7 @@ class Sort extends RequestSort
         'organisationOrCoach',
         'contact',
         'address',
+        'areaName',
         'measure',
         'campaign',
         'createdAt',
@@ -30,6 +31,7 @@ class Sort extends RequestSort
     protected $mapping = [
         'organisationOrCoach' => 'organisationOrCoaches.full_name',
         'contact' => 'contacts.full_name',
+        'areaName' => 'addressAreaName.shared_area_name',
         'measure' => 'measure_categories.name',
         'campaign' => 'campaigns.name',
         'createdAt' => 'quotation_requests.created_at',
@@ -43,6 +45,7 @@ class Sort extends RequestSort
         'organisationOrCoach' => 'organisationOrCoach',
         'contact' => 'contact',
         'address' => 'address',
+        'areaName' => 'addressAreaName',
         'measure' => 'measure',
         'campaign' => 'campaign',
     ];

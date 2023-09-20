@@ -57,7 +57,7 @@ class SendInvoiceNotifications implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Versturen herinnering nota ('.$this->invoice->number.') naar '.$this->contactInfo['contactPerson'].' ('.$this->invoice->order->contact_id.') mislukt.';

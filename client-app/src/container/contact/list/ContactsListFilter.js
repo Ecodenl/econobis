@@ -129,6 +129,7 @@ const ContactsListFilter = props => {
                     onChange={onCityChange}
                 />
             </th>
+            {/*<th></th>*/}
             <th className="hidden-xs">
                 <input
                     type="text"

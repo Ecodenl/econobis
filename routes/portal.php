@@ -56,7 +56,10 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
 
         Route::get('me/quotation-request', 'QuotationRequest\QuotationRequestController@index');
         Route::get('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@view');
+        Route::get('quotation-request/{quotationRequest}/documenten', 'QuotationRequest\QuotationRequestController@viewDocumenten');
         Route::post('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@update');
+        Route::post('quotation-request/{quotationRequest}/uploads', 'QuotationRequest\QuotationRequestController@uploads');
+        Route::get('quotation-request/{quotationRequest}/document/{document}/delete', 'QuotationRequest\QuotationRequestController@deleteDocument');
         Route::get('quotation-request/{quotationRequest}/document/{document}/download', 'QuotationRequest\QuotationRequestController@downloadDocument');
 
         /**

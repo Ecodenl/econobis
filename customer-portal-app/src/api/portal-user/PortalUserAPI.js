@@ -24,6 +24,8 @@ export default {
                         'addressLines',
                         'portalSettingsLayoutAssigned',
                         'inspectionPersonTypeId',
+                        'isOrganisationContact',
+                        'isOccupant',
                     ],
                     rlt: {
                         occupations: {

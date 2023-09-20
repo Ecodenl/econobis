@@ -42,7 +42,6 @@ function DocumentPreview({ match, history }) {
             });
 
         setLoading(false);
-        // });
     }, []);
 
     function zoomIn() {

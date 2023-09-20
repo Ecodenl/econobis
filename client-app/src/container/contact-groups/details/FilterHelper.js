@@ -78,6 +78,8 @@ export default (type, field) => {
                     return 'Woningdossier aanwezig';
                 case 'inspectionPersonType':
                     return 'Rol in buurtaanpak';
+                case 'sharedArea':
+                    return 'Buurt';
                 case 'product':
                     return 'Product';
                 case 'dateStart':

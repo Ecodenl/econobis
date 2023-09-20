@@ -9,7 +9,6 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
@@ -247,8 +246,6 @@ class HoomdossierHelper
 
     private function sendMail()
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $mail = Mail::to($this->contact->primaryEmailAddress);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);

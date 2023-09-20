@@ -308,7 +308,7 @@ class AdministrationController extends ApiController
 
     public function checkStorageDir($administration_id){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -357,8 +357,8 @@ class AdministrationController extends ApiController
     }
 
     public function downloadSepa(Sepa $sepa){
-        $filePath = Storage::disk('administrations')->getDriver()
-            ->getAdapter()->applyPathPrefix($sepa->filename);
+        $filePath = Storage::disk('administrations')
+            ->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);

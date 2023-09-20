@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setIntakesSortsFilter } from '../../../actions/intake/IntakesSortsActions';
 
 const IntakesListHead = props => {
@@ -19,13 +20,19 @@ const IntakesListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'15%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'fullName'} title={'Contact'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'20%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureRequestedId'}
                 title={'Interesse'}
                 width={'15%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status intakes'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'statusId'}
+                title={'Status intakes'}
+                width={'15%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
             <th width="5%" />
         </tr>

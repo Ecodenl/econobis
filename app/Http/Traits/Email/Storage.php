@@ -34,6 +34,6 @@ trait Storage
      */
     private function getStorageRootDir()
     {
-        return \Illuminate\Support\Facades\Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix();
+        return \Illuminate\Support\Facades\Storage::disk('mail_attachments')->path('');
     }
 }

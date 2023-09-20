@@ -10,6 +10,7 @@ namespace App\Http\RequestQueries\Contact\Grid;
 
 
 use App\Eco\HousingFile\HousingFileHoomLink;
+use App\EcoShared\SharedArea\SharedArea;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
 
@@ -52,6 +53,7 @@ class ExtraFilter extends RequestExtraFilter
         'housingFileFieldName',
         'housingFileFieldValue',
         'inspectionPersonType',
+        'sharedArea',
     ];
 
     protected $mapping = [
@@ -1040,5 +1042,44 @@ class ExtraFilter extends RequestExtraFilter
         }
 
     }
+
+    protected function applySharedAreaFilter($query, $type, $data)
+    {
+        $sharedArea = SharedArea::find($data);
+
+        if(empty($data) || !$sharedArea){
+            switch ($type) {
+                case 'eq':
+                    $query->whereHas('primaryAddress', function ($query) {
+                        RequestFilter::applyFilter($query, 'shared_area_code', 'isn0', null);
+                    });
+                    break;
+                default:
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) {
+                            RequestFilter::applyFilter($query, 'shared_area_code', 'is0', null);
+                        });
+                    break;
+            }
+
+        }else {
+
+            $sharedAreaCode = SharedArea::find($data)->area_code;
+            switch ($type) {
+                case 'neq':
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $sharedAreaCode) {
+                            RequestFilter::applyFilter($query, 'shared_area_code', $type, $sharedAreaCode);
+                        });
+                    break;
+                default:
+                    $query->whereHas('primaryAddress', function ($query) use ($type, $sharedAreaCode) {
+                        RequestFilter::applyFilter($query, 'shared_area_code', $type, $sharedAreaCode);
+                    });
+                    break;
+            }
+        }
+    }
+
 
 }

@@ -115,7 +115,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') ' . $this->distributionPartsDateBegin  . ' t/m ' . $this->distributionPartsDateEnd . ' rapportage mislukt.';

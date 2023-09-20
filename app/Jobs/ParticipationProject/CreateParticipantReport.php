@@ -98,7 +98,7 @@ class CreateParticipantReport implements ShouldQueue
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Rapportage deelnemer ('.$this->participantId.') rapportage mislukt.';

@@ -34,7 +34,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
         linkContactFromEmailToAddress,
         emailMarkAsSeen,
         gmailApiSettings,
-        inboundMailgunEnabled,
+        // inboundMailgunEnabled,
         inboundMailgunEmail,
     } = mailboxDetails;
 
@@ -206,30 +206,40 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                                 <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
                                 <ViewText label={'Client secret waarde'} value="••••••••••" />
                             </div>
+                            <div className="row">
+                                <ViewText label={'Tenant ID'} value={gmailApiSettings?.tenantId} />
+                            </div>
                         </PanelBody>
                     </>
                 )}
 
-                <PanelHeader>
-                    <span className="h5">
-                        <strong>Forward adres</strong>
-                    </span>
-                </PanelHeader>
-                <PanelBody>
-                    <div className="row">
-                        <ViewText
-                            label={'Actief'}
-                            value={inboundMailgunEnabled ? 'Ja' : 'Nee'}
-                        />
-                        {
-                            inboundMailgunEnabled && (
-                                <div className={'col-sm-6'}>
-                                    Forward email naar {inboundMailgunEmail} om deze in Econobis te ontvangen.
-                                </div>
-                            )
-                        }
-                    </div>
-                </PanelBody>
+                {incomingServerType === 'mailgun' && (
+                    <>
+                        <PanelHeader>
+                            <span className="h5">
+                                <strong>Mailgun instellingen</strong>
+                            </span>
+                        </PanelHeader>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText
+                                    className={'form-group col-sm-12'}
+                                    labelSize={'col-sm-3'}
+                                    valueSize={'col-sm-9'}
+                                    label={'Forward email'}
+                                    value={inboundMailgunEmail ? inboundMailgunEmail : 'Nog niet bepaald'}
+                                    textToolTip={
+                                        'Forward email ' +
+                                        email +
+                                        ' naar ' +
+                                        (inboundMailgunEmail ? inboundMailgunEmail : 'Nog niet bepaald') +
+                                        ' om deze in Econobis te ontvangen.'
+                                    }
+                                />
+                            </div>
+                        </PanelBody>
+                    </>
+                )}
 
                 <PanelHeader>
                     <span className="h5">

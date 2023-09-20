@@ -460,7 +460,7 @@ class EmailController extends Controller
         $this->authorize('view', Email::class);
         $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
 
-        $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
+        $filePath = Storage::disk('mail_attachments')->path($emailAttachment->filename);
 
         $contactId = '';
         if($emailAttachment->email->contacts()->count() === 1) {
@@ -825,7 +825,7 @@ class EmailController extends Controller
 
     protected function checkStorageDir($mailbox_id){
         //Check if storage map exists
-        $storageDir = Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'mailbox_' . $mailbox_id . DIRECTORY_SEPARATOR . 'outbox';
+        $storageDir = Storage::disk('mail_attachments')->path(DIRECTORY_SEPARATOR . 'mailbox_' . $mailbox_id . DIRECTORY_SEPARATOR . 'outbox');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

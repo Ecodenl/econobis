@@ -9,7 +9,6 @@
 namespace App\Http\RequestQueries\Opportunity\Grid;
 
 
-use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\RequestQuery\RequestFilter;
 use Carbon\Carbon;
 
@@ -25,6 +24,7 @@ class Filter extends RequestFilter
         'measureCategory',
         'measureName',
         'campaign',
+        'areaName',
         'statusId',
         'amountOfQuotationRequests',
     ];
@@ -42,6 +42,7 @@ class Filter extends RequestFilter
         'measureCategory' => 'measure_categories',
         'measureName' => 'measures',
         'campaign' => 'campaigns',
+        'areaName' => 'addressAreaName',
         'name' => 'contacts',
     ];
 
@@ -75,6 +76,21 @@ class Filter extends RequestFilter
     protected function applyAmountOfQuotationRequestsFilter($query, $type, $data)
     {
         $query->has('quotationRequests', '=', $data);
+
+        return false;
+    }
+
+    protected function applyAreaNameFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addressAreaName.shared_area_name', 'LIKE', '%' . $term . '%');
+            });
+        }
 
         return false;
     }

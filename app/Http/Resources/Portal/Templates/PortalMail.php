@@ -4,14 +4,13 @@ namespace App\Http\Resources\Portal\Templates;
 
 use App\Eco\Document\Document;
 use App\Http\Controllers\Api\Document\DocumentController;
-use App\Mail\ConfigurableMailable;
+use Illuminate\Mail\Mailable;
 
-class PortalMail extends ConfigurableMailable
+class PortalMail extends Mailable
 {
+    public $mail;
     public $html_body;
     public $subject;
-    public $document_path;
-    public $document_name;
     public $defaultAttachmentDocumentId;
 
     /**
@@ -33,18 +32,20 @@ class PortalMail extends ConfigurableMailable
      */
     public function build()
     {
-        $mail = $this->subject($this->mail->subject)->view('emails.generic')->text('emails.genericText');
+        $this->subject($this->mail->subject)
+            ->view('emails.generic')
+            ->text('emails.genericText');
 
         if($this->defaultAttachmentDocumentId != null){
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
             if($defaultAttachmentDocument){
                 $documentController = new DocumentController();
-                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
                     'as' => $defaultAttachmentDocument->filename
                 ]);
             }
         }
 
-        return $mail;
+        return $this;
     }
 }

@@ -8,6 +8,7 @@ import {
     setFilterQuotationRequestStatus,
     clearFilterQuotationRequests,
     setQuotationRequestAddressFilter,
+    setQuotationRequestAreaNameFilter,
     setQuotationRequestCampaignFilter,
     setQuotationRequestContactFilter,
     setQuotationRequestCreatedAtStartFilter,
@@ -32,6 +33,10 @@ const QuotationRequestsListFilter = props => {
 
     const onAddressChange = e => {
         props.setQuotationRequestAddressFilter(e.target.value);
+    };
+
+    const onAreaNameChange = e => {
+        props.setQuotationRequestAreaNameFilter(e.target.value);
     };
 
     const onCampaignChange = e => {
@@ -119,6 +124,14 @@ const QuotationRequestsListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
+                    value={props.filters.areaName.data}
+                    onChange={onAreaNameChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
                     value={props.filters.measure.data}
                     onChange={onMeasureChange}
                 />
@@ -180,6 +193,7 @@ const mapDispatchToProps = dispatch => {
             setFilterQuotationRequestStatus,
             clearFilterQuotationRequests,
             setQuotationRequestAddressFilter,
+            setQuotationRequestAreaNameFilter,
             setQuotationRequestCampaignFilter,
             setQuotationRequestContactFilter,
             setQuotationRequestCreatedAtStartFilter,

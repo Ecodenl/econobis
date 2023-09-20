@@ -18,6 +18,7 @@ class Sort extends RequestSort
         'createdAt',
         'fullName',
         'address',
+        'areaName',
         'measureRequestedId',
         'statusId',
         'campaign',
@@ -27,6 +28,7 @@ class Sort extends RequestSort
         'createdAt' => 'intakes.created_at',
         'fullName' => 'contacts.full_name',
         'address' => 'addresses.street',
+        'areaName' => 'addressAreaName.shared_area_name',
         'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
         'campaign' => 'campaigns.name',
@@ -35,6 +37,7 @@ class Sort extends RequestSort
     protected $joins = [
         'fullName' => 'contact',
         'address' => 'address',
+        'areaName' => 'addressAreaName',
         'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
         'campaign' => 'campaign',

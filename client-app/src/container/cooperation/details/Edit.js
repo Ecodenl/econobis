@@ -19,8 +19,8 @@ import Modal from '../../../components/modal/Modal';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
-import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
+import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails }) {
     const [emailTemplates, setEmailTemplates] = useState([]);

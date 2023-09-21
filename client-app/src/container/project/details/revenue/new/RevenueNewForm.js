@@ -501,11 +501,7 @@ const RevenueNew = props => {
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={
-                                        projectTypeCodeRef === 'loan'
-                                            ? 'of aflossingsbedrag (per deelname)'
-                                            : 'of aflossingsbedrag (per participatie)'
-                                    }
+                                    label={'of aflossingsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
                                     onChangeAction={props.handleInputChange}

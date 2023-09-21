@@ -28,6 +28,7 @@ class OppportunitiesNewApp extends Component {
                 quotationText: '',
                 evaluationAgreedDate: '',
                 desiredDate: '',
+                amount: '',
             },
             errors: {
                 statusId: false,

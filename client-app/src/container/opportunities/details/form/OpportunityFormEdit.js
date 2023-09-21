@@ -29,6 +29,7 @@ class OpportunityFormEdit extends Component {
             quotationText,
             status,
             datePlannedToSendWfEmailStatus,
+            amount,
         } = props.opportunity;
 
         this.state = {
@@ -45,6 +46,7 @@ class OpportunityFormEdit extends Component {
                 quotationText: quotationText,
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
+                amount: amount ? amount : '',
                 // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
                 // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
                 // evaluationWouldRecommendOrganisation: props.opportunity
@@ -151,6 +153,7 @@ class OpportunityFormEdit extends Component {
             evaluationAgreedDate,
             measureIds,
             measureIdsSelected,
+            amount,
         } = this.state.opportunity;
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
@@ -209,6 +212,21 @@ class OpportunityFormEdit extends Component {
                     ) : (
                         ''
                     )}
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label="Aantal"
+                        size={'col-sm-5'}
+                        name={'amount'}
+                        type={'number'}
+                        min={'0'}
+                        value={amount}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.amount}
+                        allowZero={true}
+                        textToolTip={`aantal, m2 of Wattpiek`}
+                    />
                 </div>
 
                 <div className="row">

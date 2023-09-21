@@ -74,7 +74,7 @@ const InputText = props => {
                                 color={'blue'}
                                 size={'15px'}
                                 data-tip={textToolTip}
-                                data-for={`tooltip-${name}`}
+                                data-for={`tooltip-${name ? name : id}`}
                             />
                             <ReactTooltip
                                 id={`tooltip-${name ? name : id}`}

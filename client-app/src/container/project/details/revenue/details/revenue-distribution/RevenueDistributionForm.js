@@ -54,6 +54,7 @@ class RevenueDistributionForm extends Component {
             showErrorModal: false,
             modalErrorMessage: '',
             showOnPortal: true,
+            description: '',
         };
     }
 
@@ -368,9 +369,12 @@ class RevenueDistributionForm extends Component {
                 administrationName +
                 `". Mutaties die niet verwerkt konden worden, omdat er gegevens ontbreken bij het contact, zijn niet aangemaakt bij de deelnemers. Zij behouden de status "Definitief". Maak de gegevens compleet en maak vervolgens opnieuw een opbrengst verdeling van de uitkeringen met de status "Definitief."`;
         }
-
         document.body.style.cursor = 'wait';
-        ProjectRevenueAPI.createPaymentInvoices(this.state.datePayout, this.state.distributionIds)
+        ProjectRevenueAPI.createPaymentInvoices(
+            this.state.datePayout,
+            this.state.distributionIds,
+            this.state.description
+        )
             .then(payload => {
                 document.body.style.cursor = 'default';
                 this.setState({
@@ -509,7 +513,7 @@ class RevenueDistributionForm extends Component {
                         <Panel>
                             <PanelBody>
                                 <div className="row">
-                                    <div className="col-md-12">
+                                    <div className="col-md-6">
                                         <InputDate
                                             label={
                                                 this.props.projectRevenue.category.codeRef === 'redemptionEuro'
@@ -520,6 +524,9 @@ class RevenueDistributionForm extends Component {
                                             value={this.state.datePayout}
                                             onChangeAction={this.handleInputChangeDate}
                                             required={'required'}
+                                            size={'col-md-5'}
+                                            labelSize={'col-md-7'}
+                                            divSize={'col-md-12'}
                                             // Ze willen ook datum in verleden kunnen opgeven
                                             // disabledBefore={moment()
                                             //     .nextBusinessDay()
@@ -529,6 +536,18 @@ class RevenueDistributionForm extends Component {
                                             //     .add(1, 'year')
                                             //     .format('YYYY-MM-DD')}
                                             error={this.state.datePayoutError}
+                                        />
+                                    </div>
+                                    <div className="col-md-6">
+                                        <InputText
+                                            label={'Omschrijving transacties'}
+                                            name={'description'}
+                                            size={'col-md-7'}
+                                            labelSize={'col-md-5'}
+                                            divSize={'col-md-12'}
+                                            maxLength={100}
+                                            onChangeAction={this.handleInputChange}
+                                            value={this.state.description}
                                         />
                                     </div>
                                     <div className="col-md-12">

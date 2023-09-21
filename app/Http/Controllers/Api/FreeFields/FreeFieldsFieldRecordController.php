@@ -19,10 +19,13 @@ class FreeFieldsFieldRecordController extends ApiController
     {
         $this->authorize('view', FreeFieldsField::class);
 
-        $freeFieldsTable = FreeFieldsTable::where('table', $_GET['table'])->first();
+        $table = $_GET['table'];
+        $id =$_GET['id'];
 
-        $freeFieldsFieldRecords = FreeFieldsField::where('table_id', $freeFieldsTable->id)->leftJoin('free_fields_field_records as fffr', function($join) {
-            $join->on('fffr.field_id', '=', 'free_fields_fields.id');
+        $freeFieldsTable = FreeFieldsTable::where('table', $table)->first();
+
+        $freeFieldsFieldRecords = FreeFieldsField::where('table_id', $freeFieldsTable->id)->leftJoin('free_fields_field_records as fffr', function($join) use ($id) {
+            $join->on('fffr.field_id', '=', 'free_fields_fields.id')->where('fffr.table_record_id', $id);
         })->get();
 
         return GridFreeFieldRecords::collection($freeFieldsFieldRecords);

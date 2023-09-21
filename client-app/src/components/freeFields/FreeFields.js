@@ -46,11 +46,9 @@ class FreeFields extends Component {
                     <div className="panel-body ">
                         <div className="row">
                             {this.state.freeFieldsFields.map(freeFieldsField => {
-                                console.log(freeFieldsField);
                                 this.state.value = null
                                 switch(freeFieldsField.fieldFormatType) {
                                     case "boolean":
-                                        console.log(freeFieldsField.fieldRecordValueBoolean);
                                         switch(freeFieldsField.fieldRecordValueBoolean) {
                                             case null:
                                                 this.state.value = null;

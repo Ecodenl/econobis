@@ -220,69 +220,84 @@ class TaskNewApp extends Component {
                     task: {
                         ...this.state.task,
                         finished: finished,
-                        campaignId: '',
-                        contactId: params.contactId,
-                        intakeId: '',
-                        contactGroupId: '',
-                        opportunityId: '',
-                        projectId: params.projectId,
-                        participantId: params.participantId,
-                        orderId: '',
-                        invoiceId: '',
+                        contactId: Number(params.contactId),
+                        projectId: Number(params.projectId),
+                        participantId: Number(params.participantId),
                     },
                 });
-            } else if (params.contactId && params.opportunityId) {
+            } else if (params.opportunityId && params.intakeId && params.campaignId && params.contactId) {
                 this.setState({
                     ...this.state,
                     task: {
                         ...this.state.task,
                         finished: finished,
-                        campaignId: '',
-                        contactId: params.contactId,
-                        intakeId: '',
-                        contactGroupId: '',
-                        opportunityId: params.opportunityId,
-                        projectId: '',
-                        participantId: '',
-                        orderId: '',
-                        invoiceId: '',
+                        contactId: Number(params.contactId),
+                        intakeId: Number(params.intakeId),
+                        campaignId: Number(params.campaignId),
+                        opportunityId: Number(params.opportunityId),
+                    },
+                });
+            } else if (params.intakeId && params.campaignId && params.contactId) {
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        finished: finished,
+                        contactId: Number(params.contactId),
+                        intakeId: Number(params.intakeId),
+                        campaignId: Number(params.campaignId),
+                    },
+                });
+            } else if (params.invoiceId && params.orderId && params.contactId) {
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        finished: finished,
+                        contactId: Number(params.contactId),
+                        orderId: Number(params.orderId),
+                        invoiceId: Number(params.invoiceId),
+                    },
+                });
+            } else if (params.orderId && params.contactId) {
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        finished: finished,
+                        contactId: Number(params.contactId),
+                        orderId: Number(params.orderId),
+                    },
+                });
+            } else if (params.housingFileId && params.contactId) {
+                this.setState({
+                    ...this.state,
+                    task: {
+                        ...this.state.task,
+                        finished: finished,
+                        contactId: Number(params.contactId),
+                        housingFileId: Number(params.housingFileId),
                     },
                 });
             } else {
                 switch (params.type) {
+                    case 'campagne':
+                        this.setState({
+                            ...this.state,
+                            task: {
+                                ...this.state.task,
+                                finished: finished,
+                                campaignId: Number(params.id),
+                            },
+                        });
+                        break;
                     case 'contact':
                         this.setState({
                             ...this.state,
                             task: {
                                 ...this.state.task,
                                 finished: finished,
-                                campaignId: '',
-                                contactId: params.id,
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'intake':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: params.id,
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
+                                contactId: Number(params.id),
                             },
                         });
                         break;
@@ -292,51 +307,7 @@ class TaskNewApp extends Component {
                             task: {
                                 ...this.state.task,
                                 finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: params.id,
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'kans':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: params.id,
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'campagne':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: params.id,
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
+                                contactGroupId: Number(params.id),
                             },
                         });
                         break;
@@ -346,88 +317,7 @@ class TaskNewApp extends Component {
                             task: {
                                 ...this.state.task,
                                 finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: params.id,
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'participant':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: params.id,
-                                orderId: '',
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'order':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: params.id,
-                                invoiceId: '',
-                            },
-                        });
-                        break;
-                    case 'nota':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: params.id,
-                            },
-                        });
-                        break;
-                    case 'woningdossier':
-                        this.setState({
-                            ...this.state,
-                            task: {
-                                ...this.state.task,
-                                finished: finished,
-                                campaignId: '',
-                                contactId: '',
-                                intakeId: '',
-                                contactGroupId: '',
-                                opportunityId: '',
-                                projectId: '',
-                                participantId: '',
-                                orderId: '',
-                                invoiceId: '',
-                                housingFileId: params.id,
+                                projectId: Number(params.id),
                             },
                         });
                         break;

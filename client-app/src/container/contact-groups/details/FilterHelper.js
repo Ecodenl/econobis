@@ -64,6 +64,10 @@ export default (type, field) => {
                     return 'Intake - Eind datum';
                 case 'intakeStatus':
                     return 'Intake - Status';
+                case 'quotationRequestStatusOrganisationOrCoach':
+                    return 'Kansactie status (org/coach)';
+                case 'quotationRequestStatusOccupant':
+                    return 'Kansactie status (bewoner)';
                 case 'portalUser':
                     return 'Portal gebruiker actief';
                 case 'housingFileFieldName':

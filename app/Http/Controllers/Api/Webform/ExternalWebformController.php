@@ -432,6 +432,10 @@ class ExternalWebformController extends Controller
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
                 'forceer_nieuw_contact' => 'force_new_contact',
+                // Documenten
+                'bijlage' => 'contact_attachment',
+                'bijlage2' => 'contact_attachment_2',
+                'bijlage3' => 'contact_attachment_3',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -1434,6 +1438,17 @@ class ExternalWebformController extends Controller
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
 
+        // Indien contact bijlage url meegegeven deze als document opslaan
+        if($data['contact_attachment']){
+            $this->addContactAttachment($contact, $data['contact_attachment']);
+        }
+        if($data['contact_attachment_2']){
+            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+        }
+        if($data['contact_attachment_3']){
+            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+        }
+
         return $contact;
     }
 
@@ -1591,6 +1606,17 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+
+        // Indien contact bijlage url meegegeven deze als document opslaan
+        if($data['contact_attachment']){
+            $this->addContactAttachment($contact, $data['contact_attachment']);
+        }
+        if($data['contact_attachment_2']){
+            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+        }
+        if($data['contact_attachment_3']){
+            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+        }
 
         return $contact;
     }
@@ -1905,7 +1931,7 @@ class ExternalWebformController extends Controller
         $document->filename = $fileName;
         $document->contact_id = $intake->contact_id;
         $document->intake_id = $intake->id;
-        // todo WM: dit moet nog anders !!!
+
         if($opportunity){
             $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
@@ -1915,13 +1941,6 @@ class ExternalWebformController extends Controller
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'intake')->first()->name;
         }
         $document->document_created_from_id = $documentCreatedFromId;
-
-        // voor alsnog deze Ids niet vullen
-//        $document->template_id = ??;
-//        $document->campaign_id = ??;
-//        $document->housing_file_id = ??;
-//        $document->quotation_request_id = ??;
-//        $document->measure_id = ??;
 
         $document->save();
 
@@ -1949,6 +1968,58 @@ class ExternalWebformController extends Controller
         }
 
         $document->save();
+    }
+
+
+    protected function addContactAttachment($contact, $contactAttachmentUrl) {
+        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
+        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
+
+        if(in_array($fileType, $allowedFileTypes)) {
+            $fileName = basename($contactAttachmentUrl);
+            $tmpFileName = Str::random(9) . '-' . $fileName;
+
+            $document = new Document();
+            $document->description = 'contact bijlage';
+            $document->document_type = 'upload';
+            $document->document_group = 'general';
+            $document->filename = $fileName;
+            $document->contact_id = $contact->id;
+
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
+
+            $document->document_created_from_id = $documentCreatedFromId;
+
+            $document->save();
+
+            $contents = file_get_contents($contactAttachmentUrl);
+            $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+            $pos = strrpos($tmpFileName, '/');
+            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
+
+            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
+                //delete file on server, still saved on alfresco.
+                Storage::disk('documents')->delete($tmpFileName);
+                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+
+            } else {
+                $document->filename = $tmpFileName;
+                $document->alfresco_node_id = null;
+                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+            }
+
+            $document->save();
+        } else {
+            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
+        }
     }
 
     /**

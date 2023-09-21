@@ -378,7 +378,7 @@ class ProjectRevenueController extends ApiController
     }
 
     public function createInvoices(
-        $distributions, $datePayout
+        $distributions, $datePayout, $description = ""
     )
     {
         set_time_limit(300);
@@ -468,6 +468,7 @@ class ProjectRevenueController extends ApiController
                         $paymentInvoice->invoice_number = $newInvoiceNumber;
                         $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
                         $paymentInvoice->status_id = 'sent';
+                        $paymentInvoice->description = $description;
                         $paymentInvoice->save();
                     }
                     array_push($createdInvoices, $paymentInvoice);
@@ -496,6 +497,7 @@ class ProjectRevenueController extends ApiController
                 // Nu kan status op Afgehandeld (processed).
                 $distribution->status = 'processed';
                 $distribution->date_payout = $datePayout;
+
                 $distribution->save();
             }
         }
@@ -957,10 +959,11 @@ class ProjectRevenueController extends ApiController
     public function createPaymentInvoices(Request $request)
     {
         set_time_limit(0);
+
         $distributionIds = $request->input('distributionIds');
         $datePayout = $request->input('datePayout');
-
-        CreatePaymentInvoices::dispatch($distributionIds, $datePayout, Auth::id());
+        $description = $request->input('description');
+        CreatePaymentInvoices::dispatch($distributionIds, $datePayout, Auth::id(), $description);
 
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }

@@ -129,26 +129,23 @@ const RevenueNew = props => {
                             ) : (
                                 ''
                             )}
-                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong
-                                ?
+                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
-                            {category.codeRef === 'redemptionEuro' && props.project.dateInterestBearingRedemptionWrong
-                                ?
+                            ) : null}
+                            {category.codeRef === 'redemptionEuro' &&
+                            props.project.dateInterestBearingRedemptionWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
+                            ) : null}
                         </span>
                     }
                     name={'dateBegin'}
@@ -473,7 +470,9 @@ const RevenueNew = props => {
                                     value={revenue}
                                     onChangeAction={props.handleInputChange}
                                     size={'col-sm-5'}
-                                    textToolTip={'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'}
+                                    textToolTip={
+                                        'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'
+                                    }
                                 />
                             </div>
                         </>

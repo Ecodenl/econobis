@@ -51,7 +51,7 @@ Hartelijke groet,<br><br> Het Econobis team
 {{-- Subcopy --}}
 @isset($actionText)
 @component('mail::subcopy')
-Als je problemen hebt met het klikken op de "{{ $actionText }}" knop, kopieër en plak deze link in je webbrowser: [{{ $actionUrl }}]({{ $actionUrl }})
+    Als {{ App\Helpers\Settings\PortalSettings::get('portalName') }} na het klikken op de "{{ $actionText }}" knop niet opent, kopieer en plak dan deze link in je webbrowser:: [{{ $actionUrl }}]({{ $actionUrl }})
 @endcomponent
 @endisset
 @endcomponent

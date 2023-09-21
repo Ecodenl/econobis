@@ -51,7 +51,11 @@ class FreeFields extends Component {
                                     this.state.value = null
                                     switch(freeFieldsField.fieldFormatType) {
                                         case "boolean":
+                                            console.log(freeFieldsField.fieldRecordValueBoolean);
                                             switch(freeFieldsField.fieldRecordValueBoolean) {
+                                                case null:
+                                                    this.state.value = null;
+                                                    break;
                                                 case 1:
                                                     this.state.value = "Ja";
                                                     break;
@@ -74,13 +78,20 @@ class FreeFields extends Component {
                                             this.state.value = freeFieldsField.fieldRecordValueDouble;
                                             break;
                                         case "date":
-                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
+                                            if(freeFieldsField.fieldRecordValueDatetime !== null) {
+                                                let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
+                                                this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
+                                            } else {
+                                                let objectDate = ""
+                                            }
                                             break;
                                         case "datetime":
-                                            let objectDatetime = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDatetime.toLocaleDateString('nl-NL');
-                                            break;
+                                            if(freeFieldsField.fieldRecordValueDatetime !== null) {
+                                                let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
+                                                this.state.value = objectDate.toLocaleDateString('nl-NL');
+                                            } else {
+                                                let objectDate = ""
+                                            }
                                     }
 
                                     return (

@@ -96,9 +96,7 @@ class FreeFields extends Component {
                                 return (
                                     <div className="col-xs-6">
                                         <label className={"col-sm-6"}>{freeFieldsField.fieldName}</label>
-                                        <div className={"col-sm-6"}>
-                                            {this.state.value}
-                                        </div>
+                                        <div className={"col-sm-6"}>{this.state.value}</div>
                                     </div>
                                 );
                             })}

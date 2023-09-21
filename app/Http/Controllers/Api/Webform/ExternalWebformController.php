@@ -74,6 +74,7 @@ use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
+use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
@@ -2396,6 +2397,12 @@ class ExternalWebformController extends Controller
             ]);
 
             $this->log('Participant mutation aangemaakt met id ' . $participantMutation->id . '.');
+
+            $participantMutationController = new ParticipantMutationController();
+            $transactionCostsAmount = $participantMutationController->calculationTransactionCosts($participantMutation);
+            $participantMutation->transaction_costs_amount = $transactionCostsAmount;
+
+            $this->log('Transactiekosten bepaald op:  ' . $transactionCostsAmount . '.');
 
             // Recalculate dependent data in participantProject
             $participantMutation->participation->calculator()->run()->save();

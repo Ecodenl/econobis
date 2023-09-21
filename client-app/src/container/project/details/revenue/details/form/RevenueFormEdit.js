@@ -853,7 +853,7 @@ class RevenueFormEdit extends Component {
                                         label={
                                             projectTypeCodeRef === 'loan'
                                                 ? 'of uitkeringsbedrag (per deelname)'
-                                                : 'of uitkeringsbedrag (per participatie)'
+                                                : 'of uitkeringsbedrag (per deelname)'
                                         }
                                         name={'payAmount'}
                                         value={payAmount}

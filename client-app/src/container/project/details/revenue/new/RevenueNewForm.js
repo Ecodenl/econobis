@@ -129,26 +129,23 @@ const RevenueNew = props => {
                             ) : (
                                 ''
                             )}
-                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong
-                                ?
+                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
-                            {category.codeRef === 'redemptionEuro' && props.project.dateInterestBearingRedemptionWrong
-                                ?
+                            ) : null}
+                            {category.codeRef === 'redemptionEuro' &&
+                            props.project.dateInterestBearingRedemptionWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
+                            ) : null}
                         </span>
                     }
                     name={'dateBegin'}
@@ -431,7 +428,7 @@ const RevenueNew = props => {
                                     label={
                                         projectTypeCodeRef === 'loan'
                                             ? 'of uitkeringsbedrag (per deelnemer)'
-                                            : 'of uitkeringsbedrag (per participatie)'
+                                            : 'of uitkeringsbedrag (per deelname)'
                                     }
                                     name={'payAmount'}
                                     value={payAmount}

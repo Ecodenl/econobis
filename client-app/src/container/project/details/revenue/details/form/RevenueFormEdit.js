@@ -850,11 +850,7 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={
-                                            projectTypeCodeRef === 'loan'
-                                                ? 'of uitkeringsbedrag (per deelname)'
-                                                : 'of uitkeringsbedrag (per deelname)'
-                                        }
+                                        label={'of uitkeringsbedrag per deelname'}
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}

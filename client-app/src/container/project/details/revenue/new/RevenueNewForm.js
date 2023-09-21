@@ -425,11 +425,7 @@ const RevenueNew = props => {
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={
-                                        projectTypeCodeRef === 'loan'
-                                            ? 'of uitkeringsbedrag (per deelnemer)'
-                                            : 'of uitkeringsbedrag (per deelname)'
-                                    }
+                                    label={'of uitkeringsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
                                     onChangeAction={props.handleInputChange}
@@ -474,7 +470,9 @@ const RevenueNew = props => {
                                     value={revenue}
                                     onChangeAction={props.handleInputChange}
                                     size={'col-sm-5'}
-                                    textToolTip={'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'}
+                                    textToolTip={
+                                        'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'
+                                    }
                                 />
                             </div>
                         </>

@@ -1,109 +1,67 @@
-import React, {Component, useEffect, useState} from 'react';
-import FreeFieldsAPI from "../../api/free-fields/FreeFieldsAPI";
-import axios from "axios";
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+// import FreeFieldsEdit from './FreeFieldsEdit';
+// import FreeFieldsView from './FreeFieldsView';
+import FreeFieldsView from './FreeFieldsView';
+import FreeFieldsEdit from './FreeFieldsEdit';
 
 class FreeFields extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            freeFieldsFields: [],
-            table: "",
-            id: "",
-            value: "",
+            showEdit: false,
+            activeDiv: ""
         };
-
     }
 
-    fetchFreeFieldsFieldRecords() {
-        const {
-            id,
-            table
-        } = this.props;
+    switchToEdit = () => {
+        this.setState({
+            showEdit: true,
+        });
+    };
 
-        FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, id)
-            .then(payloadFreeFieldsFieldRecords => {
-                this.setState({ ...this.state, freeFieldsFields: payloadFreeFieldsFieldRecords.data.data });
-            })
+    switchToView = () => {
+        this.setState({
+            showEdit: false,
+            activeDiv: '',
+        });
+    };
 
-            .catch(error => {
-                console.log(error);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
+    onDivEnter() {
+        this.setState({
+            activeDiv: 'panel-grey',
+        });
+    }
+
+    onDivLeave() {
+        if (!this.state.showEdit) {
+            this.setState({
+                activeDiv: '',
             });
-    }
-
-    componentDidMount()
-    {
-        this.fetchFreeFieldsFieldRecords();
+        }
     }
 
     render() {
-
         return (
-            <>
-                <div className={`panel panel-default`}>
-                    <div className="panel-heading "><span className="h5 text-bold">Vrije velden</span></div>
-                    <div className="panel-body ">
-                        <div className="row">
-                            {this.state.freeFieldsFields.map(freeFieldsField => {
-                                this.state.value = null
-                                switch(freeFieldsField.fieldFormatType) {
-                                    case "boolean":
-                                        switch(freeFieldsField.fieldRecordValueBoolean) {
-                                            case null:
-                                                this.state.value = null;
-                                                break;
-                                            case 1:
-                                                this.state.value = "Ja";
-                                                break;
-                                            default:
-                                                this.state.value = "Nee";
-                                                break;
-                                        }
-                                        break;
-                                    case "text_short":
-                                    case "text_long":
-                                        this.state.value = freeFieldsField.fieldRecordValueText;
-                                        break;
-                                    case "int":
-                                        this.state.value = freeFieldsField.fieldRecordValueInt;
-                                        break;
-                                    case "double_2_dec":
-                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                        break;
-                                    case "amount_euro":
-                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                        break;
-                                    case "date":
-                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
-                                        } else {
-                                            let objectDate = ""
-                                        }
-                                        break;
-                                    case "datetime":
-                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDate.toLocaleDateString('nl-NL');
-                                        } else {
-                                            let objectDate = ""
-                                        }
-                                }
-
-                                return (
-                                    <div className="col-xs-6">
-                                        <label className={"col-sm-6"}>{freeFieldsField.fieldName}</label>
-                                        <div className={"col-sm-6"}>{this.state.value}</div>
-                                    </div>
-                                );
-                            })}
-                        </div>
-                    </div>
-                </div>
-            </>
+            <div
+                className={this.state.activeDiv}
+                onMouseEnter={() => this.onDivEnter()}
+                onMouseLeave={() => this.onDivLeave()}
+            >
+                {this.state.showEdit ? (
+                    <FreeFieldsEdit
+                        id={this.props.id}
+                        table={this.props.table}
+                        switchToView={this.switchToView}
+                        fetchFreeField={this.props.fetchFreeField}
+                    />
+                ) : (
+                    <FreeFieldsView id={this.props.id} table={this.props.table} switchToEdit={this.switchToEdit} />
+                )}
+            </div>
         );
-
     }
 }
 

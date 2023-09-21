@@ -45,64 +45,63 @@ class FreeFields extends Component {
                     <div className="panel-heading "><span className="h5 text-bold">Vrije velden</span></div>
                     <div className="panel-body ">
                         <div className="row">
+                            {this.state.freeFieldsFields.map(freeFieldsField => {
+                                console.log(freeFieldsField);
+                                this.state.value = null
+                                switch(freeFieldsField.fieldFormatType) {
+                                    case "boolean":
+                                        console.log(freeFieldsField.fieldRecordValueBoolean);
+                                        switch(freeFieldsField.fieldRecordValueBoolean) {
+                                            case null:
+                                                this.state.value = null;
+                                                break;
+                                            case 1:
+                                                this.state.value = "Ja";
+                                                break;
+                                            default:
+                                                this.state.value = "Nee";
+                                                break;
+                                        }
+                                        break;
+                                    case "text_short":
+                                    case "text_long":
+                                        this.state.value = freeFieldsField.fieldRecordValueText;
+                                        break;
+                                    case "int":
+                                        this.state.value = freeFieldsField.fieldRecordValueInt;
+                                        break;
+                                    case "double_2_dec":
+                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
+                                        break;
+                                    case "amount_euro":
+                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
+                                        break;
+                                    case "date":
+                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
+                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
+                                            this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
+                                        } else {
+                                            let objectDate = ""
+                                        }
+                                        break;
+                                    case "datetime":
+                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
+                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
+                                            this.state.value = objectDate.toLocaleDateString('nl-NL');
+                                        } else {
+                                            let objectDate = ""
+                                        }
+                                }
 
-                                {this.state.freeFieldsFields.map(freeFieldsField => {
-                                    console.log(freeFieldsField);
-                                    this.state.value = null
-                                    switch(freeFieldsField.fieldFormatType) {
-                                        case "boolean":
-                                            console.log(freeFieldsField.fieldRecordValueBoolean);
-                                            switch(freeFieldsField.fieldRecordValueBoolean) {
-                                                case null:
-                                                    this.state.value = null;
-                                                    break;
-                                                case 1:
-                                                    this.state.value = "Ja";
-                                                    break;
-                                                default:
-                                                    this.state.value = "Nee";
-                                                    break;
-                                            }
-                                            break;
-                                        case "text_short":
-                                        case "text_long":
-                                            this.state.value = freeFieldsField.fieldRecordValueText;
-                                            break;
-                                        case "int":
-                                            this.state.value = freeFieldsField.fieldRecordValueInt;
-                                            break;
-                                        case "double_2_dec":
-                                            this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                            break;
-                                        case "amount_euro":
-                                            this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                            break;
-                                        case "date":
-                                            if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                                let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                                this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
-                                            } else {
-                                                let objectDate = ""
-                                            }
-                                            break;
-                                        case "datetime":
-                                            if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                                let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                                this.state.value = objectDate.toLocaleDateString('nl-NL');
-                                            } else {
-                                                let objectDate = ""
-                                            }
-                                    }
-
-                                    return (
-                                        <div className="col-xs-6">
-                                            <label className={"col-sm-6"}>{freeFieldsField.fieldName}</label>
-                                            <div className={"col-sm-6"}>
-                                                {this.state.value}
-                                            </div>
+                                return (
+                                    <div className="col-xs-6">
+                                        <label className={"col-sm-6"}>{freeFieldsField.fieldName}</label>
+                                        <div className={"col-sm-6"}>
+                                            {this.state.value}
                                         </div>
-                                    );
-                                })}
+                                    </div>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

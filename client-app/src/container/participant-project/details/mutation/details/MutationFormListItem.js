@@ -71,6 +71,10 @@ class MutationFormListItem extends Component {
                 amountFinal: props.participantMutation.amountFinal
                     ? props.participantMutation.amountFinal
                     : props.participantMutation.amount,
+                differentTransactionCostsAmount: props.participantMutation.transactionCostsAmount
+                    ? props.participantMutation.transactionCostsAmount
+                    : null,
+                createdWith: props.participantMutation.createdWith ? props.participantMutation.createdWith : '',
             },
             errors: {},
             errorMessage: {},
@@ -133,6 +137,9 @@ class MutationFormListItem extends Component {
                     amountFinal: this.props.participantMutation.amountFinal
                         ? this.props.participantMutation.amountFinal
                         : this.props.participantMutation.amount,
+                    differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount
+                        ? this.props.participantMutation.transactionCostsAmount
+                        : null,
                 },
             });
         }
@@ -187,6 +194,12 @@ class MutationFormListItem extends Component {
                     : this.props.projectDateEntry
                     ? this.props.projectDateEntry
                     : moment().format('YYYY-MM-DD'),
+                differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount
+                    ? this.props.participantMutation.transactionCostsAmount
+                    : null,
+                createdWith: this.props.participantMutation.createdWith
+                    ? this.props.participantMutation.createdWith
+                    : '',
             },
         });
 

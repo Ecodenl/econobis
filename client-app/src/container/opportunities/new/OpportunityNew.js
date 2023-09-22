@@ -19,6 +19,7 @@ const OpportunityNew = props => {
         measureCategoryId,
         measureIds,
         measureIdsSelected,
+        amount,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
@@ -64,7 +65,9 @@ const OpportunityNew = props => {
                     value={measureIdsSelected}
                     onChangeAction={props.handleMeasureIds}
                 />
+            </div>
 
+            <div className="row">
                 <InputSelect
                     label={'Status'}
                     size={'col-sm-6'}
@@ -74,6 +77,21 @@ const OpportunityNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.statusId}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    label="Aantal"
+                    size={'col-sm-5'}
+                    name={'amount'}
+                    type={'number'}
+                    min={'0'}
+                    value={amount}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.amount}
+                    allowZero={true}
+                    textToolTip={`aantal, m2 of Wattpiek`}
                 />
             </div>
 

@@ -378,6 +378,22 @@ class ContactGroup extends Model
         return false;
     }
 
+    public function getParentGroupsArrayAttribute(){
+        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+
+        $parentGroups = [];
+
+        foreach ($composedGroups as $composedGroup){
+            foreach ($composedGroup->contactGroups as $contactGroup){
+                if($this->id === $contactGroup->id){
+                    $parentGroups[] = $composedGroup->name;
+                }
+            }
+        }
+
+        return $parentGroups;
+    }
+
     // syncronized with lapasta
     public function getIsUsedInLapostaAttribute(){
 

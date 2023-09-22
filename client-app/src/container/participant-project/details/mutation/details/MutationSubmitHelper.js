@@ -29,6 +29,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             }
             values.dateOption = participantMutation.dateOption;
         }
+        values.differentTransactionCostsAmount = null;
     }
 
     if (orginalStatusCodeRef === 'option') {
@@ -52,6 +53,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             }
             values.dateGranted = participantMutation.dateGranted;
         }
+        values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
     if (orginalStatusCodeRef === 'granted') {
@@ -78,6 +80,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             values.paymentReference = participantMutation.paymentReference;
             values.dateEntry = participantMutation.dateEntry;
         }
+        values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
     if (orginalStatusCodeRef === 'final') {
@@ -93,6 +96,18 @@ export default function(participantMutation, projectTypeCodeRef) {
         values.paymentReference = participantMutation.paymentReference;
         values.dateEntry = participantMutation.dateEntry;
         values.statusId = participantMutation.statusId;
+        values.differentTransactionCostsAmount = null;
     }
+
+    if (projectTypeCodeRef === 'loan') {
+        if (values.amount != participantMutation.amount) {
+            values.differentTransactionCostsAmount = null;
+        }
+    } else {
+        if (values.quantity != participantMutation.quantity) {
+            values.differentTransactionCostsAmount = null;
+        }
+    }
+
     return values;
 }

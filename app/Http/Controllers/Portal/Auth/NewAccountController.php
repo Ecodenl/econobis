@@ -13,7 +13,6 @@ use App\Eco\Person\Person;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Controller;
@@ -299,11 +298,6 @@ class NewAccountController extends Controller
 
     protected function sendNewAccountMail(Contact $contact, $organisationName, $responsibleUserId, $emailTemplateNewAccountId)
     {
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         if (!$contact->primaryEmailAddress) {
             return false;
         }

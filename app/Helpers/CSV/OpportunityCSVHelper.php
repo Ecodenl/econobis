@@ -113,6 +113,7 @@ class OpportunityCSVHelper
                 'measures_specific' => 'Maatregelen specifiek',
                 'intake.campaign.name' => 'Campagne',
                 'status.name' => 'Status',
+                'amount' => 'Aantal',
                 'amount_of_quotation_requests' => 'Aantal offertes',
                 'quotation_text' => 'Toelichting op maatregel',
                 'desired_date' => 'Datum uitvoering',

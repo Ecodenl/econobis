@@ -4,6 +4,7 @@ import EmailAttachmentsPanel from "../../../components/email/EmailAttachmentsPan
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import EmailSplitviewAPI from "../../../api/email/EmailSplitviewAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
+import Frame from 'react-frame-component';
 
 export default function EmailSplitViewDetails({emailId, updatedEmailHandler, deleted, folder}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
@@ -107,7 +108,9 @@ export default function EmailSplitViewDetails({emailId, updatedEmailHandler, del
 
             <div className="panel panel-default">
                 <div className="panel-body panel-small" style={{padding: '20px'}} id="split-view-email-html">
-                    <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
+                    <Frame style={{height: 'calc(100vh - 550px)'}}>
+                        <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
+                    </Frame>
                 </div>
             </div>
 

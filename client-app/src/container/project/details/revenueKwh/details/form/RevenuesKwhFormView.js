@@ -60,7 +60,7 @@ const RevenuesKwhFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
-                    label={'Opbrengst kWh €'}
+                    label={'Teruggave EB per kWh €'}
                     value={
                         payoutKwh &&
                         payoutKwh.toLocaleString('nl', {

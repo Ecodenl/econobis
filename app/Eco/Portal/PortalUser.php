@@ -3,7 +3,6 @@
 namespace App\Eco\Portal;
 
 use App\Eco;
-use App\Helpers\Email\EmailHelper;
 use App\Notifications\Portal\MailAccountActivated;
 use App\Notifications\Portal\MailResetPasswordToken;
 use Carbon\Carbon;
@@ -62,9 +61,6 @@ class PortalUser extends Authenticatable
      * Send a confirmation email to the user about the activated account.
      */
     public function sendAccountActivatedNotification() {
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
         $this->notify(new MailAccountActivated($this->contact->full_name_fnf));
     }
 

@@ -6,7 +6,6 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -115,8 +114,6 @@ class checkTerminationDateParticipants extends Command
 
     private function sendMail($wrongParticipantProjects)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Ongeldige beeindigingsdatum deelnemers! (' . count($wrongParticipantProjects) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongParticipantProjectsHtml = "";

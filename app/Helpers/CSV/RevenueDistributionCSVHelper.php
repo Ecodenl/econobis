@@ -84,6 +84,8 @@ class RevenueDistributionCSVHelper
                 'type' => 'Type',
                 'contact.number' => 'Nummer',
                 'contact.full_name' => 'Naam',
+                'contact.iban' => 'IBAN',
+                'contact.iban_attn' => 'IBAN t.n.v.',
                 'participations_or_loan_amount' => 'Participaties',
                 'participations_amount_end_calendar_year' => 'Participaties op 31-12',
                 'payout_formatted' => 'Uit te keren bedrag',

@@ -158,7 +158,7 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
 
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Waardestaten maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ")";

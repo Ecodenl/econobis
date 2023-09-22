@@ -28,12 +28,14 @@ class CreatePaymentInvoices implements ShouldQueue
     private $distributionIds;
     private $datePayout;
     private $userId;
+    private $description;
 
-    public function __construct($distributionIds, $datePayout, $userId)
+    public function __construct($distributionIds, $datePayout, $userId, $description = "")
     {
         $this->distributionIds = $distributionIds;
         $this->datePayout = $datePayout;
         $this->userId = $userId;
+        $this->description = $description;
 
         $jobLog = new JobsLog();
         $jobLog->value = "Start uitkering nota's.";
@@ -54,7 +56,7 @@ class CreatePaymentInvoices implements ShouldQueue
             $distributions = $distributions->orWhereIn('id', $chunk);
         }
 
-        $createdInvoices = $projectRevenueController->createInvoices($distributions->get(), $this->datePayout);
+        $createdInvoices = $projectRevenueController->createInvoices($distributions->get(), $this->datePayout, $this->description);
 
         if ($createdInvoices) {
             $paymentInvoiceController = new PaymentInvoiceController();
@@ -74,7 +76,7 @@ class CreatePaymentInvoices implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Uitkering nota's mislukt.";

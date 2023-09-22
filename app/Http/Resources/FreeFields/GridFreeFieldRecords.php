@@ -15,7 +15,7 @@ class GridFreeFieldRecords extends JsonResource
     public function toArray($request)
     {
         return [
-            'id' => $this->id,
+            'id' => $this->freeFieldsFieldId,
             'tableName' => $this->freeFieldsTable->name,
             'fieldName' => $this->field_name,
             'fieldFormatType' => $this->freeFieldsFieldFormat->format_type,

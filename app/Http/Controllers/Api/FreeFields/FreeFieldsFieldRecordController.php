@@ -24,7 +24,7 @@ class FreeFieldsFieldRecordController extends ApiController
 
         $freeFieldsTable = FreeFieldsTable::where('table', $table)->first();
 
-        $freeFieldsFieldRecords = FreeFieldsField::where('table_id', $freeFieldsTable->id)->leftJoin('free_fields_field_records as fffr', function($join) use ($id) {
+        $freeFieldsFieldRecords = FreeFieldsField::select(['*', 'free_fields_fields.id AS freeFieldsFieldId'])->where('table_id', $freeFieldsTable->id)->leftJoin('free_fields_field_records as fffr', function($join) use ($id) {
             $join->on('fffr.field_id', '=', 'free_fields_fields.id')->where('fffr.table_record_id', $id);
         })->get();
 

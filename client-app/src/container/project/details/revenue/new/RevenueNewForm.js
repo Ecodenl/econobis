@@ -129,26 +129,23 @@ const RevenueNew = props => {
                             ) : (
                                 ''
                             )}
-                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong
-                                ?
+                            {category.codeRef === 'revenueEuro' && props.project.dateInterestBearingWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
-                            {category.codeRef === 'redemptionEuro' && props.project.dateInterestBearingRedemptionWrong
-                                ?
+                            ) : null}
+                            {category.codeRef === 'redemptionEuro' &&
+                            props.project.dateInterestBearingRedemptionWrong ? (
                                 <>
                                     <br />
                                     <small style={{ color: 'red', fontWeight: 'normal' }}>
                                         Afwijkende begindatum verwacht
                                     </small>
                                 </>
-                                : null
-                            }
+                            ) : null}
                         </span>
                     }
                     name={'dateBegin'}
@@ -385,7 +382,7 @@ const RevenueNew = props => {
                     <div className="row">
                         <InputText
                             type={'number'}
-                            label={'Opbrengst kWh €'}
+                            label={'Teruggave EB per kWh €'}
                             name={'payoutKwh'}
                             value={
                                 payoutKwh &&
@@ -428,11 +425,7 @@ const RevenueNew = props => {
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={
-                                        projectTypeCodeRef === 'loan'
-                                            ? 'of uitkeringsbedrag (per deelnemer)'
-                                            : 'of uitkeringsbedrag (per participatie)'
-                                    }
+                                    label={'of uitkeringsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
                                     onChangeAction={props.handleInputChange}
@@ -476,6 +469,10 @@ const RevenueNew = props => {
                                     name={'revenue'}
                                     value={revenue}
                                     onChangeAction={props.handleInputChange}
+                                    size={'col-sm-5'}
+                                    textToolTip={
+                                        'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'
+                                    }
                                 />
                             </div>
                         </>
@@ -504,11 +501,7 @@ const RevenueNew = props => {
                                 />
                                 <InputText
                                     type={'number'}
-                                    label={
-                                        projectTypeCodeRef === 'loan'
-                                            ? 'of aflossingsbedrag (per deelname)'
-                                            : 'of aflossingsbedrag (per participatie)'
-                                    }
+                                    label={'of aflossingsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
                                     onChangeAction={props.handleInputChange}

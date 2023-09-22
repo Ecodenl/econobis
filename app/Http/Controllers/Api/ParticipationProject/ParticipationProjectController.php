@@ -993,6 +993,8 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
+        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+
         $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 

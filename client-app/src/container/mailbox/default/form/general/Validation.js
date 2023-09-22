@@ -23,12 +23,6 @@ export const MailboxValidationPassword = Yup.object().shape({
     password: Yup.string().required('Verplicht'),
 });
 
-export const MailboxValidationClientSecret = Yup.object().shape({
-    clientSecret: Yup.string()
-        .trim()
-        .required('Verplicht'),
-});
-
 export const MailboxValidationMailgun = Yup.object().shape({
     mailgunDomainId: Yup.string()
         .required('Verplicht')
@@ -55,6 +49,13 @@ export const MailboxValidationMsOauth = Yup.object().shape({
             .trim()
             .required('Verplicht'),
         tenantId: Yup.string()
+            .trim()
+            .required('Verplicht'),
+    }),
+});
+export const MailboxValidationClientSecret = Yup.object().shape({
+    gmailApiSettings: Yup.object().shape({
+        clientSecret: Yup.string()
             .trim()
             .required('Verplicht'),
     }),

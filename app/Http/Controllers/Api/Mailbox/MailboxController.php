@@ -381,7 +381,11 @@ class MailboxController extends Controller
         if(isset($inputGmailApiSettings['clientSecret'])){
             $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
         }
-        $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
+        if(isset($inputGmailApiSettings['tenantId']) && !empty($inputGmailApiSettings['tenantId'])) {
+            $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
+        } else {
+            $gmailApiSettings->tenant_id = null;
+        }
         $gmailApiSettings->token = '';
 
         $gmailApiSettings->save();

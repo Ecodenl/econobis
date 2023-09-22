@@ -36,7 +36,7 @@ class CustomMailServiceProvider extends MailServiceProvider
                     tenantId: $config['microsoft_graph_tenant_id'],
                     clientId: $config['microsoft_graph_client_id'],
                     clientSecret: $config['microsoft_graph_client_secret'],
-                    accessTokenTtl: 3000,
+                    accessTokenTtl: 0,
                 ),
                 $config['from']['address']
             );

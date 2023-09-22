@@ -16,6 +16,7 @@ import { MailboxValidationPassword } from './Validation';
 import { MailboxValidationMailgun } from './Validation';
 import { MailboxValidationGmail } from './Validation';
 import { MailboxValidationMsOauth } from './Validation';
+import { MailboxValidationClientSecret } from './Validation';
 import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';

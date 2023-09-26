@@ -37,6 +37,17 @@ use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
+use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
+use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
+use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
+use App\Http\Resources\Contact\ContactPeek;
+use App\Http\Resources\ContactGroup\FullContactGroup;
+use App\Jobs\ParticipationProject\CreateParticipantReport;
+use Barryvdh\DomPDF\Facade\Pdf;
+use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Project\Project;
+use App\Helpers\Delete\Models\DeleteParticipation;
+use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
@@ -995,7 +1006,8 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        $participantMutationController = new ParticipantMutationController();
+        $participantMutation->transaction_costs_amount = $participantMutationController->calculationTransactionCosts($participantMutation);
 
         $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);

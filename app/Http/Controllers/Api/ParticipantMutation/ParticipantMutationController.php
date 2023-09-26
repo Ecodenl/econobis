@@ -314,7 +314,7 @@ class ParticipantMutationController extends ApiController
         return true;
     }
 
-    protected function calculationTransactionCosts($participantMutation)
+    public function calculationTransactionCosts($participantMutation)
     {
         // TransactionCosts only for (first_)deposit mutation types, otherwise return 0.
         if(!$participantMutation->type || !in_array($participantMutation->type->code_ref, ['deposit', 'first_deposit'])) {

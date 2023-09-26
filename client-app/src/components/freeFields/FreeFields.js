@@ -1,68 +1,46 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
 
-// import FreeFieldsEdit from './FreeFieldsEdit';
-// import FreeFieldsView from './FreeFieldsView';
 import FreeFieldsView from './FreeFieldsView';
 import FreeFieldsEdit from './FreeFieldsEdit';
+import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
-class FreeFields extends Component {
-    constructor(props) {
-        super(props);
+export default function FreeFields({ table, id }) {
+    const [showEdit, setShowEdit] = useState(false);
+    const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState(null);
 
-        this.state = {
-            showEdit: false,
-            activeDiv: ""
-        };
+    useEffect(() => {
+        fetchFreeFieldsFieldRecords();
+    }, []);
+
+    function switchToView() {
+        setShowEdit(false);
+    }
+    function switchToEdit() {
+        setShowEdit(true);
     }
 
-    switchToEdit = () => {
-        this.setState({
-            showEdit: true,
-        });
-    };
-
-    switchToView = () => {
-        this.setState({
-            showEdit: false,
-            activeDiv: '',
-        });
-    };
-
-    onDivEnter() {
-        this.setState({
-            activeDiv: 'panel-grey',
-        });
-    }
-
-    onDivLeave() {
-        if (!this.state.showEdit) {
-            this.setState({
-                activeDiv: '',
+    const fetchFreeFieldsFieldRecords = () => {
+        FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, id)
+            .then(payload => {
+                setFreeFieldsFieldRecords(payload);
+            })
+            .catch(error => {
+                console.log(error);
+                alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
-        }
-    }
+    };
 
-    render() {
-        return (
-            <div
-                className={this.state.activeDiv}
-                onMouseEnter={() => this.onDivEnter()}
-                onMouseLeave={() => this.onDivLeave()}
-            >
-                {this.state.showEdit ? (
-                    <FreeFieldsEdit
-                        id={this.props.id}
-                        table={this.props.table}
-                        switchToView={this.switchToView}
-                        fetchFreeField={this.props.fetchFreeField}
-                    />
-                ) : (
-                    <FreeFieldsView id={this.props.id} table={this.props.table} switchToEdit={this.switchToEdit} />
-                )}
-            </div>
-        );
-    }
+    return (
+        <div>
+            {freeFieldsFieldRecords && (
+                <>
+                    {showEdit ? (
+                        <FreeFieldsEdit freeFieldsFieldRecords={freeFieldsFieldRecords} switchToView={switchToView} />
+                    ) : (
+                        <FreeFieldsView freeFieldsFieldRecords={freeFieldsFieldRecords} switchToEdit={switchToEdit} />
+                    )}
+                </>
+            )}
+        </div>
+    );
 }
-
-export default FreeFields;

@@ -15,9 +15,6 @@ use Illuminate\Http\Request;
 
 class FreeFieldsFieldFormatController extends ApiController
 {
-//    public function freeFieldsFieldFormatsList() {
-//        return FreeFieldsFieldFormat::get();
-//    }
     public function peek(Request $request)
     {
         return PeekFreeFieldsFieldFormat::collection(FreeFieldsFieldFormat::orderBy('format_name')->get());

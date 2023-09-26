@@ -8,7 +8,6 @@
 
 namespace App\Http\Resources\FreeFields;
 
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class PeekFreeFieldsFieldFormat extends JsonResource

@@ -1,112 +1,130 @@
-import React, {Component, useEffect, useState} from 'react';
-import FreeFieldsAPI from "../../api/free-fields/FreeFieldsAPI";
-import axios from "axios";
+import React, { useState } from 'react';
+import ViewText from '../form/ViewText';
+import moment from 'moment';
+import MoneyPresenter from '../../helpers/MoneyPresenter';
 
-class FreeFieldsView extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            freeFieldsFields: [],
-            table: "",
-            id: "",
-            value: "",
-        };
-    }
-
-    fetchFreeFieldsFieldRecords() {
-        const {
-            id,
-            table
-        } = this.props;
-
-        FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, id)
-            .then(payloadFreeFieldsFieldRecords => {
-                this.setState({ ...this.state, freeFieldsFields: payloadFreeFieldsFieldRecords.data.data });
-            })
-
-            .catch(error => {
-                console.log(error);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
-            });
-    }
-
-    componentDidMount()
-    {
-        this.fetchFreeFieldsFieldRecords();
-    }
-
-    render() {
-        const {
-            switchToEdit
-        } = this.props;
-
-        return (
-            <>
-                <div className={`panel panel-default`} onClick={switchToEdit}>
-                    <div className="panel-heading "><span className="h5 text-bold">Vrije velden</span></div>
-                    <div className="panel-body ">
-                        <div className="row">
-                            {this.state.freeFieldsFields.map(freeFieldsField => {
-                                this.state.value = null
-                                switch(freeFieldsField.fieldFormatType) {
-                                    case "boolean":
-                                        switch(freeFieldsField.fieldRecordValueBoolean) {
-                                            case null:
-                                                this.state.value = null;
-                                                break;
-                                            case 1:
-                                                this.state.value = "Ja";
-                                                break;
-                                            default:
-                                                this.state.value = "Nee";
-                                                break;
-                                        }
-                                        break;
-                                    case "text_short":
-                                    case "text_long":
-                                        this.state.value = freeFieldsField.fieldRecordValueText;
-                                        break;
-                                    case "int":
-                                        this.state.value = freeFieldsField.fieldRecordValueInt;
-                                        break;
-                                    case "double_2_dec":
-                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                        break;
-                                    case "amount_euro":
-                                        this.state.value = freeFieldsField.fieldRecordValueDouble;
-                                        break;
-                                    case "date":
-                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDate.toLocaleDateString('nl-NL').split(' ')[0];
-                                        } else {
-                                            let objectDate = ""
-                                        }
-                                        break;
-                                    case "datetime":
-                                        if(freeFieldsField.fieldRecordValueDatetime !== null) {
-                                            let objectDate = new Date(freeFieldsField.fieldRecordValueDatetime);
-                                            this.state.value = objectDate.toLocaleDateString('nl-NL');
-                                        } else {
-                                            let objectDate = ""
-                                        }
-                                }
-
-                                return (
-                                    <div className="col-xs-6">
-                                        <label className={"col-sm-6"}>{freeFieldsField.fieldName}</label>
-                                        <div className={"col-sm-6"}>{this.state.value}</div>
-                                    </div>
-                                );
-                            })}
-                        </div>
+function FreeFieldsView({ freeFieldsFieldRecords, switchToEdit }) {
+    return (
+        <>
+            <div className={`panel panel-default`} onClick={switchToEdit}>
+                <div className="panel-heading ">
+                    <span className="h5 text-bold">Vrije velden ({freeFieldsFieldRecords.length})</span>
+                </div>
+                <div className="panel-body ">
+                    <div className="row">
+                        {freeFieldsFieldRecords.map(record => {
+                            switch (record.fieldFormatType) {
+                                case 'boolean':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={record.fieldRecordValueBoolean == true ? 'Ja' : 'Nee'}
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'text_short':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={record.fieldRecordValueText}
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'text_long':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={record.fieldRecordValueText}
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'int':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={record.fieldRecordValueInt}
+                                                value={record.fieldRecordValueInt ? record.fieldRecordValueInt : ''}
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'double_2_dec':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={
+                                                    record.fieldRecordValueDouble
+                                                        ? parseFloat(record.fieldRecordValueDouble).toFixed(2)
+                                                        : ''
+                                                }
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'amount_euro':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={
+                                                    record.fieldRecordValueDouble
+                                                        ? MoneyPresenter(record.fieldRecordValueDouble)
+                                                        : ''
+                                                }
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'date':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={
+                                                    record.fieldRecordValueDatetime
+                                                        ? moment(record.fieldRecordValueDatetime).format('L')
+                                                        : ''
+                                                }
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                                    break;
+                                case 'datetime':
+                                    return (
+                                        <div className="col-xs-6">
+                                            <ViewText
+                                                label={record.fieldName}
+                                                value={
+                                                    record.fieldRecordValueDatetime
+                                                        ? moment(record.fieldRecordValueDatetime).format('L HH:mm')
+                                                        : ''
+                                                }
+                                                className={'col-xs-12'}
+                                            />
+                                        </div>
+                                    );
+                            }
+                        })}
                     </div>
                 </div>
-            </>
-        );
-
-    }
+            </div>
+        </>
+    );
 }
 
 export default FreeFieldsView;

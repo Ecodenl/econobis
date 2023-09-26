@@ -58,13 +58,15 @@ export default {
     },
 
     fetchFreeFieldsFieldRecords: (table, id) => {
-        const requestUrl = `${URL_API}/api/free-fields-field-records/grid`;
+        const requestUrl = `${URL_API}/api/free-fields-field-records/get-values`;
 
-        return axiosInstance.get(requestUrl, {
-            params: {
-                table: table,
-                id: id,
-            },
-        });
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    table: table,
+                    id: id,
+                },
+            })
+            .then(response => response.data);
     },
 };

@@ -13,11 +13,10 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
 use App\Http\Resources\FreeFields\FullFreeFieldsField;
-use App\Http\Resources\FreeFields\GridFreeFields;
+use App\Http\Resources\FreeFields\GridFreeFieldsField;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
-use Illuminate\Support\Facades\Log;
 
 class FreeFieldsFieldController extends ApiController
 {
@@ -27,7 +26,7 @@ class FreeFieldsFieldController extends ApiController
 
         $freeFields = $requestQuery->get();
 
-        return GridFreeFields::collection($freeFields)
+        return GridFreeFieldsField::collection($freeFields)
             ->additional([
                 'meta' => [
                     'total' => $requestQuery->total(),

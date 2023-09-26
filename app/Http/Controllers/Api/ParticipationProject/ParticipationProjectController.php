@@ -34,6 +34,7 @@ use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
+use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
@@ -966,7 +967,8 @@ class ParticipationProjectController extends ApiController
 
         $participantMutation->fill($mutationData);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        $participantMutationController = new ParticipantMutationController();
+        $participantMutation->transaction_costs_amount = $participantMutationController->calculationTransactionCosts($participantMutation);
 
         $dateEntryYear = \Carbon\Carbon::parse($participantMutation->date_entry)->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);

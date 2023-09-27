@@ -43,7 +43,7 @@ class FreeFieldsFieldRecordController extends ApiController
             ];
         }
 
-        return response()->json(collect($freeFieldsFieldRecords));
+        return response()->json($freeFieldsFieldRecords);
 
     }
 }

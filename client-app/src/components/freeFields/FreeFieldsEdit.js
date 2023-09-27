@@ -16,7 +16,7 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
 
     function handleInputChangeBoolean(event) {
         const target = event.target;
-        const value = target.value;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
         handleInputChange(value, name, 'fieldRecordValueBoolean');

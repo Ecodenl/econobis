@@ -20,7 +20,7 @@ class EmailAttachmentController extends Controller
         return Storage::disk('mail_attachments')->download($emailAttachment->filename, $emailAttachment->name);
 
 
-//        $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
+//        $filePath = Storage::disk('mail_attachments')->path($emailAttachment->filename);
 
         /**
          * 20230509; Jos; Todo; Nog checken; Onderstaand op dit moment nog niet nodig, wel vanuit document aanmaken..?

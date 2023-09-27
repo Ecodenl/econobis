@@ -42,7 +42,8 @@ class FreeFieldsFieldRecordController extends ApiController
                 'fieldRecordValueDatetime' => $record->field_value_datetime,
             ];
         }
-        return response()->json($freeFieldsFieldRecords);
+
+        return response()->json(collect($freeFieldsFieldRecords));
 
     }
 }

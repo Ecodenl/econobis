@@ -97,8 +97,7 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
         }
 
         if($dataContent->status->short === 'executed'){
-            $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
-            $quotationRequest->status_id = $bezoekStatusDone->id;
+            $quotationRequest->date_recorded = Carbon::parse('now');
             $quotationRequest->save();
             $this->log('Afspraak op ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' gedaan voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . $this->contact->full_name_fnf);
         } else {

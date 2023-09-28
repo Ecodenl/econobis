@@ -86,15 +86,15 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                         <div className="row">
                             {freeFieldsFieldRecords &&
                                 freeFieldsFieldRecords.length > 0 &&
-                                freeFieldsFieldRecords.map(freeFieldsFieldRecord => {
-                                    switch (freeFieldsFieldRecord.fieldFormatType) {
+                                freeFieldsFieldRecords.map(record => {
+                                    switch (record.fieldFormatType) {
                                         case 'boolean':
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputToggle
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueBoolean}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueBoolean}
                                                         onChangeAction={handleInputChangeBoolean}
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
@@ -107,9 +107,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputText
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueText}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueText}
                                                         onChangeAction={handleInputChangeText}
                                                         type={'text'}
                                                         divSize={'col-sm-12'}
@@ -123,9 +123,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputTextArea
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueText}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueText}
                                                         onChangeAction={handleInputChangeText}
                                                         divSize={'col-sm-12'}
                                                         sizeLabel={'col-sm-12'}
@@ -138,9 +138,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputText
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueInt}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueInt}
                                                         onChangeAction={handleInputChangeInt}
                                                         type={'number'}
                                                         divSize={'col-sm-12'}
@@ -154,9 +154,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputText
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueDouble}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueDouble}
                                                         onChangeAction={handleInputChangeDouble}
                                                         type={'number'}
                                                         divSize={'col-sm-12'}
@@ -170,9 +170,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputText
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueDouble}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueDouble}
                                                         onChangeAction={handleInputChangeDouble}
                                                         type={'number'}
                                                         divSize={'col-sm-12'}
@@ -186,9 +186,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputDate
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueDatetime}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueDatetime}
                                                         onChangeAction={handleInputChangeDatetime}
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
@@ -201,9 +201,9 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
                                             return (
                                                 <div className="col-xs-6">
                                                     <InputDate
-                                                        label={freeFieldsFieldRecord.fieldName}
-                                                        name={'record-' + freeFieldsFieldRecord.id}
-                                                        value={freeFieldsFieldRecord.fieldRecordValueDatetime}
+                                                        label={record.fieldName}
+                                                        name={'record-' + record.id}
+                                                        value={record.fieldRecordValueDatetime}
                                                         onChangeAction={handleInputChangeDatetime}
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}

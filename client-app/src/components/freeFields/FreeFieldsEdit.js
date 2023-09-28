@@ -5,14 +5,26 @@ import ButtonText from '../button/ButtonText';
 import InputDate from '../form/InputDate';
 import moment from 'moment/moment';
 import InputTextArea from '../form/InputTextArea';
-import AdministrationDetailsUsersItem from '../../container/administration/details/administration-users/AdministrationDetailsUsersItem';
+import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
+import validator from 'validator';
 
-function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, switchToView }) {
+function FreeFieldsEdit({
+    freeFieldsFieldRecords,
+    setFreeFieldsFieldRecords,
+    switchToView,
+    objectId,
+    fetchFreeFieldsFieldRecords,
+}) {
     // useEffect(() => {
     // todo opschonen console.logs
     //     console.log('hallo FreeFieldsEdit?');
     //     console.log(freeFieldsFieldRecords);
     // }, []);
+
+    const [errors, setErrors] = useState({
+        name: false,
+        type: false,
+    });
 
     function handleInputChangeBoolean(event) {
         const target = event.target;
@@ -64,13 +76,40 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, setFreeFieldsFieldRecords, swi
         );
     }
 
-    function handleSubmit(event) {
+    async function handleSubmit(event) {
         event.preventDefault();
 
+        let errorsObj = {};
+        let hasErrors = false;
+
+        // if (validator.isEmpty(freeFieldsFieldRecords.name)) {
+        //     errorsObj.name = true;
+        //     hasErrors = true;
+        // }
+        //
+        // if (validator.isEmpty('' + freeFieldsFieldRecords.typeId)) {
+        //     errorsObj.type = true;
+        //     hasErrors = true;
+        // }
+
+        setErrors(errorsObj);
+
+        if (!hasErrors) {
+            try {
+                await FreeFieldsAPI.updateFreeFieldsFieldRecords(freeFieldsFieldRecords, objectId);
+
+                fetchFreeFieldsFieldRecords();
+                switchToView();
+            } catch (error) {
+                console.log(error);
+                alert('Er is iets misgegaan met het opslaan van de gegevens!');
+            }
+        }
+
         // todo API aanroepen voor bijwerken freeFieldsFieldRecords
-        console.log('Hier handleSumit');
-        console.log('Waarden om op te slaan:');
-        console.log(freeFieldsFieldRecords);
+        // console.log('Hier handleSumit');
+        // console.log('Waarden om op te slaan:');
+        // console.log(freeFieldsFieldRecords);
     }
 
     let inputField = null;

@@ -48,6 +48,8 @@ function FreeFields({ table, id }) {
                             freeFieldsFieldRecords={freeFieldsFieldRecords}
                             setFreeFieldsFieldRecords={setFreeFieldsFieldRecords}
                             switchToView={switchToView}
+                            objectId={id}
+                            fetchFreeFieldsFieldRecords={fetchFreeFieldsFieldRecords}
                         />
                     ) : (
                         <FreeFieldsView freeFieldsFieldRecords={freeFieldsFieldRecords} switchToEdit={switchToEdit} />

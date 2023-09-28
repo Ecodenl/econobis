@@ -589,15 +589,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
-                    {/*{permissions.viewFreeFields && (*/}
-                    <Nav id="free-fields">
-                        <NavText>
-                            <Link className="sidebar-link" to="vrije-velden">
-                                Vrije velden
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    {/*)}*/}
+                    {permissions.manageFreeFields && (
+                        <Nav id="free-fields">
+                            <NavText>
+                                <Link className="sidebar-link" to="vrije-velden">
+                                    Vrije velden
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {/* todo WM check: wordt niet meer gebruikt toch ?*/}
                     {/*<Nav id="postal-code-link">*/}
                     {/*    <NavText>*/}

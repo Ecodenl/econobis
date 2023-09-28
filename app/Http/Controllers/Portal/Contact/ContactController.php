@@ -275,7 +275,7 @@ class ContactController extends ApiController
     {
         $contactId = $contact->id;
         $administrations = Administration::whereHas('projects', function($query) use($contactId){
-            $query->WhereHas('participantsProject', function($query2) use($contactId){
+            $query->whereHas('participantsProject', function($query2) use($contactId){
                 $query2->where('contact_id', $contactId);
             });
         })->orderBy('name')->get();

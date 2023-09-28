@@ -79,12 +79,12 @@ class EndPointAfspraakController extends EndPointHoomDossierController
 
         $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
             ->where('contact_id', $this->coach->id)
-            ->WhereHas('opportunity', function($query) use ($hoomCampaigns) {
+            ->whereHas('opportunity', function($query) use ($hoomCampaigns) {
                 $query->where(function ($query2) use ($hoomCampaigns) {
                     foreach ($hoomCampaigns as $hoomCampaign) {
                         $query2->orWhere(function ($query3) use ($hoomCampaign) {
                             $query3->where(function ($query4) use ($hoomCampaign) {
-                                $query4->WhereHas('intake', function ($query5) use ($hoomCampaign) {
+                                $query4->whereHas('intake', function ($query5) use ($hoomCampaign) {
                                     $query5->where('contact_id', $this->contact->id)
                                         ->where(function ($query6) use ($hoomCampaign) {
                                             $query6->where('campaign_id', $hoomCampaign->campaign_id);

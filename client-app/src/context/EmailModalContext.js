@@ -22,7 +22,7 @@ export const EmailModalProvider = ({ children }) => {
     };
 
     return (
-        <EmailModalContext.Provider value={{ isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailDetailsModal, openEmailSendModal, modalEmailId }}>
+        <EmailModalContext.Provider value={{ isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailDetailsModal, openEmailSendModal, modalEmailId, setIsEmailDetailsModalOpen }}>
             {children}
             <EmailDetailsModal emailId={modalEmailId} showModal={isEmailDetailsModalOpen} setShowModal={setIsEmailDetailsModalOpen} />
             <EmailSendModal emailId={modalEmailId} showModal={isEmailSendModalOpen} setShowModal={setIsEmailSendModalOpen}/>

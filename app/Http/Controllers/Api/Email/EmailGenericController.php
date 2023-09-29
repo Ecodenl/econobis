@@ -7,9 +7,9 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Mailbox\Mailbox;
 use App\Eco\Person\Person;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -42,7 +42,19 @@ class EmailGenericController extends Controller
             'note' => ['nullable', 'string'],
         ]);
 
-        $email->update(Arr::keysToSnakeCase($data));
+        $email->fill(Arr::keysToSnakeCase($data));
+
+        if($email->isDirty('folder')){
+            if($email->folder === 'removed'){
+                $email->removedBy()->associate(Auth::user());
+                $email->date_removed = new Carbon();
+            }else{
+                $email->removedBy()->dissociate();
+                $email->date_removed = null;
+            }
+        }
+
+        $email->save();
 
         if($request->has('contactIds')){
             $email->contacts()->sync($request->input('contactIds', []));

@@ -468,12 +468,16 @@ class QuotationRequestNewFormGeneral extends Component {
                     {dateRecorded ? (
                         <InputTime
                             label={'Tijd opname'}
-                            size={'col-sm-6'}
+                            size={'col-sm-3'}
                             name="timeRecorded"
                             value={timeRecorded}
                             start={'06:00'}
                             end={'23:00'}
                             onChangeAction={this.handleInputChangeDate}
+                                nullableSize={'col-sm-3'}
+                                nullable={true}
+                                nullableLabel={'Onbekend'}
+                                nullableChecked={''}
                         />
                     ) : null}
                 </div>

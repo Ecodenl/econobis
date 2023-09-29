@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useContext, useState} from 'react';
 import Icon from "react-icons-kit";
 import EmailAttachmentAPI from "../../api/email/EmailAttachmentAPI";
 import fileDownload from "js-file-download";
@@ -8,10 +8,12 @@ import {eye} from 'react-icons-kit/fa/eye';
 import {hashHistory} from "react-router";
 import Modal from '../modal/Modal';
 import PdfViewer from '../pdf/PdfViewer';
+import {EmailModalContext} from "../../context/EmailModalContext";
 
 export default function EmailAttachmentsPanel({email, allowView = true}) {
     const [hoveredAttachmentId, setHoveredAttachmentId] = useState(null);
     const [viewedAttachment, setViewedAttachment] = useState(null);
+    const {setIsEmailDetailsModalOpen} = useContext(EmailModalContext);
 
     const downloadItem = (attachment) => {
         EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
@@ -21,6 +23,8 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
 
     const saveToAlfresco = attachment => {
         hashHistory.push(`document/nieuw/upload/email-bijlage/${attachment.id}`);
+
+        setIsEmailDetailsModalOpen(false);
     };
 
     const isImage = (attachment) => {

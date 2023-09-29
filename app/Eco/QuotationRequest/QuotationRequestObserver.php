@@ -8,6 +8,7 @@
 
 namespace App\Eco\QuotationRequest;
 
+use App\Eco\Opportunity\OpportunityAction;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -97,24 +98,22 @@ class QuotationRequestObserver
                 }
             }
         }
-// todo WM : nog even niet. Bij budgetaanvraag wordt kansactie status ook op approved gezet als datum akkoord toekenning is gezet.
+// todo WM : Wellicht anders in de toekomst. Voor nu alleen doen bij offerteverzoek.  Bij budgetaanvraag wordt kansactie status namelijk ook op approved gezet als datum akkoord toekenning is gezet.
 //  wellicht aparte code_ref approved_client maken om kansactie op juiste status te zetten ?
-//        $dateApprovedClient = $quotationRequest->date_approved_client;
-//        $dateApprovedClientOriginal = $quotationRequest->getOriginal('date_approved_client');
-//        if($dateApprovedClient != $dateApprovedClientOriginal)
-//        {
-//            if($quotationRequest->date_approved_client){
-//                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
-//                if($approvedStatus){
-//                    $quotationRequest->status_id = $approvedStatus->id;
-//                }
-//            } else {
-//                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
-//                if($notApprovedStatus){
-//                    $quotationRequest->status_id = $notApprovedStatus->id;
-//                }
-//            }
-//        }
+        $dateApprovedClient = $quotationRequest->date_approved_client;
+        $dateApprovedClientOriginal = $quotationRequest->getOriginal('date_approved_client');
+        if($dateApprovedClient != $dateApprovedClientOriginal)
+        {
+            $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
+            if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
+                if($quotationRequest->date_approved_client){
+                    $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
+                    if($approvedStatus){
+                        $quotationRequest->status_id = $approvedStatus->id;
+                    }
+                }
+            }
+        }
         $dateApprovedExternal = $quotationRequest->date_approved_external;
         $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
         if($dateApprovedExternal != $dateApprovedExternalOriginal)

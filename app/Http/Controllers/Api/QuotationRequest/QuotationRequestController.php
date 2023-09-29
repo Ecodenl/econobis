@@ -334,12 +334,18 @@ class QuotationRequestController extends ApiController
         //optional
         if ($data['organisationOrCoachId']) {
             $quotationRequest->contact_id = $data['organisationOrCoachId'];
+        } else {
+            $quotationRequest->contact_id = null;
         }
         if ($data['projectManagerId']) {
             $quotationRequest->project_manager_id = $data['projectManagerId'];
+        } else {
+            $quotationRequest->project_manager_id = null;
         }
         if ($data['externalPartyId']) {
             $quotationRequest->external_party_id = $data['externalPartyId'];
+        } else {
+            $quotationRequest->external_party_id = null;
         }
 
         if ($data['dateRecorded']) {

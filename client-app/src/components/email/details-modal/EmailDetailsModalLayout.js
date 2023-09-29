@@ -7,17 +7,9 @@ import EmailAttachmentsPanel from "../../../components/email/EmailAttachmentsPan
 import ResponsibleInputSelect from "../../../components/email/ResponsibleInputSelect";
 import InputSelect from "../../../components/form/InputSelect";
 import {useSelector} from "react-redux";
-import Icon from "react-icons-kit";
-import {mailReply} from 'react-icons-kit/fa/mailReply';
-import {mailReplyAll} from 'react-icons-kit/fa/mailReplyAll';
-import {mailForward} from 'react-icons-kit/fa/mailForward';
-import {trash} from 'react-icons-kit/fa/trash';
-import {pencil} from 'react-icons-kit/fa/pencil';
-import {copy} from 'react-icons-kit/fa/copy';
 import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
 import {EmailModalContext} from "../../../context/EmailModalContext";
 import {mapEmojiToStatuses} from "../../../helpers/EmailStatusHelpers";
-import CopyToClipboard from "react-copy-to-clipboard";
 import AsyncSelectSet from "../../form/AsyncSelectSet";
 import ContactsAPI from "../../../api/contact/ContactsAPI";
 import Frame from 'react-frame-component';
@@ -32,38 +24,10 @@ export default function EmailDetailsModalLayout({
                                                     opportunityComponent,
                                                     orderComponent,
                                                     invoiceComponent,
-                                                    onRemoved,
                                                     noteComponent,
-                                                    editButtonComponent,
-                                                    createContact,
                                                 }) {
     const statusses = useSelector((state) => mapEmojiToStatuses(state.systemData.emailStatuses));
     const {openEmailSendModal} = useContext(EmailModalContext);
-    const domain = window.location.origin;
-
-    const createReply = () => {
-        EmailGenericAPI.storeReply(email.id).then(payload => {
-            openEmailSendModal(payload.data.id)
-        });
-    }
-
-    const createReplyAll = () => {
-        EmailGenericAPI.storeReplyAll(email.id).then(payload => {
-            openEmailSendModal(payload.data.id)
-        });
-    }
-
-    const createForward = () => {
-        EmailGenericAPI.storeForward(email.id).then(payload => {
-            openEmailSendModal(payload.data.id)
-        });
-    }
-
-    const moveToRemoved = () => {
-        EmailGenericAPI.update(email.id, {folder: 'removed'}).then(() => {
-            onRemoved();
-        });
-    }
 
     useEffect(() => {
         document.getElementById("details-modal-email-html").addEventListener("click", captureMailtoLinks);
@@ -95,85 +59,6 @@ export default function EmailDetailsModalLayout({
 
     return (
         <div>
-            <div className="row" style={{marginLeft: '-5px'}}>
-                <div className="col-md-12">
-                    {email.folder !== 'concept' && (
-                        <div className="btn-group margin-small margin-10-right" role="group">
-                            <button
-                                type="button"
-                                title="Beantwoorden"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createReply}
-                            >
-                                <Icon icon={mailReply} size={13}/>
-                            </button>
-                            <button
-                                type="button"
-                                title="Allen beantwoorden"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createReplyAll}
-                            >
-                                <Icon icon={mailReplyAll} size={13}/>
-                            </button>
-                            <button
-                                type="button"
-                                title="Doorsturen"
-                                className={'btn btn-success btn-sm'}
-                                onClick={createForward}
-                            >
-                                <Icon icon={mailForward} size={13}/>
-                            </button>
-                        </div>
-                    )}
-
-                    {email.folder === 'concept' && (
-                        <div className="btn-group margin-small margin-10-right" role="group">
-                            <button
-                                type="button"
-                                title="Openen"
-                                className={'btn btn-success btn-sm'}
-                                onClick={() => openEmailSendModal(email.id)}
-                            >
-                                <Icon icon={pencil} size={13}/>
-                            </button>
-                        </div>
-                    )}
-
-                    <div className="btn-group margin-small margin-10-right" role="group">
-                        {editButtonComponent}
-                        <button
-                            type="button"
-                            title="Verwijderen"
-                            className={'btn btn-success btn-sm'}
-                            onClick={moveToRemoved}
-                        >
-                            <Icon icon={trash} size={13}/>
-                        </button>
-                        <CopyToClipboard text={domain + '/#/mailclient/email/' + email.id}>
-                            <button
-                                type="button"
-                                title="Haal directe link naar e-mail op"
-                                className={'btn btn-success btn-sm'}
-                            >
-                                <Icon icon={copy} size={13}/>
-                            </button>
-                        </CopyToClipboard>
-                    </div>
-
-                    {createContact && (
-                        <div className="btn-group margin-small" role="group">
-                            {
-                                email && email.contacts &&
-                                email.contacts.length === 0 && (
-                                    <button className="btn btn-success btn-sm" onClick={createContact}>Contact aanmaken</button>
-                                )
-                            }
-                        </div>
-                    )}
-
-                </div>
-            </div>
-
             {email.folder === 'removed' ? (
                 <>
                     <div className="row">
@@ -264,25 +149,6 @@ export default function EmailDetailsModalLayout({
                 />
             </div>
 
-            <div className="row">
-                {intakeComponent}
-            </div>
-
-            <div className="row">
-                {taskComponent}
-                {quotationRequestComponent}
-            </div>
-
-            <div className="row">
-                {measureComponent}
-                {opportunityComponent}
-            </div>
-
-            <div className="row">
-                {orderComponent}
-                {invoiceComponent}
-            </div>
-
             <div className="row margin-10-top">
                 <div className="col-sm-12">
                     <div className="row">
@@ -296,7 +162,7 @@ export default function EmailDetailsModalLayout({
 
             <div className="row" style={{paddingLeft: '15px', paddingRight: '15px'}} id="details-modal-email-html">
                 <Panel className="col-sm-12">
-                    <Frame style={{height: 'calc(100vh - 750px)'}}>
+                    <Frame style={{height: 'calc(100vh - 750px)', minHeight: '400px' }}>
                         <div dangerouslySetInnerHTML={{__html: email.htmlBodyWithEmbeddedImages}}/>
                     </Frame>
                 </Panel>
@@ -336,6 +202,25 @@ export default function EmailDetailsModalLayout({
                     </div>
                 </div>
             )}
+
+            <div className="row">
+                {intakeComponent}
+            </div>
+
+            <div className="row">
+                {taskComponent}
+                {quotationRequestComponent}
+            </div>
+
+            <div className="row">
+                {measureComponent}
+                {opportunityComponent}
+            </div>
+
+            <div className="row">
+                {orderComponent}
+                {invoiceComponent}
+            </div>
 
             <EmailAttachmentsPanel email={email} allowView={false}/>
         </div>

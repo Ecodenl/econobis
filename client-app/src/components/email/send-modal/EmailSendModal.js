@@ -22,6 +22,8 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
     const [emailTemplateId, setEmailTemplateId] = useState(null);
     const [errors, setErrors] = useState({});
     const [initialHtmlBody, setInitialHtmlBody] = useState('');
+    const [isSaving, setIsSaving] = useState(false);
+    const [isMarkedForSending, setIsMarkedForSending] = useState(false);
 
     useEffect(() => {
         if (!showModal) {
@@ -113,17 +115,31 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
         });
     }
 
+    useEffect(() => {
+        if (isMarkedForSending && !isSaving) {
+            /**
+             * We verzenden obv deze 2 flags.
+             * Dit is ingebouwd om ervoor te zorgen dat eerst alle wijzigingen zijn opgeslagen voordat we gaan verzenden.
+             * Als we direct zouden verzenden kan de inhoud van de email nog leeg zijn omdat het blur event nog niet volledig is afgehandeld.
+             */
+            EmailSendAPI.send(emailId).then(() => {
+                setIsMarkedForSending(false);
+                setShowModal(false);
+            });
+        }
+    }, [isMarkedForSending, isSaving]);
+
     const send = () => {
         if(!validate()){
             return;
         }
 
-        EmailSendAPI.send(emailId).then(() => {
-            setShowModal(false);
-        });
+        setIsMarkedForSending(true);
     }
 
     const save = (values = {}) => {
+        setIsSaving(true);
+
         let newEmail = {...email, ...values};
 
         return EmailSendAPI.saveConcept(emailId, {
@@ -135,6 +151,8 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
             subject: newEmail.subject,
             htmlBody: newEmail.htmlBody,
             mailContactGroupWithSingleMail: newEmail.mailContactGroupWithSingleMail,
+        }).then(() => {
+            setIsSaving(false);
         });
     }
 

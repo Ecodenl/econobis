@@ -82,17 +82,69 @@ function FreeFieldsEdit({
         let errorsObj = {};
         let hasErrors = false;
 
-        // if (validator.isEmpty(freeFieldsFieldRecords.name)) {
-        //     errorsObj.name = true;
-        //     hasErrors = true;
-        // }
-        //
-        // if (validator.isEmpty('' + freeFieldsFieldRecords.typeId)) {
-        //     errorsObj.type = true;
-        //     hasErrors = true;
-        // }
+        let dynamicVariableName = {};
 
-        setErrors(errorsObj);
+        freeFieldsFieldRecords.map(record => {
+            // if (validator.isEmpty('' + freeFieldsFieldRecords.typeId)) {
+            //     errorsObj.type = true;
+            //     hasErrors = true;
+            // }
+
+            if (record.mandatory == 1) {
+                switch (record.fieldFormatType) {
+                    case 'boolean':
+                        if (validator.isEmpty('' + record.fieldRecordValueBoolean)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'text_short':
+                        if (validator.isEmpty('' + record.fieldRecordValueText)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'text_long':
+                        if (validator.isEmpty('' + record.fieldRecordValueText)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'int':
+                        if (validator.isEmpty('' + record.fieldRecordValueInt)) {
+                            dynamicVariableName['.record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'double_2_dec':
+                        if (validator.isEmpty('' + record.fieldRecordValueDouble)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'amount_euro':
+                        if (validator.isEmpty('' + record.fieldRecordValueDouble)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'date':
+                        if (validator.isEmpty('' + record.fieldRecordValueDatetime)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                    case 'datetime':
+                        if (validator.isEmpty('' + record.fieldRecordValueDatetime)) {
+                            dynamicVariableName['record' + record.id] = true;
+                            hasErrors = true;
+                        }
+                        break;
+                }
+            }
+        });
+
+        setErrors(dynamicVariableName);
 
         if (!hasErrors) {
             try {
@@ -105,11 +157,6 @@ function FreeFieldsEdit({
                 alert('Er is iets misgegaan met het opslaan van de gegevens!');
             }
         }
-
-        // todo API aanroepen voor bijwerken freeFieldsFieldRecords
-        // console.log('Hier handleSumit');
-        // console.log('Waarden om op te slaan:');
-        // console.log(freeFieldsFieldRecords);
     }
 
     let inputField = null;
@@ -138,6 +185,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -154,6 +204,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -169,6 +222,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         sizeLabel={'col-sm-12'}
                                                         sizeInput={'col-sm-12'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -185,6 +241,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -201,6 +260,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -217,6 +279,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -232,6 +297,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );
@@ -247,6 +315,9 @@ function FreeFieldsEdit({
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
+                                                        required={record.mandatory ? 'required' : ''}
+                                                        error={errors['record' + record.id]}
+                                                        errorMessage={'dit veld is verplicht'}
                                                     />
                                                 </div>
                                             );

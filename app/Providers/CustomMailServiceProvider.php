@@ -17,6 +17,13 @@ class CustomMailServiceProvider extends MailServiceProvider
      */
     protected function registerIlluminateMailer()
     {
+        // Een vieze truc: tbv werkend maken mailgun-mailer package op servers: hier maar CURL_SSLVERSION_TLSv1_2 definieren.
+        // om 1 of andere reden hebben we op server (vps9 en vps10) geen toegang tot php.jar/stubs/curl/curl_d.php ?!
+        // daar word o.a. dus CURL_SSLVERSION_TLSv1_2 = 6 gedefinieerd.
+        if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+            define('CURL_SSLVERSION_TLSv1_2', 6);
+        }
+
         $this->app->singleton('mail.manager', function ($app) {
             return new MailManager($app);
         });

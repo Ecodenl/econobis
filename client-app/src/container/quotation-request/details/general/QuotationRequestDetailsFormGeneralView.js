@@ -26,6 +26,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
     } = props.quotationRequestDetails;
 
     const timePlannedFormated = moment(datePlanned).format('HH:mm');
+    const timeRecordedFormated = moment(dateRecorded).format('HH:mm');
 
     return (
         <div onClick={props.switchToEdit}>
@@ -156,14 +157,25 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
                 <ViewText
                     label={'Tijd afspraak'}
-                    value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
+                    value={
+                        timePlannedFormated ? (timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend') : ''
+                    }
                 />
             </div>
 
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'visit' ? (
                 <div className="row">
                     <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
-                    <ViewText label={'Tijd opname'} value={dateRecorded ? moment(dateRecorded).format('HH:mm') : ''} />
+                    <ViewText
+                        label={'Tijd opname'}
+                        value={
+                            timeRecordedFormated
+                                ? timeRecordedFormated != '00:00'
+                                    ? timeRecordedFormated
+                                    : 'Onbekend'
+                                : ''
+                        }
+                    />
                 </div>
             ) : null}
 

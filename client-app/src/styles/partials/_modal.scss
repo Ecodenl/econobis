@@ -68,15 +68,11 @@
 
 .modal-fullscreen {
   top: 0px;
+  overflow-y: scroll;
 }
 
 .modal-fullscreen .modal-dialog {
   width: 95vw;
-}
-
-.modal-fullscreen .modal-body {
-  height: 85vh;
-  overflow: scroll;
 }
 
 .submodal .modal-dialog {

@@ -3,26 +3,13 @@ import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
 import ViewText from "../../../components/form/ViewText";
 import {FaInfoCircle} from "react-icons/fa";
 import ReactTooltip from "react-tooltip";
-import Icon from "react-icons-kit";
-import {pencil} from 'react-icons-kit/fa/pencil';
 
-export default function EmailDetailsModalView({email, updateEmailAttributes, onRemoved, createContact, goTo, setShowEdit}) {
+export default function EmailDetailsModalView({email, updateEmailAttributes, createContact}) {
     return (
         <EmailDetailsModalLayout
             email={email}
-            onRemoved={onRemoved}
             updateEmailAttributes={updateEmailAttributes}
             createContact={createContact}
-            editButtonComponent={(
-                <button
-                    type="button"
-                    title="Bewerken"
-                    className={'btn btn-success btn-sm'}
-                    onClick={() => setShowEdit(true)}
-                >
-                    <Icon icon={pencil} size={13}/>
-                </button>
-            )}
             intakeComponent={(
                 <ViewText
                     label={'Intake'}

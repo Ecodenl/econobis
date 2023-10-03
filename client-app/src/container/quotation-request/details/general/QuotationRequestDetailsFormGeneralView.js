@@ -157,7 +157,9 @@ const QuotationRequestDetailsFormGeneralView = props => {
                 <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
                 <ViewText
                     label={'Tijd afspraak'}
-                    value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
+                    value={
+                        timePlannedFormated ? (timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend') : ''
+                    }
                 />
             </div>
 
@@ -166,7 +168,13 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     <ViewText label={'Datum opname'} value={dateRecorded ? moment(dateRecorded).format('L') : ''} />
                     <ViewText
                         label={'Tijd opname'}
-                        value={timeRecordedFormated != '00:00' ? timeRecordedFormated : 'Onbekend'}
+                        value={
+                            timeRecordedFormated
+                                ? timeRecordedFormated != '00:00'
+                                    ? timeRecordedFormated
+                                    : 'Onbekend'
+                                : ''
+                        }
                     />
                 </div>
             ) : null}

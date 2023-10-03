@@ -2501,16 +2501,16 @@
         },
         {
             "name": "innoge/laravel-msgraph-mail",
-            "version": "1.0.3",
+            "version": "1.0.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/InnoGE/laravel-msgraph-mail.git",
-                "reference": "96b86a11c1594ed17fd99a7f4d42772352c5834f"
+                "reference": "a9052db6e2f9d5fed0e2e04412c5421df930a8a0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/InnoGE/laravel-msgraph-mail/zipball/96b86a11c1594ed17fd99a7f4d42772352c5834f",
-                "reference": "96b86a11c1594ed17fd99a7f4d42772352c5834f",
+                "url": "https://api.github.com/repos/InnoGE/laravel-msgraph-mail/zipball/a9052db6e2f9d5fed0e2e04412c5421df930a8a0",
+                "reference": "a9052db6e2f9d5fed0e2e04412c5421df930a8a0",
                 "shasum": ""
             },
             "require": {
@@ -2566,9 +2566,9 @@
             ],
             "support": {
                 "issues": "https://github.com/InnoGE/laravel-msgraph-mail/issues",
-                "source": "https://github.com/InnoGE/laravel-msgraph-mail/tree/1.0.3"
+                "source": "https://github.com/InnoGE/laravel-msgraph-mail/tree/1.0.4"
             },
-            "time": "2023-08-16T09:17:40+00:00"
+            "time": "2023-10-02T14:43:04+00:00"
         },
         {
             "name": "joskolenberg/eloquent-reflector",

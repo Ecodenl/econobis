@@ -12,6 +12,8 @@ const recordsPerPage = 50;
 
 function FreeFieldsListApp() {
     const [freeFieldsFields, setFreeFieldsFields] = useState([]);
+    const [freeFieldsTables, setFreeFieldsTables] = useState([]);
+    const [freeFieldsFieldFormats, setFreeFieldsFieldFormats] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState([]);
@@ -23,6 +25,8 @@ function FreeFieldsListApp() {
     useEffect(
         function() {
             fetchFreeFieldsFields();
+            console.log('filter:');
+            console.log(filter);
         },
         [pagination.offset, sort, filter.tableName, filter.fieldName, filter.fieldFormatName]
     );
@@ -38,9 +42,6 @@ function FreeFieldsListApp() {
     );
 
     function fetchFreeFieldsFields() {
-        setLoading(true);
-        setFreeFieldsFields([]);
-
         axios
             .all([FreeFieldsAPI.fetchFreeFieldsFields(formatFilterHelper(), sort, pagination)])
             .then(
@@ -54,6 +55,30 @@ function FreeFieldsListApp() {
             .catch(error => {
                 setLoading(false);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
+            });
+        fetchFreeFieldsTables();
+        fetchFreeFieldsFieldFormats();
+    }
+
+    function fetchFreeFieldsTables() {
+        FreeFieldsAPI.peekFreeFieldsTables()
+            .then(data => {
+                setFreeFieldsTables(data.data.data);
+            })
+            .catch(error => {
+                console.log(error);
+                alert('Er is iets misgegaan met ophalen van de op onderdeel opties.');
+            });
+    }
+
+    function fetchFreeFieldsFieldFormats() {
+        FreeFieldsAPI.peekFreeFieldsFieldFormats()
+            .then(data => {
+                setFreeFieldsFieldFormats(data.data.data);
+            })
+            .catch(error => {
+                console.log(error);
+                alert('Er is iets misgegaan met ophalen van de op onderdeel opties.');
             });
     }
 
@@ -86,15 +111,15 @@ function FreeFieldsListApp() {
 
     function formatFilterHelper() {
         let filters = [];
-        if (filter.contact) {
+        if (filter.tableName) {
             filters.push({ field: 'tableName', data: filter.tableName });
         }
 
-        if (filter.statusId) {
+        if (filter.fieldName) {
             filters.push({ field: 'fieldName', data: filter.fieldName });
         }
 
-        if (filter.emailedTo) {
+        if (filter.fieldFormatName) {
             filters.push({ field: 'fieldFormatName', data: filter.fieldFormatName });
         }
         return filters;
@@ -104,6 +129,7 @@ function FreeFieldsListApp() {
     function handleKeyUp(e) {
         if (e.keyCode === 13) {
             onSubmitFilter();
+            console.log('handleKeyUp');
         }
     }
 
@@ -139,6 +165,8 @@ function FreeFieldsListApp() {
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
                         deleteFreeFieldsField={deleteFreeFieldsField}
+                        freeFieldsTables={freeFieldsTables}
+                        freeFieldsFieldFormats={freeFieldsFieldFormats}
                     />
                 </div>
             </PanelBody>

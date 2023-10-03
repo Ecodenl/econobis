@@ -26,14 +26,14 @@ class Filter extends RequestFilter
     ];
 
     protected $joins = [
-        'freeFieldsTable' => 'free_fields_tables',
-        'freeFieldsFieldFormat' => 'free_fields_field_formats',
+        'tableName' => 'free_fields_tables',
+        'fieldFormatName' => 'free_fields_field_formats',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
         'tableName' => 'eq',
-        'fieldName' => 'eq',
+        'fieldName' => 'ct',
         'fieldFormatName' => 'eq',
     ];
 

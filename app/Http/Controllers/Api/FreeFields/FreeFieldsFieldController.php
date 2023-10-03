@@ -17,19 +17,25 @@ use App\Http\Resources\FreeFields\GridFreeFieldsField;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FreeFieldsFieldController extends ApiController
 {
-    public function grid(RequestQuery $requestQuery)
+    public function grid(RequestQuery $requestQuery, Request $request)
     {
         $this->authorize('view', FreeFieldsField::class);
 
         $freeFields = $requestQuery->get();
+        $freeFields->load([
+            'freeFieldsTable',
+            'freeFieldsFieldFormat',
+        ]);
 
         return GridFreeFieldsField::collection($freeFields)
             ->additional([
                 'meta' => [
-                    'total' => $requestQuery->total(),
+                   'total' => $requestQuery->total(),
                 ]
             ]);
     }

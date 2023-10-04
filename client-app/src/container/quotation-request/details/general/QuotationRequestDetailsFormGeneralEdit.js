@@ -486,10 +486,10 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                             start={'06:00'}
                             end={'23:00'}
                             onChangeAction={this.handleInputChangeDate}
-                                nullableSize={'col-sm-3'}
-                                nullable={true}
-                                nullableLabel={'Onbekend'}
-                                nullableChecked={timeRecorded == '00:00' ? true : false}
+                            nullableSize={'col-sm-3'}
+                            nullable={true}
+                            nullableLabel={'Onbekend'}
+                            nullableChecked={timeRecorded == '00:00' ? true : false}
                         />
                     ) : null}
                 </div>

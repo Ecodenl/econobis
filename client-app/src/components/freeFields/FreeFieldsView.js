@@ -35,6 +35,9 @@ function FreeFieldsView({ freeFieldsFieldRecords, switchToEdit }) {
                                         <ViewText
                                             label={record.fieldName}
                                             value={record.fieldRecordValueText ? record.fieldRecordValueText : ''}
+                                            className={'col-sm-12'}
+                                            labelSize={'col-sm-3'}
+                                            valueSize={'col-sm-9'}
                                         />
                                     );
                                     break;

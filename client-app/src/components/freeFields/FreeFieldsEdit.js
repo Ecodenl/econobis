@@ -213,15 +213,14 @@ function FreeFieldsEdit({
                                             break;
                                         case 'text_long':
                                             return (
-                                                <div className="col-xs-6">
+                                                <div className="col-xs-12">
                                                     <InputTextArea
                                                         label={record.fieldName}
                                                         name={'record-' + record.id}
                                                         value={record.fieldRecordValueText}
                                                         onChangeAction={handleInputChangeText}
-                                                        divSize={'col-sm-12'}
-                                                        sizeLabel={'col-sm-12'}
-                                                        sizeInput={'col-sm-12'}
+                                                        sizeLabel={'col-sm-3'}
+                                                        sizeInput={'col-sm-9'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
                                                         errorMessage={'dit veld is verplicht'}

@@ -508,12 +508,16 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                             {dateReleased ? (
                                 <InputTime
                                     label={'Tijd uitgebracht'}
-                                    size={'col-sm-6'}
+                                    size={'col-sm-3'}
                                     name="timeReleased"
                                     value={timeReleased}
                                     start={'06:00'}
                                     end={'23:00'}
                                     onChangeAction={this.handleInputChangeDate}
+                                    nullableSize={'col-sm-3'}
+                                    nullable={true}
+                                    nullableLabel={'Onbekend'}
+                                    nullableChecked={timeReleased == '00:00' ? true : false}
                                 />
                             ) : null}
                         </div>

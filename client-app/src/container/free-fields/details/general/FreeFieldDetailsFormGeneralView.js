@@ -14,6 +14,7 @@ const FreeFieldDetailsFormGeneralView = ({
     switchToEdit,
     table,
     fieldFormat,
+    exportable,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -36,6 +37,7 @@ const FreeFieldDetailsFormGeneralView = ({
 
                     <div className="row">
                         <ViewText label={'Standaardwaarde'} value={defaultValue} />
+                        <ViewText label={'Exporteerbaar'} value={exportable ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

@@ -23,6 +23,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             visiblePortal,
             changePortal,
             defaultValue,
+            exportable,
         } = props.freeField;
 
         this.state = {
@@ -35,6 +36,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 changePortal,
                 mandatory,
                 defaultValue,
+                exportable,
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
@@ -107,43 +109,49 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
 
         if (validator.isEmpty(freeField.tableId + '')) {
             errors.tableId = true;
-            errorsMessage.tableId = "verplicht";
+            errorsMessage.tableId = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldFormatId + '')) {
             errors.fieldFormatId = true;
-            errorsMessage.fieldFormatId = "verplicht";
+            errorsMessage.fieldFormatId = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldName)) {
             errors.fieldName = true;
-            errorsMessage.fieldName = "verplicht";
+            errorsMessage.fieldName = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.mandatory + '')) {
             errors.mandatory = true;
-            errorsMessage.mandatory = "verplicht";
+            errorsMessage.mandatory = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.visiblePortal + '')) {
             errors.visiblePortal = true;
-            errorsMessage.visiblePortal = "verplicht";
+            errorsMessage.visiblePortal = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.changePortal + '')) {
             errors.changePortal = true;
-            errorsMessage.changePortal = "verplicht";
+            errorsMessage.changePortal = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
-            errorsMessage.defaultValue = "verplicht";
+            errorsMessage.defaultValue = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.exportable + '')) {
+            errors.exportable = true;
+            errorsMessage.exportable = 'verplicht';
             hasErrors = true;
         }
 
@@ -171,6 +179,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             visiblePortal,
             changePortal,
             defaultValue,
+            exportable,
         } = this.state.freeField;
 
         return (
@@ -250,6 +259,15 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.defaultValue}
                                 errorMessage={this.state.errorsMessage.defaultValue}
+                            />
+                            <InputToggle
+                                label={'Exporteerbaar'}
+                                name={'exportable'}
+                                value={exportable}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.exportable}
+                                errorMessage={this.state.errorsMessage.exportable}
                             />
                         </div>
                     </PanelBody>

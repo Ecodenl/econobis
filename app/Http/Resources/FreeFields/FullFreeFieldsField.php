@@ -26,6 +26,7 @@ class FullFreeFieldsField extends JsonResource
             'changePortal' => $this->change_portal,
             'mandatory' => $this->mandatory,
             'defaultValue' => $this->default_value,
+            'exportable' => $this->exportable,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

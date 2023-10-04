@@ -63,6 +63,7 @@ class FreeFieldsFieldController extends ApiController
             ->boolean('visiblePortal')->alias('visible_portal')->next()
             ->boolean('changePortal')->alias('change_portal')->next()
             ->string('defaultValue')->alias('default_value')->whenMissing(null)->onEmpty(null)->next()
+            ->boolean('exportable')->next()
             ->get();
 
         $freeFieldsField = new FreeFieldsField($data);
@@ -82,6 +83,7 @@ class FreeFieldsFieldController extends ApiController
             ->boolean('visiblePortal')->alias('visible_portal')->next()
             ->boolean('changePortal')->alias('change_portal')->next()
             ->string('defaultValue')->alias('default_value')->whenMissing(null)->onEmpty(null)->next()
+            ->boolean('exportable')->next()
             ->get();
 
         $freeFieldsField->fill($data);

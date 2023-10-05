@@ -41,7 +41,7 @@ class FreeFieldsFieldRecordController extends ApiController
                 'fieldRecordValueInt' => $record->field_value_int,
                 'fieldRecordValueDouble' => $record->field_value_double,
                 'fieldRecordValueDatetime' => $record->field_value_datetime,
-                'mandatory' => $record->freeFieldsField->mandatory,
+                'mandatory' => $field->mandatory,
             ];
         }
 

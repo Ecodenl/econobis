@@ -5,6 +5,7 @@ import ViewTextLong from '../../../../../components/form/ViewTextLong';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+import FreeFields from '../../../../../components/freeFields/FreeFields';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -81,6 +82,7 @@ const ProjectFormViewGeneral = ({
     transactionCostsPercentage2,
     transactionCostsAmount3,
     transactionCostsPercentage3,
+    id,
 }) => {
     let addressNumberSeriesFieldEnabled = postalcodeLink
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
@@ -283,6 +285,9 @@ const ProjectFormViewGeneral = ({
                     </>
                 ) : null}
             </section>
+
+            <FreeFields table={'projects'} id={id} />
+
             <section>
                 <hr />
                 <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>

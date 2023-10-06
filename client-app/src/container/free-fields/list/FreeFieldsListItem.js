@@ -6,7 +6,15 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
-function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDeleteItemModal, permissions }) {
+function FreeFieldsListItem({
+    id,
+    tableName,
+    fieldName,
+    fieldFormatName,
+    showDeleteItemModal,
+    permissions,
+    sortOrder,
+}) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -25,10 +33,16 @@ function FreeFieldsListItem({ id, tableName, fieldName, fieldFormatName, showDel
     }
 
     return (
-        <tr className={`${highlightLine}`} onMouseEnter={() => onLineEnter()} onMouseLeave={() => onLineLeave()} onDoubleClick={() => openItem(id)}>
+        <tr
+            className={`${highlightLine}`}
+            onMouseEnter={() => onLineEnter()}
+            onMouseLeave={() => onLineLeave()}
+            onDoubleClick={() => openItem(id)}
+        >
             <td>{tableName}</td>
             <td>{fieldName}</td>
             <td>{fieldFormatName}</td>
+            <td>{sortOrder}</td>
             <td>
                 {showActionButtons && permissions.manageFreeFields ? (
                     <a role="button" onClick={() => openItem(id)}>

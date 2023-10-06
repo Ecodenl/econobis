@@ -29,6 +29,7 @@ class FullFreeFieldsField extends JsonResource
             'exportable' => $this->exportable,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'sortOrder' => $this->sort_order,
         ];
     }
 }

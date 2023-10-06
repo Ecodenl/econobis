@@ -16,13 +16,15 @@ class Sort extends RequestSort
     protected $fields = [
         'tableName',
         'fieldName',
-        'fieldFormatName'
+        'fieldFormatName',
+        'sortOrder'
     ];
 
     protected $mapping = [
         'tableName' => 'free_fields_tables.name',
         'fieldName' => 'field_name',
         'fieldFormatName' => 'free_fields_field_formats.format_name',
+        'sortOrder' => 'sort_order'
     ];
 
     protected $joins = [

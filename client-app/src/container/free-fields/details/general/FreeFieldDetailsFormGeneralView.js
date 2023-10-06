@@ -15,6 +15,7 @@ const FreeFieldDetailsFormGeneralView = ({
     table,
     fieldFormat,
     exportable,
+    sortOrder,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -38,6 +39,10 @@ const FreeFieldDetailsFormGeneralView = ({
                     <div className="row">
                         <ViewText label={'Standaardwaarde'} value={defaultValue} />
                         <ViewText label={'Exporteerbaar'} value={exportable ? 'Ja' : 'Nee'} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={'Volgorde'} value={sortOrder} />
                     </div>
                 </PanelBody>
             </Panel>

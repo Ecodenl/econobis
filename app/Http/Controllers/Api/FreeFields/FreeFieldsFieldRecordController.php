@@ -27,7 +27,7 @@ class FreeFieldsFieldRecordController extends ApiController
         $freeFieldsTable = FreeFieldsTable::where('table', $tableId)->first();
 
         $freeFieldsFieldRecords = [];
-        $freeFieldsFieldTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->get();
+        $freeFieldsFieldTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->orderBy('sort_order')->get();
         foreach ($freeFieldsFieldTable as $field)
         {
             $record = FreeFieldsFieldRecord::where('field_id', $field->id)->where('table_record_id', $recordId)->firstOrNew();

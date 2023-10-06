@@ -24,6 +24,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             changePortal,
             defaultValue,
             exportable,
+            sortOrder,
         } = props.freeField;
 
         this.state = {
@@ -37,6 +38,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 mandatory,
                 defaultValue,
                 exportable,
+                sortOrder,
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
@@ -48,6 +50,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 visiblePortal: false,
                 changePortal: false,
                 defaultValue: false,
+                sortOrder: false,
             },
             errorsMessage: {
                 tableId: false,
@@ -57,6 +60,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 visiblePortal: false,
                 changePortal: false,
                 defaultValue: false,
+                sortOrder: false,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -155,6 +159,12 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (validator.isEmpty(freeField.sortOrder + '')) {
+            errors.sortOrder = true;
+            errorsMessage.sortOrder = 'verplicht';
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
         // If no errors send form
@@ -180,6 +190,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             changePortal,
             defaultValue,
             exportable,
+            sortOrder,
         } = this.state.freeField;
 
         return (
@@ -268,6 +279,18 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.exportable}
                                 errorMessage={this.state.errorsMessage.exportable}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Volgorde"
+                                name={'sortOrder'}
+                                value={sortOrder}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.sortOrder}
+                                errorMessage={this.state.errorsMessage.sortOrder}
+                                type={'number'}
                             />
                         </div>
                     </PanelBody>

@@ -47,6 +47,7 @@ function FreeFieldsListFilter({ filter, handleChangeFilter, freeFieldsTables, fr
                     </select>
                 </th>
                 <th />
+                <th />
             </tr>
         </>
     );

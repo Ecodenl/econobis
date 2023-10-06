@@ -8,19 +8,26 @@ const FreeFieldsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'tableName'}
                 title={'Op onderdeel'}
-                width={'25%'}
+                width={'20%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'fieldName'}
                 title={'Vrije velden'}
-                width={'35%'}
+                width={'45%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'fieldFormatName'}
                 title={'Type'}
-                width={'35%'}
+                width={'20%'}
+                setSorts={props.handleChangeSort}
+            />
+
+            <DataTableHeadTitleAndSort
+                sortColumn={'sortOrder'}
+                title={'Volgorde'}
+                width={'10%'}
                 setSorts={props.handleChangeSort}
             />
             <th width={'5%'} />

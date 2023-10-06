@@ -15,12 +15,6 @@ function FreeFieldsEdit({
     objectId,
     fetchFreeFieldsFieldRecords,
 }) {
-    // useEffect(() => {
-    // todo opschonen console.logs
-    //     console.log('hallo FreeFieldsEdit?');
-    //     console.log(freeFieldsFieldRecords);
-    // }, []);
-
     const [errors, setErrors] = useState({
         name: false,
         type: false,

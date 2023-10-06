@@ -6,7 +6,7 @@ import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
 function FreeFields({ table, id }) {
     const [isLoading, setLoading] = useState(false);
-    const [showEdit, setShowEdit] = useState(false);
+    const [showEdit, setShowEdit] = useState(true);
     const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
 
     useEffect(() => {
@@ -24,9 +24,6 @@ function FreeFields({ table, id }) {
         setLoading(true);
         FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, id)
             .then(payload => {
-                // todo opschonen console.logs
-                //                 console.log('payload');
-                //                 console.log(payload);
                 setFreeFieldsFieldRecords(payload);
                 setLoading(false);
             })

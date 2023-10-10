@@ -20,28 +20,35 @@ export default function EmailDetailsModalEdit({email, updateEmailAttributes}) {
     const [invoices, setInvoices] = useState([]);
 
     useEffect(() => {
-        IntakesAPI.peekIntakesForContacts(email.contacts.map(c => c.id)).then(payload => {
+        IntakesAPI.peekIntakesForContacts(getContactIds()).then(payload => {
             setIntakes(payload);
         });
-        TasksAPI.peekTasksForContacts(email.contacts.map(c => c.id)).then(payload => {
+        TasksAPI.peekTasksForContacts(getContactIds()).then(payload => {
             setTasks(payload);
         });
-        QuotationRequestsAPI.peekQuotationRequestsForContacts(email.contacts.map(c => c.id)).then(payload => {
+        QuotationRequestsAPI.peekQuotationRequestsForContacts(getContactIds()).then(payload => {
             setQuotationRequests(payload);
         });
         MeasureAPI.peekMeasures().then(payload => {
             setMeasures(payload);
         });
-        OpportunitiesAPI.peekOpportunitiesForContacts(email.contacts.map(c => c.id)).then(payload => {
+        OpportunitiesAPI.peekOpportunitiesForContacts(getContactIds()).then(payload => {
             setOpportunities(payload);
         });
-        OrdersAPI.peekOrdersForContacts(email.contacts.map(c => c.id)).then(payload => {
+        OrdersAPI.peekOrdersForContacts(getContactIds()).then(payload => {
             setOrders(payload);
         });
         InvoicesAPI.peekInvoices().then(payload => {
             setInvoices(payload);
         });
     }, [email.contacts]);
+
+    const getContactIds = () => {
+        return [
+            ...email.contacts.map(c => c.id),
+            ...email.manualContacts.map(c => c.id),
+        ];
+    }
 
     return (
         <EmailDetailsModalLayout

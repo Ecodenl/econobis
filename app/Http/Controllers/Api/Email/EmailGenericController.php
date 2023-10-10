@@ -146,8 +146,6 @@ class EmailGenericController extends Controller
 
         $reply = $email->generator()->reply();
 
-        $email->update(['status' => 'closed']);
-
         return response()->json([
             'id' => $reply->id,
         ]);
@@ -159,8 +157,6 @@ class EmailGenericController extends Controller
 
         $reply = $email->generator()->replyAll();
 
-        $email->update(['status' => 'closed']);
-
         return response()->json([
             'id' => $reply->id,
         ]);
@@ -171,8 +167,6 @@ class EmailGenericController extends Controller
         $this->authorize('manage', $email);
 
         $forward = $email->generator()->forward();
-
-        $email->update(['status' => 'closed']);
 
         return response()->json([
             'id' => $forward->id,

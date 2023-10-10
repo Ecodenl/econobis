@@ -76,6 +76,14 @@ class EmailSendController extends Controller
 
         set_time_limit(0);
 
+        if($email->oldEmail){
+            /**
+             * Als dit een reply(all) of forward was dan willen we de oorspronkelijke email op afgehanded zetten.
+             * Dit doen we hier (en niet in de queued job) zodat het resultaat direct aan de voorkant zichtbaar is.
+             */
+            $email->oldEmail->update(['status' => 'closed']);
+        }
+
         $email->send(Auth::user());
     }
 }

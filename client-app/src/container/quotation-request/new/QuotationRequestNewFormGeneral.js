@@ -123,12 +123,12 @@ class QuotationRequestNewFormGeneral extends Component {
                     statusId: payload.defaultStatusId, // default status id!
                     opportunityActionId: this.props.opportunityAction.id,
                     dateRecorded: '',
-                    timeRecorded: '',
+                    timeRecorded: '08:00',
                     dateReleased: '',
-                    timeReleased: '',
+                    timeReleased: '08:00',
                     datePlannedAttempt1: '',
                     datePlanned: '',
-                    timePlanned: '',
+                    timePlanned: '08:00',
                     dateApprovedClient: '',
                     dateApprovedProjectManager: '',
                     dateApprovedExternal: '',
@@ -474,10 +474,10 @@ class QuotationRequestNewFormGeneral extends Component {
                             start={'06:00'}
                             end={'23:00'}
                             onChangeAction={this.handleInputChangeDate}
-                                nullableSize={'col-sm-3'}
-                                nullable={true}
-                                nullableLabel={'Onbekend'}
-                                nullableChecked={''}
+                            nullableSize={'col-sm-3'}
+                            nullable={true}
+                            nullableLabel={'Onbekend'}
+                            nullableChecked={true}
                         />
                     ) : null}
                 </div>
@@ -496,12 +496,16 @@ class QuotationRequestNewFormGeneral extends Component {
                             {dateReleased ? (
                                 <InputTime
                                     label={'Tijd uitgebracht'}
-                                    size={'col-sm-6'}
+                                    size={'col-sm-3'}
                                     name="timeReleased"
                                     value={timeReleased}
                                     start={'06:00'}
                                     end={'23:00'}
                                     onChangeAction={this.handleInputChangeDate}
+                                    nullableSize={'col-sm-3'}
+                                    nullable={true}
+                                    nullableLabel={'Onbekend'}
+                                    nullableChecked={true}
                                 />
                             ) : null}
                         </div>

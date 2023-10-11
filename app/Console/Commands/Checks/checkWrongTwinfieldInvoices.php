@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Invoice\Invoice;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;

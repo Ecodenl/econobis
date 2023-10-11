@@ -21,6 +21,62 @@ function FreeFieldsEdit({
         type: false,
     });
 
+    const [errorsMessage, setErrorsMessage] = useState({
+        name: false,
+        type: false,
+    });
+
+    function checkMask(value, mask, mandatory) {
+        console.log('checkMask');
+        console.log(value);
+        console.log(mask);
+        //if not mandatory and field is empty, we dont need to do this check
+        if (mandatory == 0 && value == null) {
+            return false;
+        }
+
+        //check if the value complies with the mask
+        if (mandatory == 1 && value != null && mask != null) {
+            //explode the mask
+            let explodedMask = mask.split('');
+            let explodedValue = value.split('');
+            let i = 0;
+            let isCorrect = true;
+
+            //if mask contains no ? and value and mask are not the same length we can skip all this and return false
+            if (!mask.includes('?') && mask.length != value.length) {
+                return false;
+            }
+
+            for (i in explodedMask) {
+                switch (explodedMask[i]) {
+                    case '9':
+                        if (!explodedValue[i] || !explodedValue[i].match(/^[0-9]$/)) {
+                            return false;
+                        }
+                        break;
+                    case 'a':
+                        if (!explodedValue[i] || !explodedValue[i].match(/^[a-zA-Z]$/)) {
+                            return false;
+                        }
+                        break;
+                    case 'x':
+                        if (!explodedValue[i] || !explodedValue[i].match(/^[a-zA-Z0-9]$/)) {
+                            return false;
+                        }
+                        break;
+                    default:
+                        if (!explodedValue[i] || !explodedValue[i] != !explodedValue[i]) {
+                            return false;
+                        }
+                        break;
+                }
+            }
+        }
+
+        return true;
+    }
+
     function handleInputChangeBoolean(event) {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -103,65 +159,132 @@ function FreeFieldsEdit({
         event.preventDefault();
 
         let hasErrors = false;
-
+        let errorsMessage = {};
         let dynamicVariableName = {};
 
         freeFieldsFieldRecords.map(record => {
-            if (record.mandatory == 1) {
-                switch (record.fieldFormatType) {
-                    case 'boolean':
-                        if (validator.isEmpty('' + record.fieldRecordValueBoolean)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'text_short':
-                        if (validator.isEmpty('' + record.fieldRecordValueText)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'text_long':
-                        if (validator.isEmpty('' + record.fieldRecordValueText)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'int':
-                        if (validator.isEmpty('' + record.fieldRecordValueInt)) {
-                            dynamicVariableName['.record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'double_2_dec':
-                        if (validator.isEmpty('' + record.fieldRecordValueDouble)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'amount_euro':
-                        if (validator.isEmpty('' + record.fieldRecordValueDouble)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'date':
-                        if (validator.isEmpty('' + record.fieldRecordValueDatetime)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                    case 'datetime':
-                        if (validator.isEmpty('' + record.fieldRecordValueDatetime)) {
-                            dynamicVariableName['record' + record.id] = true;
-                            hasErrors = true;
-                        }
-                        break;
-                }
+            switch (record.fieldFormatType) {
+                case 'boolean':
+                    if (!checkMask(String(record.fieldRecordValueBoolean), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueBoolean) ||
+                            record.fieldRecordValueBoolean == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'text_short':
+                    if (!checkMask(String(record.fieldRecordValueText), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueText) || record.fieldRecordValueText == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'verplicht';
+                    }
+                    break;
+                case 'text_long':
+                    if (!checkMask(String(record.fieldRecordValueText), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueText) || record.fieldRecordValueText == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'int':
+                    if (!checkMask(String(record.fieldRecordValueInt), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueInt) || record.fieldRecordValueInt == null)
+                    ) {
+                        dynamicVariableName['.record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'double_2_dec':
+                    if (!checkMask(String(record.fieldRecordValueDouble), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueDouble) || record.fieldRecordValueDouble == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'amount_euro':
+                    if (!checkMask(String(record.fieldRecordValueDouble), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueDouble) || record.fieldRecordValueDouble == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'date':
+                    if (!checkMask(String(record.fieldRecordValueDatetime), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueDatetime) ||
+                            record.fieldRecordValueDatetime == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
+                case 'datetime':
+                    if (!checkMask(String(record.fieldRecordValueDatetime), record.mask, record.mandatory)) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                        errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask;
+                    }
+                    if (
+                        record.mandatory == 1 &&
+                        (validator.isEmpty('' + record.fieldRecordValueDatetime) ||
+                            record.fieldRecordValueDatetime == null)
+                    ) {
+                        dynamicVariableName['record' + record.id] = true;
+                        hasErrors = true;
+                    }
+                    break;
             }
         });
 
         setErrors(dynamicVariableName);
+        setErrorsMessage(errorsMessage);
 
         if (!hasErrors) {
             try {
@@ -204,7 +327,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -223,7 +346,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -240,7 +363,7 @@ function FreeFieldsEdit({
                                                         sizeInput={'col-sm-9'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -259,7 +382,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -278,7 +401,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -297,7 +420,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -315,7 +438,7 @@ function FreeFieldsEdit({
                                                         size={'col-sm-6'}
                                                         required={record.mandatory ? 'required' : ''}
                                                         error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
+                                                        errorMessage={errorsMessage['record' + record.id]}
                                                     />
                                                 </div>
                                             );
@@ -337,7 +460,7 @@ function FreeFieldsEdit({
                                                                 size={'col-sm-4'}
                                                                 required={record.mandatory ? 'required' : ''}
                                                                 error={errors['record' + record.id]}
-                                                                errorMessage={'dit veld is verplicht'}
+                                                                errorMessage={errorsMessage['record' + record.id]}
                                                             />
 
                                                             <InputTime
@@ -352,7 +475,7 @@ function FreeFieldsEdit({
                                                                 size={'col-sm-12'}
                                                                 required={record.mandatory ? 'required' : ''}
                                                                 error={errors['record' + record.id]}
-                                                                errorMessage={'dit veld is verplicht'}
+                                                                errorMessage={errorsMessage['record' + record.id]}
                                                                 readOnly={false}
                                                             />
                                                         </div>

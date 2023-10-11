@@ -6,7 +6,7 @@ import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
 function FreeFields({ table, id }) {
     const [isLoading, setLoading] = useState(false);
-    const [showEdit, setShowEdit] = useState(true);
+    const [showEdit, setShowEdit] = useState(false);
     const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
 
     useEffect(() => {

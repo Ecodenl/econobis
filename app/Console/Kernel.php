@@ -3,15 +3,6 @@
 namespace App\Console;
 
 use App\Console\Commands\checkMailboxes;
-use App\Console\Commands\Checks\checkFirstStartingDateParticipants;
-use App\Console\Commands\Checks\checkMissingEnergySupplierDataInParts;
-use App\Console\Commands\Checks\checkOverlappingEnergySuppliers;
-use App\Console\Commands\Checks\checkTerminationDateParticipants;
-use App\Console\Commands\Checks\checkWrongDistributionParts;
-use App\Console\Commands\Checks\checkWrongEnergySupplierDataInParts;
-use App\Console\Commands\Checks\checkWrongProjectDataForLastProjectRevenue;
-use App\Console\Commands\Checks\checkWrongRevenueDistributionKwhStatus;
-use App\Console\Commands\Checks\checkWrongRevenueDistributionPartsKwhIndicatorFields;
 use App\Console\Commands\Checks\checkWrongTwinfieldInvoices;
 use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\createTaskAtEndDateAddress;
@@ -57,17 +48,8 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailExpiredTask::class,
         processWorkflowEmailOpportunityStatus::class,
         processWorkflowEmailQuotationRequestStatus::class,
-        checkWrongDistributionParts::class,
         checkWrongTwinfieldInvoices::class,
-        checkWrongEnergySupplierDataInParts::class,
-        checkMissingEnergySupplierDataInParts::class,
-        checkWrongRevenueDistributionKwhStatus::class,
         contactGroupsContactsForReport::class,
-        checkOverlappingEnergySuppliers::class,
-        checkFirstStartingDateParticipants::class,
-        checkTerminationDateParticipants::class,
-        checkWrongProjectDataForLastProjectRevenue::class,
-        checkWrongRevenueDistributionPartsKwhIndicatorFields::class,
     ];
 
     /**

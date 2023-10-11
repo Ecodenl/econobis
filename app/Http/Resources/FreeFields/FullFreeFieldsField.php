@@ -30,6 +30,7 @@ class FullFreeFieldsField extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'sortOrder' => $this->sort_order,
+            'mask' => $this->mask,
         ];
     }
 }

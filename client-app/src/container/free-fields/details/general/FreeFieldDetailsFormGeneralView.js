@@ -16,6 +16,7 @@ const FreeFieldDetailsFormGeneralView = ({
     fieldFormat,
     exportable,
     sortOrder,
+    mask,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -43,6 +44,10 @@ const FreeFieldDetailsFormGeneralView = ({
 
                     <div className="row">
                         <ViewText label={'Volgorde'} value={sortOrder} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText label={'Masker'} value={mask} />
                     </div>
                 </PanelBody>
             </Panel>

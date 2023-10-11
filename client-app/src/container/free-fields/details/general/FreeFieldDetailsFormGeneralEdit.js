@@ -25,6 +25,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             defaultValue,
             exportable,
             sortOrder,
+            mask,
         } = props.freeField;
 
         this.state = {
@@ -39,6 +40,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 defaultValue,
                 exportable,
                 sortOrder,
+                mask,
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
@@ -51,6 +53,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 changePortal: false,
                 defaultValue: false,
                 sortOrder: false,
+                mask: false,
             },
             errorsMessage: {
                 tableId: false,
@@ -61,6 +64,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 changePortal: false,
                 defaultValue: false,
                 sortOrder: false,
+                mask: false,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -191,6 +195,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             defaultValue,
             exportable,
             sortOrder,
+            mask,
         } = this.state.freeField;
 
         return (
@@ -263,7 +268,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Standaard waarde"
+                                label="Standaard waarde."
                                 name={'defaultValue'}
                                 value={defaultValue}
                                 onChangeAction={this.handleInputChange}
@@ -292,6 +297,62 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 errorMessage={this.state.errorsMessage.sortOrder}
                                 type={'number'}
                             />
+                        </div>
+                        <hr />
+                        <div className="row">
+                            <InputText
+                                label="Masker"
+                                name={'mask'}
+                                value={mask}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.mask}
+                                errorMessage={this.state.errorsMessage.mask}
+                            />
+                            <div className="form-group col-sm-3 ">
+                                <div className="col-sm-12">
+                                    Legenda:
+                                    <br />
+                                    9 = nummer
+                                    <br />
+                                    a = letter
+                                    <br />
+                                    x = nummer / letter
+                                    <br />? = optioneel (alles na het ? is optioneel)
+                                    <br />
+                                    Alle andere karakters zullen letterlijk moeten worden gebruikt
+                                </div>
+                            </div>
+                            <div className="form-group col-sm-3">
+                                <div className="col-sm-6">
+                                    Voorbeelden:
+                                    <br />
+                                    999-999
+                                    <br />
+                                    9a9/999a
+                                    <br />
+                                    999-99-9999
+                                    <br />
+                                    xx.xx.xxxx.xx
+                                    <br />
+                                    99999?-9999
+                                    <br />
+                                    99999?-9999
+                                </div>
+                                <div className="col-sm-6">
+                                    <br />
+                                    123-760
+                                    <br />
+                                    3q2/887w
+                                    <br />
+                                    987-65-4329
+                                    <br />
+                                    12.qq.12aw.3r
+                                    <br />
+                                    23462
+                                    <br />
+                                    23462-1231
+                                </div>
+                            </div>
                         </div>
                     </PanelBody>
 

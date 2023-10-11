@@ -24,6 +24,9 @@ class FreeFieldNewForm extends Component {
                 changePortal: false,
                 mandatory: false,
                 defaultValue: '',
+                exportable: false,
+                sortOrder: false,
+                mask: false,
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
@@ -37,6 +40,9 @@ class FreeFieldNewForm extends Component {
                 defaultValue: false,
                 freeFieldsTables: false,
                 freeFieldsFieldFormats: false,
+                exportable: false,
+                sortOrder: false,
+                mask: false,
             },
             errorsMessage: {
                 tableId: false,
@@ -48,6 +54,9 @@ class FreeFieldNewForm extends Component {
                 defaultValue: false,
                 freeFieldsTables: false,
                 freeFieldsFieldFormats: false,
+                exportable: false,
+                sortOrder: false,
+                mask: false,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -100,43 +109,55 @@ class FreeFieldNewForm extends Component {
 
         if (validator.isEmpty(freeField.tableId + '')) {
             errors.tableId = true;
-            errorsMessage.tableId = "verplicht";
+            errorsMessage.tableId = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldFormatId + '')) {
             errors.fieldFormatId = true;
-            errorsMessage.fieldFormatId = "verplicht";
+            errorsMessage.fieldFormatId = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.fieldName)) {
             errors.fieldName = true;
-            errorsMessage.fieldName = "verplicht";
+            errorsMessage.fieldName = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.mandatory + '')) {
             errors.mandatory = true;
-            errorsMessage.mandatory = "verplicht";
+            errorsMessage.mandatory = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.visiblePortal + '')) {
             errors.visiblePortal = true;
-            errorsMessage.visiblePortal = "verplicht";
+            errorsMessage.visiblePortal = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.changePortal + '')) {
             errors.changePortal = true;
-            errorsMessage.changePortal = "verplicht";
+            errorsMessage.changePortal = 'verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
-            errorsMessage.defaultValue = "verplicht";
+            errorsMessage.defaultValue = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.exportable + '')) {
+            errors.exportable = true;
+            errorsMessage.exportable = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.sortOrder + '')) {
+            errors.sortOrder = true;
+            errorsMessage.sortOrder = 'verplicht';
             hasErrors = true;
         }
 
@@ -163,6 +184,9 @@ class FreeFieldNewForm extends Component {
             changePortal,
             mandatory,
             defaultValue,
+            exportable,
+            sortOrder,
+            mask,
         } = this.state.freeField;
 
         return (
@@ -244,6 +268,85 @@ class FreeFieldNewForm extends Component {
                                 error={this.state.errors.defaultValue}
                                 errorMessage={this.state.errorsMessage.defaultValue}
                             />
+                            <InputToggle
+                                label={'Exporteerbaar'}
+                                name={'exportable'}
+                                value={exportable}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.exportable}
+                                errorMessage={this.state.errorsMessage.exportable}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <InputText
+                                label="Volgorde"
+                                name={'sortOrder'}
+                                value={sortOrder}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                error={this.state.errors.sortOrder}
+                                errorMessage={this.state.errorsMessage.sortOrder}
+                                type={'number'}
+                            />
+                        </div>
+
+                        <hr />
+                        <div className="row">
+                            <InputText
+                                label="Masker"
+                                name={'mask'}
+                                value={mask}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.mask}
+                                errorMessage={this.state.errorsMessage.mask}
+                            />
+                            <div className="form-group col-sm-3 ">
+                                <div className="col-sm-12">
+                                    Legenda:
+                                    <br />
+                                    9 = nummer
+                                    <br />
+                                    a = letter
+                                    <br />
+                                    x = nummer / letter
+                                    <br />? = optioneel (alles na het ? is optioneel)
+                                    <br />
+                                    Alle andere karakters zullen letterlijk moeten worden gebruikt
+                                </div>
+                            </div>
+                            <div className="form-group col-sm-3">
+                                <div className="col-sm-6">
+                                    Voorbeelden:
+                                    <br />
+                                    999-999
+                                    <br />
+                                    9a9/999a
+                                    <br />
+                                    999-99-9999
+                                    <br />
+                                    xx.xx.xxxx.xx
+                                    <br />
+                                    99999?-9999
+                                    <br />
+                                    99999?-9999
+                                </div>
+                                <div className="col-sm-6">
+                                    <br />
+                                    123-760
+                                    <br />
+                                    3q2/887w
+                                    <br />
+                                    987-65-4329
+                                    <br />
+                                    12.qq.12aw.3r
+                                    <br />
+                                    23462
+                                    <br />
+                                    23462-1231
+                                </div>
+                            </div>
                         </div>
                     </PanelBody>
 

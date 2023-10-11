@@ -82,12 +82,10 @@ function FreeFieldsEdit({
                 if ('record-' + record.id === name) {
                     //if isTime is true we want the new time combined with the old date since this is in a separate field
                     if (isTime) {
-                        let tempValue = '';
                         value = record.fieldRecordValueDatetime.split(' ')[0] + ' ' + value;
                     }
                     //if isDate is true we want the new date combined with the old time since this is in a separate field
                     if (isDate) {
-                        let tempValue = '';
                         value = value + ' ' + record.fieldRecordValueDatetime.split(' ')[1];
                     }
 
@@ -104,17 +102,11 @@ function FreeFieldsEdit({
     async function handleSubmit(event) {
         event.preventDefault();
 
-        let errorsObj = {};
         let hasErrors = false;
 
         let dynamicVariableName = {};
 
         freeFieldsFieldRecords.map(record => {
-            // if (validator.isEmpty('' + freeFieldsFieldRecords.typeId)) {
-            //     errorsObj.type = true;
-            //     hasErrors = true;
-            // }
-
             if (record.mandatory == 1) {
                 switch (record.fieldFormatType) {
                     case 'boolean':

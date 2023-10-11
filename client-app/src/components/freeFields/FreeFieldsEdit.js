@@ -3,6 +3,7 @@ import InputText from '../form/InputText';
 import InputToggle from '../form/InputToggle';
 import ButtonText from '../button/ButtonText';
 import InputDate from '../form/InputDate';
+import InputTime from '../form/InputTime';
 import moment from 'moment/moment';
 import InputTextArea from '../form/InputTextArea';
 import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
@@ -50,6 +51,12 @@ function FreeFieldsEdit({
         handleInputChange(value, name, 'fieldRecordValueDouble');
     }
 
+    function handleInputChangeDate(date, name) {
+        const value = date ? moment(date).format('Y-MM-DD') : '';
+
+        handleInputChange(date, name, 'fieldRecordValueDatetime');
+    }
+
     function handleInputChangeDatetime(date, name) {
         const value = date ? moment(date).format('Y-MM-DD') : '';
 
@@ -57,9 +64,33 @@ function FreeFieldsEdit({
     }
 
     function handleInputChange(value, name, type) {
+        let isTime = false;
+        let isDate = false;
+
+        if (name.endsWith('T')) {
+            name = name.replace('T', '');
+            isTime = true;
+        }
+
+        if (name.endsWith('D')) {
+            name = name.replace('D', '');
+            isDate = true;
+        }
+
         setFreeFieldsFieldRecords(
             freeFieldsFieldRecords.map(record => {
                 if ('record-' + record.id === name) {
+                    //if isTime is true we want the new time combined with the old date since this is in a separate field
+                    if (isTime) {
+                        let tempValue = '';
+                        value = record.fieldRecordValueDatetime.split(' ')[0] + ' ' + value;
+                    }
+                    //if isDate is true we want the new date combined with the old time since this is in a separate field
+                    if (isDate) {
+                        let tempValue = '';
+                        value = value + ' ' + record.fieldRecordValueDatetime.split(' ')[1];
+                    }
+
                     return { ...record, [type]: value };
                 } else {
                     return {
@@ -286,7 +317,7 @@ function FreeFieldsEdit({
                                                         label={record.fieldName}
                                                         name={'record-' + record.id}
                                                         value={record.fieldRecordValueDatetime}
-                                                        onChangeAction={handleInputChangeDatetime}
+                                                        onChangeAction={handleInputChangeDate}
                                                         divSize={'col-sm-12'}
                                                         labelSize={'col-sm-6'}
                                                         size={'col-sm-6'}
@@ -300,18 +331,40 @@ function FreeFieldsEdit({
                                         case 'datetime':
                                             return (
                                                 <div className="col-xs-6">
-                                                    <InputDate
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueDatetime}
-                                                        onChangeAction={handleInputChangeDatetime}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={'dit veld is verplicht'}
-                                                    />
+                                                    <div className="row">
+                                                        <div className="col-xs-12">
+                                                            <InputDate
+                                                                label={record.fieldName}
+                                                                name={'record-' + record.id + 'D'}
+                                                                value={moment(record.fieldRecordValueDatetime).format(
+                                                                    'Y-MM-DD'
+                                                                )}
+                                                                onChangeAction={handleInputChangeDatetime}
+                                                                divSize={'col-sm-6'}
+                                                                labelSize={'col-sm-8'}
+                                                                size={'col-sm-4'}
+                                                                required={record.mandatory ? 'required' : ''}
+                                                                error={errors['record' + record.id]}
+                                                                errorMessage={'dit veld is verplicht'}
+                                                            />
+
+                                                            <InputTime
+                                                                label={''}
+                                                                name={'record-' + record.id + 'T'}
+                                                                value={moment(record.fieldRecordValueDatetime).format(
+                                                                    'LT'
+                                                                )}
+                                                                onChangeAction={handleInputChangeDatetime}
+                                                                divSize={'col-sm-3'}
+                                                                labelSize={'col-sm-0'}
+                                                                size={'col-sm-12'}
+                                                                required={record.mandatory ? 'required' : ''}
+                                                                error={errors['record' + record.id]}
+                                                                errorMessage={'dit veld is verplicht'}
+                                                                readOnly={false}
+                                                            />
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             );
                                             break;

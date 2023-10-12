@@ -28,7 +28,7 @@ class Sort extends RequestSort
     ];
 
     protected $joins = [
-        'tableName' => 'freeFieldsTables',
-        'fieldFormatName' => 'freeFieldsFieldFormats',
+        'tableName' => 'free_fields_tables',
+        'fieldFormatName' => 'free_fields_field_formats',
     ];
 }

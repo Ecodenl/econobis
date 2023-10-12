@@ -108,43 +108,44 @@ function FreeFieldsEdit({
     }
 
     function handleInputChangeDate(date, name) {
-        const value = date ? moment(date).format('Y-MM-DD') : '';
-
         handleInputChange(date, name, 'fieldRecordValueDatetime');
     }
 
-    function handleInputChangeDatetime(date, name) {
-        const value = date ? moment(date).format('Y-MM-DD') : '';
+    function handleInputChangeDatetimeDate(dateOrTime, name) {
+        const currentRecord = freeFieldsFieldRecords.find(record => 'record-' + record.id === name);
 
-        handleInputChange(date, name, 'fieldRecordValueDatetime');
+        let date = dateOrTime ? dateOrTime : moment().format('Y-MM-DD');
+        let time = '08:00';
+        if (currentRecord.fieldRecordValueDatetime) {
+            time = moment(currentRecord.fieldRecordValueDatetime).format('HH:mm');
+        }
+
+        handleInputChange(
+            moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss'),
+            name,
+            'fieldRecordValueDatetime'
+        );
+    }
+    function handleInputChangeDatetimeTime(dateOrTime, name) {
+        const currentRecord = freeFieldsFieldRecords.find(record => 'record-' + record.id === name);
+
+        let date = moment().format('Y-MM-DD');
+        let time = dateOrTime ? dateOrTime : '08:00';
+        if (currentRecord.fieldRecordValueDatetime) {
+            date = moment(currentRecord.fieldRecordValueDatetime).format('Y-MM-DD');
+        }
+
+        handleInputChange(
+            moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss'),
+            name,
+            'fieldRecordValueDatetime'
+        );
     }
 
     function handleInputChange(value, name, type) {
-        let isTime = false;
-        let isDate = false;
-
-        if (name.endsWith('T')) {
-            name = name.replace('T', '');
-            isTime = true;
-        }
-
-        if (name.endsWith('D')) {
-            name = name.replace('D', '');
-            isDate = true;
-        }
-
         setFreeFieldsFieldRecords(
             freeFieldsFieldRecords.map(record => {
                 if ('record-' + record.id === name) {
-                    //if isTime is true we want the new time combined with the old date since this is in a separate field
-                    if (isTime) {
-                        value = record.fieldRecordValueDatetime.split(' ')[0] + ' ' + value;
-                    }
-                    //if isDate is true we want the new date combined with the old time since this is in a separate field
-                    if (isDate) {
-                        value = value + ' ' + record.fieldRecordValueDatetime.split(' ')[1];
-                    }
-
                     return { ...record, [type]: value };
                 } else {
                     return {
@@ -450,11 +451,11 @@ function FreeFieldsEdit({
                                                         <div className="col-xs-12">
                                                             <InputDate
                                                                 label={record.fieldName}
-                                                                name={'record-' + record.id + 'D'}
+                                                                name={'record-' + record.id}
                                                                 value={moment(record.fieldRecordValueDatetime).format(
                                                                     'Y-MM-DD'
                                                                 )}
-                                                                onChangeAction={handleInputChangeDatetime}
+                                                                onChangeAction={handleInputChangeDatetimeDate}
                                                                 divSize={'col-sm-6'}
                                                                 labelSize={'col-sm-8'}
                                                                 size={'col-sm-4'}
@@ -465,11 +466,11 @@ function FreeFieldsEdit({
 
                                                             <InputTime
                                                                 label={''}
-                                                                name={'record-' + record.id + 'T'}
+                                                                name={'record-' + record.id}
                                                                 value={moment(record.fieldRecordValueDatetime).format(
-                                                                    'LT'
+                                                                    'HH:mm'
                                                                 )}
-                                                                onChangeAction={handleInputChangeDatetime}
+                                                                onChangeAction={handleInputChangeDatetimeTime}
                                                                 divSize={'col-sm-3'}
                                                                 labelSize={'col-sm-0'}
                                                                 size={'col-sm-12'}

@@ -12,6 +12,7 @@ use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
 use App\Http\Controllers\Api\ApiController;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 
@@ -31,6 +32,13 @@ class FreeFieldsFieldRecordController extends ApiController
         foreach ($freeFieldsFieldTable as $field)
         {
             $record = FreeFieldsFieldRecord::where('field_id', $field->id)->where('table_record_id', $recordId)->firstOrNew();
+            $fieldValueDatetime = null;
+            if($field->freeFieldsFieldFormat->format_type == 'date'){
+                $fieldValueDatetime = $record->field_value_datetime ?? Carbon::now()->format('Y-m-d');
+            } elseif($field->freeFieldsFieldFormat->format_type == 'datetime') {
+                $fieldValueDatetime = $record->field_value_datetime ?? Carbon::createFromFormat('Y-m-d H:i', Carbon::now()->format('Y-m-d') . ' 08:00');
+            }
+
             $freeFieldsFieldRecords[] = [
                 'id' => $field->id,
                 'tableName' => $field->freeFieldsTable->name,
@@ -40,7 +48,7 @@ class FreeFieldsFieldRecordController extends ApiController
                 'fieldRecordValueBoolean' => $record->field_value_boolean,
                 'fieldRecordValueInt' => $record->field_value_int,
                 'fieldRecordValueDouble' => $record->field_value_double,
-                'fieldRecordValueDatetime' => $record->field_value_datetime,
+                'fieldRecordValueDatetime' => $fieldValueDatetime,
                 'mandatory' => $field->mandatory,
                 'mask' => $field->mask,
             ];

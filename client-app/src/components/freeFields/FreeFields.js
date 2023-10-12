@@ -6,7 +6,7 @@ import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
 function FreeFields({ table, id }) {
     const [isLoading, setLoading] = useState(false);
-    const [showEdit, setShowEdit] = useState(true);
+    const [showEdit, setShowEdit] = useState(false);
     const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
 
     useEffect(() => {
@@ -34,28 +34,23 @@ function FreeFields({ table, id }) {
             });
     };
 
-    return (
-        <div>
-            {isLoading ? (
-                <p>Bezig met gegevens laden</p>
-            ) : freeFieldsFieldRecords.length > 0 ? (
-                <>
-                    {showEdit ? (
-                        <FreeFieldsEdit
-                            freeFieldsFieldRecords={freeFieldsFieldRecords}
-                            setFreeFieldsFieldRecords={setFreeFieldsFieldRecords}
-                            switchToView={switchToView}
-                            objectId={id}
-                            fetchFreeFieldsFieldRecords={fetchFreeFieldsFieldRecords}
-                        />
-                    ) : (
-                        <FreeFieldsView freeFieldsFieldRecords={freeFieldsFieldRecords} switchToEdit={switchToEdit} />
-                    )}
-                </>
+    return isLoading ? null : freeFieldsFieldRecords.length > 0 ? (
+        <div className={`panel panel-default `}>
+            <div className="panel-heading">
+                <span className="h5 text-bold">Vrije velden</span>
+            </div>
+            {showEdit ? (
+                <FreeFieldsEdit
+                    freeFieldsFieldRecords={freeFieldsFieldRecords}
+                    setFreeFieldsFieldRecords={setFreeFieldsFieldRecords}
+                    switchToView={switchToView}
+                    objectId={id}
+                    fetchFreeFieldsFieldRecords={fetchFreeFieldsFieldRecords}
+                />
             ) : (
-                <p>Bezig met gegevens laden</p>
+                <FreeFieldsView freeFieldsFieldRecords={freeFieldsFieldRecords} switchToEdit={switchToEdit} />
             )}
         </div>
-    );
+    ) : null;
 }
 export default FreeFields;

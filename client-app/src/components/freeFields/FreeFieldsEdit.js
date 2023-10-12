@@ -8,6 +8,7 @@ import moment from 'moment/moment';
 import InputTextArea from '../form/InputTextArea';
 import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 import validator from 'validator';
+import InputDateTime from '../form/InputDateTime';
 
 function FreeFieldsEdit({
     freeFieldsFieldRecords,
@@ -303,208 +304,143 @@ function FreeFieldsEdit({
     let inputField = null;
 
     return (
-        <>
-            <form className="form-horizontal" onSubmit={handleSubmit}>
-                <div className={`panel panel-default`}>
-                    <div className="panel-heading ">
-                        <span className="h5 text-bold">Vrije velden</span>
-                    </div>
-                    <div className="panel-body ">
-                        <div className="row">
-                            {freeFieldsFieldRecords &&
-                                freeFieldsFieldRecords.length > 0 &&
-                                freeFieldsFieldRecords.map(record => {
-                                    switch (record.fieldFormatType) {
-                                        case 'boolean':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputToggle
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueBoolean}
-                                                        onChangeAction={handleInputChangeBoolean}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'text_short':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputText
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueText}
-                                                        onChangeAction={handleInputChangeText}
-                                                        type={'text'}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'text_long':
-                                            return (
-                                                <div className="col-xs-12">
-                                                    <InputTextArea
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueText}
-                                                        onChangeAction={handleInputChangeText}
-                                                        sizeLabel={'col-sm-3'}
-                                                        sizeInput={'col-sm-9'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'int':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputText
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueInt}
-                                                        onChangeAction={handleInputChangeInt}
-                                                        type={'number'}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'double_2_dec':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputText
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueDouble}
-                                                        onChangeAction={handleInputChangeDouble}
-                                                        type={'number'}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'amount_euro':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputText
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueDouble}
-                                                        onChangeAction={handleInputChangeDouble}
-                                                        type={'number'}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'date':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <InputDate
-                                                        label={record.fieldName}
-                                                        name={'record-' + record.id}
-                                                        value={record.fieldRecordValueDatetime}
-                                                        onChangeAction={handleInputChangeDate}
-                                                        divSize={'col-sm-12'}
-                                                        labelSize={'col-sm-6'}
-                                                        size={'col-sm-6'}
-                                                        required={record.mandatory ? 'required' : ''}
-                                                        error={errors['record' + record.id]}
-                                                        errorMessage={errorsMessage['record' + record.id]}
-                                                    />
-                                                </div>
-                                            );
-                                            break;
-                                        case 'datetime':
-                                            return (
-                                                <div className="col-xs-6">
-                                                    <div className="row">
-                                                        <div className="col-xs-12">
-                                                            <InputDate
-                                                                label={record.fieldName}
-                                                                name={'record-' + record.id}
-                                                                value={moment(record.fieldRecordValueDatetime).format(
-                                                                    'Y-MM-DD'
-                                                                )}
-                                                                onChangeAction={handleInputChangeDatetimeDate}
-                                                                divSize={'col-sm-6'}
-                                                                labelSize={'col-sm-8'}
-                                                                size={'col-sm-4'}
-                                                                required={record.mandatory ? 'required' : ''}
-                                                                error={errors['record' + record.id]}
-                                                                errorMessage={errorsMessage['record' + record.id]}
-                                                            />
-
-                                                            <InputTime
-                                                                label={''}
-                                                                name={'record-' + record.id}
-                                                                value={moment(record.fieldRecordValueDatetime).format(
-                                                                    'HH:mm'
-                                                                )}
-                                                                onChangeAction={handleInputChangeDatetimeTime}
-                                                                divSize={'col-sm-3'}
-                                                                labelSize={'col-sm-0'}
-                                                                size={'col-sm-12'}
-                                                                required={record.mandatory ? 'required' : ''}
-                                                                error={errors['record' + record.id]}
-                                                                errorMessage={errorsMessage['record' + record.id]}
-                                                                readOnly={false}
-                                                            />
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            );
-                                            break;
-                                    }
-                                })}
-                        </div>
-                    </div>
-                    <div className="panel-footer">
-                        <div className="row">
-                            <div className="col-sm-12">
-                                <div className="pull-right btn-group" role="group">
-                                    <ButtonText
-                                        buttonClassName={'btn-default'}
-                                        buttonText={'Sluiten'}
-                                        onClickAction={switchToView}
-                                    />
-                                    <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
-                                </div>
+        <div className="panel-body ">
+            <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
+                <div className="row">
+                    {freeFieldsFieldRecords &&
+                        freeFieldsFieldRecords.length > 0 &&
+                        freeFieldsFieldRecords.map(record => {
+                            switch (record.fieldFormatType) {
+                                case 'boolean':
+                                    return (
+                                        <InputToggle
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueBoolean}
+                                            onChangeAction={handleInputChangeBoolean}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                        // </div>
+                                    );
+                                    break;
+                                case 'text_short':
+                                    return (
+                                        <InputText
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueText}
+                                            onChangeAction={handleInputChangeText}
+                                            type={'text'}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                        // </div>
+                                    );
+                                    break;
+                                case 'text_long':
+                                    return (
+                                        <InputTextArea
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueText}
+                                            onChangeAction={handleInputChangeText}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                                case 'int':
+                                    return (
+                                        <InputText
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueInt}
+                                            onChangeAction={handleInputChangeInt}
+                                            type={'number'}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                                case 'double_2_dec':
+                                    return (
+                                        <InputText
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueDouble}
+                                            onChangeAction={handleInputChangeDouble}
+                                            type={'number'}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                                case 'amount_euro':
+                                    return (
+                                        <InputText
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueDouble}
+                                            onChangeAction={handleInputChangeDouble}
+                                            type={'number'}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                                case 'date':
+                                    return (
+                                        <InputDate
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueDatetime}
+                                            onChangeAction={handleInputChangeDate}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                                case 'datetime':
+                                    return (
+                                        <InputDateTime
+                                            label={record.fieldName}
+                                            name={'record-' + record.id}
+                                            value={record.fieldRecordValueDatetime}
+                                            onChangeActionDate={handleInputChangeDatetimeDate}
+                                            onChangeActionTime={handleInputChangeDatetimeTime}
+                                            required={record.mandatory ? 'required' : ''}
+                                            error={errors['record' + record.id]}
+                                            errorMessage={errorsMessage['record' + record.id]}
+                                        />
+                                    );
+                                    break;
+                            }
+                        })}
+                </div>
+                <div className="panel-footer">
+                    <div className="row">
+                        <div className="col-sm-12">
+                            <div className="pull-right btn-group" role="group">
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Sluiten'}
+                                    onClickAction={switchToView}
+                                />
+                                <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                             </div>
                         </div>
                     </div>
                 </div>
             </form>
-        </>
+        </div>
     );
 }
 

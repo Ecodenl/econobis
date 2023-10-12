@@ -66,7 +66,7 @@ function FreeFieldsEdit({
                         }
                         break;
                     default:
-                        if (!explodedValue[i] || !explodedValue[i] != !explodedValue[i]) {
+                        if (explodedValue[i] != explodedMask[i]) {
                             return false;
                         }
                         break;

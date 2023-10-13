@@ -4,7 +4,7 @@ import FreeFieldsView from './FreeFieldsView';
 import FreeFieldsEdit from './FreeFieldsEdit';
 import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
-function FreeFields({ table, id }) {
+function FreeFields({ table, recordId }) {
     const [isLoading, setLoading] = useState(false);
     const [showEdit, setShowEdit] = useState(false);
     const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
@@ -22,7 +22,7 @@ function FreeFields({ table, id }) {
 
     const fetchFreeFieldsFieldRecords = () => {
         setLoading(true);
-        FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, id)
+        FreeFieldsAPI.fetchFreeFieldsFieldRecords(table, recordId)
             .then(payload => {
                 setFreeFieldsFieldRecords(payload);
                 setLoading(false);
@@ -44,7 +44,7 @@ function FreeFields({ table, id }) {
                     freeFieldsFieldRecords={freeFieldsFieldRecords}
                     setFreeFieldsFieldRecords={setFreeFieldsFieldRecords}
                     switchToView={switchToView}
-                    objectId={id}
+                    recordId={recordId}
                     fetchFreeFieldsFieldRecords={fetchFreeFieldsFieldRecords}
                 />
             ) : (

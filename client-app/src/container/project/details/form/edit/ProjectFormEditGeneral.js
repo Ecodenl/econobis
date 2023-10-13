@@ -515,7 +515,7 @@ const ProjectFormEditGeneral = ({
 
             <hr />
 
-            {permissions.viewContactGeneral ? <FreeFields table={'contacts'} id={this.props.id} /> : null}
+            {permissions.viewContactGeneral ? <FreeFields table={'contacts'} recordId={this.props.id} /> : null}
 
             <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>
                 {showCustomerPortalSettings ? (

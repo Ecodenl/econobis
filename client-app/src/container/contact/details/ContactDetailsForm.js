@@ -56,7 +56,7 @@ class ContactDetailsForm extends Component {
         ) : (
             <div>
                 {permissions.viewContactGeneral ? <ContactDetailsFormGeneral /> : null}
-                {permissions.viewContactGeneral ? <FreeFields table={'contacts'} id={this.props.id} /> : null}
+                {permissions.viewContactGeneral ? <FreeFields table={'contacts'} recordId={this.props.id} /> : null}
                 {permissions.viewContactAddress ? <ContactDetailsFormAddress /> : null}
                 {permissions.viewContactEmail ? <ContactDetailsFormEmail /> : null}
                 {permissions.viewContactPhone ? <ContactDetailsFormPhone /> : null}

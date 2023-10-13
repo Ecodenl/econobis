@@ -57,21 +57,21 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    fetchFreeFieldsFieldRecords: (table, id) => {
+    fetchFreeFieldsFieldRecords: (table, recordId) => {
         const requestUrl = `${URL_API}/api/free-fields-field-records/get-values`;
 
         return axiosInstance
             .get(requestUrl, {
                 params: {
                     table: table,
-                    id: id,
+                    recordId: recordId,
                 },
             })
             .then(response => response.data);
     },
 
-    updateFreeFieldsFieldRecords: (data, objectId) => {
+    updateFreeFieldsFieldRecords: (data, recordId) => {
         const requestUrl = `${URL_API}/api/free-fields-field-records/update-values`;
-        return axiosInstance.post(requestUrl, { data: { records: data, objectId: objectId } });
+        return axiosInstance.post(requestUrl, { data: { records: data, recordId: recordId } });
     },
 };

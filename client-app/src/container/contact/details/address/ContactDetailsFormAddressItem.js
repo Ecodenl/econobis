@@ -274,7 +274,7 @@ class ContactDetailsFormAddressItem extends Component {
                             eanGasError={this.state.errors.eanGas}
                             cancelEdit={this.cancelEdit}
                         />
-                        {<FreeFields table={'addresses'} id={this.props.address.id} />}
+                        {<FreeFields table={'addresses'} recordId={this.props.address.id} />}
                     </>
                 )}
                 {this.state.showAddressEnergySupplier && (

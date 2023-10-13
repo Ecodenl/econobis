@@ -38,7 +38,7 @@ const FreeFieldDetailsFormGeneralView = ({
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Standaardwaarde'} value={defaultValue} />
+                        <ViewText label={'Standaard waarde'} value={defaultValue} />
                         <ViewText label={'Exporteerbaar'} value={exportable ? 'Ja' : 'Nee'} />
                     </div>
 

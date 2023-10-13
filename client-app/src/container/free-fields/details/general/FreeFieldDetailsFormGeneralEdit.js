@@ -151,7 +151,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.defaultValue)) {
+        if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
             errorsMessage.defaultValue = 'verplicht';
             hasErrors = true;
@@ -268,11 +268,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Standaard waarde."
+                                label="Standaard waarde"
                                 name={'defaultValue'}
                                 value={defaultValue}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                required={mandatory ? 'required' : ''}
                                 error={this.state.errors.defaultValue}
                                 errorMessage={this.state.errorsMessage.defaultValue}
                             />
@@ -315,9 +315,8 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                     9 = nummer
                                     <br />
                                     a = letter
-                                    <br />
-                                    x = nummer / letter
-                                    <br />? = optioneel (alles na het ? is optioneel)
+                                    <br />x = nummer / letter
+                                    {/*<br />? = optioneel (alles na het ? is optioneel)*/}
                                     <br />
                                     Alle andere karakters zullen letterlijk moeten worden gebruikt
                                 </div>
@@ -333,10 +332,10 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                     999-99-9999
                                     <br />
                                     xx.xx.xxxx.xx
-                                    <br />
-                                    99999?-9999
-                                    <br />
-                                    99999?-9999
+                                    {/*<br />*/}
+                                    {/*99999?-9999*/}
+                                    {/*<br />*/}
+                                    {/*99999?-9999*/}
                                 </div>
                                 <div className="col-sm-6">
                                     <br />
@@ -347,10 +346,10 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                     987-65-4329
                                     <br />
                                     12.qq.12aw.3r
-                                    <br />
-                                    23462
-                                    <br />
-                                    23462-1231
+                                    {/*<br />*/}
+                                    {/*23462*/}
+                                    {/*<br />*/}
+                                    {/*23462-1231*/}
                                 </div>
                             </div>
                         </div>

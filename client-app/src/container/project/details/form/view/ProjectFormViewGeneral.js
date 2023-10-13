@@ -286,7 +286,7 @@ const ProjectFormViewGeneral = ({
                 ) : null}
             </section>
 
-            <FreeFields table={'projects'} id={id} />
+            <FreeFields table={'projects'} recordId={id} />
 
             <section>
                 <hr />

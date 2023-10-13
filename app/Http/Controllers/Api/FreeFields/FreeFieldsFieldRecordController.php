@@ -14,7 +14,6 @@ use App\Eco\FreeFields\FreeFieldsTable;
 use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class FreeFieldsFieldRecordController extends ApiController
 {
@@ -23,20 +22,49 @@ class FreeFieldsFieldRecordController extends ApiController
         $this->authorize('view', FreeFieldsField::class);
 
         $tableId = $request->get('table');
-        $recordId = $request->get('id');
+        $recordId = $request->get('recordId');
 
         $freeFieldsTable = FreeFieldsTable::where('table', $tableId)->first();
 
         $freeFieldsFieldRecords = [];
-        $freeFieldsFieldTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->orderBy('sort_order')->get();
-        foreach ($freeFieldsFieldTable as $field)
+        $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->orderBy('sort_order')->get();
+        foreach ($freeFieldsFieldPerTable as $field)
         {
-            $record = FreeFieldsFieldRecord::where('field_id', $field->id)->where('table_record_id', $recordId)->firstOrNew();
-            $fieldValueDatetime = null;
+            $record = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $field->id)->firstOrNew();
+
+            $fieldRecordValueText = $record->field_value_text;
+            $fieldRecordValueBoolean = $record->field_value_boolean;
+            $fieldRecordValueInt = $record->field_value_int;
+            $fieldRecordValueDouble = $record->field_value_double;
+            $fieldRecordValueDatetime = null;
             if($field->freeFieldsFieldFormat->format_type == 'date'){
-                $fieldValueDatetime = $record->field_value_datetime ?? Carbon::now()->format('Y-m-d');
+                $fieldRecordValueDatetime = $record->field_value_datetime ?? Carbon::now()->format('Y-m-d');
             } elseif($field->freeFieldsFieldFormat->format_type == 'datetime') {
-                $fieldValueDatetime = $record->field_value_datetime ?? Carbon::createFromFormat('Y-m-d H:i', Carbon::now()->format('Y-m-d') . ' 08:00');
+                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d H:i:s') : Carbon::createFromFormat('Y-m-d H:i', Carbon::now()->format('Y-m-d') . ' 08:00')->format('Y-m-d H:i:s');
+            }
+
+            // Id nog niet bekend, dan nieuw! Overnemen default waarden indien van toepassing
+            if(!isset($record->id)) {
+                switch ($field->freeFieldsFieldFormat->format_type) {
+                    case 'boolean':
+                        $fieldRecordValueBoolean = ($field->default_value == '1' || $field->default_value == 'true');
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        $fieldRecordValueText = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'int':
+                        $fieldRecordValueInt = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $fieldRecordValueDouble = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'date':
+                    case 'datetime':
+                        $fieldRecordValueDatetime = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                }
             }
 
             $freeFieldsFieldRecords[] = [
@@ -44,11 +72,11 @@ class FreeFieldsFieldRecordController extends ApiController
                 'tableName' => $field->freeFieldsTable->name,
                 'fieldName' => $field->field_name,
                 'fieldFormatType' => $field->freeFieldsFieldFormat->format_type,
-                'fieldRecordValueText' => $record->field_value_text,
-                'fieldRecordValueBoolean' => $record->field_value_boolean,
-                'fieldRecordValueInt' => $record->field_value_int,
-                'fieldRecordValueDouble' => $record->field_value_double,
-                'fieldRecordValueDatetime' => $fieldValueDatetime,
+                'fieldRecordValueText' => $fieldRecordValueText,
+                'fieldRecordValueBoolean' => $fieldRecordValueBoolean,
+                'fieldRecordValueInt' => $fieldRecordValueInt,
+                'fieldRecordValueDouble' => $fieldRecordValueDouble,
+                'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
                 'mandatory' => $field->mandatory,
                 'mask' => $field->mask,
             ];
@@ -59,16 +87,20 @@ class FreeFieldsFieldRecordController extends ApiController
 
     public function updateValues(Request $request)
     {
-        Log::info(json_encode($request->get('data')['records']));
+
+        $recordId = $request->get('data')['recordId'];
+//        Log::info(json_encode($request->get('data')['recordId']));
+//        Log::info(json_encode($request->get('data')['records']));
         $this->authorize('view', FreeFieldsField::class);
 
         foreach($request->get('data')['records'] as $record) {
 
-            $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('field_id', $record['id'])->firstOrNew();
+            $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $record['id'])->firstOrNew();
 
+            // Id nog niet bekend, dan nieuw! Overnemen: field_id en table_record_id
             if(!isset($freeFieldsFieldRecord->id)) {
                 $freeFieldsFieldRecord->field_id = $record['id'];
-                $freeFieldsFieldRecord->table_record_id = $request->get('data')['objectId'];
+                $freeFieldsFieldRecord->table_record_id = $recordId;
             }
 
             switch ($record['fieldFormatType']) {
@@ -76,8 +108,6 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_boolean = $record['fieldRecordValueBoolean'];
                     break;
                 case 'text_short':
-                    $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
-                    break;
                 case 'text_long':
                     $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
                     break;
@@ -85,14 +115,10 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'];
                     break;
                 case 'double_2_dec':
-                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'];
-                    break;
                 case 'amount_euro':
                     $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'];
                     break;
                 case 'date':
-                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'];
-                    break;
                 case 'datetime':
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'];
                     break;

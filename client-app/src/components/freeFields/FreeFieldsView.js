@@ -79,16 +79,14 @@ function FreeFieldsView({ freeFieldsFieldRecords, switchToEdit }) {
                             );
                             break;
                         case 'datetime':
-                            return (
-                                <ViewText
-                                    label={record.fieldName}
-                                    value={
-                                        record.fieldRecordValueDatetime
-                                            ? moment(record.fieldRecordValueDatetime).format('L HH:mm')
-                                            : ''
-                                    }
-                                />
-                            );
+                            const valueTime = moment(record.fieldRecordValueDatetime).format('HH:mm');
+                            const dateTimeFormated = record.fieldRecordValueDatetime
+                                ? valueTime === '00:00'
+                                    ? moment(record.fieldRecordValueDatetime).format('L') + ' (onbekend)'
+                                    : moment(record.fieldRecordValueDatetime).format('L HH:mm')
+                                : '';
+
+                            return <ViewText label={record.fieldName} value={dateTimeFormated} />;
                     }
                 })}
             </div>

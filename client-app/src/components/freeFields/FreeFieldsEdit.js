@@ -419,6 +419,7 @@ function FreeFieldsEdit({
                                             required={record.mandatory ? 'required' : ''}
                                             error={errors['record' + record.id]}
                                             errorMessage={errorsMessage['record' + record.id]}
+                                            nullable={true}
                                         />
                                     );
                                     break;

@@ -10,25 +10,27 @@ import ReactTooltip from 'react-tooltip';
 const InputDateTime = props => {
     const {
         className,
-        label,
+        divSize,
         sizeDate,
         sizeTime,
-        divSize,
+        label,
         id,
         name,
         value,
         onChangeActionDate,
         onChangeActionTime,
+        readOnly,
+        required,
         start,
         end,
         step,
-        readOnly,
-        required,
         textToolTip,
         error,
         errorMessage,
         disabledBefore,
         disabledAfter,
+        nullable,
+        nullableLabel,
     } = props;
 
     const [errorDateFormat, setErrorDateFormat] = useState(false);
@@ -94,6 +96,20 @@ const InputDateTime = props => {
         onChangeActionTime(formattedTime, name);
     };
 
+    const [nullableChecked, setNullableChecked] = useState(value == '00:00');
+
+    const handleChangeNullableChecked = event => {
+        const target = event.target;
+        const changedValue = target.type === 'checkbox' ? target.checked : target.value;
+
+        setNullableChecked(changedValue);
+        if (changedValue) {
+            onChangeActionTime('00:00', name);
+        } else {
+            onChangeActionTime('08:00', name);
+        }
+    };
+
     return (
         <div className={`form-group ${divSize}`}>
             <label htmlFor={id} className={`col-sm-6 ${required}`}>
@@ -128,7 +144,17 @@ const InputDateTime = props => {
                 />
             </div>
             <div className={`${sizeTime}`}>
-                {!readOnly ? (
+                {nullableChecked ? (
+                    <span>Onbekend</span>
+                ) : readOnly ? (
+                    <input
+                        name={name}
+                        value={formattedTime}
+                        className={'form-control input-sm'}
+                        readOnly={true}
+                        disabled={true}
+                    />
+                ) : (
                     <TimePicker
                         name={name}
                         value={formattedTime}
@@ -139,28 +165,42 @@ const InputDateTime = props => {
                         format={24}
                         className={'input-sm'}
                     />
-                ) : (
-                    <input
-                        name={name}
-                        value={formattedTime}
-                        className={'form-control input-sm'}
-                        readOnly={true}
-                        disabled={true}
-                    />
                 )}
             </div>
-            {textToolTip && (
-                <div className="col-sm-1">
-                    <FaInfoCircle color={'blue'} size={'15px'} data-tip={textToolTip} data-for={`tooltip-${name}`} />
-                    <ReactTooltip
-                        id={`tooltip-${name}`}
-                        effect="float"
-                        place="right"
-                        multiline={true}
-                        aria-haspopup="true"
-                    />
-                </div>
-            )}
+            <div className={'col-sm-1'}>
+                {nullable ? (
+                    <label>
+                        <input
+                            type={'checkbox'}
+                            name={'nullableChecked'}
+                            value={true}
+                            title={nullableChecked ? 'Vink uit: tijdstip zetten' : 'Vink aan: tijdstip onbekend'}
+                            checked={nullableChecked}
+                            onChange={handleChangeNullableChecked}
+                        />
+                        &nbsp;{nullableLabel}
+                    </label>
+                ) : (
+                    ''
+                )}
+                {textToolTip && (
+                    <>
+                        <FaInfoCircle
+                            color={'blue'}
+                            size={'15px'}
+                            data-tip={textToolTip}
+                            data-for={`tooltip-${name}`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-${name}`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </>
+                )}
+            </div>
             {error && (
                 <div className="col-sm-offset-6 col-sm-6">
                     <span className="has-error-message"> {errorMessage}</span>
@@ -172,9 +212,9 @@ const InputDateTime = props => {
 
 InputDateTime.defaultProps = {
     className: '',
-    sizeDate: 'col-sm-3',
-    sizeTime: 'col-sm-3',
     divSize: 'col-sm-6',
+    sizeDate: 'col-sm-3',
+    sizeTime: 'col-sm-2',
     required: '',
     readOnly: false,
     value: null,
@@ -187,14 +227,17 @@ InputDateTime.defaultProps = {
     start: '08:00',
     end: '23:00',
     step: 15,
+    nullable: false,
+    nullableLabel: '',
+    nullableChecked: false,
 };
 
 InputDateTime.propTypes = {
     label: PropTypes.string.isRequired,
     className: PropTypes.string,
+    divSize: PropTypes.string,
     sizeDate: PropTypes.string,
     sizeTime: PropTypes.string,
-    divSize: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
     value: PropTypes.oneOfType([PropTypes.string]),
@@ -209,6 +252,9 @@ InputDateTime.propTypes = {
     errorMessage: PropTypes.string,
     disabledBefore: PropTypes.string,
     disabledAfter: PropTypes.string,
+    nullable: PropTypes.bool,
+    nullableLabel: PropTypes.string,
+    nullableChecked: PropTypes.bool,
 };
 
 export default InputDateTime;

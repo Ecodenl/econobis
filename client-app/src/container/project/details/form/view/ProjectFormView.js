@@ -104,6 +104,7 @@ const ProjectFormView = props => {
         transactionCostsPercentage2,
         transactionCostsAmount3,
         transactionCostsPercentage3,
+        id,
     } = props.project;
 
     const requiredParticipants = RequiredParticipantsHelper(
@@ -190,6 +191,7 @@ const ProjectFormView = props => {
                 transactionCostsPercentage2={transactionCostsPercentage2}
                 transactionCostsAmount3={transactionCostsAmount3}
                 transactionCostsPercentage3={transactionCostsPercentage3}
+                id={id}
             />
             <section
                 onClick={

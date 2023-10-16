@@ -11,6 +11,7 @@ import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
 import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
+import FreeFields from '../../../../components/freeFields/FreeFields';
 
 class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
@@ -256,22 +257,25 @@ class ContactDetailsFormAddressItem extends Component {
                     addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
                 {this.props.permissions.updateContactAddress && this.state.showEdit && (
-                    <ContactDetailsFormAddressEdit
-                        numberOfAddresses={this.props.numberOfAddresses}
-                        numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
-                        address={this.state.address}
-                        handleInputChange={this.handleInputChange}
-                        handleInputChangeDate={this.handleInputChangeDate}
-                        handleSubmit={this.handleSubmit}
-                        typeIdError={this.state.errors.typeId}
-                        endDateError={this.state.errors.endDate}
-                        postalCodeError={this.state.errors.postalCode}
-                        numberError={this.state.errors.number}
-                        countryIdError={this.state.errors.countryId}
-                        eanElectricityError={this.state.errors.eanElectricity}
-                        eanGasError={this.state.errors.eanGas}
-                        cancelEdit={this.cancelEdit}
-                    />
+                    <>
+                        <ContactDetailsFormAddressEdit
+                            numberOfAddresses={this.props.numberOfAddresses}
+                            numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
+                            address={this.state.address}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            typeIdError={this.state.errors.typeId}
+                            endDateError={this.state.errors.endDate}
+                            postalCodeError={this.state.errors.postalCode}
+                            numberError={this.state.errors.number}
+                            countryIdError={this.state.errors.countryId}
+                            eanElectricityError={this.state.errors.eanElectricity}
+                            eanGasError={this.state.errors.eanGas}
+                            cancelEdit={this.cancelEdit}
+                        />
+                        {<FreeFields table={'addresses'} recordId={this.props.address.id} />}
+                    </>
                 )}
                 {this.state.showAddressEnergySupplier && (
                     <AddressDetailsFormAddressEnergySupplier

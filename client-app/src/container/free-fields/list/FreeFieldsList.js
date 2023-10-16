@@ -20,6 +20,8 @@ function FreeFieldsList({
     handleChangeFilter,
     handleKeyUp,
     deleteFreeFieldsField,
+    freeFieldsTables,
+    freeFieldsFieldFormats,
 }) {
     const [showDeleteItem, setShowDeleteItem] = useState(false);
     const [deleteItem, setDeleteItem] = useState({ id: '', description: '' });
@@ -40,7 +42,12 @@ function FreeFieldsList({
                 <DataTable>
                     <DataTableHead>
                         <FreeFieldsListHead handleChangeSort={handleChangeSort} />
-                        <FreeFieldsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
+                        <FreeFieldsListFilter
+                            filter={filter}
+                            handleChangeFilter={handleChangeFilter}
+                            freeFieldsTables={freeFieldsTables}
+                            freeFieldsFieldFormats={freeFieldsFieldFormats}
+                        />
                     </DataTableHead>
                     <DataTableBody>
                         {isLoading ? (

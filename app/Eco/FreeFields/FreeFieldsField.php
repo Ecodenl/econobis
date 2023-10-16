@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class FreeFieldsField extends Model
 {
+    protected $guarded = ['id'];
+
     protected $table = 'free_fields_fields';
 
     public function freeFieldsTable()

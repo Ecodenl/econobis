@@ -10,7 +10,7 @@ namespace App\Http\Resources\FreeFields;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridFreeFields extends JsonResource
+class GridFreeFieldsField extends JsonResource
 {
     public function toArray($request)
     {
@@ -18,7 +18,8 @@ class GridFreeFields extends JsonResource
             'id' => $this->id,
             'tableName' => $this->freeFieldsTable->name,
             'fieldName' => $this->field_name,
-            'fieldFormatName' => $this->freeFieldsFieldFormat->format_name
+            'fieldFormatName' => $this->freeFieldsFieldFormat->format_name,
+            'sortOrder' => $this->sort_order
         ];
     }
 }

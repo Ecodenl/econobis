@@ -4,6 +4,9 @@ export function checkFieldRecord(record) {
     let valueToCheck = null;
 
     switch (record.fieldFormatType) {
+        case 'defaultValue':
+            valueToCheck = record.defaultValue;
+            break;
         case 'boolean':
             valueToCheck = record.fieldRecordValueBoolean;
             break;
@@ -30,19 +33,17 @@ export function checkFieldRecord(record) {
             break;
     }
 
-    let errorsMessage = {};
-
     if (record.mandatory == 1 && (valueToCheck == null || validator.isEmpty(valueToCheck + ''))) {
-        return (errorsMessage['record' + record.id] = 'verplicht');
+        return 'verplicht';
     }
     if (!checkMask(valueToCheck, record.mask, record.mandatory)) {
-        return (errorsMessage['record' + record.id] = 'voldoet niet aan het masker: ' + record.mask);
+        return 'voldoet niet aan het masker: ' + record.mask;
     }
     return false;
 
     function checkMask(value, mask) {
         //check if the value complies with the mask
-        if (value != null && !validator.isEmpty(value + '') && mask != null) {
+        if (value != null && !validator.isEmpty('' + value) && mask != null && !validator.isEmpty('' + mask)) {
             //explode the mask
             let explodedMask = mask.split('');
             let explodedValue = value.split('');

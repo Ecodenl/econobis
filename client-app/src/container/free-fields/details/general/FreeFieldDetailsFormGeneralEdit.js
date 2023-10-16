@@ -9,6 +9,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
+import { checkFieldRecord } from '../../../../helpers/FreeFieldsHelpers';
 
 class FreeFieldDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -114,6 +115,18 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         let errors = {};
         let errorsMessage = {};
         let hasErrors = false;
+
+        const response = checkFieldRecord({
+            fieldFormatType: 'defaultValue',
+            defaultValue: this.state.freeField.defaultValue,
+            mandatory: this.state.freeField.mandatory,
+            mask: this.state.freeField.mask,
+        });
+        if (response) {
+            errorsMessage.defaultValue = response;
+            errors.defaultValue = true;
+            hasErrors = true;
+        }
 
         if (validator.isEmpty(freeField.tableId + '')) {
             errors.tableId = true;

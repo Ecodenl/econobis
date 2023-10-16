@@ -65,7 +65,7 @@ class FreeFieldsFieldController extends ApiController
             ->string('defaultValue')->alias('default_value')->whenMissing('')->onEmpty('')->next()
             ->boolean('exportable')->next()
             ->integer('sortOrder')->alias('sort_order')->next()
-            ->string('mask')->next()
+            ->string('mask')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         $freeFieldsField = new FreeFieldsField($data);
@@ -87,7 +87,7 @@ class FreeFieldsFieldController extends ApiController
             ->string('defaultValue')->alias('default_value')->whenMissing('')->onEmpty('')->next()
             ->boolean('exportable')->next()
             ->integer('sortOrder')->alias('sort_order')->next()
-            ->string('mask')->next()
+            ->string('mask')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
         $freeFieldsField->fill($data);

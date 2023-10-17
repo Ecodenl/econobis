@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Mailbox\MailgunDomainComplaintController;
 use App\Http\Controllers\Api\Mailbox\MailgunEventController;
 use App\Http\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
@@ -700,6 +701,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
+        Route::get('free-fields-field/get-for-filter', 'FreeFields\FreeFieldsFieldController@getForfilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
         Route::post('free-fields-field', 'FreeFields\FreeFieldsFieldController@store');

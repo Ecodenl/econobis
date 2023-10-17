@@ -20,9 +20,9 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             tableId,
             fieldFormatId,
             fieldName,
-            mandatory,
             visiblePortal,
             changePortal,
+            mandatory,
             defaultValue,
             exportable,
             sortOrder,
@@ -49,10 +49,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
-                mandatory: false,
                 visiblePortal: false,
                 changePortal: false,
+                mandatory: false,
                 defaultValue: false,
+                exportable: false,
                 sortOrder: false,
                 mask: false,
             },
@@ -60,10 +61,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
-                mandatory: false,
                 visiblePortal: false,
                 changePortal: false,
+                mandatory: false,
                 defaultValue: false,
+                exportable: false,
                 sortOrder: false,
                 mask: false,
             },
@@ -187,7 +189,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         // If no errors send form
         !hasErrors &&
             FreeFieldsAPI.updateFreeFieldsField(freeField)
-                .then(payload => {
+                .then(() => {
                     this.props.fetchFreeField();
                     this.props.switchToView();
                 })
@@ -202,9 +204,9 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             tableId,
             fieldFormatId,
             fieldName,
-            mandatory,
             visiblePortal,
             changePortal,
+            mandatory,
             defaultValue,
             exportable,
             sortOrder,
@@ -224,8 +226,8 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 value={tableId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.freeFieldsTables}
-                                errorMessage={this.state.errorsMessage.freeFieldsTables}
+                                error={this.state.errors.tableId}
+                                errorMessage={this.state.errorsMessage.tableId}
                             />
                             <InputReactSelect
                                 label={'Type'}
@@ -235,8 +237,8 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 value={fieldFormatId}
                                 onChangeAction={this.handleReactSelectChange}
                                 required={'required'}
-                                error={this.state.errors.freeFieldsFieldFormats}
-                                errorMessage={this.state.errorsMessage.freeFieldsFieldFormats}
+                                error={this.state.errors.fieldFormatId}
+                                errorMessage={this.state.errorsMessage.fieldFormatId}
                             />
                         </div>
                         <div className="row">

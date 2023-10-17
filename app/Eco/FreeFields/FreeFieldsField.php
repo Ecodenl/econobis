@@ -19,6 +19,10 @@ class FreeFieldsField extends Model
     {
         return $this->belongsTo(FreeFieldsFieldFormat::class, 'field_format_id');
     }
+    public function freeFieldsFieldRecords()
+    {
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'field_id');
+    }
 }
 
 

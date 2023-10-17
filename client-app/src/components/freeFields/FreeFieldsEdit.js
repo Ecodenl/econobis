@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import InputText from '../form/InputText';
 import InputToggle from '../form/InputToggle';
 import ButtonText from '../button/ButtonText';
@@ -120,17 +120,16 @@ function FreeFieldsEdit({
                 hasErrors = true;
             }
         });
-        if (hasErrors) {
-            console.log(errorsMessage);
-            console.log(dynamicVariableName);
-        }
+        // if (hasErrors) {
+        //     console.log(errorsMessage);
+        //     console.log(dynamicVariableName);
+        // }
         setErrors(dynamicVariableName);
         setErrorsMessage(errorsMessage);
 
         if (!hasErrors) {
             try {
                 await FreeFieldsAPI.updateFreeFieldsFieldRecords(freeFieldsFieldRecords, recordId);
-
                 fetchFreeFieldsFieldRecords();
                 switchToView();
             } catch (error) {
@@ -159,9 +158,7 @@ function FreeFieldsEdit({
                                             error={errors['record' + record.id]}
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
-                                        // </div>
                                     );
-                                    break;
                                 case 'text_short':
                                     return (
                                         <InputText
@@ -174,9 +171,7 @@ function FreeFieldsEdit({
                                             error={errors['record' + record.id]}
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
-                                        // </div>
                                     );
-                                    break;
                                 case 'text_long':
                                     return (
                                         <InputTextArea
@@ -189,7 +184,6 @@ function FreeFieldsEdit({
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
                                     );
-                                    break;
                                 case 'int':
                                     return (
                                         <InputText
@@ -203,7 +197,6 @@ function FreeFieldsEdit({
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
                                     );
-                                    break;
                                 case 'double_2_dec':
                                     return (
                                         <InputText
@@ -217,7 +210,6 @@ function FreeFieldsEdit({
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
                                     );
-                                    break;
                                 case 'amount_euro':
                                     return (
                                         <InputText
@@ -231,7 +223,6 @@ function FreeFieldsEdit({
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
                                     );
-                                    break;
                                 case 'date':
                                     return (
                                         <InputDate
@@ -244,7 +235,6 @@ function FreeFieldsEdit({
                                             errorMessage={errorsMessage['record' + record.id]}
                                         />
                                     );
-                                    break;
                                 case 'datetime':
                                     return (
                                         <InputDateTime
@@ -259,7 +249,6 @@ function FreeFieldsEdit({
                                             nullable={true}
                                         />
                                     );
-                                    break;
                             }
                         })}
                 </div>

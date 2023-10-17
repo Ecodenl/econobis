@@ -52,6 +52,8 @@ class ExtraFilter extends RequestExtraFilter
         'housingFileFieldName',
         'housingFileFieldValue',
         'inspectionPersonType',
+        'freeFieldsFieldName',
+        'freeFieldsFieldValue',
     ];
 
     protected $mapping = [
@@ -157,6 +159,18 @@ class ExtraFilter extends RequestExtraFilter
                 });
             }else{
                 $this->applyHousingFileFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+            }
+            return;
+        }
+
+        // Ook Uitzondering voor freefields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'freeFieldsFieldName' ){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                });
+            }else{
+                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
             }
             return;
         }
@@ -1038,6 +1052,31 @@ class ExtraFilter extends RequestExtraFilter
                 }
                 break;
         }
+
+    }
+
+    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName)
+    {
+        if(empty($freeFieldsFieldNameData)){
+            return;
+        }
+
+        return;
+
+//        $freeFieldsField = FreeFieldsField::find($freeFieldsFieldNameData);
+//        if(!$freeFieldsField){
+//            return;
+//        }
+
+//        $econobisFieldName = $freeFieldsField->econobis_field_name;
+//
+//        $housingFileFieldValueFilter = array_values(array_filter($this->filters, function($element) use($freeFieldsFieldNameConnectName){
+//            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'housingFileFieldValue');
+//        }));
+//        $housingFileFieldValueFilter = $housingFileFieldValueFilter ? $housingFileFieldValueFilter[0] : null;
+//
+//        $housingFileFieldValueType = $housingFileFieldValueFilter['type'];
+//        $housingFileFieldValueData = $housingFileFieldValueFilter['data'];
 
     }
 

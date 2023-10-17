@@ -4,6 +4,7 @@ namespace App\Eco\ContactGroup;
 
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
@@ -36,9 +37,15 @@ class DynamicContactGroupFilter extends Model
     {
         return $this->belongsTo(ContactGroup::class);
     }
-    public function parentDynamicContactGroupFilter()
+
+    public function parentHousingFileFieldFilter()
     {
         return DynamicContactGroupFilter::where('contact_group_id', $this->contact_group_id)->where('field', 'housingFileFieldName')->where('connect_name', $this->connected_to)->first();
+    }
+
+    public function parentFreeFieldsFieldFilter()
+    {
+        return DynamicContactGroupFilter::where('contact_group_id', $this->contact_group_id)->where('field', 'freeFieldsFieldName')->where('connect_name', $this->connected_to)->first();
     }
 
     public function getDataNameAttribute()
@@ -134,7 +141,7 @@ class DynamicContactGroupFilter extends Model
             // housingFileFieldValue omzetten
             if ($this->field == 'housingFileFieldValue'){
                 if($this->data){
-                    $parentDynamicContactGroupFilter = $this->parentDynamicContactGroupFilter();
+                    $parentDynamicContactGroupFilter = $this->parentHousingFileFieldFilter();
                     $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();
 
                     if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectDropdownFieldsIds ) ){
@@ -154,6 +161,23 @@ class DynamicContactGroupFilter extends Model
                             }
                         }
                     }
+                }
+            }
+
+            // freeFieldsFieldName omzetten
+            if ($this->field == 'freeFieldsFieldName'){
+                if($this->data){
+                    $freeFieldsField = FreeFieldsField::find($this->data);
+                    return $freeFieldsField ? $freeFieldsField->freeFieldsTable->name . ' / '. $freeFieldsField->field_name : '';
+                }
+                return '';
+            }
+            // freeFieldsFieldValue omzetten
+            if ($this->field == 'freeFieldsFieldValue'){
+                if($this->data){
+                    $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
+
+                    return '@@nog waarde ophalen';
                 }
             }
 

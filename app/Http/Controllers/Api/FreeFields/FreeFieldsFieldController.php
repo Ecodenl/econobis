@@ -8,16 +8,16 @@
 
 namespace App\Http\Controllers\Api\FreeFields;
 
-use App\Eco\FreeFields\FreeFieldsFieldFormat;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\FreeFields\Grid\RequestQuery;
+use App\Http\Resources\FreeFields\FilterFreeFieldsField;
 use App\Http\Resources\FreeFields\FullFreeFieldsField;
 use App\Http\Resources\FreeFields\GridFreeFieldsField;
 use App\Helpers\Delete\Models\DeleteFreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsField;
-use App\Eco\FreeFields\FreeFieldsTable;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class FreeFieldsFieldController extends ApiController
@@ -38,6 +38,11 @@ class FreeFieldsFieldController extends ApiController
                    'total' => $requestQuery->total(),
                 ]
             ]);
+    }
+
+    public function getForfilter(Request $request)
+    {
+        return FilterFreeFieldsField::collection(FreeFieldsField::orderBy('table_id')->orderBy('sort_order')->get());
     }
 
     public function show(FreeFieldsField $freeFieldsField)
@@ -100,14 +105,23 @@ class FreeFieldsFieldController extends ApiController
     {
         $this->authorize('manage', FreeFieldsField::class);
 
-        $freeFieldsField->delete();
+        try {
+            DB::beginTransaction();
+
+            $deleteFreeFieldsField = new DeleteFreeFieldsField($freeFieldsField);
+            $result = $deleteFreeFieldsField->delete();
+
+            if(count($result) > 0){
+                DB::rollBack();
+                abort(412, implode(";", array_unique($result)));
+            }
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error($e->getMessage());
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
     }
 
-    public function freeFieldsTablesList() {
-        return FreeFieldsTable::get();
-    }
-
-    public function freeFieldsFieldFormatsList() {
-        return FreeFieldsFieldFormat::get();
-    }
 }

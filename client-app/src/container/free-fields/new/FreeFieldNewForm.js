@@ -10,6 +10,7 @@ import InputToggle from '../../../components/form/InputToggle';
 import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import axios from 'axios';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+import { checkFieldRecord } from '../../../helpers/FreeFieldsHelpers';
 
 class FreeFieldNewForm extends Component {
     constructor(props) {
@@ -38,8 +39,6 @@ class FreeFieldNewForm extends Component {
                 changePortal: false,
                 mandatory: false,
                 defaultValue: false,
-                freeFieldsTables: false,
-                freeFieldsFieldFormats: false,
                 exportable: false,
                 sortOrder: false,
                 mask: false,
@@ -52,8 +51,6 @@ class FreeFieldNewForm extends Component {
                 changePortal: false,
                 mandatory: false,
                 defaultValue: false,
-                freeFieldsTables: false,
-                freeFieldsFieldFormats: false,
                 exportable: false,
                 sortOrder: false,
                 mask: false,
@@ -107,6 +104,18 @@ class FreeFieldNewForm extends Component {
         let errorsMessage = {};
         let hasErrors = false;
 
+        const response = checkFieldRecord({
+            fieldFormatType: 'defaultValue',
+            defaultValue: this.state.freeField.defaultValue,
+            mandatory: this.state.freeField.mandatory,
+            mask: this.state.freeField.mask,
+        });
+        if (response) {
+            errorsMessage.defaultValue = response;
+            errors.defaultValue = true;
+            hasErrors = true;
+        }
+
         if (validator.isEmpty(freeField.tableId + '')) {
             errors.tableId = true;
             errorsMessage.tableId = 'verplicht';
@@ -143,7 +152,7 @@ class FreeFieldNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.defaultValue)) {
+        if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
             errorsMessage.defaultValue = 'verplicht';
             hasErrors = true;
@@ -257,7 +266,6 @@ class FreeFieldNewForm extends Component {
                                 errorMessage={this.state.errorsMessage.changePortal}
                             />
                         </div>
-
                         <div className="row">
                             <InputText
                                 label="Standaard waarde"
@@ -278,7 +286,6 @@ class FreeFieldNewForm extends Component {
                                 errorMessage={this.state.errorsMessage.exportable}
                             />
                         </div>
-
                         <div className="row">
                             <InputText
                                 label="Volgorde"
@@ -291,7 +298,6 @@ class FreeFieldNewForm extends Component {
                                 type={'number'}
                             />
                         </div>
-
                         <hr />
                         <div className="row">
                             <InputText

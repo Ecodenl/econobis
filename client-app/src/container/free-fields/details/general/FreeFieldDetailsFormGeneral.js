@@ -49,7 +49,7 @@ class FreeFieldDetailsFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageFinancial ? (
+                {this.state.showEdit && permissions.manageFreeFields ? (
                     <FreeFieldDetailsFormGeneralEdit
                         freeField={this.props.freeField}
                         switchToView={this.switchToView}

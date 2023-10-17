@@ -23,6 +23,11 @@ class FreeFieldsField extends Model
     {
         return $this->hasMany(FreeFieldsFieldRecord::class, 'field_id');
     }
+
+    public function hasFreeFieldsFieldRecords(): bool
+    {
+        return $this->freeFieldsFieldRecords()->exists();
+    }
 }
 
 

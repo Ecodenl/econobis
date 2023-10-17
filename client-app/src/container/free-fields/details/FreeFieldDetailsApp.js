@@ -3,15 +3,15 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import {browserHistory, hashHistory} from 'react-router';
+import { browserHistory, hashHistory } from 'react-router';
 import FreeFieldDetailsForm from '../../free-fields/details/FreeFieldDetailsForm';
-import FreeFieldsDeleteItem from "../list/FreeFieldsDeleteItem";
+import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
 
 function FreeFieldDetailsApp(props) {
     const [freeField, setFreeField] = useState(null);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
 
-    function showDeleteItemModal(id, description) {
+    function showDeleteItemModal() {
         setShowDeleteItem(true);
     }
 
@@ -25,7 +25,7 @@ function FreeFieldDetailsApp(props) {
 
     function deleteFreeFieldsField(freeField) {
         FreeFieldsAPI.deleteFreeFieldsField(freeField)
-            .then(payload => {
+            .then(() => {
                 hashHistory.push(`/vrije-velden`);
             })
             .catch(error => {
@@ -40,7 +40,7 @@ function FreeFieldDetailsApp(props) {
             .then(data => {
                 setFreeField(data);
             })
-            .catch(error => {
+            .catch(() => {
                 alert('Er is iets misgegaan met ophalen van het vrije veld.');
             });
     }
@@ -59,11 +59,15 @@ function FreeFieldDetailsApp(props) {
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
+                                        {!freeField.hasFreeFieldsFieldRecords && (
+                                            <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
+                                        )}
                                     </div>
                                 </div>
                                 <div className="col-md-4">
-                                    <h4 className="text-center">Vrij veld: {freeField.table.name} / {freeField.fieldName}</h4>
+                                    <h4 className="text-center">
+                                        Vrij veld: {freeField.table.name} / {freeField.fieldName}
+                                    </h4>
                                 </div>
                                 <div className="col-md-4" />
                             </div>

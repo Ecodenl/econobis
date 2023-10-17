@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory } from 'react-router';
 
@@ -14,6 +14,7 @@ function FreeFieldsListItem({
     showDeleteItemModal,
     permissions,
     sortOrder,
+    hasFreeFieldsFieldRecords,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
@@ -51,7 +52,7 @@ function FreeFieldsListItem({
                 ) : (
                     ''
                 )}
-                {showActionButtons && permissions.manageFreeFields ? (
+                {showActionButtons && permissions.manageFreeFields && !hasFreeFieldsFieldRecords ? (
                     <a role="button" onClick={() => showDeleteItemModal(id, fieldName)}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

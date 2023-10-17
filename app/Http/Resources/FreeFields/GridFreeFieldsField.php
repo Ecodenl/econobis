@@ -19,7 +19,8 @@ class GridFreeFieldsField extends JsonResource
             'tableName' => $this->freeFieldsTable->name,
             'fieldName' => $this->field_name,
             'fieldFormatName' => $this->freeFieldsFieldFormat->format_name,
-            'sortOrder' => $this->sort_order
+            'sortOrder' => $this->sort_order,
+            'hasFreeFieldsFieldRecords' => $this->hasFreeFieldsFieldRecords(),
         ];
     }
 }

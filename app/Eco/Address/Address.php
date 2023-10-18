@@ -5,6 +5,9 @@ namespace App\Eco\Address;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsFieldRecord;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\Intake\Intake;
 use App\Eco\ParticipantProject\ParticipantProject;
@@ -84,6 +87,13 @@ class Address extends Model
     public function addressEnergyConsumptionElectricityPeriods()
     {
         return $this->hasMany(AddressEnergyConsumptionElectricity::class)->orderBy('date_begin')->orderBy('id');
+    }
+
+    public function freeFieldsFieldRecords()
+    {
+        $fieldTableContact = FreeFieldsTable::where('table', 'addresses')->first();
+        $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
     }
 
     public function getType()

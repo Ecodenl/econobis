@@ -431,7 +431,7 @@ class ContactsListExtraFilters extends Component {
             },
             freeFieldsFieldName: {
                 name: 'Vrij veld',
-                type: 'dropdownHas',
+                type: 'dropdownFreeFieldsFields',
                 dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
             },
             inspectionPersonType: {

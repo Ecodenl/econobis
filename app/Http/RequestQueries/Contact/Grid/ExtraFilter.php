@@ -9,9 +9,11 @@
 namespace App\Http\RequestQueries\Contact\Grid;
 
 
+use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
+use Illuminate\Support\Carbon;
 
 class ExtraFilter extends RequestExtraFilter
 {
@@ -1057,27 +1059,69 @@ class ExtraFilter extends RequestExtraFilter
 
     protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName)
     {
-        if(empty($freeFieldsFieldNameData)){
+        if (empty($freeFieldsFieldNameData)) {
             return;
         }
 
-        return;
+        $freeFieldsField = FreeFieldsField::find($freeFieldsFieldNameData);
+        if (!$freeFieldsField) {
+            return;
+        }
 
-//        $freeFieldsField = FreeFieldsField::find($freeFieldsFieldNameData);
-//        if(!$freeFieldsField){
-//            return;
-//        }
+        $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName) {
+            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'freeFieldsFieldValue');
+        }));
+        $freeFieldsFieldValueFilter = $freeFieldsFieldValueFilter ? $freeFieldsFieldValueFilter[0] : null;
 
-//        $econobisFieldName = $freeFieldsField->econobis_field_name;
-//
-//        $housingFileFieldValueFilter = array_values(array_filter($this->filters, function($element) use($freeFieldsFieldNameConnectName){
-//            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'housingFileFieldValue');
-//        }));
-//        $housingFileFieldValueFilter = $housingFileFieldValueFilter ? $housingFileFieldValueFilter[0] : null;
-//
-//        $housingFileFieldValueType = $housingFileFieldValueFilter['type'];
-//        $housingFileFieldValueData = $housingFileFieldValueFilter['data'];
+        $freeFieldsFieldValueType = $freeFieldsFieldValueFilter['type'];
+        $freeFieldsFieldValueData = $freeFieldsFieldValueFilter['data'];
+
+        switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+            case 'boolean':
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
+                });
+                break;
+            case 'int':
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
+                });
+                break;
+            case 'double_2_dec':
+            case 'amount_euro':
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
+                });
+                break;
+            case 'date':
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
+                });
+                break;
+            case 'datetime':
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
+                });
+                break;
+            default:
+                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                    $query->where('field_id', $freeFieldsFieldNameData);
+                    static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
+                });
+                break;
+        }
+
+//        Log::info('------------');
+//        Log::info($query->toSql());
+//        Log::info('------------');
+//        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//        $sql = vsprintf($sql, $query->getBindings());
+//        Log::info($sql);
 
     }
-
 }

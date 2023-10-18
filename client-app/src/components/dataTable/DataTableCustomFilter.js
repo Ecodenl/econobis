@@ -18,7 +18,7 @@ import DataTableDateFilter from './DataTableDateFilter';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import DataTableHousingFileFieldFilter from './DataTableHousingFileFieldFilter';
-import DataTableCustomFilterSelectDropdownFreeFields from './DataTableCustomFilterSelectDropdownFreeFields';
+import DataTableCustomFilterSelectDropdownFreeFieldsFields from './DataTableCustomFilterSelectDropdownFreeFieldsFields';
 import DataTableCustomFilterSelectFreeFieldsField from './DataTableCustomFilterSelectFreeFieldsField';
 import DataTableFreeFieldsFieldFilter from './DataTableFreeFieldsFieldFilter';
 
@@ -180,8 +180,8 @@ const DataTableCustomFilter = props => {
                         housingFileField={housingFileField}
                     />
                 )}
-                {fieldType === 'dropdownFreeFields' && (
-                    <DataTableCustomFilterSelectDropdownFreeFields
+                {fieldType === 'dropdownFreeFieldsFields' && (
+                    <DataTableCustomFilterSelectDropdownFreeFieldsFields
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
@@ -325,7 +325,7 @@ const DataTableCustomFilter = props => {
                                     housingFileField={housingFileField}
                                 />
                             )}
-                            {fieldType === 'dropdownFreeFields' && (
+                            {fieldType === 'dropdownFreeFieldsFields' && (
                                 <select
                                     className={`form-control input-sm`}
                                     id="data"
@@ -334,10 +334,10 @@ const DataTableCustomFilter = props => {
                                     onChange={handleInputChange}
                                     disabled={props.filter.readOnly}
                                 >
-                                    <option value="">--Kies een kenmerk--</option>
+                                    <option value="">--Kies een vrij veld--</option>
                                     {props.fields[props.filter.field].dropDownOptions.map(option => {
                                         return (
-                                            <option key={option.key} value={option.key}>
+                                            <option key={option.id} value={option.id}>
                                                 {option[optionName]}
                                             </option>
                                         );

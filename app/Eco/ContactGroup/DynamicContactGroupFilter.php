@@ -177,7 +177,25 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
 
-                    return '@@nog waarde ophalen';
+                    if($parentDynamicContactGroupFilter){
+                        $freeFieldsField = FreeFieldsField::find($parentDynamicContactGroupFilter->data);
+                        switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                            case 'boolean':
+                                return $this->data == '1' ? 'Ja' : 'Nee';
+                            case 'int':
+                                return (int)$this->data;
+                            case 'double_2_dec':
+                                return number_format((float)$this->data, 2, ',', '.');
+                            case 'amount_euro':
+                                return '€ ' . number_format((float)$this->data, 2, ',', '.');
+                            case 'date':
+                            case 'datetime':
+                                return Carbon::parse($this->data)->format('d-m-Y');
+                            default:
+                                return $this->data;
+                        }
+                    }
+                    return '';
                 }
             }
 

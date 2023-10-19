@@ -4,9 +4,9 @@ import FreeFieldsView from './FreeFieldsView';
 import FreeFieldsEdit from './FreeFieldsEdit';
 import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 
-function FreeFields({ table, recordId }) {
+function FreeFields({ table, recordId, initialShowEdit = false }) {
     const [isLoading, setLoading] = useState(false);
-    const [showEdit, setShowEdit] = useState(false);
+    const [showEdit, setShowEdit] = useState(initialShowEdit);
     const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
 
     useEffect(() => {

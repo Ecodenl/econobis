@@ -120,6 +120,8 @@ const ProjectFormView = props => {
                 switchToEdit={props.switchToEdit}
                 showCustomerPortalSettings={props.showCustomerPortalSettings}
                 toggleCustomerPortalSettings={props.toggleCustomerPortalSettings}
+                showFreeFields={props.showFreeFields}
+                toggleFreeFields={props.toggleFreeFields}
                 name={name}
                 code={code}
                 description={description}

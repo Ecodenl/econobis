@@ -71,7 +71,7 @@ class ContactDetailsFormAddressItem extends Component {
     };
 
     openEdit = () => {
-        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary == true) {
+        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary === true) {
             this.setState({ showEdit: true });
             this.props.setAddressEnergySupplierNewOrEditOpen(true);
         }
@@ -122,8 +122,8 @@ class ContactDetailsFormAddressItem extends Component {
         //         console.log('usedInActiveParticipationInSceOrPcrProject');
         //         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
         if (
-            name == 'typeId' &&
-            value == 'old' &&
+            name === 'typeId' &&
+            value === 'old' &&
             (this.state.address.usedInActiveParticipationInSceOrPcrProject || this.state.address.primary)
         ) {
             this.setState({
@@ -140,8 +140,8 @@ class ContactDetailsFormAddressItem extends Component {
 
         //if this is not the primary address and its used in a non SCE project
         if (
-            name == 'typeId' &&
-            value == 'old' &&
+            name === 'typeId' &&
+            value === 'old' &&
             this.state.address.usedInActiveParticipationNotInSceOrPcrProject &&
             !this.state.address.primary
         ) {
@@ -197,7 +197,7 @@ class ContactDetailsFormAddressItem extends Component {
 
         let postalCodeValid = true;
         if (!validator.isEmpty(address.postalCode + '')) {
-            if (countryId == 'NL') {
+            if (countryId === 'NL') {
                 postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
             } else {
                 postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
@@ -274,7 +274,7 @@ class ContactDetailsFormAddressItem extends Component {
                             eanGasError={this.state.errors.eanGas}
                             cancelEdit={this.cancelEdit}
                         />
-                        {<FreeFields table={'addresses'} recordId={this.props.address.id} />}
+                        <FreeFields table={'addresses'} recordId={this.props.address.id} />
                     </>
                 )}
                 {this.state.showAddressEnergySupplier && (

@@ -10,13 +10,13 @@ namespace App\Http\Resources\FreeFields;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilterFreeFieldsField extends JsonResource
+class FilterFreeFieldsFieldContact extends JsonResource
 {
     public function toArray($request)
     {
         return [
             'id' => $this->id,
-            'name' => $this->freeFieldsTable->name . ' / ' .$this->field_name,
+            'name' => $this->field_name,
             'formatType' => $this->freeFieldsFieldFormat->format_type,
         ];
     }

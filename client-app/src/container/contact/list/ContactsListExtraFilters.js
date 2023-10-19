@@ -28,7 +28,7 @@ class ContactsListExtraFilters extends Component {
             ],
         };
 
-        this.fetchFreeFieldsFields();
+        this.fetchFilterFreeFieldsFieldsContact();
 
         this.closeModal = this.closeModal.bind(this);
         this.confirmAction = this.confirmAction.bind(this);
@@ -39,8 +39,8 @@ class ContactsListExtraFilters extends Component {
         this.deleteFilterRow = this.deleteFilterRow.bind(this);
     }
 
-    fetchFreeFieldsFields() {
-        FreeFieldsAPI.fetchFilterFreeFieldsFields().then(payload => {
+    fetchFilterFreeFieldsFieldsContact() {
+        FreeFieldsAPI.fetchFilterFreeFieldsFieldsContact().then(payload => {
             this.setState({
                 ...this.state,
                 freeFieldsFields: payload.data.data,
@@ -430,7 +430,7 @@ class ContactsListExtraFilters extends Component {
                 dropDownOptions: this.props.housingFileHoomLinks,
             },
             freeFieldsFieldName: {
-                name: 'Vrij veld',
+                name: 'Vrij veld contact',
                 type: 'dropdownFreeFieldsFields',
                 dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
             },

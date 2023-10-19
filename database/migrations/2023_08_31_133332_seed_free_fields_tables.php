@@ -28,6 +28,7 @@ class SeedFreeFieldsTables extends Migration
         DB::table('free_fields_tables')->insert([
             ['table'=> 'contacts', 'name'=> 'Contacten'],
             ['table'=> 'addresses', 'name'=> 'Adressen'],
+            ['table'=> 'projects', 'name'=> 'Projecten'],
         ]);
 
         DB::table('free_fields_field_formats')->insert([

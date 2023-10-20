@@ -361,11 +361,11 @@ class ContactCSVHelper
 
         foreach ($this->contacts as $contact){
             if(($contact->freeFieldsFieldRecords()->count() - 1) > $maxContactFreeFieldsFieldRecords){
-                $maxContactFreeFieldsFieldRecords = ($contact->freeFieldsFieldRecords()->count() -1);
+                $maxContactFreeFieldsFieldRecords = ($contact->freeFieldsFieldRecords()->join('free_fields_fields', 'field_id', '=', 'free_fields_fields.id')->where('free_fields_fields.exportable', 1)->count() -1);
             }
         }
 
-        foreach (FreeFieldsTable::where('table', 'contacts')->first()->freeFieldsFields()->orderBy('sort_order')->get() as $y => $freeFieldsField){
+        foreach (FreeFieldsTable::where('table', 'contacts')->first()->freeFieldsFields()->where('exportable', 1)->orderBy('sort_order')->get() as $y => $freeFieldsField){
             $freeFieldsFieldRecordNames[$y] = $freeFieldsField->field_name;
         }
 
@@ -383,7 +383,7 @@ class ContactCSVHelper
                     $contact->last_name = $contact->person->last_name;
                 }
 
-                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->join('free_fields_fields', 'field_id', '=', 'free_fields_fields.id')->orderBy('free_fields_fields.sort_order')->get();
+                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->join('free_fields_fields', 'field_id', '=', 'free_fields_fields.id')->where('free_fields_fields.exportable', 1)->orderBy('free_fields_fields.sort_order')->get();
 
                 foreach($freeFieldsFieldRecords as $i => $freeFieldsFieldRecord) {
                     $freeFieldsFieldRecordValue = 'free_fields_field_record_' . $i;

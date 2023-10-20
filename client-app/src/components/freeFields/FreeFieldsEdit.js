@@ -105,6 +105,11 @@ function FreeFieldsEdit({
         );
     }
 
+    function closeEdit() {
+        fetchFreeFieldsFieldRecords();
+        switchToView();
+    }
+
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -259,7 +264,7 @@ function FreeFieldsEdit({
                                 <ButtonText
                                     buttonClassName={'btn-default'}
                                     buttonText={'Sluiten'}
-                                    onClickAction={switchToView}
+                                    onClickAction={closeEdit}
                                 />
                                 <ButtonText buttonText={'Opslaan'} type={'submit'} value={'Submit'} />
                             </div>

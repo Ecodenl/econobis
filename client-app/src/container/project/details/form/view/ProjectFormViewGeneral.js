@@ -11,8 +11,6 @@ const ProjectFormViewGeneral = ({
     switchToEdit,
     showCustomerPortalSettings,
     toggleCustomerPortalSettings,
-    showFreeFields,
-    toggleFreeFields,
     name,
     code,
     description,
@@ -84,7 +82,6 @@ const ProjectFormViewGeneral = ({
     transactionCostsPercentage2,
     transactionCostsAmount3,
     transactionCostsPercentage3,
-    id,
 }) => {
     let addressNumberSeriesFieldEnabled = postalcodeLink
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
@@ -287,24 +284,6 @@ const ProjectFormViewGeneral = ({
                     </>
                 ) : null}
             </section>
-
-            <section>
-                <hr />
-                <h4 onClick={() => toggleFreeFields(!showFreeFields)}>
-                    {showFreeFields ? <Icon size={21} icon={angleDown} /> : <Icon size={21} icon={angleRight} />}
-                    &nbsp;Vrije velden
-                </h4>
-            </section>
-            {showFreeFields ? (
-                <section
-                    onClick={
-                        projectStatus.codeRef === 'concept' || projectStatus.codeRef === 'active' ? switchToEdit : null
-                    }
-                >
-                    <FreeFields table={'projects'} recordId={id} initialShowEdit={false} />
-                </section>
-            ) : null}
-
             <section>
                 <hr />
                 <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>

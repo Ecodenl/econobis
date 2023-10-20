@@ -14,6 +14,7 @@ use App\Eco\FreeFields\FreeFieldsTable;
 use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class FreeFieldsFieldRecordController extends ApiController
 {
@@ -25,6 +26,10 @@ class FreeFieldsFieldRecordController extends ApiController
         $recordId = $request->get('recordId');
 
         $freeFieldsTable = FreeFieldsTable::where('table', $tableId)->first();
+
+        if(!$freeFieldsTable || !$freeFieldsTable->freeFieldsFields){
+            return response()->json([]);
+        }
 
         $freeFieldsFieldRecords = [];
         $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->orderBy('sort_order')->get();
@@ -105,22 +110,24 @@ class FreeFieldsFieldRecordController extends ApiController
 
             switch ($record['fieldFormatType']) {
                 case 'boolean':
-                    $freeFieldsFieldRecord->field_value_boolean = $record['fieldRecordValueBoolean'];
+                    $freeFieldsFieldRecord->field_value_boolean = (bool)$record['fieldRecordValueBoolean'];
                     break;
                 case 'text_short':
                 case 'text_long':
                     $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
                     break;
                 case 'int':
-                    $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'];
+                    $freeFieldsFieldRecord->field_value_int = (int)$record['fieldRecordValueInt'];
                     break;
                 case 'double_2_dec':
                 case 'amount_euro':
-                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'];
+                    $freeFieldsFieldRecord->field_value_double = (float)$record['fieldRecordValueDouble'];
                     break;
                 case 'date':
+                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') : null;
+                    break;
                 case 'datetime':
-                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'];
+                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;
                     break;
             }
             $freeFieldsFieldRecord->save();

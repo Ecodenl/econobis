@@ -148,23 +148,23 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.mandatory + '')) {
-            errors.mandatory = true;
-            errorsMessage.mandatory = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.mandatory + '')) {
+        //     errors.mandatory = true;
+        //     errorsMessage.mandatory = 'verplicht';
+        //     hasErrors = true;
+        // }
 
-        if (validator.isEmpty(freeField.visiblePortal + '')) {
-            errors.visiblePortal = true;
-            errorsMessage.visiblePortal = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.visiblePortal + '')) {
+        //     errors.visiblePortal = true;
+        //     errorsMessage.visiblePortal = 'verplicht';
+        //     hasErrors = true;
+        // }
 
-        if (validator.isEmpty(freeField.changePortal + '')) {
-            errors.changePortal = true;
-            errorsMessage.changePortal = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.changePortal + '')) {
+        //     errors.changePortal = true;
+        //     errorsMessage.changePortal = 'verplicht';
+        //     hasErrors = true;
+        // }
 
         if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
@@ -172,11 +172,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.exportable + '')) {
-            errors.exportable = true;
-            errorsMessage.exportable = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.exportable + '')) {
+        //     errors.exportable = true;
+        //     errorsMessage.exportable = 'verplicht';
+        //     hasErrors = true;
+        // }
 
         if (validator.isEmpty(freeField.sortOrder + '')) {
             errors.sortOrder = true;
@@ -224,10 +224,11 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'tableId'}
                                 options={this.state.freeFieldsTables}
                                 value={tableId}
-                                onChangeAction={this.handleReactSelectChange}
-                                required={'required'}
-                                error={this.state.errors.tableId}
-                                errorMessage={this.state.errorsMessage.tableId}
+                                // onChangeAction={this.handleReactSelectChange}
+                                // required={'required'}
+                                // error={this.state.errors.tableId}
+                                // errorMessage={this.state.errorsMessage.tableId}
+                                disabled={true}
                             />
                             <InputReactSelect
                                 label={'Type'}
@@ -235,10 +236,12 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'fieldFormatId'}
                                 options={this.state.freeFieldsFieldFormats}
                                 value={fieldFormatId}
-                                onChangeAction={this.handleReactSelectChange}
-                                required={'required'}
-                                error={this.state.errors.fieldFormatId}
-                                errorMessage={this.state.errorsMessage.fieldFormatId}
+                                // onChangeAction={this.handleReactSelectChange}
+                                // required={'required'}
+                                // error={this.state.errors.fieldFormatId}
+                                // errorMessage={this.state.errorsMessage.fieldFormatId}
+                                disabled={true}
+                            />
                             />
                         </div>
                         <div className="row">
@@ -256,7 +259,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'mandatory'}
                                 value={mandatory}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.mandatory}
                                 errorMessage={this.state.errorsMessage.mandatory}
                             />
@@ -267,7 +270,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'visiblePortal'}
                                 value={visiblePortal}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.visiblePortal}
                                 errorMessage={this.state.errorsMessage.visiblePortal}
                             />
@@ -276,7 +279,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'changePortal'}
                                 value={changePortal}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.changePortal}
                                 errorMessage={this.state.errorsMessage.changePortal}
                             />
@@ -296,7 +299,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'exportable'}
                                 value={exportable}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.exportable}
                                 errorMessage={this.state.errorsMessage.exportable}
                             />

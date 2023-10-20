@@ -43,9 +43,9 @@ class FreeFieldsFieldRecordController extends ApiController
             $fieldRecordValueDouble = $record->field_value_double;
             $fieldRecordValueDatetime = null;
             if($field->freeFieldsFieldFormat->format_type == 'date'){
-                $fieldRecordValueDatetime = $record->field_value_datetime ?? Carbon::now()->format('Y-m-d');
+                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d') . ' 00:00:00'  : null;
             } elseif($field->freeFieldsFieldFormat->format_type == 'datetime') {
-                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d H:i:s') : Carbon::createFromFormat('Y-m-d H:i', Carbon::now()->format('Y-m-d') . ' 08:00')->format('Y-m-d H:i:s');
+                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d H:i:s') : null;
             }
 
             // Id nog niet bekend, dan nieuw! Overnemen default waarden indien van toepassing
@@ -124,7 +124,7 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_double = (float)$record['fieldRecordValueDouble'];
                     break;
                 case 'date':
-                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') : null;
+                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') . ' 00:00:00' : null;
                     break;
                 case 'datetime':
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;

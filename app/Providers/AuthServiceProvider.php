@@ -6,6 +6,8 @@ use App\Eco\Administration\Administration;
 use App\Eco\Administration\AdministrationPolicy;
 use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
 use App\Eco\Contact\Contact;
@@ -143,6 +145,7 @@ class AuthServiceProvider extends ServiceProvider
         Email::class => EmailPolicy::class,
         EmailTemplate::class => EmailTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
+        FreeFieldsField::class => FreeFieldsPolicy::class,
         Mailbox::class => MailboxPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
         Team::class => TeamPolicy::class,

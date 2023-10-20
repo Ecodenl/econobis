@@ -16,6 +16,8 @@ import ContactDetailsFormOccupations from './occupations/ContactDetailsFormOccup
 import moment from 'moment/moment';
 import ContactDetailsFormPortalUser from './portal-user/ContactDetailsFormPortalUser';
 import ContactDetailsCoachQuotations from './quotationsCoach/ContactDetailsCoachQuotations';
+import FreeFields from '../../../components/freeFields/FreeFields';
+
 moment.locale('nl');
 
 class ContactDetailsForm extends Component {
@@ -54,6 +56,7 @@ class ContactDetailsForm extends Component {
         ) : (
             <div>
                 {permissions.viewContactGeneral ? <ContactDetailsFormGeneral /> : null}
+                {permissions.viewContactGeneral ? <FreeFields table={'contacts'} recordId={this.props.id} /> : null}
                 {permissions.viewContactAddress ? <ContactDetailsFormAddress /> : null}
                 {permissions.viewContactEmail ? <ContactDetailsFormEmail /> : null}
                 {permissions.viewContactPhone ? <ContactDetailsFormPhone /> : null}

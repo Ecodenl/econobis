@@ -7,6 +7,7 @@ import ProjectDetailsFormConclusion from './conclusion/ProjectDetailsFormConclus
 import ProjectDetailsFormValueCourse from './value-course/ProjectDetailsFormValueCourse';
 import RevenuesListForm from './revenue/list/RevenuesListForm';
 import RevenuesKwhListForm from './revenueKwh/list/RevenuesKwhListForm';
+import FreeFields from '../../../components/freeFields/FreeFields';
 
 class ProjectDetailsForm extends Component {
     constructor(props) {
@@ -32,6 +33,8 @@ class ProjectDetailsForm extends Component {
         ) : (
             <div>
                 <ProjectFormGeneral />
+
+                <FreeFields table={'projects'} recordId={this.props.project.id} initialShowEdit={false} />
 
                 {/* Shows value course only when project type is not equal to loan */}
                 {this.props.project.projectType && this.props.project.projectType.codeRef !== 'loan' ? (

@@ -13,6 +13,7 @@ class ProjectFormGeneral extends Component {
 
         this.state = {
             showEdit: false,
+            showCustomerPortalSettings: false,
             activeDiv: '',
         };
     }
@@ -20,12 +21,14 @@ class ProjectFormGeneral extends Component {
     switchToEdit = () => {
         this.setState({
             showEdit: true,
+            showCustomerPortalSettings: true,
         });
     };
 
     switchToView = () => {
         this.setState({
             showEdit: false,
+            showCustomerPortalSettings: false,
             activeDiv: '',
         });
     };

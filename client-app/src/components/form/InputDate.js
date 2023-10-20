@@ -165,7 +165,6 @@ InputDate.defaultProps = {
 
 InputDate.propTypes = {
     label: PropTypes.string.isRequired,
-    type: PropTypes.string,
     className: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,

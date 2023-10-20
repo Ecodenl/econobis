@@ -4,15 +4,18 @@ import Modal from '../../../components/modal/Modal';
 import DataTableCustomFilter from '../../../components/dataTable/DataTableCustomFilter';
 import ButtonText from '../../../components/button/ButtonText';
 import { connect } from 'react-redux';
+import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 
 class ContactsListExtraFilters extends Component {
     constructor(props) {
         super(props);
+
         this.state = {
             filterType: props.filterType,
             contactType: props.contactType,
             amountOfFilters: props.amountOfFilters,
             filters: props.extraFilters,
+            freeFieldsFields: null,
             yesNoOptions: [
                 {
                     id: 0,
@@ -25,6 +28,8 @@ class ContactsListExtraFilters extends Component {
             ],
         };
 
+        this.fetchFilterFreeFieldsFieldsContact();
+
         this.closeModal = this.closeModal.bind(this);
         this.confirmAction = this.confirmAction.bind(this);
         this.handleFilterFieldChange = this.handleFilterFieldChange.bind(this);
@@ -32,6 +37,15 @@ class ContactsListExtraFilters extends Component {
         this.handleFilterValueChange = this.handleFilterValueChange.bind(this);
         this.addFilterRow = this.addFilterRow.bind(this);
         this.deleteFilterRow = this.deleteFilterRow.bind(this);
+    }
+
+    fetchFilterFreeFieldsFieldsContact() {
+        FreeFieldsAPI.fetchFilterFreeFieldsFieldsContact().then(payload => {
+            this.setState({
+                ...this.state,
+                freeFieldsFields: payload.data.data,
+            });
+        });
     }
 
     closeModal() {
@@ -50,7 +64,8 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'product' ||
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
             filters[filterNumber].field === 'intakeMeasureCategory' ||
-            filters[filterNumber].field === 'housingFileFieldName'
+            filters[filterNumber].field === 'housingFileFieldName' ||
+            filters[filterNumber].field === 'freeFieldsFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -171,6 +186,23 @@ class ContactsListExtraFilters extends Component {
             });
 
             amountOfFilters = filters.length;
+        } else if (data === 'freeFieldsFieldName') {
+            filters[filterNumber] = {
+                field: 'freeFieldsFieldName',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'freeFieldsFieldValue',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+                freeFieldFormatType: '',
+            });
+
+            amountOfFilters = filters.length;
         } else {
             filters[filterNumber].field = data;
             filters[filterNumber].data = '';
@@ -195,7 +227,7 @@ class ContactsListExtraFilters extends Component {
 
         filters[filterNumber][field] = data;
 
-        if (filters[filterNumber].field == 'housingFileFieldName') {
+        if (filters[filterNumber].field === 'housingFileFieldName') {
             if (filters[filterNumber].data) {
                 let housingFileHoomLink = this.props.housingFileHoomLinks.find(
                     housingFileHoomLink => housingFileHoomLink.key === Number(filters[filterNumber].data)
@@ -203,10 +235,28 @@ class ContactsListExtraFilters extends Component {
                 if (housingFileHoomLink) {
                     let filterConnectName = filters[filterNumber].connectName;
                     filters.map(filter => {
-                        if (filter.connectedTo == filterConnectName) {
+                        if (filter.connectedTo === filterConnectName) {
                             filter.data = '';
                             filter.type = 'eq';
                             filter.housingFileField = housingFileHoomLink.externalHoomShortName;
+                        }
+                        return filter;
+                    });
+                }
+            }
+        }
+        if (filters[filterNumber].field === 'freeFieldsFieldName') {
+            if (filters[filterNumber].data) {
+                let freeFieldsField = this.state.freeFieldsFields.find(
+                    freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
+                );
+                if (freeFieldsField) {
+                    let filterConnectName = filters[filterNumber].connectName;
+                    filters.map(filter => {
+                        if (filter.connectedTo === filterConnectName) {
+                            filter.data = '';
+                            filter.type = 'eq';
+                            filter.freeFieldFormatType = freeFieldsField.formatType;
                         }
                         return filter;
                     });
@@ -250,7 +300,8 @@ class ContactsListExtraFilters extends Component {
             newFilters[filterNumber].field === 'product' ||
             newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
             newFilters[filterNumber].field === 'intakeMeasureCategory' ||
-            newFilters[filterNumber].field === 'housingFileFieldName'
+            newFilters[filterNumber].field === 'housingFileFieldName' ||
+            newFilters[filterNumber].field === 'freeFieldsFieldName'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -378,6 +429,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
             },
+            freeFieldsFieldName: {
+                name: 'Vrij veld contact',
+                type: 'dropdownFreeFieldsFields',
+                dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
+            },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
                 type: 'dropdownHas',
@@ -416,7 +472,7 @@ class ContactsListExtraFilters extends Component {
             opportunityMeasure: {
                 name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.measures.filter(measure => measure.visible == true),
+                dropDownOptions: this.props.measures.filter(measure => measure.visible === true),
             },
             opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',
@@ -455,9 +511,18 @@ class ContactsListExtraFilters extends Component {
             },
         };
 
+        // Options only if freeFieldsFieldName is set
+        const customFreeFieldsFields = {
+            freeFieldsFieldValue: {
+                name: 'Status/waarde',
+                type: 'freeFieldsFieldValue',
+            },
+        };
+
         return (
             <Modal
                 title="Extra filters"
+                modalClassName="modal-dialog-70vw"
                 modalBodyClassName="scrollable-modal-body"
                 buttonConfirmText="Toepassen"
                 confirmAction={this.confirmAction}
@@ -520,6 +585,7 @@ class ContactsListExtraFilters extends Component {
                                             ...customOpportunityFields,
                                             ...customIntakeFields,
                                             ...customHousingFileFields,
+                                            ...customFreeFieldsFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}

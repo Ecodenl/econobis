@@ -5,6 +5,7 @@ import ViewTextLong from '../../../../../components/form/ViewTextLong';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+import FreeFields from '../../../../../components/freeFields/FreeFields';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -104,7 +105,7 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
-                    {isSceProject == true && (
+                    {isSceProject === true && (
                         <ViewText
                             label={'Basis project'}
                             value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
@@ -113,7 +114,7 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
-                    {isSceProject == true && (
+                    {isSceProject === true && (
                         <ViewText
                             className={'form-group col-sm-6'}
                             label={'Benodigd aantal deelnemende leden'}
@@ -121,7 +122,7 @@ const ProjectFormViewGeneral = ({
                         />
                     )}
                 </div>
-                {isSceProject == true && (
+                {isSceProject === true && (
                     <>
                         <div className="row">
                             <div className="col-sm-6" />
@@ -398,14 +399,14 @@ const ProjectFormViewGeneral = ({
                             label={'Vragen over lid worden aan of uit?'}
                             value={showQuestionAboutMembership ? 'Ja' : 'Nee'}
                         />
-                        {showQuestionAboutMembership == true && (
+                        {showQuestionAboutMembership === true && (
                             <ViewText
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
                             />
                         )}
                     </div>
-                    {showQuestionAboutMembership == true && (
+                    {showQuestionAboutMembership === true && (
                         <>
                             <div className={'row'}>
                                 <ViewTextLong

@@ -390,7 +390,7 @@ class ContactCSVHelper
 
                     switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
                         case 'boolean':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_boolean;
+                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
                             break;
                         case 'text_short':
                         case 'text_long':
@@ -401,11 +401,13 @@ class ContactCSVHelper
                             break;
                         case 'double_2_dec':
                         case 'amount_euro':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_double;
+                            $contact->$freeFieldsFieldRecordValue = number_format($freeFieldsFieldRecord->field_value_double, 2);
                             break;
                         case 'date':
+                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;
+                            break;
                         case 'datetime':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_datetime;
+                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y H:i') : null;
                             break;
                     }
                 }

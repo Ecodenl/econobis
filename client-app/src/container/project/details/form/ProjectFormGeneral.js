@@ -14,7 +14,6 @@ class ProjectFormGeneral extends Component {
         this.state = {
             showEdit: false,
             showCustomerPortalSettings: false,
-            showFreeFields: false,
             activeDiv: '',
         };
     }
@@ -23,7 +22,6 @@ class ProjectFormGeneral extends Component {
         this.setState({
             showEdit: true,
             showCustomerPortalSettings: true,
-            showFreeFields: true,
         });
     };
 
@@ -31,7 +29,6 @@ class ProjectFormGeneral extends Component {
         this.setState({
             showEdit: false,
             showCustomerPortalSettings: false,
-            showFreeFields: false,
             activeDiv: '',
         });
     };
@@ -39,12 +36,6 @@ class ProjectFormGeneral extends Component {
     toggleCustomerPortalSettings = () => {
         this.setState({
             showCustomerPortalSettings: !this.state.showCustomerPortalSettings,
-        });
-    };
-
-    toggleFreeFields = () => {
-        this.setState({
-            showFreeFields: !this.state.showFreeFields,
         });
     };
 
@@ -75,16 +66,12 @@ class ProjectFormGeneral extends Component {
                             switchToView={this.switchToView}
                             showCustomerPortalSettings={this.state.showCustomerPortalSettings}
                             toggleCustomerPortalSettings={this.toggleCustomerPortalSettings}
-                            showFreeFields={this.state.showFreeFields}
-                            toggleFreeFields={this.toggleFreeFields}
                         />
                     ) : (
                         <ProjectFormView
                             switchToEdit={this.switchToEdit}
                             showCustomerPortalSettings={this.state.showCustomerPortalSettings}
                             toggleCustomerPortalSettings={this.toggleCustomerPortalSettings}
-                            showFreeFields={this.state.showFreeFields}
-                            toggleFreeFields={this.toggleFreeFields}
                         />
                     )}
                 </PanelBody>

@@ -11,15 +11,11 @@ import InputReactSelectLong from '../../../../../components/form/InputReactSelec
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
-import FreeFields from '../../../../../components/freeFields/FreeFields';
 
 const ProjectFormEditGeneral = ({
     showCustomerPortalSettings,
     toggleCustomerPortalSettings,
-    showFreeFields,
-    toggleFreeFields,
     permissions,
-    projectId,
     name,
     code,
     description,
@@ -515,13 +511,6 @@ const ProjectFormEditGeneral = ({
                     </div>
                 </>
             ) : null}
-
-            <hr />
-            <h4 onClick={() => toggleFreeFields(!showFreeFields)}>
-                {showFreeFields ? <Icon size={21} icon={angleDown} /> : <Icon size={21} icon={angleRight} />}
-                &nbsp;Vrije velden
-            </h4>
-            {showFreeFields ? <FreeFields table={'projects'} recordId={projectId} initialShowEdit={true} /> : null}
 
             <hr />
             <h4 onClick={() => toggleCustomerPortalSettings(!showCustomerPortalSettings)}>

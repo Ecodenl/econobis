@@ -26,8 +26,8 @@ class FreeFieldNewForm extends Component {
                 mandatory: false,
                 defaultValue: '',
                 exportable: false,
-                sortOrder: false,
-                mask: false,
+                sortOrder: '',
+                mask: '',
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
@@ -134,23 +134,23 @@ class FreeFieldNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.mandatory + '')) {
-            errors.mandatory = true;
-            errorsMessage.mandatory = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.mandatory + '')) {
+        //     errors.mandatory = true;
+        //     errorsMessage.mandatory = 'verplicht';
+        //     hasErrors = true;
+        // }
 
-        if (validator.isEmpty(freeField.visiblePortal + '')) {
-            errors.visiblePortal = true;
-            errorsMessage.visiblePortal = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.visiblePortal + '')) {
+        //     errors.visiblePortal = true;
+        //     errorsMessage.visiblePortal = 'verplicht';
+        //     hasErrors = true;
+        // }
 
-        if (validator.isEmpty(freeField.changePortal + '')) {
-            errors.changePortal = true;
-            errorsMessage.changePortal = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.changePortal + '')) {
+        //     errors.changePortal = true;
+        //     errorsMessage.changePortal = 'verplicht';
+        //     hasErrors = true;
+        // }
 
         if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
             errors.defaultValue = true;
@@ -158,11 +158,11 @@ class FreeFieldNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.exportable + '')) {
-            errors.exportable = true;
-            errorsMessage.exportable = 'verplicht';
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(freeField.exportable + '')) {
+        //     errors.exportable = true;
+        //     errorsMessage.exportable = 'verplicht';
+        //     hasErrors = true;
+        // }
 
         if (validator.isEmpty(freeField.sortOrder + '')) {
             errors.sortOrder = true;
@@ -241,7 +241,7 @@ class FreeFieldNewForm extends Component {
                                 name={'mandatory'}
                                 value={mandatory}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.mandatory}
                                 errorMessage={this.state.errorsMessage.mandatory}
                             />
@@ -252,7 +252,7 @@ class FreeFieldNewForm extends Component {
                                 name={'visiblePortal'}
                                 value={visiblePortal}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.visiblePortal}
                                 errorMessage={this.state.errorsMessage.visiblePortal}
                             />
@@ -261,7 +261,7 @@ class FreeFieldNewForm extends Component {
                                 name={'changePortal'}
                                 value={changePortal}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.changePortal}
                                 errorMessage={this.state.errorsMessage.changePortal}
                             />
@@ -281,7 +281,7 @@ class FreeFieldNewForm extends Component {
                                 name={'exportable'}
                                 value={exportable}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
+                                // required={'required'}
                                 error={this.state.errors.exportable}
                                 errorMessage={this.state.errorsMessage.exportable}
                             />

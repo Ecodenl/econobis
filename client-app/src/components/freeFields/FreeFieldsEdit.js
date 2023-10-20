@@ -8,6 +8,7 @@ import InputTextArea from '../form/InputTextArea';
 import FreeFieldsAPI from '../../api/free-fields/FreeFieldsAPI';
 import InputDateTime from '../form/InputDateTime';
 import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
+import validator from 'validator';
 
 function FreeFieldsEdit({
     freeFieldsFieldRecords,
@@ -63,32 +64,33 @@ function FreeFieldsEdit({
     function handleInputChangeDatetimeDate(dateOrTime, name) {
         const currentRecord = freeFieldsFieldRecords.find(record => 'record-' + record.id === name);
 
-        let date = dateOrTime ? dateOrTime : moment().format('Y-MM-DD');
+        let date = dateOrTime ? dateOrTime : '';
         let time = '08:00';
         if (currentRecord.fieldRecordValueDatetime) {
             time = moment(currentRecord.fieldRecordValueDatetime).format('HH:mm');
         }
 
-        handleInputChange(
-            moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss'),
-            name,
-            'fieldRecordValueDatetime'
-        );
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        handleInputChange(value, name, 'fieldRecordValueDatetime');
     }
     function handleInputChangeDatetimeTime(dateOrTime, name) {
         const currentRecord = freeFieldsFieldRecords.find(record => 'record-' + record.id === name);
 
-        let date = moment().format('Y-MM-DD');
+        let date = '';
         let time = dateOrTime ? dateOrTime : '08:00';
         if (currentRecord.fieldRecordValueDatetime) {
             date = moment(currentRecord.fieldRecordValueDatetime).format('Y-MM-DD');
         }
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
 
-        handleInputChange(
-            moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss'),
-            name,
-            'fieldRecordValueDatetime'
-        );
+        handleInputChange(value, name, 'fieldRecordValueDatetime');
     }
 
     function handleInputChange(value, name, type) {

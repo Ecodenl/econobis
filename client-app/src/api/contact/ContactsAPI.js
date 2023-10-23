@@ -111,6 +111,18 @@ export default {
         });
     },
 
+    getFreeFieldsCSV: ({ filters, extraFilters, sorts }) => {
+        const requestUrl = `${URL_API}/api/contact/free-fields-csv`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
+
     getExcelAddressEnergyConsumptionGas: ({ filters, extraFilters, sorts, pagination }) => {
         const requestUrl = `${URL_API}/api/contact/excel/verbruik/gas`;
 

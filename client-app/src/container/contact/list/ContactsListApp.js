@@ -48,6 +48,7 @@ class ContactsListApp extends Component {
         this.handlePageClick = this.handlePageClick.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.getCSV = this.getCSV.bind(this);
+        this.getEnergysuppliersCSV = this.getEnergysuppliersCSV.bind(this);
         this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
@@ -121,6 +122,27 @@ class ContactsListApp extends Component {
             ContactsAPI.getCSV({ filters, extraFilters, sorts })
                 .then(payload => {
                     fileDownload(payload.data, 'Contacten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getEnergysuppliersCSV = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
+            const filters = filterHelper(this.props.contactsFilters);
+            const sorts = this.props.contactsSorts;
+
+            ContactsAPI.getEnergysuppliersCSV({ filters, extraFilters, sorts })
+                .then(payload => {
+                    fileDownload(
+                        payload.data,
+                        'Contacten-energieleveranciers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -295,6 +317,7 @@ class ContactsListApp extends Component {
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 getCSV={this.getCSV}
+                                getEnergysuppliersCSV={this.getEnergysuppliersCSV}
                                 getExcelAddressEnergyConsumptionGas={this.getExcelAddressEnergyConsumptionGas}
                                 getExcelAddressEnergyConsumptionElectricity={
                                     this.getExcelAddressEnergyConsumptionElectricity

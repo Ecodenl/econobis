@@ -46,6 +46,7 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
+        Route::get('/contact/energysupplierscsv', 'Contact\GridController@energysupplierscsv');
         Route::get('/contact/excel/verbruik/gas', 'Contact\GridController@excelAddressEnergyConsumptionGas');
         Route::get('/contact/excel/verbruik/electriciteit', 'Contact\GridController@excelAddressEnergyConsumptionElectricity');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');

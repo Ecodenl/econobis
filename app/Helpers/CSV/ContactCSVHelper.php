@@ -340,7 +340,174 @@ class ContactCSVHelper
                 $mapping = array_merge($mapping, $mappingForMemberToGroupSince);
             }
 
+            $csv = $this->csvExporter->build($chunk, $mapping, $headers);
+            $headers = false;
+        }
+        if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
 
+        return Reader::BOM_UTF8 . $csv->getCsv();
+    }
+
+    public function downloadEnergysuppliersCSV()
+    {
+        $csv = '';
+        $headers = true;
+
+        foreach ($this->contacts->chunk(500) as $chunk) {
+            $chunk->load([
+                'person',
+                'organisation',
+                'addresses',
+                'primaryEmailAddress',
+                'emailAddresses',
+                'primaryphoneNumber',
+                'phoneNumbers',
+                'primaryAddress',
+                'primaryAddress.currentAddressEnergySupplierElectricity.energySupplier',
+                'primaryAddress.currentAddressEnergySupplierGas.energySupplier',
+            ]);
+
+            foreach ($chunk as $contact) {
+                // Addresses
+                if ($contact->addresses) {
+                    foreach (AddressType::collection() as $type) {
+                        $address = $contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
+                        if(empty($address))
+                        {
+                            $address = $contact->addresses()->where('type_id', $type->id)->first();
+                        }
+
+                        $addressArr = [];
+
+                        $addressArr['street'] = ($address ? $address->street : '');
+                        $addressArr['number'] = ($address ? $address->number : '');
+                        $addressArr['addition'] = ($address ? $address->addition : '');
+                        $addressArr['postal_code'] = ($address ? $address->postal_code : '');
+                        $addressArr['city'] = ($address ? $address->city : '');
+                        $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
+
+                        $contact['address_' . $type->id] = $addressArr;
+                    }
+                }
+            }
+
+            $this->csvExporter->beforeEach(function ($contact) {
+                // person/organisation fields
+                if ($contact->type_id === 'person') {
+                    $contact->title = $contact->person->title;
+                    $contact->initials = $contact->person->initials;
+                    $contact->first_name = $contact->person->first_name;
+                    $contact->last_name_prefix = $contact->person->last_name_prefix;
+                    $contact->last_name = $contact->person->last_name;
+                }
+
+                // Reformat energy supplier fields
+                if ($contact->primaryAddress && $contact->primaryAddress->currentAddressEnergySupplierElectricity) {
+                    $contact->energy_supplier_name_electricity = $contact->primaryAddress->currentAddressEnergySupplierElectricity->energySupplier->name;
+                    $contact->es_number_electricity = $contact->primaryAddress->currentAddressEnergySupplierElectricity->es_number;
+                    $contact->energy_member_since_electricity
+                        = $this->formatDate($contact->primaryAddress->currentAddressEnergySupplierElectricity->member_since);
+                }
+                if ($contact->primaryAddress) {
+                    $i = 0;
+                    foreach($contact->primaryAddress->addressEnergySuppliers()->where('is_current_supplier', false)->whereIn('energy_supply_type_id', [2, 3])->take(2)->get() as $oldAddressEnergySupplierElectricity) {
+                        $i++;
+                        if($i === 0) {
+                            $contact->old_energy_supplier_name_electricity_1 = $oldAddressEnergySupplierElectricity->energySupplier->name;
+                            $contact->old_es_number_electricity_1 = $oldAddressEnergySupplierElectricity->es_number;
+                            $contact->old_energy_end_date_electricity_1 = $this->formatDate($oldAddressEnergySupplierElectricity->end_date);
+                        } else {
+                            $contact->old_energy_supplier_name_electricity_2 = $oldAddressEnergySupplierElectricity->energySupplier->name;
+                            $contact->old_es_number_electricity_2 = $oldAddressEnergySupplierElectricity->es_number;
+                            $contact->old_energy_member_since_electricity_2 = $this->formatDate($oldAddressEnergySupplierElectricity->member_since);
+                            $contact->old_energy_end_date_electricity_2 = $this->formatDate($oldAddressEnergySupplierElectricity->end_date);
+                        }
+                    }
+                }
+
+                if ($contact->primaryAddress && $contact->primaryAddress->currentAddressEnergySupplierGas) {
+                    $contact->energy_supplier_name_gas = $contact->primaryAddress->currentAddressEnergySupplierGas->energySupplier->name;
+                    $contact->es_number_gas = $contact->primaryAddress->currentAddressEnergySupplierGas->es_number;
+                    $contact->energy_member_since_gas = $this->formatDate($contact->primaryAddress->currentAddressEnergySupplierGas->member_since);
+                }
+                if ($contact->primaryAddress) {
+                    $i = 0;
+                    foreach($contact->primaryAddress->addressEnergySuppliers()->where('is_current_supplier', false)->whereIn('energy_supply_type_id', [1, 3])->take(2)->get() as $oldAddressEnergySupplierGas) {
+                        $i++;
+                        if($i === 0) {
+                            $contact->old_energy_supplier_name_gas_1 = $oldAddressEnergySupplierGas->energySupplier->name;
+                            $contact->old_es_number_gas_1 = $oldAddressEnergySupplierGas->es_number;
+                            $contact->old_energy_member_since_gas_1 = $this->formatDate($oldAddressEnergySupplierGas->member_since);
+                            $contact->old_energy_end_date_gas_1 = $this->formatDate($oldAddressEnergySupplierGas->end_date);
+                        } else {
+                            $contact->old_energy_supplier_name_gas_2 = $oldAddressEnergySupplierGas->energySupplier->name;
+                            $contact->old_es_number_gas_2 = $oldAddressEnergySupplierGas->es_number;
+                            $contact->old_energy_member_since_gas_2 = $this->formatDate($oldAddressEnergySupplierGas->member_since);
+                            $contact->old_energy_end_date_gas_2 = $this->formatDate($oldAddressEnergySupplierGas->end_date);
+                        }
+                    }
+                }
+
+                // Reformat primary address fields
+                if ($contact->primaryAddress) {
+                    $contact->ean_electricity = $contact->primaryAddress->ean_electricity;
+                    $contact->ean_gas = $contact->primaryAddress->ean_gas;
+                }
+            });
+
+            $mapping = [
+                'number' => '#',
+                'full_name' => 'Naam',
+                'organisation.name' => 'Organisatie',
+                'title.name' => 'Aanspreektitel',
+                'initials' => 'Initialen',
+                'first_name' => 'Voornaam',
+                'last_name_prefix' => 'Tussenvoegsel',
+                'last_name' => 'Achternaam',
+                'address_visit.street' => 'Bezoek adres',
+                'address_visit.number' => 'Bezoek huisnummer',
+                'address_visit.addition' => 'Bezoek toevoeging',
+                'address_visit.postal_code' => 'Bezoek postcode',
+                'address_visit.city' => 'Bezoek plaats',
+                'primaryEmailAddress.email' => 'Email primair',
+                'primaryphoneNumber.number' => 'Telefoonnummer primair',
+
+
+                'energy_supplier_name_electricity' => 'Energieleverancier (elektra)',
+                'es_number_electricity' => 'Klantnummer (elektra)',
+                'energy_member_since_electricity' => 'Klant sinds (elektra)',
+                'ean_electricity' => 'EAN electriciteit',
+
+                'old_energy_supplier_name_electricity_1' => 'Energieleverancier1 (elektra)',
+                'old_es_number_electricity_1' => 'Klantnummer1 (elektra)',
+                'old_energy_member_since_electricity_1' => 'Klant sinds1 (elektra)',
+                'old_energy_end_date_electricity_1' => 'Einddatum1 (elektra)',
+                'old_ean_electricity_1' => 'EAN1 electriciteit',
+
+                'old_energy_supplier_name_electricity_2' => 'Energieleverancier2 (elektra)',
+                'old_es_number_electricity_2' => 'Klantnummer2 (elektra)',
+                'old_energy_member_since_electricity_2' => 'Klant sinds2 (elektra)',
+                'old_energy_end_date_electricity_2' => 'Einddatum2 (elektra)',
+                'old_ean_electricity_2' => 'EAN electriciteit2',
+
+
+                'energy_supplier_name_gas' => 'Energieleverancier (gas)',
+                'es_number_gas' => 'Klantnummer (gas)',
+                'energy_member_since_gas' => 'Klant sinds (gas)',
+                'ean_gas' => 'EAN gas',
+
+                'old_energy_supplier_name_gas_1' => 'Energieleverancier1 (gas)',
+                'old_es_number_gas_1' => 'Klantnummer1 (gas)',
+                'old_energy_member_since_gas_1' => 'Klant sinds1 (gas)',
+                'old_energy_end_date_gas_1' => 'Einddatum1 (gas)',
+                'old_ean_gas_1' => 'EAN1 gas',
+
+                'old_energy_supplier_name_gas_2' => 'Energieleverancier2 (gas)',
+                'old_es_number_gas_2' => 'Klantnummer2 (gas)',
+                'old_energy_member_since_gas_2' => 'Klant sinds2 (gas)',
+                'old_energy_end_date_gas_2' => 'Einddatum2 (gas)',
+                'old_ean_gas_2' => 'EAN2 gas',
+            ];
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);
             $headers = false;

@@ -715,13 +715,8 @@ class ProjectFormEdit extends Component {
                 this.props.fetchProject(project.id);
                 this.props.switchToView();
             });
-        } else {
-            if (!this.props.showCustomerPortalSettings) {
-                this.props.toggleCustomerPortalSettings();
-            }
-            if (!this.props.showFreeFields) {
-                this.props.toggleFreeFields();
-            }
+        } else if (!this.props.showCustomerPortalSettings) {
+            this.props.toggleCustomerPortalSettings();
         }
     };
 
@@ -758,7 +753,6 @@ class ProjectFormEdit extends Component {
 
     render() {
         const {
-            id,
             name,
             code,
             description,
@@ -877,9 +871,6 @@ class ProjectFormEdit extends Component {
                 <ProjectFormEditGeneral
                     showCustomerPortalSettings={this.props.showCustomerPortalSettings}
                     toggleCustomerPortalSettings={this.props.toggleCustomerPortalSettings}
-                    showFreeFields={this.props.showFreeFields}
-                    toggleFreeFields={this.props.toggleFreeFields}
-                    projectId={id}
                     name={name}
                     code={code}
                     description={description}

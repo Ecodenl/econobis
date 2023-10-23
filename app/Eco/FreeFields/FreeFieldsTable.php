@@ -12,7 +12,6 @@ class FreeFieldsTable extends Model
     {
         return $this->hasMany(FreeFieldsField::class, 'table_id');
     }
-
 }
 
 

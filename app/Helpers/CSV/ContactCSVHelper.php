@@ -9,6 +9,8 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\Address\AddressType;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
 use League\Csv\Reader;
 
@@ -355,6 +357,84 @@ class ContactCSVHelper
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);
             $headers = false;
         }
+        if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
+
+        return Reader::BOM_UTF8 . $csv->getCsv();
+    }
+
+
+    public function downloadFreeFieldsCSV()
+    {
+        $csv = '';
+        $headers = true;
+
+        $contactTableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $freeFieldsFields = FreeFieldsField::where('table_id', $contactTableId)->where('exportable', 1)->orderBy('sort_order')->get();
+
+        foreach ($this->contacts->chunk(500) as $chunk) {
+            $chunk->load([
+                'person',
+                'freeFieldsFieldRecords',
+            ]);
+
+            $this->csvExporter->beforeEach(function ($contact) {
+                // person/organisation fields
+                if ($contact->type_id === 'person') {
+                    $contact->first_name = $contact->person->first_name;
+                    $contact->last_name_prefix = $contact->person->last_name_prefix;
+                    $contact->last_name = $contact->person->last_name;
+                }
+
+                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->get();
+
+                foreach($freeFieldsFieldRecords as $freeFieldsFieldRecord) {
+                    $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsFieldRecord->field_id;
+
+                    switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
+                        case 'boolean':
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
+                            break;
+                        case 'text_short':
+                        case 'text_long':
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_text;
+                            break;
+                        case 'int':
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_int;
+                            break;
+                        case 'double_2_dec':
+                        case 'amount_euro':
+                            $contact->$freeFieldsFieldName = number_format($freeFieldsFieldRecord->field_value_double, 2, ',' , '' );
+                            break;
+                        case 'date':
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;
+                            break;
+                        case 'datetime':
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y H:i') : null;
+                            break;
+                    }
+                }
+
+            });
+
+            $mapping = [
+                'id' => 'ID',
+                'number' => '#',
+                'first_name' => 'Voornaam',
+                'last_name_prefix' => 'Tussenvoegsel',
+                'last_name' => 'Achternaam',
+            ];
+
+            $freeFieldsFieldsMapping = [];
+            foreach($freeFieldsFields as $freeFieldsField) {
+                $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsField->id;
+                $freeFieldsFieldsMapping[$freeFieldsFieldName] = $freeFieldsField->field_name;
+            }
+            $mapping = array_merge($mapping, $freeFieldsFieldsMapping);
+
+            $csv = $this->csvExporter->build($chunk, $mapping, $headers);
+            $headers = false;
+        }
+
         if (empty($csv)) abort(422, 'Geen gegevens om te downloaden');
 
         return Reader::BOM_UTF8 . $csv->getCsv();

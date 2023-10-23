@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import TextBlock from '../general/TextBlock';
 
-function FreeFieldsView({ freeFieldsFieldRecords, switchToEdit }) {
+function FreeFieldsView({ freeFieldsFieldRecords }) {
     return (
         <Col xs={12} md={6}>
             {freeFieldsFieldRecords.map(record => {

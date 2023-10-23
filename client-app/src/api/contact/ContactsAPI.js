@@ -112,7 +112,7 @@ export default {
     },
 
     getFreeFieldsCSV: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/contact/freefieldscsv`;
+        const requestUrl = `${URL_API}/api/contact/free-fields-csv`;
 
         return axiosInstance.get(requestUrl, {
             params: {

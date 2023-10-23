@@ -9,9 +9,10 @@
 namespace App\Helpers\CSV;
 
 use App\Eco\Address\AddressType;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
 use League\Csv\Reader;
-use App\Eco\FreeFields\FreeFieldsTable;
 
 class ContactCSVHelper
 {
@@ -356,18 +357,9 @@ class ContactCSVHelper
     {
         $csv = '';
         $headers = true;
-        $maxContactFreeFieldsFieldRecords = 0;
-        $freeFieldsFieldRecordNames = [];
 
-        foreach ($this->contacts as $contact){
-            if(($contact->freeFieldsFieldRecords()->count() - 1) > $maxContactFreeFieldsFieldRecords){
-                $maxContactFreeFieldsFieldRecords = ($contact->freeFieldsFieldRecords()->join('free_fields_fields', 'field_id', '=', 'free_fields_fields.id')->where('free_fields_fields.exportable', 1)->count() -1);
-            }
-        }
-
-        foreach (FreeFieldsTable::where('table', 'contacts')->first()->freeFieldsFields()->where('exportable', 1)->orderBy('sort_order')->get() as $y => $freeFieldsField){
-            $freeFieldsFieldRecordNames[$y] = $freeFieldsField->field_name;
-        }
+        $contactTableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $freeFieldsFields = FreeFieldsField::where('table_id', $contactTableId)->where('exportable', 1)->orderBy('sort_order')->get();
 
         foreach ($this->contacts->chunk(500) as $chunk) {
             $chunk->load([
@@ -383,31 +375,31 @@ class ContactCSVHelper
                     $contact->last_name = $contact->person->last_name;
                 }
 
-                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->join('free_fields_fields', 'field_id', '=', 'free_fields_fields.id')->where('free_fields_fields.exportable', 1)->orderBy('free_fields_fields.sort_order')->get();
+                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->get();
 
-                foreach($freeFieldsFieldRecords as $i => $freeFieldsFieldRecord) {
-                    $freeFieldsFieldRecordValue = 'free_fields_field_record_' . $i;
+                foreach($freeFieldsFieldRecords as $freeFieldsFieldRecord) {
+                    $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsFieldRecord->field_id;
 
                     switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
                         case 'boolean':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
                             break;
                         case 'text_short':
                         case 'text_long':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_text;
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_text;
                             break;
                         case 'int':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_int;
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_int;
                             break;
                         case 'double_2_dec':
                         case 'amount_euro':
-                            $contact->$freeFieldsFieldRecordValue = number_format($freeFieldsFieldRecord->field_value_double, 2);
+                            $contact->$freeFieldsFieldName = number_format($freeFieldsFieldRecord->field_value_double, 2, ',' , '' );
                             break;
                         case 'date':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;
                             break;
                         case 'datetime':
-                            $contact->$freeFieldsFieldRecordValue = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y H:i') : null;
+                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y H:i') : null;
                             break;
                     }
                 }
@@ -422,16 +414,12 @@ class ContactCSVHelper
                 'last_name' => 'Achternaam',
             ];
 
-            for ($x = 0; $x <= $maxContactFreeFieldsFieldRecords; $x++) {
-                $freeFieldsFieldRecordName = $freeFieldsFieldRecordNames[$x];
-
-                $freeFieldsFieldRecordsMapping =
-                    [
-                        'free_fields_field_record_' . $x => $freeFieldsFieldRecordName
-                    ];
-                $mapping = array_merge($mapping, $freeFieldsFieldRecordsMapping);
-
+            $freeFieldsFieldsMapping = [];
+            foreach($freeFieldsFields as $freeFieldsField) {
+                $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsField->id;
+                $freeFieldsFieldsMapping[$freeFieldsFieldName] = $freeFieldsField->field_name;
             }
+            $mapping = array_merge($mapping, $freeFieldsFieldsMapping);
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);
             $headers = false;

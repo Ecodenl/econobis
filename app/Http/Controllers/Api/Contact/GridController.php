@@ -55,7 +55,7 @@ class GridController extends Controller
         return $contactCSVHelper->downloadCSV();
     }
 
-    public function freefieldscsv(RequestQuery $requestQuery)
+    public function freeFieldsCsv(RequestQuery $requestQuery)
     {
         set_time_limit(0);
         $contacts = $requestQuery->getQueryNoPagination()->get();

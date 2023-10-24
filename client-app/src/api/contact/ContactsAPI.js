@@ -99,7 +99,7 @@ export default {
         });
     },
 
-    getCSV: ({ filters, extraFilters, sorts }) => {
+    getCSV: ({ filters, extraFilters, sorts, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/csv`;
 
         return axiosInstance.get(requestUrl, {
@@ -107,11 +107,12 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
+                filterType: filterType,
             },
         });
     },
 
-    getFreeFieldsCSV: ({ filters, extraFilters, sorts }) => {
+    getFreeFieldsCSV: ({ filters, extraFilters, sorts, filterType }) => {
         const requestUrl = `${URL_API}/api/contact/free-fields-csv`;
 
         return axiosInstance.get(requestUrl, {
@@ -119,6 +120,7 @@ export default {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
+                filterType: filterType,
             },
         });
     },

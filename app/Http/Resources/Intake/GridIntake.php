@@ -21,6 +21,7 @@ class GridIntake extends JsonResource
                 'createdAt' => $this->created_at,
                 'fullName' => $this->contact()->value('full_name'),
                 'fullAddress' => $this->address ? $this->address->present()->streetAndNumber() : '',
+                'areaName' => optional($this->address)->shared_area_name,
                 'campaign' => CampaignByIntake::make($this->whenLoaded('campaign')),
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
                 'status' => optional($this->status)->name,

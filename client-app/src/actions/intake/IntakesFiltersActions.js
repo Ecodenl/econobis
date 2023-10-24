@@ -17,6 +17,11 @@ export const setFilterIntakeAddress = address => ({
     address,
 });
 
+export const setFilterIntakeAreaName = areaName => ({
+    type: 'SET_FILTER_INTAKE_AREA_NAME',
+    areaName,
+});
+
 export const setFilterIntakeCampaign = campaign => ({
     type: 'SET_FILTER_INTAKE_CAMPAIGN',
     campaign,

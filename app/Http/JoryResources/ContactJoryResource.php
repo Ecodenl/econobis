@@ -50,6 +50,8 @@ class ContactJoryResource extends JoryResource
         $this->field('block_change_address')->filterable()->sortable();
         $this->field('block_change_address_number')->filterable()->sortable();
         $this->field('portal_settings_layout_assigned')->filterable()->sortable();
+        $this->field('is_organisation_contact')->filterable()->sortable();
+        $this->field('is_occupant')->filterable()->sortable();
 
         // Relations
         $this->relation('addresses');

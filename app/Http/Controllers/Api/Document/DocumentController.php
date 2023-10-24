@@ -111,7 +111,7 @@ class DocumentController extends Controller
         $document->save();
 
         //store the actual file in Alfresco
-        $user = Auth::user();
+//        $user = Auth::user();
 
         if($data['document_type'] == 'internal'){
 
@@ -229,12 +229,16 @@ class DocumentController extends Controller
     {
         $this->authorize('create', Document::class);
 
-        //delete file in Alfresco(to trashbin)
-        $user = Auth::user();
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-            $alfrescoHelper->deleteFile($document->alfresco_node_id);
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            Storage::disk('documents')->delete($document->file_path_and_name);
+        } else {
+            //delete file in Alfresco(to trashbin)
+//            $user = Auth::user();
+            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoHelper->deleteFile($document->alfresco_node_id);
+            }
         }
 
         $document->delete();
@@ -280,6 +284,14 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            $filePath = Storage::disk('documents')->path($document->file_path_and_name);
+            header('X-Filename:' . $document->filename);
+            header('Access-Control-Expose-Headers: X-Filename');
+            return response()->download($filePath, $document->filename);
+        }
+
         if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if($document->alfresco_node_id == null){
                 $filePath = Storage::disk('documents')
@@ -299,6 +311,11 @@ class DocumentController extends Controller
 
     public function downLoadRawDocument(Document $document)
     {
+        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+            return Storage::disk('documents')->get($document->file_path_and_name);
+        }
+
         if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
             if ($document->alfresco_node_id == null) {
                 return Storage::disk('documents')->get($document->filename);

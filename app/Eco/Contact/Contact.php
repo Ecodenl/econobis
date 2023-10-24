@@ -43,6 +43,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Presenter\PresentableTrait;
 use Venturecraft\Revisionable\RevisionableTrait;
 
@@ -201,6 +202,29 @@ class Contact extends Model
     {
         return $this->inspection_person_type_id == 'coach';
     }
+    public function isOccupant()
+    {
+        return $this->whereHas('opportunities', function ($query) {
+            $query->whereHas('quotationRequests');
+        })->exists();
+    }
+    public function getIsOccupantAttribute()
+    {
+        return $this->isOccupant();
+    }
+
+    public function getIsOrganisationContactAttribute()
+    {
+        $contactOrganisationOccupations = $this->occupations()
+            ->whereHas('primaryContact', function ($query) {
+                $query->where('type_id', 'organisation')
+                    ->where('primary', true);
+            })->first();
+        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
+            return $contactOrganisationOccupations->primaryContact->exists();
+        }
+        return false;
+    }
 
     public function isProjectManager()
     {
@@ -210,6 +234,19 @@ class Contact extends Model
     public function isExternalParty()
     {
         return $this->inspection_person_type_id == 'externalparty';
+    }
+
+    public function getOrganisationContact()
+    {
+        $contactOrganisationOccupations = $this->occupations()
+            ->whereHas('primaryContact', function ($query) {
+                $query->where('type_id', 'organisation')
+                    ->where('primary', true);
+            })->first();
+        if($contactOrganisationOccupations && $contactOrganisationOccupations->primaryContact){
+            return $contactOrganisationOccupations->primaryContact;
+        }
+        return false;
     }
 
     public function getIsInInspectionPersonTypeGroupAttribute()

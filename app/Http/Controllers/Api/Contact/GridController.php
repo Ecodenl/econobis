@@ -45,11 +45,10 @@ class GridController extends Controller
             ]);
     }
 
-    public function csv(RequestQuery $requestQuery)
+    public function csv(Request $request, RequestQuery $requestQuery)
     {
         set_time_limit(0);
         $contacts = $requestQuery->getQueryNoPagination()->get();
-
         $contactCSVHelper = new ContactCSVHelper($contacts);
 
         return $contactCSVHelper->downloadCSV();

@@ -166,6 +166,7 @@ abstract class RequestQuery
 
     public function getQueryNoPagination()
     {
+//        Log::info(json_encode($this->joiner));
         $query = $this->baseQuery();
 
         $this->joiner->resetProcessedJoins();

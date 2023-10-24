@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\Mailbox\MailgunDomainComplaintController;
 use App\Http\Controllers\Api\Mailbox\MailgunEventController;
 use App\Http\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Route;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 /*
@@ -52,6 +53,7 @@ Route::namespace('Api')
 
         Route::get('/contact/grid', 'Contact\GridController@index');
         Route::get('/contact/csv', 'Contact\GridController@csv');
+        Route::get('/contact/free-fields-csv', 'Contact\GridController@freeFieldsCsv');
         Route::get('/contact/excel/verbruik/gas', 'Contact\GridController@excelAddressEnergyConsumptionGas');
         Route::get('/contact/excel/verbruik/electriciteit', 'Contact\GridController@excelAddressEnergyConsumptionElectricity');
         Route::get('/contact/save-as-group', 'Contact\GridController@saveAsGroup');
@@ -705,6 +707,19 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
+
+        Route::get('free-fields-field/get-for-filter-contact', 'FreeFields\FreeFieldsFieldController@getForFilterContact');
+        Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
+        Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
+        Route::post('free-fields-field', 'FreeFields\FreeFieldsFieldController@store');
+        Route::get('free-fields-field/{freeFieldsField}', 'FreeFields\FreeFieldsFieldController@show');
+        Route::post('free-fields-field/{freeFieldsField}/update', 'FreeFields\FreeFieldsFieldController@update');
+
+        Route::get('free-fields-field-records/get-values', 'FreeFields\FreeFieldsFieldRecordController@getValues');
+        Route::post('free-fields-field-records/update-values', 'FreeFields\FreeFieldsFieldRecordController@updateValues');
+
+        Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
+        Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

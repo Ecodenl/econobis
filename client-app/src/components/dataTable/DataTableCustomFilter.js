@@ -19,6 +19,9 @@ import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import DataTableHousingFileFieldFilter from './DataTableHousingFileFieldFilter';
 import ContactListAddAreaToExtraFilter from '../../container/contact/list/ContactListAddAreaToExtraFilter';
+import DataTableCustomFilterSelectDropdownFreeFieldsFields from './DataTableCustomFilterSelectDropdownFreeFieldsFields';
+import DataTableCustomFilterSelectFreeFieldsField from './DataTableCustomFilterSelectFreeFieldsField';
+import DataTableFreeFieldsFieldFilter from './DataTableFreeFieldsFieldFilter';
 
 moment.locale('nl');
 
@@ -61,6 +64,7 @@ const DataTableCustomFilter = props => {
             return;
         if (key === 'intakeDateStart' || key === 'intakeDateFinish' || key === 'intakeStatus') return;
         if (key === 'housingFileFieldValue') return;
+        if (key === 'freeFieldsFieldValue') return;
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
@@ -70,20 +74,22 @@ const DataTableCustomFilter = props => {
         );
     });
 
-    const isCustomProductField = field == 'dateStart' || field == 'dateFinish' || field == 'orderStatus';
+    const isCustomProductField = field === 'dateStart' || field === 'dateFinish' || field === 'orderStatus';
     const isCustomOpportunityField =
-        field == 'opportunityStatus' ||
-        field == 'opportunityMeasure' ||
-        field == 'opportunityEvaluationRealised' ||
-        field == 'opportunityCampaign';
-    const isCustomIntakeField = field == 'intakeDateStart' || field == 'intakeDateFinish' || field == 'intakeStatus';
-    const isCustomHousingFileField = field == 'housingFileFieldValue';
+        field === 'opportunityStatus' ||
+        field === 'opportunityMeasure' ||
+        field === 'opportunityEvaluationRealised' ||
+        field === 'opportunityCampaign';
+    const isCustomIntakeField = field === 'intakeDateStart' || field === 'intakeDateFinish' || field === 'intakeStatus';
+    const isCustomHousingFileField = field === 'housingFileFieldValue';
+    const isCustomFreeFieldsField = field === 'freeFieldsFieldValue';
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
         : 'name';
 
     const housingFileField = props.filter.housingFileField;
+    const freeFieldFormatType = props.filter.freeFieldFormatType;
 
     // begin constanten voor modal add area to filter
     const [showModalAddAreaToFilter, setShowModalAddAreaToFilter] = useState(false);
@@ -104,7 +110,11 @@ const DataTableCustomFilter = props => {
     return (
         <tr>
             <td className="col-md-4">
-                {isCustomProductField || isCustomOpportunityField || isCustomIntakeField || isCustomHousingFileField ? (
+                {isCustomProductField ||
+                isCustomOpportunityField ||
+                isCustomIntakeField ||
+                isCustomHousingFileField ||
+                isCustomFreeFieldsField ? (
                     <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
                         <option key={0} value={field}>
                             {fields[field].name}
@@ -191,7 +201,22 @@ const DataTableCustomFilter = props => {
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
-                        housingFileField={props.filter.housingFileField}
+                        housingFileField={housingFileField}
+                    />
+                )}
+                {fieldType === 'dropdownFreeFieldsFields' && (
+                    <DataTableCustomFilterSelectDropdownFreeFieldsFields
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'freeFieldsFieldValue' && (
+                    <DataTableCustomFilterSelectFreeFieldsField
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                        freeFieldFormatType={freeFieldFormatType}
                     />
                 )}
                 {fieldType === 'dropdownRelations' && (
@@ -336,6 +361,36 @@ const DataTableCustomFilter = props => {
                                     addAreaToFilter={addAreaToFilter}
                                 />
                             )}
+                            {fieldType === 'dropdownFreeFieldsFields' && (
+                                <select
+                                    className={`form-control input-sm`}
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    onChange={handleInputChange}
+                                    disabled={props.filter.readOnly}
+                                >
+                                    <option value="">--Kies een vrij veld contact--</option>
+                                    {props.fields[props.filter.field].dropDownOptions.map(option => {
+                                        return (
+                                            <option key={option.id} value={option.id}>
+                                                {option[optionName]}
+                                            </option>
+                                        );
+                                    })}
+                                </select>
+                            )}
+                            {fieldType === 'freeFieldsFieldValue' && (
+                                <DataTableFreeFieldsFieldFilter
+                                    id="data"
+                                    name="data"
+                                    value={props.filter.data}
+                                    handleInputChange={handleInputChange}
+                                    handleInputChangeDate={handleInputChangeDate}
+                                    readOnly={props.filter.readOnly}
+                                    freeFieldFormatType={freeFieldFormatType}
+                                />
+                            )}
                         </React.Fragment>
                     )}
             </td>
@@ -343,6 +398,7 @@ const DataTableCustomFilter = props => {
             isCustomOpportunityField ||
             isCustomIntakeField ||
             isCustomHousingFileField ||
+            isCustomFreeFieldsField ||
             props.filter.readOnly ? (
                 <td />
             ) : (

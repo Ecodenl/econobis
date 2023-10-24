@@ -28,6 +28,20 @@ class AddressObserver
         if($address->type_id != 'old'){
             $address->end_date = null;
         }
+
+        // Als postcode of huisnummer gewijzigd, bepaal buurt (area code en name) weer opnieuw.
+        if($address->isDirty('postal_code') || $address->isDirty('number')){
+            $sharedPostalCodesHouseNumber = $address->getSharedPostalCodesHouseNumber();
+            if($sharedPostalCodesHouseNumber && $sharedPostalCodesHouseNumber->sharedArea){
+                $address->shared_area_code = $sharedPostalCodesHouseNumber->sharedArea->area_code;
+                $address->shared_area_name = $sharedPostalCodesHouseNumber->sharedArea->area_name;
+            } else {
+                $address->shared_area_code = null;
+                $address->shared_area_name = '';
+
+            }
+        }
+
     }
 
     public function saved(Address $address)

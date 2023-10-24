@@ -43,6 +43,11 @@ export const setFilterOpportunityCampaign = campaign => ({
     campaign,
 });
 
+export const setFilterOpportunityAreaName = areaName => ({
+    type: 'SET_FILTER_OPPORTUNITY_AREA_NAME',
+    areaName,
+});
+
 export const setFilterOpportunityStatusId = statusId => ({
     type: 'SET_FILTER_OPPORTUNITY_STATUS_ID',
     statusId,

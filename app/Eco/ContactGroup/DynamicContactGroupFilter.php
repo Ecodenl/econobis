@@ -19,6 +19,7 @@ use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\EcoShared\SharedArea\SharedArea;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
@@ -169,6 +170,15 @@ class DynamicContactGroupFilter extends Model
             if ($this->field == 'participantMutationStatusId'){
                 if($this->data){
                     return ParticipantMutationStatus::find($this->data)->name;
+                }
+                return '';
+            }
+
+            // sharedArea omzetten
+            if ($this->field == 'sharedArea'){
+                if($this->data){
+                    $sharedArea = SharedArea::find($this->data);
+                    return $sharedArea ? $sharedArea->area_name : '';
                 }
                 return '';
             }

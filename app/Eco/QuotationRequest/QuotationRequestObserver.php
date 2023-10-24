@@ -8,6 +8,7 @@
 
 namespace App\Eco\QuotationRequest;
 
+use App\Eco\Opportunity\OpportunityAction;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -34,6 +35,17 @@ class QuotationRequestObserver
 
     public function saving(QuotationRequest $quotationRequest)
     {
+        $datePlannedAttempt3 = $quotationRequest->date_planned_attempt3;
+        $datePlannedAttempt3Original = $quotationRequest->getOriginal('date_planned_attempt3');
+        if($datePlannedAttempt3 != $datePlannedAttempt3Original)
+        {
+            if($quotationRequest->date_planned_attempt3){
+                $notMadeStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-made')->first();
+                if($notMadeStatus){
+                    $quotationRequest->status_id = $notMadeStatus->id;
+                }
+            }
+        }
         $datePlanned = $quotationRequest->date_planned;
         $datePlannedOriginal = $quotationRequest->getOriginal('date_planned');
         if($datePlanned != $datePlannedOriginal)
@@ -42,6 +54,14 @@ class QuotationRequestObserver
                 $madeStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'made')->first();
                 if($madeStatus){
                     $quotationRequest->status_id = $madeStatus->id;
+// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
+//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
+//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als er dan nog 1 of meerder zijn met status 'made' of 'under-review' of 'under-review-occupant', dan kans status op pending zetten ???
+//                    $pendingOpportunityStatus = OpportunityStatus::where('code_ref', 'pending')->first();
+//                    if($quotationRequest->opportunity){
+//                        $quotationRequest->opportunity->status_id = $pendingOpportunityStatus->id;
+//                        $quotationRequest->opportunity->save();
+//                    }
                 }
             }
         }
@@ -56,6 +76,17 @@ class QuotationRequestObserver
                 }
             }
         }
+        $dateReleased = $quotationRequest->date_released;
+        $dateReleasedOriginal = $quotationRequest->getOriginal('date_released');
+        if($dateReleased != $dateReleasedOriginal)
+        {
+            if($quotationRequest->date_released){
+                $underReviewOccupantStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-occupant')->first();
+                if($underReviewOccupantStatus){
+                    $quotationRequest->status_id = $underReviewOccupantStatus->id;
+                }
+            }
+        }
         $dateUnderReview = $quotationRequest->date_under_review;
         $dateUnderReviewOriginal = $quotationRequest->getOriginal('date_under_review');
         if($dateUnderReview != $dateUnderReviewOriginal)
@@ -64,6 +95,22 @@ class QuotationRequestObserver
                 $underReviewStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
                 if($underReviewStatus){
                     $quotationRequest->status_id = $underReviewStatus->id;
+                }
+            }
+        }
+// todo WM : Wellicht anders in de toekomst. Voor nu alleen doen bij offerteverzoek.  Bij budgetaanvraag wordt kansactie status namelijk ook op approved gezet als datum akkoord toekenning is gezet.
+//  wellicht aparte code_ref approved_client maken om kansactie op juiste status te zetten ?
+        $dateApprovedClient = $quotationRequest->date_approved_client;
+        $dateApprovedClientOriginal = $quotationRequest->getOriginal('date_approved_client');
+        if($dateApprovedClient != $dateApprovedClientOriginal)
+        {
+            $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
+            if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
+                if($quotationRequest->date_approved_client){
+                    $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
+                    if($approvedStatus){
+                        $quotationRequest->status_id = $approvedStatus->id;
+                    }
                 }
             }
         }
@@ -94,6 +141,52 @@ class QuotationRequestObserver
                 }
             } else {
                 $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-not-approved')->first();
+                if($notApprovedStatus){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                }
+            }
+        }
+        $dateExecuted = $quotationRequest->date_executed;
+        $dateExecutedOriginal = $quotationRequest->getOriginal('date_executed');
+        if($dateExecuted != $dateExecutedOriginal)
+        {
+            if($quotationRequest->date_executed){
+                $executedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'executed')->first();
+                if($executedStatus){
+                    $quotationRequest->status_id = $executedStatus->id;
+// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
+//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
+//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als alle kansactie statsus op 'executed' staan dan kans status ook op executed zetten ?????
+//                    $executedOpportunityStatus = OpportunityStatus::where('code_ref', 'executed')->first();
+//                    if($quotationRequest->opportunity) {
+//                        $quotationRequest->opportunity->status_id = $executedOpportunityStatus->id;
+//                        $quotationRequest->opportunity->save();
+//                    }
+                }
+            }
+        }
+        $dateUnderReviewDetermination = $quotationRequest->date_under_review_determination;
+        $dateUnderReviewDeterminationOriginal = $quotationRequest->getOriginal('date_under_review_determination');
+        if($dateUnderReviewDetermination != $dateUnderReviewDeterminationOriginal)
+        {
+            if($quotationRequest->date_under_review_determination){
+                $underReviewDeterminationStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-det')->first();
+                if($underReviewDeterminationStatus){
+                    $quotationRequest->status_id = $underReviewDeterminationStatus->id;
+                }
+            }
+        }
+        $dateApprovedDetermination = $quotationRequest->date_approved_determination;
+        $dateApprovedDeterminationOriginal = $quotationRequest->getOriginal('date_approved_determination');
+        if($dateApprovedDetermination != $dateApprovedDeterminationOriginal)
+        {
+            if($quotationRequest->date_approved_determination){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved-det')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                }
+            } else {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved-det')->first();
                 if($notApprovedStatus){
                     $quotationRequest->status_id = $notApprovedStatus->id;
                 }

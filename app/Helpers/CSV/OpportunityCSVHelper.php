@@ -72,6 +72,10 @@ class OpportunityCSVHelper
                 $opportunity->addition = ($address ? $address->addition : '');
                 $opportunity->postal_code = ($address ? $address->postal_code : '');
                 $opportunity->city = ($address ? $address->city : '');
+
+                $opportunity->area_name = ($address ? $address->shared_area_name : '');
+                $opportunity->district_name = (($address && $address->getSharedPostalCodesHouseNumber() && $address->getSharedPostalCodesHouseNumber()->sharedArea) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
+
                 $opportunity->country = (($address && $address->country) ? $address->country->name : '');
 
                 $opportunity->contact_number = $opportunity->intake->contact->number;
@@ -106,6 +110,8 @@ class OpportunityCSVHelper
                 'addition' => 'Toevoeging',
                 'postal_code' => 'Postcode',
                 'city' => 'Plaats',
+                'area_name' => 'Buurt',
+                'district_name' => 'Wijk',
                 'country' => 'Land',
                 'primaryphoneNumber' => 'Telefoon',
                 'primaryEmailAddress' => 'E-mailadres',

@@ -118,8 +118,9 @@ class ContactsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
 
-            ContactsAPI.getCSV({ filters, extraFilters, sorts })
+            ContactsAPI.getCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
                     fileDownload(payload.data, 'Contacten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
                     this.props.unblockUI();
@@ -136,8 +137,9 @@ class ContactsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
 
-            ContactsAPI.getFreeFieldsCSV({ filters, extraFilters, sorts })
+            ContactsAPI.getFreeFieldsCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
                     fileDownload(
                         payload.data,

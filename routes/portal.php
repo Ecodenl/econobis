@@ -51,6 +51,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 
+        Route::get('/contact/{contact}/contact-free-fields', 'Contact\ContactController@getValuesForPortal');
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
 

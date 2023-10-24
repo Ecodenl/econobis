@@ -25,8 +25,6 @@ function FreeFieldsListApp() {
     useEffect(
         function() {
             fetchFreeFieldsFields();
-            console.log('filter:');
-            console.log(filter);
         },
         [pagination.offset, sort, filter.tableName, filter.fieldName, filter.fieldFormatName]
     );

@@ -22,72 +22,15 @@ class FreeFieldsFieldRecordController extends ApiController
     {
         $this->authorize('view', FreeFieldsField::class);
 
-        $tableId = $request->get('table');
+        $table = $request->get('table');
         $recordId = $request->get('recordId');
 
-        $freeFieldsTable = FreeFieldsTable::where('table', $tableId)->first();
+        return $this->getFreeFieldsValues(false, $table, $recordId);
+    }
 
-        if(!$freeFieldsTable || !$freeFieldsTable->freeFieldsFields){
-            return response()->json([]);
-        }
-
-        $freeFieldsFieldRecords = [];
-        $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $freeFieldsTable->id)->orderBy('sort_order')->get();
-        foreach ($freeFieldsFieldPerTable as $field)
-        {
-            $record = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $field->id)->firstOrNew();
-
-            $fieldRecordValueText = $record->field_value_text;
-            $fieldRecordValueBoolean = $record->field_value_boolean;
-            $fieldRecordValueInt = $record->field_value_int;
-            $fieldRecordValueDouble = $record->field_value_double;
-            $fieldRecordValueDatetime = null;
-            if($field->freeFieldsFieldFormat->format_type == 'date'){
-                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d') . ' 00:00:00'  : null;
-            } elseif($field->freeFieldsFieldFormat->format_type == 'datetime') {
-                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d H:i:s') : null;
-            }
-
-            // Id nog niet bekend, dan nieuw! Overnemen default waarden indien van toepassing
-            if(!isset($record->id)) {
-                switch ($field->freeFieldsFieldFormat->format_type) {
-                    case 'boolean':
-                        $fieldRecordValueBoolean = ($field->default_value == '1' || $field->default_value == 'true');
-                        break;
-                    case 'text_short':
-                    case 'text_long':
-                        $fieldRecordValueText = (!empty($field->default_value) ? $field->default_value : null);
-                        break;
-                    case 'int':
-                        $fieldRecordValueInt = (!empty($field->default_value) ? $field->default_value : null);
-                        break;
-                    case 'double_2_dec':
-                    case 'amount_euro':
-                        $fieldRecordValueDouble = (!empty($field->default_value) ? $field->default_value : null);
-                        break;
-                    case 'date':
-                    case 'datetime':
-                        $fieldRecordValueDatetime = (!empty($field->default_value) ? $field->default_value : null);
-                        break;
-                }
-            }
-
-            $freeFieldsFieldRecords[] = [
-                'id' => $field->id,
-                'tableName' => $field->freeFieldsTable->name,
-                'fieldName' => $field->field_name,
-                'fieldFormatType' => $field->freeFieldsFieldFormat->format_type,
-                'fieldRecordValueText' => $fieldRecordValueText,
-                'fieldRecordValueBoolean' => $fieldRecordValueBoolean,
-                'fieldRecordValueInt' => $fieldRecordValueInt,
-                'fieldRecordValueDouble' => $fieldRecordValueDouble,
-                'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
-                'mandatory' => $field->mandatory,
-                'mask' => $field->mask,
-            ];
-        }
-
-        return response()->json($freeFieldsFieldRecords);
+    public function getValuesForPortal($table, $recordId)
+    {
+        return $this->getFreeFieldsValues(true, $table, $recordId);
     }
 
     public function updateValues(Request $request)
@@ -132,5 +75,84 @@ class FreeFieldsFieldRecordController extends ApiController
             }
             $freeFieldsFieldRecord->save();
         }
+    }
+
+    /**
+     * @param mixed $tableId
+     * @param mixed $recordId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    private function getFreeFieldsValues(bool $forPortal, mixed $table, mixed $recordId): \Illuminate\Http\JsonResponse
+    {
+        $tableId = FreeFieldsTable::where('table', $table)->first()->id;
+
+        $freeFieldsTable = FreeFieldsTable::find($tableId);
+        if (!$freeFieldsTable || !$freeFieldsTable->freeFieldsFields) {
+            return response()->json([]);
+        }
+
+        $freeFieldsFieldRecords = [];
+        if($forPortal){
+            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)
+                ->where('visible_portal', true)
+                ->orderBy('sort_order')->get();
+        } else {
+            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get();
+        }
+
+        foreach ($freeFieldsFieldPerTable as $field) {
+            $record = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $field->id)->firstOrNew();
+
+            $fieldRecordValueText = $record->field_value_text;
+            $fieldRecordValueBoolean = $record->field_value_boolean;
+            $fieldRecordValueInt = $record->field_value_int;
+            $fieldRecordValueDouble = $record->field_value_double;
+            $fieldRecordValueDatetime = null;
+            if ($field->freeFieldsFieldFormat->format_type == 'date') {
+                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d') . ' 00:00:00' : null;
+            } elseif ($field->freeFieldsFieldFormat->format_type == 'datetime') {
+                $fieldRecordValueDatetime = $record->field_value_datetime ? Carbon::parse($record->field_value_datetime)->format('Y-m-d H:i:s') : null;
+            }
+
+            // Id nog niet bekend, dan nieuw! Overnemen default waarden indien van toepassing
+            if (!isset($record->id)) {
+                switch ($field->freeFieldsFieldFormat->format_type) {
+                    case 'boolean':
+                        $fieldRecordValueBoolean = ($field->default_value == '1' || $field->default_value == 'true');
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        $fieldRecordValueText = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'int':
+                        $fieldRecordValueInt = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $fieldRecordValueDouble = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                    case 'date':
+                    case 'datetime':
+                        $fieldRecordValueDatetime = (!empty($field->default_value) ? $field->default_value : null);
+                        break;
+                }
+            }
+
+            $freeFieldsFieldRecords[] = [
+                'id' => $field->id,
+                'tableName' => $field->freeFieldsTable->name,
+                'fieldName' => $field->field_name,
+                'fieldFormatType' => $field->freeFieldsFieldFormat->format_type,
+                'fieldRecordValueText' => $fieldRecordValueText,
+                'fieldRecordValueBoolean' => $fieldRecordValueBoolean,
+                'fieldRecordValueInt' => $fieldRecordValueInt,
+                'fieldRecordValueDouble' => $fieldRecordValueDouble,
+                'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
+                'mandatory' => $field->mandatory,
+                'mask' => $field->mask,
+            ];
+        }
+
+        return response()->json($freeFieldsFieldRecords);
     }
 }

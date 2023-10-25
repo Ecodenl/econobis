@@ -147,6 +147,18 @@ class MailFetcherMsOauth
         $tos = [];
         if($message->getToRecipients()){
             foreach ($message->getToRecipients() as $toRecipient){
+                // todo: Foutmelding onderzoeken: Error getting user's inbox: Undefined array key "address"
+//                  if(!isset($toRecipient['emailAddress']['address'])){
+//                      Log::info('Geen array key "address" in toRecipient "emailAddress":');
+//                      Log::info($toRecipient['emailAddress']);
+//                  }
+//                  resultaat:
+// [2023-10-25 15:40:22] production.INFO: array (
+//      'name' => 'Contact | Energie Samen',
+//  )
+// [2023-10-25 15:40:26] production.INFO: array (
+//      'name' => 'mailto:govert@geldofcs.nl',
+//  )
                 $tos[] = $toRecipient['emailAddress']['address'];
             }
         }
@@ -233,6 +245,9 @@ class MailFetcherMsOauth
                  * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
                  * Daarom maar via deze omweg uit $attachment halen.
                  */
+                // todo: er komen nu foutmeldingen binnen: Error getting user's inbox: Undefined property: stdClass::$contentId
+                //  Wellicht checke of contentId wel bestaat als property?
+                //  $cid = json_decode(json_encode($attachment))->contentId ?? null;
                 $cid = json_decode(json_encode($attachment))->contentId;
 
                 $contents = base64_decode( $attachment->getProperties()['contentBytes']);

@@ -218,8 +218,8 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = $dateReleasedMerged;
         }
 
-        if ($data['datePlannedAttempt1']) {
-            $quotationRequest->date_planned_attempt1 = $data['datePlannedAttempt1'];
+        if (isset($data['datePlannedAttempt1'])) {
+            $quotationRequest->date_planned_attempt1 = !empty($data['datePlannedAttempt1']) ? $data['datePlannedAttempt1'] : null;
         }
 
         if ($data['datePlanned']) {
@@ -376,14 +376,14 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_released = null;
         }
 
-        if ($data['datePlannedAttempt1']) {
-            $quotationRequest->date_planned_attempt1 = $data['datePlannedAttempt1'];
+        if (isset($data['datePlannedAttempt1'])) {
+            $quotationRequest->date_planned_attempt1 = !empty($data['datePlannedAttempt1']) ? $data['datePlannedAttempt1'] : null;
         }
-        if ($data['datePlannedAttempt2']) {
-            $quotationRequest->date_planned_attempt2 = $data['datePlannedAttempt2'];
+        if (isset($data['datePlannedAttempt2'])) {
+            $quotationRequest->date_planned_attempt2 = !empty($data['datePlannedAttempt2']) ? $data['datePlannedAttempt2'] : null;
         }
-        if ($data['datePlannedAttempt3']) {
-            $quotationRequest->date_planned_attempt3 = $data['datePlannedAttempt3'];
+        if (isset($data['datePlannedAttempt3'])) {
+            $quotationRequest->date_planned_attempt3 = !empty($data['datePlannedAttempt3']) ? $data['datePlannedAttempt3'] : null;
         }
 
         if ($data['datePlanned']) {

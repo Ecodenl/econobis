@@ -78,6 +78,7 @@ const InputTime = props => {
                             value={true}
                             checked={nullableChecked}
                             onChange={handleChangeNullableChecked}
+                            disabled={readOnly}
                         />
                         &nbsp;{nullableLabel}
                     </label>

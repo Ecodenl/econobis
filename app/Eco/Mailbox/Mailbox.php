@@ -44,9 +44,9 @@ class Mailbox extends Model
         return $this->belongsTo(MailgunDomain::class);
     }
 
-    public function gmailApiSettings()
+    public function oauthApiSettings()
     {
-        return $this->hasOne(MailboxGmailApiSettings::class);
+        return $this->hasOne(MailboxOauthApiSettings::class);
     }
 
     public static function getDefault()
@@ -114,9 +114,9 @@ class Mailbox extends Model
                 'name' => $this->name,
             ],
             'transport' => 'microsoft-graph-custom',
-            'microsoft_graph_tenant_id' => optional($this->gmailApiSettings)->tenant_id,
-            'microsoft_graph_client_id' => optional($this->gmailApiSettings)->client_id,
-            'microsoft_graph_client_secret' => optional($this->gmailApiSettings)->client_secret,
+            'microsoft_graph_tenant_id' => optional($this->oauthApiSettings)->tenant_id,
+            'microsoft_graph_client_id' => optional($this->oauthApiSettings)->client_id,
+            'microsoft_graph_client_secret' => optional($this->oauthApiSettings)->client_secret,
         ];
     }
 

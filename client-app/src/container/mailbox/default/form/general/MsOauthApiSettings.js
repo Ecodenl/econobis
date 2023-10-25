@@ -18,23 +18,23 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                 <div className="row">
                     <InputText
                         label={'Client id'}
-                        name={'gmailApiSettings.clientId'}
-                        value={values.gmailApiSettings?.clientId}
+                        name={'oauthApiSettings.clientId'}
+                        value={values.oauthApiSettings?.clientId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
-                        error={errors.gmailApiSettings?.clientId && touched.gmailApiSettings?.clientId}
-                        errorMessage={errors.gmailApiSettings?.clientId}
+                        error={errors.oauthApiSettings?.clientId && touched.oauthApiSettings?.clientId}
+                        errorMessage={errors.oauthApiSettings?.clientId}
                     />
                     <InputText
                         label={'Object ID'}
-                        name={'gmailApiSettings.projectId'}
-                        value={values.gmailApiSettings?.projectId}
+                        name={'oauthApiSettings.projectId'}
+                        value={values.oauthApiSettings?.projectId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
-                        error={errors.gmailApiSettings?.projectId && touched.gmailApiSettings?.projectId}
-                        errorMessage={errors.gmailApiSettings?.projectId}
+                        error={errors.oauthApiSettings?.projectId && touched.oauthApiSettings?.projectId}
+                        errorMessage={errors.oauthApiSettings?.projectId}
                     />
                 </div>
                 <div className="row">
@@ -42,27 +42,27 @@ function MailboxDefaultFormGeneralMsOauthApiSettings({ values, errors, touched, 
                     <InputText
                         type={'text'}
                         label={'Client secret waarde'}
-                        name={'gmailApiSettings.clientSecret'}
-                        value={values.gmailApiSettings?.clientSecret}
+                        name={'oauthApiSettings.clientSecret'}
+                        value={values.oauthApiSettings?.clientSecret}
                         className={'numeric-password'}
                         placeholder="**********"
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
-                        error={errors.gmailApiSettings?.clientSecret && touched.gmailApiSettings?.clientSecret}
-                        errorMessage={errors.gmailApiSettings?.clientSecret}
+                        error={errors.oauthApiSettings?.clientSecret && touched.oauthApiSettings?.clientSecret}
+                        errorMessage={errors.oauthApiSettings?.clientSecret}
                     />
                 </div>
                 <div className="row">
                     <InputText
                         label={'Tenant ID'}
-                        name={'gmailApiSettings.tenantId'}
-                        value={values.gmailApiSettings?.tenantId}
+                        name={'oauthApiSettings.tenantId'}
+                        value={values.oauthApiSettings?.tenantId}
                         onChangeAction={handleChange}
                         onBlurAction={handleBlur}
                         required={'required'}
-                        error={errors.gmailApiSettings?.tenantId && touched.gmailApiSettings?.tenantId}
-                        errorMessage={errors.gmailApiSettings?.tenantId}
+                        error={errors.oauthApiSettings?.tenantId && touched.oauthApiSettings?.tenantId}
+                        errorMessage={errors.oauthApiSettings?.tenantId}
                     />
                 </div>
             </PanelBody>

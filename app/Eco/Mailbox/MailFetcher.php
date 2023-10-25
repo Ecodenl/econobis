@@ -195,7 +195,7 @@ class MailFetcher
             'date_sent' => $dateSent,
             'folder' => 'inbox',
             'imap_id' => $emailData->id,
-            'gmail_message_id' => null,
+            'msoauth_message_id' => null,
             'message_id' => $emailData->messageId,
             'status' => 'unread'
         ]);

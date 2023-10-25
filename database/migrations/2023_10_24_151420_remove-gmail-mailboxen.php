@@ -23,6 +23,10 @@ return new class extends Migration
             $table->renameColumn('gmail_message_id', 'xxx_gmail_message_id');
         });
 
+        Schema::table('mailboxes', function (Blueprint $table) {
+            $table->dropColumn('inbound_mailgun_enabled');
+        });
+
         $emails = Email::all();
         foreach ($emails as $email){
             $email->msoauth_message_id = $email->xxx_gmail_message_id;
@@ -52,6 +56,10 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::table('mailboxes', function (Blueprint $table) {
+            $table->boolean('inbound_mailgun_enabled')->default(false)->after('start_fetch_mail');
+        });
+
         Schema::table('emails', function (Blueprint $table) {
             $table->dropColumn('msoauth_message_id');
             $table->renameColumn('xxx_gmail_message_id', 'gmail_message_id');

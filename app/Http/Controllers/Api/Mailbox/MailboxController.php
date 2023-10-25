@@ -76,14 +76,11 @@ class MailboxController extends Controller
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->onEmpty(true)->next()
             ->get();
 
-        //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
-        if($data['incoming_server_type'] == "mailgun"){
-            $data['inbound_mailgun_enabled'] = 1;
-        } else {
+        //if incomingServerType is not mailgun clear some fields just to be safe
+        if($data['incoming_server_type'] != 'mailgun'){
             $data['inbound_mailgun_email'] = null;
             $data['inbound_mailgun_post_token'] = null;
             $data['inbound_mailgun_route_id'] = null;
-            $data['inbound_mailgun_enabled'] = 0;
         }
 
         $mailbox = new Mailbox($data);
@@ -151,14 +148,11 @@ class MailboxController extends Controller
             ->boolean('emailMarkAsSeen')->alias('email_mark_as_seen')->whenMissing(true)->next()
             ->get();
 
-        //if incomingServerType is "mailgun", always set inboundMailgunEnabled to 1, else clear some fields just to be safe
-        if($data['incoming_server_type'] == "mailgun"){
-            $data['inbound_mailgun_enabled'] = 1;
-        } else {
+        //if incomingServerType is not mailgun clear some fields just to be safe
+        if($data['incoming_server_type'] != 'mailgun'){
             $data['inbound_mailgun_email'] = null;
             $data['inbound_mailgun_post_token'] = null;
             $data['inbound_mailgun_route_id'] = null;
-            $data['inbound_mailgun_enabled'] = 0;
         }
 
         $mailbox->login_tries = 0;

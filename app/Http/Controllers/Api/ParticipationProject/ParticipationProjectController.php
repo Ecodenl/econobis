@@ -907,7 +907,7 @@ class ParticipationProjectController extends ApiController
         $participations = ParticipantProject::whereIn('id',
             $request->input('ids'))->with('contact')->get();
 
-        return FullParticipantProject::collection($participations);
+        return ParticipantProjectPeek::collection($participations);
     }
 
     /**

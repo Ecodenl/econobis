@@ -21,7 +21,6 @@ use App\Console\Commands\setIsCurrentSupplier;
 use Config;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use Illuminate\Support\Facades\Log;
 
 //use App\Console\Commands\deleteFloatingAttachmentFiles;
 
@@ -61,7 +60,6 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $scheduleRunId = Config::get('app.SCHEDULE_RUN_ID');
-        Log::info('SCHEDULE_RUN_ID: ' . $scheduleRunId);
 
         // Time is CET. So when scheduled for 06:00 it is run at 08:00 Amsterdam time (summertime).
         // Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).

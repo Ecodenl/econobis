@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import DataTableCustomFilterSelectString from './DataTableCustomFilterSelectString';
 import DataTableCustomFilterSelectStringWithoutNull from './DataTableCustomFilterSelectStringWithoutNull';
@@ -18,6 +18,7 @@ import DataTableDateFilter from './DataTableDateFilter';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import DataTableHousingFileFieldFilter from './DataTableHousingFileFieldFilter';
+import ContactListAddAreaToExtraFilter from '../../container/contact/list/ContactListAddAreaToExtraFilter';
 
 moment.locale('nl');
 
@@ -84,6 +85,22 @@ const DataTableCustomFilter = props => {
 
     const housingFileField = props.filter.housingFileField;
 
+    // begin constanten voor modal add area to filter
+    const [showModalAddAreaToFilter, setShowModalAddAreaToFilter] = useState(false);
+
+    const closeModalAddAreaToFilter = () => {
+        setShowModalAddAreaToFilter(false);
+    };
+
+    const addAreaToFilter = sharedArea => {
+        if (sharedArea) {
+            props.handleFilterValueChange('data', sharedArea.id, props.filterNumber);
+            props.handleFilterValueChange('showValue', sharedArea.areaName, props.filterNumber);
+        }
+        setShowModalAddAreaToFilter(false);
+    };
+    // eind constanten voor modal add area to filter
+
     return (
         <tr>
             <td className="col-md-4">
@@ -149,6 +166,13 @@ const DataTableCustomFilter = props => {
                     />
                 )}
                 {fieldType === 'dropdownHas' && (
+                    <DataTableCustomFilterSelectDropdownHas
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'searchWithAsync' && (
                     <DataTableCustomFilterSelectDropdownHas
                         handleInputChange={handleInputChange}
                         type={type}
@@ -295,9 +319,21 @@ const DataTableCustomFilter = props => {
                                     name="data"
                                     value={props.filter.data}
                                     handleInputChange={handleInputChange}
-                                    handleInputChangeDate={handleInputChangeDate}
                                     readOnly={props.filter.readOnly}
                                     housingFileField={housingFileField}
+                                />
+                            )}
+                            {fieldType === 'searchWithAsync' && (
+                                <a role="button" onClick={() => setShowModalAddAreaToFilter(true)}>
+                                    <span>
+                                        {props.filter.showValue ? props.filter.showValue : '--Willekeurige waarde--'}
+                                    </span>
+                                </a>
+                            )}
+                            {showModalAddAreaToFilter && (
+                                <ContactListAddAreaToExtraFilter
+                                    closeModalAddAreaToFilter={closeModalAddAreaToFilter}
+                                    addAreaToFilter={addAreaToFilter}
                                 />
                             )}
                         </React.Fragment>

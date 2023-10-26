@@ -1,47 +1,57 @@
 import React, { useEffect, useState } from 'react';
 import Container from 'react-bootstrap/Container';
-import Row from 'react-bootstrap/Row';
-import Col from 'react-bootstrap/Col';
 import LoadingView from '../../../components/general/LoadingView';
-import { Field, Form, Formik } from 'formik';
-import FormLabel from 'react-bootstrap/FormLabel';
-import * as Yup from 'yup';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
-import { ClipLoader } from 'react-spinners';
-import InputTextDate from '../../../components/form/InputTextDate';
 import InspectDetailsDocumentTable from './document-table';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
-import Select from '../../../components/form/Select';
-import moment from 'moment/moment';
+import VisitCoach from './action-visit/VisitCoach';
+import VisitProjectManager from './action-visit/VisitProjectManager';
+import VisitExternalParty from './action-visit/VisitExternalParty';
+import SubsidyRequestExternalParty from './action-subsidy-request/SubsidyRequestExternalParty';
+import SubsidyRequestProjectManager from './action-subsidy-request/SubsidyRequestProjectManager';
+import QuotationRequestExternalParty from './action-quotation-request/QuotationRequestExternalParty';
+import QuotationRequestCoach from './action-quotation-request/QuotationRequestCoach';
+import SubsidyRequestCoach from './action-subsidy-request/SubsidyRequestCoach';
+import QuotationRequestProjectManager from './action-quotation-request/QuotationRequestProjectManager';
+import QuotationRequestOccupant from './action-quotation-request/QuotationRequestOccupant';
+import SubsidyRequestOccupant from './action-subsidy-request/SubsidyRequestOccupant';
+import VisitOccupant from './action-visit/VisitOccupant';
 
 function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
     const [initialQuotationRequest, setInitialQuotationRequest] = useState({});
-    const [statuses, setStatuses] = useState([]);
-    const [underReview, setUnderReview] = useState(false);
-    const [approved, setApproved] = useState(false);
-    const [notApproved, setNotApproved] = useState(false);
-    const [pmApproved, setPmApproved] = useState(false);
-    const [pmNotApproved, setPmNotApproved] = useState(false);
-
-    const validationSchema = Yup.object().shape({});
+    const [initialQuotationRequestDocumenten, setInitialQuotationRequestDocumenten] = useState({});
+    const [reload, setReload] = useState(false);
+    const [reloadDocumenten, setReloadDocumenten] = useState(false);
 
     const handleSubmit = (values, actions) => {
         QuotationRequestAPI.update({
             id: match.params.id,
             dateRecorded: values.dateRecorded,
+            datePlannedAttempt1: values.datePlannedAttempt1,
+            datePlannedAttempt2: values.datePlannedAttempt2,
+            datePlannedAttempt3: values.datePlannedAttempt3,
             datePlanned: values.datePlanned,
             dateReleased: values.dateReleased,
+            dateApprovedClient: values.dateApprovedClient,
             dateApprovedProjectManager: values.dateApprovedProjectManager,
             dateApprovedExternal: values.dateApprovedExternal,
             opportunityStatusId: values.opportunity.status.id,
             opportunityActionId: values.opportunityAction.id,
+            coachOrOrganisationNote: values.coachOrOrganisationNote,
+            projectmanagerNote: values.projectmanagerNote,
             externalpartyNote: values.externalpartyNote,
-            quotationText: values.quotationText,
+            clientNote: values.clientNote,
+            quotationAmount: values.quotationAmount ? values.quotationAmount.toString().replace(',', '.') : '',
             statusId: values.status.id,
             dateUnderReview: values.dateUnderReview,
+            dateExecuted: values.dateExecuted,
+            awardAmount: values.awardAmount ? values.awardAmount.toString().replace(',', '.') : '',
+            dateUnderReviewDetermination: values.dateUnderReviewDetermination,
+            dateApprovedDetermination: values.dateApprovedDetermination,
+            amountDetermination: values.amountDetermination
+                ? values.amountDetermination.toString().replace(',', '.')
+                : '',
         }).then(response => {
             history.push('/schouwen');
         });
@@ -55,21 +65,18 @@ function InspectDetails({ match, history, user }) {
     useEffect(() => {
         QuotationRequestAPI.fetchById(match.params.id).then(response => {
             setInitialQuotationRequest(response.data);
-            QuotationRequestAPI.fetchQuotationRequestStatus(response.data.opportunityAction.id).then(payload => {
-                setStatuses(payload.data.data);
-            });
             setLoading(false);
+            setReload(false);
         });
-    }, []);
+    }, [reload == true]);
 
-    const getStatusOptions = () => {
-        return statuses.map(status => {
-            return {
-                id: status.id,
-                name: initialQuotationRequest?.opportunityAction.name + ' - ' + status.name,
-            };
+    useEffect(() => {
+        QuotationRequestAPI.fetchDocumentenById(match.params.id).then(response => {
+            setInitialQuotationRequestDocumenten(response.data);
+            setLoading(false);
+            setReloadDocumenten(false);
         });
-    };
+    }, [reloadDocumenten == true]);
 
     return (
         <Container className={'content-section'}>
@@ -77,514 +84,112 @@ function InspectDetails({ match, history, user }) {
                 <LoadingView />
             ) : (
                 <>
-                    <div>
-                        <Formik
-                            initialValues={initialQuotationRequest}
-                            enableReinitialize={true}
-                            validationSchema={validationSchema}
-                            onSubmit={handleSubmit}
-                        >
-                            {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
-                                return (
-                                    <Form>
-                                        <Row>
-                                            <Col>
-                                                <FormLabel className={'field-label'}>Naam</FormLabel>
-                                                <input
-                                                    type="text"
-                                                    className={`text-input w-input content`}
-                                                    value={initialQuotationRequest.opportunity.intake.contact.fullName}
-                                                    readOnly={true}
-                                                />
-                                                <FormLabel className={'field-label'}>Adres</FormLabel>
-                                                <input
-                                                    type="text"
-                                                    className={`text-input w-input content`}
-                                                    value={
-                                                        initialQuotationRequest.opportunity.intake.address
-                                                            .streetPostalCodeCity
-                                                    }
-                                                    readOnly={true}
-                                                />
-                                                <FormLabel className={'field-label'}>Telefoon</FormLabel>
-                                                <input
-                                                    type="text"
-                                                    className={`text-input w-input content`}
-                                                    value={
-                                                        initialQuotationRequest.opportunity.intake.contact
-                                                            .primaryphoneNumber
-                                                    }
-                                                    readOnly={true}
-                                                />
-                                                <FormLabel className={'field-label'}>Email</FormLabel>
-                                                <input
-                                                    type="text"
-                                                    className={`text-input w-input content`}
-                                                    value={
-                                                        initialQuotationRequest.opportunity.intake.contact
-                                                            .primaryEmailAddress
-                                                    }
-                                                    readOnly={true}
-                                                />
-                                                <FormLabel className={'field-label'}>Status</FormLabel>
-                                                {user.inspectionPersonTypeId === 'coach' ? (
-                                                    <Field name="status.id">
-                                                        {({ field }) => (
-                                                            <Select
-                                                                name="status.id"
-                                                                field={field}
-                                                                errors={errors}
-                                                                touched={touched}
-                                                                id="status_id"
-                                                                placeholder={'Status'}
-                                                                options={getStatusOptions()}
-                                                                emptyOption={false}
-                                                            />
-                                                        )}
-                                                    </Field>
-                                                ) : (
-                                                    <input
-                                                        type="text"
-                                                        className={`text-input w-input content`}
-                                                        value={
-                                                            initialQuotationRequest.opportunityAction.name +
-                                                            ' - ' +
-                                                            initialQuotationRequest.status.name
-                                                        }
-                                                        readOnly={true}
-                                                    />
-                                                )}
-                                                {user.inspectionPersonTypeId === 'externalparty' ? (
-                                                    <>
-                                                        <FormLabel className={'field-label'}>Omschrijving</FormLabel>
-                                                        {initialQuotationRequest.quotationText}
-                                                    </>
-                                                ) : user.inspectionPersonTypeId === 'projectmanager' ? (
-                                                    <>
-                                                        <FormLabel className={'field-label'}>Omschrijving</FormLabel>
-                                                        <Field
-                                                            name="quotationText"
-                                                            component="textarea"
-                                                            className="form-control input-sm mb-2"
-                                                        />
-                                                    </>
-                                                ) : null}
-                                                {user.inspectionPersonTypeId === 'coach' ||
-                                                initialQuotationRequest.opportunityAction.codeRef === 'visit' ? (
-                                                    <>
-                                                        <FormLabel htmlFor="date_planned" className={'field-label'}>
-                                                            Datum afspraak
-                                                        </FormLabel>
-                                                        <Field name="datePlanned">
-                                                            {({ field }) => (
-                                                                <InputTextDate
-                                                                    name="datePlanned"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_planned"
-                                                                    placeholder={'Datum afspraak'}
-                                                                    step="900"
-                                                                />
-                                                            )}
-                                                        </Field>
-                                                    </>
-                                                ) : null}
-                                                {(user.inspectionPersonTypeId === 'coach' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'quotation-request') ||
-                                                initialQuotationRequest.opportunityAction.codeRef === 'visit' ? (
-                                                    <>
-                                                        <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                                            Datum opname
-                                                        </FormLabel>
-                                                        <Field name="dateRecorded">
-                                                            {({ field }) => (
-                                                                <InputTextDate
-                                                                    name="dateRecorded"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_recorded"
-                                                                    placeholder={'Datum opname'}
-                                                                    step="900"
-                                                                />
-                                                            )}
-                                                        </Field>
-                                                    </>
-                                                ) : null}
+                    {initialQuotationRequest.opportunityAction ? (
+                        <>
+                            {initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' ? (
+                                <>
+                                    {user.inspectionPersonTypeId === 'coach' ||
+                                    (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
+                                        <QuotationRequestCoach
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'externalparty' ? (
+                                        <QuotationRequestExternalParty
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                        <QuotationRequestProjectManager
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.isOccupant === true ? (
+                                        <QuotationRequestOccupant
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
+                                <>
+                                    {user.inspectionPersonTypeId === 'coach' ||
+                                    (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
+                                        <SubsidyRequestCoach
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'externalparty' ? (
+                                        <SubsidyRequestExternalParty
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                        <SubsidyRequestProjectManager
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.isOccupant === true ? (
+                                        <SubsidyRequestOccupant
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : initialQuotationRequest.opportunityAction.codeRef === 'visit' ? (
+                                <>
+                                    {user.inspectionPersonTypeId === 'coach' ||
+                                    (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
+                                        <VisitCoach
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'externalparty' ? (
+                                        <VisitExternalParty
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                        <VisitProjectManager
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.isOccupant === true ? (
+                                        <VisitOccupant
+                                            history={history}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : null}
 
-                                                {(user.inspectionPersonTypeId === 'coach' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'quotation-request') ||
-                                                (user.inspectionPersonTypeId === 'projectmanager' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'subsidy-request') ? (
-                                                    <>
-                                                        <FormLabel htmlFor="date_released" className={'field-label'}>
-                                                            Datum uitgebracht
-                                                        </FormLabel>
-                                                        <Field name="dateReleased">
-                                                            {({ field }) => (
-                                                                <InputTextDate
-                                                                    name="dateReleased"
-                                                                    field={field}
-                                                                    type="datetime-local"
-                                                                    errors={errors}
-                                                                    touched={touched}
-                                                                    onChangeAction={setFieldValue}
-                                                                    id="date_released"
-                                                                    placeholder={'Datum uitgebracht'}
-                                                                    readOnly={user.inspectionPersonTypeId !== 'coach'}
-                                                                    step="900"
-                                                                />
-                                                            )}
-                                                        </Field>
-                                                    </>
-                                                ) : null}
-
-                                                {user.inspectionPersonTypeId === 'projectmanager' &&
-                                                initialQuotationRequest.opportunityAction.codeRef ===
-                                                    'subsidy-request' ? (
-                                                    <>
-                                                        <FormLabel
-                                                            htmlFor="date_approved_client"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum akkoord bewoner
-                                                        </FormLabel>
-                                                        <Field name="dateApprovedClient">
-                                                            {({ field }) => (
-                                                                <InputTextDate
-                                                                    field={field}
-                                                                    type="date"
-                                                                    id="date_approved_client"
-                                                                    placeholder={'Datum akkoord bewoner'}
-                                                                    readOnly={true}
-                                                                />
-                                                            )}
-                                                        </Field>
-                                                    </>
-                                                ) : null}
-                                                {user.inspectionPersonTypeId === 'projectmanager' ? (
-                                                    <>
-                                                        {initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'subsidy-request' ? (
-                                                            <>
-                                                                <FormLabel
-                                                                    htmlFor="date_approved_project_manager"
-                                                                    className={'field-label'}
-                                                                >
-                                                                    Datum akkoord projectleider
-                                                                </FormLabel>
-                                                                <div style={{ display: 'flex' }}>
-                                                                    <div>
-                                                                        <Field name="dateApprovedProjectManager">
-                                                                            {({ field }) => (
-                                                                                <InputTextDate
-                                                                                    field={field}
-                                                                                    type="date"
-                                                                                    errors={errors}
-                                                                                    touched={touched}
-                                                                                    onChangeAction={setFieldValue}
-                                                                                    id="date_approved_project_manager"
-                                                                                    placeholder={
-                                                                                        'Datum akkoord projectleider'
-                                                                                    }
-                                                                                    readOnly={
-                                                                                        // pmApproved &&
-                                                                                        user.inspectionPersonTypeId ===
-                                                                                        'projectmanager'
-                                                                                            ? false
-                                                                                            : true
-                                                                                    }
-                                                                                />
-                                                                            )}
-                                                                        </Field>
-                                                                    </div>
-                                                                    {user.inspectionPersonTypeId ===
-                                                                    'projectmanager' ? (
-                                                                        <div>
-                                                                            <Button
-                                                                                variant={
-                                                                                    pmApproved ||
-                                                                                    values.status?.codeRef ===
-                                                                                        'pm-approved'
-                                                                                        ? 'dark'
-                                                                                        : 'outline-dark'
-                                                                                }
-                                                                                size="sm"
-                                                                                onClick={() => {
-                                                                                    setPmApproved(true);
-                                                                                    setFieldValue(
-                                                                                        'dateApprovedProjectManager',
-                                                                                        moment().format('YYYY-MM-DD')
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                {pmApproved ||
-                                                                                values.status?.codeRef === 'pm-approved'
-                                                                                    ? 'Goedgekeurd'
-                                                                                    : 'Goedkeuren'}
-                                                                            </Button>
-                                                                            <Button
-                                                                                variant={
-                                                                                    pmNotApproved ||
-                                                                                    values.status?.codeRef ===
-                                                                                        'pm-not-approved'
-                                                                                        ? 'dark'
-                                                                                        : 'outline-dark'
-                                                                                }
-                                                                                size="sm"
-                                                                                onClick={() => {
-                                                                                    setPmNotApproved(true);
-                                                                                    setFieldValue(
-                                                                                        'dateApprovedProjectManager',
-                                                                                        ''
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                {pmNotApproved ||
-                                                                                values.status?.codeRef ===
-                                                                                    'pm-not-approved'
-                                                                                    ? 'Afgekeurd'
-                                                                                    : 'Niet Goedkeuren'}
-                                                                            </Button>
-                                                                        </div>
-                                                                    ) : null}
-                                                                </div>
-                                                            </>
-                                                        ) : null}
-                                                    </>
-                                                ) : null}
-                                                {user.inspectionPersonTypeId === 'projectmanager' ||
-                                                user.inspectionPersonTypeId === 'externalparty' ? (
-                                                    <>
-                                                        {initialQuotationRequest.opportunityAction.codeRef ===
-                                                            'quotation-request' ||
-                                                        initialQuotationRequest.opportunityAction.codeRef ===
-                                                            'subsidy-request' ? (
-                                                            <>
-                                                                <FormLabel
-                                                                    htmlFor="date_under_review"
-                                                                    className={'field-label'}
-                                                                >
-                                                                    Datum in behandeling
-                                                                </FormLabel>
-                                                                <div style={{ display: 'flex' }}>
-                                                                    <div>
-                                                                        <Field name="dateUnderReview">
-                                                                            {({ field }) => (
-                                                                                <InputTextDate
-                                                                                    field={field}
-                                                                                    type="date"
-                                                                                    errors={errors}
-                                                                                    touched={touched}
-                                                                                    onChangeAction={setFieldValue}
-                                                                                    id="date_under_review"
-                                                                                    placeholder={'Datum in behandeling'}
-                                                                                    readOnly={
-                                                                                        user.inspectionPersonTypeId !==
-                                                                                            'projectmanager' &&
-                                                                                        (underReview ||
-                                                                                            values.status?.codeRef ===
-                                                                                                'under-review')
-                                                                                            ? false
-                                                                                            : true
-                                                                                    }
-                                                                                />
-                                                                            )}
-                                                                        </Field>
-                                                                    </div>
-                                                                    {user.inspectionPersonTypeId === 'externalparty' ? (
-                                                                        <div>
-                                                                            <Button
-                                                                                variant={
-                                                                                    underReview ||
-                                                                                    values.status?.codeRef ===
-                                                                                        'under-review'
-                                                                                        ? 'dark'
-                                                                                        : 'outline-dark'
-                                                                                }
-                                                                                size="sm"
-                                                                                onClick={() => {
-                                                                                    setUnderReview(true);
-                                                                                    setFieldValue(
-                                                                                        'dateUnderReview',
-                                                                                        moment().format('YYYY-MM-DD')
-                                                                                    );
-                                                                                }}
-                                                                            >
-                                                                                {underReview ||
-                                                                                values.status?.codeRef ===
-                                                                                    'under-review'
-                                                                                    ? 'In behandeling'
-                                                                                    : 'In behandeling nemen'}
-                                                                            </Button>
-                                                                        </div>
-                                                                    ) : null}
-                                                                </div>
-                                                            </>
-                                                        ) : null}
-                                                    </>
-                                                ) : null}
-                                                {(user.inspectionPersonTypeId === 'coach' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'quotation-request') ||
-                                                (user.inspectionPersonTypeId === 'projectmananger' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'subsidy-request') ||
-                                                (user.inspectionPersonTypeId === 'externalparty' &&
-                                                    initialQuotationRequest.opportunityAction.codeRef !== 'visit') ? (
-                                                    <>
-                                                        <FormLabel
-                                                            htmlFor="date_approved_external"
-                                                            className={'field-label'}
-                                                        >
-                                                            Datum akkoord extern
-                                                        </FormLabel>
-                                                        <div style={{ display: 'flex' }}>
-                                                            <div>
-                                                                <Field name="dateApprovedExternal">
-                                                                    {({ field }) => (
-                                                                        <InputTextDate
-                                                                            field={field}
-                                                                            type="date"
-                                                                            errors={errors}
-                                                                            touched={touched}
-                                                                            onChangeAction={setFieldValue}
-                                                                            id="date_approved_external"
-                                                                            placeholder={'Datum akkoord extern'}
-                                                                            readOnly={
-                                                                                ((user.inspectionPersonTypeId ===
-                                                                                    'coach' &&
-                                                                                    initialQuotationRequest
-                                                                                        .opportunityAction.codeRef ===
-                                                                                        'quotation-request') ||
-                                                                                    (user.inspectionPersonTypeId ===
-                                                                                        'externalparty' &&
-                                                                                        initialQuotationRequest
-                                                                                            .opportunityAction
-                                                                                            .codeRef !== 'visit')) &&
-                                                                                (approved ||
-                                                                                    values.status?.codeRef ===
-                                                                                        'approved')
-                                                                                    ? false
-                                                                                    : true
-                                                                            }
-                                                                        />
-                                                                    )}
-                                                                </Field>
-                                                            </div>
-                                                            {user.inspectionPersonTypeId === 'externalparty' ? (
-                                                                <div>
-                                                                    <Button
-                                                                        variant={
-                                                                            approved ||
-                                                                            values.status?.codeRef === 'approved'
-                                                                                ? 'dark'
-                                                                                : 'outline-dark'
-                                                                        }
-                                                                        size="sm"
-                                                                        onClick={() => {
-                                                                            setApproved(true);
-                                                                            setFieldValue(
-                                                                                'dateApprovedExternal',
-                                                                                moment().format('YYYY-MM-DD')
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        {approved ||
-                                                                        values.status?.codeRef === 'approved'
-                                                                            ? 'Goedgekeurd'
-                                                                            : 'Goedkeuren'}
-                                                                    </Button>
-
-                                                                    <Button
-                                                                        variant={
-                                                                            notApproved ||
-                                                                            values.status?.codeRef === 'not-approved'
-                                                                                ? 'dark'
-                                                                                : 'outline-dark'
-                                                                        }
-                                                                        size="sm"
-                                                                        onClick={() => {
-                                                                            setNotApproved(true);
-                                                                            setFieldValue('dateApprovedExternal', '');
-                                                                        }}
-                                                                    >
-                                                                        {notApproved ||
-                                                                        values.status?.codeRef === 'not-approved'
-                                                                            ? 'Afgekeurd'
-                                                                            : 'Niet Goedkeuren'}
-                                                                    </Button>
-                                                                </div>
-                                                            ) : null}
-                                                        </div>
-                                                    </>
-                                                ) : null}
-
-                                                {user.inspectionPersonTypeId === 'externalparty' &&
-                                                (initialQuotationRequest.opportunityAction.codeRef ===
-                                                    'quotation-request' ||
-                                                    initialQuotationRequest.opportunityAction.codeRef ===
-                                                        'subsidy-request') ? (
-                                                    <>
-                                                        <FormLabel className={'field-label'}>Opmerkingen</FormLabel>
-                                                        <Field
-                                                            name="externalpartyNote"
-                                                            component="textarea"
-                                                            className="form-control input-sm mb-2"
-                                                        />
-                                                    </>
-                                                ) : null}
-                                            </Col>
-                                        </Row>
-                                        <Row>
-                                            <Col>
-                                                <ButtonGroup className="float-right">
-                                                    <Button
-                                                        variant={'outline-dark'}
-                                                        size="sm"
-                                                        onClick={function() {
-                                                            history.push(`/schouwen`);
-                                                        }}
-                                                    >
-                                                        Annuleren
-                                                    </Button>
-                                                    <Button
-                                                        className={'w-button'}
-                                                        size="sm"
-                                                        onClick={handleSubmit}
-                                                        disabled={isSubmitting}
-                                                    >
-                                                        {isSubmitting ? (
-                                                            <span>
-                                                                <ClipLoader color={'white'} size={14} />
-                                                                Bezig met opslaan
-                                                            </span>
-                                                        ) : (
-                                                            'Opslaan'
-                                                        )}
-                                                    </Button>
-                                                </ButtonGroup>
-                                            </Col>
-                                        </Row>
-                                    </Form>
-                                );
-                            }}
-                        </Formik>
-                    </div>
-
-                    <InspectDetailsDocumentTable
-                        quotationRequestId={match.params.id}
-                        documents={initialQuotationRequest.documents}
-                        previewDocument={previewDocument}
-                    />
+                            {(initialQuotationRequest.opportunityAction.codeRef === 'visit' &&
+                                user.inspectionPersonTypeId !== 'projectmanager' &&
+                                user.inspectionPersonTypeId !== 'externalparty') ||
+                            (initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' &&
+                                user.inspectionPersonTypeId !== 'externalparty') ||
+                            initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
+                                <InspectDetailsDocumentTable
+                                    quotationRequestId={match.params.id}
+                                    documents={initialQuotationRequestDocumenten.documents}
+                                    previewDocument={previewDocument}
+                                    setReloadDocumenten={setReloadDocumenten}
+                                />
+                            ) : null}
+                        </>
+                    ) : null}
                 </>
             )}
         </Container>

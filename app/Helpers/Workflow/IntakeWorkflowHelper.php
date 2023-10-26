@@ -93,6 +93,7 @@ class IntakeWorkflowHelper
         $quotationRequest->status_id = $quotationRequestStatus->id;
         $quotationRequest->date_planned_to_send_wf_email_status = null;
         $quotationRequest->quotation_text = $opportunity = '';
+        $quotationRequest->quotation_amount = 0;
         $quotationRequest->save();
 
         return true;

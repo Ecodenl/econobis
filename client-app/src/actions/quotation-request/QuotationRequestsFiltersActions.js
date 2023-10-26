@@ -13,6 +13,11 @@ export const setQuotationRequestAddressFilter = address => ({
     address,
 });
 
+export const setQuotationRequestAreaNameFilter = areaName => ({
+    type: 'SET_FILTER_QUOTATION_REQUEST_AREA_NAME',
+    areaName,
+});
+
 export const setQuotationRequestCampaignFilter = campaign => ({
     type: 'SET_FILTER_QUOTATION_REQUEST_CAMPAIGN',
     campaign,

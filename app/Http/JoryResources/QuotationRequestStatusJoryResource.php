@@ -40,5 +40,8 @@ class QuotationRequestStatusJoryResource extends JoryResource
         $this->field('code_ref')->filterable()->sortable();
         $this->field('opportunity_action_id')->filterable()->sortable();
         $this->field('order')->filterable()->sortable();
+
+        // Attributes
+        $this->field('opportunity_action_name')->filterable()->sortable();
     }
 }

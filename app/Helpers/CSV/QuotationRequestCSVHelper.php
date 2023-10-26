@@ -76,6 +76,8 @@ class QuotationRequestCSVHelper
                 $quotationRequest->addition = ($address ? $address->addition : '');
                 $quotationRequest->postal_code = ($address ? $address->postal_code : '');
                 $quotationRequest->city = ($address ? $address->city : '');
+                $quotationRequest->area_name = ($address ? $address->shared_area_name : '');
+                $quotationRequest->district_name = (($address && $address->getSharedPostalCodesHouseNumber()) ? $address->getSharedPostalCodesHouseNumber()->sharedArea->district_name : '');
                 $quotationRequest->country = (($address && $address->country) ? $address->country->name : '');
 
                 // person/$quotationRequest fields
@@ -100,9 +102,10 @@ class QuotationRequestCSVHelper
                 'date_released' => 'Datum uitgebracht',
                 'date_approved_client' => 'Datum akkoord bewoner',
                 'date_approved_project_manager' => 'Datum akkoord projectleider',
-                'date_under_review' => 'Datum in behandeling',
-                'date_approved_external' => 'Datum akkoord extern',
+                'date_under_review' => 'Datum toekenning in behandeling',
+                'date_approved_external' => 'Datum akkoord toekenning',
                 'quotation_text' => 'Offerte omschrijving',
+                'quotation_amount' => 'Offerte bedrag',
                 'opportunity.intake.contact.full_name' => 'Contact',
                 'title.name' => 'Persoon titel',
                 'initials' => 'Persoon initialen',
@@ -114,6 +117,8 @@ class QuotationRequestCSVHelper
                 'addition' => 'Toevoeging',
                 'postal_code' => 'Postcode',
                 'city' => 'Plaats',
+                'area_name' => 'Buurt',
+                'district_name' => 'Wijk',
                 'country' => 'Land',
                 'opportunity.number' => 'Kans ID',
                 'opportunity.measureCategory.name' => 'Maatregel categorie',

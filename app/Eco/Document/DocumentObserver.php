@@ -8,6 +8,7 @@
 
 namespace App\Eco\Document;
 
+use App\Helpers\Settings\PortalSettings;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,7 +22,15 @@ class DocumentObserver
         $document->number = 'temp';
 
         $userId = Auth::id();
-        $document->created_by_id = $userId;
+        if(Auth::isPortalUser()) {
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if ($responsibleUserId) {
+                $document->created_by_id = $responsibleUserId;
+            }
+            $document->created_by_portal_user_id = $userId;
+        } else {
+            $document->created_by_id = $userId;
+        }
     }
 
     public function created(Document $document)

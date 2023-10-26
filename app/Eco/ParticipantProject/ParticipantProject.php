@@ -257,12 +257,12 @@ class ParticipantProject extends Model
 
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution
-    public function getParticipantInDefinitiveRevenueAttribute()
-    {
-        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
-        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
-        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
-    }
+//    public function getParticipantInDefinitiveRevenueAttribute()
+//    {
+//        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
+//        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
+//        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
+//    }
 
     public function getParticipantBelongsToMembershipGroupAttribute()
     {

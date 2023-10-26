@@ -19,7 +19,7 @@ return new class extends Migration
             $table->unsignedInteger('schedule_run_id');
             $table->string('scheduled_commands_command_ref');
             $table->dateTime('start_at');
-            $table->dateTime('end_at');
+            $table->dateTime('end_at')->nullable();
             $table->boolean('finished');
         });
     }

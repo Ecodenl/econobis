@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\Schedule\CommandRun;
 use App\Eco\Task\Task;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use Carbon\Carbon;
@@ -41,6 +42,15 @@ class processWorkflowEmailExpiredTask extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         $tasksToProcess = Task::where('finished', false)
             ->whereNull('date_sent_wf_expired_task')
             ->where('date_planned_finish','<', Carbon::now()->startOfDay()->toDateString())
@@ -58,6 +68,10 @@ class processWorkflowEmailExpiredTask extends Command
                 $task->save();
             }
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
 
         Log::info("Emails verstuurd verlopen taken.");
     }

@@ -2,7 +2,9 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Artisan;
 
 class controleScripts extends Command
@@ -31,6 +33,15 @@ class controleScripts extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         Artisan::call('revenue:checkMissingEnergySuppliersInAddress');
         Artisan::call('revenue:checkWrongDistributionParts');
         Artisan::call('revenue:checkWrongEnergySupplierDataInParts');
@@ -42,6 +53,10 @@ class controleScripts extends Command
         Artisan::call('participants:checkFirstStartingDate');
         Artisan::call('participants:checkTerminationDate');
 //        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
 
     }
 

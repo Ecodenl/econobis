@@ -6,6 +6,7 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
 use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailFetcherMsOauth;
+use App\Eco\Schedule\CommandRun;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
@@ -43,6 +44,15 @@ class checkMailboxes extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();
         foreach ($mailboxes as $mailbox) {
             //In construct wordt gelijk valid gekeken
@@ -68,6 +78,10 @@ class checkMailboxes extends Command
                 $mailbox2->save();
             }
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
 
         Log::info('Mailboxen gecheckt om ' . Carbon::now()->format('Y-m-d H:i:s') . '.');
     }

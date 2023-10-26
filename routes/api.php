@@ -1,7 +1,15 @@
 <?php
 
+use App\Http\Controllers\Api\Email\EmailAttachmentController;
+use App\Http\Controllers\Api\Email\EmailDetailsController;
+use App\Http\Controllers\Api\Email\EmailGenericController;
+use App\Http\Controllers\Api\Email\EmailSendController;
+use App\Http\Controllers\Api\Email\EmailSplitviewController;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
+use App\Http\Controllers\Api\Mailbox\MailgunDomainBounceController;
+use App\Http\Controllers\Api\Mailbox\MailgunDomainComplaintController;
+use App\Http\Controllers\Api\Mailbox\MailgunEventController;
 use App\Http\Middleware\EncryptCookies;
 use Illuminate\Session\Middleware\StartSession;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
@@ -27,6 +35,12 @@ Route::get('password/reset/{token}', [
 Route::namespace('Api')
     ->middleware(['auth:api', 'scopes:use-app', 'two-factor'])
     ->group(function () {
+
+// Todo WM: check rewrite code:  Shared api's. Naar namespce 'Shared' ??
+
+        Route::get('/shared-area/search', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@searchArea');
+        Route::get('/shared-area/{sharedArea}', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@show');
+        Route::post('/shared-area/shared-area-details', '\App\Http\Controllers\Shared\SharedArea\SharedAreaController@getSharedAreaDetails');
 
         Route::get('/jobs', 'Job\JobController@getLastJobs');
 
@@ -295,6 +309,7 @@ Route::namespace('Api')
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
+        Route::get('mailbox/for-user/{user}/email-peek', 'Mailbox\MailboxController@forUserEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
         Route::post('mailbox', 'Mailbox\MailboxController@store');
         Route::post('mailbox/ignore', 'Mailbox\MailboxController@storeIgnore');
@@ -329,7 +344,6 @@ Route::namespace('Api')
 
         Route::get('email/grid/in-folder/{folder}', 'Email\EmailController@grid');
         Route::get('email/search', 'Email\EmailController@search');
-        Route::get('email/amount-open', 'Email\EmailController@getAmountOfOpenEmails');
         Route::get('email/{email}', 'Email\EmailController@show');
         Route::get('email/{email}/reply', 'Email\EmailController@getReply');
         Route::get('email/{email}/reply-all', 'Email\EmailController@getReplyAll');
@@ -348,6 +362,46 @@ Route::namespace('Api')
         Route::post('email/concept/{email}/update2', 'Email\EmailController@updateConcept2');
         Route::post('email/concept/{email}/send', 'Email\EmailController@sendConcept');
         Route::post('email/{email}/status/{emailStatusId}', 'Email\EmailController@setEmailStatus');
+
+        /**
+         * Email splitview
+         */
+        Route::get('email-splitview/select-list', [EmailSplitviewController::class, 'selectList']);
+        Route::get('email-splitview/{email}', [EmailSplitviewController::class, 'show']);
+
+        /**
+         * Email generic
+         */
+        Route::post('email-generic/delete-multiple', [EmailGenericController::class, 'deleteMultiple']);
+        Route::post('email-generic/update-multiple', [EmailGenericController::class, 'updateMultiple']);
+        Route::post('email-generic', [EmailGenericController::class, 'store']);
+        Route::post('email-generic/store-group-mail/{contactGroup}', [EmailGenericController::class, 'storeGroupMail']);
+        Route::post('email-generic/{email}', [EmailGenericController::class, 'update']);
+        Route::post('email-generic/{email}/store-reply', [EmailGenericController::class, 'storeReply']);
+        Route::post('email-generic/{email}/store-reply-all', [EmailGenericController::class, 'storeReplyAll']);
+        Route::post('email-generic/{email}/store-forward', [EmailGenericController::class, 'storeForward']);
+        Route::post('email-generic/{email}/create-contact', [EmailGenericController::class, 'createContact']);
+        Route::get('email-generic/amount-open', [EmailGenericController::class, 'getAmountOfOpenEmails']);
+
+        /**
+         * Email details
+         */
+        Route::get('email-details/{email}', [EmailDetailsController::class, 'show']);
+
+        /**
+         * Email send modal
+         */
+        Route::get('email-send/{email}', [EmailSendController::class, 'show']);
+        Route::post('email-send/{email}/save-concept', [EmailSendController::class, 'saveConcept']);
+        Route::post('email-send/{email}/send', [EmailSendController::class, 'send']);
+
+        /**
+         * Email attachments
+         */
+        Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
+        Route::post('email-attachment/{emailAttachment}/delete', [EmailAttachmentController::class, 'delete']);
+        Route::post('email/{email}/add-documents-as-attachments', [EmailAttachmentController::class, 'addDocumentsAsAttachments']);
+        Route::post('email/{email}/attachment', [EmailAttachmentController::class, 'store']);
 
         Route::get('email-template/grid', 'EmailTemplate\EmailTemplateController@grid');
         Route::get('email-template/peek', 'EmailTemplate\EmailTemplateController@peek');
@@ -562,9 +616,19 @@ Route::namespace('Api')
         Route::post('webform/{webform}', 'Webform\WebformController@update');
         Route::post('webform/{webform}/delete', 'Webform\WebformController@delete');
 
+        Route::post('mailgun-event/fetch-from-mailgun', [MailgunEventController::class, 'fetchFromMailgun']);
+
         Route::get('mailgun-domain/jory', 'Mailbox\MailgunDomainController@jory');
         Route::post('mailgun-domain', 'Mailbox\MailgunDomainController@store');
         Route::post('mailgun-domain/{mailgunDomain}', 'Mailbox\MailgunDomainController@update');
+
+        Route::get('mailgun-domain/{mailgunDomain}/bounce', [MailgunDomainBounceController::class, 'index']);
+        Route::post('mailgun-domain/{mailgunDomain}/bounce', [MailgunDomainBounceController::class, 'create']);
+        Route::post('mailgun-domain/{mailgunDomain}/bounce/{address}/delete', [MailgunDomainBounceController::class, 'delete']);
+
+        Route::get('mailgun-domain/{mailgunDomain}/complaint', [MailgunDomainComplaintController::class, 'index']);
+        Route::post('mailgun-domain/{mailgunDomain}/complaint', [MailgunDomainComplaintController::class, 'create']);
+        Route::post('mailgun-domain/{mailgunDomain}/complaint/{address}/delete', [MailgunDomainComplaintController::class, 'delete']);
 
         Route::get('vat-code/jory', 'VatCode\VatCodeController@jory');
         Route::post('vat-code', 'VatCode\VatCodeController@store');
@@ -638,6 +702,9 @@ Route::namespace('Api')
         Route::post('cooperation', 'Cooperation\CooperationController@store');
         Route::post('cooperation/{cooperation}', 'Cooperation\CooperationController@update');
         Route::post('cooperation/{cooperation}/sync-all-with-laposta', 'Cooperation\CooperationController@syncAllWithLaposta');
+        Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
+        Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
+        Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

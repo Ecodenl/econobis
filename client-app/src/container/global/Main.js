@@ -1,17 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, {Component} from 'react';
+import {connect} from 'react-redux';
+import {bindActionCreators} from 'redux';
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
 
-import { toggleSidebarClose, toggleSidebarOpen } from '../../actions/general/SidebarActions';
-import { fetchMeDetails } from '../../actions/general/MeDetailsActions';
-import { fetchSystemData } from '../../actions/general/SystemDataActions';
+import {toggleSidebarClose, toggleSidebarOpen} from '../../actions/general/SidebarActions';
+import {fetchMeDetails} from '../../actions/general/MeDetailsActions';
+import {fetchSystemData} from '../../actions/general/SystemDataActions';
 import NavHeader from '../../components/navigationHeader/NavHeader';
 import Sidebar from '../../components/navigationSidebar/Sidebar';
 import LoadingPage from './LoadingPage';
 import ErrorPage from './ErrorPage';
 import Content from './Content';
+import {EmailModalProvider} from "../../context/EmailModalContext";
 
 class Main extends Component {
     constructor(props) {
@@ -96,7 +97,7 @@ class Main extends Component {
         return (
             <div>
                 {this.props.systemDataHasError || this.props.meDetailsHasError ? (
-                    <ErrorPage />
+                    <ErrorPage/>
                 ) : this.props.systemDataLoaded && this.props.meDetailsLoaded ? (
                     <BlockUi
                         tag="div"
@@ -104,42 +105,44 @@ class Main extends Component {
                         className={'full-screen-loading'}
                         message={'Moment geduld, de gegevens worden opgehaald'}
                     >
-                        <div className="wrapper">
-                            <div>
-                                <NavHeader
-                                    menuStuck={this.state.menuStuck}
-                                    toggleMenuStuck={this.toggleMenuStuck}
-                                    toggleChangePassword={this.toggleChangePassword}
-                                    toggleTwoFactorSettings={this.toggleTwoFactorSettings}
-                                    toggleAboutUs={this.toggleAboutUs}
-                                />
-                                <Sidebar
-                                    onMenuEnter={this.onMenuEnter}
-                                    onMenuLeave={this.onMenuLeave}
-                                    menuActive={this.state.menuActive}
-                                    menuStuck={this.state.menuStuck}
-                                />
-                            </div>
+                        <EmailModalProvider>
+                            <div className="wrapper">
+                                <div>
+                                    <NavHeader
+                                        menuStuck={this.state.menuStuck}
+                                        toggleMenuStuck={this.toggleMenuStuck}
+                                        toggleChangePassword={this.toggleChangePassword}
+                                        toggleTwoFactorSettings={this.toggleTwoFactorSettings}
+                                        toggleAboutUs={this.toggleAboutUs}
+                                    />
+                                    <Sidebar
+                                        onMenuEnter={this.onMenuEnter}
+                                        onMenuLeave={this.onMenuLeave}
+                                        menuActive={this.state.menuActive}
+                                        menuStuck={this.state.menuStuck}
+                                    />
+                                </div>
 
-                            <div className={contentClass}>
-                                <div className="container-fluid">
-                                    <div className="col-md-12">
-                                        <Content
-                                            children={this.props.children}
-                                            toggleChangePassword={this.toggleChangePassword}
-                                            toggleTwoFactorSettings={this.toggleTwoFactorSettings}
-                                            changePasswordActive={this.state.changePasswordActive}
-                                            twoFactorSettingsActive={this.state.twoFactorSettingsActive}
-                                            toggleAboutUs={this.toggleAboutUs}
-                                            showAboutUs={this.state.showAboutUs}
-                                        />
+                                <div className={contentClass}>
+                                    <div className="container-fluid">
+                                        <div className="col-md-12">
+                                            <Content
+                                                children={this.props.children}
+                                                toggleChangePassword={this.toggleChangePassword}
+                                                toggleTwoFactorSettings={this.toggleTwoFactorSettings}
+                                                changePasswordActive={this.state.changePasswordActive}
+                                                twoFactorSettingsActive={this.state.twoFactorSettingsActive}
+                                                toggleAboutUs={this.toggleAboutUs}
+                                                showAboutUs={this.state.showAboutUs}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
+                        </EmailModalProvider>
                     </BlockUi>
                 ) : (
-                    <LoadingPage />
+                    <LoadingPage/>
                 )}
             </div>
         );
@@ -159,6 +162,6 @@ function mapStateToProps(state) {
 }
 
 const mapDispatchToProps = dispatch =>
-    bindActionCreators({ fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen }, dispatch);
+    bindActionCreators({fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen}, dispatch);
 
 export default connect(mapStateToProps, mapDispatchToProps)(Main);

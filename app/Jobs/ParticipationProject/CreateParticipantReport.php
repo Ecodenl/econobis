@@ -1,16 +1,10 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 04-01-2018
- * Time: 16:06
- */
 
 namespace App\Jobs\ParticipationProject;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\User\User;
@@ -34,8 +28,9 @@ class CreateParticipantReport implements ShouldQueue
     private $emailTemplateId;
     private $showOnPortal;
     private $userId;
+    private Email $email;
 
-    public function __construct($participantId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId)
+    public function __construct($participantId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId, Email $email)
     {
         $this->participantId = $participantId;
         $participant = ParticipantProject::find($participantId);
@@ -48,6 +43,7 @@ class CreateParticipantReport implements ShouldQueue
         $this->emailTemplateId = $emailTemplateId;
         $this->showOnPortal = $showOnPortal;
         $this->userId = $userId;
+        $this->email = $email;
 
         $jobLog = new JobsLog();
         $jobLog->value = 'Start deelnemer '.$this->participantFullName.' ('.$participantId.') rapportage.';
@@ -88,10 +84,21 @@ class CreateParticipantReport implements ShouldQueue
             $jobLog->user_id = $this->userId;
             $jobLog->job_category_id = 'participant';
             $jobLog->save();
+
+            /**
+             * Gekoppelde email bijwerken voor weergave in verzonden items.
+             */
+            $participantProject = ParticipantProject::find($this->participantId);
+            $emailAddress = optional(optional($participantProject)->contact)->primaryEmailAddress;
+            if($emailAddress){
+                $this->email->contacts()->attach($emailAddress->contact_id);
+                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->save();
+            }
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Rapportage deelnemer ('.$this->participantId.') rapportage mislukt.';

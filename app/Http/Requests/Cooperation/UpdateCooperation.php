@@ -40,7 +40,6 @@ class UpdateCooperation extends FormRequest
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
-            'hoomCampaignId' => [''],
             'sendEmail' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
@@ -54,6 +53,9 @@ class UpdateCooperation extends FormRequest
             'inspectionReleasedEmailTemplateId' => [''],
             'createContactsForReportTable' => [''],
             'emailReportTableProblems' => ['email'],
+            'fontFamilyDefault' => [''],
+            'fontSizeDefault' => [''],
+            'fontColorDefault' => [''],
         ];
     }
 }

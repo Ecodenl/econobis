@@ -9,8 +9,8 @@
 namespace App\Jobs\RevenueKwh;
 
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\User\User;
@@ -34,8 +34,9 @@ class CreateRevenuesKwhReport implements ShouldQueue
     private $emailTemplateId;
     private $showOnPortal;
     private $userId;
+    private Email $email;
 
-    public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId)
+    public function __construct($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId, $email)
     {
         $this->distributionId = $distributionId;
         $distribution = RevenueDistributionKwh::find($distributionId);
@@ -48,6 +49,7 @@ class CreateRevenuesKwhReport implements ShouldQueue
         $this->emailTemplateId = $emailTemplateId;
         $this->showOnPortal = $showOnPortal;
         $this->userId = $userId;
+        $this->email = $email;
 
         $jobLog = new JobsLog();
         $jobLog->value = 'Start opbrengstverdeling deelnemer '.$this->distributionFullName.' ('.$distributionId.') rapportage.';
@@ -88,10 +90,21 @@ class CreateRevenuesKwhReport implements ShouldQueue
             $jobLog->user_id = $this->userId;
             $jobLog->job_category_id = 'revenue';
             $jobLog->save();
+
+            /**
+             * Gekoppelde email bijwerken voor weergave in verzonden items.
+             */
+            $distributionKwh = RevenueDistributionKwh::find($this->distributionId);
+            $emailAddress = optional(optional($distributionKwh)->contact)->primaryEmailAddress;
+            if($emailAddress){
+                $this->email->contacts()->attach($emailAddress->contact_id);
+                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->save();
+            }
         }
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = 'Opbrengstverdeling deelnemer ('.$this->distributionId.') rapportage mislukt.';

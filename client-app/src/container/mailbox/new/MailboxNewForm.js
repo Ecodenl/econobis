@@ -32,6 +32,7 @@ function MailboxNewForm({ fetchSystemData }) {
             projectId: '',
             clientId: '',
             clientSecret: '',
+            tenantId: '',
         },
     };
 

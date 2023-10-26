@@ -37,4 +37,8 @@ class QuotationRequestStatus extends Model
         return $this->belongsTo(OpportunityAction::class, 'opportunity_action_id');
     }
 
+    public function getOpportunityActionNameAttribute()
+    {
+        return $this->opportunityAction->name;
+    }
 }

@@ -804,7 +804,7 @@ class RevenueFormEdit extends Component {
                         <div className="row">
                             <InputText
                                 type={'number'}
-                                label={'Opbrengst kWh €'}
+                                label={'Teruggave EB per kWh €'}
                                 name={'payoutKwh'}
                                 value={
                                     payoutKwh &&
@@ -850,11 +850,7 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={
-                                            projectTypeCodeRef === 'loan'
-                                                ? 'of uitkeringsbedrag (per deelname)'
-                                                : 'of uitkeringsbedrag (per participatie)'
-                                        }
+                                        label={'of uitkeringsbedrag per deelname'}
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}
@@ -898,6 +894,10 @@ class RevenueFormEdit extends Component {
                                         name={'revenue'}
                                         value={revenue}
                                         onChangeAction={this.handleInputChange}
+                                        size={'col-sm-5'}
+                                        textToolTip={
+                                            'Vul hier hier het totaal resultaat in dat je wilt verdelen over alle deelnemers. Econobis maakt vanuit dit totaal de verdeling per deelnemer'
+                                        }
                                     />
                                 </div>
                             </React.Fragment>
@@ -926,11 +926,7 @@ class RevenueFormEdit extends Component {
                                     />
                                     <InputText
                                         type={'number'}
-                                        label={
-                                            projectTypeCodeRef === 'loan'
-                                                ? 'of aflossingsbedrag (per deelname)'
-                                                : 'of aflossingsbedrag (per participatie)'
-                                        }
+                                        label={'of aflossingsbedrag per deelname'}
                                         name={'payAmount'}
                                         value={payAmount}
                                         onChangeAction={this.handleInputChange}

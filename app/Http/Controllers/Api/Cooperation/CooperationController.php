@@ -9,11 +9,15 @@
 namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationHoomCampaign;
 use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
+use App\Http\Requests\Cooperation\CreateCooperationHoomCampaign;
 use App\Http\Requests\Cooperation\UpdateCooperation;
+use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
+use App\Http\Resources\Cooperation\FullCooperationHoomCampaign;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -27,7 +31,7 @@ class CooperationController extends ApiController
 
         $cooperation = Cooperation::first();
 
-        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate']);
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns']);
 
         return FullCooperation::make($cooperation);
     }
@@ -37,9 +41,6 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperation = new Cooperation($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -74,7 +75,7 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
     }
 
     public function update(UpdateCooperation $request, Cooperation $cooperation)
@@ -84,9 +85,7 @@ class CooperationController extends ApiController
         $currentCreateContactsForReportTable = $cooperation->create_contacts_for_report_table;
 
         $cooperation->fill($request->validatedSnake());
-        if($cooperation->hoom_campaign_id == '') {
-            $cooperation->hoom_campaign_id = null;
-        }
+
         if($cooperation->hoom_group_id == '') {
             $cooperation->hoom_group_id = null;
         }
@@ -128,13 +127,44 @@ class CooperationController extends ApiController
             $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
-        return $this->show($cooperation);
+        return $this->show();
+    }
+
+    public function storeHoomCampaign(CreateCooperationHoomCampaign $request)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign = new CooperationHoomCampaign($request->validatedSnake());
+        if($cooperationHoomCampaign->measure_id == '') {
+            $cooperationHoomCampaign->measure_id = null;
+        }
+        $cooperationHoomCampaign->save();
+
+        return FullCooperationHoomCampaign::make($cooperationHoomCampaign);
+    }
+    public function updateHoomCampaign(UpdateCooperationHoomCampaign $request, CooperationHoomCampaign $cooperationHoomCampaign)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign->fill($request->validatedSnake());
+
+        if($cooperationHoomCampaign->measure_id == '') {
+            $cooperationHoomCampaign->measure_id = null;
+        }
+        $cooperationHoomCampaign->save();
+
+        return FullCooperationHoomCampaign::make($cooperationHoomCampaign);
+    }
+    public function destroyHoomCampaign(CooperationHoomCampaign $cooperationHoomCampaign)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationHoomCampaign->delete();
     }
 
     private function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('cooperation')->getDriver()->getAdapter()->getPathPrefix()
-            . DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo';
+        $storageDir = Storage::disk('cooperation')->path(DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

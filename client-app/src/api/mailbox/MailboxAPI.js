@@ -51,6 +51,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchMailboxesForUserPeek: (userId) => {
+        const requestUrl = `${URL_MAILBOX}/for-user/${userId}/email-peek`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     receiveMailFromMailboxesUser: () => {
         const requestUrl = `${URL_MAILBOX}/receive/from-mailboxes-user`;
 

@@ -44,6 +44,16 @@ class UserPolicy
         return $user->hasPermissionTo('manage_user', 'api');
     }
 
+    public function updateDefaultMailbox(User $user, User $model)
+    {
+        // update default mailbox voor die deze permission hebben (via role_has_permissions) of voor gebruiker zelf
+        if($user->id === $model->id){
+            return true;
+        }
+
+        return $user->hasPermissionTo('manage_user', 'api');
+    }
+
     /**
      * Determine whether the user can delete the model.
      *

@@ -41,7 +41,11 @@ class InvoiceDetailsHarmonica extends Component {
     }
 
     newTask = type => {
-        hashHistory.push(`/taak/nieuw/${type}/nota/${this.props.invoiceDetails.id}`);
+        if (this.props.invoiceDetails) {
+            hashHistory.push(
+                `/taak/nieuw/${type}/nota/${this.props.invoiceDetails.id}/order/${this.props.invoiceDetails.orderId}/contact/${this.props.invoiceDetails.contactId}`
+            );
+        }
     };
 
     newEmail = () => {

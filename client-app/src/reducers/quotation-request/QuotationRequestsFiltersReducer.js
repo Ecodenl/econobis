@@ -15,6 +15,10 @@ const filtersReducerDefaultState = {
         field: 'address',
         data: '',
     },
+    areaName: {
+        field: 'areaName',
+        data: '',
+    },
     measure: {
         field: 'measure',
         data: '',
@@ -69,6 +73,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
+                },
+            };
+        case 'SET_FILTER_QUOTATION_REQUEST_AREA_NAME':
+            return {
+                ...state,
+                areaName: {
+                    ...state.areaName,
+                    data: action.areaName,
                 },
             };
         case 'SET_FILTER_QUOTATION_REQUEST_CAMPAIGN':

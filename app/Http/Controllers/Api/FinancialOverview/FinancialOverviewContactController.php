@@ -206,8 +206,8 @@ class FinancialOverviewContactController extends Controller
         $this->authorize('manage', FinancialOverview::class);
 
         if ($financialOverviewContact->filename) {
-            $filePath = Storage::disk('administrations')->getDriver()
-                ->getAdapter()->applyPathPrefix($financialOverviewContact->filename);
+            $filePath = Storage::disk('administrations')
+                ->path($financialOverviewContact->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $financialOverviewContact->name);
         } else {

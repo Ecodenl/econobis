@@ -119,6 +119,11 @@ class Intake extends Model
         }
     }
 
+    public function getName()
+    {
+        return 'Intake: ' . $this->id . ' voor ' . $this->contact->full_name;
+    }
+
     private function checkIfAllMeasureRequestedHaveOpportunity()
     {
         $canUpdateStatus = true;

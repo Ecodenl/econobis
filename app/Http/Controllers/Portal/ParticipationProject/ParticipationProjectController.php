@@ -23,7 +23,6 @@ use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -278,7 +277,7 @@ class ParticipationProjectController extends Controller
 
         //send email
         if ($primaryEmailAddress) {
-            $mailbox = $this->setMailConfigByDistribution($project);
+            $mailbox = $this->getMailboxByDistribution($project);
             if ($mailbox) {
                 $fromEmail = $mailbox->email;
                 $fromName = $mailbox->name;
@@ -289,7 +288,9 @@ class ParticipationProjectController extends Controller
 
             $portalUserContact = $portalUser ? $portalUser->contact : null;
 
-            $email = Mail::to($primaryEmailAddress->email);
+            $email = Mail::fromMailbox($mailbox)
+                ->to($primaryEmailAddress->email);
+
             if($emailTemplate && !empty($emailTemplate->subject) )
             {
                 $subject = $emailTemplate->subject;
@@ -362,7 +363,7 @@ class ParticipationProjectController extends Controller
 
     }
 
-    protected function setMailConfigByDistribution(Project $project)
+    protected function getMailboxByDistribution(Project $project)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();
@@ -372,15 +373,12 @@ class ParticipationProjectController extends Controller
             $mailboxToSendFrom = $project->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
         return $mailboxToSendFrom;
     }
     protected function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

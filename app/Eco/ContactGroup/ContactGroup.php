@@ -294,6 +294,14 @@ class ContactGroup extends Model
         return $groupContactsForReport;
     }
 
+    // todo
+    //  gebruik van hasComposedIds en hasComposedExceptedIds elimineren uit dit model
+    //  ik denk dat we de complexe getAllContacts uit dit model moeten halen en verplaatsen
+    //  naar controller of een helper.
+    //  nu gaat het dus fout als je ergens contactGroup->all_contacts 2x achter elkaar gebruikt.
+    //  Deze kunnen dan verschillende resultaten geven als er samengesteld en uitgezonderde groepen
+    //  worden gebruikt !! Dit om de velden hasComposedIds en hasComposedExceptedIds bij de 2x nl.
+    //  al gevuld zijn door de 1e keer.
     public function getAllContactsAttribute()
     {
         //gebruikt om infinite loop te checken bij samengestelde groepen
@@ -368,6 +376,22 @@ class ContactGroup extends Model
         }
 
         return false;
+    }
+
+    public function getParentGroupsArrayAttribute(){
+        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+
+        $parentGroups = [];
+
+        foreach ($composedGroups as $composedGroup){
+            foreach ($composedGroup->contactGroups as $contactGroup){
+                if($this->id === $contactGroup->id){
+                    $parentGroups[] = $composedGroup->name;
+                }
+            }
+        }
+
+        return $parentGroups;
     }
 
     // syncronized with lapasta

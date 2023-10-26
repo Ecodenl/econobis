@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
@@ -99,8 +98,6 @@ class checkMissingRevenueDistributionParts extends Command
 
     private function sendMail($missingRevenueDistributionParts, $doRecover)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Missing revenue distribution parts ! (' . count($missingRevenueDistributionParts) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $missingRevenueDistributionPartsHtml = "";

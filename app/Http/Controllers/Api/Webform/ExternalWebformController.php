@@ -13,6 +13,7 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressEnergyConsumptionElectricity;
 use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
@@ -22,10 +23,9 @@ use App\Eco\Country\Country;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
-use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
@@ -68,12 +68,12 @@ use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
+use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
@@ -141,7 +141,9 @@ class ExternalWebformController extends Controller
     private $contactActie = null;
     private $newContactCreated = false;
     private $contactIdToEmailNewContactToGroup = null;
+    private $contactIdToEmailNewContactPersonToGroup = null;
     private $processEmailNewContactToGroup = false;
+    private $processEmailNewContactPersonToGroup = false;
 
     private $newTaskToEmail = [];
     private $processWorkflowEmailNewTask = false;
@@ -214,6 +216,11 @@ class ExternalWebformController extends Controller
         // evt nog ProcessEmailNewContactToGroup uitvoeren
         if ($this->processEmailNewContactToGroup) {
             $this->doProcessEmailNewContactToGroup($data['contact']);
+        }
+
+        // evt nog ProcessEmailNewContactPersonToGroup uitvoeren
+        if ($this->processEmailNewContactPersonToGroup) {
+            $this->doProcessEmailNewContactPersonToGroup($data['contact']);
         }
 
         // evt nog processWorkflowEmailNewTask uitvoeren
@@ -424,6 +431,10 @@ class ExternalWebformController extends Controller
                 // Hoomdossier aanmaken
                 'hoomdossier_aanmaken' => 'create_hoom_dossier',
                 'forceer_nieuw_contact' => 'force_new_contact',
+                // Documenten
+                'bijlage' => 'contact_attachment',
+                'bijlage2' => 'contact_attachment_2',
+                'bijlage3' => 'contact_attachment_3',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -1426,6 +1437,17 @@ class ExternalWebformController extends Controller
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
 
+        // Indien contact bijlage url meegegeven deze als document opslaan
+        if($data['contact_attachment']){
+            $this->addContactAttachment($contact, $data['contact_attachment']);
+        }
+        if($data['contact_attachment_2']){
+            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+        }
+        if($data['contact_attachment_3']){
+            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+        }
+
         return $contact;
     }
 
@@ -1583,6 +1605,17 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+
+        // Indien contact bijlage url meegegeven deze als document opslaan
+        if($data['contact_attachment']){
+            $this->addContactAttachment($contact, $data['contact_attachment']);
+        }
+        if($data['contact_attachment_2']){
+            $this->addContactAttachment($contact, $data['contact_attachment_2']);
+        }
+        if($data['contact_attachment_3']){
+            $this->addContactAttachment($contact, $data['contact_attachment_3']);
+        }
 
         return $contact;
     }
@@ -1897,7 +1930,7 @@ class ExternalWebformController extends Controller
         $document->filename = $fileName;
         $document->contact_id = $intake->contact_id;
         $document->intake_id = $intake->id;
-        // todo WM: dit moet nog anders !!!
+
         if($opportunity){
             $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->id;
             $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'opportunity')->first()->name;
@@ -1908,17 +1941,10 @@ class ExternalWebformController extends Controller
         }
         $document->document_created_from_id = $documentCreatedFromId;
 
-        // voor alsnog deze Ids niet vullen
-//        $document->template_id = ??;
-//        $document->campaign_id = ??;
-//        $document->housing_file_id = ??;
-//        $document->quotation_request_id = ??;
-//        $document->measure_id = ??;
-
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->getDriver()->getAdapter()->applyPathPrefix($tmpFileName);
+        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
         $tmpFileName = str_replace('\\', '/', $filePath_tmp);
         $pos = strrpos($tmpFileName, '/');
         $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
@@ -1941,6 +1967,58 @@ class ExternalWebformController extends Controller
         }
 
         $document->save();
+    }
+
+
+    protected function addContactAttachment($contact, $contactAttachmentUrl) {
+        $allowedFileTypes = ['png','jpg','jpeg','pdf'];
+        $fileType = strtolower(pathinfo($contactAttachmentUrl, PATHINFO_EXTENSION));
+
+        if(in_array($fileType, $allowedFileTypes)) {
+            $fileName = basename($contactAttachmentUrl);
+            $tmpFileName = Str::random(9) . '-' . $fileName;
+
+            $document = new Document();
+            $document->description = 'contact bijlage';
+            $document->document_type = 'upload';
+            $document->document_group = 'general';
+            $document->filename = $fileName;
+            $document->contact_id = $contact->id;
+
+            $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'contact')->first()->id;
+            $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'contact')->first()->name;
+
+            $document->document_created_from_id = $documentCreatedFromId;
+
+            $document->save();
+
+            $contents = file_get_contents($contactAttachmentUrl);
+            $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
+            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+            $pos = strrpos($tmpFileName, '/');
+            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
+
+            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
+                //delete file on server, still saved on alfresco.
+                Storage::disk('documents')->delete($tmpFileName);
+                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+
+            } else {
+                $document->filename = $tmpFileName;
+                $document->alfresco_node_id = null;
+                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+            }
+
+            $document->save();
+        } else {
+            $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
+        }
     }
 
     /**
@@ -2390,6 +2468,12 @@ class ExternalWebformController extends Controller
 
             $this->log('Participant mutation aangemaakt met id ' . $participantMutation->id . '.');
 
+            $participantMutationController = new ParticipantMutationController();
+            $transactionCostsAmount = $participantMutationController->calculationTransactionCosts($participantMutation);
+            $participantMutation->transaction_costs_amount = $transactionCostsAmount;
+
+            $this->log('Transactiekosten bepaald op:  ' . $transactionCostsAmount . '.');
+
             // Recalculate dependent data in participantProject
             $participantMutation->participation->calculator()->run()->save();
             $this->log('Participant project bijgewerkt met id ' . $participantMutation->participation->id . '.');
@@ -2521,8 +2605,8 @@ class ExternalWebformController extends Controller
                             }
 
                             if ($contactGroup->send_email_new_contact_link) {
-                                $this->contactIdToEmailNewContactToGroup = $contact->id;
-                                $this->processEmailNewContactToGroup = true;
+                                $this->contactIdToEmailNewContactPersonToGroup = $contact->id;
+                                $this->processEmailNewContactPersonToGroup = true;
                             }
                             if ($contactGroup->inspection_person_type_id != null) {
                                 $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
@@ -2563,6 +2647,24 @@ class ExternalWebformController extends Controller
                     $processed = $contactGroupHelper->processEmailNewContactToGroup();
                     if ($processed) {
                         $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactToGroup);
+                    }
+                }
+            }
+        }
+    }
+
+    protected function doProcessEmailNewContactPersonToGroup(array $data)
+    {
+        $contactPersonToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactPersonToGroup);
+        if($data['contact_group_ids_contactperson']){
+            $contactGroups = ContactGroup::whereIn('id', explode(',', $data['contact_group_ids_contactperson']))->get();
+            foreach ($contactGroups as $contactGroup)
+            {
+                if ($contactGroup->send_email_new_contact_link) {
+                    $contactGroupHelper = new ContactGroupHelper($contactGroup, $contactPersonToEmailNewContactGroup);
+                    $processed = $contactGroupHelper->processEmailNewContactToGroup();
+                    if ($processed) {
+                        $this->log('Email verzonden naar ' . $this->contactIdToEmailNewContactPersonToGroup);
                     }
                 }
             }
@@ -2941,7 +3043,6 @@ class ExternalWebformController extends Controller
                     $users->push($dummyUser);
                 }
 
-                (new EmailHelper())->setConfigToDefaultMailbox();
                 Notification::send($users, new WebformRequestProcessed($this->logs, $data, $success, $webform));
             }
         } catch (\Exception $e) {

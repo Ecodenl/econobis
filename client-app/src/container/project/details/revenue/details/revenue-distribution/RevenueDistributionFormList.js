@@ -61,6 +61,7 @@ const RevenueDistributionFormList = props => {
                             projectTypeCodeRef={props.projectTypeCodeRef}
                             distributionIds={props.distributionIds}
                             createType={props.createType}
+                            distributionIdsTotalToProcess={props.distributionIdsTotalToProcess}
                         />
                     );
                 })

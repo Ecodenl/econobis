@@ -19,6 +19,24 @@ export default {
         return axiosInstance.post(requestUrl, payload);
     },
 
+    createHoomCampaign: payload => {
+        const requestUrl = `cooperation-hoom-campaign`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
+
+    updateHoomCampaign: (hoomCampaignId, payload) => {
+        const requestUrl = `cooperation-hoom-campaign/${hoomCampaignId}`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
+
+    deleteHoomCampaign: hoomCampaignId => {
+        const requestUrl = `cooperation-hoom-campaign/${hoomCampaignId}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
     syncAllWithLaposta: id => {
         const requestUrl = `cooperation/${id}/sync-all-with-laposta`;
 

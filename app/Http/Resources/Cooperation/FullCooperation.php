@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\Cooperation;
 
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullCooperation extends JsonResource
@@ -29,11 +28,10 @@ class FullCooperation extends JsonResource
             'website' => $this->website,
             'logoFilename' => $this->logo_filename,
             'logoName' => $this->logo_name,
-            'hoomLink' => $this->hoom_link,
-            'hoomConnectCoachLink' => $this->hoom_connect_coach_link,
+            'hoomLink' => $this->hoom_link ? $this->hoom_link : '',
+            'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
-            'hoomCampaignId' => $this->hoom_campaign_id ? $this->hoom_campaign_id : '',
-            'hoomCampaign' => ['name' => $this->hoomCampaign ? $this->hoomCampaign->name : ''],
+            'hoomCampaigns' => FullCooperationHoomCampaign::collection($this->whenLoaded('hoomCampaigns')),
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
@@ -58,9 +56,12 @@ class FullCooperation extends JsonResource
             'inspectionPlannedMailboxId' => $this->inspection_planned_mailbox_id ? $this->inspection_planned_mailbox_id : '',
             'inspectionPlannedMailbox' => ['name' => $this->inspectionPlannedMailbox ? $this->inspectionPlannedMailbox->name : ''],
             'createContactsForReportTable' => $this->create_contacts_for_report_table,
-            'emailReportTableProblems' => $this->email_report_table_problems,
+            'emailReportTableProblems' => $this->email_report_table_problems ? $this->email_report_table_problems : '',
             'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_last_created,
             'createContactsForReportTableInProgress' => $this->create_contacts_for_report_table_in_progress,
+            'fontFamilyDefault' => $this->font_family_default,
+            'fontSizeDefault' => $this->font_size_default,
+            'fontColorDefault' => $this->font_color_default,
         ];
     }
 }

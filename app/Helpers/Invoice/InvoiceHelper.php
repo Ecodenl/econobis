@@ -12,7 +12,6 @@ use App\Eco\Invoice\InvoicesToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Order\Order;
 use App\Eco\User\User;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\Resources\Invoice\Templates\InvoiceMail;
@@ -184,7 +183,7 @@ class InvoiceHelper
             throw new Exception("Nota met ID " . $invoice->id . " in error-sending gezet.");
         }
 
-        self::setMailConfigByInvoice($invoice);
+        $mailbox = self::getMailboxByInvoice($invoice);
 
         $orderController = new OrderController();
         $contactInfo
@@ -246,7 +245,8 @@ class InvoiceHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-        $mail = Mail::to($contactInfo['email']);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $bcc = $invoice->administration->email_bcc_notas;
         if($bcc)
@@ -269,8 +269,7 @@ class InvoiceHelper
             ];
         } else {
             $mail->send(new InvoiceMail($mail, $htmlBody,
-                Storage::disk('administrations')->getDriver()->getAdapter()
-                    ->applyPathPrefix($invoice->document->filename),
+                Storage::disk('administrations')->path($invoice->document->filename),
                 $invoice->document->name, $defaultAttachmentDocumentId));
 
             $invoice->emailed_to = $contactInfo['email'];
@@ -325,7 +324,7 @@ class InvoiceHelper
 
     public static function sendNotificationEmail(EmailTemplate $emailTemplate = null, Invoice $invoice, $userId)
     {
-        self::setMailConfigByInvoice($invoice);
+        $mailbox = self::getMailboxByInvoice($invoice);
 
         $orderController = new OrderController();
         $contactInfo = $orderController->getContactInfoForOrder($invoice->order->contact);
@@ -334,7 +333,8 @@ class InvoiceHelper
             return false;
         }
 
-        $mail = Mail::to($contactInfo['email']);
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($contactInfo['email']);
 
         $subject = 'Betalingsherinnering';
 
@@ -377,7 +377,7 @@ class InvoiceHelper
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->getDriver()->getAdapter()->applyPathPrefix($invoice->document->filename), $invoice->document->name, $defaultAttachmentDocumentId));
+        $mail->send(new InvoiceMail($mail, $htmlBody, Storage::disk('administrations')->path($invoice->document->filename), $invoice->document->name, $defaultAttachmentDocumentId));
 
         return true;
     }
@@ -474,14 +474,14 @@ class InvoiceHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices';
+        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
     }
 
-    public static function setMailConfigByInvoice(Invoice $invoice)
+    public static function getMailboxByInvoice(Invoice $invoice)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();;
@@ -491,10 +491,7 @@ class InvoiceHelper
             $mailboxToSendFrom = $invoice->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
+        return $mailboxToSendFrom;
     }
 
     public static function invoiceInProgress(Invoice $invoice)

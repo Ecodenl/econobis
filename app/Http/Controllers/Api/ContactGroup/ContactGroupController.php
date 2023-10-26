@@ -78,7 +78,7 @@ class ContactGroupController extends Controller
         if(!$contactGroupAutorized){
             abort(403, 'Niet geautoriseerd.');
         }
-        $contactGroup->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
+        $contactGroupAutorized->load(['responsibleUser', 'createdBy', 'tasks', 'emailTemplateNewContactLink']);
         return FullContactGroup::make($contactGroupAutorized);
     }
 

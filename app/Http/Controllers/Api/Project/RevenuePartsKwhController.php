@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Project;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
@@ -14,13 +15,12 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
-use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionPartsKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenuePartsKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Excel\EnergySupplierExcelHelper;
 use App\Helpers\Project\RevenueDistributionKwhHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -517,16 +517,15 @@ class RevenuePartsKwhController extends ApiController
 
             //Make preview email
             if ($primaryEmailAddress) {
-                $mailbox = $this->setMailConfigByDistribution($project);
+                $mailbox = $this->getMailboxByDistribution($project);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
-                    $fromName = $mailbox->name;
                 } else {
                     $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = Mail::fromMailbox($mailbox)
+                    ->to($primaryEmailAddress->email);
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -607,8 +606,39 @@ class RevenuePartsKwhController extends ApiController
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 
+        $distributionPartsKwh = RevenueDistributionPartsKwh::find($distributionPartsKwhIds[0]);
+        $distributionKwh = $distributionPartsKwh->distributionKwh;
+        $revenuesKwh = $distributionKwh->revenuesKwh;
+        $project = $revenuesKwh->project;
+
+        $mailbox = optional($project->administration)->mailbox ? $project->administration->mailbox : Mailbox::getDefault();
+
+        $emailModel = null;
+        if($mailbox){
+            /**
+             * Email model aanmaken zodat de email ook zichtbaar wordt onder verzonden items.
+             * Dit is één gezamenlijke email voor alle ontvangers.
+             *
+             * De ontvangers worden later per succesvolle job aan deze mail toegevoegd.
+             */
+            $emailModel = new Email([
+                'mailbox_id' => $mailbox->id,
+                'from' => $mailbox->email,
+                'to' => [],
+                'cc' => [],
+                'bcc' => [],
+                'subject' => $subject,
+                'html_body' => EmailTemplate::find($emailTemplateId)->html_body,
+                'folder' => 'sent',
+                'date_sent' => \Illuminate\Support\Carbon::now(),
+                'project_id' => $project->id,
+                'sent_by_user_id' => Auth::id(),
+            ]);
+            $emailModel->save();
+        }
+
         foreach($distributionPartsKwhIds as $distributionPartsKwhId) {
-            CreateRevenuePartsKwhReport::dispatch($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
+            CreateRevenuePartsKwhReport::dispatch($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id(), $emailModel);
         }
 
         return null;
@@ -759,7 +789,7 @@ class RevenuePartsKwhController extends ApiController
             //send email
             if ($primaryEmailAddress) {
                 try{
-                    $mailbox = $this->setMailConfigByDistribution($project);
+                    $mailbox = $this->getMailboxByDistribution($project);
                     if ($mailbox) {
                         $fromEmail = $mailbox->email;
                         $fromName = $mailbox->name;
@@ -768,7 +798,9 @@ class RevenuePartsKwhController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::to($primaryEmailAddress->email);
+                    $email = Mail::fromMailbox($mailbox)
+                        ->to($primaryEmailAddress->email);
+                    
                     if (!$subject) {
                         $subject = 'Participant rapportage Econobis';
                     }
@@ -1005,7 +1037,7 @@ class RevenuePartsKwhController extends ApiController
         $participantMutation->save();
     }
 
-    protected function setMailConfigByDistribution($project)
+    protected function getMailboxByDistribution($project)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();
@@ -1014,10 +1046,6 @@ class RevenuePartsKwhController extends ApiController
             $mailboxToSendFrom = $project->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
         return $mailboxToSendFrom;
     }
 
@@ -1038,7 +1066,8 @@ class RevenuePartsKwhController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

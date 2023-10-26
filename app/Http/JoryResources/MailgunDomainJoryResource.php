@@ -14,6 +14,7 @@ class MailgunDomainJoryResource extends JoryResource
         $mailgunDomainController = new MailgunDomainController();
         $mailgunDomainController->authorize('view', MailgunDomain::class);
     }
+
     protected $modelClass = MailgunDomain::class;
 
     protected function configureForApp(): void

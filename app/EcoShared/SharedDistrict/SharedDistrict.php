@@ -10,7 +10,5 @@ class SharedDistrict extends Model
 
     protected $guarded = ['id'];
 
-    protected $casts = [
-    ];
-
+    protected $table = 'shared_districts';
 }

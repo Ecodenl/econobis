@@ -27,6 +27,7 @@ class GridOpportunity extends JsonResource
             'statusName' => optional($this->whenLoaded('status'))->name,
             'amountQuotations' => count($this->quotationRequests),
             'contactId' => optional(optional($this->intake)->contact)->id,
+            'areaName' => optional(optional($this->intake)->address)->shared_area_name,
         ];
     }
 }

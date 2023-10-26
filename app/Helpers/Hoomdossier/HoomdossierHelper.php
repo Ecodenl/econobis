@@ -9,7 +9,6 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Hoomdossier\Templates\HoomdossierMail;
@@ -203,55 +202,50 @@ class HoomdossierHelper
 
     public function connectCoachToHoomdossier(QuotationRequest $quotationRequest)
     {
-        if(!$this->cooperation){
+        if(!$this->cooperation
+            || !$this->cooperation->hoom_connect_coach_link
+            || !$quotationRequest->organisationOrCoach->exists()
+            || !$quotationRequest->organisationOrCoach->hoom_account_id
+            || !$quotationRequest->opportunity->exists()
+            || !$quotationRequest->opportunity->intake->exists()
+            || !$quotationRequest->opportunity->intake->contact->hoom_account_id
+            || !in_array( $quotationRequest->opportunity->intake->campaign_id, $this->cooperation->hoomCampaigns->pluck('campaign_id')->toArray() )
+        )
+        {
             return;
         }
-        if(!$this->cooperation->hoom_connect_coach_link){
-            return;
-        }
 
-        if(
-            $quotationRequest->organisationOrCoach->exists() &&
-            $quotationRequest->organisationOrCoach->hoom_account_id &&
-            $quotationRequest->opportunity->exists() &&
-            $quotationRequest->opportunity->intake->exists() &&
-            $quotationRequest->opportunity->intake->contact->hoom_account_id &&
-            ($quotationRequest->opportunity->intake->campaign_id === $this->cooperation->hoom_campaign_id)
-        ) {
-            $coach = $quotationRequest->organisationOrCoach;
+        $coach = $quotationRequest->organisationOrCoach;
 
-                $payload = [
-                    'building_coach_statuses' => [
-                        'coach_contact_id' => $coach->id,
-                        'resident_contact_id' => $this->contact->id,
-                    ],
-                ];
+        $payload = [
+            'building_coach_statuses' => [
+                'coach_contact_id' => $coach->id,
+                'resident_contact_id' => $this->contact->id,
+            ],
+        ];
 
-                $client = new Client;
-                $headers = [
-                    'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
-                    'Accept' => 'application/json',
-                ];
+        $client = new Client;
+        $headers = [
+            'Authorization' => 'Bearer ' . $this->cooperation->hoom_key,
+            'Accept' => 'application/json',
+        ];
 
-                try {
-                    $response = $client->post($this->cooperation->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
-                    return $response->getBody();
-                } catch (RequestException $e) {
-                    if ($e->hasResponse()) {
-                        Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody());
-                        abort($e->getCode(), $e->getResponse()->getBody());
-                    } else {
-                        Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode());
-                        abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
-                    }
-                }
+        try {
+            $response = $client->post($this->cooperation->hoom_connect_coach_link, ['headers' => $headers, 'json' => $payload]);
+            return $response->getBody();
+        } catch (RequestException $e) {
+            if ($e->hasResponse()) {
+                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode() . ' - ' . $e->getResponse()->getBody());
+                abort($e->getCode(), $e->getResponse()->getBody());
+            } else {
+                Log::error('Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier met de coach id ' . $this->contact->id . ', melding: ' . $e->getCode());
+                abort($e->getCode(), 'Er is iets misgegaan met het koppelen van een coach aan het Hoomdossier');
+            }
         }
     }
 
     private function sendMail()
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $mail = Mail::to($this->contact->primaryEmailAddress);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);

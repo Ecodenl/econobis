@@ -5,6 +5,7 @@ import ViewText from '../../../components/form/ViewText';
 import PanelHeader from '../../../components/panel/PanelHeader';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
+import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 
 function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
     return (
@@ -18,7 +19,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </PanelHeader>
                 </Panel>
             )}
-
             <Panel>
                 <PanelBody>
                     <div className="row">
@@ -45,6 +45,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Logo'} value={formData.logoName} />
                     </div>
                 </PanelBody>
+            </Panel>
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Hoom gegevens</span>
                 </PanelHeader>
@@ -55,7 +57,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </div>
                     <div className="row">
                         <ViewText label={'Hoom bewoner/coach link'} value={formData.hoomConnectCoachLink} />
-                        <ViewText label={'Hoom campagne'} value={formData.hoomCampaign && formData.hoomCampaign.name} />
                     </div>
                     <div className="row">
                         <ViewText
@@ -70,7 +71,14 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                             value={formData.sendEmail ? 'Ja' : 'Nee'}
                         />
                     </div>
+                    <HoomCampaigns
+                        cooperationId={formData.id}
+                        showEditCooperation={false}
+                        hoomCampaigns={formData.hoomCampaigns}
+                    />
                 </PanelBody>
+            </Panel>
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Laposta gegevens</span>
                 </PanelHeader>
@@ -80,6 +88,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Laposta key'} value={formData.lapostaKey} />
                     </div>
                 </PanelBody>
+            </Panel>
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Twee factor authenticatie</span>
                 </PanelHeader>
@@ -93,6 +103,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         />
                     </div>
                 </PanelBody>
+            </Panel>
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Buurtaanpak</span>
                 </PanelHeader>
@@ -128,41 +140,55 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         />
                     </div>
                 </PanelBody>
+            </Panel>
 
-                {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
-                    <>
-                        <PanelHeader>
-                            <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="row">
+            {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Contactgroep/contact koppelingen </span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <ViewText
+                                label={'Vullen report tabel (tbv Power BI)'}
+                                value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
+                                size={'col-sm-5'}
+                                name={'createContactsForReportTable'}
+                                textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                            />
+                            {formData.createContactsForReportTable == true && (
                                 <ViewText
-                                    label={'Vullen report tabel (tbv Power BI)'}
-                                    value={formData.createContactsForReportTable ? 'Ja' : 'Nee'}
-                                    size={'col-sm-5'}
-                                    name={'createContactsForReportTable'}
-                                    textToolTip={`Hiermee wordt er een tabel gevuld met alle contactgroep/contact koppelingen tbv Power BI.`}
+                                    label={'Email bij problemen vullen report tabel'}
+                                    value={formData.emailReportTableProblems}
                                 />
-                                {formData.createContactsForReportTable == true && (
-                                    <ViewText
-                                        label={'Email vullen report table problemen'}
-                                        value={formData.emailReportTableProblems}
-                                    />
-                                )}
-                                {formData.createContactsForReportTable == true && (
-                                    <ViewText
-                                        label={'Datum laatste keer gevuld'}
-                                        value={
-                                            formData.createContactsForReportTableLastCreated
-                                                ? moment(formData.createContactsForReportTableLastCreated).format('L')
-                                                : ''
-                                        }
-                                    />
-                                )}
-                            </div>
-                        </PanelBody>
-                    </>
-                )}
+                            )}
+                            {formData.createContactsForReportTable == true && (
+                                <ViewText
+                                    label={'Datum laatste keer gevuld'}
+                                    value={
+                                        formData.createContactsForReportTableLastCreated
+                                            ? moment(formData.createContactsForReportTableLastCreated).format('L')
+                                            : ''
+                                    }
+                                />
+                            )}
+                        </div>
+                    </PanelBody>
+                </Panel>
+            )}
+            <Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">E-mail opmaak</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Lettertype'} value={formData.fontFamilyDefault} />
+                        <ViewText label={'Lettergrootte'} value={formData.fontSizeDefault} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
+                    </div>
+                </PanelBody>
 
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>

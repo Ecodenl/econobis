@@ -25,6 +25,8 @@ const MutationFormEdit = ({
     participantMutationStatuses,
     participantProjectDateRegister,
     participantInDefinitiveRevenue,
+    participantBelongsToMembershipGroup,
+    participantChoiceMembership,
     projectDateInterestBearingKwh,
 }) => {
     const { type, statusId } = participantMutationFromState;
@@ -93,6 +95,8 @@ const MutationFormEdit = ({
                             handleSubmit={handleSubmit}
                             participantProjectDateRegister={participantProjectDateRegister}
                             participantInDefinitiveRevenue={participantInDefinitiveRevenue}
+                            participantBelongsToMembershipGroup={participantBelongsToMembershipGroup}
+                            participantChoiceMembership={participantChoiceMembership}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
@@ -145,6 +149,8 @@ const mapStateToProps = state => {
         projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
         participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
+        participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
+        participantChoiceMembership: state.participantProjectDetails.participantChoiceMembership,
         projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
     };

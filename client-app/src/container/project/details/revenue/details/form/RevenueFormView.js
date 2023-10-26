@@ -158,7 +158,7 @@ const RevenueFormView = props => {
 
                     <div className="row" onClick={props.switchToEdit}>
                         <ViewText
-                            label={'Opbrengst kWh €'}
+                            label={'Teruggave EB per kWh €'}
                             value={
                                 payoutKwh &&
                                 payoutKwh.toLocaleString('nl', {
@@ -186,11 +186,7 @@ const RevenueFormView = props => {
                                         value={payPercentage && payPercentage + '%'}
                                     />
                                     <ViewText
-                                        label={
-                                            project.projectType.codeRef === 'loan'
-                                                ? 'of uitkeringsbedrag (per deelnemer)'
-                                                : 'of uitkeringsbedrag (per participatie)'
-                                        }
+                                        label={'of uitkeringsbedrag per deelname'}
                                         value={MoneyPresenter(payAmount)}
                                     />
                                 </div>
@@ -236,7 +232,7 @@ const RevenueFormView = props => {
                                 {project.projectType.codeRef === 'loan' ||
                                 project.projectType.codeRef === 'obligation' ? (
                                     <ViewText
-                                        label={'Aflossingsbedrag (per deelnemer)'}
+                                        label={'Aflossing bedrag per deelname'}
                                         value={MoneyPresenter(payAmount)}
                                     />
                                 ) : null}

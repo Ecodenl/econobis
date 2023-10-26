@@ -54,6 +54,7 @@ class FullOpportunity extends JsonResource
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'relatedQuotationRequestsStatuses' => $this->relatedQuotationRequestsStatuses,
             'defaultStatusId' => $this->defaultStatusId,
+            'amount' => $this->amount,
         ];
     }
 }

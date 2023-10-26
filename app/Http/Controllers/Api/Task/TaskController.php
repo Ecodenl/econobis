@@ -167,7 +167,7 @@ class TaskController extends Controller
 
         $task->fill($data);
 
-        if($task->isDirty('finished') && $task->finished){
+        if( $task->getOriginal('finished') != $task->finished && $task->finished ){
             $task->date_finished = Carbon::today();
             $task->finished_by_id = Auth::id();
         }
@@ -253,16 +253,22 @@ class TaskController extends Controller
         return $allTasks->count();
     }
 
-    public function peek()
+    public function peek(Request $request)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
+
+        $query = Task::query();
         if ($teamContactIds){
-            $tasks = Task::whereIn('contact_id', $teamContactIds)->orderBy('id')->get();
+            $query->whereIn('contact_id', $teamContactIds)->orderBy('id');
         }else{
-            $tasks = Task::orderBy('id')->get();
+            $query->orderBy('id');
         }
 
-        return TaskPeek::collection($tasks);
+        if($request->has('contactIds')){
+            $query = $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+        }
+
+        return TaskPeek::collection($query->get());
     }
 
     public function getRelatedEmails($id, $folder)

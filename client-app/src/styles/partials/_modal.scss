@@ -26,6 +26,11 @@
 {
   width: 90vw;
 }
+.modal-search-in-modal
+{
+  width: 50%;
+}
+
 .modal-portal-layout-crop div.modal-content,
 .modal-portal-layout-add-widget div.modal-content
 {
@@ -64,4 +69,21 @@
 
 .filter-row {
   margin: 0 0 12px 0;
+}
+
+.modal-fullscreen {
+  top: 0px;
+  overflow-y: scroll;
+}
+
+.modal-fullscreen .modal-dialog {
+  width: 95vw;
+}
+
+.submodal .modal-dialog {
+  width: 700px;
+}
+
+.modal-align-top {
+  top: 0px;
 }

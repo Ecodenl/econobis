@@ -251,6 +251,11 @@ class ParticipantProject extends Model
         return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
     }
 
+    public function getParticipantBelongsToMembershipGroupAttribute()
+    {
+        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
+    }
+
     // Return if projectparicipant is in a sce or pcr project
     public function getParticipantInSceOrPcrProjectAttribute()
     {

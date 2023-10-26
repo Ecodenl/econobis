@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -53,6 +52,11 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
         $wrongRevenueDistributionPartsKwh = [];
 
         foreach(RevenueDistributionPartsKwh::where('status', '!=', 'processed')->get() as $revenueDistributionPartKwh) {
+
+            // Indien partsKwh status 'concept-to-update' heeft, dan slaan we hem over. IndicatorFields worden altijd weer opnieuw bepaald als condept partsKwh opnieuw wordt bijgewerkt.
+            if($revenueDistributionPartKwh->partsKwh->status == 'concept-to-update'){
+                continue;
+            }
             $isEnergySupplierSwitch = false;
             $isEndParticipation = false;
             $isEndTotalPeriod = false;
@@ -138,8 +142,6 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
 
     private function sendMail($wrongRevenueDistributionPartsKwh, $doRecover)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = $this->description . ' (' . count($wrongRevenueDistributionPartsKwh) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $wrongRevenueDistributionPartsKwhHtml = "";

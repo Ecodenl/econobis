@@ -56,22 +56,42 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
         if(!isset($dataContent->status) || !isset($dataContent->status->short)) {
             $this->error('Geen status meegegeven', 404);
         }
-        if(!$this->cooperation->hoom_campaign_id) {
-            $this->error('Geen Hoomdossier campagne voor cooperatie gevonden', 404);
+        if(!$this->cooperation->hoomCampaigns) {
+            $this->error('Geen Hoomdossier campagnes voor cooperatie gevonden', 404);
         }
     }
     protected function doPost($dataContent)
     {
         $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
+        $bezoekStatusMade = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'made')->first();
+
+        $hoomCampaigns = $this->cooperation->hoomCampaigns;
 
         $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
-            ->WhereHas('opportunity', function($query){
-                $query->WhereHas('intake', function($query2){
-                    $query2->where('contact_id', $this->contact->id)
-                        ->where('campaign_id', $this->cooperation->hoom_campaign_id);
+            ->where('status_id', $bezoekStatusMade->id)
+            ->whereHas('opportunity', function($query) use ($hoomCampaigns) {
+                $query->where(function ($query2) use ($hoomCampaigns) {
+                    foreach ($hoomCampaigns as $hoomCampaign) {
+                        $query2->orWhere(function ($query3) use ($hoomCampaign) {
+                            $query3->where(function ($query4) use ($hoomCampaign) {
+                                $query4->whereHas('intake', function ($query5) use ($hoomCampaign) {
+                                    $query5->where('contact_id', $this->contact->id)
+                                        ->where(function ($query6) use ($hoomCampaign) {
+                                            $query6->where('campaign_id', $hoomCampaign->campaign_id);
+                                        });
+                                });
+                            });
+                            if($hoomCampaign->measure_id != null){
+                                $query3->whereHas('measures', function ($query7) use ($hoomCampaign) {
+                                    $query7->where('measure_id', $hoomCampaign->measure_id);
+                                });
+                            }
+                        });
+                    }
                 });
             })
             ->orderby('id', 'desc')->first();
+
         if(!$quotationRequest) {
             $this->error('Afspraak niet gevonden in Econobis', 404);
         }
@@ -79,11 +99,14 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
         if($dataContent->status->short === 'executed'){
             $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
             $quotationRequest->status_id = $bezoekStatusDone->id;
+            if(!$quotationRequest->date_recorded){
+                $quotationRequest->date_recorded = Carbon::parse(Carbon::parse('now')->format('Y-m-d') . ' 00:00:00');
+            }
             $quotationRequest->save();
-            $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' op gedaan voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . $this->contact->full_name_fnf);
+            $this->log('Afspraak op ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' gedaan voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . $this->contact->full_name_fnf);
         } else {
             $StatusFromContent = (isset($dataContent->status->name) ? $dataContent->status->name : 'onbekend');
-            $this->log('Afspraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' niet bijgewerkt voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . ($this->contact ? $this->contact->full_name_fnf : 'onbekend') . ' i.v.m. status: '. $StatusFromContent);
+            $this->log('Afspraak op ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') . ' niet bijgewerkt voor bezoek coach ' . ($quotationRequest->organisationOrCoach ? $quotationRequest->organisationOrCoach->full_name_fnf : 'onbekend') . ' bij bewoner ' . ($this->contact ? $this->contact->full_name_fnf : 'onbekend') . ' i.v.m. status: '. $StatusFromContent);
         }
     }
 

@@ -121,38 +121,50 @@ class ContactDetailsHarmonica extends Component {
     }
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
+        if (this.props.contactDetails) {
+            hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newNote = () => {
-        hashHistory.push(`/taak/nieuw/afgehandeld/contact/${this.props.contactDetails.id}`);
+        if (this.props.contactDetails) {
+            hashHistory.push(`/taak/nieuw/afgehandeld/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newParticipation = () => {
-        hashHistory.push(`/project/deelnemer/nieuw/contact/${this.props.contactDetails.id}`);
+        if (this.props.contactDetails) {
+            hashHistory.push(`/project/deelnemer/nieuw/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newEmail = () => {
-        let primaryEmail = this.props.contactDetails.emailAddresses.find(emailAddress => {
-            return emailAddress.primary;
-        });
-        if (typeof primaryEmail === 'undefined') {
-            this.setState({
-                showModalError: !this.state.showModalError,
-                modalErrorTitle: 'Waarschuwing',
-                modalErrorMessage: 'Dit contact heeft nog geen primair e-mail adres.',
+        if (this.props.contactDetails) {
+            let primaryEmail = this.props.contactDetails.emailAddresses.find(emailAddress => {
+                return emailAddress.primary;
             });
-        } else {
-            hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+            if (typeof primaryEmail === 'undefined') {
+                this.setState({
+                    showModalError: !this.state.showModalError,
+                    modalErrorTitle: 'Waarschuwing',
+                    modalErrorMessage: 'Dit contact heeft nog geen primair e-mail adres.',
+                });
+            } else {
+                hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+            }
         }
     };
 
     newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
+        if (this.props.contactDetails) {
+            hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     newOrder = () => {
-        hashHistory.push(`/order/nieuw/contact/${this.props.contactDetails.id}`);
+        if (this.props.contactDetails) {
+            hashHistory.push(`/order/nieuw/contact/${this.props.contactDetails.id}`);
+        }
     };
 
     toggleAddGroup = () => {
@@ -171,6 +183,7 @@ class ContactDetailsHarmonica extends Component {
                             showEmailsInboxList={this.state.toggleShowList.emailsInbox}
                             newEmail={this.newEmail}
                             emailInboxCount={this.props.contactDetails.emailInboxCount}
+                            contactId={this.props.contactDetails.id}
                         />
 
                         <EmailSentHarmonica
@@ -178,6 +191,7 @@ class ContactDetailsHarmonica extends Component {
                             showEmailsSentList={this.state.toggleShowList.emailsSent}
                             newEmail={this.newEmail}
                             emailSentCount={this.props.contactDetails.emailSentCount}
+                            contactId={this.props.contactDetails.id}
                         />
                     </>
                 ) : null}

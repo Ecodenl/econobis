@@ -97,6 +97,11 @@ class User extends Authenticatable
         return $this->hasMany(TwoFactorToken::class);
     }
 
+    public function defaultMailbox()
+    {
+        return $this->belongsTo(Mailbox::class);
+    }
+
     public function requiresTwoFactorAuthentication()
     {
         $cooperation = Cooperation::first();
@@ -211,5 +216,25 @@ class User extends Authenticatable
 
             return $this->teamDocumentCreatedFromIds;
         }
+    }
+
+    public function getDefaultMailboxWithFallback()
+    {
+        if($this->defaultMailbox){
+            return $this->defaultMailbox;
+        }
+
+        $cooperationDefaultMailbox = Mailbox::getDefault();
+        $mailboxes = $this->mailboxes()->where('is_active', true)->get();
+
+        if($cooperationDefaultMailbox && $mailboxes->contains($cooperationDefaultMailbox)){
+            return $cooperationDefaultMailbox;
+        }
+
+        if($mailboxes->count() > 0){
+            return $mailboxes->first();
+        }
+
+        return null;
     }
 }

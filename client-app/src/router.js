@@ -95,6 +95,7 @@ const DistrictsListApp = React.lazy(() => import('./container/district/list/Dist
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
 const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
+const MailgunEventListApp = React.lazy(() => import('./container/mailgun-event/list/MailgunEventListApp'));
 const ContactAvailabilityListApp = React.lazy(() =>
     import('./container/contact-availability/list/ContactAvailabilityListApp')
 );
@@ -244,6 +245,12 @@ const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorAct
 const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
 const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorRecover'));
 
+/**
+ * Mailclient / Mail in splitview
+ * */
+const EmailSplitView = React.lazy(() => import('./container/email/splitview/EmailSplitView'));
+const OpenEmailModal = React.lazy(() => import('./container/email/OpenEmailModalView'));
+
 const Routes = () => {
     return (
         <Suspense fallback={<LoadingPage />}>
@@ -319,12 +326,15 @@ const Routes = () => {
                         path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
                         component={DocumentNewApp}
                     />
-                    <Route path="document/nieuw/:type/intake/:intakeId/contact/:contactId" component={DocumentNewApp} />
+                    <Route
+                        path="document/nieuw/:type/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={DocumentNewApp}
+                    />
                     <Route path="document/nieuw/:type/maatregel/:measureId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/offerteverzoek/:quotationRequestId" component={DocumentNewApp} />
                     <Route path="document/nieuw/:type/taak/:taskId" component={DocumentNewApp} />
                     <Route
-                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/contact/:contactId"
+                        path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
                         component={DocumentNewApp}
                     />
                     {/* todo WM: worden deze nog gebruikt? */}
@@ -435,6 +445,8 @@ const Routes = () => {
                     /* Availabilities */
                     <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
                     <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />
+                    /* Mailgun Events */
+                    <Route path="mailgun/log" component={MailgunEventListApp} />
                     /* Housing File */
                     <Route
                         path="woningdossier/nieuw/contact/:contactId/adres/:addressId"
@@ -524,7 +536,6 @@ const Routes = () => {
                     <Route path="taak/nieuw" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed" component={TaskNewApp} />
                     <Route path="taak/nieuw/:closed/:type/:id" component={TaskNewApp} />
-                    <Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
                     <Route path="taak/:id" component={TaskDetailsApp} />
                     <Route path="taak/nieuw/:type/:id" component={TaskNewApp} />
                     <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />
@@ -532,6 +543,24 @@ const Routes = () => {
                         path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
                         component={TaskNewApp}
                     />
+                    <Route
+                        path="taak/nieuw/:closed/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route
+                        path="taak/nieuw/:closed/nota/:invoiceId/order/:orderId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    <Route path="taak/nieuw/:closed/order/:orderId/contact/:contactId" component={TaskNewApp} />
+                    <Route
+                        path="taak/nieuw/:closed/woningdossier/:housingFileId/contact/:contactId"
+                        component={TaskNewApp}
+                    />
+                    {/*<Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" component={TaskNewApp} />*/}
                     <Route path="taken" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />
                     <Route path="taken/:type" component={TasksListApp} />
@@ -561,6 +590,9 @@ const Routes = () => {
                     <Route path="offerte-verzoek-status/:id" component={QuotationRequestStatusDetailsApp} />
                     <Route path="kans-statussen" component={OpportunityStatusListApp} />
                     <Route path="kans-status/:id" component={OpportunityStatusDetailsApp} />
+                    /* Mailclient */
+                    <Route path="mailclient/:folder" component={EmailSplitView} />
+                    <Route path="mailclient/email/:id" component={OpenEmailModal} />
                     /* 404 route */
                     <Route path="*" component={NotFoundedPage} />
                 </Route>

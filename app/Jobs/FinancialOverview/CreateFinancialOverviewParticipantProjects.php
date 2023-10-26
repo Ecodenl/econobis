@@ -73,7 +73,7 @@ class CreateFinancialOverviewParticipantProjects implements ShouldQueue
 
     }
 
-    public function failed(\Exception $exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Toevoegen project (" . ($this->financialOverviewProject->project->code) . ") aan waardestaat (" . ($this->financialOverviewProject->financialOverview->description) . ") mislukt.";

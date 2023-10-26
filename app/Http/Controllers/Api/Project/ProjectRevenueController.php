@@ -6,9 +6,8 @@ use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
@@ -18,16 +17,11 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
-use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
-use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
 use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionCSVHelper;
-use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
-use App\Helpers\CSV\RevenueParticipantsCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenue;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
@@ -87,13 +81,20 @@ class ProjectRevenueController extends ApiController
         $offset = $request->input('page') ? $request->input('page') * $limit : 0;
 
         $distribution = $projectRevenue->distribution()->limit($limit)->offset($offset)->orderBy('status')->get();
+
         $distributionIdsTotal = $projectRevenue->distribution()->pluck('id')->toArray();
         $total = $projectRevenue->distribution()->count();
+
+        $distributionIdsTotalToProcess =$projectRevenue->distribution()->where('status', '!=', 'processed')->pluck('id')->toArray();
+        $totalToProcess = $projectRevenue->distribution()->where('status', '!=', 'processed')->count();
+
 
         return FullProjectRevenueDistribution::collection($distribution)
             ->additional(['meta' => [
                 'total' => $total,
                 'distributionIdsTotal' => $distributionIdsTotal,
+                'totalToProcess' => $totalToProcess,
+                'distributionIdsTotalToProcess' => $distributionIdsTotalToProcess,
             ]
             ]);
 
@@ -187,6 +188,7 @@ class ProjectRevenueController extends ApiController
         $projectRevenue->fill($data);
 
         $projectRevenueConfirmedIsDirty = false;
+        // isDirty werkt hier niet goed op boolean veld. Geeft altijd TRUE !?!?
         if($projectRevenue->isDirty('confirmed')){
             $projectRevenueConfirmedIsDirty = true;
         }
@@ -377,7 +379,7 @@ class ProjectRevenueController extends ApiController
     }
 
     public function createInvoices(
-        $distributions, $datePayout
+        $distributions, $datePayout, $description = ""
     )
     {
         set_time_limit(300);
@@ -467,6 +469,7 @@ class ProjectRevenueController extends ApiController
                         $paymentInvoice->invoice_number = $newInvoiceNumber;
                         $paymentInvoice->number = 'U' . Carbon::now()->year . '-' . $newInvoiceNumber;
                         $paymentInvoice->status_id = 'sent';
+                        $paymentInvoice->description = $description;
                         $paymentInvoice->save();
                     }
                     array_push($createdInvoices, $paymentInvoice);
@@ -495,6 +498,7 @@ class ProjectRevenueController extends ApiController
                 // Nu kan status op Afgehandeld (processed).
                 $distribution->status = 'processed';
                 $distribution->date_payout = $datePayout;
+
                 $distribution->save();
             }
         }
@@ -624,16 +628,16 @@ class ProjectRevenueController extends ApiController
 
             //Make preview email
             if ($primaryEmailAddress) {
-                $mailbox = $this->setMailConfigByDistribution($distribution);
+                $mailbox = $this->getMailboxByDistribution($distribution);
                 if ($mailbox) {
                     $fromEmail = $mailbox->email;
-                    $fromName = $mailbox->name;
                 } else {
                     $fromEmail = \Config::get('mail.from.address');
-                    $fromName = \Config::get('mail.from.name');
                 }
 
-                $email = Mail::to($primaryEmailAddress->email);
+                $email = Mail::fromMailbox($mailbox)
+                    ->to($primaryEmailAddress->email);
+
                 if (!$subject) {
                     $subject = 'Participant rapportage Econobis';
                 }
@@ -714,8 +718,38 @@ class ProjectRevenueController extends ApiController
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 
+        $distribution = ProjectRevenueDistribution::find($distributionIds[0]);
+        $revenue = $distribution->revenue;
+        $project = $revenue->project;
+
+        $mailbox = optional($project->administration)->mailbox ? $project->administration->mailbox : Mailbox::getDefault();
+
+        $emailModel = null;
+        if($mailbox){
+            /**
+             * Email model aanmaken zodat de email ook zichtbaar wordt onder verzonden items.
+             * Dit is één gezamenlijke email voor alle ontvangers.
+             *
+             * De ontvangers worden later per succesvolle job aan deze mail toegevoegd.
+             */
+            $emailModel = new Email([
+                'mailbox_id' => $mailbox->id,
+                'from' => $mailbox->email,
+                'to' => [],
+                'cc' => [],
+                'bcc' => [],
+                'subject' => $subject,
+                'html_body' => EmailTemplate::find($emailTemplateId)->html_body,
+                'folder' => 'sent',
+                'date_sent' => \Illuminate\Support\Carbon::now(),
+                'project_id' => $project->id,
+                'sent_by_user_id' => Auth::id(),
+            ]);
+            $emailModel->save();
+        }
+
         foreach($distributionIds as $distributionId) {
-            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id());
+            CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id(), $emailModel);
         }
 
 // null voor succesboodschap. todo nog even checken of wat nut was om hier ProjectRevenueDistiibution terug te geven.
@@ -841,16 +875,20 @@ class ProjectRevenueController extends ApiController
                     . 'documents/' . $document->filename));
                 file_put_contents($filePath, $pdf);
 
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                    \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
+                        \Config::get('app.ALFRESCO_COOP_PASSWORD'));
 
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                    $document->filename, $document->getDocumentGroup()->name);
-                if($alfrescoResponse == null)
-                {
-                    throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath,
+                        $document->filename, $document->getDocumentGroup()->name);
+                    if ($alfrescoResponse == null) {
+                        throw new \Exception('Fout bij maken rapport document in Alfresco.');
+                    }
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $document->alfresco_node_id = null;
                 }
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
                 $document->save();
             }
             catch (\Exception $e) {
@@ -862,7 +900,7 @@ class ProjectRevenueController extends ApiController
             //send email
             if ($primaryEmailAddress) {
                 try{
-                    $mailbox = $this->setMailConfigByDistribution($distribution);
+                    $mailbox = $this->getMailboxByDistribution($distribution);
                     if ($mailbox) {
                         $fromEmail = $mailbox->email;
                         $fromName = $mailbox->name;
@@ -871,7 +909,9 @@ class ProjectRevenueController extends ApiController
                         $fromName = \Config::get('mail.from.name');
                     }
 
-                    $email = Mail::to($primaryEmailAddress->email);
+                    $email = Mail::fromMailbox($mailbox)
+                        ->to($primaryEmailAddress->email);
+
                     if (!$subject) {
                         $subject = 'Participant rapportage Econobis';
                     }
@@ -956,15 +996,16 @@ class ProjectRevenueController extends ApiController
     public function createPaymentInvoices(Request $request)
     {
         set_time_limit(0);
+
         $distributionIds = $request->input('distributionIds');
         $datePayout = $request->input('datePayout');
-
-        CreatePaymentInvoices::dispatch($distributionIds, $datePayout, Auth::id());
+        $description = $request->input('description');
+        CreatePaymentInvoices::dispatch($distributionIds, $datePayout, Auth::id(), $description);
 
         return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
     }
 
-    protected function setMailConfigByDistribution(ProjectRevenueDistribution $distribution)
+    protected function getMailboxByDistribution(ProjectRevenueDistribution $distribution)
     {
         // Standaard vanuit primaire mailbox mailen
         $mailboxToSendFrom = Mailbox::getDefault();
@@ -976,16 +1017,13 @@ class ProjectRevenueController extends ApiController
             $mailboxToSendFrom = $project->administration->mailbox;
         }
 
-        // Configuratie instellen als er een mailbox is gevonden
-        if ($mailboxToSendFrom) {
-            (new EmailHelper())->setConfigToMailbox($mailboxToSendFrom);
-        }
         return $mailboxToSendFrom;
     }
 
     protected function translateToValidCharacterSet($field){
 
-        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
 //        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 

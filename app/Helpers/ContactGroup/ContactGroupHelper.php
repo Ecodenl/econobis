@@ -5,7 +5,6 @@ namespace App\Helpers\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -28,9 +27,6 @@ class ContactGroupHelper
 
     public function processEmailNewContactToGroup(){
         set_time_limit(0);
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
 
         if (!$this->contactGroup) {
             return false;

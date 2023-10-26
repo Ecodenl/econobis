@@ -17,9 +17,12 @@ use App\Eco\Occupation\Occupation;
 use App\Eco\Opportunity\OpportunityEvaluationStatus;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\OrderStatus;
+use App\Eco\ParticipantMutation\ParticipantMutationType;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\EcoShared\SharedArea\SharedArea;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 use JosKolenberg\Enum\EnumNotFoundException;
 
 class DynamicContactGroupFilter extends Model
@@ -46,7 +49,7 @@ class DynamicContactGroupFilter extends Model
             if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->data))  return Carbon::parse($this->data)->format('d-m-Y');
 
             // Booleans omzetten
-            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists'];
+            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
             // opportunityMeasureCategory omzetten
@@ -105,6 +108,14 @@ class DynamicContactGroupFilter extends Model
                 }
                 return '';
             }
+            // quotationRequestStatusOrganisationOrCoach en quotationRequestStatusOccupant omzetten
+            if ($this->field == 'quotationRequestStatusOrganisationOrCoach' || $this->field == 'quotationRequestStatusOccupant'){
+                if($this->data){
+                    $quotationRequestStatus = QuotationRequestStatus::find($this->data);
+                    return $quotationRequestStatus ? $quotationRequestStatus->name : ''   ;
+                }
+                return '';
+            }
 
             // orderStatus omzetten
             if ($this->field == 'orderStatus'){
@@ -145,6 +156,31 @@ class DynamicContactGroupFilter extends Model
                         }
                     }
                 }
+            }
+
+            // participantMutationTypeId omzetten
+            if ($this->field == 'participantMutationTypeId'){
+                if($this->data){
+                    return ParticipantMutationType::find($this->data)->name;
+                }
+                return '';
+            }
+
+            // participantMutationStatusId omzetten
+            if ($this->field == 'participantMutationStatusId'){
+                if($this->data){
+                    return ParticipantMutationStatus::find($this->data)->name;
+                }
+                return '';
+            }
+
+            // sharedArea omzetten
+            if ($this->field == 'sharedArea'){
+                if($this->data){
+                    $sharedArea = SharedArea::find($this->data);
+                    return $sharedArea ? $sharedArea->area_name : '';
+                }
+                return '';
             }
 
             return $this->data;

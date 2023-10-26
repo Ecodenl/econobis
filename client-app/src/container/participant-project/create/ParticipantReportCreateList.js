@@ -28,7 +28,7 @@ class ParticipantReportCreateList extends Component {
                                     >
                                         <NavText>
                                             <Link className="send-payment-invoices-list-link">
-                                                {participant.id} - {participant.contact.fullName}
+                                                {participant.id} - {participant.name}
                                             </Link>
                                         </NavText>
                                     </Nav>

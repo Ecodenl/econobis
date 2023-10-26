@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Address\Address;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;

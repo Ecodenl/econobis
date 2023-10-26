@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Eco\Email\Email;
+use App\Eco\Schedule\CommandRun;
 use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -41,8 +42,22 @@ class deleteEmailDefinitive extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         $this->doDeleteEmailDefinitive();
-        dd('Einde Verwijder email (soft deleted) definitief.');
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
+
+        Log::info("Einde Verwijder email (soft deleted) definitief.");
     }
 
     /**
@@ -52,7 +67,8 @@ class deleteEmailDefinitive extends Command
     public function doDeleteEmailDefinitive()
     {
         $dateDeleteBefore = Carbon::parse('now')->subMonth(3)->format('Y-m-d');
-        print_r("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . "\n");
+        Log::info("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore);
+
         $emails = Email::withTrashed()->where('deleted_at', '<', $dateDeleteBefore)->get();
         $emailController =  new EmailController();
         foreach ($emails as $email){

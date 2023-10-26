@@ -3,9 +3,11 @@
 namespace App\Console\Commands;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Schedule\CommandRun;
 use App\Eco\User\User;
 use App\Helpers\Twinfield\TwinfieldCustomerHelper;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
@@ -42,6 +44,15 @@ class processTwinfieldCustomer extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         $adminUser = User::where('email', config('app.admin_user.email'))->first();
         if($adminUser){
             Auth::setUser($adminUser);
@@ -51,6 +62,10 @@ class processTwinfieldCustomer extends Command
             $twinfieldCustomerHelper = new TwinfieldCustomerHelper($administration, null);
             $twinfieldCustomerHelper->processTwinfieldCustomer();
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
 
         Log::info("Contacten Econobis in Twinfield bijgewerkt.");
     }

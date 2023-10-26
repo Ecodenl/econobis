@@ -2,28 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Schedule\CommandRun;
-use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
-class setIsCurrentSupplier extends Command
+class controleScripts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'addressEnergySupplier:setIsCurrentSupplier';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Bepaal of energieleveranciers huidig zijn geworden';
+    protected $signature = 'check:controleScripts';
 
     /**
      * Create a new command instance.
@@ -51,17 +42,24 @@ class setIsCurrentSupplier extends Command
         $commandRun->finished = false;
         $commandRun->save();
 
-        $addressEnergySupplierController = new AddressEnergySupplierController();
-
-        $addressEnergySuppliers = AddressEnergySupplier::all();
-        foreach ($addressEnergySuppliers as $addressEnergySupplier){
-            $addressEnergySupplierController->determineIsCurrentSupplier($addressEnergySupplier);
-        }
+        Artisan::call('revenue:checkMissingEnergySuppliersInAddress');
+        Artisan::call('revenue:checkWrongDistributionParts');
+        Artisan::call('revenue:checkWrongEnergySupplierDataInParts');
+        Artisan::call('revenue:checkMissingEnergySupplierDataInParts');
+        Artisan::call('revenue:checkWrongRevenueDistributionKwhStatus');
+        Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
+        Artisan::call('revenue:checkMissingRevenueDistributionParts');
+        Artisan::call('addressEnergySupplier:checkOverlappingEnergySuppliers');
+        Artisan::call('participants:checkFirstStartingDate');
+        Artisan::call('participants:checkTerminationDate');
+//        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
 
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;
         $commandRun->save();
 
-        Log::info('Procedure of energieleveranciers huidig zijn geworden klaar');
     }
+
+
 }
+

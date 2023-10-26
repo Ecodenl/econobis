@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Schedule\CommandRun;
 use App\Eco\User\User;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -46,6 +47,15 @@ class contactGroupsContactsForReport extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->save();
+
         Auth::setUser(User::find(1));
 
         $cooperation = Cooperation::first();
@@ -100,6 +110,11 @@ class contactGroupsContactsForReport extends Command
         } else {
             Log::info('Er ging iets anders mis tijdens de contactGroupsContactsForReport cronjob');
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
+
     }
 
     /**

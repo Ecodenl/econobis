@@ -130,7 +130,9 @@ function MutationFormEditDeposit({
         // voorwaarde voor niet meer wijzigen:
         // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
         //   nb: indien in definitieve waardestaat dan is hier readOnly al true
-        if (readOnly || (participantMutationFromProps.status.codeRef === 'final' && participantInDefinitiveRevenue)) {
+        // todo: check of check participantInDefinitiveRevenue weer terug gezet moet worden???
+        // if (readOnly || (participantMutationFromProps.status.codeRef === 'final' && participantInDefinitiveRevenue)) {
+        if (readOnly || participantMutationFromProps.status.codeRef === 'final') {
             return participantMutationFromProps.transactionCostsAmount
                 ? participantMutationFromProps.transactionCostsAmount
                 : 0;

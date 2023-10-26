@@ -77,4 +77,19 @@ class Cooperation extends Model
     {
         return $this->belongsTo(Mailbox::class, 'inspection_planned_mailbox_id');
     }
+
+    public function getFontFamilyDefault()
+    {
+        return $this->font_family_default ? $this->font_family_default : 'Times';
+    }
+
+    public function getFontSizeDefault()
+    {
+        return $this->font_size_default ? $this->font_size_default : 16;
+    }
+
+    public function getFontColorDefault()
+    {
+        return $this->font_color_default ? $this->font_color_default : '#000000';
+    }
 }

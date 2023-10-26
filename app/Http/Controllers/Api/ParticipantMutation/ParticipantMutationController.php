@@ -13,6 +13,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
@@ -74,6 +75,8 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
+        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+
         $result = $this->checkMutationAllowed($participantMutation);
 
         $this->recalculateParticipantMutation($participantMutation);
@@ -91,7 +94,7 @@ class ParticipantMutationController extends ApiController
         return $melding;
    }
 
-    public function update(RequestInput $requestInput, ParticipantMutation $participantMutation)
+    public function update(RequestInput $requestInput, Request $request, ParticipantMutation $participantMutation)
     {
         $this->authorize('manage', ParticipantMutation::class);
 
@@ -130,6 +133,15 @@ class ParticipantMutationController extends ApiController
             ->get();
 
         $participantMutation->fill($data);
+
+        if($request->get('differentTransactionCostsAmount')){
+            $participantMutation->transaction_costs_amount = $request->get('differentTransactionCostsAmount');
+        } else {
+            if (($participantMutation->participation->project->projectType->code_ref === 'loan' && $participantMutation->getOriginal('amount') != $participantMutation->amount)
+                || ($participantMutation->participation->project->projectType->code_ref !== 'loan' && $participantMutation->getOriginal('quantity') != $participantMutation->quantity)) {
+                $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+            }
+        }
 
         $result = $this->checkMutationAllowed($participantMutation);
 
@@ -300,5 +312,122 @@ class ParticipantMutationController extends ApiController
             }
         }
         return true;
+    }
+
+    public function calculationTransactionCosts($participantMutation)
+    {
+        // TransactionCosts only for (first_)deposit mutation types, otherwise return 0.
+        if(!$participantMutation->type || !in_array($participantMutation->type->code_ref, ['deposit', 'first_deposit'])) {
+            return 0;
+        }
+
+        $project = $participantMutation->participation->project;
+        $participation = $participantMutation->participation;
+
+        // indien transactie_costs niet meer gewijzigd mag worden, dan laten we transaction_costs_amount zoals het was.
+        // voorwaarde voor niet meer wijzigen:
+        // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
+        if($participantMutation->status->code_ref == 'final' &&
+            ( $participation->participant_in_definitive_revenue || $participantMutation->financial_overview_definitive )
+        ){
+            return $participantMutation->transaction_costs_amount;
+        }
+
+        // Indien Transactie kosten ook bij lidmaatschap (use_transaction_costs_with_membership) = false
+        if (!$project->use_transaction_costs_with_membership) {
+
+            $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
+
+            // Indien Vragen over lid worden aan of uit (show_question_about_membership) = true en deelnemer zit al in leden groep, dan Transactioncosts = 0
+            if ($project->show_question_about_membership && $belongsToMembershipGroup) {
+                return 0;
+            }
+
+            // Indien Vragen over lid worden aan of uit (show_question_about_membership) = true en deelnemer heeft wel gekozen voor lidmaatschap, dan Transactioncosts = 0
+            if ($project->show_question_about_membership && $participation->choice_membership === 1) {
+                return 0;
+            }
+        }
+
+        $varAmount = 0;
+        $varQuantity = 0;
+        $transactionCosts = 0;
+
+        switch ($participantMutation->status->code_ref) {
+            case 'interest':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_interest;
+                } else {
+                    $varQuantity = $participantMutation->quantity_interest;
+                }
+                break;
+            case 'option':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_option;
+                } else {
+                    $varQuantity = $participantMutation->quantity_option;
+                }
+                break;
+            case 'granted':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_granted;
+                } else {
+                    $varQuantity = $participantMutation->quantity_granted;
+                }
+                break;
+            case 'final':
+                if ($project->projectType->code_ref === 'loan' ) {
+                    $varAmount = $participantMutation->amount_final;
+                } else {
+                    $varQuantity = $participantMutation->quantity_final;
+                }
+                break;
+        }
+
+        switch ($project->getTransactionCostsCodeRef()) {
+            case 'amount-once':
+                $transactionCosts = $project->transaction_costs_amount;
+                break;
+            case 'amount':
+                if ($project->projectType->code_ref === 'loan') {
+                    $transactionCosts = $project->transaction_costs_amount;
+                } else {
+                    $transactionCosts = $project->transaction_costs_amount * $varQuantity;
+                }
+                break;
+            case 'percentage':
+                if ($project->projectType->code_ref === 'loan') {
+                    $amount = $varAmount;
+                } else {
+                    $amount = $varQuantity * $project->current_book_worth;
+                }
+
+                if ($amount != 0) {
+                    if ($project->transaction_costs_amount_3 !== null && $amount >= $project->transaction_costs_amount_3) {
+                        $transactionCosts = floatval($amount * $project->transaction_costs_percentage_3 / 100);
+                    } else if ($project->transaction_costs_amount_2 !== null && $amount >= $project->transaction_costs_amount_2) {
+                        $transactionCosts = floatval($amount * $project->transaction_costs_percentage_2 / 100);
+                    } else if ($project->transaction_costs_amount !== null && $amount >= $project->transaction_costs_amount) {
+                        $transactionCosts = floatval($amount * $project->transaction_costs_percentage / 100);
+                    } else {
+                        $transactionCosts = 0;
+                    }
+                }
+                break;
+            default:
+                $transactionCosts = 0;
+                break;
+        }
+
+        if ($project->getTransactionCostsCodeRef() && $project->getTransactionCostsCodeRef() !== 'none') {
+            if ($project->transaction_costs_amount_min !== null && $transactionCosts < $project->transaction_costs_amount_min) {
+                $transactionCosts = $project->transaction_costs_amount_min;
+            }
+            if ($project->transaction_costs_amount_max !== null && $transactionCosts > $project->transaction_costs_amount_max) {
+                $transactionCosts = $project->transaction_costs_amount_max;
+            }
+        }
+
+        return $transactionCosts;
     }
 }

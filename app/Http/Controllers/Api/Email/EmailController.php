@@ -15,7 +15,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Controllers\Controller;
-use App\Jobs\Email\SendEmailsWithVariables;
+use App\Jobs\Email\SendEmailsWithVariablesDeprecated;
 use App\Eco\Email\Jobs\StoreConceptEmail;
 use App\Eco\Mailbox\Mailbox;
 use App\Helpers\RequestInput\RequestInput;
@@ -23,7 +23,7 @@ use App\Http\RequestQueries\Email\Grid\RequestQuery;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\Email\GridEmail;
 use App\Http\Resources\GenericResource;
-use App\Jobs\Email\SendGroupEmail;
+use App\Jobs\Email\SendGroupEmailDeprecated;
 use Carbon\Carbon;
 use Config;
 use Illuminate\Http\Request;
@@ -68,7 +68,7 @@ class EmailController extends Controller
         $total = $queryBuilderNoPagination->count();
 
         $emails = $queryBuilderPagination->get();
-        $emails->load('mailbox', 'contacts');
+        $emails->load('mailbox', 'contacts', 'attachmentsWithoutCids');
 
         return GridEmail::collection($emails)
             ->additional([
@@ -350,9 +350,9 @@ class EmailController extends Controller
         $email->save();
 
         if ($email->contact_group_id) {
-            SendGroupEmail::dispatch($email, json_decode($request['cc']), Auth::id());
+            SendGroupEmailDeprecated::dispatch($email, json_decode($request['cc']), Auth::id());
         } else {
-            SendEmailsWithVariables::dispatch($email, json_decode($request['to']), Auth::id());
+            SendEmailsWithVariablesDeprecated::dispatch($email, json_decode($request['to']), Auth::id());
         }
     }
 
@@ -460,7 +460,7 @@ class EmailController extends Controller
         $this->authorize('view', Email::class);
         $this->checkMailboxAutorized($emailAttachment->email->mailbox_id);
 
-        $filePath = Storage::disk('mail_attachments')->getDriver()->getAdapter()->applyPathPrefix($emailAttachment->filename);
+        $filePath = Storage::disk('mail_attachments')->path($emailAttachment->filename);
 
         $contactId = '';
         if($emailAttachment->email->contacts()->count() === 1) {
@@ -825,7 +825,7 @@ class EmailController extends Controller
 
     protected function checkStorageDir($mailbox_id){
         //Check if storage map exists
-        $storageDir = Storage::disk('mail_attachments')->getDriver()->getAdapter()->getPathPrefix() . DIRECTORY_SEPARATOR . 'mailbox_' . $mailbox_id . DIRECTORY_SEPARATOR . 'outbox';
+        $storageDir = Storage::disk('mail_attachments')->path(DIRECTORY_SEPARATOR . 'mailbox_' . $mailbox_id . DIRECTORY_SEPARATOR . 'outbox');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

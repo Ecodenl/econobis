@@ -29,6 +29,20 @@ export default {
             });
     },
 
+    peekOpportunitiesForContacts: (contactIds) => {
+        const requestUrl = `${URL_OPPORTUNITY}/peek`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    contactIds: JSON.stringify(contactIds),
+                }
+            })
+            .then(function(response) {
+                return response.data.data;
+            });
+    },
+
     getAmountActive: () => {
         const requestUrl = `${URL_OPPORTUNITY}/amount-active`;
 

@@ -7,6 +7,7 @@ import ReactTooltip from 'react-tooltip';
 const InputText = props => {
     const {
         label,
+        labelClassName,
         type,
         className,
         size,
@@ -40,7 +41,7 @@ const InputText = props => {
     return (
         <div className={`form-group ${divSize} ${divClassName}`}>
             {!!label && (
-                <label htmlFor={id} className={`${labelSize} ${required}`}>
+                <label htmlFor={id} className={`${labelSize} ${required} ${labelClassName}`}>
                     {label}
                 </label>
             )}
@@ -51,7 +52,7 @@ const InputText = props => {
                     id={id}
                     placeholder={placeholder}
                     name={name}
-                    value={value ? value : (allowZero && value === 0 ? 0 : '')}
+                    value={value ? value : allowZero && value === 0 ? 0 : ''}
                     onClick={onClickAction}
                     onChange={onChangeAction}
                     onBlur={onBlurAction}
@@ -73,7 +74,7 @@ const InputText = props => {
                                 color={'blue'}
                                 size={'15px'}
                                 data-tip={textToolTip}
-                                data-for={`tooltip-${name}`}
+                                data-for={`tooltip-${name ? name : id}`}
                             />
                             <ReactTooltip
                                 id={`tooltip-${name ? name : id}`}
@@ -114,8 +115,9 @@ const InputText = props => {
 };
 
 InputText.defaultProps = {
-    divClassName: '',
     className: '',
+    divClassName: '',
+    labelClassName: '',
     size: 'col-sm-6',
     divSize: 'col-sm-6',
     labelSize: 'col-sm-6',
@@ -146,6 +148,7 @@ InputText.propTypes = {
     type: PropTypes.string,
     className: PropTypes.string,
     divClassName: PropTypes.string,
+    labelClassName: PropTypes.string,
     size: PropTypes.string,
     divSize: PropTypes.string,
     labelSize: PropTypes.string,

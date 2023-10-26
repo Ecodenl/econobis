@@ -51,6 +51,7 @@ class ContactGroupsListItem extends Component {
             isUsedInLaposta,
             groupUpToDateWithLaposta,
             numberOfLapostaMembers,
+            parentGroupsArray,
             useLaposta,
         } = this.props;
 
@@ -105,7 +106,14 @@ class ContactGroupsListItem extends Component {
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (
-                        ''
+
+                        this.state.showActionButtons && permissions.manageGroup && isUsedInComposedGroup ? (
+                            <a role="button" onClick={this.props.showPartOfComposedGroupModal.bind(this, parentGroupsArray)}>
+                                <Icon className="mybtn-grey" size={14} icon={trash} />
+                            </a>
+                        ) : (
+                            ''
+                        )
                     )}
                 </td>
             </tr>

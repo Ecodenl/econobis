@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
@@ -49,6 +50,15 @@ class AppServiceProvider extends ServiceProvider
                 setlocale(LC_TIME, 'nld_nld');
             }
         }
+
+        Arr::macro('keysToSnakeCase', function ($array) {
+            return array_combine(
+                array_map(function ($key) {
+                    return snake_case($key);
+                }, array_keys($array)),
+                $array
+            );
+        });
     }
 
     /**

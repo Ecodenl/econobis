@@ -546,7 +546,7 @@ class RevenuePartsKwhFormEdit extends Component {
                                     <div className="row">
                                         <InputText
                                             type={'number'}
-                                            label={'Opbrengst kWh €'}
+                                            label={'Teruggave EB per kWh €'}
                                             name={'payoutKwh'}
                                             value={
                                                 payoutKwh &&

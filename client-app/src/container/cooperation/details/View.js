@@ -178,6 +178,19 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
             )}
             <Panel>
                 <PanelHeader>
+                    <span className="h5 text-bold">E-mail opmaak</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Lettertype'} value={formData.fontFamilyDefault} />
+                        <ViewText label={'Lettergrootte'} value={formData.fontSizeDefault} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
+                    </div>
+                </PanelBody>
+
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>

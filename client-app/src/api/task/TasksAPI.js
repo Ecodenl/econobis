@@ -61,4 +61,18 @@ export default {
                 console.log(error);
             });
     },
+
+    peekTasksForContacts: (contactIds) => {
+        const requestUrl = `${URL_API}/api/task/peek`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    contactIds: JSON.stringify(contactIds),
+                }
+            })
+            .then(function(response) {
+                return response.data.data;
+            });
+    },
 };

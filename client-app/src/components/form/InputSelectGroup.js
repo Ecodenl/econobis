@@ -16,6 +16,7 @@ const InputSelectGroup = props => {
         required,
         error,
         readOnly,
+        emptyOption,
     } = props;
 
     return (
@@ -33,7 +34,7 @@ const InputSelectGroup = props => {
                     onBlur={onBlurAction}
                     disabled={readOnly}
                 >
-                    <option value="" />
+                    {emptyOption && <option value=""></option>}
                     {optionsInGroups.map((group, i) => {
                         const optionName = group.optionName || 'name';
                         return (
@@ -62,6 +63,7 @@ InputSelectGroup.defaultProps = {
     required: '',
     error: false,
     value: '',
+    emptyOption: true,
 };
 
 InputSelectGroup.propTypes = {
@@ -79,6 +81,7 @@ InputSelectGroup.propTypes = {
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     optionName: PropTypes.string,
+    emptyOption: PropTypes.bool,
 };
 
 export default InputSelectGroup;

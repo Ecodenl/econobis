@@ -4,13 +4,7 @@ namespace App\Console\Commands\RecoverScripts;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Helpers\Email\EmailHelper;
-use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
 
 class recoverWrongEnergySupplierDataInParts extends Command
 {

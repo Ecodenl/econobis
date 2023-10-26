@@ -97,6 +97,7 @@ class OpportunityController extends ApiController
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
             ->integer('intakeId')->validate('required|exists:intakes,id')->onEmpty(null)->alias('intake_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
+            ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
@@ -128,6 +129,7 @@ class OpportunityController extends ApiController
             ->integer('statusId')->validate('required|exists:opportunity_status,id')->alias('status_id')->next()
             ->string('quotationText')->alias('quotation_text')->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
+            ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
             ->get();
 
@@ -174,18 +176,24 @@ class OpportunityController extends ApiController
         return Opportunity::where('status_id', 1)->count();
     }
 
-    public function peek()
+    public function peek(Request $request)
     {
         $teamContactIds = Auth::user()->getTeamContactIds();
+
+        $query = Opportunity::query()->orderBy('id');
         if ($teamContactIds){
-            $opportunities = Opportunity::whereHas('intake', function($query) use($teamContactIds){
+            $query->whereHas('intake', function($query) use($teamContactIds){
                 $query->whereIn('contact_id', $teamContactIds);
-            })->orderBy('id')->get();
-        }else{
-            $opportunities = Opportunity::orderBy('id')->get();
+            });
         }
 
-        return OpportunityPeek::collection($opportunities);
+        if($request->has('contactIds')){
+            $query->whereHas('intake', function ($query) use ($request) {
+                $query->whereIn('contact_id', json_decode($request->input('contactIds')));
+            });
+        }
+
+        return OpportunityPeek::collection($query->get());
     }
 
     // Data for dashboard chart

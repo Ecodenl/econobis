@@ -255,6 +255,20 @@ class ParticipantProject extends Model
         return Carbon::parse($dateTerminatedAllowedFrom)->subDay(1)->format('Y-m-d');
     }
 
+
+    // Return if projectparicipant already has a link in a non-concept revenue distribution
+    public function getParticipantInDefinitiveRevenueAttribute()
+    {
+        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
+        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
+        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
+    }
+
+    public function getParticipantBelongsToMembershipGroupAttribute()
+    {
+        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
+    }
+
     // Return if projectparicipant is in a sce or pcr project
     public function getParticipantInSceOrPcrProjectAttribute()
     {

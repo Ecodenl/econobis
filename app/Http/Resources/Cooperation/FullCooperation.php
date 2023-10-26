@@ -59,6 +59,9 @@ class FullCooperation extends JsonResource
             'emailReportTableProblems' => $this->email_report_table_problems ? $this->email_report_table_problems : '',
             'createContactsForReportTableLastCreated' => $this->create_contacts_for_report_table_last_created,
             'createContactsForReportTableInProgress' => $this->create_contacts_for_report_table_in_progress,
+            'fontFamilyDefault' => $this->font_family_default,
+            'fontSizeDefault' => $this->font_size_default,
+            'fontColorDefault' => $this->font_color_default,
         ];
     }
 }

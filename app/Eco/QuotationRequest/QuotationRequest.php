@@ -10,7 +10,7 @@ use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\User\User;
-use App\Jobs\Email\SendEmailsWithVariables;
+use App\Jobs\Email\SendEmailsWithVariablesDeprecated;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -157,7 +157,7 @@ class QuotationRequest extends Model
 
                 $email->contacts()->attach([$mail['contact']->id]);
 
-                SendEmailsWithVariables::dispatch($email, [$mail['contact']->primaryEmailAddress->id], Auth::id());
+                SendEmailsWithVariablesDeprecated::dispatch($email, [$mail['contact']->primaryEmailAddress->id], Auth::id());
             }
         }
     }

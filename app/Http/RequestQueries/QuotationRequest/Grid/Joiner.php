@@ -45,4 +45,11 @@ class Joiner extends RequestJoiner
         $query->join('intakes as intakes3',  'opportunities3.intake_id', '=', 'intakes3.id');
         $query->join('campaigns',  'intakes3.campaign_id', '=', 'campaigns.id');
     }
+
+    protected function applyAddressAreaNameJoin($query)
+    {
+        $query->join('opportunities AS opportunities4', 'quotation_requests.opportunity_id', '=', 'opportunities4.id');
+        $query->join('intakes as intakes4',  'opportunities4.intake_id', '=', 'intakes4.id');
+        $query->join('addresses as addressAreaName',  'intakes4.address_id', '=', 'addressAreaName.id');
+    }
 }

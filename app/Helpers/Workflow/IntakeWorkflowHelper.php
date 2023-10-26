@@ -11,7 +11,6 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Organisation\Organisation;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
-use App\Helpers\Email\EmailHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -94,17 +93,15 @@ class IntakeWorkflowHelper
         $quotationRequest->status_id = $quotationRequestStatus->id;
         $quotationRequest->date_planned_to_send_wf_email_status = null;
         $quotationRequest->quotation_text = $opportunity = '';
+        $quotationRequest->quotation_amount = 0;
         $quotationRequest->save();
 
         return true;
     }
 
 
-    private function processWorkflowEmailQuotationRequest(){
-
-        // Emails moeten vanuit de default mailbox worden verstuurd ipv de mail instellingen in .env
-        // Daarom hier eerst de emailconfiguratie overschrijven voordat we gaan verzenden.
-        (new EmailHelper())->setConfigToDefaultMailbox();
+    private function processWorkflowEmailQuotationRequest()
+    {
 
         $emailTemplate = EmailTemplate::find($this->measureCategory->email_template_id_wf_create_quotation_request);
         if (!$emailTemplate) {

@@ -95,6 +95,7 @@ const DistrictsListApp = React.lazy(() => import('./container/district/list/Dist
 const DistrictNewApp = React.lazy(() => import('./container/district/new/DistrictNewApp'));
 const DistrictDetailsApp = React.lazy(() => import('./container/district/details/DistrictDetailsApp'));
 const DistrictCalendarApp = React.lazy(() => import('./container/district/calendar/DistrictCalendarApp'));
+const MailgunEventListApp = React.lazy(() => import('./container/mailgun-event/list/MailgunEventListApp'));
 const ContactAvailabilityListApp = React.lazy(() =>
     import('./container/contact-availability/list/ContactAvailabilityListApp')
 );
@@ -243,6 +244,12 @@ const CooperationDetailsApp = React.lazy(() => import('./container/cooperation/d
 const TwoFactorActivate = React.lazy(() => import('./container/auth/TwoFactorActivate'));
 const TwoFactorConfirm = React.lazy(() => import('./container/auth/TwoFactorConfirm'));
 const TwoFactorRecover = React.lazy(() => import('./container/auth/TwoFactorRecover'));
+
+/**
+ * Mailclient / Mail in splitview
+ * */
+const EmailSplitView = React.lazy(() => import('./container/email/splitview/EmailSplitView'));
+const OpenEmailModal = React.lazy(() => import('./container/email/OpenEmailModalView'));
 
 const Routes = () => {
     return (
@@ -438,6 +445,8 @@ const Routes = () => {
                     /* Availabilities */
                     <Route path="beschikbaarheid/:id" component={ContactAvailabilityDetailsApp} />
                     <Route path="beschikbaarheid" component={ContactAvailabilityListApp} />
+                    /* Mailgun Events */
+                    <Route path="mailgun/log" component={MailgunEventListApp} />
                     /* Housing File */
                     <Route
                         path="woningdossier/nieuw/contact/:contactId/adres/:addressId"
@@ -581,6 +590,9 @@ const Routes = () => {
                     <Route path="offerte-verzoek-status/:id" component={QuotationRequestStatusDetailsApp} />
                     <Route path="kans-statussen" component={OpportunityStatusListApp} />
                     <Route path="kans-status/:id" component={OpportunityStatusDetailsApp} />
+                    /* Mailclient */
+                    <Route path="mailclient/:folder" component={EmailSplitView} />
+                    <Route path="mailclient/email/:id" component={OpenEmailModal} />
                     /* 404 route */
                     <Route path="*" component={NotFoundedPage} />
                 </Route>

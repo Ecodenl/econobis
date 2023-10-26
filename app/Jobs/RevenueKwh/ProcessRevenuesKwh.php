@@ -111,7 +111,7 @@ class ProcessRevenuesKwh implements ShouldQueue
         $jobLog->save();
     }
 
-    public function failed($exception)
+    public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Opbrengst Kwh definitief maken mislukt.";

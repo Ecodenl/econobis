@@ -7,7 +7,6 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Helpers\Email\EmailHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -196,8 +195,6 @@ class checkMissingEnergySuppliersInAddress extends Command
 
     private function sendMail($missingEnergySuppliersInAddressData, $doRecover)
     {
-        (new EmailHelper())->setConfigToDefaultMailbox();
-
         $subject = 'Missing energy suppliers in address ! (' . count($missingEnergySuppliersInAddressData) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $missingEnergySuppliersInAddressDataHtml = "";

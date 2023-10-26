@@ -6,6 +6,8 @@ import MailgunDomainDetailsToolbar from './MailgunDomainDetailsToolbar';
 import MailgunDomainDetailsForm from './MailgunDomainDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import MailgunDomainDetailsBounces from "./MailgunDomainDetailsBounces";
+import MailgunDomainDetailsComplaints from "./MailgunDomainDetailsComplaints";
 
 class MailgunDomainDetailsApp extends Component {
     constructor(props) {
@@ -30,6 +32,14 @@ class MailgunDomainDetailsApp extends Component {
 
                     <div className="col-md-12 margin-10-top">
                         <MailgunDomainDetailsForm />
+                    </div>
+
+                    <div className="col-md-12 margin-10-top">
+                        <MailgunDomainDetailsBounces mailgunDomainId={this.props.params.id} />
+                    </div>
+
+                    <div className="col-md-12 margin-10-top">
+                        <MailgunDomainDetailsComplaints mailgunDomainId={this.props.params.id} />
                     </div>
                 </div>
                 <div className="col-md-3" />

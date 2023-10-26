@@ -16,29 +16,30 @@ const OpportunitiesListHead = props => {
 
     return (
         <tr className="thead-title">
-            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'desiredDate'}
                 title={'Datum Uitvoering'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategory'}
                 title={'Maatregel categorie'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureName'}
                 title={'Maatregel specifiek'}
-                width={'15%'}
+                width={'13%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kans'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kans'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'amountOfQuotationRequests'}
                 title={'Aantal kansacties'}

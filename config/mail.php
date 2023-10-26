@@ -207,4 +207,9 @@ return [
         ],
     ],
 
+    /**
+     * Voor lokaal ontwikkelen;
+     * Als deze is ingeschakeld worden alle mails obv .env instellingen gestuurd ipv mailboxen in database.
+     */
+    'ignore_custom_mailboxes' => env('MAIL_IGNORE_CUSTOM_MAILBOXES', false),
 ];

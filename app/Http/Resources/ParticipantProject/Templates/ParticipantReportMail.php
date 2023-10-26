@@ -5,10 +5,10 @@ namespace App\Http\Resources\ParticipantProject\Templates;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
-use App\Mail\ConfigurableMailable;
+use Illuminate\Mail\Mailable;
 use Illuminate\Support\Facades\Storage;
 
-class ParticipantReportMail extends ConfigurableMailable
+class ParticipantReportMail extends Mailable
 {
     public $html_body;
     public $subject;
@@ -37,25 +37,25 @@ class ParticipantReportMail extends ConfigurableMailable
      */
     public function build()
     {
+        $this->subject($this->email->subject)
+            ->view('emails.generic')
+            ->text('emails.genericText')
+            ->attach(Storage::disk('documents')->path($this->document->filename), [
+                'as' => $this->document->name
+            ]);
 
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');
-
-        $mail->attach(Storage::disk('documents')->getDriver()->getAdapter()
-            ->applyPathPrefix($this->document->filename), [
-            'as' => $this->document->name
-        ]);
-
-        if($this->defaultAttachmentDocumentId != null){
+        if ($this->defaultAttachmentDocumentId != null) {
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
-            if($defaultAttachmentDocument){
+            if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
                     'as' => $defaultAttachmentDocument->filename
                 ]);
             }
         }
 
-        $mail = $this->from($this->from_email, $this->from_name);
-        return $mail;
+        $this->from($this->from_email, $this->from_name);
+
+        return $this;
     }
 }

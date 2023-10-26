@@ -2407,6 +2407,25 @@ class TemplateVariableHelper
             case 'datum_akkoord_bewoner':
                 return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d-m-Y') : null;
                 break;
+            case 'datum_uitgevoerd':
+                return $model->date_executed ? Carbon::parse($model->date_executed)->format('d-m-Y') : null;
+                break;
+            case 'bedrag':
+            case 'offerte_bedrag':
+                return number_format( ($model->quotation_amount ? $model->quotation_amount : 0), 2, ',', '' );
+                break;
+            case 'opmerking_organisatie_of_coach':
+                return $model->coach_or_organisation_note ? $model->coach_or_organisation_note : '';
+                break;
+            case 'opmerking_projectmanager':
+                return $model->externalparty_note ? $model->projectmanager_note : '';
+                break;
+            case 'opmerking_externe_partij':
+                return $model->externalparty_note ? $model->externalparty_note : '';
+                break;
+            case 'opmerking_bewoner':
+                return $model->client_note ? $model->client_note : '';
+                break;
             case 'status':
                 return $model->status ? $model->status->name : '';
                 break;

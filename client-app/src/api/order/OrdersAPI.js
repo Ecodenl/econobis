@@ -30,6 +30,20 @@ export default {
             });
     },
 
+    peekOrdersForContacts: (contactIds) => {
+        const requestUrl = `${URL_ORDER}/peek`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    contactIds: JSON.stringify(contactIds),
+                }
+            })
+            .then(function(response) {
+                return response.data.data;
+            });
+    },
+
     getCSV: ({ filters, sorts, administrationId }) => {
         const requestUrl = `${URL_ORDER}/csv`;
 

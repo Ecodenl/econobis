@@ -5,12 +5,12 @@ namespace App\Http\Resources\FinancialOverview\Templates;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
-use App\Mail\ConfigurableMailable;
+use Illuminate\Mail\Mailable;
 
-class FinancialOverviewContactMail extends ConfigurableMailable
+class FinancialOverviewContactMail extends Mailable
 {
+    public $email;
     public $html_body;
-    public $subject;
     public $document_path;
     public $document_name;
     public $defaultAttachmentDocumentId;
@@ -36,23 +36,23 @@ class FinancialOverviewContactMail extends ConfigurableMailable
      */
     public function build()
     {
+        $this->subject($this->email->subject)
+            ->view('emails.generic')
+            ->text('emails.genericText')
+            ->attach($this->document_path, [
+                'as' => $this->document_name
+            ]);
 
-        $mail = $this->subject($this->email->subject)->view('emails.generic')->text('emails.genericText');;
-
-        $mail->attach($this->document_path, [
-            'as' => $this->document_name
-        ]);
-
-        if($this->defaultAttachmentDocumentId != null){
+        if ($this->defaultAttachmentDocumentId != null) {
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
-            if($defaultAttachmentDocument){
+            if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $mail->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
+                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
                     'as' => $defaultAttachmentDocument->filename
                 ]);
             }
         }
 
-        return $mail;
+        return $this;
     }
 }

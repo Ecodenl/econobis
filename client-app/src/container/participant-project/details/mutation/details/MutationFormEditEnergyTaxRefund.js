@@ -26,7 +26,7 @@ function MutationFormEditEnergyTaxRefund({ participantMutationFromProps, cancelD
             </div>
             <div className="row">
                 <ViewText
-                    label={'Opbrengst kWh €'}
+                    label={'Teruggave EB per kWh €'}
                     id={'payoutKwhPrice'}
                     className={'col-sm-6 form-group'}
                     value={payoutKwhPrice}

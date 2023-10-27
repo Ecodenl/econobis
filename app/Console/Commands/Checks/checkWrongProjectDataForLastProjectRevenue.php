@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectRevenueCategory;

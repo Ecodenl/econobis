@@ -69,11 +69,11 @@ class Kernel extends ConsoleKernel
 
         switch ($scheduleRunId){
             case 1:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:58');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:58');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:58');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:58');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:55');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:55');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:55');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:55');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:55');
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('20:55');
 
@@ -108,11 +108,11 @@ class Kernel extends ConsoleKernel
                 $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:25');
                 break;
             case 2:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:59');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:59');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:59');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:59');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:56');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:56');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:56');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:56');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:56');
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:00');
 
@@ -147,11 +147,11 @@ class Kernel extends ConsoleKernel
                 $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:40');
                 break;
             case 3:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:01');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('09:01');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('12:01');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('15:01');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('18:01');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:57');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:57');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:57');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:57');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:57');
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:05');
 
@@ -186,11 +186,11 @@ class Kernel extends ConsoleKernel
                 $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:55');
                 break;
             case 4:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:02');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('09:02');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('12:02');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('15:02');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('18:02');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:58');
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:10');
 
@@ -225,11 +225,11 @@ class Kernel extends ConsoleKernel
                 $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('06:10');
                 break;
             case 5:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:03');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('09:03');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('12:03');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('15:03');
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('18:03');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('17:59');
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:15');
 

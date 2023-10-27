@@ -380,24 +380,22 @@ class ContactCSVHelper
             foreach ($chunk as $contact) {
                 // Addresses
                 if ($contact->addresses) {
-                    foreach (AddressType::collection() as $type) {
-                        $address = $contact->addresses()->where('type_id', $type->id)->where('primary', true)->first();
-                        if(empty($address))
-                        {
-                            $address = $contact->addresses()->where('type_id', $type->id)->first();
-                        }
-
-                        $addressArr = [];
-
-                        $addressArr['street'] = ($address ? $address->street : '');
-                        $addressArr['number'] = ($address ? $address->number : '');
-                        $addressArr['addition'] = ($address ? $address->addition : '');
-                        $addressArr['postal_code'] = ($address ? $address->postal_code : '');
-                        $addressArr['city'] = ($address ? $address->city : '');
-                        $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
-
-                        $contact['address_' . $type->id] = $addressArr;
+                    $address = $contact->addresses()->where('primary', true)->first();
+                    if(empty($address))
+                    {
+                        $address = $contact->addresses()->first();
                     }
+
+                    $addressArr = [];
+
+                    $addressArr['street'] = ($address ? $address->street : '');
+                    $addressArr['number'] = ($address ? $address->number : '');
+                    $addressArr['addition'] = ($address ? $address->addition : '');
+                    $addressArr['postal_code'] = ($address ? $address->postal_code : '');
+                    $addressArr['city'] = ($address ? $address->city : '');
+                    $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
+
+                    $contact['address'] = $addressArr;
                 }
             }
 
@@ -422,7 +420,7 @@ class ContactCSVHelper
                     $i = 0;
                     foreach($contact->primaryAddress->addressEnergySuppliers()->where('is_current_supplier', false)->whereIn('energy_supply_type_id', [2, 3])->take(2)->get() as $oldAddressEnergySupplierElectricity) {
                         $i++;
-                        if($i === 0) {
+                        if($i === 1) {
                             $contact->old_energy_supplier_name_electricity_1 = $oldAddressEnergySupplierElectricity->energySupplier->name;
                             $contact->old_es_number_electricity_1 = $oldAddressEnergySupplierElectricity->es_number;
                             $contact->old_energy_end_date_electricity_1 = $this->formatDate($oldAddressEnergySupplierElectricity->end_date);
@@ -444,7 +442,7 @@ class ContactCSVHelper
                     $i = 0;
                     foreach($contact->primaryAddress->addressEnergySuppliers()->where('is_current_supplier', false)->whereIn('energy_supply_type_id', [1, 3])->take(2)->get() as $oldAddressEnergySupplierGas) {
                         $i++;
-                        if($i === 0) {
+                        if($i === 1) {
                             $contact->old_energy_supplier_name_gas_1 = $oldAddressEnergySupplierGas->energySupplier->name;
                             $contact->old_es_number_gas_1 = $oldAddressEnergySupplierGas->es_number;
                             $contact->old_energy_member_since_gas_1 = $this->formatDate($oldAddressEnergySupplierGas->member_since);
@@ -474,11 +472,11 @@ class ContactCSVHelper
                 'first_name' => 'Voornaam',
                 'last_name_prefix' => 'Tussenvoegsel',
                 'last_name' => 'Achternaam',
-                'address_visit.street' => 'Bezoek adres',
-                'address_visit.number' => 'Bezoek huisnummer',
-                'address_visit.addition' => 'Bezoek toevoeging',
-                'address_visit.postal_code' => 'Bezoek postcode',
-                'address_visit.city' => 'Bezoek plaats',
+                'address.street' => 'Adres',
+                'address.number' => 'Huisnummer',
+                'address.addition' => 'Toevoeging',
+                'address.postal_code' => 'Postcode',
+                'address.city' => 'Plaats',
                 'primaryEmailAddress.email' => 'Email primair',
                 'primaryphoneNumber.number' => 'Telefoonnummer primair',
 

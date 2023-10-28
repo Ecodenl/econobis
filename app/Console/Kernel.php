@@ -65,7 +65,7 @@ class Kernel extends ConsoleKernel
         // Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).
         // Time is default CET, therefore set timezone to Europ/Amsterdam, scheduled for 06:00 wil run at 06:00 Amsterdam time now.
 
-        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('06:00', '23:30');
+        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('06:00', '23:00');
 
         switch ($scheduleRunId){
             case 1:
@@ -77,13 +77,13 @@ class Kernel extends ConsoleKernel
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('20:55');
 
-                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:05');
+                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:01');
 
-                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:30');
-                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:45');
+                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:05');
+                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:10');
 
-                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:00');
-                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:15');
+                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('00:15');
+                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('00:20');
 
                 // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
@@ -116,13 +116,13 @@ class Kernel extends ConsoleKernel
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:00');
 
-                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:20');
+                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:21');
 
-                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:33');
-                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:48');
+                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:25');
+                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:30');
 
-                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:03');
-                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:18');
+                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('00:35');
+                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('00:40');
 
                 // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
@@ -155,13 +155,13 @@ class Kernel extends ConsoleKernel
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:05');
 
-                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:35');
+                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:41');
 
-                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:36');
-                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:51');
+                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:45');
+                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:50');
 
-                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:06');
-                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:21');
+                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('00:55');
+                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:00');
 
                 // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
@@ -194,13 +194,13 @@ class Kernel extends ConsoleKernel
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:10');
 
-                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('23:50');
+                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('00:01');
 
-                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:39');
-                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:54');
+                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('01:05');
+                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('01:10');
 
-                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:09');
-                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:24');
+                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:15');
+                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:20');
 
                 // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 
@@ -233,13 +233,13 @@ class Kernel extends ConsoleKernel
 
                 $schedule->command('check:controleScript')->timezone('Europe/Amsterdam')->dailyAt('21:15');
 
-                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('00:05');
+                $schedule->command('laposta:processStateAllMembersLaposta')->timezone('Europe/Amsterdam')->dailyAt('00:21');
 
-                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('00:42');
-                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('00:57');
+                $schedule->command('address:createTaskAtEndDateAddress')->timezone('Europe/Amsterdam')->dailyAt('01:25');
+                $schedule->command('addressEnergySupplier:setIsCurrentSupplier')->timezone('Europe/Amsterdam')->dailyAt('01:30');
 
-                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:12');
-                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:27');
+                $schedule->command('invoice:setDaysLastReminder')->timezone('Europe/Amsterdam')->dailyAt('01:35');
+                $schedule->command('invoice:setDaysToExpire')->timezone('Europe/Amsterdam')->dailyAt('01:40');
 
                 // don't schedule anything between 02:00 and 03:00 because of summer/winter time changes (02:00 -> 03:00 job is skipt and 03:00-02:00 job is run double.
 

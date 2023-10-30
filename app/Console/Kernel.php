@@ -65,11 +65,11 @@ class Kernel extends ConsoleKernel
         // Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).
         // Time is default CET, therefore set timezone to Europ/Amsterdam, scheduled for 06:00 wil run at 06:00 Amsterdam time now.
 
-        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('06:00', '23:00');
+        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('07:00', '23:00');
 
         switch ($scheduleRunId){
             case 1:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:55');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:45');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:55');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:55');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:55');
@@ -90,25 +90,24 @@ class Kernel extends ConsoleKernel
                 // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
                 $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:05');
 
-                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('03:30');
 //                $schedule->command('email:deleteFloatingAttachmentFiles')->timezone('Europe/Amsterdam')->dailyAt('03:35');
+                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('03:18');
+                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('03:21');
+                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('03:24');
+                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('03:27');
 
-                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('04:20');
-                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('04:30');
-                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('04:45');
-
-                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('05:00');
-                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:05');
-                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:10');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('05:15');
+                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:01');
+                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:11');
+                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:21');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:31');
                 /**
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:25');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:00');
                 break;
             case 2:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:56');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:46');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:56');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:56');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:56');
@@ -129,25 +128,24 @@ class Kernel extends ConsoleKernel
                 // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
                 $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:20');
 
-                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('03:45');
 //                $schedule->command('email:deleteFloatingAttachmentFiles')->timezone('Europe/Amsterdam')->dailyAt('03:35');
+                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('03:48');
+                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('03:51');
+                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('03:54');
+                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('03:57');
 
-                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('04:35');
-                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('04:45');
-                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('05:00');
-
-                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('05:15');
-                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:20');
-                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:25');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('05:30');
+                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:03');
+                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:13');
+                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:23');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:33');
                 /**
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:40');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:10');
                 break;
             case 3:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:57');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:47');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:57');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:57');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:57');
@@ -168,25 +166,24 @@ class Kernel extends ConsoleKernel
                 // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
                 $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:35');
 
-                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('04:00');
 //                $schedule->command('email:deleteFloatingAttachmentFiles')->timezone('Europe/Amsterdam')->dailyAt('03:35');
+                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('04:18');
+                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('04:21');
+                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('04:24');
+                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('04:27');
 
-                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('04:50');
-                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('05:00');
-                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('05:15');
-
-                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('05:30');
-                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:35');
-                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:40');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('05:45');
+                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:05');
+                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:15');
+                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:25');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:35');
                 /**
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('05:55');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:20');
                 break;
             case 4:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:58');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:48');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:58');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:58');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:58');
@@ -207,25 +204,24 @@ class Kernel extends ConsoleKernel
                 // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
                 $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('03:50');
 
-                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('04:15');
 //                $schedule->command('email:deleteFloatingAttachmentFiles')->timezone('Europe/Amsterdam')->dailyAt('03:35');
+                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('04:48');
+                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('04:51');
+                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('04:54');
+                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('04:57');
 
-                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('05:05');
-                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('05:15');
-                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('05:30');
-
-                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('05:45');
-                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('05:50');
-                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('05:55');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:00');
+                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:07');
+                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:17');
+                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:27');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:37');
                 /**
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('06:10');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:30');
                 break;
             case 5:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('05:59');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:49');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:59');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:59');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('14:59');
@@ -246,22 +242,21 @@ class Kernel extends ConsoleKernel
                 // report:contactGroupsContacts after laposta:processStateAllMembersLaposta
                 $schedule->command('report:contactGroupsContacts')->timezone('Europe/Amsterdam')->dailyAt('04:05');
 
-                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('04:30');
 //                $schedule->command('email:deleteFloatingAttachmentFiles')->timezone('Europe/Amsterdam')->dailyAt('03:35');
+                $schedule->command('email:deleteEmailDefinitive')->timezone('Europe/Amsterdam')->dailyAt('05:18');
+                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('05:21');
+                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('05:24');
+                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('05:27');
 
-                $schedule->command('invoice:processTwinfieldCustomer')->timezone('Europe/Amsterdam')->dailyAt('05:20');
-                $schedule->command('invoice:processTwinfieldInvoicePayment')->timezone('Europe/Amsterdam')->dailyAt('05:30');
-                $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('05:45');
-
-                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:00');
-                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:05');
-                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:10');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:15');
+                $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:09');
+                $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:19');
+                $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:29');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:39');
                 /**
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('06:25');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:40');
                 break;
         }
 

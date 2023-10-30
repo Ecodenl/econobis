@@ -185,11 +185,11 @@ class ContactsListApp extends Component {
 
                 ContactsAPI.getExcelAddressEnergyConsumptionElectricity({ filters, extraFilters, sorts, pagination })
                     .then(payload => {
-                        var excelFileName = `Contacten-verbruik-electriciteit-${moment().format(
+                        var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
                             'YYYY-MM-DD HH:mm:ss'
                         )}.xlsx`;
                         if (splitsExcel) {
-                            var excelFileName = `Contacten-verbruik-electriciteit-${moment().format(
+                            var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
                                 'YYYY-MM-DD HH:mm:ss'
                             )} (${counter} van ${amountFiles}).xlsx`;
                         }

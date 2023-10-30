@@ -109,9 +109,9 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 </Row>
                 {isParticipantPcrProject ? (
                     <>
-                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                        <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
                         <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer elektriciteit'}>
                                 {primaryAddress.eanElectricity}
                             </TextBlock>
                         </Row>

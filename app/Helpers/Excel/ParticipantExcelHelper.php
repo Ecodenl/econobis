@@ -92,7 +92,7 @@ class ParticipantExcelHelper
         $headerData[] = 'Energieleverancier';
         $headerData[] = 'Energieleverancier klant sinds';
         $headerData[] = 'Klantnummer';
-        $headerData[] = 'EAN electra';
+        $headerData[] = 'EAN elektra';
         $headerData[] = 'EAN gas';
 // [56]
         $headerData[] = 'Projectcode';

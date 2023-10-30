@@ -12,12 +12,9 @@ class CreateSharedLastNamePrefixesTable extends Migration
      * @return void
      */
 
-    protected $connection = 'econobis_shared';
-
     public function up()
     {
-        //if (!Schema::hasTable('shared_last_name_prefixes')) {
-        Schema::create('shared_last_name_prefixes', function (Blueprint $table) {
+        Schema::connection('econobis_shared')->create('shared_last_name_prefixes', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 16)->default('');
             $table->timestamps();
@@ -55,7 +52,7 @@ class CreateSharedLastNamePrefixesTable extends Migration
         ];
 
         foreach ($prefixes as $prefix) {
-            DB::table('shared_last_name_prefixes')->insert([
+            DB::connection('econobis_shared')->table('shared_last_name_prefixes')->insert([
                     [
                         'id' => $prefix[0],
                         'name' => $prefix[1]
@@ -63,7 +60,15 @@ class CreateSharedLastNamePrefixesTable extends Migration
                 ]
             );
         }
-        //}
+
+        //change the foreign keys from users to this new table
+        Schema::connection('mysql')->table('users', function (Blueprint $table) {
+            $table->dropForeign('users_last_name_prefix_id_foreign');
+            $table->foreign('last_name_prefix_id')->references('id')->on(config('database.connections.econobis_shared.database') . '.shared_last_name_prefixes')->onDelete('restrict');
+        });
+
+        //rename the original table
+        Schema::connection('mysql')->rename('last_name_prefixes', 'xxx_last_name_prefixes');
     }
 
     /**
@@ -73,6 +78,15 @@ class CreateSharedLastNamePrefixesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('shared_last_name_prefixes');
+        Schema::connection('mysql')->rename('xxx_last_name_prefixes', 'last_name_prefixes');
+
+        Schema::connection('mysql')->table('users', function (Blueprint $table) {
+            $table->dropForeign('users_last_name_prefix_id_foreign');
+            $table->foreign('last_name_prefix_id')->references('id')->on('last_name_prefixes')->onDelete('restrict');
+        });
+
+        Schema::connection('econobis_shared')->dropIfExists('shared_last_name_prefixes');
+
+
     }
 }

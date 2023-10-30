@@ -423,6 +423,7 @@ class ContactCSVHelper
                         if($i === 1) {
                             $contact->old_energy_supplier_name_electricity_1 = $oldAddressEnergySupplierElectricity->energySupplier->name;
                             $contact->old_es_number_electricity_1 = $oldAddressEnergySupplierElectricity->es_number;
+                            $contact->old_energy_member_since_electricity_1 = $this->formatDate($oldAddressEnergySupplierElectricity->member_since);
                             $contact->old_energy_end_date_electricity_1 = $this->formatDate($oldAddressEnergySupplierElectricity->end_date);
                         } else {
                             $contact->old_energy_supplier_name_electricity_2 = $oldAddressEnergySupplierElectricity->energySupplier->name;

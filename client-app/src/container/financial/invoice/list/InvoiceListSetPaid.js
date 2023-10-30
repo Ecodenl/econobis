@@ -85,7 +85,8 @@ class InvoiceListSetPaid extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Vul de betaaldatum en evt. het betalingskenmerk in en klik op Nota's betalen. Er wordt dan een betaling aangemaakt voor het openstaande bedrag (€
+                            Vul de betaaldatum en evt. het betalingskenmerk in en klik op Nota's betalen. Er wordt dan
+                            een betaling aangemaakt voor het openstaande bedrag (€
                             {this.props.amountOpen.toLocaleString('nl', {
                                 minimumFractionDigits: 2,
                                 maximumFractionDigits: 2,

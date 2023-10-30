@@ -90,19 +90,17 @@ const RevenueDistributionFormView = props => {
                     ) : (
                         <div className="col-sm-1"></div>
                     )
+                ) : props.distributionIdsTotalToProcess.includes(id) ? (
+                    <div className="col-sm-1">
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={props.toggleDistributionCheck}
+                            checked={props.distributionIds.includes(id)}
+                        />
+                    </div>
                 ) : (
-                    props.distributionIdsTotalToProcess.includes(id) ? (
-                        <div className="col-sm-1">
-                            <input
-                                type="checkbox"
-                                name={id}
-                                onChange={props.toggleDistributionCheck}
-                                checked={props.distributionIds.includes(id)}
-                            />
-                        </div>
-                    ) : (
-                        <div className="col-sm-1"></div>
-                    )
+                    <div className="col-sm-1"></div>
                 )
             ) : null}
 
@@ -119,7 +117,7 @@ const RevenueDistributionFormView = props => {
                     <div className="col-sm-1">{deliveredTotal && deliveredTotal}</div>
                     <div className="col-sm-2">
                         {kwhReturn
-                            ? '€' +
+                            ? '€ ' +
                               kwhReturn.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                             : ''}
                     </div>

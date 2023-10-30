@@ -5,9 +5,10 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const ViewText = props => {
-    const { label, className, id, value, link, hidden, name, textToolTip, labelSize, valueSize } = props;
+    const { label, className, id, value, link, hidden, name, textToolTip, labelSize, valueSize, url } = props;
 
     if (link.length > 0) {
+        console.log(link);
         return (
             <div className={className} style={hidden ? { display: 'none' } : {}}>
                 <label htmlFor={id} className={labelSize}>
@@ -17,6 +18,40 @@ const ViewText = props => {
                     <Link to={link} className="link-underline">
                         {value}
                     </Link>{' '}
+                    {textToolTip && (
+                        <span>
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={textToolTip}
+                                data-for={`tooltip-${name}`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-${name}`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </span>
+                    )}
+                </div>
+            </div>
+        );
+    } else if (url) {
+        const handleChildElementClick = e => {
+            e.stopPropagation();
+        };
+
+        return (
+            <div className={className} style={hidden ? { display: 'none' } : {}}>
+                <label htmlFor={id} className={labelSize}>
+                    {label}
+                </label>
+                <div className={valueSize} id={id}>
+                    <a href={url} target={'_blank'} rel={'noreferrer'} onClick={e => handleChildElementClick(e)}>
+                        {value}{' '}
+                    </a>
                     {textToolTip && (
                         <span>
                             <FaInfoCircle
@@ -78,6 +113,7 @@ ViewText.defaultProps = {
     textToolTip: '',
     link: '',
     hidden: false,
+    url: '',
 };
 
 ViewText.propTypes = {
@@ -91,6 +127,7 @@ ViewText.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     link: PropTypes.string,
     hidden: PropTypes.bool,
+    url: PropTypes.string,
 };
 
 export default ViewText;

@@ -8,7 +8,7 @@ Tables for econobis_shared database
 -- DROP TABLE IF EXISTS `shared_command_runs`;
 CREATE TABLE `shared_command_runs` (
   `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
-  `local_id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `local_id` bigint(20) unsigned NOT NULL,
   `app_cooperation_name` varchar(191) NOT NULL,
   `schedule_run_id` int(10) unsigned NOT NULL,
   `scheduled_commands_command_ref` varchar(191) NOT NULL,

@@ -1,12 +1,9 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
-use App\Eco\Mailbox\Mailbox;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
 
 class checkWrongContactEmailRecords extends Command
 {

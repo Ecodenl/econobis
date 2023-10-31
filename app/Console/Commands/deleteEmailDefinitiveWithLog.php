@@ -3,9 +3,12 @@
 namespace App\Console\Commands;
 
 use App\Eco\Email\Email;
+use App\Eco\User\User;
 use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class deleteEmailDefinitiveWithLog extends Command
 {
@@ -40,8 +43,13 @@ class deleteEmailDefinitiveWithLog extends Command
      */
     public function handle()
     {
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
+
         $this->doDeleteEmailDefinitive();
-        dd('Einde Verwijder email (soft deleted) definitief.');
+        Log::info('Einde Verwijder email (soft deleted) definitief.');
     }
 
     /**
@@ -51,19 +59,19 @@ class deleteEmailDefinitiveWithLog extends Command
     public function doDeleteEmailDefinitive()
     {
         $dateDeleteBefore = Carbon::parse('now')->subMonth(3)->format('Y-m-d');
-        print_r("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . "\n");
+        Log::info("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . ".");
         $emails = Email::withTrashed()->where('deleted_at', '<', $dateDeleteBefore)->get();
         $emailController =  new EmailController();
         foreach ($emails as $email){
             $attachments = $email->attachments;
             foreach ($attachments as $attachment) {
                 $emailController->deleteEmailAttachment($attachment);
-                print_r("Emailattachment ". $attachment->id . " verwijderd.\n");
+                Log::info("Emailattachment ". $attachment->id . " verwijderd.");
             }
             $email->contacts()->detach();
             $email->groupEmailAddresses()->detach();
             $email->forceDelete();
-            print_r("Email ". $email->id . " verwijderd (date deleted_at: " . $email->deleted_at . ")\n");
+            Log::info("Email ". $email->id . " verwijderd (date deleted_at: " . $email->deleted_at . ").");
         }
     }
 

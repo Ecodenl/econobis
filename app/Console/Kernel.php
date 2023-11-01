@@ -8,6 +8,7 @@ use App\Console\Commands\contactGroupsContactsForReport;
 use App\Console\Commands\createTaskAtEndDateAddress;
 use App\Console\Commands\deleteEmailDefinitive;
 use App\Console\Commands\getAllEmail;
+use App\Console\Commands\processCommandRunsToShared;
 use App\Console\Commands\processStateAllMembersLaposta;
 use App\Console\Commands\processTwinfieldCustomer;
 use App\Console\Commands\processTwinfieldInvoicePayment;
@@ -39,6 +40,7 @@ class Kernel extends ConsoleKernel
         setIsCurrentSupplier::class,
         setDaysLastReminderInvoice::class,
         setDaysToExpireInvoice::class,
+        processCommandRunsToShared::class,
         processTwinfieldCustomer::class,
         processTwinfieldInvoicePayment::class,
         processStateAllMembersLaposta::class,
@@ -65,7 +67,7 @@ class Kernel extends ConsoleKernel
         // Time is CET. So when scheduled for 06:00 it is run at 07:00 Amsterdam time (wintertime).
         // Time is default CET, therefore set timezone to Europ/Amsterdam, scheduled for 06:00 wil run at 06:00 Amsterdam time now.
 
-        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('07:00', '23:00');
+        $schedule->command('email:getAllEmail')->everyTenMinutes()->timezone('Europe/Amsterdam')->between('07:30', '23:00');
 
         switch ($scheduleRunId){
             case 1:
@@ -104,7 +106,9 @@ class Kernel extends ConsoleKernel
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:00');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('07:05');
+
+                $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:32');
                 break;
             case 2:
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:46');
@@ -142,7 +146,9 @@ class Kernel extends ConsoleKernel
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:10');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('07:10');
+
+                $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:37');
                 break;
             case 3:
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:47');
@@ -180,7 +186,9 @@ class Kernel extends ConsoleKernel
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:20');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('07:15');
+
+                $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:42');
                 break;
             case 4:
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:48');
@@ -218,7 +226,9 @@ class Kernel extends ConsoleKernel
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:30');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('07:20');
+
+                $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:47');
                 break;
             case 5:
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:49');
@@ -256,7 +266,9 @@ class Kernel extends ConsoleKernel
                  * Cronjob draait elke dag (1440 minuten) maar sommige events kunnen pas later beschikbaar komen daarom wat extra marge voor de zekerheid.
                  * Zie: https://documentation.mailgun.com/en/latest/api-events.html#event-polling
                  */
-                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('22:40');
+                $schedule->command('mailgun:fetch-events --minutes=1500')->timezone('Europe/Amsterdam')->dailyAt('07:25');
+
+                $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:52');
                 break;
         }
 

@@ -20,11 +20,7 @@ class ParticipantReportCreateViewEmail extends Component {
     }
 
     downloadEmail(participantId) {
-        ParticipantsProjectAPI.previewEmail(
-            this.props.documentTemplateId,
-            this.props.emailTemplateId,
-            participantId
-        ).then(payload => {
+        ParticipantsProjectAPI.previewEmail(this.props.emailTemplateId, participantId).then(payload => {
             this.setState({
                 email: payload,
             });

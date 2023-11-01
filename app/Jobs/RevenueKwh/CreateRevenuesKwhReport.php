@@ -97,8 +97,8 @@ class CreateRevenuesKwhReport implements ShouldQueue
             $distributionKwh = RevenueDistributionKwh::find($this->distributionId);
             $emailAddress = optional(optional($distributionKwh)->contact)->primaryEmailAddress;
             if($emailAddress){
-                $this->email->contacts()->attach($emailAddress->contact_id);
-                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
+                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
                 $this->email->save();
             }
         }

@@ -97,8 +97,8 @@ class CreateRevenueReport implements ShouldQueue
             $distribution = ProjectRevenueDistribution::find($this->distributionId);
             $emailAddress = optional(optional($distribution)->contact)->primaryEmailAddress;
             if($emailAddress){
-                $this->email->contacts()->attach($emailAddress->contact_id);
-                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
+                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
                 $this->email->save();
             }
         }

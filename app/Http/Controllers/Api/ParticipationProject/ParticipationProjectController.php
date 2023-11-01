@@ -535,7 +535,7 @@ class ParticipationProjectController extends ApiController
         return ParticipantProjectPeek::collection($sortedParticipants);
     }
 
-    public function previewPDF(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+    public function previewPDF(Request $request, DocumentTemplate $documentTemplate) {
         $this->authorize('view', ParticipantProject::class);
 
         $participantIds = $request->input('participantIds');
@@ -587,7 +587,7 @@ class ParticipationProjectController extends ApiController
         return null;
     }
 
-    public function previewEmail(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate) {
+    public function previewEmail(Request $request, EmailTemplate $emailTemplate) {
         $this->authorize('view', ParticipantProject::class);
 
         $participantIds = $request->input('participantIds');
@@ -673,7 +673,13 @@ class ParticipationProjectController extends ApiController
         return null;
     }
 
-    public function createParticipantReport(Request $request, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
+    public function createParticipantReportNoPDF(Request $request, EmailTemplate $emailTemplate)
+    {
+        $this->createParticipantReport($request, null, $emailTemplate);
+        return null;
+    }
+
+    public function createParticipantReport(Request $request, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate)
     {
 
         $this->authorize('manage', ParticipantProject::class);
@@ -713,13 +719,13 @@ class ParticipationProjectController extends ApiController
         }
 
         foreach($participantIds as $participantId) {
-            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate->id, $emailTemplate->id, $showOnPortal, Auth::id(), $emailModel);
+            CreateParticipantReport::dispatch($participantId, $subject, $documentTemplate ? $documentTemplate->id : null, $emailTemplate->id, $showOnPortal, Auth::id(), $emailModel);
         }
 
         return null;
     }
 
-    public function createParticipantProjectReport($subject, $participantId, DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
+    public function createParticipantProjectReport($subject, $participantId, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
         $this->authorize('manage', ParticipantProject::class);
 
@@ -733,87 +739,92 @@ class ParticipationProjectController extends ApiController
 
         $messages = [];
         //load template parts
-        $documentTemplate->load('footer', 'baseTemplate', 'header');
-
-        $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
-
-        if ($documentTemplate->baseTemplate) {
-            $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
-                $documentTemplate->html_body, '','');
-        } else {
-            $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
-                '', '');
-        }
-
-        $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
 
         $participant = ParticipantProject::find($participantId);
         $contact = $participant->contact;
         $project = $participant->project;
-
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $contact);
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $participant);
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties',
-            $participant->mutations);
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
-        $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'portal');
-        $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'contacten_portal');
-        $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml, 'cooperatie');
-        $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie',
-            $project->administration);
-
-        $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
-
-        //if preview there is 1 participantId so we return
-        $pdf = PDF::loadView('documents.generic', [
-            'html' => $revenueHtml,
-        ])->output();
-
         $primaryEmailAddress = $contact->primaryEmailAddress;
 
-        try
-        {
-            $time = Carbon::now();
+        $document = null;
 
-            $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+        if($documentTemplate) {
+            $documentTemplate->load('footer', 'baseTemplate', 'header');
 
-            $document = new Document();
-            $document->document_created_from_id = $documentCreatedFromParticipantId;
-            $document->document_type = 'internal';
-            $document->document_group = $documentTemplate->document_group;
-            $document->contact_id = $contact->id;
-            $document->project_id = $project->id;
-            $document->participation_project_id = $participant->id;
-            $document->template_id = $documentTemplate->id;
-            $document->show_on_portal = $showOnPortal;
+            $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';
 
-            $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
-            //max length name 25
-            $filename = substr($filename, 0, 25);
-
-            $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
-
-            $document->save();
-
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
-
-            file_put_contents($filePath, $pdf);
-
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            }else{
-                $document->alfresco_node_id = null;
+            if ($documentTemplate->baseTemplate) {
+                $html .= TemplateVariableHelper::replaceTemplateTagVariable($documentTemplate->baseTemplate->html_body,
+                    $documentTemplate->html_body, '','');
+            } else {
+                $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($documentTemplate->html_body,
+                    '', '');
             }
 
-            $document->save();
-        } catch (\Exception $e) {
-            Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
-            Log::error($e->getMessage());
-            $messages[] = 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
+            $html .= $documentTemplate->footer ? $documentTemplate->footer->html_body : '';
+
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $contact);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'project', $project);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'deelname', $participant);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'mutaties',
+                $participant->mutations);
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'ik', $user);
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'portal');
+            $revenueHtml = TemplateVariableHelper::replaceTemplatePortalVariables($revenueHtml, 'contacten_portal');
+            $revenueHtml = TemplateVariableHelper::replaceTemplateCooperativeVariables($revenueHtml, 'cooperatie');
+            $revenueHtml = TemplateVariableHelper::replaceTemplateVariables($revenueHtml, 'administratie',
+                $project->administration);
+
+            $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
+
+            //if preview there is 1 participantId so we return
+            $pdf = PDF::loadView('documents.generic', [
+                'html' => $revenueHtml,
+            ])->output();
+
+            try
+            {
+                $time = Carbon::now();
+
+                $documentCreatedFromParticipantId = DocumentCreatedFrom::where('code_ref', 'participant')->first()->id;
+
+                $document = new Document();
+                $document->document_created_from_id = $documentCreatedFromParticipantId;
+                $document->document_type = 'internal';
+                $document->document_group = $documentTemplate->document_group;
+                $document->contact_id = $contact->id;
+                $document->project_id = $project->id;
+                $document->participation_project_id = $participant->id;
+                $document->template_id = $documentTemplate->id;
+                $document->show_on_portal = $showOnPortal;
+
+                $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+
+                //max length name 25
+                $filename = substr($filename, 0, 25);
+
+                $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+
+                $document->save();
+
+                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
+
+                file_put_contents($filePath, $pdf);
+
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+                    $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
+                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+                }else{
+                    $document->alfresco_node_id = null;
+                }
+
+                $document->save();
+            } catch (\Exception $e) {
+                Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
+                Log::error($e->getMessage());
+                $messages[] = 'Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
+            }
+
         }
 
         //send email
@@ -866,8 +877,10 @@ class ParticipationProjectController extends ApiController
             }
 
             //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
+            if($document){
+                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+                    Storage::disk('documents')->delete($document->filename);
+                }
             }
         }
         if(count($messages) > 0)

@@ -50,6 +50,7 @@ class processWorkflowEmailQuotationRequestStatus extends Command
         $commandRun->start_at = Carbon::now();
         $commandRun->end_at = null;
         $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
         $commandRun->save();
 
         // Get quotation request statussen with workflow enabled and number of days to send not 0 (they are sent immediately)

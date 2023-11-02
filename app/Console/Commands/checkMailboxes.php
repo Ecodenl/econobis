@@ -51,6 +51,7 @@ class checkMailboxes extends Command
         $commandRun->start_at = Carbon::now();
         $commandRun->end_at = null;
         $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
         $commandRun->save();
 
         $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();

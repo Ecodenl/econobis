@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class conversionPortalRegistrationCode extends Command
@@ -40,7 +41,7 @@ class conversionPortalRegistrationCode extends Command
     public function handle()
     {
         $this->doConversionPortalRegistrationCode();
-        dd('Einde Herstel ontbrekende portal registration codes.');
+        Log::info('Einde Herstel ontbrekende portal registration codes.');
     }
 
     /**
@@ -51,14 +52,14 @@ class conversionPortalRegistrationCode extends Command
      */
     public function doConversionPortalRegistrationCode()
     {
-        print_r("Start Herstel ontbrekende portal registration codes.\n");
+        Log::info("Start Herstel ontbrekende portal registration codes.");
         $contacts = Contact::all();
         foreach ($contacts as $contact){
             if($contact->type_id == 'person' && !$contact->portal_registration_code && $contact->portalUser()->count() == 0)
             {
                 $contact->portal_registration_code = Str::random(32);
                 $contact->save();
-                print_r("Contact ". $contact->id . " voorzien van portal registration code.\n");
+                Log::info("Contact ". $contact->id . " voorzien van portal registration code.");
             }
         }
     }

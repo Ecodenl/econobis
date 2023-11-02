@@ -49,6 +49,7 @@ class processWorkflowEmailCompleteTask extends Command
         $commandRun->start_at = Carbon::now();
         $commandRun->end_at = null;
         $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
         $commandRun->save();
 
         $tasksToProcess = Task::where('finished', true)

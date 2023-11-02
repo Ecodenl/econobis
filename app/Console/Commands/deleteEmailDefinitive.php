@@ -4,9 +4,11 @@ namespace App\Console\Commands;
 
 use App\Eco\Email\Email;
 use App\Eco\Schedule\CommandRun;
+use App\Eco\User\User;
 use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class deleteEmailDefinitive extends Command
@@ -42,6 +44,11 @@ class deleteEmailDefinitive extends Command
      */
     public function handle()
     {
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
+
         $commandRun = new CommandRun();
         $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
         $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
@@ -49,6 +56,7 @@ class deleteEmailDefinitive extends Command
         $commandRun->start_at = Carbon::now();
         $commandRun->end_at = null;
         $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
         $commandRun->save();
 
         $this->doDeleteEmailDefinitive();

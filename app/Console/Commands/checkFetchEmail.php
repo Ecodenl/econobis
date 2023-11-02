@@ -40,17 +40,17 @@ class checkFetchEmail extends Command
      */
     public function handle()
     {
-        print_r($this->description . "\n");
-        print_r("Mailbox: " . $this->argument('mailbox'). "\n");
-        print_r("ImapId : " . $this->argument('imapId'). "\n");
+        Log::info($this->description);
+        Log::info("Mailbox: " . $this->argument('mailbox'));
+        Log::info("ImapId : " . $this->argument('imapId'));
         $mailbox = Mailbox::find($this->argument('mailbox'));
         $imapId = $this->argument('imapId');
         if($mailbox && $mailbox->valid && $mailbox->is_active){
             $found = $this->checkFetchEmailByMailboxAndImap($mailbox, $imapId);
             if($found){
-                print_r("Found\n");
+                Log::info("Found");
             } else {
-                print_r("Not found\n");
+                Log::info("Not found");
             }
         }
     }
@@ -76,18 +76,19 @@ class checkFetchEmail extends Command
 //                Log::info("Search since 2022-08-20: " . count($mailIds));
 //                Log::info("Search since 2022-08-20: " . implode(',', $mailIds));
 //            } catch(PhpImap\Exceptions\ConnectionException $ex) {
-//                echo "IMAP connection failed: " . $ex;
+//                Log::info("IMAP connection failed: " . $ex);
 //                die();
 //            } catch(\Exception $ex2) {
-//                echo "searchMailbox failed: ";
-//                echo $ex2;
+//                Log::info("searchMailbox failed: ");
+//                Log::info($ex2);
+//                die();
 
                 try {
                     $mailIds = $imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
                 Log::info("Search ALL : " . count($mailIds));
                 } catch(PhpImap\Exceptions\ConnectionException $ex) {
-                    echo "IMAP connection failed: " . $ex;
+                    Log::info("IMAP connection failed: " . $ex);
                     die();
                 }
 //            }

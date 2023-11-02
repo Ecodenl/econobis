@@ -79,7 +79,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
             $this->subject,
             $this->distributionPartsKwhId,
             $this->distributionId,
-            DocumentTemplate::find($this->documentTemplateId),
+            ($this->documentTemplateId ? DocumentTemplate::find($this->documentTemplateId) : null),
             EmailTemplate::find($this->emailTemplateId),
             $this->showOnPortal,
         );

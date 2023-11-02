@@ -11,10 +11,10 @@ class ParticipantReportCreateViewEmail extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.participantId !== nextProps.participantId) {
-            if (nextProps.participantId) {
-                this.downloadEmail(nextProps.participantId);
+    componentDidUpdate(prevProps) {
+        if (prevProps.participantId !== this.props.participantId) {
+            if (this.props.participantId) {
+                this.downloadEmail(this.props.participantId);
             }
         }
     }

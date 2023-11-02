@@ -209,16 +209,17 @@ class RevenueDistributionForm extends Component {
     checkDistributionRevenueReport = () => {
         let error = false;
 
-        if (validator.isEmpty(this.state.templateId)) {
-            error = true;
-            this.setState({
-                templateIdError: true,
-            });
-        } else {
-            this.setState({
-                templateIdError: false,
-            });
-        }
+        // document template not longer required
+        // if (validator.isEmpty(this.state.templateId)) {
+        //     error = true;
+        //     this.setState({
+        //         templateIdError: true,
+        //     });
+        // } else {
+        //     this.setState({
+        //         templateIdError: false,
+        //     });
+        // }
 
         if (validator.isEmpty(this.state.emailTemplateId)) {
             error = true;
@@ -471,11 +472,7 @@ class RevenueDistributionForm extends Component {
                                                 ? ' '
                                                 : "De uitkeringsdatum is de datum in het SEPA bestand en de datum van de mutaties in het mutatieoverzicht van de deelnemers. Als je niet gaat uitkeren ('naar kapitaalrekening (niet uitbetalen)') betreft het alleen de mutatiedatum en is de uitkeringsdatum niet van toepassing."
                                         }
-                                        disabled={
-                                            totalToProcess === 0
-                                                ? true
-                                                : false
-                                        }
+                                        disabled={totalToProcess === 0 ? true : false}
                                     />
                                 </React.Fragment>
                             ) : null)}
@@ -494,7 +491,7 @@ class RevenueDistributionForm extends Component {
                                             value={this.state.templateId}
                                             options={this.state.templates}
                                             onChangeAction={this.handleInputChange}
-                                            required={'required'}
+                                            // required={'required'}
                                             error={this.state.templateIdError}
                                         />
                                     </div>

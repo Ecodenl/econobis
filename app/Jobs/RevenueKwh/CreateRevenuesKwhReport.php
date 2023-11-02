@@ -68,7 +68,7 @@ class CreateRevenuesKwhReport implements ShouldQueue
         $result = $revenuesKwhController->createParticipantRevenueReport(
             $this->subject,
             $this->distributionId,
-            DocumentTemplate::find($this->documentTemplateId),
+            ($this->documentTemplateId ? DocumentTemplate::find($this->documentTemplateId) : null),
             EmailTemplate::find($this->emailTemplateId),
             $this->showOnPortal,
         );

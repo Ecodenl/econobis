@@ -738,7 +738,6 @@ class ParticipationProjectController extends ApiController
         $user = Auth::user();
 
         $messages = [];
-        //load template parts
 
         $participant = ParticipantProject::find($participantId);
         $contact = $participant->contact;
@@ -748,6 +747,7 @@ class ParticipationProjectController extends ApiController
         $document = null;
 
         if($documentTemplate) {
+            //load template parts
             $documentTemplate->load('footer', 'baseTemplate', 'header');
 
             $html = $documentTemplate->header ? $documentTemplate->header->html_body : '';

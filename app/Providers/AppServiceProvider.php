@@ -22,11 +22,23 @@ class AppServiceProvider extends ServiceProvider
         date_default_timezone_set('Europe/Amsterdam');
 
         if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
+            $host= gethostname();
+            $ip = gethostbyname($host);
+//        Log::info("host " . $host);
+//        Log::info("ip " . $ip);
+//        [2023-10-30 15:53:29] production.INFO: host vps10.xarishosting.nl  {"Coöperatie":"Econobis Xaris"}
+//        [2023-10-30 15:53:29] production.INFO: ip 37.97.146.3  {"Coöperatie":"Econobis Xaris"}
+            if($ip == '37.97.146.3') {
+                $slackChannelName = '#eco-vps10';
+            } else {
+                $slackChannelName = '#eco';
+            }
+
             $monolog = Log::getLogger(); // onderliggende monolog instatie ophalen
             $slackHandler
                 = new SlackHandler( // nieuwe slackhandler
                     Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
-                    '#eco', // slack channel naam
+                    $slackChannelName, // slack channel naam
                     'econobis', // slack username
                     true,
                     null,

@@ -54,9 +54,13 @@ class contactGroupsContactsForReport extends Command
         $commandRun->start_at = Carbon::now();
         $commandRun->end_at = null;
         $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        Auth::setUser(User::find(1));
+        $adminUser = User::where('email', config('app.admin_user.email'))->first();
+        if($adminUser){
+            Auth::setUser($adminUser);
+        }
 
         $cooperation = Cooperation::first();
         if($cooperation) {

@@ -27,7 +27,7 @@ class MailgunMailController
             'to' => $request->getTo(),
             'cc' => $request->getCc(),
             'bcc' => [],
-            'subject' => $request->input('subject'),
+            'subject' => $request->input('subject') ?? '',
             'html_body' => $request->getHtmlBody(),
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',

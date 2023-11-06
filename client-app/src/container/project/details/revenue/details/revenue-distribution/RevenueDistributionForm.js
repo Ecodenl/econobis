@@ -140,10 +140,15 @@ class RevenueDistributionForm extends Component {
                 createType: '',
             });
         } else {
+            const distributionIdsTotal =
+                createType === 'createInvoices'
+                    ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                    : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+
             this.setState({
                 showCheckboxList: true,
                 createType: createType,
-                distributionIds: this.props.projectRevenue.distribution.meta.distributionIdsTotal,
+                distributionIds: distributionIdsTotal,
                 checkedAll: true,
             });
         }
@@ -161,7 +166,10 @@ class RevenueDistributionForm extends Component {
         let distributionsIds = [];
 
         if (isChecked) {
-            distributionsIds = this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+            distributionsIds =
+                this.state.createType === 'createInvoices'
+                    ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                    : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
         }
 
         this.setState({
@@ -199,10 +207,13 @@ class RevenueDistributionForm extends Component {
     };
 
     checkAllDistributionsAreChecked() {
+        const distributionIdsTotal =
+            this.state.createType === 'createInvoices'
+                ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+
         this.setState({
-            checkedAll:
-                this.state.distributionIds.length ===
-                this.props.projectRevenue.distribution.meta.distributionIdsTotal.length,
+            checkedAll: this.state.distributionIds.length === distributionIdsTotal.length,
         });
     }
 
@@ -405,18 +416,20 @@ class RevenueDistributionForm extends Component {
         this.props.administrations.forEach(function(administration) {
             administrationIds.push(administration.id);
         });
+
         let numberSelectedNumberTotal = 0;
         if (
             this.props &&
             this.props.projectRevenue &&
             this.props.projectRevenue.distribution &&
-            this.props.projectRevenue.distribution.meta &&
-            this.props.projectRevenue.distribution.meta.distributionIdsTotal
+            this.props.projectRevenue.distribution.meta
         ) {
-            numberSelectedNumberTotal =
-                this.state.distributionIds.length +
-                '/' +
-                this.props.projectRevenue.distribution.meta.distributionIdsTotal.length;
+            const distributionIdsTotal =
+                this.state.createType === 'createInvoices'
+                    ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                    : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+
+            numberSelectedNumberTotal = this.state.distributionIds.length + '/' + distributionIdsTotal.length;
         } else {
             numberSelectedNumberTotal = this.state.distributionIds.length;
         }
@@ -580,6 +593,9 @@ class RevenueDistributionForm extends Component {
                                             onChangeAction={this.handleInputChange}
                                             value={this.state.description}
                                         />
+                                    </div>
+                                    <div className="col-md-12">
+                                        <ViewText label="Geselecteerde deelnemers" value={numberSelectedNumberTotal} />
                                     </div>
                                     <div className="col-md-12">
                                         <div className="margin-10-top pull-right btn-group" role="group">

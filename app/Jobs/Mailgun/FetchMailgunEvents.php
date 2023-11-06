@@ -102,15 +102,21 @@ class FetchMailgunEvents implements ShouldQueue
             $eventCode = 'failed_' . $event->getSeverity();
         }
 
+        $subjectEvent = $event->getMessage()['headers']['subject'] ?? '';
+        $subject = strlen($subjectEvent)>191 ? ( substr($subjectEvent,0,188) . '...') : $subjectEvent;
+
+        $deliveryStatusEvent = $event->getDeliveryStatus()['message'] ?? '';
+        $deliveryStatus = strlen($deliveryStatusEvent)>191 ? ( substr($deliveryStatusEvent,0,188) . '...') : $deliveryStatusEvent;
+
         $mailgunEvent = new MailgunEvent([
             'mailgun_domain_id' => $this->mailgunDomain->id,
             'mailgun_id' => $event->getId(),
             'mailgun_message_id' => $event->getMessage()['headers']['message-id'] ?? '',
             'event' => $eventCode,
             'recipient' => $event->getRecipient(),
-            'subject' => $event->getMessage()['headers']['subject'] ?? '',
+            'subject' => $subject,
             'event_date' => $event->getEventDate(),
-            'delivery_status' => $event->getDeliveryStatus()['message'] ?? '',
+            'delivery_status' => $deliveryStatus,
         ]);
         $mailgunEvent->save();
     }

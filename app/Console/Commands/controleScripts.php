@@ -2,27 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\Eco\Invoice\Invoice;
 use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 
-class setDaysLastReminderInvoice extends Command
+class controleScripts extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'invoice:setDaysLastReminder';
-
-    /**
-     * The console command description.
-     *
-     * @var string
-     */
-    protected $description = 'Herberekend dagen laatste herinnering';
+    protected $signature = 'check:controleScripts';
 
     /**
      * Create a new command instance.
@@ -51,17 +43,24 @@ class setDaysLastReminderInvoice extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        $invoices = Invoice::all();
-
-        foreach ($invoices as $invoice){
-            $invoice->setDaysLastReminder();
-            $invoice->save();
-        }
+        Artisan::call('revenue:checkMissingEnergySuppliersInAddress');
+        Artisan::call('revenue:checkWrongDistributionParts');
+        Artisan::call('revenue:checkWrongEnergySupplierDataInParts');
+        Artisan::call('revenue:checkMissingEnergySupplierDataInParts');
+        Artisan::call('revenue:checkWrongRevenueDistributionKwhStatus');
+        Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
+        Artisan::call('revenue:checkMissingRevenueDistributionParts');
+        Artisan::call('addressEnergySupplier:checkOverlappingEnergySuppliers');
+        Artisan::call('participants:checkFirstStartingDate');
+        Artisan::call('participants:checkTerminationDate');
+//        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
 
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;
         $commandRun->save();
 
-        Log::info('Dagen laatste herinnering herberekend');
     }
+
+
 }
+

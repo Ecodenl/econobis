@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class checkContactIban extends Command
 {
@@ -38,18 +39,18 @@ class checkContactIban extends Command
      */
     public function handle()
     {
-        print_r("Start Check IBAN codes bij contacten.\n");
+        Log::info("Start Check IBAN codes bij contacten.");
         foreach(Contact::all() as $contact) {
 
             if($contact->iban)
             {
                 if(!$this->checkIBAN($contact->iban))
                 {
-                    print_r("Foute IBAN: " . $contact->iban . " bij contact " . $contact->id . "\n");
+                    Log::info("Foute IBAN: " . $contact->iban . " bij contact " . $contact->id . ".");
                 }
             }
         }
-    dd('Einde Check IBAN codes bij contacten.');
+        Log::info('Einde Check IBAN codes bij contacten.');
     }
 
     private function checkIBAN($iban)

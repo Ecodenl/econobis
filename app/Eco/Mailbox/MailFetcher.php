@@ -63,7 +63,7 @@ class MailFetcher
             // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
-        } catch(PhpImap\Exceptions\ConnectionException $ex) {
+        } catch(\PhpImap\Exceptions\ConnectionException $ex) {
             Log::error("IMAP connection failed: " . $ex);
 //            echo "IMAP connection failed: " . $ex;
             $this->mailbox->start_fetch_mail = null;
@@ -73,7 +73,7 @@ class MailFetcher
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex3) {
+            } catch(\PhpImap\Exceptions\ConnectionException $ex3) {
                 Log::error("IMAP connection failed: " . $ex3);
 //                echo "IMAP connection failed: " . $ex3;
                 $this->mailbox->start_fetch_mail = null;

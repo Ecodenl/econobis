@@ -80,7 +80,7 @@ class MailFetcherMsOauth
                     Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
-                Log::error('Error getting user\'s inbox: '.$e->getMessage());
+                Log::error('Error mailbox ' . $this->mailbox->id . ' getting user\'s inbox: '.$e->getMessage());
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
 

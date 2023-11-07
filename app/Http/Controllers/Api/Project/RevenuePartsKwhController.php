@@ -602,7 +602,7 @@ class RevenuePartsKwhController extends ApiController
         set_time_limit(0);
         $distributionPartsKwhIds = $request->input('distributionPartsKwhIds');
         $subject = $request->input('subject');
-        $documentTemplateId = ( $request->input('documentTemplateId') && !empty($request->input('documentTemplateId')) ) ?? null;
+        $documentTemplateId = ( $request->input('documentTemplateId') && !empty($request->input('documentTemplateId')) ) ? $request->input('documentTemplateId') : null;
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 

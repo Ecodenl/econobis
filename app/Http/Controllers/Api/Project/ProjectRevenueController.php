@@ -710,7 +710,7 @@ class ProjectRevenueController extends ApiController
         set_time_limit(0);
         $distributionIds = $request->input('distributionIds');
         $subject = $request->input('subject');
-        $documentTemplateId = ( $request->input('documentTemplateId') && !empty($request->input('documentTemplateId')) ) ?? null;
+        $documentTemplateId = ( $request->input('documentTemplateId') && !empty($request->input('documentTemplateId')) ) ? $request->input('documentTemplateId') : null;
         $emailTemplateId = $request->input('emailTemplateId');
         $showOnPortal = $request->input('showOnPortal');
 

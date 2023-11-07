@@ -144,6 +144,13 @@ class MailFetcherMsOauth
 
     private function fetchEmail(Message $message)
     {
+        $from = $message->getFrom()->getEmailAddress()->getAddress();
+        // geen fromAddress, dan slaan we ook niets op.
+        if(!$from){
+            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
+            return;
+        }
+
         $tos = [];
         if($message->getToRecipients()){
             foreach ($message->getToRecipients() as $toRecipient){
@@ -153,25 +160,31 @@ class MailFetcherMsOauth
 //                      Log::info($toRecipient['emailAddress']);
 //                  }
 //                  resultaat:
-// [2023-10-25 15:40:22] production.INFO: array (
-//      'name' => 'Contact | Energie Samen',
-//  )
-// [2023-10-25 15:40:26] production.INFO: array (
-//      'name' => 'mailto:govert@geldofcs.nl',
-//  )
-                $tos[] = $toRecipient['emailAddress']['address'];
+//                  [2023-10-25 15:40:22] production.INFO: array (
+//                       'name' => 'Contact | Energie Samen',
+//                   )
+//                  [2023-10-25 15:40:26] production.INFO: array (
+//                       'name' => 'mailto:govert@geldofcs.nl',
+//                   )
+                if(isset($toRecipient['emailAddress']['address'])){
+                    $tos[] = $toRecipient['emailAddress']['address'];
+                }
             }
         }
         $ccs = [];
         if($message->getCcRecipients()){
             foreach ($message->getCcRecipients() as $ccRecipient){
-                $ccs[] = $ccRecipient['emailAddress']['address'];
+                if(isset($ccRecipient['emailAddress']['address'])){
+                    $ccs[] = $ccRecipient['emailAddress']['address'];
+                }
             }
         }
         $bccs = [];
         if($message->getBccRecipients()){
             foreach ($message->getBccRecipients() as $bccRecipient){
-                $bccs[] = $bccRecipient['emailAddress']['address'];
+                if(isset($bccRecipient['emailAddress']['address'])){
+                    $bccs[] = $bccRecipient['emailAddress']['address'];
+                }
             }
         }
 
@@ -207,7 +220,7 @@ class MailFetcherMsOauth
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $message->getFrom()->getEmailAddress()->getAddress(),
+            'from' => $from,
             'to' => $tos,
             'cc' => $ccs,
             'bcc' => $bccs,
@@ -245,10 +258,7 @@ class MailFetcherMsOauth
                  * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
                  * Daarom maar via deze omweg uit $attachment halen.
                  */
-                // todo: er komen nu foutmeldingen binnen: Error getting user's inbox: Undefined property: stdClass::$contentId
-                //  Wellicht checke of contentId wel bestaat als property?
-                //  $cid = json_decode(json_encode($attachment))->contentId ?? null;
-                $cid = json_decode(json_encode($attachment))->contentId;
+                $cid = json_decode(json_encode($attachment))->contentId ?? null;
 
                 $contents = base64_decode( $attachment->getProperties()['contentBytes']);
                 $name = $attachment->getName();

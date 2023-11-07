@@ -125,6 +125,13 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
+
+        // geen fromAddress, dan slaan we ook niets op.
+        if(!$emailData->fromAddress){
+            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
+            return;
+        }
+
         try {
             $dateSent = Carbon::parse( $emailData->date ) ;
         } catch(\Exception $ex) {

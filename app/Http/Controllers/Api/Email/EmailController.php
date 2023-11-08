@@ -843,7 +843,7 @@ class EmailController extends Controller
 
         $body = '<p></p><hr><p>
                  <strong>Van: </strong>' . $email->from . '<br />
-                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->formatLocalized('%A %e %B %Y %H:%M') . '<br />
+                 <strong>Verzonden: </strong>' . Carbon::parse($email->date_sent)->isoFormat('dddd D MMMM YYYY HH:mm') . '<br />
                  <strong>Aan: </strong>' . $stringTo . '<br />';
         if ($stringCc) {
             $body .= '<strong>Cc: </strong>' . $stringCc . '<br />';

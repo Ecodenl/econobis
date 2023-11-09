@@ -155,6 +155,7 @@ class AddressController extends ApiController
 
     public function getLvbagAddress(Request $request){
         $secret = config('lvbag.lvbag_key');
+
         if(empty($secret)){
             return [
                 'street' => "",
@@ -183,6 +184,16 @@ class AddressController extends ApiController
 
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
             $pc = preg_replace('/\s+/', '', $pc);
+        }
+
+        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || $request->input('number') === 0 || !is_numeric($request->input('number')) || $request->input('number') > 99999) {
+            // the postalcode is not 4 times numeric and two times alphanumeric (for example 1616AA)
+            // or the housenumber is not a positive number > 0
+            // or the housenumber > 99999 (the max that lvbag will except without returning an error)
+            return [
+                'street' => "",
+                'city' => "",
+            ];
         }
 
         $addresses = $lvbag->adresUitgebreid()

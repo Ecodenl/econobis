@@ -119,7 +119,7 @@ class AddressController extends ApiController
                 $customer = $twinfieldCustomerHelper->updateCustomer($contact);
                 if($twinfieldCustomerHelper->messages)
                 {
-                    array_merge($messages, $twinfieldCustomerHelper->messages);
+                    $messages = array_merge($messages, $twinfieldCustomerHelper->messages);
                 }
             }
             if( !empty($messages) )
@@ -186,10 +186,9 @@ class AddressController extends ApiController
             $pc = preg_replace('/\s+/', '', $pc);
         }
 
-        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || $request->input('number') === 0 || !is_numeric($request->input('number')) || $request->input('number') > 99999) {
-            // the postalcode is not 4 times numeric and two times alphanumeric (for example 1616AA)
-            // or the housenumber is not a positive number > 0
-            // or the housenumber > 99999 (the max that lvbag will except without returning an error)
+        // Only get address from Lvbag if the postalcode is default NL format: 4 times numeric, directly followed by two times alphanumeric (for example 1616AA)
+        // and the housenumber is between 1 and 99999
+        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || !is_numeric($request->input('number')) || $request->input('number') <= 0 || $request->input('number') > 99999) {
             return [
                 'street' => "",
                 'city' => "",

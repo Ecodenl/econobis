@@ -122,7 +122,7 @@
                 <td class="align-left"><a href="{{ $invoice->administration->website }}">{{ $invoice->administration->website }}</a></td>
             </tr>
             <tr>
-                <td class="align-left">Notadatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}</td>
+                <td class="align-left">Notadatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->isoFormat('D MMMM YYYY') : 'Nog niet bekend' }}</td>
                 <td class="align-left">KvK {{ $invoice->administration->kvk_number }}</td>
             </tr>
             <tr>
@@ -169,7 +169,7 @@
             @if($invoiceProduct->product->duration_id !== 'none' && $invoice->collection_frequency_id !== 'once')
                 <tr>
                     {{--min 1 dag omdat het t/m is--}}
-                    <td  colspan="5">Periode {{ (Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->formatLocalized('%e %B %Y') }} t/m {{ $invoice->order->addDurationToDate(Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->subDay()->formatLocalized('%e %B %Y') }}</td>
+                    <td  colspan="5">Periode {{ (Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->isoFormat('D MMMM YYYY') }} t/m {{ $invoice->order->addDurationToDate(Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->subDay()->isoFormat('D MMMM YYYY') }}</td>
                 </tr>
             @endif
 

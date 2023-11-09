@@ -6,6 +6,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\Mailbox\Mailbox;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class deleteWrongContactEmailRecords extends Command
@@ -43,7 +44,7 @@ class deleteWrongContactEmailRecords extends Command
         foreach ($emailsWithoutToCcAndBcc as $emailWithoutToCcAndBcc) {
             $emailWithoutToCcAndBcc->contacts()->detach();
         }
-        dd('Einde Verwijderen foute email/contact koppelingen.');
+        Log::info('Einde Verwijderen foute email/contact koppelingen.');
     }
 
 }

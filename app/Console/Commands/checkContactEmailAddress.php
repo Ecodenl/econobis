@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class checkContactEmailAddress extends Command
 {
@@ -38,7 +39,7 @@ class checkContactEmailAddress extends Command
      */
     public function handle()
     {
-        print_r("Start Check Emailaddesses bij contacten.\n");
+        Log::info("Start Check Emailaddesses bij contacten.");
         foreach(Contact::all() as $contact) {
             foreach($contact->emailAddresses as $emailAddress) {
                 $emailAddressZonderVoorloopSpatiesLengte = strlen( ltrim( $emailAddress->email) );
@@ -47,15 +48,15 @@ class checkContactEmailAddress extends Command
 
                 if( $emailAddressZonderVoorloopSpatiesLengte != $emailAddressLengte )
                 {
-                    print_r("Emailadress: " . $emailAddress->email . " bij contact " . $contact->id . " bevat voorloop spaties\n");
+                    Log::info("Emailadress: " . $emailAddress->email . " bij contact " . $contact->id . " bevat voorloop spaties.");
                 }
                 if($emailAddressZonderSpatiesAchteraanLengte != $emailAddressLengte)
                 {
-                    print_r("Emailadress: " . $emailAddress->email . " bij contact " . $contact->id . " bevat spaties achteraan\n");
+                    Log::info("Emailadress: " . $emailAddress->email . " bij contact " . $contact->id . " bevat spaties achteraan.");
                 }
             }
         }
-    dd('Einde Check Emailaddesses bij contacten.');
+        Log::info('Einde Check Emailaddesses bij contacten.');
     }
 
 

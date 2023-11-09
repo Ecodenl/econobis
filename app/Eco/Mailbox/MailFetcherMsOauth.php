@@ -254,23 +254,31 @@ class MailFetcherMsOauth
                  * De cid's zijn de verwijzingen in de html van images.
                  * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
                  * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
-                 *
-                 * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
-                 * Daarom maar via deze omweg uit $attachment halen.
                  */
-                $cid = json_decode(json_encode($attachment))->contentId ?? null;
 
-                $contents = base64_decode( $attachment->getProperties()['contentBytes']);
-                $name = $attachment->getName();
-                $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
-                $emailAttachment = new EmailAttachment([
-                    'filename' => $filePathAndName,
-                    'name' => $name,
-                    'email_id' => $email->id,
-                    'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
-                ]);
-                $emailAttachment->save();
-                \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                $contentBytes = $attachment->getProperties()['contentBytes'] ?? null;
+                if($contentBytes){
+                    /**
+                     * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
+                     * Daarom maar via deze omweg uit $attachment halen.
+                     */
+                    $contents = base64_decode($contentBytes);
+                    $cid = json_decode(json_encode($attachment))->contentId ?? null;
+
+                    $name = $attachment->getName();
+                    $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
+                    $emailAttachment = new EmailAttachment([
+                        'filename' => $filePathAndName,
+                        'name' => $name,
+                        'email_id' => $email->id,
+                        'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
+                    ]);
+                    $emailAttachment->save();
+                    \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                } else {
+                    // hier eventueel foutmelding indien geen contents voor bijlage gevonden ? Voorlopig niet.
+                }
+
             }
 
         }

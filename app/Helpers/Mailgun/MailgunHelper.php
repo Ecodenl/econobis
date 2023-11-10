@@ -5,6 +5,7 @@ namespace App\Helpers\Mailgun;
 
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Mailbox\Mailbox;
+use App\Eco\Mailbox\MailgunDomain;
 use GuzzleHttp\Client;
 use Illuminate\Support\Str;
 
@@ -47,10 +48,16 @@ class MailgunHelper
         $mailbox->inbound_mailgun_email = Str::random(24) . '@mailforward.econobis.nl'; // Iedereen gebruikt zelfde domein dus kan nog hardcoded
         $mailbox->inbound_mailgun_post_token = Str::random(32);
 
+        /**
+         * De mailgundomeinen worden altijd door Econobis zelf aangemaakt en daar valt ook mailforward.econobis.nl onder.
+         * Daarom kunnen we gewoon het eerste mailgundomein pakken.
+         */
+        $secret = MailgunDomain::where('is_verified', true)->firstOrFail()->secret;
+
         $response = (new Client())->post('https://api.eu.mailgun.net/v3/routes', [
             'auth' => [
                 'api',
-                config('services.mailgun.secret')
+                $secret
             ],
             'form_params' => [
                 'priority' => 0,

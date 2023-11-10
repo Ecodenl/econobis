@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\Mailbox\Mailbox;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class checkFloatingAttachmentFiles extends Command
@@ -41,7 +42,7 @@ class checkFloatingAttachmentFiles extends Command
     public function handle()
     {
         $this->doCheckFloatingAttachmentFiles();
-        dd('Einde Check op zwevende bijlagen.');
+        Log::info('Einde Check op zwevende bijlagen.');
     }
 
     /**
@@ -50,7 +51,7 @@ class checkFloatingAttachmentFiles extends Command
      */
     public function doCheckFloatingAttachmentFiles()
     {
-        print_r("Start Check op zwevende bijlagen.\n");
+        Log::info("Start Check op zwevende bijlagen.");
         foreach (Mailbox::all() as $mailbox) {
             $this->checkForFloatingAttachmentFiles($mailbox, 'inbox');
             $this->checkForFloatingAttachmentFiles($mailbox, 'outbox');
@@ -82,11 +83,9 @@ class checkFloatingAttachmentFiles extends Command
             }
             $checkAttachement = EmailAttachment::where('filename', $filenameInMailbox)->exists();
             if (!$checkAttachement) {
-                print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
-                print_r("Filenaam: " . $filenameInMailbox . " niet in EmailAttachment\n");
+                Log::info("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - Filenaam: " . $filenameInMailbox . " niet in EmailAttachment.");
             } else {
-//                    print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
-//                    print_r("Filenaam: " . $filenameInMailbox . " wel in EmailAttachment\n");
+//                Log::info("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - Filenaam: " . $filenameInMailbox . " wel in EmailAttachment.");
 
             }
         }

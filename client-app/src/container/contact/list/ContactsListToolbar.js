@@ -140,7 +140,7 @@ class ContactsListToolbar extends Component {
                         {permissions.downloadContact && (
                             <ButtonIcon
                                 iconName={'download'}
-                                onClickAction={this.props.getEnergysuppliersCSV}
+                                onClickAction={this.props.getEnergySuppliersCSV}
                                 title="Downloaden contacten energieleveranciers gegevens naar CSV"
                             />
                         )}

@@ -358,7 +358,7 @@ class ContactCSVHelper
         return Reader::BOM_UTF8 . $csv->getCsv();
     }
 
-    public function downloadEnergysuppliersCSV()
+    public function downloadEnergySuppliersCSV()
     {
         $csv = '';
         $headers = true;

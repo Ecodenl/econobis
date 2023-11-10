@@ -55,14 +55,14 @@ class GridController extends Controller
         return $contactCSVHelper->downloadCSV();
     }
 
-    public function energysupplierscsv(RequestQuery $requestQuery)
+    public function energySuppliersCsv(RequestQuery $requestQuery)
     {
         set_time_limit(0);
         $contacts = $requestQuery->getQueryNoPagination()->get();
 
         $contactCSVHelper = new ContactCSVHelper($contacts);
 
-        return $contactCSVHelper->downloadEnergysuppliersCSV();
+        return $contactCSVHelper->downloadEnergySuppliersCSV();
     }
 
     public function excelAddressEnergyConsumptionGas(RequestQuery $requestQuery)

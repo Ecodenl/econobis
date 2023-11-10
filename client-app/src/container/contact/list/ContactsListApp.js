@@ -48,7 +48,7 @@ class ContactsListApp extends Component {
         this.handlePageClick = this.handlePageClick.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.getCSV = this.getCSV.bind(this);
-        this.getEnergysuppliersCSV = this.getEnergysuppliersCSV.bind(this);
+        this.getEnergySuppliersCSV = this.getEnergySuppliersCSV.bind(this);
         this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
@@ -130,14 +130,14 @@ class ContactsListApp extends Component {
         }, 100);
     };
 
-    getEnergysuppliersCSV = () => {
+    getEnergySuppliersCSV = () => {
         this.props.blockUI();
         setTimeout(() => {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
 
-            ContactsAPI.getEnergysuppliersCSV({ filters, extraFilters, sorts })
+            ContactsAPI.getEnergySuppliersCSV({ filters, extraFilters, sorts })
                 .then(payload => {
                     fileDownload(
                         payload.data,
@@ -317,7 +317,7 @@ class ContactsListApp extends Component {
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 getCSV={this.getCSV}
-                                getEnergysuppliersCSV={this.getEnergysuppliersCSV}
+                                getEnergySuppliersCSV={this.getEnergySuppliersCSV}
                                 getExcelAddressEnergyConsumptionGas={this.getExcelAddressEnergyConsumptionGas}
                                 getExcelAddressEnergyConsumptionElectricity={
                                     this.getExcelAddressEnergyConsumptionElectricity

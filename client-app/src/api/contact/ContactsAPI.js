@@ -111,8 +111,8 @@ export default {
         });
     },
 
-    getEnergysuppliersCSV: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/contact/energysupplierscsv`;
+    getEnergySuppliersCSV: ({ filters, extraFilters, sorts }) => {
+        const requestUrl = `${URL_API}/api/contact/energy-suppliers-csv`;
 
         return axiosInstance.get(requestUrl, {
             params: {

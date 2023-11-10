@@ -62,7 +62,7 @@ class deleteEmailDefinitiveWithLog extends Command
         $dateDeleteBefore = Carbon::parse('now')->subMonths(3)->format('Y-m-d');
         Log::info("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . ".");
 
-        $emails = Email::withTrashed()->where('deleted_at', '<', $dateDeleteBefore)->get();
+        $emails = Email::withTrashed()->whereNotNull('deleted_at')->where('deleted_at', '<', $dateDeleteBefore)->get();
         foreach ($emails as $email){
             $attachments = $email->attachments;
             foreach ($attachments as $attachment) {

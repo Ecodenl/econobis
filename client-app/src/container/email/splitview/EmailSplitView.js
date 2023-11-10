@@ -1,20 +1,22 @@
-import React, {useContext, useEffect, useState} from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import EmailSplitviewAPI from '../../../api/email/EmailSplitviewAPI';
 import EmailSplitViewDetails from './EmailSplitViewDetails';
 import EmailSplitViewSelectList from './EmailSplitViewSelectList';
 import EmailSplitViewFiltersPanel from './EmailSplitViewFiltersPanel';
-import {getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters} from './EmailFilterHelpers';
-import {EmailModalContext} from '../../../context/EmailModalContext';
+import { getJoryFilter, storeFiltersToStorage, getFiltersFromStorage, defaultFilters } from './EmailFilterHelpers';
+import { EmailModalContext } from '../../../context/EmailModalContext';
 import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import {hashHistory} from 'react-router';
+import { hashHistory } from 'react-router';
 import Icon from 'react-icons-kit';
-import {undo} from 'react-icons-kit/fa/undo';
-import {useSelector} from "react-redux";
+import { undo } from 'react-icons-kit/fa/undo';
+import { useSelector } from 'react-redux';
+import ContactGroupDetailsLapostaListDeActivate from '../../contact-groups/details/ContactGroupDetailsLapostaListDeActivate';
+import Modal from '../../../components/modal/Modal';
 
-export default function EmailSplitView({router}) {
+export default function EmailSplitView({ router }) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
@@ -22,10 +24,11 @@ export default function EmailSplitView({router}) {
     const [isRefreshingData, setIsRefreshingData] = useState(false);
     const [isFetchingMoreEmails, setIsFetchingMoreEmails] = useState(false);
     const [contact, setContact] = useState(null);
-    const [filters, setFilters] = useState({...defaultFilters});
-    const {isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal} = useContext(EmailModalContext);
-    const hasMailboxes = useSelector((state) => state.meDetails.mailboxes.length > 0);
+    const [filters, setFilters] = useState({ ...defaultFilters });
+    const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
+    const hasMailboxes = useSelector(state => state.meDetails.mailboxes.length > 0);
     const [multiselectEnabled, setMultiselectEnabled] = useState(false);
+    const [message, setMessage] = useState('Nieuwe e-mails worden opgehaald ...');
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -40,12 +43,12 @@ export default function EmailSplitView({router}) {
     }, [isEmailSendModalOpen]);
 
     useEffect(() => {
-        setFilters({...getFiltersFromStorage(), fetch: true});
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
         setSelectedEmailId(null);
     }, [router.params.folder]);
 
     useEffect(() => {
-        setFilters({...getFiltersFromStorage(), fetch: true});
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
 
         if (router.location.query.contact) {
             fetchContactName(router.location.query.contact).then(response => {
@@ -65,7 +68,7 @@ export default function EmailSplitView({router}) {
             return;
         }
 
-        setFilters({...filters, fetch: false});
+        setFilters({ ...filters, fetch: false });
 
         storeFiltersToStorage(filters);
 
@@ -81,7 +84,7 @@ export default function EmailSplitView({router}) {
     }, [filters.fetch]);
 
     const fetchMoreEmails = () => {
-        if(isFetchingMoreEmails){
+        if (isFetchingMoreEmails) {
             return;
         }
 
@@ -112,7 +115,7 @@ export default function EmailSplitView({router}) {
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
-                return {...email, ...attributes};
+                return { ...email, ...attributes };
             }
 
             return email;
@@ -126,7 +129,7 @@ export default function EmailSplitView({router}) {
     };
 
     const getSorts = () => {
-        if(router.params.folder === 'concept') {
+        if (router.params.folder === 'concept') {
             return ['-createdAt'];
         }
 
@@ -135,12 +138,12 @@ export default function EmailSplitView({router}) {
 
     const handleFilterKeyUp = e => {
         if (e.keyCode === 13) {
-            setFilters({...filters, fetch: true});
+            setFilters({ ...filters, fetch: true });
         }
     };
 
     const resetFilters = () => {
-        if(router.location.query.contact){
+        if (router.location.query.contact) {
             /**
              * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
              * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
@@ -154,8 +157,8 @@ export default function EmailSplitView({router}) {
 
         setFilters({
             ...defaultFilters,
-            fetch: true
-        })
+            fetch: true,
+        });
     };
 
     const createMail = () => {
@@ -165,19 +168,26 @@ export default function EmailSplitView({router}) {
     };
 
     const refreshData = () => {
-        if(isRefreshingData) {
+        if (isRefreshingData) {
             return;
         }
 
         setIsRefreshingData(true);
 
-        MailboxAPI.receiveMailFromMailboxesUser().then(() => {
-            refetchCurrentEmails();
-        }).finally(() => {
-            setIsRefreshingData(false);
-        });
+        MailboxAPI.receiveMailFromMailboxesUser()
+            .then(() => {
+                setMessage('Ophalen nieuwe e-mails is voltooid.');
+                refetchCurrentEmails();
+                setTimeout(closeModal, 5000);
+            })
+            .catch(error => {
+                setMessage('Er ging iets mis bij ophalen nieuwe e-mails.');
+            });
     };
 
+    function closeModal() {
+        setIsRefreshingData(false);
+    }
     const hasFilters = () => {
         return Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
     };
@@ -187,17 +197,14 @@ export default function EmailSplitView({router}) {
             {!hasMailboxes ? (
                 <div className={'row'}>
                     <div className="col-xs-12">
-                        <div
-                            className="alert alert-info"
-                            role="alert"
-                        >
+                        <div className="alert alert-info" role="alert">
                             U heeft nog geen toegang tot een mailbox toegekend gekregen.
                         </div>
                     </div>
                 </div>
             ) : (
                 <div className="row">
-                    <div className="col-md-4" style={{paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px'}}>
+                    <div className="col-md-4" style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}>
                         <div className="btn-group" role="group">
                             <ButtonIcon
                                 iconName={'refresh'}
@@ -212,53 +219,72 @@ export default function EmailSplitView({router}) {
                             />
                         </div>
                     </div>
-                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
+                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
                         {contact && (
-                            <span style={{marginLeft: '6px'}}>
+                            <span style={{ marginLeft: '6px' }}>
                                 Email voor contact <strong>{contact?.fullName}</strong>
-                                <a role="button" style={{marginLeft: '10px'}} className="btn btn-success btn-sm" onClick={() => hashHistory.push(router.location.pathname)}>
+                                <a
+                                    role="button"
+                                    style={{ marginLeft: '10px' }}
+                                    className="btn btn-success btn-sm"
+                                    onClick={() => hashHistory.push(router.location.pathname)}
+                                >
                                     Filter wissen
                                 </a>
                             </span>
                         )}
                     </div>
-                    <div className="col-md-4" style={{marginTop: '-10px', marginBottom: '5px'}}>
-                        {
-                            hasFilters() && (
-                                <button
-                                    type="button"
-                                    className="btn btn-success pull-right btn-sm"
-                                    style={{marginRight: '4px'}}
-                                    onClick={resetFilters}
-                                >
-                                    Wis alle filters
-                                </button>
-                            )
-                        }
+                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                        {hasFilters() && (
+                            <button
+                                type="button"
+                                className="btn btn-success pull-right btn-sm"
+                                style={{ marginRight: '4px' }}
+                                onClick={resetFilters}
+                            >
+                                Wis alle filters
+                            </button>
+                        )}
                     </div>
+                    {isRefreshingData && (
+                        <Modal
+                            buttonClassName={'btn-danger'}
+                            closeModal={closeModal}
+                            buttonCancelText={'Sluiten'}
+                            showConfirmAction={false}
+                            title="Alle mappen verzenden/ontvangen"
+                        >
+                            <p>{message}</p>
+                            {/*{errors.length ? (*/}
+                            {/*    <ul>*/}
+                            {/*        {errors.map(item => (*/}
+                            {/*            <li>{item}</li>*/}
+                            {/*        ))}*/}
+                            {/*    </ul>*/}
+                            {/*) : null}*/}
+                        </Modal>
+                    )}
                 </div>
             )}
             <div className="row">
                 <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
-                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters}/>
+                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters} />
                     </form>
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-4 margin-10-top" style={{paddingRight: '0px'}}>
-                    {
-                        hasFilters() && (
-                            <div className="panel panel-default">
-                                <div className="panel-body panel-small">
-                                    Let op: filters actief &nbsp;
-                                    <a role="button" onClick={resetFilters}>
-                                        <Icon size={16} icon={undo}/>
-                                    </a>
-                                </div>
+                <div className="col-md-4 margin-10-top" style={{ paddingRight: '0px' }}>
+                    {hasFilters() && (
+                        <div className="panel panel-default">
+                            <div className="panel-body panel-small">
+                                Let op: filters actief &nbsp;
+                                <a role="button" onClick={resetFilters}>
+                                    <Icon size={16} icon={undo} />
+                                </a>
                             </div>
-                        )
-                    }
+                        </div>
+                    )}
                     <EmailSplitViewSelectList
                         emails={emails}
                         folder={router.params.folder}
@@ -273,14 +299,17 @@ export default function EmailSplitView({router}) {
                     />
                 </div>
                 <div className="col-md-8 margin-10-top">
-                    <EmailSplitViewDetails emailId={selectedEmailId} updatedEmailHandler={refetchCurrentEmails}
-                                           folder={router.params.folder} deleted={() => {
-                        localStorage.setItem('lastOpenedEmailId', null);
+                    <EmailSplitViewDetails
+                        emailId={selectedEmailId}
+                        updatedEmailHandler={refetchCurrentEmails}
+                        folder={router.params.folder}
+                        deleted={() => {
+                            localStorage.setItem('lastOpenedEmailId', null);
 
-                        setSelectedEmailId(null);
+                            setSelectedEmailId(null);
 
-                        refetchCurrentEmails();
-                    }}
+                            refetchCurrentEmails();
+                        }}
                     />
                 </div>
             </div>

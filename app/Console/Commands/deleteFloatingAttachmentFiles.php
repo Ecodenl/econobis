@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Eco\Email\EmailAttachment;
 use App\Eco\Mailbox\Mailbox;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class deleteFloatingAttachmentFiles extends Command
@@ -41,7 +42,7 @@ class deleteFloatingAttachmentFiles extends Command
     public function handle()
     {
         $this->doDeleteFloatingAttachmentFiles();
-        dd('Einde Verwijder zwevende bijlagen.');
+        Log::info('Einde Verwijder zwevende bijlagen.');
     }
 
     /**
@@ -50,7 +51,7 @@ class deleteFloatingAttachmentFiles extends Command
      */
     public function doDeleteFloatingAttachmentFiles()
     {
-        print_r("Start Verwijder zwevende bijlagen.\n");
+        Log::info("Start Verwijder zwevende bijlagen.");
         foreach (Mailbox::all() as $mailbox) {
             $this->deleteFloatingAttachmentFilesInMailbox($mailbox, 'inbox');
             $this->deleteFloatingAttachmentFilesInMailbox($mailbox, 'outbox');
@@ -74,8 +75,7 @@ class deleteFloatingAttachmentFiles extends Command
             $checkAttachement = EmailAttachment::where('filename', $filenameInMailbox)->exists();
             if (!$checkAttachement) {
                 Storage::delete($filename);
-                print_r("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - ");
-                print_r("Filenaam: " . $filenameInMailbox . " verwijderd\n");
+                Log::info("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - Filenaam: " . $filenameInMailbox . " verwijderd.");
             }
         }
     }

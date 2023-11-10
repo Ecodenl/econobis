@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Eco\Contact\Contact;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 
 class checkContactPostalCode extends Command
 {
@@ -38,18 +39,18 @@ class checkContactPostalCode extends Command
      */
     public function handle()
     {
-        print_r("Start Check postcodes bij contacten.\n");
+        Log::info("Start Check postcodes bij contacten.");
         foreach(Contact::all() as $contact) {
             foreach($contact->addresses as $address) {
                 if( !empty($address->postal_code) && $address->country_id == 'NL' )
                 {
                         if (!$this->postalCodeNLCheck($address->postal_code)) {
-                            print_r("ContactId: (" . $contact->id . ", AddressId " . $address->id . ": Nederlands postcode NIET OK: " . $address->postal_code . ".\n");
+                            Log::info("ContactId: (" . $contact->id . ", AddressId " . $address->id . ": Nederlands postcode NIET OK: " . $address->postal_code . ".");
                         }
                 }
             }
         }
-    dd('Einde Check postcodes bij contacten.');
+        Log::info('Einde Check postcodes bij contacten.');
     }
 
     protected function postalCodeNLCheck($postalCode)

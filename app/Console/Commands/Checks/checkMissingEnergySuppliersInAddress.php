@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplier;
@@ -104,7 +104,7 @@ class checkMissingEnergySuppliersInAddress extends Command
                                     'es_number' => '',
                                     'energy_supply_type_id' => $energySupplierTypeElectriciteit ? $energySupplierTypeElectriciteit->id : 2,
                                     'member_since' => $distributionPartKwh->partsKwh->date_begin,
-                                    'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay(1)->format('Y-m-d') : null,
+                                    'end_date' => $firstNextAddressEnergySupplier ? Carbon::parse($firstNextAddressEnergySupplier->member_since)->subDay()->format('Y-m-d') : null,
                                 ];
                                 $addressEnergySupplierNew = new AddressEnergySupplier();
                                 $addressEnergySupplierNew->fill($addressEnergySupplierData);

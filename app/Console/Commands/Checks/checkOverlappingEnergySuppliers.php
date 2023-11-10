@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Address\Address;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
@@ -73,7 +73,7 @@ class checkOverlappingEnergySuppliers extends Command
                     $response = $addressEnergySupplierController->validateAddressEnergySupplier($addressEnergySupplier, false);
 
                     if($response){
-                        $overlappingAddresses[] = $address->contact->id . '/'. $address->id ;
+                        $overlappingAddresses[] = ($address->contact ? $address->contact->id : 'onbekend') . '/'. $address->id ;
                         break;
                     }
                 }

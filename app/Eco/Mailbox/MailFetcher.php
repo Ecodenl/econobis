@@ -63,7 +63,7 @@ class MailFetcher
             // PHP.net imap_search criteria: http://php.net/manual/en/function.imap-search.php
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
-        } catch(PhpImap\Exceptions\ConnectionException $ex) {
+        } catch(\PhpImap\Exceptions\ConnectionException $ex) {
             Log::error("IMAP connection failed: " . $ex);
 //            echo "IMAP connection failed: " . $ex;
             $this->mailbox->start_fetch_mail = null;
@@ -73,7 +73,7 @@ class MailFetcher
             try {
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
-            } catch(PhpImap\Exceptions\ConnectionException $ex3) {
+            } catch(\PhpImap\Exceptions\ConnectionException $ex3) {
                 Log::error("IMAP connection failed: " . $ex3);
 //                echo "IMAP connection failed: " . $ex3;
                 $this->mailbox->start_fetch_mail = null;
@@ -125,6 +125,13 @@ class MailFetcher
     {
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
+
+        // geen fromAddress, dan slaan we ook niets op.
+        if(!$emailData->fromAddress){
+            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
+            return;
+        }
+
         try {
             $dateSent = Carbon::parse( $emailData->date ) ;
         } catch(\Exception $ex) {

@@ -4,9 +4,10 @@ namespace App\Console\Commands;
 
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityStatus;
+use App\Eco\Schedule\CommandRun;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class processWorkflowEmailOpportunityStatus extends Command
@@ -42,6 +43,16 @@ class processWorkflowEmailOpportunityStatus extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
+        $commandRun->save();
+
         // Get opportunity statussen with workflow enabled and number of days to send not 0 (they are sent immediately)
         $opportunityStatusesToProcess = OpportunityStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
         foreach ($opportunityStatusesToProcess as $opportunityStatus) {
@@ -55,5 +66,11 @@ class processWorkflowEmailOpportunityStatus extends Command
                 $opportunityWorkflowHelper->processWorkflowEmail();
             }
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
+
+        Log::info("Emails verstuurd kansen met bepaalde status.");
     }
 }

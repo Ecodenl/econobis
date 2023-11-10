@@ -80,11 +80,10 @@ class TemplateVariableHelper
     {
         $dateShort = Carbon::now()->format('d-m-Y');
 
-        $dateLong = Carbon::now()->formatLocalized('%d %B %Y');
+        $dateLong = Carbon::now()->isoFormat('D MMMM YYYY');
 
         $html_body = str_replace('{huidige_datum_kort}', $dateShort, $html_body);
         $html_body = str_replace('{huidige_datum_lang}', $dateLong, $html_body);
-
 
         if (preg_match_all("/{(\S*?)}/", $html_body, $m)) {
             foreach ($m[1] as $i => $varname) {
@@ -2563,7 +2562,7 @@ class TemplateVariableHelper
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";
                 }
-                return $model->date_sent ? Carbon::parse($model->date_sent)->formatLocalized('%e %B %Y') : null;
+                return $model->date_sent ? Carbon::parse($model->date_sent)->isoFormat('D MMMM YYYY') : null;
             default:
                 return '';
         }

@@ -80,7 +80,7 @@ class MailFetcherMsOauth
                     Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
-                Log::error('Error getting user\'s inbox: '.$e->getMessage());
+                Log::error('Error mailbox ' . $this->mailbox->id . ' getting user\'s inbox: '.$e->getMessage());
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
 
@@ -144,22 +144,47 @@ class MailFetcherMsOauth
 
     private function fetchEmail(Message $message)
     {
+        $from = $message->getFrom()->getEmailAddress()->getAddress();
+        // geen fromAddress, dan slaan we ook niets op.
+        if(!$from){
+            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
+            return;
+        }
+
         $tos = [];
         if($message->getToRecipients()){
             foreach ($message->getToRecipients() as $toRecipient){
-                $tos[] = $toRecipient['emailAddress']['address'];
+                // todo: Foutmelding onderzoeken: Error getting user's inbox: Undefined array key "address"
+//                  if(!isset($toRecipient['emailAddress']['address'])){
+//                      Log::info('Geen array key "address" in toRecipient "emailAddress":');
+//                      Log::info($toRecipient['emailAddress']);
+//                  }
+//                  resultaat:
+//                  [2023-10-25 15:40:22] production.INFO: array (
+//                       'name' => 'Contact | Energie Samen',
+//                   )
+//                  [2023-10-25 15:40:26] production.INFO: array (
+//                       'name' => 'mailto:govert@geldofcs.nl',
+//                   )
+                if(isset($toRecipient['emailAddress']['address'])){
+                    $tos[] = $toRecipient['emailAddress']['address'];
+                }
             }
         }
         $ccs = [];
         if($message->getCcRecipients()){
             foreach ($message->getCcRecipients() as $ccRecipient){
-                $ccs[] = $ccRecipient['emailAddress']['address'];
+                if(isset($ccRecipient['emailAddress']['address'])){
+                    $ccs[] = $ccRecipient['emailAddress']['address'];
+                }
             }
         }
         $bccs = [];
         if($message->getBccRecipients()){
             foreach ($message->getBccRecipients() as $bccRecipient){
-                $bccs[] = $bccRecipient['emailAddress']['address'];
+                if(isset($bccRecipient['emailAddress']['address'])){
+                    $bccs[] = $bccRecipient['emailAddress']['address'];
+                }
             }
         }
 
@@ -195,7 +220,7 @@ class MailFetcherMsOauth
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $message->getFrom()->getEmailAddress()->getAddress(),
+            'from' => $from,
             'to' => $tos,
             'cc' => $ccs,
             'bcc' => $bccs,
@@ -229,23 +254,31 @@ class MailFetcherMsOauth
                  * De cid's zijn de verwijzingen in de html van images.
                  * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
                  * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
-                 *
-                 * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
-                 * Daarom maar via deze omweg uit $attachment halen.
                  */
-                $cid = json_decode(json_encode($attachment))->contentId;
 
-                $contents = base64_decode( $attachment->getProperties()['contentBytes']);
-                $name = $attachment->getName();
-                $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
-                $emailAttachment = new EmailAttachment([
-                    'filename' => $filePathAndName,
-                    'name' => $name,
-                    'email_id' => $email->id,
-                    'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
-                ]);
-                $emailAttachment->save();
-                \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                $contentBytes = $attachment->getProperties()['contentBytes'] ?? null;
+                if($contentBytes){
+                    /**
+                     * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
+                     * Daarom maar via deze omweg uit $attachment halen.
+                     */
+                    $contents = base64_decode($contentBytes);
+                    $cid = json_decode(json_encode($attachment))->contentId ?? null;
+
+                    $name = $attachment->getName();
+                    $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
+                    $emailAttachment = new EmailAttachment([
+                        'filename' => $filePathAndName,
+                        'name' => $name,
+                        'email_id' => $email->id,
+                        'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
+                    ]);
+                    $emailAttachment->save();
+                    \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                } else {
+                    // hier eventueel foutmelding indien geen contents voor bijlage gevonden ? Voorlopig niet.
+                }
+
             }
 
         }

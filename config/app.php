@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '4',
     'version_minor' => '6',
-    'version_fix' => '1.2',
+    'version_fix' => '1.8',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
@@ -82,6 +82,13 @@ return [
 
     'APP_COOP_NAME' => env('APP_COOP_NAME'),
 
+    /*
+    |--------------------------------------------------------------------------
+    | Schedule run ID (default 1)
+    |--------------------------------------------------------------------------
+    */
+
+    'SCHEDULE_RUN_ID' => env('SCHEDULE_RUN_ID', 1),
 
     /*
     |--------------------------------------------------------------------------

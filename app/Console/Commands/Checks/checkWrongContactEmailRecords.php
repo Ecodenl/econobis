@@ -1,12 +1,10 @@
 <?php
 
-namespace App\Console\Commands;
+namespace App\Console\Commands\Checks;
 
 use App\Eco\Email\Email;
-use App\Eco\Email\EmailAttachment;
-use App\Eco\Mailbox\Mailbox;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 
 class checkWrongContactEmailRecords extends Command
 {
@@ -41,9 +39,9 @@ class checkWrongContactEmailRecords extends Command
     {
         $emailsWithoutToCcAndBcc = Email::where('folder', 'inbox')->where('to', '[]')->where('cc', '[]')->where('bcc', '[]')->get();
         foreach ($emailsWithoutToCcAndBcc as $emailWithoutToCcAndBcc) {
-            print_r("Email id: " . $emailWithoutToCcAndBcc->id . " Aantal contacts: " . $emailWithoutToCcAndBcc->contacts()->count() . "\n");
+            Log::info("Email id: " . $emailWithoutToCcAndBcc->id . " Aantal contacts: " . $emailWithoutToCcAndBcc->contacts()->count() . ".");
         }
-        dd('Einde Check op foute email/contact koppelingen.');
+        Log::info('Einde Check op foute email/contact koppelingen.');
     }
 
 }

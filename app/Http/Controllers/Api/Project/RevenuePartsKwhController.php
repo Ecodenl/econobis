@@ -144,7 +144,7 @@ class RevenuePartsKwhController extends ApiController
     {
         $this->authorize('manage', RevenuesKwh::class);
 
-        $newEndDate = Carbon::parse($revenuePartsKwh->date_begin)->subDay(1)->format('Y-m-d');
+        $newEndDate = Carbon::parse($revenuePartsKwh->date_begin)->subDay()->format('Y-m-d');
 
         try {
             DB::beginTransaction();

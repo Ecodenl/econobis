@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\Schedule\CommandRun;
 use App\Eco\Task\Task;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use Illuminate\Console\Command;
-use Illuminate\Support\Carbon;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class processWorkflowEmailCompleteTask extends Command
@@ -41,6 +42,16 @@ class processWorkflowEmailCompleteTask extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
+        $commandRun->save();
+
         $tasksToProcess = Task::where('finished', true)
             ->whereNull('date_sent_wf_completed_task')
             ->whereHas('type', function($query){
@@ -60,6 +71,10 @@ class processWorkflowEmailCompleteTask extends Command
                 }
             }
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
 
         Log::info("Email verstuurd X aantal dagen na afhandelen taak.");
     }

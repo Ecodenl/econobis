@@ -121,7 +121,7 @@ class OrderCSVHelper
                             $start = $orderProduct->date_start;
                             $end = $orderProduct->order->addDurationToDate(Carbon::parse($orderProduct->date_start));
                         }
-                        $period = Carbon::parse($start)->formatLocalized('%e %B %Y') . ' t/m ' . Carbon::parse($end)->subDay()->formatLocalized('%e %B %Y');
+                        $period = Carbon::parse($start)->isoFormat('D MMMM YYYY') . ' t/m ' . Carbon::parse($end)->subDay()->isoFormat('D MMMM YYYY');
                     }
 
                     $orderProductInfo = [

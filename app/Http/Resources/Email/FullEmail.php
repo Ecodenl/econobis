@@ -114,7 +114,7 @@ class FullEmail extends JsonResource
             'dateSent' => $this->date_sent,
             'folder' => $this->folder,
             'imapId' => $this->imap_id,
-            'gmailMessageId' => $this->gmail_message_id,
+            'msoauthMessageId' => $this->msoauth_message_id,
             'messageId' => $this->message_id,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,

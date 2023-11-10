@@ -36,9 +36,9 @@ class MailgunHelper
 
     public function updateMailgunForwarding(Mailbox $mailbox)
     {
-        if($mailbox->inbound_mailgun_enabled){
+        if($mailbox->incoming_server_type == 'mailgun'){
             $this->createInboundForwardRoute($mailbox);
-        }else{
+        }elseif($mailbox->inbound_mailgun_email != null){
             $this->deleteInboundForwardRoute($mailbox);
         }
     }

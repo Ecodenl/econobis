@@ -57,6 +57,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
         $this->emailTemplateId = $emailTemplateId;
         $this->showOnPortal = $showOnPortal;
         $this->userId = $userId;
+        $this->email = $email;
 
         $this->distributionPartsDateBegin = Carbon::parse($distributionPartsKwh->date_begin_from_till_visible)->format('d-m-Y');
         $this->distributionPartsDateEnd = Carbon::parse($distributionPartsKwh->partsKwh->date_end)->format('d-m-Y');

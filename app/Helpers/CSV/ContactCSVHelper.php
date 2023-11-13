@@ -394,7 +394,7 @@ class ContactCSVHelper
                     $addressArr['postal_code'] = ($address ? $address->postal_code : '');
                     $addressArr['city'] = ($address ? $address->city : '');
                     $addressArr['country'] = (($address && $address->country) ? $address->country->name : '');
-
+                    $addressArr['type'] = (($address && $address->getType() && $address->getType()->name) ? $address->getType()->name : '');
                     $contact['address'] = $addressArr;
                 }
             }
@@ -467,7 +467,7 @@ class ContactCSVHelper
             $mapping = [
                 'number' => '#',
                 'full_name' => 'Naam',
-                'organisation.name' => 'Organisatie',
+                'organisation.name' => 'Organisatienaam',
                 'title.name' => 'Aanspreektitel',
                 'initials' => 'Initialen',
                 'first_name' => 'Voornaam',
@@ -475,47 +475,43 @@ class ContactCSVHelper
                 'last_name' => 'Achternaam',
                 'address.street' => 'Adres',
                 'address.number' => 'Huisnummer',
-                'address.addition' => 'Toevoeging',
+                'address.addition' => 'Huisnummertoevoeging',
                 'address.postal_code' => 'Postcode',
-                'address.city' => 'Plaats',
+                'address.city' => 'Woonplaats',
                 'primaryEmailAddress.email' => 'Email primair',
                 'primaryphoneNumber.number' => 'Telefoonnummer primair',
+                'address.type' => 'Adrestype',
 
+                'ean_electricity' => 'EAN (voor elektra)',
+                'ean_gas' => 'EAN (voor gas)',
 
-                'energy_supplier_name_electricity' => 'Energieleverancier (elektra)',
-                'es_number_electricity' => 'Klantnummer (elektra)',
-                'energy_member_since_electricity' => 'Klant sinds (elektra)',
-                'ean_electricity' => 'EAN electriciteit',
+                'energy_supplier_name_electricity' => 'Huidige energieleverancier (voor elektra)',
+                'es_number_electricity' => 'Klantnummer',
+                'energy_member_since_electricity' => 'Klant sinds',
 
-                'old_energy_supplier_name_electricity_1' => 'Energieleverancier1 (elektra)',
-                'old_es_number_electricity_1' => 'Klantnummer1 (elektra)',
-                'old_energy_member_since_electricity_1' => 'Klant sinds1 (elektra)',
-                'old_energy_end_date_electricity_1' => 'Einddatum1 (elektra)',
-                'old_ean_electricity_1' => 'EAN1 electriciteit',
+                'old_energy_supplier_name_electricity_1' => 'Vorige energieleverancier1 (voor elektra)',
+                'old_es_number_electricity_1' => 'Klantnummer',
+                'old_energy_member_since_electricity_1' => 'Klant sinds',
+                'old_energy_end_date_electricity_1' => 'Einddatum',
 
-                'old_energy_supplier_name_electricity_2' => 'Energieleverancier2 (elektra)',
-                'old_es_number_electricity_2' => 'Klantnummer2 (elektra)',
-                'old_energy_member_since_electricity_2' => 'Klant sinds2 (elektra)',
-                'old_energy_end_date_electricity_2' => 'Einddatum2 (elektra)',
-                'old_ean_electricity_2' => 'EAN electriciteit2',
+                'old_energy_supplier_name_electricity_2' => 'Vorige energieleverancier2 (voor elektra)',
+                'old_es_number_electricity_2' => 'Klantnummer',
+                'old_energy_member_since_electricity_2' => 'Klant sinds',
+                'old_energy_end_date_electricity_2' => 'Einddatum',
 
+                'energy_supplier_name_gas' => 'Huidige energieleverancier (voor gas)',
+                'es_number_gas' => 'Klantnummer',
+                'energy_member_since_gas' => 'Klant sinds',
 
-                'energy_supplier_name_gas' => 'Energieleverancier (gas)',
-                'es_number_gas' => 'Klantnummer (gas)',
-                'energy_member_since_gas' => 'Klant sinds (gas)',
-                'ean_gas' => 'EAN gas',
+                'old_energy_supplier_name_gas_1' => 'Vorige energieleverancier1 (voor gas)',
+                'old_es_number_gas_1' => 'Klantnummer',
+                'old_energy_member_since_gas_1' => 'Klant sinds',
+                'old_energy_end_date_gas_1' => 'Einddatum',
 
-                'old_energy_supplier_name_gas_1' => 'Energieleverancier1 (gas)',
-                'old_es_number_gas_1' => 'Klantnummer1 (gas)',
-                'old_energy_member_since_gas_1' => 'Klant sinds1 (gas)',
-                'old_energy_end_date_gas_1' => 'Einddatum1 (gas)',
-                'old_ean_gas_1' => 'EAN1 gas',
-
-                'old_energy_supplier_name_gas_2' => 'Energieleverancier2 (gas)',
-                'old_es_number_gas_2' => 'Klantnummer2 (gas)',
-                'old_energy_member_since_gas_2' => 'Klant sinds2 (gas)',
-                'old_energy_end_date_gas_2' => 'Einddatum2 (gas)',
-                'old_ean_gas_2' => 'EAN2 gas',
+                'old_energy_supplier_name_gas_2' => 'Vorige energieleverancier2 (voor gas)',
+                'old_es_number_gas_2' => 'Klantnummer',
+                'old_energy_member_since_gas_2' => 'Klant sinds',
+                'old_energy_end_date_gas_2' => 'Einddatum',
             ];
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);

@@ -240,31 +240,6 @@ class MailboxController extends Controller
         return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 
-    public function receive(Mailbox $mailbox)
-    {
-        $this->authorize('view', Mailbox::class);
-
-        if (!$mailbox->is_active) {
-            return 'This mailbox is not active';
-        }
-        if (!$mailbox->valid) {
-            return 'This mailbox is invalid';
-        }
-
-        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        if ($mailbox->incoming_server_type === 'gmail') {
-            $mailFetcher = new MailFetcherGmail($mailbox);
-        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
-            $mailFetcher = new MailFetcherMsOauth($mailbox);
-        } else if ($mailbox->incoming_server_type !== 'mailgun'){
-            $mailFetcher = new MailFetcher($mailbox);
-        } else {
-            return;
-        }
-
-        return $mailFetcher->fetchNew();
-    }
-
     public function receiveMailFromMailboxesUser()
     {
         $this->authorize('view', Mailbox::class);
@@ -372,25 +347,6 @@ class MailboxController extends Controller
         $mailbox->save();
     }
 
-    private function storeOrUpdateGmailApiSettings(Mailbox $mailbox, array $inputGmailApiSettings): void
-    {
-        $gmailApiSettings = MailboxGmailApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
-
-        $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
-        $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
-        if(isset($inputGmailApiSettings['clientSecret'])){
-            $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
-        }
-        if(isset($inputGmailApiSettings['tenantId']) && !empty($inputGmailApiSettings['tenantId'])) {
-            $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
-        } else {
-            $gmailApiSettings->tenant_id = null;
-        }
-        $gmailApiSettings->token = '';
-
-        $gmailApiSettings->save();
-    }
-
     public function gmailApiConnectionCallback(Request $request)
     {
         $state = json_decode(base64_decode($request->state));
@@ -458,5 +414,49 @@ class MailboxController extends Controller
             header("Location: {$appUrl}/#/mailbox/{$mailbox->id}");
             exit;
         }
+    }
+
+    private function receive(Mailbox $mailbox)
+    {
+        $this->authorize('view', Mailbox::class);
+
+        if (!$mailbox->is_active) {
+            return 'This mailbox is not active';
+        }
+        if (!$mailbox->valid) {
+            return 'This mailbox is invalid';
+        }
+
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
+        if ($mailbox->incoming_server_type === 'gmail') {
+            $mailFetcher = new MailFetcherGmail($mailbox);
+        } elseif ($mailbox->incoming_server_type === 'ms-oauth') {
+            $mailFetcher = new MailFetcherMsOauth($mailbox);
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
+            $mailFetcher = new MailFetcher($mailbox);
+        } else {
+            return;
+        }
+
+        return $mailFetcher->fetchNew();
+    }
+
+    private function storeOrUpdateGmailApiSettings(Mailbox $mailbox, array $inputGmailApiSettings): void
+    {
+        $gmailApiSettings = MailboxGmailApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
+
+        $gmailApiSettings->client_id = $inputGmailApiSettings['clientId'];
+        $gmailApiSettings->project_id = $inputGmailApiSettings['projectId'];
+        if(isset($inputGmailApiSettings['clientSecret'])){
+            $gmailApiSettings->client_secret = $inputGmailApiSettings['clientSecret'];
+        }
+        if(isset($inputGmailApiSettings['tenantId']) && !empty($inputGmailApiSettings['tenantId'])) {
+            $gmailApiSettings->tenant_id = $inputGmailApiSettings['tenantId'];
+        } else {
+            $gmailApiSettings->tenant_id = null;
+        }
+        $gmailApiSettings->token = '';
+
+        $gmailApiSettings->save();
     }
 }

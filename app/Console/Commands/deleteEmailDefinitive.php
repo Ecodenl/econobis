@@ -3,13 +3,14 @@
 namespace App\Console\Commands;
 
 use App\Eco\Email\Email;
+use App\Eco\Email\EmailAttachment;
 use App\Eco\Schedule\CommandRun;
 use App\Eco\User\User;
-use App\Http\Controllers\Api\Email\EmailController;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class deleteEmailDefinitive extends Command
 {
@@ -40,9 +41,9 @@ class deleteEmailDefinitive extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         $adminUser = User::where('email', config('app.admin_user.email'))->first();
         if($adminUser){
@@ -70,25 +71,36 @@ class deleteEmailDefinitive extends Command
 
     /**
      *
-     * @return array
+     * @return void
      */
-    public function doDeleteEmailDefinitive()
+    protected function doDeleteEmailDefinitive(): void
     {
-        $dateDeleteBefore = Carbon::parse('now')->subMonth(3)->format('Y-m-d');
-        Log::info("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore);
+        $dateDeleteBefore = Carbon::parse('now')->subMonths(3)->format('Y-m-d');
+        Log::info("Start Verwijder email (soft deleted) definitief en met date deleted_at voor: " . $dateDeleteBefore . ".");
 
-        $emails = Email::withTrashed()->where('deleted_at', '<', $dateDeleteBefore)->get();
-        $emailController =  new EmailController();
+        $emails = Email::withTrashed()->whereNotNull('deleted_at')->where('deleted_at', '<', $dateDeleteBefore)->get();
         foreach ($emails as $email){
             $attachments = $email->attachments;
             foreach ($attachments as $attachment) {
-                $emailController->deleteEmailAttachment($attachment);
+                $this->deleteEmailAttachment($attachment);
             }
             $email->contacts()->detach();
             $email->groupEmailAddresses()->detach();
             $email->forceDelete();
         }
         Log::info('Verwijder email (soft deleted) definitief heeft gedraaid.');
+    }
+
+    protected function deleteEmailAttachment(EmailAttachment $emailAttachment): void
+    {
+        //delete real file (only when count on filename is 1, otherwise this attachment is also in use in another email because of a reply or send through)
+        $countAttachment = EmailAttachment::where('filename', $emailAttachment->filename)->count();
+        if($countAttachment == 1){
+            Storage::disk('mail_attachments')->delete($emailAttachment->filename);
+        }
+
+        //delete db record
+        $emailAttachment->delete();
     }
 
 }

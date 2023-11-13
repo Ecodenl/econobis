@@ -125,7 +125,7 @@
                 <td class="align-left">{!! ($financialOverviewContact->financialOverview->administration->website) ? $financialOverviewContact->financialOverview->administration->website : '&nbsp;' !!}</td>
             </tr>
             <tr>
-                <td class="align-left">Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}</td>
+                <td class="align-left">Datum: {{ $financialOverviewContact->date_sent ? Carbon\Carbon::parse($financialOverviewContact->date_sent)->isoFormat('D MMMM YYYY') : 'Nog niet bekend' }}</td>
                 <td class="align-left">KvK {{ $financialOverviewContact->financialOverview->administration->kvk_number }}</td>
             </tr>
             <tr>

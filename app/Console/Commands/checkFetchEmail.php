@@ -75,7 +75,7 @@ class checkFetchEmail extends Command
 //                $mailIds = $imap->searchMailbox('SINCE "2022-08-20"');
 //                Log::info("Search since 2022-08-20: " . count($mailIds));
 //                Log::info("Search since 2022-08-20: " . implode(',', $mailIds));
-//            } catch(PhpImap\Exceptions\ConnectionException $ex) {
+//            } catch(\PhpImap\Exceptions\ConnectionException $ex) {
 //                Log::info("IMAP connection failed: " . $ex);
 //                die();
 //            } catch(\Exception $ex2) {
@@ -87,7 +87,7 @@ class checkFetchEmail extends Command
                     $mailIds = $imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
                 Log::info("Search ALL : " . count($mailIds));
-                } catch(PhpImap\Exceptions\ConnectionException $ex) {
+                } catch(\PhpImap\Exceptions\ConnectionException $ex) {
                     Log::info("IMAP connection failed: " . $ex);
                     die();
                 }

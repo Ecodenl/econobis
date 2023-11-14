@@ -17,7 +17,6 @@ class OutgoingServerType extends EnumWithIdAndName
         return [
             new static('smtp', 'SMTP'),
             new static('mailgun', 'Mailgun'),
-            new static('gmail', 'Gmail Api'),
             new static('ms-oauth', 'Microsoft Api'),
         ];
     }

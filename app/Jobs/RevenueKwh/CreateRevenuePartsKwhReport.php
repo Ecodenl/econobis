@@ -11,7 +11,6 @@ namespace App\Jobs\RevenueKwh;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Jobs\JobsCategory;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -42,7 +41,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
     private $userId;
     private Email $email;
 
-    public function __construct($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId, Email $email)
+    public function __construct($distributionPartsKwhId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, $userId, $email)
     {
         $this->distributionPartsKwhId = $distributionPartsKwhId;
         $distributionPartsKwh = RevenueDistributionPartsKwh::find($distributionPartsKwhId);
@@ -80,7 +79,7 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
             $this->subject,
             $this->distributionPartsKwhId,
             $this->distributionId,
-            DocumentTemplate::find($this->documentTemplateId),
+            ($this->documentTemplateId ? DocumentTemplate::find($this->documentTemplateId) : null),
             EmailTemplate::find($this->emailTemplateId),
             $this->showOnPortal,
         );
@@ -109,8 +108,8 @@ class CreateRevenuePartsKwhReport implements ShouldQueue
             $distributionKwh = RevenueDistributionKwh::find($this->distributionId);
             $emailAddress = optional(optional($distributionKwh)->contact)->primaryEmailAddress;
             if($emailAddress){
-                $this->email->contacts()->attach($emailAddress->contact_id);
-                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
+                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
                 $this->email->save();
             }
         }

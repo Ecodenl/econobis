@@ -1,3 +1,2 @@
-// Gmail en MS graph Api Settings constants constants
-export * from './GmailApiSettings';
+// MS graph Api Settings constants constants
 export * from './MsOauthApiSettings';

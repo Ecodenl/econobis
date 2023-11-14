@@ -37,12 +37,18 @@ class ParticipantReportMail extends Mailable
      */
     public function build()
     {
-        $this->subject($this->email->subject)
-            ->view('emails.generic')
-            ->text('emails.genericText')
-            ->attach(Storage::disk('documents')->path($this->document->filename), [
-                'as' => $this->document->name
-            ]);
+        if($this->document){
+            $this->subject($this->email->subject)
+                ->view('emails.generic')
+                ->text('emails.genericText')
+                ->attach(Storage::disk('documents')->path($this->document->filename), [
+                    'as' => $this->document->name
+                ]);
+        } else {
+            $this->subject($this->email->subject)
+                ->view('emails.generic')
+                ->text('emails.genericText');
+        }
 
         if ($this->defaultAttachmentDocumentId != null) {
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);

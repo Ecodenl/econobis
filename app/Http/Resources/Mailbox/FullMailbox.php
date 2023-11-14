@@ -57,7 +57,7 @@ class FullMailbox extends JsonResource
             'primary' => $this->primary,
             'linkContactFromEmailToAddress' => $this->link_contact_from_email_to_address,
             'emailMarkAsSeen' => $this->email_mark_as_seen,
-            'gmailApiSettings' => new FullGmailApiSettings($this->whenLoaded('gmailApiSettings')),
+            'oauthApiSettings' => new FullOauthApiSettings($this->whenLoaded('oauthApiSettings')),
             'inboundMailgunEmail' => $this->inbound_mailgun_email,
         ];
     }

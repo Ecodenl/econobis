@@ -14,6 +14,7 @@ use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
 use League\Csv\Reader;
 use Illuminate\Support\Facades\Log;
+use App\Eco\Address\Address;
 
 class ContactCSVHelper
 {
@@ -370,49 +371,86 @@ class ContactCSVHelper
         $headers = true;
 
         $contactTableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
-        $freeFieldsFields = FreeFieldsField::where('table_id', $contactTableId)->where('exportable', 1)->orderBy('sort_order')->get();
+        $addressTableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+        $freeFieldsFieldsContact = FreeFieldsField::where('table_id', $contactTableId)->where('exportable', 1)->orderBy('sort_order')->get();
+        $freeFieldsFieldsAddress = FreeFieldsField::where('table_id', $addressTableId)->where('exportable', 1)->orderBy('sort_order')->get();
 
-        foreach ($this->contacts->chunk(500) as $chunk) {
+        $contactIds = $this->contacts->pluck('id');
+
+        $addresses = Address::whereIn('contact_id', $contactIds)->where('type_id', '!=', 'old')->orderBy('contact_id')->get();
+        //Log::info($contactIds);
+        foreach ($addresses->chunk(500) as $chunk) {
             $chunk->load([
-                'person',
+                'contact',
+                'contact.person',
+                'contact.freeFieldsFieldRecords',
                 'freeFieldsFieldRecords',
-                'addresses',
-                'addresses.freeFieldsFieldRecords',
             ]);
-Log::info($chunk);
-            $this->csvExporter->beforeEach(function ($contact) {
+
+            //Log::info($chunk);
+
+            $this->csvExporter->beforeEach(function ($address) {
                 // person/organisation fields
-                if ($contact->type_id === 'person') {
-                    $contact->first_name = $contact->person->first_name;
-                    $contact->last_name_prefix = $contact->person->last_name_prefix;
-                    $contact->last_name = $contact->person->last_name;
+                if ($address->contact->type_id === 'person') {
+                    $address->contact->first_name = $address->contact->person->first_name;
+                    $address->contact->last_name_prefix = $address->contact->person->last_name_prefix;
+                    $address->contact->last_name = $address->contact->person->last_name;
                 }
 
-                $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->get();
+                //Contact free fields
+                $freeFieldsFieldContactRecords = $address->contact->freeFieldsFieldRecords()->get();
+                foreach ($freeFieldsFieldContactRecords as $freeFieldsFieldContactRecord) {
+                    $freeFieldsFieldName = 'free_fields_field_contact_name_' . $freeFieldsFieldContactRecord->field_id;
 
-                foreach ($freeFieldsFieldRecords as $freeFieldsFieldRecord) {
-                    $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsFieldRecord->field_id;
-
-                    switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
+                    switch ($freeFieldsFieldContactRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
                         case 'boolean':
-                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
+                            $address->$freeFieldsFieldName = $freeFieldsFieldContactRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
                             break;
                         case 'text_short':
                         case 'text_long':
-                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_text;
+                            $address->$freeFieldsFieldName = $freeFieldsFieldContactRecord->field_value_text;
                             break;
                         case 'int':
-                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_int;
+                            $address->$freeFieldsFieldName = $freeFieldsFieldContactRecord->field_value_int;
                             break;
                         case 'double_2_dec':
                         case 'amount_euro':
-                            $contact->$freeFieldsFieldName = number_format($freeFieldsFieldRecord->field_value_double, 2, ',', '');
+                            $address->$freeFieldsFieldName = number_format($freeFieldsFieldContactRecord->field_value_double, 2, ',', '');
                             break;
                         case 'date':
-                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;
+                            $address->$freeFieldsFieldName = $freeFieldsFieldContactRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldContactRecord->field_value_datetime)->format('d-m-Y') : null;
                             break;
                         case 'datetime':
-                            $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y H:i') : null;
+                            $address->$freeFieldsFieldName = $freeFieldsFieldContactRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldContactRecord->field_value_datetime)->format('d-m-Y H:i') : null;
+                            break;
+                    }
+                }
+
+                //Address free fields
+                $freeFieldsFieldAddressRecords = $address->freeFieldsFieldRecords()->get();
+                foreach ($freeFieldsFieldAddressRecords as $freeFieldsFieldAddressRecord) {
+                    $freeFieldsFieldName = 'free_fields_field_address_name_' . $freeFieldsFieldAddressRecord->field_id;
+
+                    switch ($freeFieldsFieldAddressRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
+                        case 'boolean':
+                            $address->$freeFieldsFieldName = $freeFieldsFieldAddressRecord->field_value_boolean == 1 ? 'Ja' : 'Nee';
+                            break;
+                        case 'text_short':
+                        case 'text_long':
+                            $address->$freeFieldsFieldName = $freeFieldsFieldAddressRecord->field_value_text;
+                            break;
+                        case 'int':
+                            $address->$freeFieldsFieldName = $freeFieldsFieldAddressRecord->field_value_int;
+                            break;
+                        case 'double_2_dec':
+                        case 'amount_euro':
+                            $address->$freeFieldsFieldName = number_format($freeFieldsFieldAddressRecord->field_value_double, 2, ',', '');
+                            break;
+                        case 'date':
+                            $address->$freeFieldsFieldName = $freeFieldsFieldAddressRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldAddressRecord->field_value_datetime)->format('d-m-Y') : null;
+                            break;
+                        case 'datetime':
+                            $address->$freeFieldsFieldName = $freeFieldsFieldAddressRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldAddressRecord->field_value_datetime)->format('d-m-Y H:i') : null;
                             break;
                     }
                 }
@@ -420,19 +458,40 @@ Log::info($chunk);
             });
 
             $mapping = [
-                'id' => 'ID',
-                'number' => '#',
-                'first_name' => 'Voornaam',
-                'last_name_prefix' => 'Tussenvoegsel',
-                'last_name' => 'Achternaam',
+                'contact.id' => 'ID',
+                'contact.number' => '#',
+                'contact.first_name' => 'Voornaam',
+                'contact.last_name_prefix' => 'Tussenvoegsel',
+                'contact.last_name' => 'Achternaam',
+
+                'postal_code' => 'Postcode',
+                'number' => 'Nummer',
+                'addition' => 'Toevoeging',
+                'street' => 'Adres',
+                'city' => 'Plaats',
+                'type_id' => 'Type',
+                'shared_area_name' => 'Buurt',
+                'country.name' => 'Land',
+                'primary' => 'Primair',
+                'ean_electricity' => 'EAN elektriciteit',
+                'ean_gas' => 'EAN gas',
             ];
 
-            $freeFieldsFieldsMapping = [];
-            foreach($freeFieldsFields as $freeFieldsField) {
-                $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsField->id;
-                $freeFieldsFieldsMapping[$freeFieldsFieldName] = $freeFieldsField->field_name;
+            //Contact free fields
+            $freeFieldsFieldsContactMapping = [];
+            foreach($freeFieldsFieldsContact as $freeFieldsFieldContact) {
+                $freeFieldsFieldName = 'free_fields_field_contact_name_' . $freeFieldsFieldContact->id;
+                $freeFieldsFieldsContactMapping[$freeFieldsFieldName] = $freeFieldsFieldContact->field_name;
             }
-            $mapping = array_merge($mapping, $freeFieldsFieldsMapping);
+            $mapping = array_merge($mapping, $freeFieldsFieldsContactMapping);
+
+            //Address free fields
+            $freeFieldsFieldsAddressMapping = [];
+            foreach($freeFieldsFieldsAddress as $freeFieldsFieldAddress) {
+                $freeFieldsFieldName = 'free_fields_field_address_name_' . $freeFieldsFieldAddress->id;
+                $freeFieldsFieldsAddressMapping[$freeFieldsFieldName] = $freeFieldsFieldAddress->field_name;
+            }
+            $mapping = array_merge($mapping, $freeFieldsFieldsAddressMapping);
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);
             $headers = false;

@@ -6,8 +6,6 @@ import Panel from '../../../../components/panel/Panel';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import PanelBody from '../../../../components/panel/PanelBody';
 import moment from 'moment/moment';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import { REDIRECT_URL_GMAIL } from '../../../../constants';
 import { REDIRECT_URL_MS_OAUTH } from '../../../../constants';
 
 function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
@@ -33,7 +31,7 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
         primary,
         linkContactFromEmailToAddress,
         emailMarkAsSeen,
-        gmailApiSettings,
+        oauthApiSettings,
         // inboundMailgunEnabled,
         inboundMailgunEmail,
     } = mailboxDetails;
@@ -153,43 +151,6 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                     </>
                 )}
 
-                {(incomingServerType === 'gmail' || outgoingServerType === 'gmail') && (
-                    <>
-                        <PanelHeader>
-                            <span className="h5">
-                                <strong>Gmail api instellingen</strong>
-                            </span>
-                        </PanelHeader>
-                        <PanelBody>
-                            <div className="row">
-                                <ViewText label={'Project id'} value={gmailApiSettings?.projectId} />
-                                <ViewText label={'Redirect url'} value={REDIRECT_URL_GMAIL} />
-                                {/*<div className="form-group col-sm-6">*/}
-                                {/*    <label className="col-sm-6">Redirect url</label>*/}
-                                {/*    <div className="col-sm-6" style={{ paddingRight: '5px' }} onClick={null}>*/}
-                                {/*        {REDIRECT_URL_GMAIL}*/}
-                                {/*        <CopyToClipboard text={REDIRECT_URL_GMAIL}>*/}
-                                {/*            <a*/}
-                                {/*                className="btn btn-success btn-sm pull-right"*/}
-                                {/*                style={{ top: '5px' }}*/}
-                                {/*                role="button"*/}
-                                {/*                onClick={null}*/}
-                                {/*                title={'Kopieer sleutel'}*/}
-                                {/*            >*/}
-                                {/*               <Icon size={14} icon={copy} />{' '}*/}
-                                {/*            </a>*/}
-                                {/*        </CopyToClipboard>*/}
-                                {/*    </div>*/}
-                                {/*</div>*/}
-                            </div>
-                            <div className="row">
-                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
-                                <ViewText label={'Client secret'} value={gmailApiSettings?.clientSecret} />
-                            </div>
-                        </PanelBody>
-                    </>
-                )}
-
                 {(incomingServerType === 'ms-oauth' || outgoingServerType === 'ms-oauth') && (
                     <>
                         <PanelHeader>
@@ -199,15 +160,15 @@ function MailboxDetailsFormGeneralView({ mailboxDetails, switchToEdit }) {
                         </PanelHeader>
                         <PanelBody>
                             <div className="row">
-                                <ViewText label={'Client id'} value={gmailApiSettings?.clientId} />
-                                <ViewText label={'Object ID'} value={gmailApiSettings?.projectId} />
+                                <ViewText label={'Client id'} value={oauthApiSettings?.clientId} />
+                                <ViewText label={'Object ID'} value={oauthApiSettings?.projectId} />
                             </div>
                             <div className="row">
                                 <ViewText label={'Redirect url'} value={REDIRECT_URL_MS_OAUTH} />
                                 <ViewText label={'Client secret waarde'} value="••••••••••" />
                             </div>
                             <div className="row">
-                                <ViewText label={'Tenant ID'} value={gmailApiSettings?.tenantId} />
+                                <ViewText label={'Tenant ID'} value={oauthApiSettings?.tenantId} />
                             </div>
                         </PanelBody>
                     </>

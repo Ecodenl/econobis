@@ -38,7 +38,7 @@ class MailgunMailController
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',
             'imap_id' => null,
-            'gmail_message_id' => null,
+            'msoauth_message_id' => null,
             'message_id' => $request->input('Message-Id'),
             'status' => 'unread'
         ]);

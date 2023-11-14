@@ -35,32 +35,16 @@ const ParticipantDetailsUndoTerminate = ({
 
     return (
         <>
-            {participantProject.participantInDefinitiveRevenue ? (
-                <Modal
-                    buttonConfirmText="Deelname beëindiging ongedaan maken"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    showConfirmAction={false}
-                    title="Beëindigen ongedaan maken"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>
-                        Deelname komt nog voor in niet verwerkte definitieve opbrengstverdeling. Beëindiging ongedaan
-                        maken niet mogelijk.
-                    </p>
-                </Modal>
-            ) : (
-                <Modal
-                    buttonConfirmText="Deelname beëindiging ongedaan maken"
-                    buttonClassName={'btn-danger'}
-                    closeModal={closeDeleteItemModal}
-                    confirmAction={() => confirmAction()}
-                    title="Beëindigen ongedaan maken"
-                    modalClassName={'modal-lg'}
-                >
-                    <p>Weet u zeker dat u deze beëindigde deelname weer ongedaan wilt maken?</p>
-                </Modal>
-            )}
+            <Modal
+                buttonConfirmText="Deelname beëindiging ongedaan maken"
+                buttonClassName={'btn-danger'}
+                closeModal={closeDeleteItemModal}
+                confirmAction={() => confirmAction()}
+                title="Beëindigen ongedaan maken"
+                modalClassName={'modal-lg'}
+            >
+                <p>Weet u zeker dat u deze beëindigde deelname weer ongedaan wilt maken?</p>
+            </Modal>
         </>
     );
 };

@@ -252,7 +252,7 @@ class ParticipantProject extends Model
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
-        return Carbon::parse($dateTerminatedAllowedFrom)->subDay(1)->format('Y-m-d');
+        return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
 
 

@@ -160,8 +160,9 @@ class ContactsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
 
-            ContactsAPI.getEnergySuppliersCSV({ filters, extraFilters, sorts })
+            ContactsAPI.getEnergySuppliersCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
                     fileDownload(
                         payload.data,

@@ -13,6 +13,7 @@ use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsTable;
 use Carbon\Carbon;
 use League\Csv\Reader;
+use Illuminate\Support\Facades\Log;
 
 class ContactCSVHelper
 {
@@ -375,8 +376,10 @@ class ContactCSVHelper
             $chunk->load([
                 'person',
                 'freeFieldsFieldRecords',
+                'addresses',
+                'addresses.freeFieldsFieldRecords',
             ]);
-
+Log::info($chunk);
             $this->csvExporter->beforeEach(function ($contact) {
                 // person/organisation fields
                 if ($contact->type_id === 'person') {
@@ -387,7 +390,7 @@ class ContactCSVHelper
 
                 $freeFieldsFieldRecords = $contact->freeFieldsFieldRecords()->get();
 
-                foreach($freeFieldsFieldRecords as $freeFieldsFieldRecord) {
+                foreach ($freeFieldsFieldRecords as $freeFieldsFieldRecord) {
                     $freeFieldsFieldName = 'free_fields_field_name_' . $freeFieldsFieldRecord->field_id;
 
                     switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
@@ -403,7 +406,7 @@ class ContactCSVHelper
                             break;
                         case 'double_2_dec':
                         case 'amount_euro':
-                            $contact->$freeFieldsFieldName = number_format($freeFieldsFieldRecord->field_value_double, 2, ',' , '' );
+                            $contact->$freeFieldsFieldName = number_format($freeFieldsFieldRecord->field_value_double, 2, ',', '');
                             break;
                         case 'date':
                             $contact->$freeFieldsFieldName = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('d-m-Y') : null;

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->dropColumn('inbound_mailgun_enabled');
         });
 
-        $emails = Email::all();
+        $emails = Email::whereNotNull('xxx_gmail_message_id')->get();
         foreach ($emails as $email){
             $email->msoauth_message_id = $email->xxx_gmail_message_id;
             $email->save();

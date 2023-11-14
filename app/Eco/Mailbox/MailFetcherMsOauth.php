@@ -81,6 +81,13 @@ class MailFetcherMsOauth
                 }
             } catch (Exception $e) {
                 Log::error('Error mailbox ' . $this->mailbox->id . ' getting user\'s inbox: '.$e->getMessage());
+                if($this->mailbox->login_tries < 5){
+                    $this->mailbox->login_tries += 1;
+//                    Log::info('Poging ' . $this->mailbox->login_tries);
+                } else {
+                    Log::info('Mailbox op inactief gezet na 5 pogingen.');
+                    $this->mailbox->valid = false;
+                }
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
 
@@ -90,6 +97,8 @@ class MailFetcherMsOauth
 //        }
 
         $this->mailbox->date_last_fetched = Carbon::now();
+        $this->mailbox->valid = true;
+        $this->mailbox->login_tries = 0;
         $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
     }

@@ -30,7 +30,7 @@ class EmailJoryResource extends JoryResource
         $this->field('deleted_at')->filterable()->sortable();
         $this->field('folder')->filterable()->sortable();
         $this->field('from')->filterable()->sortable();
-        $this->field('gmail_message_id')->filterable()->sortable();
+        $this->field('msoauth_message_id')->filterable()->sortable();
         $this->field('html_body')->filterable()->sortable();
         $this->field('id')->filterable()->sortable();
         $this->field('imap_id')->filterable()->sortable();

@@ -11,21 +11,16 @@ class PaymentInvoiceCreateViewEmail extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.distributionId !== nextProps.distributionId) {
-            if (nextProps.distributionId) {
-                this.downloadEmail(nextProps.distributionId);
+    componentDidUpdate(prevProps) {
+        if (prevProps.distributionId !== this.props.distributionId) {
+            if (this.props.distributionId) {
+                this.downloadEmail(this.props.distributionId);
             }
         }
     }
 
     downloadEmail(distributionId) {
-        ProjectRevenueAPI.previewEmail(
-            distributionId,
-            this.props.subject,
-            this.props.documentTemplateId,
-            this.props.emailTemplateId
-        ).then(payload => {
+        ProjectRevenueAPI.previewEmail(distributionId, this.props.subject, this.props.emailTemplateId).then(payload => {
             this.setState({
                 email: payload.data,
             });

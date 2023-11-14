@@ -45,6 +45,7 @@ const ResetForm = ({ handleSubmit, email }) => (
                                 errors={errors}
                                 touched={touched}
                                 classNameErrorMessage={'authorization-text'}
+                                type={'password'}
                             />
                         )}
                     </Field>
@@ -60,6 +61,7 @@ const ResetForm = ({ handleSubmit, email }) => (
                                 errors={errors}
                                 touched={touched}
                                 classNameErrorMessage={'authorization-text mb-3'}
+                                type={'password'}
                             />
                         )}
                     </Field>

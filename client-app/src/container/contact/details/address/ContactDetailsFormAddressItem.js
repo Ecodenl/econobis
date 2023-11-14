@@ -12,6 +12,7 @@ import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
+import FreeFields from '../../../../components/freeFields/FreeFields';
 
 class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
@@ -71,7 +72,7 @@ class ContactDetailsFormAddressItem extends Component {
     };
 
     openEdit = () => {
-        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary == true) {
+        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary === true) {
             this.setState({ showEdit: true });
             this.props.setAddressEnergySupplierNewOrEditOpen(true);
         }
@@ -122,8 +123,8 @@ class ContactDetailsFormAddressItem extends Component {
         //         console.log('usedInActiveParticipationInSceOrPcrProject');
         //         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
         if (
-            name == 'typeId' &&
-            value == 'old' &&
+            name === 'typeId' &&
+            value === 'old' &&
             (this.state.address.usedInActiveParticipationInSceOrPcrProject || this.state.address.primary)
         ) {
             this.setState({
@@ -140,8 +141,8 @@ class ContactDetailsFormAddressItem extends Component {
 
         //if this is not the primary address and its used in a non SCE project
         if (
-            name == 'typeId' &&
-            value == 'old' &&
+            name === 'typeId' &&
+            value === 'old' &&
             this.state.address.usedInActiveParticipationNotInSceOrPcrProject &&
             !this.state.address.primary
         ) {
@@ -239,7 +240,7 @@ class ContactDetailsFormAddressItem extends Component {
 
         let postalCodeValid = true;
         if (!validator.isEmpty(address.postalCode + '')) {
-            if (countryId == 'NL') {
+            if (countryId === 'NL') {
                 postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
             } else {
                 postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
@@ -299,22 +300,25 @@ class ContactDetailsFormAddressItem extends Component {
                     addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
                 />
                 {this.props.permissions.updateContactAddress && this.state.showEdit && (
-                    <ContactDetailsFormAddressEdit
-                        numberOfAddresses={this.props.numberOfAddresses}
-                        numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
-                        address={this.state.address}
-                        handleInputChange={this.handleInputChange}
-                        handleInputChangeDate={this.handleInputChangeDate}
-                        handleSubmit={this.handleSubmit}
-                        typeIdError={this.state.errors.typeId}
-                        endDateError={this.state.errors.endDate}
-                        postalCodeError={this.state.errors.postalCode}
-                        numberError={this.state.errors.number}
-                        countryIdError={this.state.errors.countryId}
-                        eanElectricityError={this.state.errors.eanElectricity}
-                        eanGasError={this.state.errors.eanGas}
-                        cancelEdit={this.cancelEdit}
-                    />
+                    <>
+                        <ContactDetailsFormAddressEdit
+                            numberOfAddresses={this.props.numberOfAddresses}
+                            numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
+                            address={this.state.address}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            typeIdError={this.state.errors.typeId}
+                            endDateError={this.state.errors.endDate}
+                            postalCodeError={this.state.errors.postalCode}
+                            numberError={this.state.errors.number}
+                            countryIdError={this.state.errors.countryId}
+                            eanElectricityError={this.state.errors.eanElectricity}
+                            eanGasError={this.state.errors.eanGas}
+                            cancelEdit={this.cancelEdit}
+                        />
+                        <FreeFields table={'addresses'} recordId={this.props.address.id} />
+                    </>
                 )}
                 {this.state.showAddressEnergySupplier && (
                     <AddressDetailsFormAddressEnergySupplier

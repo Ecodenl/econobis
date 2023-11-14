@@ -3,11 +3,10 @@
 namespace App\Eco\ParticipantMutation;
 
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\ProjectValueCourse;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantMutation extends Model
@@ -99,6 +98,25 @@ class ParticipantMutation extends Model
     public function getMollieAmountFormatted()
     {
         return number_format($this->getMollieAmount(), 2, '.', '');
+    }
+    public function getChangeAllowedAttribute()
+    {
+        if($this->participation->date_terminated != null){
+            return false;
+        }
+        $projectRevenueDistributions = $this->participation->projectRevenueDistributions()->whereNotIn('status', ['concept'])
+            ->whereHas('revenue', function ($query) {
+                $query->where('date_begin', '<=', Carbon::parse($this->date_entry)->format('Y-m-d'));
+                $query->where('date_end', '>=', Carbon::parse($this->date_entry)->format('Y-m-d'));
+            });
+        $revenueDistributionKwh = $this->participation->revenueDistributionKwh()->whereNotIn('status', ['concept'])
+            ->whereHas('distributionPartsKwh', function ($query) {
+                $query->whereHas('partsKwh', function ($query) {
+                    $query->where('date_begin', '<=', Carbon::parse($this->date_entry)->format('Y-m-d'));
+                    $query->where('date_end', '>=', Carbon::parse($this->date_entry)->format('Y-m-d'));
+                });
+            });
+        return $projectRevenueDistributions->count() == 0 && $revenueDistributionKwh->count() == 0;
     }
 
 }

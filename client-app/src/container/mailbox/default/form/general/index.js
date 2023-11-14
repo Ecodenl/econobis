@@ -14,10 +14,8 @@ import { MailboxValidationImap } from './Validation';
 import { MailboxValidationSmtp } from './Validation';
 import { MailboxValidationPassword } from './Validation';
 import { MailboxValidationMailgun } from './Validation';
-import { MailboxValidationGmail } from './Validation';
 import { MailboxValidationMsOauth } from './Validation';
 import { MailboxValidationClientSecret } from './Validation';
-import MailboxDefaultFormGeneralGmailApiSettings from './GmailApiSettings';
 import ViewText from '../../../../../components/form/ViewText';
 import moment from 'moment';
 import MailboxDefaultFormGeneralMsOauthApiSettings from './MsOauthApiSettings';
@@ -66,12 +64,6 @@ function MailboxDefaultFormGeneral({
         }
         if (currentOutgoingServerType === 'mailgun') {
             validationSchema = validationSchema.concat(MailboxValidationMailgun);
-        }
-        if (currentIncomingServerType === 'gmail' || currentOutgoingServerType === 'gmail') {
-            validationSchema = validationSchema.concat(MailboxValidationGmail);
-            if (isNew) {
-                validationSchema = validationSchema.concat(MailboxValidationClientSecret);
-            }
         }
         if (currentIncomingServerType === 'ms-oauth' || currentOutgoingServerType === 'ms-oauth') {
             validationSchema = validationSchema.concat(MailboxValidationMsOauth);
@@ -342,15 +334,6 @@ function MailboxDefaultFormGeneral({
                     </>
                 )}
 
-                {(values.incomingServerType === 'gmail' || values.outgoingServerType === 'gmail') && (
-                    <MailboxDefaultFormGeneralGmailApiSettings
-                        values={values}
-                        errors={errors}
-                        touched={touched}
-                        handleChange={handleChange}
-                        handleBlur={handleBlur}
-                    />
-                )}
                 {(values.incomingServerType === 'ms-oauth' || values.outgoingServerType === 'ms-oauth') && (
                     <MailboxDefaultFormGeneralMsOauthApiSettings
                         values={values}

@@ -15,6 +15,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
+import FreeFields from '../../../components/freeFields/FreeFields';
 
 const DefaultContactPersonalEdit = function({
     portalSettings,
@@ -759,6 +760,7 @@ const DefaultContactPersonalEdit = function({
                     </>
                 ) : null}
             </Col>
+            <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={true} />
         </Row>
     );
 };

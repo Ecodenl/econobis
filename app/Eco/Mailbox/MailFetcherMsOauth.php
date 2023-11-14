@@ -69,7 +69,7 @@ class MailFetcherMsOauth
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
                 $filter = '$filter=receivedDateTime ge ' . $dateLastFetched . 'T00:00:00Z';
-                $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
+                $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
                 $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(200);
@@ -140,15 +140,13 @@ class MailFetcherMsOauth
 // todo oauth WM: nog iets met response doen ?
 //        if (isset($this->appClient['message']) && $this->appClient['message'] == 'ms_oauth_unauthorised') {
 //            Log::info($this->appClient);
-//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
 //        }
 //
 //        // Todo improve failure message
-//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
-//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'ms_oauth_unauthorised') {
+//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
 //        }
-//
-//        $this->service = new Google_Service_Gmail($client);
     }
 
     private function fetchEmail(Message $message)
@@ -238,7 +236,7 @@ class MailFetcherMsOauth
             'date_sent' => $sentDateTime,
             'folder' => 'inbox',
             'imap_id' => null,
-            'gmail_message_id' => $message->getId(),
+            'msoauth_message_id' => $message->getId(),
             'message_id' => $message->getInternetMessageId(),
             'status' => 'unread'
         ]);
@@ -254,7 +252,7 @@ class MailFetcherMsOauth
 
     private function storeAttachments(string $messageId, Email $email)
     {
-        $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/messages/'.$messageId.'/attachments';
+        $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/messages/'.$messageId.'/attachments';
         $requestResult = $this->appClient->createCollectionRequest('GET', $requestUrl)
             ->setReturnType(Attachment::class);
         if($requestResult){

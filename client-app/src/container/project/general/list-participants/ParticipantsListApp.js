@@ -73,7 +73,7 @@ class ParticipantsListApp extends Component {
 
             payload.forEach(function(template) {
                 // if (template.group == 'participation' || template.group == 'revenue') {
-                    templates.push({ id: template.id, name: template.name });
+                templates.push({ id: template.id, name: template.name });
                 // }
             });
 
@@ -256,16 +256,17 @@ class ParticipantsListApp extends Component {
     checkParticipantReport = () => {
         let error = false;
 
-        if (validator.isEmpty(this.state.templateId)) {
-            error = true;
-            this.setState({
-                templateIdError: true,
-            });
-        } else {
-            this.setState({
-                templateIdError: false,
-            });
-        }
+        // document template not longer required
+        // if (validator.isEmpty(this.state.templateId)) {
+        //     error = true;
+        //     this.setState({
+        //         templateIdError: true,
+        //     });
+        // } else {
+        //     this.setState({
+        //         templateIdError: false,
+        //     });
+        // }
 
         if (validator.isEmpty(this.state.emailTemplateId)) {
             error = true;
@@ -433,7 +434,7 @@ class ParticipantsListApp extends Component {
                                             value={this.state.templateId}
                                             options={this.state.templates}
                                             onChangeAction={this.handleInputChange}
-                                            required={'required'}
+                                            // required={'required'}
                                             error={this.state.templateIdError}
                                         />
                                     </div>

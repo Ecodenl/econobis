@@ -78,31 +78,25 @@ const RevenueDistributionFormView = props => {
         >
             {props.showCheckboxList ? (
                 props.createType !== 'createInvoices' ? (
-                    props.distributionIds.includes(id) ? (
-                        <div className="col-sm-1">
-                            <input
-                                type="checkbox"
-                                name={id}
-                                onChange={props.toggleDistributionCheck}
-                                checked={props.distributionIds.includes(id)}
-                            />
-                        </div>
-                    ) : (
-                        <div className="col-sm-1"></div>
-                    )
+                    <div className="col-sm-1">
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={props.toggleDistributionCheck}
+                            checked={props.distributionIds.includes(id)}
+                        />
+                    </div>
+                ) : props.distributionIdsTotalToProcess.includes(id) ? (
+                    <div className="col-sm-1">
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={props.toggleDistributionCheck}
+                            checked={props.distributionIds.includes(id)}
+                        />
+                    </div>
                 ) : (
-                    props.distributionIdsTotalToProcess.includes(id) ? (
-                        <div className="col-sm-1">
-                            <input
-                                type="checkbox"
-                                name={id}
-                                onChange={props.toggleDistributionCheck}
-                                checked={props.distributionIds.includes(id)}
-                            />
-                        </div>
-                    ) : (
-                        <div className="col-sm-1"></div>
-                    )
+                    <div className="col-sm-1"></div>
                 )
             ) : null}
 

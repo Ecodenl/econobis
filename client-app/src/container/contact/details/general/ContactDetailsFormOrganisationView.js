@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
-import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 const ContactDetailsFormOrganisationView = props => {
     const {

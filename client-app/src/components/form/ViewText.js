@@ -8,7 +8,6 @@ const ViewText = props => {
     const { label, className, id, value, link, hidden, name, textToolTip, labelSize, valueSize, url } = props;
 
     if (link.length > 0) {
-        console.log(link);
         return (
             <div className={className} style={hidden ? { display: 'none' } : {}}>
                 <label htmlFor={id} className={labelSize}>

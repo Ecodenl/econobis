@@ -4,7 +4,7 @@ import FreeFieldsView from './FreeFieldsView';
 import FreeFieldsEdit from './FreeFieldsEdit';
 
 function FreeFields({ freeFieldsFieldRecords, showEdit }) {
-    return freeFieldsFieldRecords.length > 0 ? (
+    return freeFieldsFieldRecords && freeFieldsFieldRecords.length > 0 ? (
         <>
             {showEdit ? (
                 <FreeFieldsEdit freeFieldsFieldRecords={freeFieldsFieldRecords} />

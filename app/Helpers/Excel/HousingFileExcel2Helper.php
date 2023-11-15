@@ -76,7 +76,7 @@ class HousingFileExcel2Helper
         $headerData[] = 'Aantal bewoners';
         $headerData[] = 'Stooktemperatuur';
         $headerData[] = 'Verbruik gas';
-        $headerData[] = 'Verbruik electriciteit';
+        $headerData[] = 'Verbruik elektriciteit';
 
         foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
             $headerData[] = $housingFileHoomLinkStatus->label;

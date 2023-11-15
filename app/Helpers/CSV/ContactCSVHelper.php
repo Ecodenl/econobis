@@ -317,7 +317,7 @@ class ContactCSVHelper
                 'energy_supplier_name_electricity' => 'Energieleverancier (elektra)',
                 'es_number_electricity' => 'Klantnummer (elektra)',
                 'energy_member_since_electricity' => 'Klant sinds (elektra)',
-                'ean_electricity' => 'EAN electriciteit',
+                'ean_electricity' => 'EAN elektriciteit',
                 'energy_supplier_name_gas' => 'Energieleverancier (gas)',
                 'es_number_gas' => 'Klantnummer (gas)',
                 'energy_member_since_gas' => 'Klant sinds (gas)',

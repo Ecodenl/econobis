@@ -13,7 +13,7 @@ class SeedVoorDenLastNamePrefixeTable extends Migration
     public function up()
     {
         $prefixes = [
-            'Voor den',
+            'voor den',
         ];
 
         foreach ($prefixes as $prefix) {

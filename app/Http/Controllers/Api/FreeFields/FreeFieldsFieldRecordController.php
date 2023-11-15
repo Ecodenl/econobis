@@ -8,9 +8,12 @@
 
 namespace App\Http\Controllers\Api\FreeFields;
 
+use App\Eco\Address\Address;
+use App\Eco\Contact\Contact;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
+use App\Eco\Project\Project;
 use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -20,10 +23,23 @@ class FreeFieldsFieldRecordController extends ApiController
 {
     public function getValues(Request $request)
     {
-//        $this->authorize('view', FreeFieldsField::class);
-
         $table = $request->get('table');
         $recordId = $request->get('recordId');
+
+//        $this->authorize('view', FreeFieldsField::class);
+        switch ($table){
+            case 'contacts':
+                $this->authorize('view', Contact::find($recordId));
+                break;
+            case 'addresses':
+                $this->authorize('view', Address::find($recordId));
+                break;
+            case 'projects':
+                $this->authorize('view', Project::class);
+                break;
+            default:
+                abort(403, 'Niet geautoriseerd.');
+        }
 
         return $this->getFreeFieldsValues(false, $table, $recordId);
     }
@@ -36,8 +52,25 @@ class FreeFieldsFieldRecordController extends ApiController
     public function updateValues(Request $request)
     {
 
+        $table = $request->get('data')['table'];
+//        Log::info('test update freefields table');
+//        Log::info($table);
         $recordId = $request->get('data')['recordId'];
 //        $this->authorize('view', FreeFieldsField::class);
+        switch ($table){
+            case 'contacts':
+                $this->authorize('update', Contact::find($recordId));
+                break;
+            case 'addresses':
+                $this->authorize('update', Address::find($recordId));
+                break;
+            case 'projects':
+                $this->authorize('manage', Project::class);
+                break;
+            default:
+                abort(403, 'Niet geautoriseerd.');
+        }
+
 
         foreach($request->get('data')['records'] as $record) {
 

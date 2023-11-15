@@ -76,8 +76,8 @@ export default {
             .then(response => response.data);
     },
 
-    updateFreeFieldsFieldRecords: (data, recordId) => {
+    updateFreeFieldsFieldRecords: (data, table, recordId) => {
         const requestUrl = `${URL_API}/api/free-fields-field-records/update-values`;
-        return axiosInstance.post(requestUrl, { data: { records: data, recordId: recordId } });
+        return axiosInstance.post(requestUrl, { data: { records: data, table: table, recordId: recordId } });
     },
 };

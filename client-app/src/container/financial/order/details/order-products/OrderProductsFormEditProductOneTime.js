@@ -281,7 +281,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 }
                                 name={'orderPrice'}
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     this.state.orderPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: this.state.product.currentPrice.priceNumberOfDecimals,
@@ -304,7 +304,7 @@ class OrderProductsFormNewProductOneTime extends Component {
                                 label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     this.state.totalPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,

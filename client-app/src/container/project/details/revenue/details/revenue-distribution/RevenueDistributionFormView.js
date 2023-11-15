@@ -113,7 +113,7 @@ const RevenueDistributionFormView = props => {
                     <div className="col-sm-1">{deliveredTotal && deliveredTotal}</div>
                     <div className="col-sm-2">
                         {kwhReturn
-                            ? '€' +
+                            ? '€ ' +
                               kwhReturn.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                             : ''}
                     </div>

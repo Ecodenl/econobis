@@ -462,7 +462,7 @@ class OrderDetailsFormGeneralEdit extends Component {
                             <InputText
                                 label="Totaal bedrag incl. BTW"
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     this.props.orderDetails.totalInclVatInclReductionPerYear.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,

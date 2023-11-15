@@ -290,7 +290,7 @@ class RevenuesKwhHelper
         // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
         if(!$addressEnergySupplier) {
             $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
-            $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+            $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
             $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
             $addressEnergySupplierData = [
                 'address_id' => $distributionKwh->participation->address_id,
@@ -429,7 +429,7 @@ class RevenuesKwhHelper
             // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
             if(!$addressEnergySupplier){
                 $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
-                $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+                $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
                 $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
 
                 // todo WM: hier direct onbekende energysupplier toevoegen aan addressEnergySupplier

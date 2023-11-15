@@ -20,7 +20,7 @@ class FreeFieldsFieldRecordController extends ApiController
 {
     public function getValues(Request $request)
     {
-        $this->authorize('view', FreeFieldsField::class);
+//        $this->authorize('view', FreeFieldsField::class);
 
         $table = $request->get('table');
         $recordId = $request->get('recordId');
@@ -37,9 +37,7 @@ class FreeFieldsFieldRecordController extends ApiController
     {
 
         $recordId = $request->get('data')['recordId'];
-//        Log::info(json_encode($request->get('data')['recordId']));
-//        Log::info(json_encode($request->get('data')['records']));
-        $this->authorize('view', FreeFieldsField::class);
+//        $this->authorize('view', FreeFieldsField::class);
 
         foreach($request->get('data')['records'] as $record) {
 

@@ -460,6 +460,7 @@ class ContactCSVHelper
             $mapping = [
                 'contact.id' => 'ID',
                 'contact.number' => '#',
+                'contact.full_name' => 'Naam',
                 'contact.first_name' => 'Voornaam',
                 'contact.last_name_prefix' => 'Tussenvoegsel',
                 'contact.last_name' => 'Achternaam',

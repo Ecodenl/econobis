@@ -36,12 +36,12 @@ class processCommandRunsToShared extends Command
     /**
      * Execute the console command.
      *
-     * @return mixed
+     * @return void
      */
-    public function handle()
+    public function handle(): void
     {
         // delete all local records that are already created in shared
-//        CommandRun::where('created_in_shared', true)->delete();
+        CommandRun::where('created_in_shared', true)->delete();
 
         // create all local records that are not created yet in shared
         foreach (CommandRun::where('created_in_shared', false)->get() as $commandRun) {

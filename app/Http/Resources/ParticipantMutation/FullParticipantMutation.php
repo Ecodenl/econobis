@@ -63,6 +63,7 @@ class FullParticipantMutation extends JsonResource
                 'isPaidByMollie' => $this->is_paid_by_mollie,
                 'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
                 'econobisPaymentLink' => $this->econobis_payment_link,
+                'changeAllowed' => $this->change_allowed,
             ];
     }
 }

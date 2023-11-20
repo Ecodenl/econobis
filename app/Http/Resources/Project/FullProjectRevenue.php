@@ -44,6 +44,7 @@ class FullProjectRevenue extends JsonResource
                 'kwhEndLow' => $this->kwh_end_low,
                 'kwhResult' => $this->kwh_result,
                 'revenue' => $this->revenue,
+                'amountRevenue' => $this->amount_revenue,
                 'datePayed' => $this->date_payed,
                 'payPercentage' => $this->pay_percentage,
                 'payAmount' => $this->pay_amount,
@@ -55,9 +56,7 @@ class FullProjectRevenue extends JsonResource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'project' => FullProject::make($this->whenLoaded('project')),
-                'distribution' => FullProjectRevenueDistribution::collection($this->whenLoaded('distribution')),
                 'payoutKwh' => $this->payout_kwh,
-                'participantInDefinitiveRevenue' => $this->participant ? $this->participant->participantInDefinitiveRevenue : false,
             ];
     }
 }

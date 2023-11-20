@@ -20,7 +20,7 @@ class ParticipantReportCreateViewPdf extends Component {
     }
 
     downloadFile(participantId, i = 0) {
-        ParticipantsProjectAPI.previewPDF(this.props.documentTemplateId, this.props.emailTemplateId, participantId)
+        ParticipantsProjectAPI.previewPDF(this.props.documentTemplateId, participantId)
             .then(payload => {
                 this.setState({
                     file: payload.data,

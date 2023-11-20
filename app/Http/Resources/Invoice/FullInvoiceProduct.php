@@ -28,7 +28,7 @@ class FullInvoiceProduct extends JsonResource
                 $start = $this->date_start;
                 $end = $this->invoice->addDurationToDate(Carbon::parse($this->date_start));
             }
-            $period = Carbon::parse($start)->formatLocalized('%e %B %Y') . ' t/m ' . Carbon::parse($end)->subDay()->formatLocalized('%e %B %Y');
+            $period = Carbon::parse($start)->isoFormat('D MMMM YYYY') . ' t/m ' . Carbon::parse($end)->subDay()->isoFormat('D MMMM YYYY');
         }
 
         return

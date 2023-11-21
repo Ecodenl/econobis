@@ -4,9 +4,11 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
+import FreeFields from '../../../components/freeFields/FreeFields';
 
 function DefaultContactPersonalView({ portalSettings, initialContact }) {
     const {
+        id,
         person = {},
         emailCorrespondence,
         emailInvoice,
@@ -19,6 +21,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
         dateDidAgreeAvg,
         number,
         isParticipantPcrProject,
+        freeFieldsFieldRecords,
     } = initialContact;
     return (
         <Row>
@@ -109,9 +112,9 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 </Row>
                 {isParticipantPcrProject ? (
                     <>
-                        <FormLabel className={'field-label'}>EAN nummer electriciteit</FormLabel>
+                        <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
                         <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer electriciteit'}>
+                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer elektriciteit'}>
                                 {primaryAddress.eanElectricity}
                             </TextBlock>
                         </Row>
@@ -201,6 +204,7 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                     ''
                 )}
             </Col>
+            <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
         </Row>
     );
 }

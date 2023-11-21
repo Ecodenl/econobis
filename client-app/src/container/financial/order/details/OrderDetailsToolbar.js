@@ -39,9 +39,18 @@ class OrderToolbar extends Component {
                         {!this.props.orderDetails.canCreateInvoice && (
                             <ButtonIcon iconName={'eye'} onClickAction={this.preview} />
                         )}
-                        {this.props.orderDetails.canCreateInvoice && (
-                            <ButtonText buttonText={'Preview concept nota'} onClickAction={this.newInvoice} />
-                        )}
+                        {this.props.orderDetails.canCreateInvoice &&
+                            this.props.orderDetails.orderProducts.length > 0 && (
+                                <ButtonText buttonText={'Preview concept nota'} onClickAction={this.newInvoice} />
+                            )}
+                        {this.props.orderDetails.canCreateInvoice &&
+                            this.props.orderDetails.orderProducts.length == 0 && (
+                                <ButtonText
+                                    buttonText={'Preview concept nota'}
+                                    disabled
+                                    title={'Deze order heeft nog geen orderregels'}
+                                />
+                            )}
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>

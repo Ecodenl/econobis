@@ -76,6 +76,7 @@ function ChangeAccountPassword() {
                                         placeholder={'Nieuw wachtwoord'}
                                         errors={errors}
                                         touched={touched}
+                                        type={'password'}
                                     />
                                 )}
                             </Field>
@@ -93,6 +94,7 @@ function ChangeAccountPassword() {
                                         placeholder={'Herhaal nieuw wachtwoord'}
                                         errors={errors}
                                         touched={touched}
+                                        type={'password'}
                                     />
                                 )}
                             </Field>

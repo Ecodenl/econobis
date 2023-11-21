@@ -33,7 +33,6 @@ function MutationFormEditDeposit({
     errorMessage,
     buttonText,
     participantProjectDateRegister,
-    participantInDefinitiveRevenue,
     participantBelongsToMembershipGroup,
     participantChoiceMembership,
     projectDateInterestBearingKwh,
@@ -131,7 +130,7 @@ function MutationFormEditDeposit({
         // voorwaarde voor niet meer wijzigen:
         // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
         //   nb: indien in definitieve waardestaat dan is hier readOnly al true
-        if (readOnly || (participantMutationFromProps.status.codeRef === 'final' && participantInDefinitiveRevenue)) {
+        if (readOnly || participantMutationFromProps.status.codeRef === 'final') {
             return participantMutationFromProps.transactionCostsAmount
                 ? participantMutationFromProps.transactionCostsAmount
                 : 0;
@@ -268,7 +267,6 @@ function MutationFormEditDeposit({
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
-                    participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                     disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
@@ -323,7 +321,6 @@ MutationFormEditDeposit.propTypes = {
     buttonText: PropTypes.string,
     handleSubmit: PropTypes.any,
     participantProjectDateRegister: PropTypes.any,
-    participantInDefinitiveRevenue: PropTypes.bool,
     participantBelongsToMembershipGroup: PropTypes.bool,
     participantChoiceMembership: PropTypes.any,
 };

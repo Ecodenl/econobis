@@ -68,6 +68,7 @@ const ContactGroupsListFilter = props => {
                 </select>
             </th>
             <th />
+            <th />
         </tr>
     );
 };

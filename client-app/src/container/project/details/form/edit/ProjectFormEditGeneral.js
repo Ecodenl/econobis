@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import InputText from '../../../../../components/form/InputText';
 import InputSelect from '../../../../../components/form/InputSelect';
@@ -202,7 +202,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     disabled={!useSceProject}
                 />
-                {isSceProject == true && (
+                {isSceProject === true && (
                     <InputSelect
                         label={'Basis project'}
                         name={'baseProjectCodeRef'}
@@ -223,7 +223,7 @@ const ProjectFormEditGeneral = ({
                     value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
-                {isSceProject == true && (
+                {isSceProject === true && (
                     <ViewText
                         className={'form-group col-sm-6'}
                         label={'Benodigd aantal deelnemende leden'}
@@ -232,7 +232,7 @@ const ProjectFormEditGeneral = ({
                 )}
             </div>
 
-            {isSceProject == true && (
+            {isSceProject === true && (
                 <>
                     <div className="row">
                         <div className="form-group col-sm-6" />
@@ -400,7 +400,7 @@ const ProjectFormEditGeneral = ({
                     value={dateEnd}
                     onChangeAction={handleInputChangeDate}
                 />
-                {isMembershipRequired == true && (
+                {isMembershipRequired === true && (
                     <div className={'row'}>
                         <InputMultiSelect
                             label={'Onderdeel van groep'}
@@ -521,7 +521,6 @@ const ProjectFormEditGeneral = ({
                 )}
                 &nbsp;Contacten portal instellingen
             </h4>
-            {/*<h4>Contacten portal instellingen</h4>*/}
             {showCustomerPortalSettings ? (
                 <>
                     <div className="row">
@@ -796,7 +795,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             disabled={!permissions.managePortalSettings}
                         />
-                        {showQuestionAboutMembership == true && (
+                        {showQuestionAboutMembership === true && (
                             <InputToggle
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 name={'useTransactionCostsWithMembership'}
@@ -806,7 +805,7 @@ const ProjectFormEditGeneral = ({
                             />
                         )}
                     </div>
-                    {showQuestionAboutMembership == true && (
+                    {showQuestionAboutMembership === true && (
                         <>
                             <div className={'row'}>
                                 <InputReactSelectLong
@@ -918,7 +917,7 @@ const ProjectFormEditGeneral = ({
                                         onChange={handleInputChange}
                                         className="form-control input-sm"
                                         required={'required'}
-                                        error={errors.textAgreeTerms}
+                                        // error={errors.textAgreeTerms}
                                         readOnly={!permissions.managePortalSettings}
                                     />
                                 </div>
@@ -1108,7 +1107,7 @@ const ProjectFormEditGeneral = ({
                                         onChange={handleInputChange}
                                         className="form-control input-sm"
                                         required={'required'}
-                                        error={errors.textAcceptAgreement}
+                                        // error={errors.textAcceptAgreement}
                                         readOnly={!permissions.managePortalSettings}
                                     />
                                 </div>
@@ -1157,8 +1156,8 @@ const ProjectFormEditGeneral = ({
                             <strong>Bevestigen en betalen</strong>
                         </label>
                     </div>
-                    {administrations.find(a => a.id == administrationId) &&
-                        administrations.find(a => a.id == administrationId).usesMollie && (
+                    {administrations.find(a => a.id === administrationId) &&
+                        administrations.find(a => a.id === administrationId).usesMollie && (
                             <div className="row">
                                 <InputToggle
                                     label={'Direct elektronisch betalen via Mollie'}

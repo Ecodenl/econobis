@@ -221,7 +221,7 @@ class HousingFileDetailsFormUseEdit extends Component {
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'amount_electricity') ? (
                         <InputText
-                            label={'Verbruik electriciteit'}
+                            label={'Verbruik elektriciteit'}
                             name={'amountElectricity'}
                             value={amountElectricity}
                             min={0}

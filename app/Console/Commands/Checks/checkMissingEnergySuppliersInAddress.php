@@ -54,7 +54,7 @@ class checkMissingEnergySuppliersInAddress extends Command
         Log::info($this->description . ($doRecover ? ' MET HERSTEL!' : '') );
 
         $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
-        $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Electriciteit')->first();
+        $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
 
         $missingEnergySuppliersInAddressData = [];
 
@@ -96,7 +96,7 @@ class checkMissingEnergySuppliersInAddress extends Command
                             $missingEnergySuppliersInAddressData[] = $missingEnergySuppliersInAddress;
 
                             // Indien meteen herstel, dan gaan we addressEnergySupplier record aanmaken vanaf begindatum part t/m dag voor eerstvolgende addressEnergySupplier die er wel is
-                            // (type Electriciteit)
+                            // (type Elektriciteit)
                             if($doRecover){
                                 $addressEnergySupplierData = [
                                     'address_id' => $address->id,

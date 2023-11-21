@@ -67,7 +67,9 @@ export default {
     },
 
     createParticipantReport: (templateId, emailTemplateId, subject, participantIds, showOnPortal) => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/create-participant-report/${templateId}/${emailTemplateId}`;
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/create-participant-report/${
+            templateId ? templateId : 'no-pdf'
+        }/${emailTemplateId}`;
 
         return axiosInstance.post(requestUrl, {
             participantIds: participantIds,
@@ -76,14 +78,14 @@ export default {
         });
     },
 
-    previewPDF: (templateId, emailTemplateId, participantIds) => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-pdf/${templateId}/${emailTemplateId}`;
+    previewPDF: (templateId, participantIds) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-pdf/${templateId}`;
 
         return axiosInstance.post(requestUrl, { participantIds: [participantIds] }, { responseType: 'blob' });
     },
 
-    previewEmail: (templateId, emailTemplateId, participantIds) => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-email/${templateId}/${emailTemplateId}`;
+    previewEmail: (emailTemplateId, participantIds) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-email/${emailTemplateId}`;
 
         return axiosInstance
             .post(requestUrl, { participantIds: [participantIds] })

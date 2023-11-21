@@ -3,7 +3,7 @@
 namespace App\Helpers\MsOauth;
 
 use App\Eco\Mailbox\Mailbox;
-use App\Eco\Mailbox\MailboxGmailApiSettings;
+use App\Eco\Mailbox\MailboxOauthApiSettings;
 use App\Http\Controllers\Controller;
 use App\TokenStore\TokenCache;
 use Illuminate\Http\Request;
@@ -14,32 +14,20 @@ use Microsoft\Graph\Graph;
 class MsOauthConnectionManager extends Controller
 {
     private Mailbox $mailbox;
-    private MailboxGmailApiSettings $gmailApiSettings;
+    private MailboxOauthApiSettings $oauthApiSettings;
     private Graph $appClient;
     private GenericProvider $clientProvider;
 
     public function __construct(Mailbox $mailbox)
     {
         $this->mailbox = $mailbox;
-        $this->gmailApiSettings = $mailbox->gmailApiSettings;
+        $this->oauthApiSettings = $mailbox->oauthApiSettings;
         $this->setClientConfig();
     }
 
     public function connect()
     {
-        $token = $this->gmailApiSettings->token;
-        // Load previously authorized token from the database, if it exists.
-//todo oauth WM: opschonen
-//
-//        json_decode($token, true) :
-//        array (
-//            'token_type' => 'Bearer',
-//            'scope' => 'Calendars.ReadWrite Mail.Read Mail.Send MailboxSettings.Read openid profile User.Read email',
-//            'ext_expires_in' => 4913,
-//            'access_token' => hier access token,
-//            'refresh_token' => hier refresh token,
-//            'expires' => 1662988694,
-//        )
+        $token = $this->oauthApiSettings->token;
 
         if ($token != null) {
 //todo oauth WM: opschonen
@@ -94,13 +82,13 @@ class MsOauthConnectionManager extends Controller
 // todo WM oauth: nog testen en opschonen
 //
 //        Log::info('authCode: ' . $authCode);
-//        Log::info('client_id: ' . $this->gmailApiSettings->client_id);
-//        Log::info('client_secret: ' . $this->gmailApiSettings->client_secret);
+//        Log::info('client_id: ' . $this->oauthApiSettings->client_id);
+//        Log::info('client_secret: ' . $this->oauthApiSettings->client_secret);
 
         if (isset($authCode)) {
             $this->clientProvider = new GenericProvider([
-                'clientId'                => $this->gmailApiSettings->client_id,
-                'clientSecret'            => $this->gmailApiSettings->client_secret,
+                'clientId'                => $this->oauthApiSettings->client_id,
+                'clientSecret'            => $this->oauthApiSettings->client_secret,
                 'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
                 'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
                 'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
@@ -126,15 +114,15 @@ class MsOauthConnectionManager extends Controller
 
                 Log::info('accessToken (json_encode): ' . json_encode($accessToken));
 
-//                Log::info('client_id:  ' . $this->gmailApiSettings->client_id );
-//                Log::info('project_id:  ' . $this->gmailApiSettings->project_id );
-//                Log::info('client_secret:  ' . $this->gmailApiSettings->client_secret );
-                $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->gmailApiSettings->client_id)
-                    ->where('project_id', $this->gmailApiSettings->project_id)->get();
-//                    ->where('client_secret', $this->gmailApiSettings->client_secret)->get();
+//                Log::info('client_id:  ' . $this->oauthApiSettings->client_id );
+//                Log::info('project_id:  ' . $this->oauthApiSettings->project_id );
+//                Log::info('client_secret:  ' . $this->oauthApiSettings->client_secret );
+                $msOauthApiSettings = MailboxOauthApiSettings::where('client_id', $this->oauthApiSettings->client_id)
+                    ->where('project_id', $this->oauthApiSettings->project_id)->get();
+//                    ->where('client_secret', $this->oauthApiSettings->client_secret)->get();
 //                Log::info('aantal:  ' . $msOauthApiSettings->count() );
                 foreach ($msOauthApiSettings as $msOauthApiSetting) {
-//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
+//                    Log::info('Save oauthApiSettings id: ' . $msOauthApiSetting->id);
                     $msOauthApiSetting->token = json_encode($accessToken);
                     $msOauthApiSetting->save();
                 }
@@ -181,17 +169,17 @@ class MsOauthConnectionManager extends Controller
     {
 // todo WM oauth: nog testen en opschonen
 //
-//        Log::info('client_id uit gmailApiSettigns: ' . $this->gmailApiSettings->client_id);
-//        Log::info('client_secret uit gmailApiSettigns: ' . $this->gmailApiSettings->client_secret);
-//        Log::info('project_id uit gmailApiSettigns: ' . $this->gmailApiSettings->project_id);
+//        Log::info('client_id uit oauthApiSettings: ' . $this->oauthApiSettings->client_id);
+//        Log::info('client_secret uit oauthApiSettings: ' . $this->oauthApiSettings->client_secret);
+//        Log::info('project_id uit oauthApiSettings: ' . $this->oauthApiSettings->project_id);
 
 //        Log::info('client_id uit config azure: ' . config('azure.appId'));
 //        Log::info('client_secret uit config azure: ' . config('azure.appSecret'));
 
         // Initialize the OAuth client
         $this->clientProvider = new GenericProvider([
-            'clientId'                => $this->gmailApiSettings->client_id,
-            'clientSecret'            => $this->gmailApiSettings->client_secret,
+            'clientId'                => $this->oauthApiSettings->client_id,
+            'clientSecret'            => $this->oauthApiSettings->client_secret,
             'redirectUri'             => config('app.url') . '/' . config('azure.redirectUri'),
             'urlAuthorize'            => config('azure.authority').config('azure.authorizeEndpoint'),
             'urlAccessToken'          => config('azure.authority').config('azure.tokenEndpoint'),
@@ -206,12 +194,12 @@ class MsOauthConnectionManager extends Controller
      */
     public function setAccessTokenFromRefreshToken()
     {
-        $token = json_decode($this->gmailApiSettings->token, true);
+        $token = json_decode($this->oauthApiSettings->token, true);
         if (isset($token['refresh_token'])) {
 
             $clientProvider = new GenericProvider([
-                'clientId' => $this->gmailApiSettings->client_id,
-                'clientSecret' => $this->gmailApiSettings->client_secret,
+                'clientId' => $this->oauthApiSettings->client_id,
+                'clientSecret' => $this->oauthApiSettings->client_secret,
                 'redirectUri' => config('app.url') . '/' . config('azure.redirectUri'),
                 'urlAuthorize' => config('azure.authority') . config('azure.authorizeEndpoint'),
                 'urlAccessToken' => config('azure.authority') . config('azure.tokenEndpoint'),
@@ -227,12 +215,12 @@ class MsOauthConnectionManager extends Controller
                 $appClient = new Graph();
                 $appClient->setAccessToken($accessToken->getToken());
 
-                $msOauthApiSettings = MailboxGmailApiSettings::where('client_id', $this->gmailApiSettings->client_id)
-                    ->where('project_id', $this->gmailApiSettings->project_id)->get();
-//                    ->where('client_secret', $this->gmailApiSettings->client_secret)->get();
+                $msOauthApiSettings = MailboxOauthApiSettings::where('client_id', $this->oauthApiSettings->client_id)
+                    ->where('project_id', $this->oauthApiSettings->project_id)->get();
+//                    ->where('client_secret', $this->oauthApiSettings->client_secret)->get();
 //                Log::info('aantal:  ' . $msOauthApiSettings->count() );
                 foreach ($msOauthApiSettings as $msOauthApiSetting) {
-//                    Log::info('Save gmailApiSettings id: ' . $msOauthApiSetting->id);
+//                    Log::info('Save oauthApiSettings id: ' . $msOauthApiSetting->id);
                     $msOauthApiSetting->token = json_encode($accessToken);
                     $msOauthApiSetting->save();
                 }

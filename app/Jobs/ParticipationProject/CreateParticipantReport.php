@@ -62,7 +62,7 @@ class CreateParticipantReport implements ShouldQueue
         $result = $participationProjectController->createParticipantProjectReport(
             $this->subject,
             $this->participantId,
-            DocumentTemplate::find($this->documentTemplateId),
+            ($this->documentTemplateId ? DocumentTemplate::find($this->documentTemplateId) : null),
             EmailTemplate::find($this->emailTemplateId),
             $this->showOnPortal,
         );
@@ -91,8 +91,8 @@ class CreateParticipantReport implements ShouldQueue
             $participantProject = ParticipantProject::find($this->participantId);
             $emailAddress = optional(optional($participantProject)->contact)->primaryEmailAddress;
             if($emailAddress){
-                $this->email->contacts()->attach($emailAddress->contact_id);
-                $this->email->to = array_merge($this->email->to, [$emailAddress->id]);
+                $this->email->contacts()->syncWithoutDetaching($emailAddress->contact_id);
+                $this->email->to = array_unique(array_merge($this->email->to, [$emailAddress->id]));
                 $this->email->save();
             }
         }

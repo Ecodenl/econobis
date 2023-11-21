@@ -214,16 +214,17 @@ class RevenuesKwhDistributionForm extends Component {
     checkDistributionKwhRevenueReport = () => {
         let error = false;
 
-        if (validator.isEmpty(this.state.templateId)) {
-            error = true;
-            this.setState({
-                templateIdError: true,
-            });
-        } else {
-            this.setState({
-                templateIdError: false,
-            });
-        }
+        // document template not longer required
+        // if (validator.isEmpty(this.state.templateId)) {
+        //     error = true;
+        //     this.setState({
+        //         templateIdError: true,
+        //     });
+        // } else {
+        //     this.setState({
+        //         templateIdError: false,
+        //     });
+        // }
 
         if (validator.isEmpty(this.state.emailTemplateId)) {
             error = true;
@@ -372,7 +373,7 @@ class RevenuesKwhDistributionForm extends Component {
                                             value={this.state.templateId}
                                             options={this.state.templates}
                                             onChangeAction={this.handleInputChange}
-                                            required={'required'}
+                                            // required={'required'}
                                             error={this.state.templateIdError}
                                         />
                                     </div>

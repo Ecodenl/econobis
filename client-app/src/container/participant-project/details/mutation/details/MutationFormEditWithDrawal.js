@@ -27,7 +27,6 @@ function MutationFormEditWithDrawal({
     errorMessage,
     buttonText,
     participantProjectDateRegister,
-    participantInDefinitiveRevenue,
     projectDateInterestBearingKwh,
 }) {
     let disableBeforeEntryDate = '';
@@ -120,7 +119,6 @@ function MutationFormEditWithDrawal({
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                     participantProjectDateRegister={participantProjectDateRegister}
-                    participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                     disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}

@@ -172,13 +172,13 @@ class ParticipantMutationController extends ApiController
         $dateRegisterOld = $participantProject->dateEntryFirstDeposit;
 
         if($participantMutation->status->code_ref == 'final'){
-            if ($participantProject->participantInDefinitiveRevenue) {
+            if ($participantMutation->change_allowed == false) {
                 abort(409, 'Deelnemer komt al voor in een definitieve verdeling, definitieve mutaties kunnen niet meer verwijderd worden.');
             }
             if ($participantProject->date_terminated != null) {
                 abort(409, 'Deelnemer is beëindigd, definitieve mutaties kunnen niet meer verwijderd worden.');
             }
-            if ($participantMutation->financialOverviewDefinitive) {
+            if ($participantMutation->financial_overview_definitive) {
                 abort(409, 'Mutatie komt al voor in een definitieve waardestaat.');
             }
             if ($participantMutation->isPaidByMollie) {
@@ -326,9 +326,9 @@ class ParticipantMutationController extends ApiController
 
         // indien transactie_costs niet meer gewijzigd mag worden, dan laten we transaction_costs_amount zoals het was.
         // voorwaarde voor niet meer wijzigen:
-        // - mutationstatus is final (Definitief) en (participant in definitive revenue of waardestaat)
+        // - mutationstatus is final (Definitief) en (mutation change allowed false of waardestaat definitief)
         if($participantMutation->status->code_ref == 'final' &&
-            ( $participation->participant_in_definitive_revenue || $participantMutation->financial_overview_definitive )
+            ( $participantMutation->change_allowed == false || $participantMutation->financial_overview_definitive )
         ){
             return $participantMutation->transaction_costs_amount;
         }

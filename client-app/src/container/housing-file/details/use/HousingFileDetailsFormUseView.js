@@ -65,7 +65,7 @@ const HousingFileDetailsFormUseView = props => {
                     <ViewText label="Verbruik gas" value={amountGas && amountGas} />
                 ) : null}
                 {showFields.some(showField => showField.econobisFieldName === 'amount_electricity') ? (
-                    <ViewText label="Verbruik electriciteit" value={amountElectricity && amountElectricity} />
+                    <ViewText label="Verbruik elektriciteit" value={amountElectricity && amountElectricity} />
                 ) : null}
             </div>
         </div>

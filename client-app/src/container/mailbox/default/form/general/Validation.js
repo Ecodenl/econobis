@@ -29,19 +29,8 @@ export const MailboxValidationMailgun = Yup.object().shape({
         .typeError('Verplicht'),
 });
 
-export const MailboxValidationGmail = Yup.object().shape({
-    gmailApiSettings: Yup.object().shape({
-        projectId: Yup.string()
-            .trim()
-            .required('Verplicht'),
-        clientId: Yup.string()
-            .trim()
-            .required('Verplicht'),
-    }),
-});
-
 export const MailboxValidationMsOauth = Yup.object().shape({
-    gmailApiSettings: Yup.object().shape({
+    oauthApiSettings: Yup.object().shape({
         clientId: Yup.string()
             .trim()
             .required('Verplicht'),
@@ -54,7 +43,7 @@ export const MailboxValidationMsOauth = Yup.object().shape({
     }),
 });
 export const MailboxValidationClientSecret = Yup.object().shape({
-    gmailApiSettings: Yup.object().shape({
+    oauthApiSettings: Yup.object().shape({
         clientSecret: Yup.string()
             .trim()
             .required('Verplicht'),

@@ -256,9 +256,9 @@ class AddressEnergySupplierController extends ApiController
 
         if ($otherAddressEnergySuppliers->exists()) {
             if($withAbort){
-                abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Electriciteit en/of Gas.");
+                abort('422', "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Elektriciteit en/of Gas.");
             }else{
-                return "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Electriciteit en/of Gas.";
+                return "Periode 'Klant sinds' t/m 'Eind datum' overlapt met een andere periode voor hetzelfde adres en leverancierstype Elektriciteit en/of Gas.";
             }
         }
         return false;
@@ -320,16 +320,16 @@ class AddressEnergySupplierController extends ApiController
                 });
 
             // 1 = Gas
-            // 2 = Electriciteit
-            // 3 = Electriciteit en gas
+            // 2 = Elektriciteit
+            // 3 = Elektriciteit en gas
             if ($addressEnergySupplier->energy_supply_type_id == 1) {
-                // huidige type Gas, controleer op overlap met andere met typen Gas en Electriciteit en Gas
+                // huidige type Gas, controleer op overlap met andere met typen Gas en Elektriciteit en Gas
                 $types = [1, 3];
             } else if ($addressEnergySupplier->energy_supply_type_id == 2) {
-                // huidige type Electriciteit, controleer op overlap met andere met typen Electriciteit en Electriciteit en Gas
+                // huidige type Elektriciteit, controleer op overlap met andere met typen Elektriciteit en Elektriciteit en Gas
                 $types = [2, 3];
             } else {
-                // huidige type Electriciteit en gas, controleer op overlap met alle typen Gas, Electriciteit en Electriciteit en Gas
+                // huidige type Elektriciteit en gas, controleer op overlap met alle typen Gas, Elektriciteit en Elektriciteit en Gas
                 $types = [1, 2, 3];
             }
             $otherAddressEnergySuppliers->whereIn('energy_supply_type_id', $types);

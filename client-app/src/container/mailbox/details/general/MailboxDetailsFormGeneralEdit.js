@@ -15,11 +15,7 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
                 switchToView();
             })
             .catch(error => {
-                if (
-                    error.response.status === 401 &&
-                    (error.response.data.message === 'gmail_unauthorised' ||
-                        error.response.data.message === 'ms_oauth_unauthorised')
-                ) {
+                if (error.response.status === 401 && error.response.data.message === 'ms_oauth_unauthorised') {
                     window.location = error.response.data.authUrl;
                 } else {
                     console.log(error);
@@ -34,8 +30,8 @@ function MailboxDetailsFormGeneralEdit({ mailboxDetails, updateMailbox, fetchSys
         <MailboxDefaultFormGeneral
             initialValues={{
                 ...mailboxDetails,
-                gmailApiSettings: mailboxDetails.gmailApiSettings
-                    ? mailboxDetails.gmailApiSettings
+                oauthApiSettings: mailboxDetails.oauthApiSettings
+                    ? mailboxDetails.oauthApiSettings
                     : {
                           projectId: '',
                           clientId: '',

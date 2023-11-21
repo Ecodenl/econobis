@@ -13,6 +13,9 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsFieldRecord;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\Intake\Intake;
@@ -85,6 +88,13 @@ class Contact extends Model
     public function addressesWithoutOld()
     {
         return $this->hasMany(Address::class)->where('type_id', '!=', 'old')->orderByDesc('primary')->orderByDesc('id');
+    }
+
+    public function freeFieldsFieldRecords()
+    {
+        $fieldTableContact = FreeFieldsTable::where('table', 'contacts')->first();
+        $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
     }
 
     public function addressesActive()
@@ -251,7 +261,7 @@ class Contact extends Model
 
     public function getIsInInspectionPersonTypeGroupAttribute()
     {
-        return $this->groups()->whereNotNull('inspection_person_type_id')->exists();;
+        return $this->groups()->whereNotNull('inspection_person_type_id')->exists();
     }
 
     public function availabilities()
@@ -691,6 +701,7 @@ class Contact extends Model
         if ($this->type_id === ContactType::ORGANISATION) {
             return Address::where('contact_id', $this->id)->where('type_id', 'visit')->first();
         }
+        return null;
     }
 
     public function getSingleRelatedAdministrationAttribute()
@@ -721,17 +732,14 @@ class Contact extends Model
         if ($this->type_id === ContactType::PERSON) {
             if ($this->primaryAddress) {
                 return false;
-            } else {
-                return true;
             }
         }
         if ($this->type_id === ContactType::ORGANISATION) {
             if (Address::where('contact_id', $this->id)->where('type_id', 'visit')->exists()) {
                 return false;
-            } else {
-                return true;
             }
         }
+        return true;
     }
 
     public function getIsParticipantPcrProjectAttribute()

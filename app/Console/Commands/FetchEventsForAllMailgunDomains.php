@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Eco\Mailbox\MailgunDomain;
+use App\Eco\Schedule\CommandRun;
 use App\Jobs\Mailgun\FetchMailgunEvents;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
 
 class FetchEventsForAllMailgunDomains extends Command
@@ -14,6 +16,7 @@ class FetchEventsForAllMailgunDomains extends Command
      * @var string
      */
     protected $signature = 'mailgun:fetch-events {--minutes=30}';
+    protected $commandRef = 'mailgun:fetch-events';
 
     /**
      * The console command description.
@@ -27,9 +30,24 @@ class FetchEventsForAllMailgunDomains extends Command
      */
     public function handle()
     {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = config('app.SCHEDULE_RUN_ID');
+        $commandRun->scheduled_commands_command_ref = $this->commandRef;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
+        $commandRun->save();
+
         foreach (MailgunDomain::where('is_verified', true)->get() as $mailgunDomain) {
             $this->fetchEventsForMailgunDomain($mailgunDomain);
         }
+
+        $commandRun->end_at = Carbon::now();
+        $commandRun->finished = true;
+        $commandRun->save();
+
     }
 
     protected function fetchEventsForMailgunDomain(MailgunDomain $mailgunDomain)

@@ -25,7 +25,7 @@ export default {
             });
     },
 
-    recalculateRevenuesDistribution: (id) => {
+    recalculateRevenuesDistribution: id => {
         const requestUrl = `${URL_REVENUES_KWH}/${id}/recalculateRevenuesDistribution`;
 
         return axiosInstance.get(requestUrl);
@@ -80,22 +80,21 @@ export default {
             });
     },
 
-    downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
-        const requestUrl = `distribution-kwh/${id}/download-preview`;
+    previewPDF: (id, subject, documentTemplateId) => {
+        const requestUrl = `distribution-kwh/${id}/preview-pdf`;
 
         return axiosInstance.post(
             requestUrl,
-            { subject: subject, documentTemplateId: documentTemplateId, emailTemplateId: emailTemplateId },
+            { subject: subject, documentTemplateId: documentTemplateId },
             { responseType: 'blob' }
         );
     },
 
-    previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
+    previewEmail: (id, subject, emailTemplateId) => {
         const requestUrl = `distribution-kwh/${id}/preview-email`;
 
         return axiosInstance.post(requestUrl, {
             subject: subject,
-            documentTemplateId: documentTemplateId,
             emailTemplateId: emailTemplateId,
         });
     },

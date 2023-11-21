@@ -6,10 +6,12 @@ use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
 class Webform extends Model
 {
     use Encryptable;
+    use RevisionableTrait;
 
     protected $guarded = ['id'];
 

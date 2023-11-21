@@ -177,7 +177,13 @@ export default {
         return axiosInstance.post(requestUrl, registerValues);
     },
 
-    fetchContactProjects: function(contactId, projectId) {
+    fetchContactFreeFields: function(contactId) {
+        const requestUrl = `/contact/${contactId}/contact-free-fields`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchContactProjects: function(contactId) {
         const requestUrl = `/contact/${contactId}/contact-projects`;
 
         return axiosInstance.get(requestUrl);

@@ -49,7 +49,9 @@ const RevenueDistributionFormList = props => {
                 )}
                 <div className="col-sm-2">Status</div>
             </div>
-            {props.projectRevenue.distribution && props.projectRevenue.distribution.data.length > 0 ? (
+            {props.projectRevenue.distribution &&
+            props.projectRevenue.distribution.data &&
+            props.projectRevenue.distribution.data.length > 0 ? (
                 props.projectRevenue.distribution.data.map(participation => {
                     return (
                         <RevenueDistributionFormView

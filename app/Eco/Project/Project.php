@@ -234,7 +234,7 @@ class Project extends Model
     {
         $financialOverviewProjectIds = $this->financialOverviewProjects()->where('definitive', true)->pluck('financial_overview_id')->toArray();;
         $financialOverviews = FinancialOverview::whereIn('id', $financialOverviewProjectIds)->get()->sortByDesc('year')->first();
-        return $financialOverviews ? $financialOverviews->year : null;
+        return $financialOverviews ? (int) $financialOverviews->year : null;
     }
 
     public function getDateInterestBearingWrong() {

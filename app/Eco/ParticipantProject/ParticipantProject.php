@@ -206,9 +206,22 @@ class ParticipantProject extends Model
     public function getDateEntryLastMutationAttribute()
     {
         $projectType = $this->project->projectType;
-        $lastMutationType = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $depositTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+        $lastMutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption', 'result_deposit'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-        $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)->where('status_id', $mutationStatusFinal)->whereIn('type_id', $lastMutationType)->orderByDesc('date_entry')->first();
+        $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $this->id)
+            ->whereIn('type_id', $lastMutationTypes)
+            ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
+                $query
+                    ->where(function ($query) use ($depositTypes, $mutationStatusFinal) {
+                        $query->whereIn('type_id', $depositTypes)
+                            ->where('status_id', $mutationStatusFinal);
+                    })
+                    ->orWhereNotIn('type_id', $depositTypes);
+            })
+            ->orderByDesc('date_entry')
+            ->first();
+
         return $mutationDefinitiveLast ? $mutationDefinitiveLast->date_entry : null;
     }
 
@@ -239,17 +252,17 @@ class ParticipantProject extends Model
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
-        return Carbon::parse($dateTerminatedAllowedFrom)->subDay(1)->format('Y-m-d');
+        return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
 
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution
-    public function getParticipantInDefinitiveRevenueAttribute()
-    {
-        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
-        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
-        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
-    }
+//    public function getParticipantInDefinitiveRevenueAttribute()
+//    {
+//        $projectRevenueDistributions = $this->projectRevenueDistributions()->whereNotIn('status', ['concept']);
+//        $revenueDistributionKwh = $this->revenueDistributionKwh()->whereNotIn('status', ['concept']);
+//        return $projectRevenueDistributions->count() > 0 || $revenueDistributionKwh->count() > 0;
+//    }
 
     public function getParticipantBelongsToMembershipGroupAttribute()
     {

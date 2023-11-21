@@ -122,7 +122,7 @@
                 <td class="align-left"><a href="{{ $invoice->administration->website }}">{{ $invoice->administration->website }}</a></td>
             </tr>
             <tr>
-                <td class="align-left">Notadatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->formatLocalized('%e %B %Y') : 'Nog niet bekend' }}</td>
+                <td class="align-left">Notadatum: {{ $invoice->date_sent ? Carbon\Carbon::parse($invoice->date_sent)->isoFormat('D MMMM YYYY') : 'Nog niet bekend' }}</td>
                 <td class="align-left">KvK {{ $invoice->administration->kvk_number }}</td>
             </tr>
             <tr>
@@ -160,30 +160,30 @@
         @foreach($invoice->invoiceProducts as $invoiceProduct)
             <tr>
                 <td class="align-left">{!! (str_replace('€', '&euro;', $invoiceProduct->description)) !!}</td>
-                <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
+                <td class="align-right"><span class="euro-sign">&euro;</span> {{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
                 <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
-                <td class="align-right"><span class="euro-sign">&euro;</span>{{ $invoiceProduct->amount_excl_vat_formatted }}</td>
+                <td class="align-right"><span class="euro-sign">&euro;</span> {{ $invoiceProduct->amount_excl_vat_formatted }}</td>
             </tr>
 
             @if($invoiceProduct->product->duration_id !== 'none' && $invoice->collection_frequency_id !== 'once')
                 <tr>
                     {{--min 1 dag omdat het t/m is--}}
-                    <td  colspan="5">Periode {{ (Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->formatLocalized('%e %B %Y') }} t/m {{ $invoice->order->addDurationToDate(Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->subDay()->formatLocalized('%e %B %Y') }}</td>
+                    <td  colspan="5">Periode {{ (Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->isoFormat('D MMMM YYYY') }} t/m {{ $invoice->order->addDurationToDate(Carbon\Carbon::parse($invoiceProduct->date_last_invoice))->subDay()->isoFormat('D MMMM YYYY') }}</td>
                 </tr>
             @endif
 
             @if($invoiceProduct->amount_reduction)
                 <tr>
                     <td class="align-left" colspan="4">Korting</td>
-                    <td class="align-right" ><span class="euro-sign">&euro;</span>{{ $invoiceProduct->amount_reduction_amount_excl_vat_formatted }}</td>
+                    <td class="align-right" ><span class="euro-sign">&euro;</span> {{ $invoiceProduct->amount_reduction_amount_excl_vat_formatted }}</td>
                 </tr>
             @endif
 
             @if($invoiceProduct->percentage_reduction)
                 <tr>
                     <td class="align-left" colspan="4">Korting {{ $invoiceProduct->percentage_reduction }}%</td>
-                    <td class="align-right"><span class="euro-sign">&euro;</span>{{ $invoiceProduct->amount_reduction_percentage_excl_vat_formatted }}</td>
+                    <td class="align-right"><span class="euro-sign">&euro;</span> {{ $invoiceProduct->amount_reduction_percentage_excl_vat_formatted }}</td>
                 </tr>
             @endif
             <tr>
@@ -193,7 +193,7 @@
         @if($invoice->vatInfo)
             <tr>
                 <td class="align-left" colspan="4"><strong>Totaal excl. BTW</strong></td>
-                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($invoice->total_excl_vat_incl_reduction, 2, ',', '.') }}</strong></td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span> {{ number_format($invoice->total_excl_vat_incl_reduction, 2, ',', '.') }}</strong></td>
             </tr>
             <tr>
                 <td class="align-left">&nbsp;</td>
@@ -209,19 +209,19 @@
                     @if($invoice->has_rounding_difference)
                         <td class="align-right">&nbsp;</td>
                     @else
-                        <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
+                        <td class="align-right"><span class="euro-sign">&euro;</span> {{ number_format($vatInfo['total_over'], 2, ',', '.') }}</td>
                     @endif
-                    <td class="align-right"><span class="euro-sign">&euro;</span>{{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
+                    <td class="align-right"><span class="euro-sign">&euro;</span> {{ number_format($vatInfo['total_amount'], 2, ',', '.') }}</td>
                 </tr>
             @endforeach
             <tr>
                 <td class="align-left" colspan="4"><strong>BTW Totaal</strong></td>
-                <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($invoice->total_vat_incl_reduction, 2, ',', '.') }}</strong></td>
+                <td class="align-right"><strong><span class="euro-sign">&euro;</span> {{ number_format($invoice->total_vat_incl_reduction, 2, ',', '.') }}</strong></td>
             </tr>
         @endif
         <tr>
             <td class="align-left" colspan="4"><strong>Totaal te betalen</strong></td>
-            <td class="align-right"><strong><span class="euro-sign">&euro;</span>{{ number_format($invoice->total_incl_vat_incl_reduction, 2, ',', '.') }}</strong></td>
+            <td class="align-right"><strong><span class="euro-sign">&euro;</span> {{ number_format($invoice->total_incl_vat_incl_reduction, 2, ',', '.') }}</strong></td>
         </tr>
     </table>
 

@@ -97,7 +97,12 @@ const ParticipantDetailsTerminate = ({
                 .then(payload => {
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
-                    if (projectTypeCodeRef === 'postalcode_link_capital' && redirectRevenueSplit) {
+                    if (
+                        projectTypeCodeRef === 'postalcode_link_capital' &&
+                        redirectRevenueSplit &&
+                        payload.data.projectsArray &&
+                        payload.data.projectsArray.length > 0
+                    ) {
                         if (payload.data.projectsArray.success) {
                             hashHistory.push(`${payload.data.revenuePartsKwhRedirect}`);
                         } else {

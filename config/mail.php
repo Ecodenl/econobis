@@ -87,10 +87,6 @@ return [
             'transport' => 'array',
         ],
 
-        'gmailapi' => [
-            'transport' => 'gmailapi',
-        ],
-
         'msoauthapi' => [
             'transport' => 'msoauthapi',
         ],

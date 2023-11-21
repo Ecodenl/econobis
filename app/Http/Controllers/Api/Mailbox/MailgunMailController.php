@@ -8,6 +8,7 @@ use App\Http\Requests\MailgunStoreMailRequest;
 use App\Http\Traits\Email\EmailRelations;
 use App\Http\Traits\Email\Storage;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class MailgunMailController
 {
@@ -21,18 +22,23 @@ class MailgunMailController
             return;
         }
 
+        $from = $request->getFrom();
+        if(!$from){
+            Log::info("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
+            return;
+        }
         $email = new Email([
             'mailbox_id' => $mailbox->id,
-            'from' => $request->getFrom(),
+            'from' => $from,
             'to' => $request->getTo(),
             'cc' => $request->getCc(),
             'bcc' => [],
-            'subject' => $request->input('subject'),
+            'subject' => $request->input('subject') ?? '',
             'html_body' => $request->getHtmlBody(),
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',
             'imap_id' => null,
-            'gmail_message_id' => null,
+            'msoauth_message_id' => null,
             'message_id' => $request->input('Message-Id'),
             'status' => 'unread'
         ]);

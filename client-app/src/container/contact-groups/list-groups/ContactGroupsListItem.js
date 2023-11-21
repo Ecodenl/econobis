@@ -53,6 +53,7 @@ class ContactGroupsListItem extends Component {
             numberOfLapostaMembers,
             parentGroupsArray,
             useLaposta,
+            createdByName,
         } = this.props;
 
         const style = {
@@ -92,6 +93,7 @@ class ContactGroupsListItem extends Component {
                 </td>
                 <td>{closedStatus}</td>
                 <td>{type ? type.name : ''}</td>
+                <td>{createdByName ? createdByName : 'test'}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageGroup ? (
                         <a role="button" onClick={() => this.openItem(id)}>
@@ -105,15 +107,15 @@ class ContactGroupsListItem extends Component {
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name, type.id)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
+                    ) : this.state.showActionButtons && permissions.manageGroup && isUsedInComposedGroup ? (
+                        <a
+                            role="button"
+                            onClick={this.props.showPartOfComposedGroupModal.bind(this, parentGroupsArray)}
+                        >
+                            <Icon className="mybtn-grey" size={14} icon={trash} />
+                        </a>
                     ) : (
-
-                        this.state.showActionButtons && permissions.manageGroup && isUsedInComposedGroup ? (
-                            <a role="button" onClick={this.props.showPartOfComposedGroupModal.bind(this, parentGroupsArray)}>
-                                <Icon className="mybtn-grey" size={14} icon={trash} />
-                            </a>
-                        ) : (
-                            ''
-                        )
+                        ''
                     )}
                 </td>
             </tr>

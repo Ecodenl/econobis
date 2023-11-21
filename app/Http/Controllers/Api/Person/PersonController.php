@@ -317,7 +317,7 @@ class PersonController extends ApiController
                 $customer = $twinfieldCustomerHelper->updateCustomer($contact);
                 if($twinfieldCustomerHelper->messages)
                 {
-                    array_merge($messages, $twinfieldCustomerHelper->messages);
+                    $messages = array_merge($messages, $twinfieldCustomerHelper->messages);
                 }
             }
             if( !empty($messages) )

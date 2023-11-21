@@ -41,7 +41,7 @@ class HousingFileExcel2SpecificationsHelper
         $headerData[] = 'Zijde';
         $headerData[] = 'Uitvoering';
         $headerData[] = 'Besparing gas';
-        $headerData[] = 'Besparing electriciteit';
+        $headerData[] = 'Besparing elektriciteit';
         $headerData[] = 'CO2 besparing';
 
         $completeData[] = $headerData;
@@ -65,7 +65,7 @@ class HousingFileExcel2SpecificationsHelper
                 $rowData[8] = $housingFileSpecification->side ? $housingFileSpecification->side->name : ''; //'Zijde'
                 $rowData[9] = $housingFileSpecification->type_of_execution ? $typeOfExecutionOptions[$housingFileSpecification->type_of_execution] : 'Onbekend'; //'Uitvoering'
                 $rowData[10] = $housingFileSpecification->savings_gas; //'Savings gas'
-                $rowData[11] = $housingFileSpecification->savings_electricity; //'Savings electriciteit'
+                $rowData[11] = $housingFileSpecification->savings_electricity; //'Savings elektriciteit'
                 $rowData[12] = $housingFileSpecification->co2_savings; //'Savings Co2 '
 
                 $completeData[] = $rowData;

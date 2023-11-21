@@ -69,7 +69,7 @@ class MailFetcherMsOauth
                 // Sort by received time, newest first
                 $orderBy = '$orderBy=receivedDateTime DESC';
                 $filter = '$filter=receivedDateTime ge ' . $dateLastFetched . 'T00:00:00Z';
-                $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
+                $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/mailFolders/inbox/messages?'.$select.'&'.$filter.'&'.$orderBy;
                 $messages = $this->appClient->createCollectionRequest('GET', $requestUrl)
                     ->setReturnType(Message::class)
                     ->setPageSize(200);
@@ -80,7 +80,14 @@ class MailFetcherMsOauth
                     Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
-                Log::error('Error getting user\'s inbox: '.$e->getMessage());
+                Log::error('Error mailbox ' . $this->mailbox->id . ' getting user\'s inbox: '.$e->getMessage());
+                if($this->mailbox->login_tries < 5){
+                    $this->mailbox->login_tries += 1;
+//                    Log::info('Poging ' . $this->mailbox->login_tries);
+                } else {
+                    Log::info('Mailbox op inactief gezet na 5 pogingen.');
+                    $this->mailbox->valid = false;
+                }
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
 
@@ -90,6 +97,8 @@ class MailFetcherMsOauth
 //        }
 
         $this->mailbox->date_last_fetched = Carbon::now();
+        $this->mailbox->valid = true;
+        $this->mailbox->login_tries = 0;
         $this->mailbox->start_fetch_mail = null;
         $this->mailbox->save();
     }
@@ -131,35 +140,58 @@ class MailFetcherMsOauth
 // todo oauth WM: nog iets met response doen ?
 //        if (isset($this->appClient['message']) && $this->appClient['message'] == 'ms_oauth_unauthorised') {
 //            Log::info($this->appClient);
-//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
 //        }
 //
 //        // Todo improve failure message
-//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'gmail_unauthorised') {
-//            throw new Exception('InitGmailConfig: ' . $client['message']);
+//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'ms_oauth_unauthorised') {
+//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
 //        }
-//
-//        $this->service = new Google_Service_Gmail($client);
     }
 
     private function fetchEmail(Message $message)
     {
+        $from = $message->getFrom()->getEmailAddress()->getAddress();
+        // geen fromAddress, dan slaan we ook niets op.
+        if(!$from){
+            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
+            return;
+        }
+
         $tos = [];
         if($message->getToRecipients()){
             foreach ($message->getToRecipients() as $toRecipient){
-                $tos[] = $toRecipient['emailAddress']['address'];
+                // todo: Foutmelding onderzoeken: Error getting user's inbox: Undefined array key "address"
+//                  if(!isset($toRecipient['emailAddress']['address'])){
+//                      Log::info('Geen array key "address" in toRecipient "emailAddress":');
+//                      Log::info($toRecipient['emailAddress']);
+//                  }
+//                  resultaat:
+//                  [2023-10-25 15:40:22] production.INFO: array (
+//                       'name' => 'Contact | Energie Samen',
+//                   )
+//                  [2023-10-25 15:40:26] production.INFO: array (
+//                       'name' => 'mailto:govert@geldofcs.nl',
+//                   )
+                if(isset($toRecipient['emailAddress']['address'])){
+                    $tos[] = $toRecipient['emailAddress']['address'];
+                }
             }
         }
         $ccs = [];
         if($message->getCcRecipients()){
             foreach ($message->getCcRecipients() as $ccRecipient){
-                $ccs[] = $ccRecipient['emailAddress']['address'];
+                if(isset($ccRecipient['emailAddress']['address'])){
+                    $ccs[] = $ccRecipient['emailAddress']['address'];
+                }
             }
         }
         $bccs = [];
         if($message->getBccRecipients()){
             foreach ($message->getBccRecipients() as $bccRecipient){
-                $bccs[] = $bccRecipient['emailAddress']['address'];
+                if(isset($bccRecipient['emailAddress']['address'])){
+                    $bccs[] = $bccRecipient['emailAddress']['address'];
+                }
             }
         }
 
@@ -195,7 +227,7 @@ class MailFetcherMsOauth
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $message->getFrom()->getEmailAddress()->getAddress(),
+            'from' => $from,
             'to' => $tos,
             'cc' => $ccs,
             'bcc' => $bccs,
@@ -204,7 +236,7 @@ class MailFetcherMsOauth
             'date_sent' => $sentDateTime,
             'folder' => 'inbox',
             'imap_id' => null,
-            'gmail_message_id' => $message->getId(),
+            'msoauth_message_id' => $message->getId(),
             'message_id' => $message->getInternetMessageId(),
             'status' => 'unread'
         ]);
@@ -220,7 +252,7 @@ class MailFetcherMsOauth
 
     private function storeAttachments(string $messageId, Email $email)
     {
-        $requestUrl = '/users/' . $this->mailbox->gmailApiSettings->project_id. '/messages/'.$messageId.'/attachments';
+        $requestUrl = '/users/' . $this->mailbox->oauthApiSettings->project_id. '/messages/'.$messageId.'/attachments';
         $requestResult = $this->appClient->createCollectionRequest('GET', $requestUrl)
             ->setReturnType(Attachment::class);
         if($requestResult){
@@ -229,23 +261,31 @@ class MailFetcherMsOauth
                  * De cid's zijn de verwijzingen in de html van images.
                  * Ook overige bijlages (excel bijv.) krijgen een cid, zet hem voor deze bijlages op null.
                  * Op die manier kunnen we afbeeldingen die in de html staan verbergen als bijlage.
-                 *
-                 * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
-                 * Daarom maar via deze omweg uit $attachment halen.
                  */
-                $cid = json_decode(json_encode($attachment))->contentId;
 
-                $contents = base64_decode( $attachment->getProperties()['contentBytes']);
-                $name = $attachment->getName();
-                $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
-                $emailAttachment = new EmailAttachment([
-                    'filename' => $filePathAndName,
-                    'name' => $name,
-                    'email_id' => $email->id,
-                    'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
-                ]);
-                $emailAttachment->save();
-                \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                $contentBytes = $attachment->getProperties()['contentBytes'] ?? null;
+                if($contentBytes){
+                    /**
+                     * contentId is niet rechtsreeks benaderbaar maar zit wel in json.
+                     * Daarom maar via deze omweg uit $attachment halen.
+                     */
+                    $contents = base64_decode($contentBytes);
+                    $cid = json_decode(json_encode($attachment))->contentId ?? null;
+
+                    $name = $attachment->getName();
+                    $filePathAndName = $this->getAttachmentDBName() . \bin2hex(\random_bytes(16)).'.bin';
+                    $emailAttachment = new EmailAttachment([
+                        'filename' => $filePathAndName,
+                        'name' => $name,
+                        'email_id' => $email->id,
+                        'cid' => $cid && str_contains($email->html_body, $cid) ? $cid : null,
+                    ]);
+                    $emailAttachment->save();
+                    \Illuminate\Support\Facades\Storage::disk('mail_attachments')->put($filePathAndName, $contents);
+                } else {
+                    // hier eventueel foutmelding indien geen contents voor bijlage gevonden ? Voorlopig niet.
+                }
+
             }
 
         }

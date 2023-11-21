@@ -144,6 +144,13 @@ class ContactsListToolbar extends Component {
                                 title="Downloaden vrije velden van contacten naar CSV"
                             />
                         )}
+                        {permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.props.getEnergySuppliersCSV}
+                                title="Downloaden contacten energieleveranciers gegevens naar CSV"
+                            />
+                        )}
                         {permissions.import && (
                             <ButtonIcon
                                 iconName={'upload'}

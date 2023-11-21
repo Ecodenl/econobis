@@ -216,29 +216,6 @@ class MailboxController extends Controller
         return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 
-    public function receive(Mailbox $mailbox)
-    {
-        $this->authorize('view', Mailbox::class);
-
-        if (!$mailbox->is_active) {
-            return 'This mailbox is not active';
-        }
-        if (!$mailbox->valid) {
-            return 'This mailbox is invalid';
-        }
-
-        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        if ($mailbox->incoming_server_type === 'ms-oauth') {
-            $mailFetcher = new MailFetcherMsOauth($mailbox);
-        } else if ($mailbox->incoming_server_type !== 'mailgun'){
-            $mailFetcher = new MailFetcher($mailbox);
-        } else {
-            return;
-        }
-
-        return $mailFetcher->fetchNew();
-    }
-
     public function receiveMailFromMailboxesUser()
     {
         $this->authorize('view', Mailbox::class);
@@ -344,25 +321,6 @@ class MailboxController extends Controller
         $mailbox->save();
     }
 
-    private function storeOrUpdateOauthApiSettings(Mailbox $mailbox, array $inputOauthApiSettings): void
-    {
-        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
-
-        $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
-        $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
-        if(isset($inputOauthApiSettings['clientSecret'])){
-            $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
-        }
-        if(isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
-            $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
-        } else {
-            $oauthApiSettings->tenant_id = null;
-        }
-        $oauthApiSettings->token = '';
-
-        $oauthApiSettings->save();
-    }
-
     public function msOauthApiConnectionCallback(Request $request)
     {
 //todo WM oauth: opschonen
@@ -397,4 +355,47 @@ class MailboxController extends Controller
             exit;
         }
     }
+
+    private function receive(Mailbox $mailbox)
+    {
+        $this->authorize('view', Mailbox::class);
+
+        if (!$mailbox->is_active) {
+            return 'This mailbox is not active';
+        }
+        if (!$mailbox->valid) {
+            return 'This mailbox is invalid';
+        }
+
+        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
+        if ($mailbox->incoming_server_type === 'ms-oauth') {
+            $mailFetcher = new MailFetcherMsOauth($mailbox);
+        } else if ($mailbox->incoming_server_type !== 'mailgun'){
+            $mailFetcher = new MailFetcher($mailbox);
+        } else {
+            return;
+        }
+
+        return $mailFetcher->fetchNew();
+    }
+
+    private function storeOrUpdateOauthApiSettings(Mailbox $mailbox, array $inputOauthApiSettings): void
+    {
+        $oauthApiSettings = MailboxOauthApiSettings::firstOrNew(['mailbox_id' => $mailbox->id]);
+
+        $oauthApiSettings->client_id = $inputOauthApiSettings['clientId'];
+        $oauthApiSettings->project_id = $inputOauthApiSettings['projectId'];
+        if(isset($inputOauthApiSettings['clientSecret'])){
+            $oauthApiSettings->client_secret = $inputOauthApiSettings['clientSecret'];
+        }
+        if(isset($inputOauthApiSettings['tenantId']) && !empty($inputOauthApiSettings['tenantId'])) {
+            $oauthApiSettings->tenant_id = $inputOauthApiSettings['tenantId'];
+        } else {
+            $oauthApiSettings->tenant_id = null;
+        }
+        $oauthApiSettings->token = '';
+
+        $oauthApiSettings->save();
+    }
+
 }

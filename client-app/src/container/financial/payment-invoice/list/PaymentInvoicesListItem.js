@@ -44,7 +44,7 @@ class PaymentInvoicesListItem extends Component {
                 <td>{number}</td>
                 <td>{revenueDistribution.contact ? revenueDistribution.contact.fullName : ''}</td>
                 <td>
-                    {'€' +
+                    {'€ ' +
                         revenueDistribution.payout.toLocaleString('nl', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -54,7 +54,8 @@ class PaymentInvoicesListItem extends Component {
                 <td>
                     {this.state.showActionButtons && this.props.statusId === 'sent' ? (
                         <a role="button" onClick={() => this.showSetNotPaid()} title="Zet op niet betaald">
-                            <Icon className="mybtn-success" size={14} icon={remove} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={remove} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''

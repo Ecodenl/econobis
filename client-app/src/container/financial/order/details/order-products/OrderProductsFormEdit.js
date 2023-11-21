@@ -107,7 +107,7 @@ const OrderProductsFormEdit = props => {
                                     name={'price'}
                                     value={
                                         props.orderProduct.product.currentPrice.inputInclVat
-                                            ? '€' +
+                                            ? '€ ' +
                                               props.orderProduct.product.currentPrice.priceInclVat.toLocaleString(
                                                   'nl',
                                                   {
@@ -116,7 +116,7 @@ const OrderProductsFormEdit = props => {
                                                           props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                                   }
                                               )
-                                            : '€' +
+                                            : '€ ' +
                                               props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
                                                   maximumFractionDigits:
@@ -141,7 +141,7 @@ const OrderProductsFormEdit = props => {
                                 label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     props.totalPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,

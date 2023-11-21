@@ -264,7 +264,7 @@ class HousingFileSpecificationsListExtraFilters extends Component {
                             <td className="col-md-1" />
                         </tr>
                         <tr>
-                            <td className="col-md-4">Besparing electriciteit (range)</td>
+                            <td className="col-md-4">Besparing elektriciteit (range)</td>
                             <td className="col-md-3">
                                 <input
                                     type="number"

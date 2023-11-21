@@ -185,7 +185,7 @@ class InvoicesListItem extends Component {
                 <td>{daysToExpire}</td>
                 <td>{daysLastReminder}</td>
                 <td>
-                    {'€' +
+                    {'€ ' +
                         totalInclVatInclReduction.toLocaleString('nl', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -193,7 +193,7 @@ class InvoicesListItem extends Component {
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? <br /> : ''}
                     {this.props.statusId === 'sent' || this.props.statusId === 'exported' ? (
                         <span className="error-span">
-                            {'€' +
+                            {'€ ' +
                                 amountOpen.toLocaleString('nl', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,

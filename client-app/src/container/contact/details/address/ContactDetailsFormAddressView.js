@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import GetNameByIdHelper from '../../../../helpers/GetNameByIdHelper';
-import Icon from "react-icons-kit";
+import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 import { lightbulbO } from 'react-icons-kit/fa/lightbulbO';
@@ -30,9 +30,9 @@ const ContactDetailsFormAddressView = props => {
     } else {
         if (currentAddressEnergySupplierElectricity && currentAddressEnergySupplierElectricity.energySupplier) {
             currentAddressEnergySupplierNames.push(
-                currentAddressEnergySupplierElectricity.energySupplier.name + ' (Electra)'
+                currentAddressEnergySupplierElectricity.energySupplier.name + ' (Elektra)'
             );
-            currentAddressEnergySupplierNumbers.push(currentAddressEnergySupplierElectricity.esNumber + ' (Electra)');
+            currentAddressEnergySupplierNumbers.push(currentAddressEnergySupplierElectricity.esNumber + ' (Elektra)');
         }
         if (currentAddressEnergySupplierGas && currentAddressEnergySupplierGas.energySupplier) {
             currentAddressEnergySupplierNames.push(currentAddressEnergySupplierGas.energySupplier.name + ' (Gas)');
@@ -55,9 +55,7 @@ const ContactDetailsFormAddressView = props => {
                 <div className="col-sm-1">
                     {city} {country ? '(' + country.id + ')' : ''}
                 </div>
-                <div className="col-sm-2">
-                    {areaName}
-                </div>
+                <div className="col-sm-2">{areaName}</div>
                 {/*<div className="col-sm-2">{country ? country.name : ''}</div>*/}
                 <div className="col-sm-2">
                     {currentAddressEnergySupplierNames.map(energySupplierName => {

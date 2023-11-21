@@ -458,7 +458,7 @@ const DefaultContactPersonalEdit = function({
                                     : 'field-label'
                             }
                         >
-                            EAN nummer electriciteit
+                            EAN nummer elektriciteit
                         </FormLabel>
 
                         {(isEmpty(values.primaryAddress.number + '') ||
@@ -467,7 +467,7 @@ const DefaultContactPersonalEdit = function({
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
-                                        EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode
+                                        EAN nummer elektriciteit wordt alleen opgeslagen als minimaal nummer en postcode
                                         zijn ingevuld bij adres.
                                     </small>
                                 </Col>
@@ -485,7 +485,7 @@ const DefaultContactPersonalEdit = function({
                                             errors={errors}
                                             touched={touched}
                                             id="eanElectricity"
-                                            placeholder={'EAN nummer electriciteit'}
+                                            placeholder={'EAN nummer elektriciteit'}
                                         />
                                     )}
                                 </Field>

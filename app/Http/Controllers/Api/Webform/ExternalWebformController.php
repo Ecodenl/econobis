@@ -406,7 +406,7 @@ class ExternalWebformController extends Controller
                 'adres_postcode' => 'address_postal_code',
                 'adres_plaats' => 'address_city',
                 'adres_land_id' => 'address_country_id',
-                // Ean electra
+                // Ean elektra
                 'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 // PhoneNumber
                 'telefoonnummer' => 'phone_number',
@@ -1743,7 +1743,7 @@ class ExternalWebformController extends Controller
 
             $addressEnergyConsumptionElectricity = AddressEnergyConsumptionElectricity::where('address_id', $address->id)->where('date_begin',  Carbon::parse($data['date_begin'])->format('Y-m-d'))->where('date_end',  Carbon::parse($data['date_end'])->format('Y-m-d'));
             if ($addressEnergyConsumptionElectricity->exists()) {
-                $this->log('Verbruik electriciteit gevonden voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ', deze worden bijgewerkt.');
+                $this->log('Verbruik elektriciteit gevonden voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ', deze worden bijgewerkt.');
                 //update
                 $addressEnergyConsumptionElectricity->update([
                     'consumption_high' => $data['consumption_high'] ?: 0,
@@ -1767,7 +1767,7 @@ class ExternalWebformController extends Controller
                     });
 
                 if ($addressEnergyConsumptionElectricityCheck->exists()) {
-                    $this->log('Verbruik electriciteit voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ' overlapt met een andere verbruikperiode, deze gegevens worden NIET verwerkt.');
+                    $this->log('Verbruik elektriciteit voor periode ' . Carbon::parse($data['date_begin'])->format('d-m-Y') . ' t/m ' . Carbon::parse($data['date_end'])->format('d-m-Y') . ' overlapt met een andere verbruikperiode, deze gegevens worden NIET verwerkt.');
                 }else{
                     //create new
                     AddressEnergyConsumptionElectricity::create([
@@ -1793,7 +1793,7 @@ class ExternalWebformController extends Controller
             }
 
         } else {
-            $this->log('Er is geen verbruiksperiode meegegeven, kan geen electriciteit verbruik vastleggen');
+            $this->log('Er is geen verbruiksperiode meegegeven, kan geen elektriciteit verbruik vastleggen');
         }
     }
 

@@ -144,6 +144,13 @@ class ContactsListToolbar extends Component {
                                 title="Downloaden vrije velden van contacten naar CSV"
                             />
                         )}
+                        {permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.props.getEnergySuppliersCSV}
+                                title="Downloaden contacten energieleveranciers gegevens naar CSV"
+                            />
+                        )}
                         {permissions.import && (
                             <ButtonIcon
                                 iconName={'upload'}
@@ -157,7 +164,7 @@ class ContactsListToolbar extends Component {
                                     role="button"
                                     className={'btn btn-success btn-sm'}
                                     onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
-                                    title="Downloaden electriciteit verbruik"
+                                    title="Downloaden elektriciteit verbruik"
                                 >
                                     <FaRegLightbulb width={'13px'} height={'12px'} />
                                 </a>

@@ -252,7 +252,7 @@ class InvoiceProductsFormNew extends Component {
                                     label={'Prijs excl. BTW'}
                                     name={'price'}
                                     value={
-                                        '€' +
+                                        '€ ' +
                                         this.state.price.toLocaleString('nl', {
                                             minimumFractionDigits: 2,
                                             maximumFractionDigits: 2,
@@ -276,7 +276,7 @@ class InvoiceProductsFormNew extends Component {
                                 label={'Totaalbedrag'}
                                 name={'totalPrice'}
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     this.state.totalPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,

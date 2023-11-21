@@ -84,24 +84,24 @@ const InvoiceDetailsFormGeneralView = props => {
                             label={'Bedrag incl. BTW'}
                             value={
                                 totalInclVatInclReduction
-                                    ? '€' +
+                                    ? '€ ' +
                                       totalInclVatInclReduction.toLocaleString('nl', {
                                           minimumFractionDigits: 2,
                                           maximumFractionDigits: 2,
                                       })
-                                    : '€0,00'
+                                    : '€ 0,00'
                             }
                         />
                         <ViewText
                             label={'Openstaand bedrag'}
                             value={
                                 amountOpen
-                                    ? '€' +
+                                    ? '€ ' +
                                       amountOpen.toLocaleString('nl', {
                                           minimumFractionDigits: 2,
                                           maximumFractionDigits: 2,
                                       })
-                                    : '€0,00'
+                                    : '€ 0,00'
                             }
                         />
                     </div>

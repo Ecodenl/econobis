@@ -137,7 +137,7 @@ const OrderDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Totaal bedrag incl. BTW'}
                             value={
-                                '€' +
+                                '€ ' +
                                 totalInclVatInclReductionPerYear.toLocaleString('nl', {
                                     minimumFractionDigits: 2,
                                     maximumFractionDigits: 2,

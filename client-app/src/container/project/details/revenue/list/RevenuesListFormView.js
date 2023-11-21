@@ -7,6 +7,7 @@ import Icon from 'react-icons-kit';
 import { eye } from 'react-icons-kit/fa/eye';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 
 const RevenuesListFormView = ({
     revenue: revenueDetails,
@@ -18,7 +19,7 @@ const RevenuesListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
-    const { id, confirmed, category, dateBegin, dateEnd, datePayed, type, revenue, kwhResult } = revenueDetails;
+    const { id, confirmed, category, dateBegin, dateEnd, datePayed, type, amountRevenue } = revenueDetails;
 
     return (
         <div
@@ -26,17 +27,17 @@ const RevenuesListFormView = ({
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
-            <div className="col-sm-1">{category ? category.name : ''}</div>
-            <div className="col-sm-2">{dateBegin ? moment(dateBegin).format('L') : ''}</div>
-            <div className="col-sm-2">{dateEnd ? moment(dateEnd).format('L') : ''}</div>
-            <div className="col-sm-2">{datePayed ? moment(datePayed).format('L') : ''}</div>
-            <div className="col-sm-2">{type ? type.name : ''}</div>
-            <div className="col-sm-1">{revenue ? revenue : ''}</div>
-            {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                <div className="col-sm-1">{kwhResult ? kwhResult : ''}</div>
-            ) : (
-                <div className="col-sm-1" />
-            )}
+            <div className="col-sm-2">{category ? category.name : ''}</div>
+            <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>
+                {dateBegin ? moment(dateBegin).format('L') : ''}
+            </div>
+            <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>
+                {dateEnd ? moment(dateEnd).format('L') : ''}
+            </div>
+            <div className="col-sm-1">{datePayed ? moment(datePayed).format('L') : ''}</div>
+            {projectTypeCodeRef !== 'loan' ? <div className="col-sm-2">{type ? type.name : ''}</div> : null}
+            <div className="col-sm-2">{confirmed ? 'Definitief' : 'Concept'}</div>
+            <div className="col-sm-2">{amountRevenue ? MoneyPresenter(amountRevenue) : ''}</div>
             <div className="col-sm-1">
                 {showActionButtons ? (
                     <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>

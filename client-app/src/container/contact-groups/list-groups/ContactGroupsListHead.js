@@ -25,8 +25,9 @@ const ContactGroupsListHead = props => {
                 <DataTableHeadTitleAndSort sortColumn={'name'} title={'Name'} width={'45%'} setSorts={setSorts} />
             )}
             <DataTableHeadTitle title={'Aantal leden'} width={'15%'} />
-            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'15%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'typeId'} title={'Type'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'typeId'} title={'Type'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitle title={'Eigenaar'} width={'10%'} />
             <DataTableHeadTitle title={''} width={'10%'} />
         </tr>
     );

@@ -413,7 +413,7 @@ class TwinfieldInvoicePaymentHelper
             $invoicePayment->in_progress = false;
             $invoicePayment->save();
 
-            $message = 'Betaling van €' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.';
+            $message = 'Betaling van € ' . $amount . ' toegevoegd via Twinfield voor nota ' . $invoiceToBeChecked->number . '.';
             TwinfieldLog::create([
                 'invoice_id' => $invoiceToBeChecked->id,
                 'contact_id' => null,
@@ -436,7 +436,7 @@ class TwinfieldInvoicePaymentHelper
                 $invoicePayment->in_progress = false;
                 $invoicePayment->save();
 
-                $message = 'Betaling van €' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was €' . $oldAmount . ' (datum ' . $oldDateInput . ').';
+                $message = 'Betaling van € ' . $amount . ' (datum ' . $dateInput . ') aangepast via Twinfield voor nota ' . $invoiceToBeChecked->number . '. Bedrag was € ' . $oldAmount . ' (datum ' . $oldDateInput . ').';
                 TwinfieldLog::create([
                     'invoice_id' => $invoiceToBeChecked->id,
                     'contact_id' => null,

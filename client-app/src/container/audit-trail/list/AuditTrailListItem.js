@@ -24,7 +24,7 @@ class AuditTrailListItem extends Component {
     }
 
     render() {
-        const { model, revisionableId, field, oldValue, newValue, changedBy, changedAt } = this.props;
+        const { model, revisionableId, field, oldValue, newValue, valueChanged, changedBy, changedAt } = this.props;
 
         return (
             <tr
@@ -35,8 +35,32 @@ class AuditTrailListItem extends Component {
                 <td>{model}</td>
                 <td>{revisionableId}</td>
                 <td>{field}</td>
-                <td>{oldValue ? oldValue : 'Null'}</td>
-                <td>{newValue ? newValue : 'Null'}</td>
+                <td>
+                    {valueChanged ? (
+                        oldValue ? (
+                            oldValue
+                        ) : (
+                            'Null'
+                        )
+                    ) : (
+                        <span style={{ color: 'green' }} title="Waarde is niet gewijzigd">
+                            {oldValue ? oldValue : 'Null'}
+                        </span>
+                    )}
+                </td>
+                <td>
+                    {valueChanged ? (
+                        newValue ? (
+                            newValue
+                        ) : (
+                            'Null'
+                        )
+                    ) : (
+                        <span style={{ color: 'green' }} title="Waarde is niet gewijzigd">
+                            {newValue ? newValue : 'Null'}
+                        </span>
+                    )}
+                </td>
                 <td>{changedBy ? changedBy.fullName : ''}</td>
                 <td>{moment(changedAt).format('L')}</td>
             </tr>

@@ -11,10 +11,10 @@ class CreateRevenuePartsKwhReportViewEmail extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.distributionId !== nextProps.distributionId) {
-            if (nextProps.distributionId) {
-                this.downloadEmail(nextProps.distributionId);
+    componentDidUpdate(prevProps) {
+        if (prevProps.distributionId !== this.props.distributionId) {
+            if (this.props.distributionId) {
+                this.downloadEmail(this.props.distributionId);
             }
         }
     }

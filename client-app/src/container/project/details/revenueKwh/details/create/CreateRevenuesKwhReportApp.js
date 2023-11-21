@@ -187,16 +187,25 @@ class CreateRevenuesKwhReportApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <CreateRevenuesKwhReportViewPdf
-                                        subject={this.props.reportPreview.subject}
-                                        documentTemplateId={this.props.reportPreview.templateId}
-                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
-                                        distributionId={this.state.distributionId}
-                                        isLoading={this.state.isLoading}
-                                        amountOfDistributions={
-                                            this.state.distributions ? this.state.distributions.length : -1
-                                        }
-                                    />
+                                    {this.state.isLoading ? (
+                                        <div>Gegevens aan het laden.</div>
+                                    ) : this.props.reportPreview.templateId ? (
+                                        <CreateRevenuesKwhReportViewPdf
+                                            subject={this.props.reportPreview.subject}
+                                            documentTemplateId={this.props.reportPreview.templateId}
+                                            emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                            distributionId={this.state.distributionId}
+                                            isLoading={this.state.isLoading}
+                                            amountOfDistributions={
+                                                this.state.distributions ? this.state.distributions.length : -1
+                                            }
+                                        />
+                                    ) : (
+                                        <div className="text-center text-danger">
+                                            Er is geen document template gekozen, er zal alleen een e-mail worden
+                                            verstuurd zonder PDF bijlage
+                                        </div>
+                                    )}
                                 </PanelBody>
                             </Panel>
                         </div>
@@ -205,16 +214,20 @@ class CreateRevenuesKwhReportApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <Panel>
                                 <PanelBody>
-                                    <CreateRevenuesKwhReportViewEmail
-                                        subject={this.props.reportPreview.subject}
-                                        documentTemplateId={this.props.reportPreview.templateId}
-                                        emailTemplateId={this.props.reportPreview.emailTemplateId}
-                                        distributionId={this.state.distributionId}
-                                        isLoading={this.state.isLoading}
-                                        amountOfDistributions={
-                                            this.state.distributions ? this.state.distributions.length : -1
-                                        }
-                                    />
+                                    {this.state.isLoading ? (
+                                        <div>Gegevens aan het laden.</div>
+                                    ) : (
+                                        <CreateRevenuesKwhReportViewEmail
+                                            subject={this.props.reportPreview.subject}
+                                            documentTemplateId={this.props.reportPreview.templateId}
+                                            emailTemplateId={this.props.reportPreview.emailTemplateId}
+                                            distributionId={this.state.distributionId}
+                                            isLoading={this.state.isLoading}
+                                            amountOfDistributions={
+                                                this.state.distributions ? this.state.distributions.length : -1
+                                            }
+                                        />
+                                    )}
                                 </PanelBody>
                             </Panel>
                         </div>

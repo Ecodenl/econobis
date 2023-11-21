@@ -15,6 +15,7 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -32,6 +33,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\FreeFields\FreeFieldsFieldRecordController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Http\Resources\Project\ProjectRegister;
@@ -146,6 +148,12 @@ class ContactController extends ApiController
             ]);
         }
         return $documentBody;
+    }
+
+    public function getValuesForPortal(Contact $contact)
+    {
+        $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
+        return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
     }
 
     public function getContactProjects(Contact $contact)
@@ -578,10 +586,10 @@ class ContactController extends ApiController
 
         $noteAddress = '';
         if($addressOld != null && $addressOld->ean_electricity != $address->ean_electricity){
-            $noteAddress = $noteAddress . "Oude EAN electriciteit: " . $addressOld->ean_electricity . "\n";
+            $noteAddress = $noteAddress . "Oude EAN elektriciteit: " . $addressOld->ean_electricity . "\n";
         }
         if( ($addressOld == null && $address != null && $address->ean_electricity != null) || ($addressOld != null && $address != null && $addressOld->ean_electricity != $address->ean_electricity)){
-            $noteAddress = $noteAddress . "Nieuwe EAN electriciteit: " . $address->ean_electricity . "\n";
+            $noteAddress = $noteAddress . "Nieuwe EAN elektriciteit: " . $address->ean_electricity . "\n";
         }
         if($addressOld != null && $address != null && $addressOld->ean_gas != $address->ean_gas){
             $noteAddress = $noteAddress . "Oude EAN gas: " . $addressOld->ean_gas . "\n";

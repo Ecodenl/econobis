@@ -468,12 +468,12 @@ class OrderProductsFormNew extends Component {
                                     name={'price'}
                                     value={
                                         this.state.productInputInclVat
-                                            ? '€' +
+                                            ? '€ ' +
                                               this.state.priceInclVat.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
                                                   maximumFractionDigits: this.state.priceNumberOfDecimals,
                                               })
-                                            : '€' +
+                                            : '€ ' +
                                               this.state.price.toLocaleString('nl', {
                                                   minimumFractionDigits: 2,
                                                   maximumFractionDigits: this.state.priceNumberOfDecimals,
@@ -497,7 +497,7 @@ class OrderProductsFormNew extends Component {
                                 label={'Totaalbedrag incl. BTW'}
                                 name={'totalPrice'}
                                 value={
-                                    '€' +
+                                    '€ ' +
                                     this.state.totalPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
                                         maximumFractionDigits: 2,

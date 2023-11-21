@@ -19,12 +19,12 @@ const InvoiceProductsFormView = props => {
                 <div className="col-sm-2">{amount ? amount : ''}</div>
                 <div className="col-sm-2">
                     {amountInclVatInclReduction
-                        ? '€' +
+                        ? '€ ' +
                           amountInclVatInclReduction.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                           })
-                        : '€0,00'}
+                        : '€ 0,00'}
                 </div>
                 <div className="col-sm-1">
                     {/*{props.showActionButtons &&*/}

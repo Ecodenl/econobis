@@ -11,21 +11,16 @@ class CreateRevenuePartsKwhReportViewPdf extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.distributionId !== nextProps.distributionId) {
-            if (nextProps.distributionId) {
-                this.downloadFile(nextProps.distributionId);
+    componentDidUpdate(prevProps) {
+        if (prevProps.distributionId !== this.props.distributionId) {
+            if (this.props.distributionId) {
+                this.downloadFile(this.props.distributionId);
             }
         }
     }
 
     downloadFile(distributionId, i = 0) {
-        RevenuePartsKwhAPI.downloadPreview(
-            distributionId,
-            this.props.subject,
-            this.props.documentTemplateId,
-            this.props.emailTemplateId
-        )
+        RevenuePartsKwhAPI.previewPDF(distributionId, this.props.subject, this.props.documentTemplateId)
             .then(payload => {
                 this.setState({
                     file: payload.data,

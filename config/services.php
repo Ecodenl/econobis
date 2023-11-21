@@ -48,10 +48,6 @@ return [
         're_captcha_server_side_key' => env('RE_CAPTCHA_SERVER_SIDE_KEY'),
     ],
 
-    'gmailapi' => [
-        'mailbox_id' => null,
-    ],
-
     'msoauthapi' => [
         'mailbox_id' => null,
     ],

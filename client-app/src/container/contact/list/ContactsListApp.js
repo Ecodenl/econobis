@@ -48,6 +48,8 @@ class ContactsListApp extends Component {
         this.handlePageClick = this.handlePageClick.bind(this);
         this.handleExtraFiltersChange = this.handleExtraFiltersChange.bind(this);
         this.getCSV = this.getCSV.bind(this);
+        this.getFreeFieldsCSV = this.getFreeFieldsCSV.bind(this);
+        this.getEnergySuppliersCSV = this.getEnergySuppliersCSV.bind(this);
         this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
     }
 
@@ -117,10 +119,55 @@ class ContactsListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
 
-            ContactsAPI.getCSV({ filters, extraFilters, sorts })
+            ContactsAPI.getCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
                     fileDownload(payload.data, 'Contacten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getFreeFieldsCSV = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
+            const filters = filterHelper(this.props.contactsFilters);
+            const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
+
+            ContactsAPI.getFreeFieldsCSV({ filters, extraFilters, sorts, filterType })
+                .then(payload => {
+                    fileDownload(
+                        payload.data,
+                        'Contacten-Vrije-Velden-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getEnergySuppliersCSV = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const extraFilters = this.state.extraFilters;
+            const filters = filterHelper(this.props.contactsFilters);
+            const sorts = this.props.contactsSorts;
+            const filterType = this.state.filterType;
+
+            ContactsAPI.getEnergySuppliersCSV({ filters, extraFilters, sorts, filterType })
+                .then(payload => {
+                    fileDownload(
+                        payload.data,
+                        'Contacten-energieleveranciers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -185,11 +232,11 @@ class ContactsListApp extends Component {
 
                 ContactsAPI.getExcelAddressEnergyConsumptionElectricity({ filters, extraFilters, sorts, pagination })
                     .then(payload => {
-                        var excelFileName = `Contacten-verbruik-electriciteit-${moment().format(
+                        var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
                             'YYYY-MM-DD HH:mm:ss'
                         )}.xlsx`;
                         if (splitsExcel) {
-                            var excelFileName = `Contacten-verbruik-electriciteit-${moment().format(
+                            var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
                                 'YYYY-MM-DD HH:mm:ss'
                             )} (${counter} van ${amountFiles}).xlsx`;
                         }
@@ -295,6 +342,8 @@ class ContactsListApp extends Component {
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 getCSV={this.getCSV}
+                                getFreeFieldsCSV={this.getFreeFieldsCSV}
+                                getEnergySuppliersCSV={this.getEnergySuppliersCSV}
                                 getExcelAddressEnergyConsumptionGas={this.getExcelAddressEnergyConsumptionGas}
                                 getExcelAddressEnergyConsumptionElectricity={
                                     this.getExcelAddressEnergyConsumptionElectricity

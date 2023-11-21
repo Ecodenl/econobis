@@ -4,7 +4,6 @@ namespace App\Console\Commands;
 
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Mailbox\MailFetcher;
-use App\Eco\Mailbox\MailFetcherGmail;
 use App\Eco\Mailbox\MailFetcherMsOauth;
 use App\Eco\Schedule\CommandRun;
 use Carbon\Carbon;
@@ -57,9 +56,7 @@ class checkMailboxes extends Command
         $mailboxes = Mailbox::where('valid', 0)->where('is_active', 1)->where('login_tries', '<', 5)->get();
         foreach ($mailboxes as $mailbox) {
             //In construct wordt gelijk valid gekeken
-            if ($mailbox->incoming_server_type === 'gmail') {
-                new MailFetcherGmail($mailbox);
-            } else if ($mailbox->incoming_server_type === 'ms-oauth') {
+            if ($mailbox->incoming_server_type === 'ms-oauth') {
                 new MailFetcherMsOauth($mailbox);
             } else if ($mailbox->incoming_server_type !== 'mailgun'){
                 new MailFetcher($mailbox);

@@ -39,22 +39,22 @@ const OrderProductsFormView = props => {
                 <div className="col-sm-1">{amount ? amount : ''}</div>
                 <div className="col-sm-2">
                     {amountInclReductionInclVat
-                        ? '€' +
+                        ? '€ ' +
                           amountInclReductionInclVat.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                           })
-                        : '€0,00'}
+                        : '€ 0,00'}
                 </div>
                 <div className="col-sm-2">{product.invoiceFrequency ? product.invoiceFrequency.name : ''}</div>
                 <div className="col-sm-1">
                     {amountInclReductionInclVatPerYear
-                        ? '€' +
+                        ? '€ ' +
                           amountInclReductionInclVatPerYear.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: 2,
                           })
-                        : '€0,00'}
+                        : '€ 0,00'}
                 </div>
                 <div className={`col-sm-1`}>{dateStart ? moment(dateStart).format('L') : ''}</div>
                 <div className={`col-sm-1 ${classTextNotActiveAnymore}`}>
@@ -64,14 +64,16 @@ const OrderProductsFormView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.openEdit}>
-                        <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
+                        <Icon className="mybtn-success" size={14} icon={pencil} />
+                        &nbsp;
                     </a>
                 ) : (
                     ''
                 )}
                 {props.showActionButtons && props.permissions.manageFinancial ? (
                     <a role="button" onClick={props.toggleDelete}>
-                        <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
+                        <Icon className="mybtn-danger" size={14} icon={trash} />
+                        &nbsp;
                     </a>
                 ) : (
                     ''

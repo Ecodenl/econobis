@@ -170,7 +170,7 @@ class HousingFileSpecificationsListItem extends Component {
                 {!showCheckboxList && showMore && savingsElectricity ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
-                        <td>Besparing electriciteit:</td>
+                        <td>Besparing elektriciteit:</td>
                         <td colSpan={'4'}>{savingsElectricity}</td>
                     </tr>
                 ) : null}

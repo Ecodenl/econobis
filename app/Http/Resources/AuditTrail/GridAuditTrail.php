@@ -24,6 +24,7 @@ class GridAuditTrail extends JsonResource
             'field' => $this->key,
             'oldValue' => $this->old_value,
             'newValue' => $this->new_value,
+            'valueChanged' => $this->value_changed,
             'changedBy' => FullUser::make($this->whenLoaded('user')),
             'changedAt' => $this->updated_at,
         ];

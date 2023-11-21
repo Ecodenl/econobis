@@ -60,26 +60,25 @@ export default {
         return axiosInstance.post(requestUrl, {
             distributionIds: distributionIds,
             datePayout: datePayout,
-            description : description
+            description: description,
         });
     },
 
-    downloadPreview: (id, subject, documentTemplateId, emailTemplateId) => {
-        const requestUrl = `distribution/${id}/download-preview`;
+    previewPDF: (id, subject, documentTemplateId) => {
+        const requestUrl = `distribution/${id}/preview-pdf`;
 
         return axiosInstance.post(
             requestUrl,
-            { subject: subject, documentTemplateId: documentTemplateId, emailTemplateId: emailTemplateId },
+            { subject: subject, documentTemplateId: documentTemplateId },
             { responseType: 'blob' }
         );
     },
 
-    previewEmail: (id, subject, documentTemplateId, emailTemplateId) => {
+    previewEmail: (id, subject, emailTemplateId) => {
         const requestUrl = `distribution/${id}/preview-email`;
 
         return axiosInstance.post(requestUrl, {
             subject: subject,
-            documentTemplateId: documentTemplateId,
             emailTemplateId: emailTemplateId,
         });
     },

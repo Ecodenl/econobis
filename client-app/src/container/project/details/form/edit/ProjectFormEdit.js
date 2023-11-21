@@ -50,23 +50,28 @@ class ProjectFormEdit extends Component {
                     props.project.requiresContactGroups.map(requiresContactGroup => requiresContactGroup.id).join(','),
                 contactGroupIdsSelected: props.project.requiresContactGroups ? props.project.requiresContactGroups : [],
                 allowChangeDateInterestBearingKwh:
-                    (props.project.dateInterestBearingKwhWrong != null && props.project.dateInterestBearingKwhWrong != undefined)
+                    props.project.dateInterestBearingKwhWrong != null &&
+                    props.project.dateInterestBearingKwhWrong != undefined
                         ? props.project.dateInterestBearingKwhWrong
                         : false,
                 allowChangeDateInterestBearing:
-                    (props.project.dateInterestBearingWrong != null && props.project.dateInterestBearingWrong != undefined)
+                    props.project.dateInterestBearingWrong != null &&
+                    props.project.dateInterestBearingWrong != undefined
                         ? props.project.dateInterestBearingWrong
                         : false,
                 allowChangeDateInterestBearingRedemption:
-                    (props.project.dateInterestBearingRedemptionWrong != null && props.project.dateInterestBearingRedemptionWrong != undefined)
+                    props.project.dateInterestBearingRedemptionWrong != null &&
+                    props.project.dateInterestBearingRedemptionWrong != undefined
                         ? props.project.dateInterestBearingRedemptionWrong
                         : false,
                 allowChangeKwhStartHighNextRevenue:
-                    (props.project.kwhStartHighNextRevenueWrong != null && props.project.kwhStartHighNextRevenueWrong != undefined)
+                    props.project.kwhStartHighNextRevenueWrong != null &&
+                    props.project.kwhStartHighNextRevenueWrong != undefined
                         ? props.project.kwhStartHighNextRevenueWrong
                         : false,
                 allowChangeKwhStartLowNextRevenue:
-                    (props.project.kwhStartLowNextRevenueWrong != null && props.project.kwhStartLowNextRevenueWrong != undefined)
+                    props.project.kwhStartLowNextRevenueWrong != null &&
+                    props.project.kwhStartLowNextRevenueWrong != undefined
                         ? props.project.kwhStartLowNextRevenueWrong
                         : false,
             },
@@ -170,7 +175,7 @@ class ProjectFormEdit extends Component {
             let documentTemplates = [];
 
             payload.forEach(function(documentTemplate) {
-                if (documentTemplate.group == 'registration') {
+                if (documentTemplate.group === 'registration') {
                     documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
                 }
             });
@@ -237,7 +242,7 @@ class ProjectFormEdit extends Component {
         } else {
             let administration;
             administration = this.props.administrations.filter(
-                administration => administration.id == this.props.project.administrationId
+                administration => administration.id === this.props.project.administrationId
             );
             administration = administration[0];
             if (administration && administration.lastYearFinancialOverviewDefinitive) {
@@ -705,7 +710,7 @@ class ProjectFormEdit extends Component {
 
         if (!hasErrors) {
             this.setState({ isSaving: true });
-            ProjectDetailsAPI.updateProject(project.id, project).then(payload => {
+            ProjectDetailsAPI.updateProject(project.id, project).then(() => {
                 this.setState({ isSaving: false });
                 this.props.fetchProject(project.id);
                 this.props.switchToView();

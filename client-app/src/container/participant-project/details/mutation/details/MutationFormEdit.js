@@ -24,7 +24,6 @@ const MutationFormEdit = ({
     cancelDetails,
     participantMutationStatuses,
     participantProjectDateRegister,
-    participantInDefinitiveRevenue,
     participantBelongsToMembershipGroup,
     participantChoiceMembership,
     projectDateInterestBearingKwh,
@@ -94,7 +93,6 @@ const MutationFormEdit = ({
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
                             participantProjectDateRegister={participantProjectDateRegister}
-                            participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                             participantBelongsToMembershipGroup={participantBelongsToMembershipGroup}
                             participantChoiceMembership={participantChoiceMembership}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
@@ -114,7 +112,6 @@ const MutationFormEdit = ({
                             cancelDetails={cancelDetails}
                             buttonText={buttonTextSubmit}
                             handleSubmit={handleSubmit}
-                            participantInDefinitiveRevenue={participantInDefinitiveRevenue}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
@@ -148,7 +145,6 @@ const mapStateToProps = state => {
         projectTransactionCostsCodeRef: state.participantProjectDetails.project?.transactionCostsCodeRef,
         projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
-        participantInDefinitiveRevenue: state.participantProjectDetails.participantInDefinitiveRevenue,
         participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
         participantChoiceMembership: state.participantProjectDetails.participantChoiceMembership,
         projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,

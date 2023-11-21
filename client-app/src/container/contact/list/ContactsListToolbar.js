@@ -10,8 +10,8 @@ import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
 import { share } from 'react-icons-kit/fa/share';
 
-import ContactsMergeSelectedItems from "./ContactsMergeSelectedItems";
-import Icon from "react-icons-kit";
+import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
+import Icon from 'react-icons-kit';
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -137,6 +137,20 @@ class ContactsListToolbar extends Component {
                                 title="Downloaden contacten naar CSV"
                             />
                         )}
+                        {permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.props.getFreeFieldsCSV}
+                                title="Downloaden vrije velden van contacten naar CSV"
+                            />
+                        )}
+                        {permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.props.getEnergySuppliersCSV}
+                                title="Downloaden contacten energieleveranciers gegevens naar CSV"
+                            />
+                        )}
                         {permissions.import && (
                             <ButtonIcon
                                 iconName={'upload'}
@@ -150,7 +164,7 @@ class ContactsListToolbar extends Component {
                                     role="button"
                                     className={'btn btn-success btn-sm'}
                                     onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
-                                    title="Downloaden electriciteit verbruik"
+                                    title="Downloaden elektriciteit verbruik"
                                 >
                                     <FaRegLightbulb width={'13px'} height={'12px'} />
                                 </a>
@@ -184,7 +198,11 @@ class ContactsListToolbar extends Component {
                     <ContactListAddContactsToGroup toggleAddGroup={this.toggleAddContactsToGroup} />
                 )}
                 {this.state.showMergeSelectedItems && (
-                    <ContactsMergeSelectedItems toggleShowMergeSelectedItems={this.toggleShowMergeSelectedItems} contacts={this.props.contacts} fetchContactsData={this.props.fetchContactsData} />
+                    <ContactsMergeSelectedItems
+                        toggleShowMergeSelectedItems={this.toggleShowMergeSelectedItems}
+                        contacts={this.props.contacts}
+                        fetchContactsData={this.props.fetchContactsData}
+                    />
                 )}
             </div>
         );

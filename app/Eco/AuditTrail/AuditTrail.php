@@ -2,17 +2,10 @@
 
 namespace App\Eco\AuditTrail;
 
-use App\Eco\Contact\Contact;
-use App\Eco\Measure\Measure;
-use App\Eco\Opportunity\Opportunity;
-use App\Eco\Organisation\Organisation;
-use App\Eco\Intake\Intake;
-use App\Eco\Task\Task;
 use App\Eco\User\User;
 use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Crypt;
-use Venturecraft\Revisionable\RevisionableTrait;
 
 class AuditTrail extends Model
 {
@@ -35,7 +28,7 @@ class AuditTrail extends Model
         }
 
         // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
+        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'api_key' || $this->key == 'mollie_api_key') && trim($decryptedValue) == '' ) {
             return '';
         }
 
@@ -53,11 +46,31 @@ class AuditTrail extends Model
             $decryptedValue = $value;
         }
 
-        // Indien IBAN leeg is, dan niet ge-encrypte waarde tonen
-        if(($this->key == 'iban' || $this->key == 'IBAN') && trim($decryptedValue) == '' ) {
+        // Indien IBAN of API key leeg is, dan niet ge-encrypte waarde tonen
+        if(($this->key == 'iban' || $this->key == 'IBAN' || $this->key == 'api_key' || $this->key == 'mollie_api_key') && trim($decryptedValue) == '' ) {
             return '';
         }
         return $value;
+    }
+
+    public function getValueChangedAttribute()
+    {
+        $decryptedOldValue = $this->old_value;
+        $decryptedNewValue = $this->new_value;
+
+        try {
+            if($this->old_value) {
+                $decryptedOldValue = Crypt::decrypt($this->old_value);
+            }
+            if($this->old_value) {
+                $decryptedNewValue = Crypt::decrypt($this->new_value);
+            }
+        } catch (DecryptException $e) {
+            $decryptedOldValue = $this->old_value;
+            $decryptedNewValue = $this->new_value;
+        }
+
+        return $decryptedOldValue != $decryptedNewValue;
     }
 
 }

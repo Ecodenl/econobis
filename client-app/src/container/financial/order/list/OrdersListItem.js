@@ -70,7 +70,7 @@ class OrdersListItem extends Component {
                 <td>{subject ? subject : ''}</td>
                 <td>{contact ? contact.fullName : ''}</td>
                 <td className={`${totalInclVatInclReductionPerYear <= 0 ? 'warning-td' : ''}`}>
-                    {'€' +
+                    {'€ ' +
                         totalInclVatInclReductionPerYear.toLocaleString('nl', {
                             minimumFractionDigits: 2,
                             maximumFractionDigits: 2,
@@ -81,14 +81,16 @@ class OrdersListItem extends Component {
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
                     )}
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, subject)}>
-                            <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''

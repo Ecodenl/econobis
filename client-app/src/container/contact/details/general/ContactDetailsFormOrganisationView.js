@@ -60,7 +60,16 @@ const ContactDetailsFormOrganisationView = props => {
             </div>
 
             <div className="row">
-                <ViewText className={'col-xs-12'} label="Website" value={organisation.website} />
+                <ViewText
+                    className={'col-xs-12'}
+                    label="Website"
+                    value={organisation.website}
+                    url={
+                        organisation.website.startsWith('http')
+                            ? organisation.website
+                            : 'http://' + organisation.website
+                    }
+                />
             </div>
 
             <div className="row">

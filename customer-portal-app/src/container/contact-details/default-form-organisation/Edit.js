@@ -511,14 +511,14 @@ const DefaultContactOrganisationEdit = function({
                                     : 'field-label'
                             }
                         >
-                            EAN nummer electriciteit
+                            EAN nummer elektriciteit
                         </FormLabel>
                         {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
                         !isEmpty(values.visitAddress.eanElectricity + '') ? (
                             <Row>
                                 <Col xs={12} sm={12}>
                                     <small className={'text-danger'}>
-                                        EAN nummer electriciteit wordt alleen opgeslagen als minimaal nummer en postcode
+                                        EAN nummer elektriciteit wordt alleen opgeslagen als minimaal nummer en postcode
                                         zijn ingevuld bij bezoekadres.
                                     </small>
                                 </Col>
@@ -535,7 +535,7 @@ const DefaultContactOrganisationEdit = function({
                                             errors={errors}
                                             touched={touched}
                                             id="ean_electricity"
-                                            placeholder={'EAN nummer electriciteit'}
+                                            placeholder={'EAN nummer elektriciteit'}
                                         />
                                     )}
                                 </Field>

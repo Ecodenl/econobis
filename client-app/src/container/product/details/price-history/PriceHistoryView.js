@@ -17,7 +17,7 @@ const PriceHistoryView = props => {
             ) : (
                 <div className="col-sm-3">
                     {price
-                        ? '€' +
+                        ? '€ ' +
                           price.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: priceNumberOfDecimals,
@@ -31,7 +31,7 @@ const PriceHistoryView = props => {
             ) : (
                 <div className="col-sm-2">
                     {priceInclVat
-                        ? '€' +
+                        ? '€ ' +
                           priceInclVat.toLocaleString('nl', {
                               minimumFractionDigits: 2,
                               maximumFractionDigits: priceNumberOfDecimals,

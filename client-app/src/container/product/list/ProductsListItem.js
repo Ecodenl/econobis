@@ -59,7 +59,7 @@ class ProductsListItem extends Component {
                 ) : (
                     <td>
                         {currentPrice
-                            ? '€' +
+                            ? '€ ' +
                               currentPrice.price.toLocaleString('nl', {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: currentPrice.priceNumberOfDecimals,
@@ -73,7 +73,7 @@ class ProductsListItem extends Component {
                 ) : (
                     <td>
                         {currentPrice
-                            ? '€' +
+                            ? '€ ' +
                               currentPrice.priceInclVat.toLocaleString('nl', {
                                   minimumFractionDigits: 2,
                                   maximumFractionDigits: currentPrice.priceNumberOfDecimals,

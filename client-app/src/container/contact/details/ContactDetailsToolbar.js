@@ -10,6 +10,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
+import { Link } from 'react-router';
 
 function ContactDetailsToolbar({
     permissions,
@@ -22,6 +23,7 @@ function ContactDetailsToolbar({
     numberOfActions,
     cooperation,
     isLoading,
+    occupations,
 }) {
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
@@ -65,15 +67,30 @@ function ContactDetailsToolbar({
                             </div>
                         </div>
                         {!isLoading && (
-                            <div className="col-md-4">
-                                <h4 className="text-center text-success margin-small">
-                                    <strong>
-                                        {fullName || 'Nieuw'} ({type && type.name})
-                                    </strong>
-                                </h4>
-                            </div>
+                            <>
+                                <div className="col-md-4">
+                                    <h4 className="text-center text-success margin-small">
+                                        <strong>
+                                            {fullName || 'Nieuw'} ({type && type.name})
+                                        </strong>
+                                    </h4>
+                                </div>
+                                <div className="col-md-4 text-right align-middle">
+                                    {occupations
+                                        ? occupations.map(s =>
+                                              s.primary ? (
+                                                  <Link
+                                                      to={`/contact/${s.primaryContact.id}`}
+                                                      className="link-underline margin-10-right"
+                                                  >
+                                                      {s.primaryContact.fullName}
+                                                  </Link>
+                                              ) : null
+                                          )
+                                        : null}
+                                </div>
+                            </>
                         )}
-                        <div className="col-md-4" />
                     </PanelBody>
                 </Panel>
             </div>
@@ -106,6 +123,7 @@ const mapStateToProps = state => {
         cooperation: state.systemData.cooperation,
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
+        occupations: state.contactDetails.occupations,
     };
 };
 

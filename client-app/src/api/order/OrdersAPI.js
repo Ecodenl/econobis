@@ -3,7 +3,7 @@ import axiosInstance from '../default-setup/AxiosInstance';
 const URL_ORDER = `${URL_API}/api/order`;
 
 export default {
-    fetchOrders: ({ filters, sorts, pagination, administrationId }) => {
+    fetchOrders: ({ filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines }) => {
         const requestUrl = `${URL_ORDER}/grid`;
 
         return axiosInstance.get(requestUrl, {
@@ -13,6 +13,7 @@ export default {
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
+                showOrdersWithoutOrderlines: showOrdersWithoutOrderlines,
             },
         });
     },
@@ -30,14 +31,14 @@ export default {
             });
     },
 
-    peekOrdersForContacts: (contactIds) => {
+    peekOrdersForContacts: contactIds => {
         const requestUrl = `${URL_ORDER}/peek`;
 
         return axiosInstance
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;

@@ -64,8 +64,7 @@ class MailFetcher
             $mailIds = $this->imap->searchMailbox('SINCE "'.$dateLastFetched.'"');
 //            Log::info("Search since " . $dateLastFetched . ": " . implode(',', $mailIds));
         } catch(\PhpImap\Exceptions\ConnectionException $ex) {
-            Log::error("IMAP connection failed: " . $ex);
-//            echo "IMAP connection failed: " . $ex;
+            Log::error("IMAP connection failed (mailbox: " . $this->mailbox->id . "): " . $ex);
             $this->mailbox->start_fetch_mail = null;
             $this->mailbox->save();
             die();
@@ -74,8 +73,7 @@ class MailFetcher
                 $mailIds = $this->imap->searchMailbox('ALL');
 //                Log::info("Search ALL : " . implode(',', $mailIds));
             } catch(\PhpImap\Exceptions\ConnectionException $ex3) {
-                Log::error("IMAP connection failed: " . $ex3);
-//                echo "IMAP connection failed: " . $ex3;
+                Log::error("IMAP connection failed (mailbox: " . $this->mailbox->id . "): " . $ex3);
                 $this->mailbox->start_fetch_mail = null;
                 $this->mailbox->save();
                 die();
@@ -126,10 +124,10 @@ class MailFetcher
         $emailData = $this->imap->getMail($mailId, $this->mailbox->email_mark_as_seen);
 //        dd($emailData);
 
-        // geen fromAddress, dan slaan we ook niets op.
+        // geen fromAddress, dan melding
         if(!$emailData->fromAddress){
             Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
-            return;
+//            return;
         }
 
         try {
@@ -193,7 +191,7 @@ class MailFetcher
 
         $email = new Email([
             'mailbox_id' => $this->mailbox->id,
-            'from' => $emailData->fromAddress,
+            'from' => $emailData->fromAddress ?: '',
             'to' => array_keys($emailData->to),
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),

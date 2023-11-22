@@ -152,10 +152,11 @@ class MailFetcherMsOauth
     private function fetchEmail(Message $message)
     {
         $from = $message->getFrom()->getEmailAddress()->getAddress();
-        // geen fromAddress, dan slaan we ook niets op.
+        // geen fromAddress, dan melding
         if(!$from){
             Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
-            return;
+            $from = '';
+//            return;
         }
 
         $tos = [];
@@ -236,8 +237,8 @@ class MailFetcherMsOauth
             'date_sent' => $sentDateTime,
             'folder' => 'inbox',
             'imap_id' => null,
-            'msoauth_message_id' => $message->getId(),
-            'message_id' => $message->getInternetMessageId(),
+            'msoauth_message_id' => $message->getId() ?: '',
+            'message_id' => $message->getInternetMessageId() ?: '',
             'status' => 'unread'
         ]);
         $email->save();

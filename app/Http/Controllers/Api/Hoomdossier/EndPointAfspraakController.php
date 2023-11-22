@@ -60,13 +60,16 @@ class EndPointAfspraakController extends EndPointHoomDossierController
         if(!$this->cooperation->hoomCampaigns) {
             $this->error('Geen Hoomdossier campagnes voor cooperatie gevonden', 404);
         }
+        if(!isset($dataContent->coaches)) {
+            $this->error('Geen coaches tag meegegeven', 404);
+        }
         if(!$dataContent->coaches) {
             $this->error('Geen coach meegegeven', 404);
         }
         $firstCoachId = $dataContent->coaches[0]->contact_id;
         $coach = Contact::find($firstCoachId);
         if(!$coach || !$coach->isCoach()) {
-            $this->error('Gekoppelde coach is geen coach in Econobis', 404);
+            $this->error('Gekoppelde coach (' . $firstCoachId . ') is geen coach in Econobis', 404);
         } else {
             $this->coach = $coach;
         }

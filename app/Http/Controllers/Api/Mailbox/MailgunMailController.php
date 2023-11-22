@@ -24,7 +24,7 @@ class MailgunMailController
 
         $from = $request->getFrom();
         if(!$from){
-            Log::info("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
+            Log::error("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
             return;
         }
         $email = new Email([

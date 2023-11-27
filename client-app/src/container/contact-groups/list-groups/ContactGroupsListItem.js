@@ -93,7 +93,7 @@ class ContactGroupsListItem extends Component {
                 </td>
                 <td>{closedStatus}</td>
                 <td>{type ? type.name : ''}</td>
-                <td>{createdByName ? createdByName : 'test'}</td>
+                <td>{createdByName ? createdByName : ' '}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageGroup ? (
                         <a role="button" onClick={() => this.openItem(id)}>

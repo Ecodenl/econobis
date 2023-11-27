@@ -13,6 +13,11 @@ export const setFilterContactGroupTypeId = typeId => ({
     typeId,
 });
 
+export const setFilterContactGroupCreatedById = createdById => ({
+    type: 'SET_FILTER_CONTACT_GROUP_CREATED_BY_ID',
+    createdById,
+});
+
 export const clearFilterContactGroups = () => ({
     type: 'CLEAR_FILTER_CONTACT_GROUPS',
 });

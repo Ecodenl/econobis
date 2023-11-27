@@ -17,23 +17,25 @@ class Filter extends RequestFilter
         'name',
         'status',
         'typeId',
-          ];
+        'createdById',
+    ];
 
     protected $mapping = [
         'name' => 'contact_groups.name',
         'status' => 'contact_groups.closed',
         'typeId' => 'contact_groups.type_id',
+        'createdById' => 'contact_groups.created_by_id',
     ];
 
     protected $joins = [];
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'createdById' => 'eq',
     ];
 
     protected function applyAmountOfMembersFilter($query, $type, $data)
     {
 
     }
-
 }

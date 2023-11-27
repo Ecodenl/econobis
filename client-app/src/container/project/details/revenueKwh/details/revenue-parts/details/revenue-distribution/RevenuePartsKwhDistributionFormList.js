@@ -21,7 +21,7 @@ const RevenuePartsKwhDistributionFormList = props => {
                         {/*    </div>*/}
                         {/*) : null}*/}
                         <div className="col-sm-1">
-                            {props.revenuePartsKwh.status == 'confirmed' && props.showCheckboxList ? (
+                            {props.showCheckboxList ? (
                                 <input type="checkbox" onChange={props.toggleCheckedAll} checked={props.checkedAll} />
                             ) : (
                                 'Type'

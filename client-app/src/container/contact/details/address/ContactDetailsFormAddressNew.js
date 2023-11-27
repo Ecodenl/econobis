@@ -352,7 +352,7 @@ class ContactDetailsFormAddressNew extends Component {
 
                         <div className="row">
                             <InputText
-                                label={'EAN electriciteit'}
+                                label={'EAN elektriciteit'}
                                 id={'eanElectricity'}
                                 name={'eanElectricity'}
                                 value={eanElectricity}

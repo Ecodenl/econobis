@@ -586,10 +586,10 @@ class ContactController extends ApiController
 
         $noteAddress = '';
         if($addressOld != null && $addressOld->ean_electricity != $address->ean_electricity){
-            $noteAddress = $noteAddress . "Oude EAN electriciteit: " . $addressOld->ean_electricity . "\n";
+            $noteAddress = $noteAddress . "Oude EAN elektriciteit: " . $addressOld->ean_electricity . "\n";
         }
         if( ($addressOld == null && $address != null && $address->ean_electricity != null) || ($addressOld != null && $address != null && $addressOld->ean_electricity != $address->ean_electricity)){
-            $noteAddress = $noteAddress . "Nieuwe EAN electriciteit: " . $address->ean_electricity . "\n";
+            $noteAddress = $noteAddress . "Nieuwe EAN elektriciteit: " . $address->ean_electricity . "\n";
         }
         if($addressOld != null && $address != null && $addressOld->ean_gas != $address->ean_gas){
             $noteAddress = $noteAddress . "Oude EAN gas: " . $addressOld->ean_gas . "\n";

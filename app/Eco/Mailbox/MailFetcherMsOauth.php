@@ -154,7 +154,7 @@ class MailFetcherMsOauth
         $from = $message->getFrom()->getEmailAddress()->getAddress();
         // geen fromAddress, dan slaan we ook niets op.
         if(!$from){
-            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
+            Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", message_id: " . $message->getInternetMessageId() . ").");
             return;
         }
 

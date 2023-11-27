@@ -20,12 +20,7 @@ class CreateRevenuesKwhReportViewEmail extends Component {
     }
 
     downloadEmail(distributionId) {
-        RevenuesKwhAPI.previewEmail(
-            distributionId,
-            this.props.subject,
-            this.props.documentTemplateId,
-            this.props.emailTemplateId
-        ).then(payload => {
+        RevenuesKwhAPI.previewEmail(distributionId, this.props.subject, this.props.emailTemplateId).then(payload => {
             this.setState({
                 email: payload.data,
             });

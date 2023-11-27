@@ -20,8 +20,8 @@ const InvoicePaymentsFormView = props => {
                 <div className="col-sm-3">{datePaid ? moment(datePaid).format('L') : ''}</div>
                 <div className="col-sm-2">
                     {amount
-                        ? '€' + amount.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                        : '€0,00'}
+                        ? '€ ' + amount.toLocaleString('nl', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                        : '€ 0,00'}
                 </div>
                 <div className="col-sm-3">{paymentReference ? paymentReference : ''}</div>
                 <div className="col-sm-3">{createdAt ? moment(createdAt).format('L') : ''}</div>

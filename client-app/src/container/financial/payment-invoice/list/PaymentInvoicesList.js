@@ -117,10 +117,7 @@ class PaymentInvoicesList extends Component {
                 <div className="row">
                     <div className="col-md-4">
                         <div className="btn-group btn-group-flex" role="group">
-                            <ButtonIcon
-                                iconName={'refresh'}
-                                onClickAction={this.resetPaymentInvoiceFilters}
-                            />
+                            <ButtonIcon iconName={'refresh'} onClickAction={this.resetPaymentInvoiceFilters} />
                         </div>
                     </div>
                     <div className="col-md-4">
@@ -135,12 +132,12 @@ class PaymentInvoicesList extends Component {
                                 <div className="pull-right">
                                     Totaal:{' '}
                                     {meta.totalPrice
-                                        ? '€' +
+                                        ? '€ ' +
                                           meta.totalPrice.toLocaleString('nl', {
                                               minimumFractionDigits: 2,
                                               maximumFractionDigits: 2,
                                           })
-                                        : '€0,00'}
+                                        : '€ 0,00'}
                                 </div>
                             </div>
                         </div>

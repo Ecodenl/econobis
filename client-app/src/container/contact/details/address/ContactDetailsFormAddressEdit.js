@@ -181,7 +181,7 @@ const ContactDetailsFormAddressEdit = props => {
                         </div>
                         <div className="row">
                             <InputText
-                                label={'EAN electriciteit'}
+                                label={'EAN elektriciteit'}
                                 id={'eanElectricity'}
                                 name={'eanElectricity'}
                                 value={eanElectricity}

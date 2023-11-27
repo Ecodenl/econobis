@@ -36,18 +36,25 @@ use Illuminate\Support\Facades\Log;
 class OrderController extends ApiController
 {
 
-    public function grid(RequestQuery $requestQuery)
+    public function grid(RequestQuery $requestQuery,Request $request)
     {
         $this->authorize('view', Order::class);
 
-        $orders = $requestQuery->get();
+        if($request['showOrdersWithoutOrderlines'] === "true") {
+            $orders = $requestQuery->get();
+            $orderIdsTotal = $requestQuery->totalIds();
+        } else {
+            $orders = $requestQuery->getQuery()->has('orderProducts')->get();
+            $orderIdsTotal = $requestQuery->getQuery()->has('orderProducts')->pluck('id');
+        }
+
 
         $orders->load(['contact']);
 
         return GridOrder::collection($orders)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
-                'orderIdsTotal' => $requestQuery->totalIds(),
+                'orderIdsTotal' => $orderIdsTotal,
             ]
         ]);
     }

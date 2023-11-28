@@ -128,7 +128,7 @@ class MailFetcher
 
         // geen fromAddress, dan slaan we ook niets op.
         if(!$emailData->fromAddress){
-            Log::info("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
+            Log::error("Email zonder from (mailbox: " . $this->mailbox->id . ", imap_id: " . $emailData->id . ").");
             return;
         }
 

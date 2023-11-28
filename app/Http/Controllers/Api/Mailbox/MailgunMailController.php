@@ -32,8 +32,8 @@ class MailgunMailController
         $email = new Email([
             'mailbox_id' => $mailbox->id,
             'from' => $from,
-            'to' => $request->getTo() ?? '',
-            'cc' => $request->getCc() ?? '',
+            'to' => $request->getTo() ?? [],
+            'cc' => $request->getCc() ?? [],
             'bcc' => [],
             'subject' => $request->input('subject') ?? '',
             'html_body' => $request->getHtmlBody() ?? '',

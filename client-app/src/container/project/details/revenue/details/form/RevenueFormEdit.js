@@ -848,15 +848,17 @@ class RevenueFormEdit extends Component {
                                         error={this.state.errors.payPercentage}
                                         errorMessage={this.state.errorMessage.payPercentage}
                                     />
-                                    <InputText
-                                        type={'number'}
-                                        label={'of uitkeringsbedrag per deelname'}
-                                        name={'payAmount'}
-                                        value={payAmount}
-                                        onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.payAmount}
-                                        errorMessage={this.state.errorMessage.payAmount}
-                                    />
+                                    {projectTypeCodeRef === 'obligation' ? (
+                                        <InputText
+                                            type={'number'}
+                                            label={'of uitkeringsbedrag per deelname'}
+                                            name={'payAmount'}
+                                            value={payAmount}
+                                            onChangeAction={this.handleInputChange}
+                                            error={this.state.errors.payAmount}
+                                            errorMessage={this.state.errorMessage.payAmount}
+                                        />
+                                    ) : null}
                                 </div>
                                 <div className="row">
                                     <InputText
@@ -968,6 +970,23 @@ class RevenueFormEdit extends Component {
                                 ? 'Als je deze datum invult, zal de aflossing definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'
                                 : 'Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'}
                         </p>
+                        {(!payPercentage || payPercentage == 0) &&
+                        (!payAmount || payAmount == 0) &&
+                        (!payPercentageValidFromKeyAmount || payPercentageValidFromKeyAmount == 0) ? (
+                            category.codeRef === 'redemptionEuro' ? (
+                                <p>
+                                    <span style={{ color: 'red' }}>Aflossing is 0 !!</span>
+                                </p>
+                            ) : projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                                <p>
+                                    <span style={{ color: 'red' }}>Uitkering (rente) is 0 !!</span>
+                                </p>
+                            ) : projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                                <p>
+                                    <span style={{ color: 'red' }}>Resultaat is 0 !!</span>
+                                </p>
+                            ) : null
+                        ) : null}
                     </Modal>
                 )}
             </form>

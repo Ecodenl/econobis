@@ -177,19 +177,23 @@ const RevenueFormView = props => {
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                         <span className={'h5 text-bold'}>Opbrengst euro</span>
                     </div>
-                    <div className="row" onClick={props.switchToEdit}>
-                        {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
-                            <React.Fragment>
+                    {project.projectType.codeRef === 'loan' || project.projectType.codeRef === 'obligation' ? (
+                        <>
+                            <div className="row" onClick={props.switchToEdit}>
                                 <div>
                                     <ViewText
                                         label={'Uitkering (rente) %'}
                                         value={payPercentage && payPercentage + '%'}
                                     />
-                                    <ViewText
-                                        label={'of uitkeringsbedrag per deelname'}
-                                        value={MoneyPresenter(payAmount)}
-                                    />
+                                    {distributionType && distributionType.id === 'inPossessionOf' ? (
+                                        <ViewText
+                                            label={'of uitkeringsbedrag per deelname'}
+                                            value={MoneyPresenter(payAmount)}
+                                        />
+                                    ) : null}
                                 </div>
+                            </div>
+                            <div className="row" onClick={props.switchToEdit}>
                                 <div>
                                     <ViewText
                                         label={
@@ -200,15 +204,15 @@ const RevenueFormView = props => {
                                         value={keyAmountFirstPercentage && '€ ' + keyAmountFirstPercentage}
                                     />
                                 </div>
-                            </React.Fragment>
-                        ) : null}
-                        {project.projectType.codeRef === 'capital' ||
-                        project.projectType.codeRef === 'postalcode_link_capital' ? (
-                            <React.Fragment>
-                                <ViewText label={'Resultaat'} value={revenue} />
-                            </React.Fragment>
-                        ) : null}
-                    </div>
+                            </div>
+                        </>
+                    ) : null}
+                    {project.projectType.codeRef === 'capital' ||
+                    project.projectType.codeRef === 'postalcode_link_capital' ? (
+                        <div className="row" onClick={props.switchToEdit}>
+                            <ViewText label={'Resultaat'} value={revenue} />
+                        </div>
+                    ) : null}
                     {keyAmountFirstPercentage ? (
                         <div className="row">
                             <ViewText

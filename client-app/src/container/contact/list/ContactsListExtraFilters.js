@@ -443,6 +443,11 @@ class ContactsListExtraFilters extends Component {
                 name: 'Buurt',
                 type: 'searchWithAsync',
             },
+            hoomdossierExists: {
+                name: 'Hoomdossier aangemaakt',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
         };
 
         // Options only if product is set

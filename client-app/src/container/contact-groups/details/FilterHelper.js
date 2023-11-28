@@ -142,6 +142,8 @@ export default (type, field) => {
                     return 'Huidig bedrag obligaties';
                 case 'createdAt':
                     return 'Gemaakt op';
+                case 'hoomdossierExists':
+                    return 'Hoomdossier aangemaakt';
             }
             break;
         case 'comperator':

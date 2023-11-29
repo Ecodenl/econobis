@@ -298,6 +298,11 @@ class ContactGroupController extends Controller
                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, false);
                 $lapostaMemberHelper->createMember();
             }
+
+            if($contactGroup->inspection_person_type_id !== null){
+                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
+                $contact->save();
+            }
         }
     }
 

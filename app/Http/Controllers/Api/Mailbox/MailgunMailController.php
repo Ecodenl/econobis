@@ -23,23 +23,25 @@ class MailgunMailController
         }
 
         $from = $request->getFrom();
+        // geen fromAddress, dan melding
         if(!$from){
             Log::error("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
-            return;
+            $from = '';
+//            return;
         }
         $email = new Email([
             'mailbox_id' => $mailbox->id,
             'from' => $from,
-            'to' => $request->getTo(),
-            'cc' => $request->getCc(),
+            'to' => $request->getTo() ?? [],
+            'cc' => $request->getCc() ?? [],
             'bcc' => [],
             'subject' => $request->input('subject') ?? '',
-            'html_body' => $request->getHtmlBody(),
+            'html_body' => $request->getHtmlBody() ?? '',
             'date_sent' => Carbon::now(),
             'folder' => 'inbox',
             'imap_id' => null,
             'msoauth_message_id' => null,
-            'message_id' => $request->input('Message-Id'),
+            'message_id' => $request->input('Message-Id') ?? '',
             'status' => 'unread'
         ]);
         $email->save();

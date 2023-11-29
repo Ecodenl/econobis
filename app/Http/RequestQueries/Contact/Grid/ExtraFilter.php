@@ -58,6 +58,7 @@ class ExtraFilter extends RequestExtraFilter
         'sharedArea',
         'freeFieldsFieldName',
         'freeFieldsFieldValue',
+        'hoomdossierExists',
     ];
 
     protected $mapping = [
@@ -1097,6 +1098,14 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
+    protected function applyHoomdossierExistsFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereNotNull('hoom_account_id');
+        }else{
+            $query->whereNull('hoom_account_id');
+        }
+    }
 
     protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName)
     {

@@ -148,6 +148,11 @@ class TemplateMergeFieldsTest extends TestCase
         $html .='{offerteverzoek_contact_email} {offerteverzoek_contact_woonplaats} {offerteverzoek_contact_adres} {offerteverzoek_contact_postcode}';
         $html .='{offerteverzoek_contact_telefoonnummer} {offerteverzoek_maatregel} {offerteverzoek_tekst} {offerteverzoek_gemaakt_op} {offerteverzoek_gemaakt_door}';
 
+        $html .='{kansactie_organisatie_naam} {kansactie_organisatie_adres} {kansactie_organisatie_plaats} {kansactie_organisatie_email}';
+        $html .='{kansactie_organisatie_telefoonnummer} {kansactie_organisatie_primair_contact} {kansactie_organisatie_primair_contact_voornaam} {kansactie_organisatie_primair_contact_achternaam} {kansactie_contact_naam}';
+        $html .='{kansactie_contact_email} {kansactie_contact_woonplaats} {kansactie_contact_adres} {kansactie_contact_postcode}';
+        $html .='{kansactie_contact_telefoonnummer} {kansactie_maatregel} {kansactie_tekst} {kansactie_gemaakt_op} {kansactie_gemaakt_door}';
+
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'offerteverzoek', QuotationRequest::find(1));
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kansactie', QuotationRequest::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);

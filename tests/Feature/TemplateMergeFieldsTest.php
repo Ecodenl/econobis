@@ -149,6 +149,7 @@ class TemplateMergeFieldsTest extends TestCase
         $html .='{offerteverzoek_contact_telefoonnummer} {offerteverzoek_maatregel} {offerteverzoek_tekst} {offerteverzoek_gemaakt_op} {offerteverzoek_gemaakt_door}';
 
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'offerteverzoek', QuotationRequest::find(1));
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kansactie', QuotationRequest::find(1));
         $html = TemplateVariableHelper::stripRemainingVariableTags($html);
 
         $expectedHtml = 'OrgaNisatie Laantje 10 Wognum OrgaNisatie@xaris.nl';

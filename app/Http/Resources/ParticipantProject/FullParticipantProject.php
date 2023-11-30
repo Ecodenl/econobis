@@ -9,7 +9,9 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
-use App\Http\Resources\Project\FullProject;
+use App\Http\Resources\Project\GridProjectRevenue;
+use App\Http\Resources\Project\GridRevenuesKwh;
+use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -32,7 +34,9 @@ class FullParticipantProject extends JsonResource
                 'contact' => FullContact::make($this->whenLoaded('contact')),
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
-                'project' => FullProject::make($this->whenLoaded('project')),
+                'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
+                'relatedRevenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
+                'relatedRevenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,

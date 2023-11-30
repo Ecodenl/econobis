@@ -12,9 +12,11 @@ use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectType;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
+use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -84,6 +86,15 @@ class ParticipantProject extends Model
     public function revenueDistributionKwh()
     {
         return $this->hasMany(RevenueDistributionKwh::class, 'participation_id');
+    }
+
+    public function projectRevenues(){
+        return $this->hasManyThrough(ProjectRevenue::class, ProjectRevenueDistribution::class, 'participation_id', 'id','id', 'revenue_id');
+    }
+
+    public function revenuesKwh()
+    {
+        return $this->hasManyThrough(RevenuesKwh::class, RevenueDistributionKwh::class, 'participation_id', 'id', 'id', 'revenue_id');
     }
 
     public function financialOverviewParticipantProjects()

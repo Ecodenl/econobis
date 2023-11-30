@@ -91,7 +91,7 @@ class ParticipantDetailsToolbar extends Component {
             this.props.permissions.manageFinancial;
         isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
-        const projectTypeCodeRef = project && project.projectType ? project.projectType.codeRef : '';
+        const projectTypeCodeRef = project ? project.typeCodeRef : '';
 
         return (
             <div className="row">
@@ -170,7 +170,7 @@ class ParticipantDetailsToolbar extends Component {
                         participantProject={participantProject}
                         setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleTerminate}
-                        projectTypeCodeRef={participantProject.project.projectType.codeRef}
+                        projectTypeCodeRef={participantProject.project.typeCodeRef}
                     />
                 )}
                 {this.state.showUndoTerminate && (
@@ -178,7 +178,7 @@ class ParticipantDetailsToolbar extends Component {
                         participantProject={participantProject}
                         setErrorModal={this.setErrorModal}
                         closeDeleteItemModal={this.toggleUndoTerminate}
-                        projectTypeCodeRef={participantProject.project.projectType.codeRef}
+                        projectTypeCodeRef={participantProject.project.typeCodeRef}
                     />
                 )}
                 {this.state.showErrorModal && (

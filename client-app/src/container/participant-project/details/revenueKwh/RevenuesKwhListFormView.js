@@ -72,7 +72,7 @@ const RevenuesKwhListFormView = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        projectName: state.participantProjectDetails.project.name,
+        projectName: state.participantProjectDetails.project?.name,
     };
 };
 

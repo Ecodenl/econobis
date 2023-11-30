@@ -27,7 +27,7 @@ const RevenuesListForm = ({ projectTypeCodeRef }) => {
 
 const mapStateToProps = state => {
     return {
-        projectTypeCodeRef: state.participantProjectDetails.project.typeCodeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
     };
 };
 

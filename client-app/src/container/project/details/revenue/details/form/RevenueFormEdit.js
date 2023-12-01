@@ -513,6 +513,7 @@ class RevenueFormEdit extends Component {
                                 label={'Type opbrengst verdeling'}
                                 name={'distributionTypeId'}
                                 options={this.props.projectRevenueDistributionTypes}
+                                emptyOption={false}
                                 value={distributionTypeId}
                                 onChangeAction={this.handleInputChange}
                             />

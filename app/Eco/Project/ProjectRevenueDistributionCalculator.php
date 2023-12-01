@@ -131,6 +131,7 @@ class ProjectRevenueDistributionCalculator
 
             return $this->calculatePayoutHowLongInPossession();
         }
+        return 0;
     }
 
     protected function calculatePayoutInPossessionOf()

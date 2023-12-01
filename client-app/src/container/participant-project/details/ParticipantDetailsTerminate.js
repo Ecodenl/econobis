@@ -67,10 +67,6 @@ const ParticipantDetailsTerminate = ({
         setRedirectRevenueSplit(value);
     };
 
-    const revenueKwhSplitCategoryId = projectRevenueCategories.find(
-        projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
-    ).id;
-
     const confirmAction = () => {
         let errors = {
             dateTerminated: false,

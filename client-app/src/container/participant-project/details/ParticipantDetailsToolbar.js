@@ -106,28 +106,30 @@ class ParticipantDetailsToolbar extends Component {
                                             {this.props.permissions.manageParticipation && (
                                                 <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                             )}
-                                            {projectTypeCodeRef === 'capital' ||
-                                            projectTypeCodeRef === 'postalcode_link_capital' ? (
-                                                <ButtonText
-                                                    buttonText={
-                                                        participantProject.dateTerminated
-                                                            ? `Beëindiging ongedaan maken`
-                                                            : `Beëindigen`
-                                                    }
-                                                    onClickAction={
-                                                        participantProject.dateTerminated
-                                                            ? this.toggleUndoTerminate
-                                                            : this.toggleTerminate
-                                                    }
-                                                    // disabled={participantProject.dateTerminated}
-                                                />
-                                            ) : (
-                                                <ButtonText
-                                                    buttonText={`Beëindigen`}
-                                                    onClickAction={this.toggleTerminate}
-                                                    disabled={participantProject.dateTerminated}
-                                                />
-                                            )}
+                                            {/*todo WM: tijdelijk even ook voor loan en obligation*/}
+                                            {/*{projectTypeCodeRef === 'capital' ||*/}
+                                            {/*projectTypeCodeRef === 'postalcode_link_capital' ? (*/}
+                                            <ButtonText
+                                                buttonText={
+                                                    participantProject.dateTerminated
+                                                        ? `Beëindiging ongedaan maken`
+                                                        : `Beëindigen`
+                                                }
+                                                onClickAction={
+                                                    participantProject.dateTerminated
+                                                        ? this.toggleUndoTerminate
+                                                        : this.toggleTerminate
+                                                }
+                                                // disabled={participantProject.dateTerminated}
+                                            />
+                                            {/*todo WM: tijdelijk even ook voor loan en obligation*/}
+                                            {/*) : (*/}
+                                            {/*    <ButtonText*/}
+                                            {/*        buttonText={`Beëindigen`}*/}
+                                            {/*        onClickAction={this.toggleTerminate}*/}
+                                            {/*        disabled={participantProject.dateTerminated}*/}
+                                            {/*    />*/}
+                                            {/*)}*/}
                                         </>
                                     )}
 

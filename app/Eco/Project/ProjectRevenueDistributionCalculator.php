@@ -57,46 +57,43 @@ class ProjectRevenueDistributionCalculator
         }
         // --- HOW LONG IN POSSESSION --- //
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession') {
-// todo WM: volgens mij komen we hier nooit als het goed is. calculateCapitalResult alleen voor project type capital of postalcode_link_capital
-//            en die hebben altijd distribution type howLongInPossession !!
-            Log::error('Error: Hier horen we nooit te komen !!  (ProjectRevenueDistributionCalculator | calculateCapitalResult | howLongInPossession)');
-//            $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
-//            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
-//
-//            $totalParticipations = 0;
-//            $totalParticipationsDays = 0;
-//            foreach ($this->projectRevenueDistribution->where('revenue_id', $projectRevenue->id)->get() as $distribution){
-//                $totalParticipations += $distribution->participations_amount;
-//
-//                $mutations = $distribution->participation->mutationsDefinitive;
-//                foreach ($mutations as $mutation) {
-//                    $dateEntry = $mutation->date_entry;
-//
-//                    if($dateEntry <= $dateEnd) {
-//                        // If date entry is before date begin then date entry is equal to date begin
-//                        if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
-//
-//                        $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
-//                        $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
-//                    }
-//                }
-//            }
-//
-//            $distributionParticipationsDays = 0;
-//            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive;
-//            foreach ($mutations as $mutation) {
-//                $dateEntry = $mutation->date_entry;
-//
-//                if($dateEntry <= $dateEnd) {
-//                    // If date entry is before date begin then date entry is equal to date begin
-//                    if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
-//
-//                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
-//                    $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
-//                }
-//            }
-//            $distributionFactor = $distributionParticipationsDays / $totalParticipationsDays;
-//            $payout = $totalResult * $distributionFactor;
+            $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
+            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+
+            $totalParticipations = 0;
+            $totalParticipationsDays = 0;
+            foreach ($this->projectRevenueDistribution->where('revenue_id', $projectRevenue->id)->get() as $distribution){
+                $totalParticipations += $distribution->participations_amount;
+
+                $mutations = $distribution->participation->mutationsDefinitive;
+                foreach ($mutations as $mutation) {
+                    $dateEntry = $mutation->date_entry;
+
+                    if($dateEntry <= $dateEnd) {
+                        // If date entry is before date begin then date entry is equal to date begin
+                        if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+                        $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                        $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                    }
+                }
+            }
+
+            $distributionParticipationsDays = 0;
+            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive;
+            foreach ($mutations as $mutation) {
+                $dateEntry = $mutation->date_entry;
+
+                if($dateEntry <= $dateEnd) {
+                    // If date entry is before date begin then date entry is equal to date begin
+                    if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
+
+                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                    $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
+                }
+            }
+            $distributionFactor = $distributionParticipationsDays / $totalParticipationsDays;
+            $payout = $totalResult * $distributionFactor;
         }
 
         // Return total delivered kwh for per distribution

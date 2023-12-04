@@ -5,7 +5,8 @@ namespace App\Eco\Project;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 
-class ProjectRevenueDeliveredKwhPeriod extends Model
+// todo WM: opschonen: deliveredKwhPeriod gebruiken we niet meer
+class xxxProjectRevenueDeliveredKwhPeriod extends Model
 {
     use RevisionableTrait;
 

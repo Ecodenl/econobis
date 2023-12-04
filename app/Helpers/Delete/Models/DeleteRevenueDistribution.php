@@ -79,9 +79,10 @@ class DeleteRevenueDistribution implements DeleteInterface
      */
     public function deleteRelations()
     {
-        foreach ($this->revenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod){
-            $deliveredKwhPeriod->delete();
-        }
+// todo WM: opschonen: deliveredKwhPeriod gebruiken we niet meer
+//        foreach ($this->revenueDistribution->deliveredKwhPeriod as $deliveredKwhPeriod){
+//            $deliveredKwhPeriod->delete();
+//        }
     }
 
     /** Model specific delete actions e.g. delete files from server

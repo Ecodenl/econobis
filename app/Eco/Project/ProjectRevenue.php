@@ -63,9 +63,10 @@ class ProjectRevenue extends Model
         return $this->hasMany(ProjectRevenueDistribution::class, 'revenue_id');
     }
 
-    public function deliveredKwhPeriod(){
-        return $this->hasMany(ProjectRevenueDeliveredKwhPeriod::class, 'revenue_id');
-    }
+// todo WM: opschonen: deliveredKwhPeriod gebruiken we niet meer
+//    public function deliveredKwhPeriod(){
+//        return $this->hasMany(xxxProjectRevenueDeliveredKwhPeriod::class, 'revenue_id');
+//    }
 
     //Appended fields
     public function getKwhResultAttribute()

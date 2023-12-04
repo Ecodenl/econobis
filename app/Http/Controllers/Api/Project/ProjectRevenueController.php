@@ -208,6 +208,7 @@ class ProjectRevenueController extends ApiController
         // If period is changed then remove all values from revenue distribution period
         // todo WM: volgens mij kan dit ook opgeschoond worden.
 // todo WM: opschonen: revenueKwhSplit gebruiken we niet meer
+// todo WM: opschonen: deliveredKwhPeriod gebruiken we niet meer
 //        if($projectRevenue->category->code_ref != 'revenueKwhSplit') {
 //            if ($projectRevenue->isDirty('date_begin') ||
 //                $projectRevenue->isDirty('date_end')) {

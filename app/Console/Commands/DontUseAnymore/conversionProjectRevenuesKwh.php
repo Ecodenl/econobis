@@ -7,7 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
-use App\Eco\Project\ProjectRevenueDeliveredKwhPeriod;
+use App\Eco\Project\xxxProjectRevenueDeliveredKwhPeriod;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenueDistributionPartsKwh;
@@ -810,7 +810,7 @@ class conversionProjectRevenuesKwh extends Command
 //            Log::info("Oud distribution id: " . $oldProjectRevenueDistribution->id);
 //        }
 
-//        $oldProjectRevenueDeliveredKwhPeriods = ProjectRevenueDeliveredKwhPeriod::where('distribution_id', $oldProjectRevenueDistribution->id)
+//        $oldProjectRevenueDeliveredKwhPeriods = xxxProjectRevenueDeliveredKwhPeriod::where('distribution_id', $oldProjectRevenueDistribution->id)
 //            ->where('revenue_id', $oldProjectRevenueDistribution->revenue_id)
 //            ->whereBetween('date_begin', [$partDateBegin, $partDateEnd])->get();
 
@@ -1446,7 +1446,7 @@ class conversionProjectRevenuesKwh extends Command
                     && $dateEndForCheck >= $dateEndCalendarYearFromRevenue ) {
                     $daysOfPeriod = $dateEndCalendarYearFromRevenueForPeriod->addDay()->diffInDays($dateBegin);
 
-                    $deliveredKwhPeriod = ProjectRevenueDeliveredKwhPeriod::updateOrCreate(
+                    $deliveredKwhPeriod = xxxProjectRevenueDeliveredKwhPeriod::updateOrCreate(
                         [
                             'distribution_id' => $oldDistributionId,
                             'revenue_id' => $oldProjectRevenue->id,

@@ -427,6 +427,9 @@ class ExtraFilter extends RequestExtraFilter
             }
         }
 
+        $query->whereHas('occupations', function($q) use ($data) {
+            $q->whereDate('end_date', '>=', Carbon::now())->orWhereNull('end_date')->where('occupation_id', $data);
+        });
     }
     protected function applyOccupationPrimaryFilter($query, $type, $data)
     {

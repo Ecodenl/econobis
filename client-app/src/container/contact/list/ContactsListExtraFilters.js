@@ -463,6 +463,12 @@ class ContactsListExtraFilters extends Component {
         };
 
         // Options only if kans is set
+        let opportunityMeasureCategory =
+            typeof this.state.filters !== 'undefined' &&
+            this.state.filters.filter(filter => filter.field === 'opportunityMeasureCategory').length > 0
+                ? this.state.filters.filter(filter => filter.field === 'opportunityMeasureCategory')[0].data
+                : '';
+
         const customOpportunityFields = {
             opportunityStatus: {
                 name: 'Kans status',
@@ -473,7 +479,9 @@ class ContactsListExtraFilters extends Component {
                 name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
                 // dropDownOptions: this.props.measures,
-                dropDownOptions: this.props.measures.filter(measure => measure.visible === 1),
+                dropDownOptions: this.props.measures.filter(
+                    measure => measure.visible === 1 && measure.measureCategoryId == opportunityMeasureCategory
+                ),
             },
             opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',

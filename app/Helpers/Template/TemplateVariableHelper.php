@@ -2729,6 +2729,7 @@ class TemplateVariableHelper
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'campagne', $document->campaign);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'woningdossier', $document->housingFile);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'offerteverzoek', $document->quotationRequest);
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kansactie', $document->quotationRequest);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'maatregel', $document->measure);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'taak', $document->task);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'project', $document->project);

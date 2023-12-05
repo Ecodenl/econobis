@@ -81,6 +81,7 @@ class SendSingleMailToContact extends SendSingleMail
         }
         if ($email->quotationRequest) {
             $string = TemplateVariableHelper::replaceTemplateVariables($string, 'offerteverzoek', $email->quotationRequest);
+            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kansactie', $email->quotationRequest);
         }
         if ($email->opportunity) {
             $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kans', $email->opportunity);

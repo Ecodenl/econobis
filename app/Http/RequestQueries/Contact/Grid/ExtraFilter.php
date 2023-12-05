@@ -389,47 +389,80 @@ class ExtraFilter extends RequestExtraFilter
         if(empty($data))
         {
             switch($type){
-                case 'neq':
-                    $query->whereDoesntHave('isSecondaryOccupant');
-                    break;
                 case 'eq':
-                    $query->whereHas('isSecondaryOccupant');
+                    $query->whereHas('isSecondaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
+                    break;
+                case 'neq':
+                    $query->whereDoesntHave('isSecondaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'rel':
-                    $query->whereDoesntHave('isPrimaryOccupant');
+                    $query->whereHas('isPrimaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'nrel':
-                    $query->whereHas('isPrimaryOccupant');
+                    $query->whereDoesntHave('isPrimaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
             }
         }else{
             switch($type){
                 case 'eq':
                     $query->whereHas('isSecondaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'neq':
                     $query->whereDoesntHave('isSecondaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'rel':
                     $query->whereHas('isPrimaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'nrel':
                     $query->whereDoesntHave('isPrimaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
             }
         }
 
-        $query->whereHas('occupations', function($q) use ($data) {
-            $q->whereDate('end_date', '>=', Carbon::now())->orWhereNull('end_date')->where('occupation_id', $data);
-        });
     }
     protected function applyOccupationPrimaryFilter($query, $type, $data)
     {
@@ -437,38 +470,74 @@ class ExtraFilter extends RequestExtraFilter
         {
             switch($type){
                 case 'eq':
-                    $query->whereDoesntHave('isSecondaryOccupantPrimary');
+                    $query->whereHas('isSecondaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'neq':
-                    $query->whereHas('isSecondaryOccupantPrimary');
+                    $query->whereDoesntHave('isSecondaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'rel':
-                    $query->whereDoesntHave('isPrimaryOccupantPrimary');
+                    $query->whereHas('isPrimaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'nrel':
-                    $query->whereHas('isPrimaryOccupantPrimary');
+                    $query->whereDoesntHave('isPrimaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
             }
         }else{
             switch($type){
                 case 'eq':
                     $query->whereHas('isSecondaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'neq':
                     $query->whereDoesntHave('isSecondaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'rel':
                     $query->whereHas('isPrimaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'nrel':
                     $query->whereDoesntHave('isPrimaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
             }
@@ -745,7 +814,7 @@ class ExtraFilter extends RequestExtraFilter
                 if(empty($data)){
                     RequestFilter::applyFilter($query, 'inspection_person_type_id', 'nl', null);
                 }else{
-                    $query->Where(function ($query) use ($type, $data) {
+                    $query->where(function ($query) use ($type, $data) {
                         RequestFilter::applyFilter($query, 'inspection_person_type_id', $type, $data);
                     })
                         ->orWhere(function ($query) use ($data) {

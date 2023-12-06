@@ -64,7 +64,7 @@ const DataTableCustomFilter = props => {
             return;
         if (key === 'intakeDateStart' || key === 'intakeDateFinish' || key === 'intakeStatus') return;
         if (key === 'housingFileFieldValue') return;
-        if (key === 'freeFieldsFieldValue') return;
+        if (key === 'contactFreeFieldsFieldValue') return;
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
@@ -82,7 +82,7 @@ const DataTableCustomFilter = props => {
         field === 'opportunityCampaign';
     const isCustomIntakeField = field === 'intakeDateStart' || field === 'intakeDateFinish' || field === 'intakeStatus';
     const isCustomHousingFileField = field === 'housingFileFieldValue';
-    const isCustomFreeFieldsField = field === 'freeFieldsFieldValue';
+    const isCustomFreeFieldsField = field === 'contactFreeFieldsFieldValue';
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
@@ -211,7 +211,7 @@ const DataTableCustomFilter = props => {
                         readOnly={props.filter.readOnly}
                     />
                 )}
-                {fieldType === 'freeFieldsFieldValue' && (
+                {fieldType === 'contactFreeFieldsFieldValue' && (
                     <DataTableCustomFilterSelectFreeFieldsField
                         handleInputChange={handleInputChange}
                         type={type}
@@ -380,7 +380,7 @@ const DataTableCustomFilter = props => {
                                     })}
                                 </select>
                             )}
-                            {fieldType === 'freeFieldsFieldValue' && (
+                            {fieldType === 'contactFreeFieldsFieldValue' && (
                                 <DataTableFreeFieldsFieldFilter
                                     id="data"
                                     name="data"

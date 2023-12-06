@@ -166,7 +166,7 @@ class DynamicContactGroupFilter extends Model
             }
 
             // freeFieldsFieldName omzetten
-            if ($this->field == 'freeFieldsFieldName'){
+            if ($this->field == 'contactFreeFieldsFieldName'){
                 if($this->data){
                     $freeFieldsField = FreeFieldsField::find($this->data);
                     return $freeFieldsField ? $freeFieldsField->freeFieldsTable->name . ' / '. $freeFieldsField->field_name : '';
@@ -174,7 +174,7 @@ class DynamicContactGroupFilter extends Model
                 return '';
             }
             // freeFieldsFieldValue omzetten
-            if ($this->field == 'freeFieldsFieldValue'){
+            if ($this->field == 'contactFreeFieldsFieldValue'){
                 if($this->data){
                     $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
 

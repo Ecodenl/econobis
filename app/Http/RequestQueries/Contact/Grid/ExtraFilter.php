@@ -56,8 +56,8 @@ class ExtraFilter extends RequestExtraFilter
         'housingFileFieldValue',
         'inspectionPersonType',
         'sharedArea',
-        'freeFieldsFieldName',
-        'freeFieldsFieldValue',
+        'contactFreeFieldsFieldName',
+        'contactFreeFieldsFieldValue',
         'hoomdossierExists',
     ];
 
@@ -169,7 +169,7 @@ class ExtraFilter extends RequestExtraFilter
         }
 
         // Ook Uitzondering voor freefields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
-        if($filter['field'] == 'freeFieldsFieldName' ){
+        if($filter['field'] == 'contactFreeFieldsFieldName' ){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
                     $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
@@ -1119,7 +1119,7 @@ class ExtraFilter extends RequestExtraFilter
         }
 
         $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName) {
-            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'freeFieldsFieldValue');
+            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'contactFreeFieldsFieldValue');
         }));
         $freeFieldsFieldValueFilter = $freeFieldsFieldValueFilter ? $freeFieldsFieldValueFilter[0] : null;
 

@@ -65,7 +65,7 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
             filters[filterNumber].field === 'intakeMeasureCategory' ||
             filters[filterNumber].field === 'housingFileFieldName' ||
-            filters[filterNumber].field === 'freeFieldsFieldName'
+            filters[filterNumber].field === 'contactFreeFieldsFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -186,16 +186,16 @@ class ContactsListExtraFilters extends Component {
             });
 
             amountOfFilters = filters.length;
-        } else if (data === 'freeFieldsFieldName') {
+        } else if (data === 'contactFreeFieldsFieldName') {
             filters[filterNumber] = {
-                field: 'freeFieldsFieldName',
+                field: 'contactFreeFieldsFieldName',
                 type: 'eq',
                 data: '',
                 connectName: data + filterNumber,
             };
 
             filters.splice(filterNumber + 1, 0, {
-                field: 'freeFieldsFieldValue',
+                field: 'contactFreeFieldsFieldValue',
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
@@ -245,7 +245,7 @@ class ContactsListExtraFilters extends Component {
                 }
             }
         }
-        if (filters[filterNumber].field === 'freeFieldsFieldName') {
+        if (filters[filterNumber].field === 'contactFreeFieldsFieldName') {
             if (filters[filterNumber].data) {
                 let freeFieldsField = this.state.freeFieldsFields.find(
                     freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
@@ -301,7 +301,7 @@ class ContactsListExtraFilters extends Component {
             newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
             newFilters[filterNumber].field === 'intakeMeasureCategory' ||
             newFilters[filterNumber].field === 'housingFileFieldName' ||
-            newFilters[filterNumber].field === 'freeFieldsFieldName'
+            newFilters[filterNumber].field === 'contactFreeFieldsFieldName'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -429,7 +429,7 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
             },
-            freeFieldsFieldName: {
+            contactFreeFieldsFieldName: {
                 name: 'Vrij veld contact',
                 type: 'dropdownFreeFieldsFields',
                 dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
@@ -518,9 +518,9 @@ class ContactsListExtraFilters extends Component {
 
         // Options only if freeFieldsFieldName is set
         const customFreeFieldsFields = {
-            freeFieldsFieldValue: {
+            contactFreeFieldsFieldValue: {
                 name: 'Status/waarde',
-                type: 'freeFieldsFieldValue',
+                type: 'contactFreeFieldsFieldValue',
             },
         };
 

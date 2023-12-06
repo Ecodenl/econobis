@@ -74,9 +74,9 @@ export default (type, field) => {
                     return 'Woningdossier - veldnaam';
                 case 'housingFileFieldValue':
                     return 'Woningdossier - status / waarde';
-                case 'freeFieldsFieldName':
+                case 'contactFreeFieldsFieldName':
                     return 'Vrij veld contact - veldnaam';
-                case 'freeFieldsFieldValue':
+                case 'contactFreeFieldsFieldValue':
                     return 'Vrij veld contact - status / waarde';
                 case 'housingFileExists':
                     return 'Woningdossier aanwezig';

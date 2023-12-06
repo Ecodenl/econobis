@@ -56,76 +56,82 @@ function RegisterProject({ match, currentSelectedContact }) {
                     .all([
                         ProjectAPI.fetchProject(match.params.id),
                         ContactAPI.fetchContact(currentSelectedContact.id),
+                        ContactAPI.fetchContactFreeFields(currentSelectedContact.id),
                         ContactAPI.fetchContactProjectData(currentSelectedContact.id, match.params.id),
                     ])
                     .then(
-                        axios.spread((payloadProject, payloadContact, payloadContactProjectData) => {
-                            const contact = payloadContact.data.data;
-                            const project = payloadProject.data.data;
-                            setProject(project);
-                            setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
-                            const contactData = rebaseContact(contact);
-                            setContact(contactData);
+                        axios.spread(
+                            (payloadProject, payloadContact, payloadContactFreeFields, payloadContactProjectData) => {
+                                const contact = payloadContact.data.data;
+                                const project = payloadProject.data.data;
+                                setProject(project);
+                                setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
+                                const contactData = rebaseContact(contact);
+                                contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
+                                setContact(contactData);
 
-                            setContactProjectData(payloadContactProjectData.data);
+                                setContactProjectData(payloadContactProjectData.data);
 
-                            if (
-                                project &&
-                                project.projectType &&
-                                project.projectType.codeRef === 'postalcode_link_capital'
-                            ) {
-                                let pcrPostalCode = '';
-                                if (contactData.typeId === 'organisation') {
-                                    pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
+                                if (
+                                    project &&
+                                    project.projectType &&
+                                    project.projectType.codeRef === 'postalcode_link_capital'
+                                ) {
+                                    let pcrPostalCode = '';
+                                    if (contactData.typeId === 'organisation') {
+                                        pcrPostalCode = contactData.visitAddress
+                                            ? contactData.visitAddress.postalCode
+                                            : '';
+                                    } else {
+                                        pcrPostalCode = contactData.primaryAddress
+                                            ? contactData.primaryAddress.postalCode
+                                            : '';
+                                    }
+                                    setRegisterValues({
+                                        ...registerValues,
+                                        projectId: match.params.id,
+                                        contactId: currentSelectedContact.id,
+                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                        ...initialPcrValues,
+                                        pcrPostalCode,
+                                    });
                                 } else {
-                                    pcrPostalCode = contactData.primaryAddress
-                                        ? contactData.primaryAddress.postalCode
-                                        : '';
+                                    setRegisterValues({
+                                        ...registerValues,
+                                        projectId: match.params.id,
+                                        contactId: currentSelectedContact.id,
+                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                    });
                                 }
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                    ...initialPcrValues,
-                                    pcrPostalCode,
-                                });
-                            } else {
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                });
-                            }
 
-                            if (
-                                payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
-                                payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
-                            ) {
-                                /**
-                                 * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
-                                 * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
-                                 */
-                                setRegisterValues(current => {
-                                    return {
-                                        ...current,
-                                        participationsOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .participationsOptioned,
-                                        amountOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
-                                        pcrYearlyPowerKwhConsumption:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .powerKwhConsumption,
-                                        didAcceptAgreement: true,
-                                        didUnderstandInfo: true,
-                                    };
-                                });
-                            }
+                                if (
+                                    payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
+                                    payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
+                                ) {
+                                    /**
+                                     * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
+                                     * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
+                                     */
+                                    setRegisterValues(current => {
+                                        return {
+                                            ...current,
+                                            participationsOptioned:
+                                                payloadContactProjectData.data.projectRegisterIndicators
+                                                    .participationsOptioned,
+                                            amountOptioned:
+                                                payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
+                                            pcrYearlyPowerKwhConsumption:
+                                                payloadContactProjectData.data.projectRegisterIndicators
+                                                    .powerKwhConsumption,
+                                            didAcceptAgreement: true,
+                                            didUnderstandInfo: true,
+                                        };
+                                    });
+                                }
 
-                            setLoading(false);
-                        })
+                                setLoading(false);
+                            }
+                        )
                     )
                     .catch(error => {
                         alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
@@ -163,13 +169,19 @@ function RegisterProject({ match, currentSelectedContact }) {
         const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
-                ContactAPI.fetchContact(currentSelectedContact.id)
-                    .then(payload => {
-                        const contactData = rebaseContact(payload.data.data);
-
-                        setContact(contactData);
-                        nextStep();
-                    })
+                axios
+                    .all([
+                        ContactAPI.fetchContact(currentSelectedContact.id),
+                        ContactAPI.fetchContactFreeFields(currentSelectedContact.id),
+                    ])
+                    .then(
+                        axios.spread((payloadContact, payloadContactFreeFields) => {
+                            const contactData = rebaseContact(payloadContact.data.data);
+                            contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
+                            setContact(contactData);
+                            nextStep();
+                        })
+                    )
                     .catch(error => {
                         alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                         setLoading(false);

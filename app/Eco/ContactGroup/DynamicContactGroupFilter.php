@@ -166,7 +166,7 @@ class DynamicContactGroupFilter extends Model
             }
 
             // freeFieldsFieldName omzetten
-            if ($this->field == 'contactFreeFieldsFieldName'){
+            if ($this->field == 'contactFreeFieldsFieldName' || $this->field == 'addressFreeFieldsFieldName'){
                 if($this->data){
                     $freeFieldsField = FreeFieldsField::find($this->data);
                     return $freeFieldsField ? $freeFieldsField->freeFieldsTable->name . ' / '. $freeFieldsField->field_name : '';
@@ -174,42 +174,7 @@ class DynamicContactGroupFilter extends Model
                 return '';
             }
             // freeFieldsFieldValue omzetten
-            if ($this->field == 'contactFreeFieldsFieldValue'){
-                if($this->data){
-                    $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
-
-                    if($parentDynamicContactGroupFilter){
-                        $freeFieldsField = FreeFieldsField::find($parentDynamicContactGroupFilter->data);
-                        switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
-                            case 'boolean':
-                                return $this->data == '1' ? 'Ja' : 'Nee';
-                            case 'int':
-                                return (int)$this->data;
-                            case 'double_2_dec':
-                                return number_format((float)$this->data, 2, ',', '.');
-                            case 'amount_euro':
-                                return '€ ' . number_format((float)$this->data, 2, ',', '.');
-                            case 'date':
-                            case 'datetime':
-                                return Carbon::parse($this->data)->format('d-m-Y');
-                            default:
-                                return $this->data;
-                        }
-                    }
-                    return '';
-                }
-            }
-
-            // freeFieldsFieldName omzetten
-            if ($this->field == 'addressFreeFieldsFieldName'){
-                if($this->data){
-                    $freeFieldsField = FreeFieldsField::find($this->data);
-                    return $freeFieldsField ? $freeFieldsField->freeFieldsTable->name . ' / '. $freeFieldsField->field_name : '';
-                }
-                return '';
-            }
-            // freeFieldsFieldValue omzetten
-            if ($this->field == 'addressFreeFieldsFieldValue'){
+            if ($this->field == 'contactFreeFieldsFieldValue' || $this->field == 'addressFreeFieldsFieldValue'){
                 if($this->data){
                     $parentDynamicContactGroupFilter = $this->parentFreeFieldsFieldFilter();
 

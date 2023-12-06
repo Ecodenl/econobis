@@ -43,7 +43,6 @@ class FreeFieldsFieldController extends ApiController
 
     public function getForFilter($type, Request $request)
     {
-        Log::info($type);
         $tableId = FreeFieldsTable::where('table', $type)->first()->id;
         return FilterFreeFieldsField::collection(FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get());
     }

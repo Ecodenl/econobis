@@ -15,7 +15,6 @@ use App\EcoShared\SharedArea\SharedArea;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class ExtraFilter extends RequestExtraFilter
 {
@@ -1125,8 +1124,6 @@ class ExtraFilter extends RequestExtraFilter
         if (empty($freeFieldsFieldNameData)) {
             return;
         }
-
-        Log::info($freeFieldsFieldTable);
 
         $freeFieldsField = FreeFieldsField::find($freeFieldsFieldNameData);
         if (!$freeFieldsField) {

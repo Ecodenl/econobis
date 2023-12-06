@@ -41,9 +41,9 @@ class FreeFieldsFieldController extends ApiController
             ]);
     }
 
-    public function getForFilterContact(Request $request)
+    public function getForFilter($type, Request $request)
     {
-        $contactTableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $contactTableId = FreeFieldsTable::where('table', $type)->first()->id;
         return FilterFreeFieldsFieldContact::collection(FreeFieldsField::where('table_id', $contactTableId)->orderBy('sort_order')->get());
     }
 

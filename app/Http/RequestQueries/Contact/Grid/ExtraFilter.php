@@ -15,6 +15,7 @@ use App\EcoShared\SharedArea\SharedArea;
 use App\Helpers\RequestQuery\RequestExtraFilter;
 use App\Helpers\RequestQuery\RequestFilter;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ExtraFilter extends RequestExtraFilter
 {
@@ -58,6 +59,8 @@ class ExtraFilter extends RequestExtraFilter
         'sharedArea',
         'contactFreeFieldsFieldName',
         'contactFreeFieldsFieldValue',
+        'addressFreeFieldsFieldName',
+        'addressFreeFieldsFieldValue',
         'hoomdossierExists',
     ];
 
@@ -169,13 +172,23 @@ class ExtraFilter extends RequestExtraFilter
         }
 
         // Ook Uitzondering voor freefields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
-        if($filter['field'] == 'contactFreeFieldsFieldName' ){
+        if($filter['field'] == 'contactFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
-                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'contacts');
                 });
             }else{
-                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'contacts');
+            }
+            return;
+        }
+        if($filter['field'] == 'addressFreeFieldsFieldName'){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'addresses');
+                });
+            }else{
+                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'addresses');
             }
             return;
         }
@@ -1107,63 +1120,125 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName)
+    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName, $freeFieldsFieldTable)
     {
         if (empty($freeFieldsFieldNameData)) {
             return;
         }
+
+        Log::info($freeFieldsFieldTable);
 
         $freeFieldsField = FreeFieldsField::find($freeFieldsFieldNameData);
         if (!$freeFieldsField) {
             return;
         }
 
-        $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName) {
-            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'contactFreeFieldsFieldValue');
+        $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName, $freeFieldsFieldTable) {
+            if($freeFieldsFieldTable === "contacts") {
+                return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'contactFreeFieldsFieldValue');
+            } elseif ($freeFieldsFieldTable === "addresses") {
+                return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'addressFreeFieldsFieldValue');
+            }
         }));
         $freeFieldsFieldValueFilter = $freeFieldsFieldValueFilter ? $freeFieldsFieldValueFilter[0] : null;
 
         $freeFieldsFieldValueType = $freeFieldsFieldValueFilter['type'];
         $freeFieldsFieldValueData = $freeFieldsFieldValueFilter['data'];
 
-        switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
-            case 'boolean':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'int':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'double_2_dec':
-            case 'amount_euro':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'date':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
-                });
-                break;
-            case 'datetime':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
-                });
-                break;
-            default:
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
-                });
-                break;
+        if($freeFieldsFieldTable === "contacts") {
+            switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                case 'boolean':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'int':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'double_2_dec':
+                case 'amount_euro':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'date':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                    });
+                    break;
+                case 'datetime':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                    });
+                    break;
+                default:
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
+                    });
+                    break;
+            }
+        }
+
+        if($freeFieldsFieldTable === "addresses") {
+            switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                case 'boolean':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'int':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'double_2_dec':
+                case 'amount_euro':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'date':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                        });
+                    });
+                    break;
+                case 'datetime':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                        });
+                    });
+                    break;
+                default:
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+            }
         }
 
 //        Log::info('------------');

@@ -15,7 +15,8 @@ class ContactsListExtraFilters extends Component {
             contactType: props.contactType,
             amountOfFilters: props.amountOfFilters,
             filters: props.extraFilters,
-            freeFieldsFields: null,
+            contactFreeFieldsFields: null,
+            addressFreeFieldsFields: null,
             yesNoOptions: [
                 {
                     id: 0,
@@ -29,6 +30,7 @@ class ContactsListExtraFilters extends Component {
         };
 
         this.fetchFilterFreeFieldsFieldsContact();
+        this.fetchFilterFreeFieldsFieldsAddress();
 
         this.closeModal = this.closeModal.bind(this);
         this.confirmAction = this.confirmAction.bind(this);
@@ -43,7 +45,16 @@ class ContactsListExtraFilters extends Component {
         FreeFieldsAPI.fetchFilterFreeFieldsFieldsContact().then(payload => {
             this.setState({
                 ...this.state,
-                freeFieldsFields: payload.data.data,
+                contactFreeFieldsFields: payload.data.data,
+            });
+        });
+    }
+
+    fetchFilterFreeFieldsFieldsAddress() {
+        FreeFieldsAPI.fetchFilterFreeFieldsFieldsAddress().then(payload => {
+            this.setState({
+                ...this.state,
+                addressFreeFieldsFields: payload.data.data,
             });
         });
     }
@@ -65,7 +76,8 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
             filters[filterNumber].field === 'intakeMeasureCategory' ||
             filters[filterNumber].field === 'housingFileFieldName' ||
-            filters[filterNumber].field === 'contactFreeFieldsFieldName'
+            filters[filterNumber].field === 'contactFreeFieldsFieldName' ||
+            filters[filterNumber].field === 'addressFreeFieldsFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -203,6 +215,23 @@ class ContactsListExtraFilters extends Component {
             });
 
             amountOfFilters = filters.length;
+        } else if (data === 'addressFreeFieldsFieldName') {
+            filters[filterNumber] = {
+                field: 'addressFreeFieldsFieldName',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'addressFreeFieldsFieldValue',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+                freeFieldFormatType: '',
+            });
+
+            amountOfFilters = filters.length;
         } else {
             filters[filterNumber].field = data;
             filters[filterNumber].data = '';
@@ -247,7 +276,26 @@ class ContactsListExtraFilters extends Component {
         }
         if (filters[filterNumber].field === 'contactFreeFieldsFieldName') {
             if (filters[filterNumber].data) {
-                let freeFieldsField = this.state.freeFieldsFields.find(
+                let freeFieldsField = this.state.contactFreeFieldsFields.find(
+                    freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
+                );
+                if (freeFieldsField) {
+                    let filterConnectName = filters[filterNumber].connectName;
+                    filters.map(filter => {
+                        if (filter.connectedTo === filterConnectName) {
+                            filter.data = '';
+                            filter.type = 'eq';
+                            filter.freeFieldFormatType = freeFieldsField.formatType;
+                        }
+                        return filter;
+                    });
+                }
+            }
+        }
+
+        if (filters[filterNumber].field === 'addressFreeFieldsFieldName') {
+            if (filters[filterNumber].data) {
+                let freeFieldsField = this.state.addressFreeFieldsFields.find(
                     freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
                 );
                 if (freeFieldsField) {
@@ -301,7 +349,8 @@ class ContactsListExtraFilters extends Component {
             newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
             newFilters[filterNumber].field === 'intakeMeasureCategory' ||
             newFilters[filterNumber].field === 'housingFileFieldName' ||
-            newFilters[filterNumber].field === 'contactFreeFieldsFieldName'
+            newFilters[filterNumber].field === 'contactFreeFieldsFieldName' ||
+            newFilters[filterNumber].field === 'addressFreeFieldsFieldName'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -432,7 +481,12 @@ class ContactsListExtraFilters extends Component {
             contactFreeFieldsFieldName: {
                 name: 'Vrij veld contact',
                 type: 'dropdownFreeFieldsFields',
-                dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
+                dropDownOptions: this.state.contactFreeFieldsFields ? this.state.contactFreeFieldsFields : [],
+            },
+            addressFreeFieldsFieldName: {
+                name: 'Vrij veld adres',
+                type: 'dropdownFreeFieldsFields',
+                dropDownOptions: this.state.addressFreeFieldsFields ? this.state.addressFreeFieldsFields : [],
             },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
@@ -517,10 +571,16 @@ class ContactsListExtraFilters extends Component {
         };
 
         // Options only if freeFieldsFieldName is set
-        const customFreeFieldsFields = {
+        const customContactFreeFieldsFields = {
             contactFreeFieldsFieldValue: {
                 name: 'Status/waarde',
                 type: 'contactFreeFieldsFieldValue',
+            },
+        };
+        const customAddressFreeFieldsFields = {
+            addressFreeFieldsFieldValue: {
+                name: 'Status/waarde',
+                type: 'addressFreeFieldsFieldValue',
             },
         };
 
@@ -590,7 +650,8 @@ class ContactsListExtraFilters extends Component {
                                             ...customOpportunityFields,
                                             ...customIntakeFields,
                                             ...customHousingFileFields,
-                                            ...customFreeFieldsFields,
+                                            ...customContactFreeFieldsFields,
+                                            ...customAddressFreeFieldsFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}

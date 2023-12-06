@@ -51,6 +51,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchFilterFreeFieldsFieldsAddress: () => {
+        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter/addresses`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     peekFreeFieldsTables: () => {
         const requestUrl = `${URL_API}/api/free-fields-field/free-fields-tables/peek`;
 

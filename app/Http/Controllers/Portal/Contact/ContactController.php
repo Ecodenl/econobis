@@ -58,6 +58,7 @@ class ContactController extends ApiController
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+//        todo WM: checken of dit hier moeten doen?
 //        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
 //        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
 //        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
@@ -142,6 +143,7 @@ class ContactController extends ApiController
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
@@ -173,6 +175,7 @@ class ContactController extends ApiController
 
     public function getValuesForPortal(Contact $contact)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
@@ -192,6 +195,7 @@ class ContactController extends ApiController
 
     public function getContactProjects(Contact $contact)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
@@ -221,6 +225,7 @@ class ContactController extends ApiController
 
     public function getContactProjectData(Contact $contact, Project $project)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
@@ -330,6 +335,7 @@ class ContactController extends ApiController
 
     public function financialOverviewDocuments(Contact $contact)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
@@ -353,6 +359,7 @@ class ContactController extends ApiController
 
     public function relatedAdministrations(Contact $contact)
     {
+//        todo WM: checken of dit hier moeten doen?
 //        $portalUser = Auth::user();
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');

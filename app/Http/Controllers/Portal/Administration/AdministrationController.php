@@ -19,6 +19,7 @@ class AdministrationController extends Controller
     public function documentDownload(Administration $administration, Document $document)
     {
         $portalUser = Auth::user();
+//        todo WM: checken of dit hier moeten doen?
 //        if (!Auth::isPortalUser() || !$portalUser->contact) {
 //            abort(501, 'Er is helaas een fout opgetreden.');
 //        }

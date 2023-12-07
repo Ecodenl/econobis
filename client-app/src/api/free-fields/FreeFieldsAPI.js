@@ -46,7 +46,13 @@ export default {
     },
 
     fetchFilterFreeFieldsFieldsContact: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter-contact`;
+        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter/contacts`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchFilterFreeFieldsFieldsAddress: () => {
+        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter/addresses`;
 
         return axiosInstance.get(requestUrl);
     },

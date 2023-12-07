@@ -174,20 +174,20 @@ class ExtraFilter extends RequestExtraFilter
         if($filter['field'] == 'contactFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
-                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'contacts');
+                    $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'contacts');
                 });
             }else{
-                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'contacts');
+                $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'contacts');
             }
             return;
         }
         if($filter['field'] == 'addressFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
-                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'addresses');
+                    $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'addresses');
                 });
             }else{
-                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName'], 'addresses');
+                $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'addresses');
             }
             return;
         }
@@ -1119,7 +1119,7 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName, $freeFieldsFieldTable)
+    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName, $freeFieldsFieldTable)
     {
         if (empty($freeFieldsFieldNameData)) {
             return;

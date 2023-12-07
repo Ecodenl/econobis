@@ -275,41 +275,45 @@ class ContactsListExtraFilters extends Component {
             }
         }
         if (filters[filterNumber].field === 'contactFreeFieldsFieldName') {
+            let formatType = '';
             if (filters[filterNumber].data) {
-                let freeFieldsField = this.state.contactFreeFieldsFields.find(
+                const freeFieldsField = this.state.contactFreeFieldsFields.find(
                     freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
                 );
                 if (freeFieldsField) {
-                    let filterConnectName = filters[filterNumber].connectName;
-                    filters.map(filter => {
-                        if (filter.connectedTo === filterConnectName) {
-                            filter.data = '';
-                            filter.type = 'eq';
-                            filter.freeFieldFormatType = freeFieldsField.formatType;
-                        }
-                        return filter;
-                    });
+                    formatType = freeFieldsField.formatType;
                 }
             }
+            let filterConnectName = filters[filterNumber].connectName;
+            filters.map(filter => {
+                if (filter.connectedTo === filterConnectName) {
+                    filter.data = '';
+                    filter.type = 'eq';
+                    filter.freeFieldFormatType = formatType;
+                }
+                return filter;
+            });
         }
 
         if (filters[filterNumber].field === 'addressFreeFieldsFieldName') {
+            let formatType = '';
             if (filters[filterNumber].data) {
-                let freeFieldsField = this.state.addressFreeFieldsFields.find(
+                const freeFieldsField = this.state.addressFreeFieldsFields.find(
                     freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
                 );
                 if (freeFieldsField) {
-                    let filterConnectName = filters[filterNumber].connectName;
-                    filters.map(filter => {
-                        if (filter.connectedTo === filterConnectName) {
-                            filter.data = '';
-                            filter.type = 'eq';
-                            filter.freeFieldFormatType = freeFieldsField.formatType;
-                        }
-                        return filter;
-                    });
+                    formatType = freeFieldsField.formatType;
                 }
             }
+            let filterConnectName = filters[filterNumber].connectName;
+            filters.map(filter => {
+                if (filter.connectedTo === filterConnectName) {
+                    filter.data = '';
+                    filter.type = 'eq';
+                    filter.freeFieldFormatType = formatType;
+                }
+                return filter;
+            });
         }
 
         this.setState({

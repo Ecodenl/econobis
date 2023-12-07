@@ -11,6 +11,7 @@ import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
 import validator from 'validator';
 
 function FreeFieldsEdit({
+    table,
     freeFieldsFieldRecords,
     setFreeFieldsFieldRecords,
     switchToView,
@@ -136,7 +137,7 @@ function FreeFieldsEdit({
 
         if (!hasErrors) {
             try {
-                await FreeFieldsAPI.updateFreeFieldsFieldRecords(freeFieldsFieldRecords, recordId);
+                await FreeFieldsAPI.updateFreeFieldsFieldRecords(table, freeFieldsFieldRecords, recordId);
                 fetchFreeFieldsFieldRecords();
                 switchToView();
             } catch (error) {

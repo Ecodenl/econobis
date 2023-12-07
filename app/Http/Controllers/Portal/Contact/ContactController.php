@@ -58,6 +58,14 @@ class ContactController extends ApiController
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contactOrgineel->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contactOrgineel->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
@@ -134,6 +142,19 @@ class ContactController extends ApiController
 
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
+
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
 
@@ -152,12 +173,38 @@ class ContactController extends ApiController
 
     public function getValuesForPortal(Contact $contact)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
+
         $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
         return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
     }
 
     public function getContactProjects(Contact $contact)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
+
         // only active projects that are today in registration period, and only is_active projecttypes
         $allowedProjectStatuses = ProjectStatus::where('code_ref', 'active' )->get()->pluck('id');
         $activeProjectTypes = ProjectType::where('is_active', true)->get()->pluck('id');
@@ -174,6 +221,18 @@ class ContactController extends ApiController
 
     public function getContactProjectData(Contact $contact, Project $project)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
         $this->setContactProjectIndicators($project, $contact, null, 0);
 
         $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllGroups() );
@@ -271,6 +330,19 @@ class ContactController extends ApiController
 
     public function financialOverviewDocuments(Contact $contact)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
+
         $contact->load([
             'financialOverviewContactsSend' => function($query){
                 $query->orderBy('date_sent');
@@ -281,6 +353,19 @@ class ContactController extends ApiController
 
     public function relatedAdministrations(Contact $contact)
     {
+//        $portalUser = Auth::user();
+//        if (!Auth::isPortalUser() || !$portalUser->contact) {
+//            abort(501, 'Er is helaas een fout opgetreden.');
+//        }
+//        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+//        $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
+//
+//        $authorizedForContact = in_array($contact->id, $allowedContactIds);
+//        if ($portalUser->contact_id != $contact->id && !$authorizedForContact) {
+//            abort(403, 'Verboden');
+//        }
+
         $contactId = $contact->id;
         $administrations = Administration::whereHas('projects', function($query) use($contactId){
             $query->whereHas('participantsProject', function($query2) use($contactId){

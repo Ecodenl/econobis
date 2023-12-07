@@ -41,6 +41,7 @@ function FreeFields({ table, recordId, initialShowEdit = false }) {
             </div>
             {showEdit ? (
                 <FreeFieldsEdit
+                    table={table}
                     freeFieldsFieldRecords={freeFieldsFieldRecords}
                     setFreeFieldsFieldRecords={setFreeFieldsFieldRecords}
                     switchToView={switchToView}

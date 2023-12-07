@@ -92,8 +92,8 @@ class Contact extends Model
 
     public function freeFieldsFieldRecords()
     {
-        $fieldTableContact = FreeFieldsTable::where('table', 'contacts')->first();
-        $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
+        $fieldTableContacts = FreeFieldsTable::where('table', 'contacts')->first();
+        $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContacts->id ?? '$#@') )->get()->pluck('id')->toArray();
         return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
     }
 

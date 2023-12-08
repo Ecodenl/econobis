@@ -95,7 +95,16 @@ class TwinfieldInvoicePaymentHelper
         foreach ($invoicesToBeChecked as $invoiceToBeChecked)
         {
             if(!$invoiceToBeChecked->twinfield_number){
-                Log::error('Nota ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.');
+                $message = 'Nota ' . $invoiceToBeChecked->id . ' met nummer ' . $invoiceToBeChecked->number . ' heeft status geexporteerd maar heeft geen Twinfield nummer.';
+                Log::info($message);
+                TwinfieldLog::create([
+                    'invoice_id' => $invoiceToBeChecked->id,
+                    'contact_id' => null,
+                    'message_text' => substr($message, 0, 256),
+                    'message_type' => 'payment',
+                    'user_id' => Auth::user()->id,
+                    'is_error' => true,
+                ]);
             }
             else {
 
@@ -104,8 +113,8 @@ class TwinfieldInvoicePaymentHelper
                 try {
                     $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
                 } catch (PhpTwinfieldException $exceptionTwinfield) {
-                    Log::error($exceptionTwinfield->getMessage());
                     $message = 'Er is een twinfield fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+                    Log::info($message);
                     TwinfieldLog::create([
                         'invoice_id' => $invoiceToBeChecked->id,
                         'contact_id' => null,
@@ -116,8 +125,8 @@ class TwinfieldInvoicePaymentHelper
                     ]);
                     return $message;
                 } catch (\Exception $e) {
-                    Log::error($e->getMessage());
                     $message = 'Er is een fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '. Foutmelding: ' . $e->getMessage();
+                    Log::info($message);
                     TwinfieldLog::create([
                         'invoice_id' => $invoiceToBeChecked->id,
                         'contact_id' => null,
@@ -166,8 +175,8 @@ class TwinfieldInvoicePaymentHelper
                     try {
                         $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsPaidInfo);
                     } catch (PhpTwinfieldException $exceptionTwinfield) {
-                        Log::error($exceptionTwinfield->getMessage());
                         $message = 'Er is een twinfield fout opgetreden bij ophalen betaalgegevens notanr. ' . $invoiceToBeChecked->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+                        Log::info($message);
                         TwinfieldLog::create([
                             'invoice_id' => $invoiceToBeChecked->id,
                             'contact_id' => null,
@@ -178,8 +187,8 @@ class TwinfieldInvoicePaymentHelper
                         ]);
                         return $message;
                     } catch (\Exception $e) {
-                        Log::error($e->getMessage());
                         $message = 'Er is een fout opgetreden bij ophalen betaalgegevens notanr. ' . $invoiceToBeChecked->number . '. Foutmelding: ' . $e->getMessage();
+                        Log::info($message);
                         TwinfieldLog::create([
                             'invoice_id' => $invoiceToBeChecked->id,
                             'contact_id' => null,
@@ -462,8 +471,8 @@ class TwinfieldInvoicePaymentHelper
             $browseDefinitions = $browseDataApiConnector->getBrowseDefinition('100');
 //            $browseDefinitions = $browseDataApiConnector->getBrowseFields();
         } catch (PhpTwinfieldException $exceptionTwinfield) {
-            Log::error($exceptionTwinfield->getMessage());
             $message = 'Er is een twinfield fout opgetreden. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => null,
                 'contact_id' => null,
@@ -474,8 +483,8 @@ class TwinfieldInvoicePaymentHelper
             ]);
             return $message;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
             $message = 'Er is een fout opgetreden. Foutmelding: ' . $e->getMessage();
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => null,
                 'contact_id' => null,

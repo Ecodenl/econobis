@@ -8,6 +8,7 @@ import DashboardWidget from './widget';
 import { ContactDetailsDashboardWidget, SwitchContactDashboardWidget } from './widget/default';
 import DashboardSettingsAPI from '../../api/dashboard/DashboardSettingsAPI';
 import { isEmpty } from 'lodash';
+import axios from 'axios';
 
 const Dashboard = function(props) {
     const [isLoading, setLoading] = useState(true);
@@ -27,21 +28,82 @@ const Dashboard = function(props) {
 
     function callFetchContact() {
         setLoading(true);
-        ContactAPI.fetchContact(props.currentSelectedContact.id)
-            .then(payload => {
-                const contactData = rebaseContact(payload.data.data);
 
-                setContact(contactData);
-                props.updateNameSelectedContact(
-                    contactData.fullNameFnf,
-                    contactData.typeId,
-                    contactData.firstName,
-                    contactData.lastNamePrefix,
-                    contactData.lastName
-                );
-            })
+        function doSetContact(contactData) {
+            setContact(contactData);
+            props.updateNameSelectedContact(
+                contactData.fullNameFnf,
+                contactData.typeId,
+                contactData.firstName,
+                contactData.lastNamePrefix,
+                contactData.lastName
+            );
+        }
+
+        axios
+            .all([
+                ContactAPI.fetchContact(props.currentSelectedContact.id),
+                ContactAPI.fetchContactFreeFields(props.currentSelectedContact.id),
+            ])
+            .then(
+                axios.spread((payloadContact, payloadContactFreeFields) => {
+                    let contactData = rebaseContact(payloadContact.data.data);
+                    contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
+
+                    const typeContact = contactData.typeId ? contactData.typeId : null;
+                    switch (typeContact) {
+                        case 'person':
+                            if (contactData.primaryAddress.id) {
+                                ContactAPI.fetchAddressFreeFields(contactData.primaryAddress.id)
+                                    .then(payload => {
+                                        contactData.primaryAddress.freeFieldsFieldRecords = payload.data;
+                                        doSetContact(contactData);
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
+                                    });
+                            }
+                            break;
+                        case 'organisation':
+                            axios
+                                .all([
+                                    ContactAPI.fetchAddressFreeFields(contactData.visitAddress.id),
+                                    ContactAPI.fetchAddressFreeFields(contactData.postalAddress.id),
+                                    ContactAPI.fetchAddressFreeFields(contactData.invoiceAddress.id),
+                                ])
+                                .then(
+                                    axios.spread(
+                                        (payloadVisitAddressFF, payloadPostalAddressFF, payloadInvoiceAddressFF) => {
+                                            if (payloadVisitAddressFF.data.id) {
+                                                contactData.visitAddress.freeFieldsFieldRecords =
+                                                    payloadVisitAddressFF.data;
+                                            }
+                                            if (payloadPostalAddressFF.data.id) {
+                                                contactData.postalAddress.freeFieldsFieldRecords =
+                                                    payloadPostalAddressFF.data;
+                                            }
+                                            if (payloadInvoiceAddressFF.data.id) {
+                                                contactData.invoiceAddress.freeFieldsFieldRecords =
+                                                    payloadInvoiceAddressFF.data;
+                                            }
+                                            doSetContact(contactData);
+                                        }
+                                    )
+                                )
+                                .catch(error => {
+                                    console.log(error);
+                                });
+
+                        default:
+                            doSetContact(contactData);
+                            break;
+                    }
+
+                    setLoading(false);
+                })
+            )
             .catch(error => {
-                console.log(error);
+                // console.log(error);
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 setLoading(false);
             })

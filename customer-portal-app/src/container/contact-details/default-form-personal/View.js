@@ -110,6 +110,9 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                         {primaryAddress.country ? primaryAddress.country.name : ''}
                     </TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={primaryAddress.freeFieldsFieldRecords} showEdit={false} />
+
                 {isParticipantPcrProject ? (
                     <>
                         <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
@@ -132,6 +135,8 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
             </Col>
             <Col xs={12} md={6}>
                 <FormLabel className={'field-label'}>IBAN gegevens</FormLabel>
@@ -204,7 +209,6 @@ function DefaultContactPersonalView({ portalSettings, initialContact }) {
                     ''
                 )}
             </Col>
-            <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
         </Row>
     );
 }

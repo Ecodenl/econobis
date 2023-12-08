@@ -48,6 +48,18 @@ const ContactDetails = function(props) {
 
     function callFetchContact() {
         setLoading(true);
+
+        function doSetContact(contactData) {
+            setContact(contactData);
+            props.updateNameSelectedContact(
+                contactData.fullNameFnf,
+                contactData.typeId,
+                contactData.firstName,
+                contactData.lastNamePrefix,
+                contactData.lastName
+            );
+        }
+
         axios
             .all([
                 ContactAPI.fetchContact(props.currentSelectedContact.id),
@@ -55,20 +67,69 @@ const ContactDetails = function(props) {
             ])
             .then(
                 axios.spread((payloadContact, payloadContactFreeFields) => {
-                    let contactData = rebaseContact(payloadContact.data.data);
+                    let contactData = rebaseContact(payloadContact.data.data, true);
                     contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
-                    setContact(contactData);
-                    props.updateNameSelectedContact(
-                        contactData.fullNameFnf,
-                        contactData.typeId,
-                        contactData.firstName,
-                        contactData.lastNamePrefix,
-                        contactData.lastName
-                    );
+
+                    const typeContact = contactData.typeId ? contactData.typeId : null;
+                    switch (typeContact) {
+                        case 'person':
+                            if (contactData.primaryAddress.id) {
+                                ContactAPI.fetchAddressFreeFields(contactData.primaryAddress.id)
+                                    .then(payload => {
+                                        contactData.primaryAddress.freeFieldsFieldRecords = payload.data;
+                                        doSetContact(contactData);
+                                    })
+                                    .catch(error => {
+                                        console.log(error);
+                                    });
+                            }
+                            break;
+                        case 'organisation':
+                            axios
+                                .all([
+                                    contactData.visitAddress.id
+                                        ? ContactAPI.fetchAddressFreeFields(contactData.visitAddress.id)
+                                        : null,
+                                    contactData.postalAddress.id
+                                        ? ContactAPI.fetchAddressFreeFields(contactData.postalAddress.id)
+                                        : null,
+                                    contactData.invoiceAddress.id
+                                        ? ContactAPI.fetchAddressFreeFields(contactData.invoiceAddress.id)
+                                        : null,
+                                ])
+                                .then(
+                                    axios.spread(
+                                        (payloadVisitAddressFF, payloadPostalAddressFF, payloadInvoiceAddressFF) => {
+                                            if (payloadVisitAddressFF) {
+                                                contactData.visitAddress.freeFieldsFieldRecords =
+                                                    payloadVisitAddressFF.data;
+                                            }
+                                            if (payloadPostalAddressFF) {
+                                                contactData.postalAddress.freeFieldsFieldRecords =
+                                                    payloadPostalAddressFF.data;
+                                            }
+                                            if (payloadInvoiceAddressFF) {
+                                                contactData.invoiceAddress.freeFieldsFieldRecords =
+                                                    payloadInvoiceAddressFF.data;
+                                            }
+                                            doSetContact(contactData);
+                                        }
+                                    )
+                                )
+                                .catch(error => {
+                                    console.log(error);
+                                });
+
+                        default:
+                            doSetContact(contactData);
+                            break;
+                    }
+
                     setLoading(false);
                 })
             )
             .catch(error => {
+                // console.log(error);
                 alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 setLoading(false);
             });

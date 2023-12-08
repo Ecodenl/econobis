@@ -1,3 +1,5 @@
+import ContactAPI from '../api/contact/ContactAPI';
+
 export default function(contactData) {
     const typeContact = contactData.typeId ? contactData.typeId : null;
 
@@ -15,6 +17,7 @@ export default function(contactData) {
         countryId: '',
         eanElectricity: '',
         eanGas: '',
+        freeFieldsFieldRecords: '',
         currentAddressEnergySupplierElectricity: emptyCurrentAddressEnergySupplierElectricity,
     };
     let primaryAddress = null;

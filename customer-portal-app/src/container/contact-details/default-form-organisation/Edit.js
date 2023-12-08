@@ -13,6 +13,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
+import FreeFields from '../../../components/freeFields/FreeFields';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
@@ -321,6 +322,8 @@ const DefaultContactOrganisationEdit = function({
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={false} />
             </Col>
 
             <Col xs={12} md={6}>
@@ -501,6 +504,12 @@ const DefaultContactOrganisationEdit = function({
                         </Field>
                     </Col>
                 </Row>
+
+                <FreeFields
+                    freeFieldsFieldRecords={initialContact.visitAddress.freeFieldsFieldRecords}
+                    showEdit={false}
+                />
+
                 {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
                     <>
                         <FormLabel
@@ -814,6 +823,12 @@ const DefaultContactOrganisationEdit = function({
                         </Field>
                     </Col>
                 </Row>
+
+                <FreeFields
+                    freeFieldsFieldRecords={initialContact.postalAddress.freeFieldsFieldRecords}
+                    showEdit={false}
+                />
+
                 <FormLabel htmlFor="street" className="field-label">
                     Nota adres
                 </FormLabel>
@@ -920,6 +935,11 @@ const DefaultContactOrganisationEdit = function({
                         </Field>
                     </Col>
                 </Row>
+
+                <FreeFields
+                    freeFieldsFieldRecords={initialContact.invoiceAddress.freeFieldsFieldRecords}
+                    showEdit={false}
+                />
             </Col>
         </Row>
     );

@@ -182,6 +182,11 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchAddressFreeFields: function(addressId) {
+        const requestUrl = `/address/${addressId}/address-free-fields`;
+
+        return axiosInstance.get(requestUrl);
+    },
 
     fetchContactProjects: function(contactId) {
         const requestUrl = `/contact/${contactId}/contact-projects`;

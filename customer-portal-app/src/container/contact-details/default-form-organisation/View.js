@@ -4,6 +4,7 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
+import FreeFields from '../../../components/freeFields/FreeFields';
 
 function DefaultContactOrganisationView({ portalSettings, initialContact }) {
     const {
@@ -22,8 +23,15 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         number,
         primaryOccupations,
         isParticipantPcrProject,
+        freeFieldsFieldRecords,
     } = initialContact;
 
+    console.log('initialContact.visitAddress');
+    console.log(visitAddress);
+    console.log('initialContact.postalAddress');
+    console.log(postalAddress);
+    console.log('initialContact.invoiceAddress');
+    console.log(invoiceAddress);
     return (
         <Row>
             <Col xs={12} md={6}>
@@ -119,6 +127,8 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
             </Col>
             <Col xs={12} md={6}>
                 <FormLabel className={'field-label'}>Bezoekadres</FormLabel>
@@ -148,6 +158,9 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {visitAddress.country ? visitAddress.country.name : ''}
                     </TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={visitAddress.freeFieldsFieldRecords} showEdit={false} />
+
                 {isParticipantPcrProject ? (
                     <>
                         <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
@@ -166,6 +179,7 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                 ) : (
                     ''
                 )}
+
                 <FormLabel className={'field-label'}>Huidige energie leverancier</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Energieleverancier'}>
@@ -226,6 +240,9 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {postalAddress.country ? postalAddress.country.name : ''}
                     </TextBlock>{' '}
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={postalAddress.freeFieldsFieldRecords} showEdit={false} />
+
                 <FormLabel className={'field-label'}>Nota adres</FormLabel>
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
@@ -253,6 +270,8 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
                         {invoiceAddress.country ? invoiceAddress.country.name : ''}
                     </TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={invoiceAddress.freeFieldsFieldRecords} showEdit={false} />
             </Col>
         </Row>
     );

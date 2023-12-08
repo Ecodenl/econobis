@@ -446,6 +446,11 @@ const DefaultContactPersonalEdit = function({
                                 />
                             )}
                         </Field>
+
+                        <FreeFields
+                            freeFieldsFieldRecords={initialContact.primaryAddress.freeFieldsFieldRecords}
+                            showEdit={false}
+                        />
                     </Col>
                 </Row>
                 {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
@@ -534,6 +539,8 @@ const DefaultContactPersonalEdit = function({
                 <Row>
                     <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                 </Row>
+
+                <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={true} />
             </Col>
 
             <Col xs={12} md={6}>
@@ -760,7 +767,6 @@ const DefaultContactPersonalEdit = function({
                     </>
                 ) : null}
             </Col>
-            <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={true} />
         </Row>
     );
 };

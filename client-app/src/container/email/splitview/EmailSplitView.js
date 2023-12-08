@@ -209,7 +209,7 @@ export default function EmailSplitView({ router }) {
                             <ButtonIcon
                                 iconName={'refresh'}
                                 onClickAction={refreshData}
-                                title={'Alle mappen verzenden/ontvangen'}
+                                title={'Alle mappen ontvangen'}
                             />
                             <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
                             <ButtonIcon
@@ -252,7 +252,7 @@ export default function EmailSplitView({ router }) {
                             closeModal={closeModal}
                             buttonCancelText={'Sluiten'}
                             showConfirmAction={false}
-                            title="Alle mappen verzenden/ontvangen"
+                            title="Alle mappen ontvangen"
                         >
                             <p>{message}</p>
                             {/*{errors.length ? (*/}

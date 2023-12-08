@@ -18,7 +18,7 @@ const EmailsInListToolbar = props => {
                     <ButtonIcon
                         iconName={'refresh'}
                         onClickAction={props.refreshData}
-                        title={'Alle mappen verzenden/ontvangen'}
+                        title={'Alle mappen ontvangen'}
                     />
                     <ButtonIcon iconName={'plus'} onClickAction={newMailbox} title={'Nieuwe e-mail'} />
                 </div>

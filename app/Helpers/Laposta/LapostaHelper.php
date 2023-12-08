@@ -45,7 +45,7 @@ class LapostaHelper
 
         $messages = $this->syncLaposta();
         if(count($messages)) {
-            Log::error('Er is iets misgegaan bij het synchroniseren van Laposta' );
+            Log::info('Er is iets misgegaan bij het synchroniseren van Laposta' );
         }
     }
     protected function syncStateAllMembersLaposta() {
@@ -115,10 +115,10 @@ class LapostaHelper
             return $response['data'];
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::info('Er is iets misgegaan bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() );
+                Log::info('Er is iets misgegaan met bij het ophalen van alle Laposta lijsten. Melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren van Laposta');
             }
         }
@@ -133,10 +133,10 @@ class LapostaHelper
             return $response['data'];
         } catch (\Exception $e) {
             if ($e->getMessage()) {
-                Log::error('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
+                Log::info('Er is iets misgegaan bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() . ' - ' . $e->getMessage() );
                 abort($e->getHttpStatus(), $e->getMessage());
             } else {
-                Log::error('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() );
+                Log::info('Er is iets misgegaan met bij het ophalen van alle Laposta relaties voor laposta list id ' . $listId .  ', melding: ' . $e->getHttpStatus() );
                 abort($e->getHttpStatus(), 'Er is iets misgegaan bij het synchroniseren van Laposta');
             }
         }

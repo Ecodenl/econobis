@@ -318,28 +318,28 @@ class TwinfieldSalesTransactionHelper
             $invoice->save();
             return true;
         } catch (PhpTwinfieldException $exceptionTwinfield) {
-            Log::error($exceptionTwinfield->getMessage());
             $message = $exceptionTwinfield->getMessage();
-//            TwinfieldLog::create([
-//                'invoice_id' => $invoice->id,
-//                'contact_id' => null,
-//                'message_text' => substr($message, 0, 256),
-//                'message_type' => 'invoice',
-//                'user_id' => Auth::user()->id,
-//                'is_error' => true,
-//            ]);
+            Log::info($message);
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
             return $message;
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
             $message = $e->getMessage();
-//            TwinfieldLog::create([
-//                'invoice_id' => $invoice->id,
-//                'contact_id' => null,
-//                'message_text' => substr($message, 0, 256),
-//                'message_type' => 'invoice',
-//                'user_id' => Auth::user()->id,
-//                'is_error' => true,
-//            ]);
+            Log::info($message);
+            TwinfieldLog::create([
+                'invoice_id' => $invoice->id,
+                'contact_id' => null,
+                'message_text' => substr($message, 0, 256),
+                'message_type' => 'invoice',
+                'user_id' => Auth::user()->id,
+                'is_error' => true,
+            ]);
             return $message;
         }
 
@@ -370,8 +370,8 @@ class TwinfieldSalesTransactionHelper
             return true;
 
         } catch (PhpTwinfieldException $exceptionTwinfield) {
-            Log::error($exceptionTwinfield->getMessage());
             $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => $invoice->id,
                 'contact_id' => null,
@@ -382,8 +382,8 @@ class TwinfieldSalesTransactionHelper
             ]);
             array_push($this->messages, $message);
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
             $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage();
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => $invoice->id,
                 'contact_id' => null,

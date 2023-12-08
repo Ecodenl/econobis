@@ -66,12 +66,12 @@ class ContactDetailsFormPortalUserEdit extends Component {
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    let errorObject = JSON.parse(JSON.stringify(error));
+                    // let errorObject = JSON.parse(JSON.stringify(error));
 
                     let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
 
-                    if (errorObject.response.status !== 500) {
-                        errorMessage = errorObject.response.data.message;
+                    if (error.response.status !== 500) {
+                        errorMessage = error.response.data.message;
                     }
 
                     this.setState({
@@ -88,18 +88,19 @@ class ContactDetailsFormPortalUserEdit extends Component {
     handleTwoFactorReset = event => {
         event.preventDefault();
 
-        if(!confirm('Weet u zeker dat u de twee factor authenticatie wilt resetten voor deze portal gebruiker?')) {
+        if (!confirm('Weet u zeker dat u de twee factor authenticatie wilt resetten voor deze portal gebruiker?')) {
             return;
         }
 
-        PortalUserAPI.resetTwoFactor(this.state.portalUser.id)
-            .then(() => {
-                this.props.dispatch(ContactDetailsActions.updatePortalUser({
+        PortalUserAPI.resetTwoFactor(this.state.portalUser.id).then(() => {
+            this.props.dispatch(
+                ContactDetailsActions.updatePortalUser({
                     ...this.state.portalUser,
                     hasTwoFactorEnabled: false,
-                }));
-                this.props.switchToView();
-            });
+                })
+            );
+            this.props.switchToView();
+        });
     };
 
     render() {
@@ -124,8 +125,10 @@ class ContactDetailsFormPortalUserEdit extends Component {
                             <label className="col-sm-6">Twee factor authenticatie</label>
                             <div className="col-sm-3">{this.props.portalUser.hasTwoFactorEnabled ? 'Ja' : 'Nee'}</div>
                             {this.props.portalUser.hasTwoFactorEnabled ? (
-                                <a href="#" className="col-sm-3" onClick={this.handleTwoFactorReset}>reset</a>
-                            ) : null }
+                                <a href="#" className="col-sm-3" onClick={this.handleTwoFactorReset}>
+                                    reset
+                                </a>
+                            ) : null}
                         </div>
                     </div>
 

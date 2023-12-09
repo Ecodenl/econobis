@@ -161,7 +161,7 @@ class Kernel extends ConsoleKernel
                 $schedule->command('shared:processCommandRunsToShared')->timezone('Europe/Amsterdam')->dailyAt('07:37');
                 break;
             case 3:
-                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('76:47');
+                $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('06:47');
                 $schedule->command('email:getAllEmail')->timezone('Europe/Amsterdam')->dailyAt('08:02');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('08:57');
                 $schedule->command('email:checkMailboxes')->timezone('Europe/Amsterdam')->dailyAt('11:57');

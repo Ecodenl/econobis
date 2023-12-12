@@ -12,9 +12,11 @@ import axiosInstance from '../../../api/default-setup/AxiosInstance';
 import { hashHistory } from 'react-router';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
-import { useSelector } from 'react-redux';
+import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
 import EmailMailboxStatusses from './EmailMailboxStatusses';
+import { fetchMeDetails } from '../../../actions/general/MeDetailsActions';
+import moment from 'moment/moment';
 
 export default function EmailSplitView({ router }) {
     const perPage = 50;
@@ -26,11 +28,50 @@ export default function EmailSplitView({ router }) {
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
-    const [showMailboxStatusses, setShowMailboxStatusses] = useState(true);
-    const mailboxes = useSelector(state => state.meDetails.mailboxes);
-    const hasMailboxes = useSelector(state => state.meDetails.mailboxes.length > 0);
+    const [refreshDataInitial, setRefreshDataInitial] = useState(false);
+    const dispatch = useDispatch();
+    const activeMailboxes = useSelector(state => state.meDetails.activeMailboxes);
+    const hasMailboxes = useSelector(state => state.meDetails.activeMailboxes.length > 0);
     const [multiselectEnabled, setMultiselectEnabled] = useState(false);
     const [message, setMessage] = useState('Nieuwe e-mails worden opgehaald ...');
+
+    const determineRefreshDataInitial = () => {
+        // console.log('Hallo determineRefreshDataInitial?');
+        const time15MinutesAgo = moment()
+            .subtract(15, 'minutes')
+            .format('YYYY-MM-DD HH:mm:ss');
+
+        const mailBoxesToFetchInitial = activeMailboxes.filter(mailbox => {
+            if (
+                mailbox.valid &&
+                (!mailbox.date_last_fetched ||
+                    moment(mailbox.date_last_fetched).format('YYYY-MM-DD HH:mm:ss') < time15MinutesAgo)
+            ) {
+                return true;
+            }
+            return false;
+        });
+        // console.log('setRefreshDataInitial?');
+        // console.log(mailBoxesToFetchInitial && mailBoxesToFetchInitial.length > 0 ? 'true' : 'false');
+
+        setRefreshDataInitial(mailBoxesToFetchInitial.length > 0);
+    };
+
+    useEffect(() => {
+        // console.log('On page load ?');
+        dispatch(fetchMeDetails());
+        determineRefreshDataInitial();
+    }, []);
+
+    useEffect(() => {
+        // console.log('RefreshDataInitial gewijzigt?');
+        // console.log(refreshDataInitial);
+        if (refreshDataInitial) {
+            // console.log('do refreshData als refreshDataInitial = true');
+            refreshData();
+            setRefreshDataInitial(false);
+        }
+    }, [refreshDataInitial]);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -180,6 +221,7 @@ export default function EmailSplitView({ router }) {
             .then(() => {
                 setMessage('Ophalen nieuwe e-mails is voltooid.');
                 refetchCurrentEmails();
+                dispatch(fetchMeDetails());
                 setTimeout(closeModal, 5000);
             })
             .catch(error => {
@@ -206,22 +248,10 @@ export default function EmailSplitView({ router }) {
                 </div>
             ) : (
                 <>
-                    {showMailboxStatusses && (
-                        <EmailMailboxStatusses
-                            mailboxes={mailboxes}
-                            setShowMailboxStatusses={setShowMailboxStatusses}
-                        />
-                    )}
+                    <EmailMailboxStatusses />
                     <div className="row">
                         <div
-                           className="col-xs-12">
-                        <div className="alert alert-info" role="alert">
-                            Uitvoeren mappen ontvangen wordt tijdelijk alleen 's ochtends rond 8.00 automatisch gedaan
-                            en niet meer elke 10 minuten (tussen 08.00 en 20.00). Gebruik knop "Alle mappen ontvangen"
-                            op deze pagina om nieuwe e-mails te ontvangen.
-                        </div>
-                    </div>
-                    <div className="col-md-4"
+                            className="col-md-4"
                             style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}
                         >
                             <div className="btn-group" role="group">

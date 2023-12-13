@@ -9,6 +9,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchMailboxesLoggedInUser: () => {
+        const requestUrl = `${URL_MAILBOX}/logged-in/statuses`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchMailboxDetails: id => {
         const requestUrl = `${URL_MAILBOX}/${id}`;
 
@@ -45,13 +51,19 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    checkRefreshEmailData: () => {
+        const requestUrl = `${URL_MAILBOX}/check-refresh-email-data`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchMailboxesLoggedInUserPeek: () => {
         const requestUrl = `${URL_MAILBOX}/logged-in/email-peek`;
 
         return axiosInstance.get(requestUrl);
     },
 
-    fetchMailboxesForUserPeek: (userId) => {
+    fetchMailboxesForUserPeek: userId => {
         const requestUrl = `${URL_MAILBOX}/for-user/${userId}/email-peek`;
 
         return axiosInstance.get(requestUrl);

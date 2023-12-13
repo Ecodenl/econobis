@@ -3,15 +3,13 @@ import moment from 'moment';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import { useSelector } from 'react-redux';
 import ButtonText from '../../../components/button/ButtonText';
 
-export default function EmailMailboxStatusses() {
-    const [showMailboxStatussesPanel, setShowMailboxStatussesPanel] = useState(true);
-    const [showMailboxStatusses, setShowMailboxStatusses] = useState(false);
-    const activeMailboxes = useSelector(state => state.meDetails.activeMailboxes);
+export default function EmailMailboxStatuses({ activeMailboxes }) {
+    const [showMailboxStatusesPanel, setShowMailboxStatusesPanel] = useState(true);
+    const [showMailboxStatuses, setShowMailboxStatuses] = useState(false);
 
-    return showMailboxStatussesPanel ? (
+    return showMailboxStatusesPanel ? (
         <div className={'row'}>
             <div className="col-xs-12">
                 <div
@@ -19,12 +17,12 @@ export default function EmailMailboxStatusses() {
                     style={{ display: 'flex', justifyContent: 'space-between' }}
                     role="alert"
                 >
-                    {showMailboxStatusses ? (
+                    {showMailboxStatuses ? (
                         <div>
                             <div style={{ flex: '1 1 auto' }}>
                                 <ButtonText
                                     buttonText={'Status mailboxen (verbergen)'}
-                                    onClickAction={() => setShowMailboxStatusses(false)}
+                                    onClickAction={() => setShowMailboxStatuses(false)}
                                 />
                             </div>
                             <div>&nbsp;</div>
@@ -67,12 +65,12 @@ export default function EmailMailboxStatusses() {
                         <div style={{ flex: '1 1 auto' }}>
                             <ButtonText
                                 buttonText={'Status mailboxen (tonen)'}
-                                onClickAction={() => setShowMailboxStatusses(true)}
+                                onClickAction={() => setShowMailboxStatuses(true)}
                             />
                         </div>
                     )}
                     <div>
-                        <a onClick={() => setShowMailboxStatussesPanel(false)} className="btn btn-sm">
+                        <a onClick={() => setShowMailboxStatusesPanel(false)} className="btn btn-sm">
                             x
                         </a>
                     </div>

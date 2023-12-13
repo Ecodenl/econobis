@@ -25,12 +25,13 @@ use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
+use App\Http\Resources\Mailbox\LoggedInUserStatuses;
 use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\User\UserPeek;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MailboxController extends Controller
@@ -246,6 +247,35 @@ class MailboxController extends Controller
         $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
+    }
+
+    /**
+     * Geef de mailboxen van een ingelogde gebruiker voor tonen statussen.
+     */
+    public function loggedInUserStatuses()
+    {
+        $user = Auth::user();
+
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name', 'date_last_fetched', 'valid')->where('is_active', 1)->get();
+
+        return LoggedInUserStatuses::collection($mailboxes);
+    }
+
+    public function checkRefreshEmailData()
+    {
+        $user = Auth::user();
+
+//        Log::info('test checkRefreshEmailData hier');
+        $time15MinutesAgo = Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s');
+        $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)->where('valid', true )
+            ->where(function ($query) use($time15MinutesAgo) {
+                $query->whereNull('date_last_fetched')
+                    ->orwhere('date_last_fetched', '<', $time15MinutesAgo );
+            });
+
+//        Log::info($activateAutomaticRefreshEmailData->get());
+
+        return $activateAutomaticRefreshEmailData->exists();
     }
 
     /**

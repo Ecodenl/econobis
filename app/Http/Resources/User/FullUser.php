@@ -49,7 +49,7 @@ class FullUser extends JsonResource
             'showTwoFactorNotification' => $this->show_two_factor_notification,
             'defaultMailboxId' => $this->default_mailbox_id,
             'defaultMailbox' => MailboxPeek::make($this->whenLoaded('defaultMailbox')),
-            'activeMailboxes' => GenericResource::collection($this->whenLoaded('mailboxes')->where('is_active', true)),
+//            'mailboxes' =>$this->whenLoaded('mailboxes'),
         ];
     }
 

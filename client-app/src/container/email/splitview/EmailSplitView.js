@@ -12,15 +12,15 @@ import axiosInstance from '../../../api/default-setup/AxiosInstance';
 import { hashHistory } from 'react-router';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
-import { useSelector, useDispatch } from 'react-redux';
 import Modal from '../../../components/modal/Modal';
-import EmailMailboxStatusses from './EmailMailboxStatusses';
-import { fetchMeDetails } from '../../../actions/general/MeDetailsActions';
-import moment from 'moment/moment';
+import EmailMailboxStatuses from './EmailMailboxStatuses';
+import axios from 'axios';
 
 export default function EmailSplitView({ router }) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
+    const [isLoadingMailboxes, setIsLoadingMailboxes] = useState(false);
+    const [activeMailboxes, setActiveMailboxes] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [isRefreshingData, setIsRefreshingData] = useState(false);
@@ -28,50 +28,14 @@ export default function EmailSplitView({ router }) {
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
-    const [refreshDataInitial, setRefreshDataInitial] = useState(false);
-    const dispatch = useDispatch();
-    const activeMailboxes = useSelector(state => state.meDetails.activeMailboxes);
-    const hasMailboxes = useSelector(state => state.meDetails.activeMailboxes.length > 0);
+    const hasMailboxes = activeMailboxes.length > 0;
+
     const [multiselectEnabled, setMultiselectEnabled] = useState(false);
     const [message, setMessage] = useState('Nieuwe e-mails worden opgehaald ...');
 
-    const determineRefreshDataInitial = () => {
-        // console.log('Hallo determineRefreshDataInitial?');
-        const time15MinutesAgo = moment()
-            .subtract(15, 'minutes')
-            .format('YYYY-MM-DD HH:mm:ss');
-
-        const mailBoxesToFetchInitial = activeMailboxes.filter(mailbox => {
-            if (
-                mailbox.valid &&
-                (!mailbox.date_last_fetched ||
-                    moment(mailbox.date_last_fetched).format('YYYY-MM-DD HH:mm:ss') < time15MinutesAgo)
-            ) {
-                return true;
-            }
-            return false;
-        });
-        // console.log('setRefreshDataInitial?');
-        // console.log(mailBoxesToFetchInitial && mailBoxesToFetchInitial.length > 0 ? 'true' : 'false');
-
-        setRefreshDataInitial(mailBoxesToFetchInitial.length > 0);
-    };
-
     useEffect(() => {
-        // console.log('On page load ?');
-        dispatch(fetchMeDetails());
-        determineRefreshDataInitial();
+        fetchActiveMailboxes(true);
     }, []);
-
-    useEffect(() => {
-        // console.log('RefreshDataInitial gewijzigt?');
-        // console.log(refreshDataInitial);
-        if (refreshDataInitial) {
-            // console.log('do refreshData als refreshDataInitial = true');
-            refreshData();
-            setRefreshDataInitial(false);
-        }
-    }, [refreshDataInitial]);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -154,7 +118,26 @@ export default function EmailSplitView({ router }) {
             setEmailCount(response.data.total);
         });
     };
-
+    const fetchActiveMailboxes = doRefreshData => {
+        setIsLoadingMailboxes(true);
+        axios
+            .all([MailboxAPI.checkRefreshEmailData(), MailboxAPI.fetchMailboxesLoggedInUser()])
+            .then(
+                axios.spread((payloadcheckRefreshEmailData, payloadActiveMailboxes) => {
+                    // console.log('test payloadActiveMailboxes');
+                    // console.log(payloadActiveMailboxes.data.data);
+                    setActiveMailboxes(payloadActiveMailboxes.data.data);
+                    if (doRefreshData && Boolean(payloadcheckRefreshEmailData.data)) {
+                        refreshData();
+                    }
+                    setIsLoadingMailboxes(false);
+                })
+            )
+            .catch(error => {
+                console.log(error);
+                setIsLoadingMailboxes(false);
+            });
+    };
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
@@ -221,7 +204,7 @@ export default function EmailSplitView({ router }) {
             .then(() => {
                 setMessage('Ophalen nieuwe e-mails is voltooid.');
                 refetchCurrentEmails();
-                dispatch(fetchMeDetails());
+                fetchActiveMailboxes(false);
                 setTimeout(closeModal, 5000);
             })
             .catch(error => {
@@ -238,7 +221,15 @@ export default function EmailSplitView({ router }) {
 
     return (
         <div>
-            {!hasMailboxes ? (
+            {isLoadingMailboxes ? (
+                <div className={'row'}>
+                    <div className="col-xs-12">
+                        <div className="alert alert-info" role="alert">
+                            Bezig met ophalen mailbox statussen ...
+                        </div>
+                    </div>
+                </div>
+            ) : !hasMailboxes ? (
                 <div className={'row'}>
                     <div className="col-xs-12">
                         <div className="alert alert-info" role="alert">
@@ -248,7 +239,7 @@ export default function EmailSplitView({ router }) {
                 </div>
             ) : (
                 <>
-                    <EmailMailboxStatusses />
+                    <EmailMailboxStatuses activeMailboxes={activeMailboxes} />
                     <div className="row">
                         <div
                             className="col-md-4"

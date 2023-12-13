@@ -25,7 +25,7 @@ use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
 use App\Http\Resources\Mailbox\GridMailbox;
 use App\Http\Resources\Mailbox\LoggedInEmailPeek;
-use App\Http\Resources\Mailbox\LoggedInUserStatuses;
+use App\Http\Resources\Mailbox\LoggedInUserOnlyActive;
 use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\User\UserPeek;
 use Carbon\Carbon;
@@ -252,30 +252,24 @@ class MailboxController extends Controller
     /**
      * Geef de mailboxen van een ingelogde gebruiker voor tonen statussen.
      */
-    public function loggedInUserStatuses()
+    public function loggedInUserOnlyActive()
     {
         $user = Auth::user();
 
         $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name', 'date_last_fetched', 'valid')->where('is_active', 1)->get();
 
-        return LoggedInUserStatuses::collection($mailboxes);
-    }
-
-    public function checkRefreshEmailData()
-    {
-        $user = Auth::user();
-
-//        Log::info('test checkRefreshEmailData hier');
         $time15MinutesAgo = Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s');
         $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)->where('valid', true )
             ->where(function ($query) use($time15MinutesAgo) {
                 $query->whereNull('date_last_fetched')
                     ->orwhere('date_last_fetched', '<', $time15MinutesAgo );
-            });
+            })->exists();
 
-//        Log::info($activateAutomaticRefreshEmailData->get());
-
-        return $activateAutomaticRefreshEmailData->exists();
+        return LoggedInUserOnlyActive::collection($mailboxes)
+            ->additional(['meta' => [
+                'activateAutomaticRefreshEmailData' => $activateAutomaticRefreshEmailData,
+            ]
+            ]);
     }
 
     /**

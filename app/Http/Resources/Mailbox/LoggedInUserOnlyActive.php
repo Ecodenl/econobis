@@ -11,7 +11,7 @@ namespace App\Http\Resources\Mailbox;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class LoggedInUserStatuses extends JsonResource
+class LoggedInUserOnlyActive extends JsonResource
 {
     public function toArray($request)
     {

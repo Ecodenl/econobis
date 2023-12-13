@@ -10,7 +10,7 @@ export default {
     },
 
     fetchMailboxesLoggedInUser: () => {
-        const requestUrl = `${URL_MAILBOX}/logged-in/statuses`;
+        const requestUrl = `${URL_MAILBOX}/logged-in/only-active`;
 
         return axiosInstance.get(requestUrl);
     },
@@ -49,12 +49,6 @@ export default {
         const requestUrl = `${URL_MAILBOX}/${mailboxId}/users/remove/${userId}`;
 
         return axiosInstance.post(requestUrl);
-    },
-
-    checkRefreshEmailData: () => {
-        const requestUrl = `${URL_MAILBOX}/check-refresh-email-data`;
-
-        return axiosInstance.get(requestUrl);
     },
 
     fetchMailboxesLoggedInUserPeek: () => {

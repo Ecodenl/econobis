@@ -121,13 +121,11 @@ export default function EmailSplitView({ router }) {
     const fetchActiveMailboxes = doRefreshData => {
         setIsLoadingMailboxes(true);
         axios
-            .all([MailboxAPI.checkRefreshEmailData(), MailboxAPI.fetchMailboxesLoggedInUser()])
+            .all([MailboxAPI.fetchMailboxesLoggedInUser()])
             .then(
-                axios.spread((payloadcheckRefreshEmailData, payloadActiveMailboxes) => {
-                    // console.log('test payloadActiveMailboxes');
-                    // console.log(payloadActiveMailboxes.data.data);
+                axios.spread(payloadActiveMailboxes => {
                     setActiveMailboxes(payloadActiveMailboxes.data.data);
-                    if (doRefreshData && Boolean(payloadcheckRefreshEmailData.data)) {
+                    if (doRefreshData && payloadActiveMailboxes.data.meta.activateAutomaticRefreshEmailData) {
                         refreshData();
                     }
                     setIsLoadingMailboxes(false);

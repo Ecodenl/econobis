@@ -311,6 +311,7 @@ Route::namespace('Api')
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
+        Route::get('mailbox/logged-in/only-active', 'Mailbox\MailboxController@loggedInUserOnlyActive');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/for-user/{user}/email-peek', 'Mailbox\MailboxController@forUserEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');

@@ -62,10 +62,10 @@ function FinancialOverviewProjectItem({
                 refreshFinancialOverviewProjects();
             })
             .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
+                // let errorObject = JSON.parse(JSON.stringify(error));
                 let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
+                if (error.response.status !== 500) {
+                    errorMessage = error.response.data.message;
                 }
                 setShowErrorModal(true);
                 setModalErrorMessage(errorMessage);
@@ -81,10 +81,10 @@ function FinancialOverviewProjectItem({
                 refreshFinancialOverviewProjects();
             })
             .catch(error => {
-                let errorObject = JSON.parse(JSON.stringify(error));
+                // let errorObject = JSON.parse(JSON.stringify(error));
                 let errorMessage = 'Er is iets misgegaan bij opslaan. Probeer het opnieuw.';
-                if (errorObject.response.status !== 500) {
-                    errorMessage = errorObject.response.data.message;
+                if (error.response.status !== 500) {
+                    errorMessage = error.response.data.message;
                 }
                 setShowErrorModal(true);
                 setModalErrorMessage(errorMessage);
@@ -125,12 +125,14 @@ function FinancialOverviewProjectItem({
                 <td>
                     {financialOverview.definitive ? (
                         <a role="button">
-                            <Icon className="mybtn-primary" size={14} icon={check} />&nbsp;
+                            <Icon className="mybtn-primary" size={14} icon={check} />
+                            &nbsp;
                         </a>
                     ) : showActionButtons ? (
                         financialOverviewProject.definitive ? (
                             <a role="button" onClick={toggleMakeConcept}>
-                                <Icon className="mybtn-danger" size={14} icon={remove} />&nbsp;
+                                <Icon className="mybtn-danger" size={14} icon={remove} />
+                                &nbsp;
                             </a>
                         ) : (
                             <>

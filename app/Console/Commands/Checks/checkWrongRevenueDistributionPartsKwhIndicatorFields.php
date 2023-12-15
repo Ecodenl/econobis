@@ -96,6 +96,8 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
                     "revenue_id" => $revenueDistributionPartKwh->revenue_id,
                     "project_id" => $revenueDistributionPartKwh->revenuesKwh->project_id,
                     "distribution_id" => $revenueDistributionPartKwh->distribution_id,
+                    "participation_id" => $revenueDistributionPartKwh->distributionKwh->participation_id,
+                    "contact_id" => $revenueDistributionPartKwh->distributionKwh->contact_id,
                     "part_id" => $revenueDistributionPartKwh->partsKwh->id,
                     "distribution_part_id" => $revenueDistributionPartKwh->id,
                     "part_date_begin" => $revenueDistributionPartKwh->partsKwh->date_begin,
@@ -154,6 +156,8 @@ class checkWrongRevenueDistributionPartsKwhIndicatorFields extends Command
                 "<p>revenue_id: " . $wrongRevenueDistributionPartKwh['revenue_id'] . ", " .
                 "project_id: " . $wrongRevenueDistributionPartKwh['project_id'] . ", " .
                 "distribution_id: " . $wrongRevenueDistributionPartKwh['distribution_id'] . ", " .
+                "participation_id: " . $wrongRevenueDistributionPartKwh['participation_id'] . ", " .
+                "contact_id: " . $wrongRevenueDistributionPartKwh['contact_id'] . ", " .
                 "part_id: " . $wrongRevenueDistributionPartKwh['part_id'] . ", " .
                 "distribution_part_id: " . $wrongRevenueDistributionPartKwh['distribution_part_id'] . ", " .
                 "part_date_begin: " . $wrongRevenueDistributionPartKwh['part_date_begin'] . ", " .

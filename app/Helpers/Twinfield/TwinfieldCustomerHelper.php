@@ -243,7 +243,7 @@ class TwinfieldCustomerHelper
 
             } catch (PhpTwinfieldException $exceptionTwinfield) {
                 $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-                Log::error($message);
+                Log::info($message);
                 TwinfieldLog::create([
                     'invoice_id' => null,
                     'contact_id' => $contact->id,
@@ -255,7 +255,7 @@ class TwinfieldCustomerHelper
                 array_push($this->messages, $message);
             } catch (Exception $e) {
                 $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
-                Log::error($message);
+                Log::info($message);
                 TwinfieldLog::create([
                     'invoice_id' => null,
                     'contact_id' => $contact->id,
@@ -321,7 +321,7 @@ class TwinfieldCustomerHelper
 
                 } catch (PhpTwinfieldException $exceptionTwinfield) {
                     $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-                    Log::error($message);
+                    Log::info($message);
                     TwinfieldLog::create([
                         'invoice_id' => null,
                         'contact_id' => $contact->id,
@@ -333,7 +333,7 @@ class TwinfieldCustomerHelper
                     array_push($this->messages, $message);
                 } catch (Exception $e) {
                     $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
-                    Log::error($message);
+                    Log::info($message);
                     TwinfieldLog::create([
                         'invoice_id' => null,
                         'contact_id' => $contact->id,
@@ -413,7 +413,7 @@ class TwinfieldCustomerHelper
 
         } catch (PhpTwinfieldException $exceptionTwinfield) {
             $message = 'Synchronisatie contact ' . $contact->number . ' (twinfieldcode: ' . $code . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-            Log::error($message);
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => null,
                 'contact_id' => $contact->id,
@@ -425,7 +425,7 @@ class TwinfieldCustomerHelper
             array_push($this->messages, $message);
         } catch (Exception $e) {
             $message = 'Synchronisatie contact ' . $contact->number . ' (twinfieldcode: ' . $code . ') gaf de volgende foutmelding: ' . $e->getMessage();
-            Log::error($message);
+            Log::info($message);
             TwinfieldLog::create([
                 'invoice_id' => null,
                 'contact_id' => $contact->id,

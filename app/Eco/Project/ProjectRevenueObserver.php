@@ -46,30 +46,6 @@ class ProjectRevenueObserver
                 {
                     $project->kwh_start_low_next_revenue = $projectRevenue->kwh_end_low;
                 }
-            // Set next (begin) date revenueKwhSplit
-// todo WM: opschonen: revenueKwhSplit gebruiken we niet meer
-//            }elseif($projectRevenue->category->code_ref == 'revenueKwhSplit'){
-//                $participant = $projectRevenue->participant;
-//                $participant->date_next_revenue_kwh = Carbon::parse($projectRevenue->date_end)->clone()->addDay();
-//                // Set next start high next revenue
-//                if($projectRevenue->kwh_end_high <> 0)
-//                {
-//                    $participant->kwh_start_high_next_revenue = $projectRevenue->kwh_end_high;
-//                }
-//                // Set next start low next revenue
-//                if($projectRevenue->kwh_end_low <> 0)
-//                {
-//                    $participant->kwh_start_low_next_revenue = $projectRevenue->kwh_end_low;
-//                }
-//                $participant->save();
-//
-//                // Set next (begin) date, start high and start low in project (if not set yet))
-//                if($project->date_interest_bearing_kwh == null)
-//                {
-//                    $project->date_interest_bearing_kwh = $projectRevenue->date_begin;
-//                    $project->kwh_start_high_next_revenue = $projectRevenue->kwh_begin_high;
-//                    $project->kwh_start_low_next_revenue = $projectRevenue->kwh_begin_low;
-//                }
             }
 
             $project->save();

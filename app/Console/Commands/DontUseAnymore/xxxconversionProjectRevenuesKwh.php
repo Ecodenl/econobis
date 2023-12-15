@@ -22,14 +22,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class conversionProjectRevenuesKwh extends Command
+class xxxconversionProjectRevenuesKwh extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'project:conversionProjectRevenuesKwh';
+    protected $signature = 'project:xxxconversionProjectRevenuesKwh';
 
     /**
      * The console command description.

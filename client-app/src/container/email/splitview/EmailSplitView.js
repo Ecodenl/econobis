@@ -204,12 +204,19 @@ export default function EmailSplitView({ router }) {
                 </div>
             ) : (
                 <div className="row">
+                    <div className="col-xs-12">
+                        <div className="alert alert-info" role="alert">
+                            Uitvoeren mappen ontvangen wordt tijdelijk alleen 's ochtends rond 8.00 automatisch gedaan
+                            en niet meer elke 10 minuten (tussen 08.00 en 20.00). Gebruik knop "Alle mappen ontvangen"
+                            op deze pagina om nieuwe e-mails te ontvangen.
+                        </div>
+                    </div>
                     <div className="col-md-4" style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}>
                         <div className="btn-group" role="group">
                             <ButtonIcon
                                 iconName={'refresh'}
                                 onClickAction={refreshData}
-                                title={'Alle mappen verzenden/ontvangen'}
+                                title={'Alle mappen ontvangen'}
                             />
                             <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
                             <ButtonIcon
@@ -252,7 +259,7 @@ export default function EmailSplitView({ router }) {
                             closeModal={closeModal}
                             buttonCancelText={'Sluiten'}
                             showConfirmAction={false}
-                            title="Alle mappen verzenden/ontvangen"
+                            title="Alle mappen ontvangen"
                         >
                             <p>{message}</p>
                             {/*{errors.length ? (*/}

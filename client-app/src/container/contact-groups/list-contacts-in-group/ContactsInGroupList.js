@@ -8,6 +8,9 @@ import ContactsInGroupListItem from './ContactsInGroupListItem';
 import ContactsInGroupDeleteItem from './ContactsInGroupDeleteItem';
 import ContactsInGroupEditItem from './ContactsInGroupEditItem';
 import { connect } from 'react-redux';
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { setContactsInGroupPagination } from '../../../actions/contact-group/ContactsInGroupPaginationActions';
+import { bindActionCreators } from 'redux';
 
 class ContactsInGroupList extends Component {
     constructor(props) {
@@ -26,6 +29,7 @@ class ContactsInGroupList extends Component {
                 memberToGroupSince: '',
             },
         };
+        this.handlePageClick = this.handlePageClick.bind(this);
     }
 
     showDeleteItemModal = (id, name) => {
@@ -78,6 +82,15 @@ class ContactsInGroupList extends Component {
         });
     };
 
+    handlePageClick(page) {
+        let pageSelected = page.selected;
+        let offset = Math.ceil(page.selected * 50);
+
+        this.props.setContactsInGroupPagination({ pageSelected, offset });
+
+        this.props.refreshContactsInGroupData(page.selected);
+    }
+
     render() {
         let loadingText = '';
         let loading = true;
@@ -97,7 +110,7 @@ class ContactsInGroupList extends Component {
                 <div className="row">
                     <div className="col-xs-12">
                         <span>
-                            Totaal leden in groep: <strong>{this.props.contactsInGroup.length}</strong>
+                            Totaal leden in groep: <strong>{this.props.total}</strong>
                         </span>
                     </div>
                 </div>
@@ -132,6 +145,13 @@ class ContactsInGroupList extends Component {
                         </DataTableBody>
                     </DataTable>
                 </form>
+                <div className="col-md-6 col-md-offset-3">
+                    <DataTablePagination
+                        onPageChangeAction={this.handlePageClick}
+                        totalRecords={this.props.total}
+                        recordsPerPage={50}
+                    />
+                </div>
                 {this.state.showDeleteItem && (
                     <ContactsInGroupDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}
@@ -160,4 +180,8 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactsInGroupList);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators({ setContactsInGroupPagination }, dispatch);
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupList);

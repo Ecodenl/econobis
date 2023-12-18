@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
+import { clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import {
     fetchContactGroupDetails,
     clearContactGroupDetails,
@@ -10,14 +10,19 @@ import {
 
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
+import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
 
 class ContactsInGroupListApp extends Component {
     constructor(props) {
         super(props);
+
+        this.state = {
+            contactsInGroup: [],
+        };
     }
 
     componentDidMount() {
-        this.props.fetchContactsInGroup(this.props.params.contactGroup);
+        this.fetchContactsInGroup(this.props.params.contactGroup);
         this.props.fetchContactGroupDetails(this.props.params.contactGroup);
     }
 
@@ -26,9 +31,18 @@ class ContactsInGroupListApp extends Component {
         this.props.clearContactGroupDetails();
     }
 
-    refreshContactsInGroupData = () => {
+    refreshContactsInGroupData = (page = null) => {
         this.props.clearContactsInGroup();
-        this.props.fetchContactsInGroup(this.props.params.contactGroup);
+        this.fetchContactsInGroup(this.props.params.contactGroup, page);
+    };
+
+    fetchContactsInGroup = (groupId, page = null) => {
+        const pagination = { limit: 50, offset: page };
+
+        ContactsInGroupAPI.fetchContactsInGroupPaginated(groupId, pagination).then(payload => {
+            this.setState({ contactsInGroup: payload.gridContactGroupContacts });
+            this.setState({ total: payload.total });
+        });
     };
 
     render() {
@@ -45,7 +59,8 @@ class ContactsInGroupListApp extends Component {
 
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupList
-                                contactsInGroup={this.props.contactsInGroup}
+                                contactsInGroup={this.state.contactsInGroup}
+                                total={this.state.total}
                                 groupId={this.props.params.contactGroup}
                                 refreshContactsInGroupData={this.refreshContactsInGroupData}
                             />
@@ -60,14 +75,12 @@ class ContactsInGroupListApp extends Component {
 const mapStateToProps = state => {
     return {
         contactsInGroup: state.contactsInGroup,
+        total: state.total,
     };
 };
 
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        { fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails },
-        dispatch
-    );
+    return bindActionCreators({ clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails }, dispatch);
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListApp);

@@ -7,8 +7,23 @@ export default {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
 
         return axiosInstance
-            .get(requestUrl)
             .then(response => response.data.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
+    fetchContactsInGroupPaginated: (contactGroup, pagination) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
+
+        return axiosInstance
+            .get(requestUrl, {
+                params: {
+                    limit: pagination.limit,
+                    offset: pagination.offset,
+                },
+            })
+            .then(response => response.data)
             .catch(error => {
                 console.log(error);
             });

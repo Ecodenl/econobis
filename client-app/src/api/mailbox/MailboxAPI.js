@@ -9,6 +9,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchMailboxesLoggedInUser: () => {
+        const requestUrl = `${URL_MAILBOX}/logged-in/only-active`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchMailboxDetails: id => {
         const requestUrl = `${URL_MAILBOX}/${id}`;
 
@@ -51,7 +57,7 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    fetchMailboxesForUserPeek: (userId) => {
+    fetchMailboxesForUserPeek: userId => {
         const requestUrl = `${URL_MAILBOX}/for-user/${userId}/email-peek`;
 
         return axiosInstance.get(requestUrl);

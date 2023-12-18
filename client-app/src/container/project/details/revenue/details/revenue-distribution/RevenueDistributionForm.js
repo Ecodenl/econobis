@@ -40,6 +40,7 @@ class RevenueDistributionForm extends Component {
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
             subject: [],
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -240,6 +241,17 @@ class RevenueDistributionForm extends Component {
         } else {
             this.setState({
                 emailTemplateIdError: false,
+            });
+        }
+
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
             });
         }
 
@@ -523,6 +535,8 @@ class RevenueDistributionForm extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">

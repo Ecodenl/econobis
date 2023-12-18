@@ -45,6 +45,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
             subject: [],
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -241,6 +242,17 @@ class RevenuePartsKwhDistributionForm extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (validator.isEmpty(this.state.datePayout + '')) {
             error = true;
             this.setState({
@@ -367,6 +379,8 @@ class RevenuePartsKwhDistributionForm extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">

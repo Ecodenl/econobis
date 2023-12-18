@@ -42,6 +42,7 @@ class ParticipantsListApp extends Component {
             emailTemplateIdError: false,
             emailTemplates: [],
             subject: [],
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -279,6 +280,17 @@ class ParticipantsListApp extends Component {
             });
         }
 
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
+            });
+        }
+
         if (this.state.participantIds.length > 0 && !error) {
             this.props.previewParticipantReport({
                 templateId: this.state.templateId,
@@ -453,6 +465,8 @@ class ParticipantsListApp extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">

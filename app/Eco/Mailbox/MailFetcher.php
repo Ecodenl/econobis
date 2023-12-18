@@ -184,6 +184,11 @@ class MailFetcher
         }
 
         $subject = $emailData->subject ?: '';
+        $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
+        if(false === $currentEncodingTextSubject){
+            $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
+        }
+
 
         if(strlen($subject) > 250){
             $subject = substr($subject, 0, 249);

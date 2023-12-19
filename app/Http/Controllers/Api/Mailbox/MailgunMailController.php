@@ -21,6 +21,7 @@ class MailgunMailController
         if(!$mailbox) {
             return;
         }
+        Log::info("Email mailgun store (mailbox: " . $mailbox->id . ").");
 
         $from = $request->getFrom();
         // geen fromAddress, dan melding
@@ -71,6 +72,8 @@ class MailgunMailController
 
         $this->addRelationToContacts($email);
         $this->storeAttachments($request, $email);
+
+        sleep(10);
     }
 
     private function storeAttachments(MailgunStoreMailRequest $request, Email $email)

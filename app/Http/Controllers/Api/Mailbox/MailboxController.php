@@ -259,7 +259,9 @@ class MailboxController extends Controller
         $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name', 'date_last_fetched', 'valid')->where('is_active', 1)->get();
 
         $time15MinutesAgo = Carbon::now()->subMinutes(15)->format('Y-m-d H:i:s');
-        $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)->where('valid', true )
+        $activateAutomaticRefreshEmailData = $user->mailboxes()->where('is_active', 1)
+            ->where('valid', true )
+            ->whereIn('incoming_server_type', ['imap', 'ms-oauth'] )
             ->where(function ($query) use($time15MinutesAgo) {
                 $query->whereNull('date_last_fetched')
                     ->orwhere('date_last_fetched', '<', $time15MinutesAgo );

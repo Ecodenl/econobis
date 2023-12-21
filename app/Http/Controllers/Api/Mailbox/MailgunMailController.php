@@ -72,8 +72,6 @@ class MailgunMailController
 
         $this->addRelationToContacts($email);
         $this->storeAttachments($request, $email);
-
-        sleep(10);
     }
 
     private function storeAttachments(MailgunStoreMailRequest $request, Email $email)

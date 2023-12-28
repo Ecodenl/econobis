@@ -44,7 +44,8 @@ class RevenuePartsKwhDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
+            subjectError: false,
             documentGroup: '',
             checkedAll: false,
             showCheckboxList: false,
@@ -146,13 +147,19 @@ class RevenuePartsKwhDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionPartsKwhIds: this.props.revenuePartsKwh.distributionPartsKwh.meta
-                    .distributionPartsKwhIdsTotal,
-                checkedAll: true,
-            });
+            if (
+                this.props.revenuePartsKwh &&
+                this.props.revenuePartsKwh.distributionPartsKwh &&
+                this.props.revenuePartsKwh.distributionPartsKwh.meta
+            ) {
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionPartsKwhIds: this.props.revenuePartsKwh.distributionPartsKwh.meta
+                        .distributionPartsKwhIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 
@@ -238,6 +245,17 @@ class RevenuePartsKwhDistributionForm extends Component {
         } else {
             this.setState({
                 emailTemplateIdError: false,
+            });
+        }
+
+        if (validator.isEmpty(this.state.subject)) {
+            error = true;
+            this.setState({
+                subjectError: true,
+            });
+        } else {
+            this.setState({
+                subjectError: false,
             });
         }
 
@@ -367,6 +385,8 @@ class RevenuePartsKwhDistributionForm extends Component {
                                             name={'subject'}
                                             value={this.state.subject}
                                             onChangeAction={this.handleSubjectChange}
+                                            required={'required'}
+                                            error={this.state.subjectError}
                                         />
                                     </div>
                                     <div className="col-md-12">

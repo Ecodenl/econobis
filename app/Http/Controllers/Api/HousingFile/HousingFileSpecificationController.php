@@ -57,7 +57,7 @@ class HousingFileSpecificationController extends ApiController
 
         $intakeStatusIdClosedWithOpportunity = IntakeStatus::where('code_Ref', 'closed_with_opportunity')->first()->id;
         $housingFileIntakeSource = IntakeSource::where('code_ref', 'housing_file')->first()->id;
-        $opportunityStatusIdInactive = OpportunityStatus::where('code_ref', 'inactive')->first()->id;
+        $opportunityStatusIdActive = OpportunityStatus::where('code_ref', 'active')->first()->id;
         $specificationStatusIdOpportunityCreated = HousingFileSpecificationStatus::where('code_ref', 'opportunity_created')->first()->id;
 
         $specificationIds = $request->input('ids');
@@ -82,7 +82,7 @@ class HousingFileSpecificationController extends ApiController
 
                 $opportunity = Opportunity::create([
                     'measure_category_id' => $measure->measureCategory->id,
-                    'status_id' => $opportunityStatusIdInactive,
+                    'status_id' => $opportunityStatusIdActive,
                     'housing_file_specification_id' => $housingFileSpecification->id,
                     'intake_id' => $intake->id,
                     'quotation_text' => $housingFileSpecification->external_hoom_name ? $housingFileSpecification->external_hoom_name : '',

@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierControll
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -117,65 +118,66 @@ class checkMissingEnergySuppliersInAddress extends Command
                                     Log::info($response);
                                 } else {
                                     $addressEnergySupplierNew->save();
+                                    Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
                                 }
                             }
 
                         }
 
-                        if($doRecover) {
-
-                            // Hier corrigeren is_visible / is_energy_supplier_switch indien distributionpart nog niet Verwerkt en energieleverancier is Onbekend
-                            if ($distributionPartKwh->status != 'processed' && $distributionPartKwh->es_id == $energySupplierUnknown->id) {
-                                // indien geen volgende part, dan laatste part voor energieleverancier Onbekend altijd op is_visible = true en is_energy_supplier_switch = true
-                                if (!$partKwh->next_revenue_parts_kwh) {
-                                    if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != true) {
-//                                    Log::info('Geen volgende part - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|1)');
-                                        $distributionPartKwh->is_visible = true;
-                                        $distributionPartKwh->is_energy_supplier_switch = true;
-                                        if ($doRecover) {
-                                            $distributionPartKwh->save();
-                                        }
-                                    }
-                                } else {
-                                    // indien wel volgende part, dan check of bij dezelfde distribution_id energieleverancier niet meer Onbekend is, in dat geval ook is_visible = true en is_energy_supplier_switch = true
-                                    $nextDistributionPartKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartKwh->revenue_id)
-                                        ->where('parts_id', $partKwh->next_revenue_parts_kwh->id)
-                                        ->where('distribution_id', $distributionPartKwh->distribution_id)
-                                        ->first();
-                                    if (!$nextDistributionPartKwh || $nextDistributionPartKwh->es_id != $energySupplierUnknown->id) {
-                                        if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != true) {
-//                                        Log::info('Wel volgende part andere ES - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|1)');
-                                            $distributionPartKwh->is_visible = true;
-                                            $distributionPartKwh->is_energy_supplier_switch = true;
-                                            if ($doRecover) {
-                                                $distributionPartKwh->save();
-                                            }
-                                        }
-                                    } else {
-                                        if ($partKwh->is_last_revenue_parts_kwh || $partKwh->is_end_of_year_revenue_parts_kwh) {
-                                            if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != false) {
-//                                            Log::info('Wel volgende part en heeft ook ES onbekend (LP of EOY) - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|0)');
-                                                $distributionPartKwh->is_visible = true;
-                                                $distributionPartKwh->is_energy_supplier_switch = false;
-                                                if ($doRecover) {
-                                                    $distributionPartKwh->save();
-                                                }
-                                            }
-                                        } else {
-                                            if ($distributionPartKwh->is_visible != false || $distributionPartKwh->is_energy_supplier_switch != false) {
-//                                            Log::info('Wel volgende part en heeft ook ES onbekend (geen LP of EOY) - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (0|0)');
-                                                $distributionPartKwh->is_visible = false;
-                                                $distributionPartKwh->is_energy_supplier_switch = false;
-                                                if ($doRecover) {
-                                                    $distributionPartKwh->save();
-                                                }
-                                            }
-                                        }
-
-                                    }
-                                }
-                            }
-                        }
+//                        if($doRecover) {
+//
+//                            // Hier corrigeren is_visible / is_energy_supplier_switch indien distributionpart nog niet Verwerkt en energieleverancier is Onbekend
+//                            if ($distributionPartKwh->status != 'processed' && $distributionPartKwh->es_id == $energySupplierUnknown->id) {
+//                                // indien geen volgende part, dan laatste part voor energieleverancier Onbekend altijd op is_visible = true en is_energy_supplier_switch = true
+//                                if (!$partKwh->next_revenue_parts_kwh) {
+//                                    if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != true) {
+////                                    Log::info('Geen volgende part - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|1)');
+//                                        $distributionPartKwh->is_visible = true;
+//                                        $distributionPartKwh->is_energy_supplier_switch = true;
+//                                        if ($doRecover) {
+//                                            $distributionPartKwh->save();
+//                                        }
+//                                    }
+//                                } else {
+//                                    // indien wel volgende part, dan check of bij dezelfde distribution_id energieleverancier niet meer Onbekend is, in dat geval ook is_visible = true en is_energy_supplier_switch = true
+//                                    $nextDistributionPartKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartKwh->revenue_id)
+//                                        ->where('parts_id', $partKwh->next_revenue_parts_kwh->id)
+//                                        ->where('distribution_id', $distributionPartKwh->distribution_id)
+//                                        ->first();
+//                                    if (!$nextDistributionPartKwh || $nextDistributionPartKwh->es_id != $energySupplierUnknown->id) {
+//                                        if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != true) {
+////                                        Log::info('Wel volgende part andere ES - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|1)');
+//                                            $distributionPartKwh->is_visible = true;
+//                                            $distributionPartKwh->is_energy_supplier_switch = true;
+//                                            if ($doRecover) {
+//                                                $distributionPartKwh->save();
+//                                            }
+//                                        }
+//                                    } else {
+//                                        if ($partKwh->is_last_revenue_parts_kwh || $partKwh->is_end_of_year_revenue_parts_kwh) {
+//                                            if ($distributionPartKwh->is_visible != true || $distributionPartKwh->is_energy_supplier_switch != false) {
+////                                            Log::info('Wel volgende part en heeft ook ES onbekend (LP of EOY) - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (1|0)');
+//                                                $distributionPartKwh->is_visible = true;
+//                                                $distributionPartKwh->is_energy_supplier_switch = false;
+//                                                if ($doRecover) {
+//                                                    $distributionPartKwh->save();
+//                                                }
+//                                            }
+//                                        } else {
+//                                            if ($distributionPartKwh->is_visible != false || $distributionPartKwh->is_energy_supplier_switch != false) {
+////                                            Log::info('Wel volgende part en heeft ook ES onbekend (geen LP of EOY) - Correctie (revenueId: ' . $distributionPartKwh->revenue_id . ') distributionPartKwh ' . $distributionPartKwh->id . ' (' . $distributionPartKwh->is_visible . '|' . $distributionPartKwh->is_energy_supplier_switch . ') => (0|0)');
+//                                                $distributionPartKwh->is_visible = false;
+//                                                $distributionPartKwh->is_energy_supplier_switch = false;
+//                                                if ($doRecover) {
+//                                                    $distributionPartKwh->save();
+//                                                }
+//                                            }
+//                                        }
+//
+//                                    }
+//                                }
+//                            }
+//                        }
 
                     }
                 }

@@ -144,6 +144,7 @@ class IntakeWorkflowHelper
         }
         if($this->quotationRequest) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $this->quotationRequest);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kansactie', $this->quotationRequest);
         }
 
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody,'portal' );

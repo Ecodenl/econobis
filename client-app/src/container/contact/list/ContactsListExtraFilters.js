@@ -15,7 +15,9 @@ class ContactsListExtraFilters extends Component {
             contactType: props.contactType,
             amountOfFilters: props.amountOfFilters,
             filters: props.extraFilters,
-            freeFieldsFields: null,
+            contactFreeFieldsFields: null,
+            addressFreeFieldsFields: null,
+            measuresToSelect: props.measures.filter(measure => measure.visible === 1),
             yesNoOptions: [
                 {
                     id: 0,
@@ -29,6 +31,7 @@ class ContactsListExtraFilters extends Component {
         };
 
         this.fetchFilterFreeFieldsFieldsContact();
+        this.fetchFilterFreeFieldsFieldsAddress();
 
         this.closeModal = this.closeModal.bind(this);
         this.confirmAction = this.confirmAction.bind(this);
@@ -43,7 +46,16 @@ class ContactsListExtraFilters extends Component {
         FreeFieldsAPI.fetchFilterFreeFieldsFieldsContact().then(payload => {
             this.setState({
                 ...this.state,
-                freeFieldsFields: payload.data.data,
+                contactFreeFieldsFields: payload.data.data,
+            });
+        });
+    }
+
+    fetchFilterFreeFieldsFieldsAddress() {
+        FreeFieldsAPI.fetchFilterFreeFieldsFieldsAddress().then(payload => {
+            this.setState({
+                ...this.state,
+                addressFreeFieldsFields: payload.data.data,
             });
         });
     }
@@ -65,7 +77,8 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'opportunityMeasureCategory' ||
             filters[filterNumber].field === 'intakeMeasureCategory' ||
             filters[filterNumber].field === 'housingFileFieldName' ||
-            filters[filterNumber].field === 'freeFieldsFieldName'
+            filters[filterNumber].field === 'contactFreeFieldsFieldName' ||
+            filters[filterNumber].field === 'addressFreeFieldsFieldName'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -186,16 +199,33 @@ class ContactsListExtraFilters extends Component {
             });
 
             amountOfFilters = filters.length;
-        } else if (data === 'freeFieldsFieldName') {
+        } else if (data === 'contactFreeFieldsFieldName') {
             filters[filterNumber] = {
-                field: 'freeFieldsFieldName',
+                field: 'contactFreeFieldsFieldName',
                 type: 'eq',
                 data: '',
                 connectName: data + filterNumber,
             };
 
             filters.splice(filterNumber + 1, 0, {
-                field: 'freeFieldsFieldValue',
+                field: 'contactFreeFieldsFieldValue',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+                freeFieldFormatType: '',
+            });
+
+            amountOfFilters = filters.length;
+        } else if (data === 'addressFreeFieldsFieldName') {
+            filters[filterNumber] = {
+                field: 'addressFreeFieldsFieldName',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'addressFreeFieldsFieldValue',
                 type: 'eq',
                 data: '',
                 connectedTo: data + filterNumber,
@@ -245,28 +275,62 @@ class ContactsListExtraFilters extends Component {
                 }
             }
         }
-        if (filters[filterNumber].field === 'freeFieldsFieldName') {
+        if (filters[filterNumber].field === 'contactFreeFieldsFieldName') {
+            let formatType = '';
             if (filters[filterNumber].data) {
-                let freeFieldsField = this.state.freeFieldsFields.find(
+                const freeFieldsField = this.state.contactFreeFieldsFields.find(
                     freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
                 );
                 if (freeFieldsField) {
-                    let filterConnectName = filters[filterNumber].connectName;
-                    filters.map(filter => {
-                        if (filter.connectedTo === filterConnectName) {
-                            filter.data = '';
-                            filter.type = 'eq';
-                            filter.freeFieldFormatType = freeFieldsField.formatType;
-                        }
-                        return filter;
-                    });
+                    formatType = freeFieldsField.formatType;
                 }
+            }
+            let filterConnectName = filters[filterNumber].connectName;
+            filters.map(filter => {
+                if (filter.connectedTo === filterConnectName) {
+                    filter.data = '';
+                    filter.type = 'eq';
+                    filter.freeFieldFormatType = formatType;
+                }
+                return filter;
+            });
+        }
+
+        if (filters[filterNumber].field === 'addressFreeFieldsFieldName') {
+            let formatType = '';
+            if (filters[filterNumber].data) {
+                const freeFieldsField = this.state.addressFreeFieldsFields.find(
+                    freeFieldsField => freeFieldsField.id === Number(filters[filterNumber].data)
+                );
+                if (freeFieldsField) {
+                    formatType = freeFieldsField.formatType;
+                }
+            }
+            let filterConnectName = filters[filterNumber].connectName;
+            filters.map(filter => {
+                if (filter.connectedTo === filterConnectName) {
+                    filter.data = '';
+                    filter.type = 'eq';
+                    filter.freeFieldFormatType = formatType;
+                }
+                return filter;
+            });
+        }
+        let measuresToSelect = this.state.measuresToSelect;
+        if (filters[filterNumber].field === 'opportunityMeasureCategory') {
+            if (filters[filterNumber].data) {
+                measuresToSelect = this.props.measures.filter(
+                    measure => measure.visible === 1 && measure.measureCategoryId == filters[filterNumber].data
+                );
+            } else {
+                measuresToSelect = this.props.measures.filter(measure => measure.visible === 1);
             }
         }
 
         this.setState({
             ...this.state,
             filters,
+            measuresToSelect,
         });
     }
 
@@ -301,7 +365,8 @@ class ContactsListExtraFilters extends Component {
             newFilters[filterNumber].field === 'opportunityMeasureCategory' ||
             newFilters[filterNumber].field === 'intakeMeasureCategory' ||
             newFilters[filterNumber].field === 'housingFileFieldName' ||
-            newFilters[filterNumber].field === 'freeFieldsFieldName'
+            newFilters[filterNumber].field === 'contactFreeFieldsFieldName' ||
+            newFilters[filterNumber].field === 'addressFreeFieldsFieldName'
         ) {
             newFilters = newFilters.filter(filter => filter.connectedTo !== newFilters[filterNumber].connectName);
         }
@@ -429,10 +494,15 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
             },
-            freeFieldsFieldName: {
+            contactFreeFieldsFieldName: {
                 name: 'Vrij veld contact',
                 type: 'dropdownFreeFieldsFields',
-                dropDownOptions: this.state.freeFieldsFields ? this.state.freeFieldsFields : [],
+                dropDownOptions: this.state.contactFreeFieldsFields ? this.state.contactFreeFieldsFields : [],
+            },
+            addressFreeFieldsFieldName: {
+                name: 'Vrij veld adres',
+                type: 'dropdownFreeFieldsFields',
+                dropDownOptions: this.state.addressFreeFieldsFields ? this.state.addressFreeFieldsFields : [],
             },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
@@ -477,7 +547,7 @@ class ContactsListExtraFilters extends Component {
             opportunityMeasure: {
                 name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.measures.filter(measure => measure.visible === true),
+                dropDownOptions: this.state.measuresToSelect,
             },
             opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',
@@ -517,10 +587,16 @@ class ContactsListExtraFilters extends Component {
         };
 
         // Options only if freeFieldsFieldName is set
-        const customFreeFieldsFields = {
-            freeFieldsFieldValue: {
+        const customContactFreeFieldsFields = {
+            contactFreeFieldsFieldValue: {
                 name: 'Status/waarde',
-                type: 'freeFieldsFieldValue',
+                type: 'contactFreeFieldsFieldValue',
+            },
+        };
+        const customAddressFreeFieldsFields = {
+            addressFreeFieldsFieldValue: {
+                name: 'Status/waarde',
+                type: 'addressFreeFieldsFieldValue',
             },
         };
 
@@ -590,7 +666,8 @@ class ContactsListExtraFilters extends Component {
                                             ...customOpportunityFields,
                                             ...customIntakeFields,
                                             ...customHousingFileFields,
-                                            ...customFreeFieldsFields,
+                                            ...customContactFreeFieldsFields,
+                                            ...customAddressFreeFieldsFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}

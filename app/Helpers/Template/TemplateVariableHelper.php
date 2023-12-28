@@ -2258,7 +2258,7 @@ class TemplateVariableHelper
                 break;
 
             case 'projectmanager_naam':
-                return optional($model->projectManager)->full_name;
+                return optional($model->projectManager)->full_name_fnf;
                 break;
             case 'projectmanager_voornaam':
                 return optional($model->projectManager)->first_name;
@@ -2281,7 +2281,7 @@ class TemplateVariableHelper
                 break;
 
             case 'externe_partij_naam':
-                return optional($model->externalParty)->full_name;
+                return optional($model->externalParty)->full_name_fnf;
                 break;
             case 'externe_partij_voornaam':
                 return optional($model->externalParty)->first_name;
@@ -2305,7 +2305,7 @@ class TemplateVariableHelper
 
             case 'contact_naam':
             case 'verzoek_voor_naam':
-                return optional(optional($model->opportunity)->intake)->contact->full_name;
+                return optional(optional($model->opportunity)->intake)->contact->full_name_fnf;
                 break;
             case 'verzoek_voor_titel':
                 return optional(optional(optional($model->opportunity->intake->contact)->person)->title)->name;

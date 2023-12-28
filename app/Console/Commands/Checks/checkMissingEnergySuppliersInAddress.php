@@ -59,6 +59,7 @@ class checkMissingEnergySuppliersInAddress extends Command
 
         $missingEnergySuppliersInAddressData = [];
 
+        $addNew = false;
         $revenuesKwh = RevenuesKwh::where('status', '!=', 'processed')->get();
         // alle revenues kwh controleren die nog niet verwerkt zijn
         foreach($revenuesKwh as $revenueKwh) {
@@ -118,7 +119,7 @@ class checkMissingEnergySuppliersInAddress extends Command
                                     Log::info($response);
                                 } else {
                                     $addressEnergySupplierNew->save();
-                                    Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
+                                    $addNew = true;
                                 }
                             }
 
@@ -190,6 +191,9 @@ class checkMissingEnergySuppliersInAddress extends Command
             Log::info('Missing energy suppliers in address gevonden, mail gestuurd');
         } else {
             Log::info('Geen missing energy suppliers in address gevonden');
+        }
+        if($addNew) {
+            Artisan::call('revenue:checkWrongRevenueDistributionPartsKwhIndicatorFields');
         }
 
         Log::info('Procedure check op missing energy suppliers in address klaar');

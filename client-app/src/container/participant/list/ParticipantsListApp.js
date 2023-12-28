@@ -44,7 +44,7 @@ class ParticipantsListApp extends Component {
             emailTemplateId: '',
             emailTemplateIdError: false,
             emailTemplates: [],
-            subject: [],
+            subject: '',
             subjectError: false,
             documentGroup: '',
             checkedAll: false,
@@ -209,11 +209,12 @@ class ParticipantsListApp extends Component {
                 participantIds: [],
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                participantIds: this.props.participantsProject.meta.participantIdsTotal,
-                checkedAll: true,
-            });
+            if (this.props.participantsProject && this.props.participantsProject.isLoading === false)
+                this.setState({
+                    showCheckboxList: true,
+                    participantIds: this.props.participantsProject.meta.participantIdsTotal,
+                    checkedAll: true,
+                });
         }
     };
 

@@ -44,7 +44,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
             subjectError: false,
             documentGroup: '',
             checkedAll: false,
@@ -147,13 +147,19 @@ class RevenuePartsKwhDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionPartsKwhIds: this.props.revenuePartsKwh.distributionPartsKwh.meta
-                    .distributionPartsKwhIdsTotal,
-                checkedAll: true,
-            });
+            if (
+                this.props.revenuePartsKwh &&
+                this.props.revenuePartsKwh.distributionPartsKwh &&
+                this.props.revenuePartsKwh.distributionPartsKwh.meta
+            ) {
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionPartsKwhIds: this.props.revenuePartsKwh.distributionPartsKwh.meta
+                        .distributionPartsKwhIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 

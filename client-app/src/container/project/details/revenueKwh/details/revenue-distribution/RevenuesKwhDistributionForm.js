@@ -42,7 +42,7 @@ class RevenuesKwhDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
             subjectError: false,
             documentGroup: '',
             checkedAll: false,
@@ -146,12 +146,18 @@ class RevenuesKwhDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionKwhIds: this.props.revenuesKwh.distributionKwh.meta.distributionKwhIdsTotal,
-                checkedAll: true,
-            });
+            if (
+                this.props.revenuesKwh &&
+                this.props.revenuesKwh.distributionKwh &&
+                this.props.revenuesKwh.distributionKwh.meta
+            ) {
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionKwhIds: this.props.revenuesKwh.distributionKwh.meta.distributionKwhIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 

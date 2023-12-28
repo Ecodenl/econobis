@@ -39,7 +39,7 @@ class RevenueDistributionForm extends Component {
                 .nextBusinessDay()
                 .format('YYYY-MM-DD'),
             datePayoutError: false,
-            subject: [],
+            subject: '',
             subjectError: false,
             documentGroup: '',
             checkedAll: false,
@@ -141,17 +141,23 @@ class RevenueDistributionForm extends Component {
                 createType: '',
             });
         } else {
-            const distributionIdsTotal =
-                createType === 'createInvoices'
-                    ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
-                    : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
+            if (
+                this.props.projectRevenue &&
+                this.props.projectRevenue.distribution &&
+                this.props.projectRevenue.distribution.meta
+            ) {
+                const distributionIdsTotal =
+                    createType === 'createInvoices'
+                        ? this.props.projectRevenue.distribution.meta.distributionIdsTotalToProcess
+                        : this.props.projectRevenue.distribution.meta.distributionIdsTotal;
 
-            this.setState({
-                showCheckboxList: true,
-                createType: createType,
-                distributionIds: distributionIdsTotal,
-                checkedAll: true,
-            });
+                this.setState({
+                    showCheckboxList: true,
+                    createType: createType,
+                    distributionIds: distributionIdsTotal,
+                    checkedAll: true,
+                });
+            }
         }
     };
 

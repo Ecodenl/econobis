@@ -486,8 +486,8 @@ class ProjectRevenueController extends ApiController
 
                 // indien bijschrijven
                 if ($distribution->payout_type_id === $payoutTypeCreditId) {
-                    // indien payout > 0 result bijschrijven
-                    if($distribution->payout > 0){
+                    // indien payout != 0 result bijschrijven (of opname)
+                    if($distribution->payout != 0){
                         $participantMutation = new ParticipantMutation();
                         $participantMutation->participation_id = $distribution->participation_id;
                         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result_deposit')

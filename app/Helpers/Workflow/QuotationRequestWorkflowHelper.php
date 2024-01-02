@@ -69,6 +69,8 @@ class QuotationRequestWorkflowHelper
             if($this->quotationRequest) {
                 $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'offerteverzoek', $this->quotationRequest);
                 $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $this->quotationRequest);
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'kansactie', $this->quotationRequest);
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kansactie', $this->quotationRequest);
                 if($this->quotationRequest->opportunity) {
                     $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->quotationRequest->opportunity);
                 }

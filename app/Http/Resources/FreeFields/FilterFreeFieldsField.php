@@ -10,7 +10,7 @@ namespace App\Http\Resources\FreeFields;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FilterFreeFieldsFieldContact extends JsonResource
+class FilterFreeFieldsField extends JsonResource
 {
     public function toArray($request)
     {

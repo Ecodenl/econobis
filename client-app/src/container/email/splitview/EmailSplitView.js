@@ -12,13 +12,15 @@ import axiosInstance from '../../../api/default-setup/AxiosInstance';
 import { hashHistory } from 'react-router';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
-import { useSelector } from 'react-redux';
-import ContactGroupDetailsLapostaListDeActivate from '../../contact-groups/details/ContactGroupDetailsLapostaListDeActivate';
 import Modal from '../../../components/modal/Modal';
+import EmailMailboxStatuses from './EmailMailboxStatuses';
+import axios from 'axios';
 
 export default function EmailSplitView({ router }) {
     const perPage = 50;
     const [emails, setEmails] = useState([]);
+    const [isLoadingMailboxes, setIsLoadingMailboxes] = useState(false);
+    const [activeMailboxes, setActiveMailboxes] = useState([]);
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [isRefreshingData, setIsRefreshingData] = useState(false);
@@ -26,9 +28,14 @@ export default function EmailSplitView({ router }) {
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
-    const hasMailboxes = useSelector(state => state.meDetails.mailboxes.length > 0);
+    const hasMailboxes = activeMailboxes.length > 0;
+
     const [multiselectEnabled, setMultiselectEnabled] = useState(false);
     const [message, setMessage] = useState('Nieuwe e-mails worden opgehaald ...');
+
+    useEffect(() => {
+        fetchActiveMailboxes(true);
+    }, []);
 
     useEffect(() => {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
@@ -111,7 +118,24 @@ export default function EmailSplitView({ router }) {
             setEmailCount(response.data.total);
         });
     };
-
+    const fetchActiveMailboxes = doRefreshData => {
+        setIsLoadingMailboxes(true);
+        axios
+            .all([MailboxAPI.fetchMailboxesLoggedInUser()])
+            .then(
+                axios.spread(payloadActiveMailboxes => {
+                    setActiveMailboxes(payloadActiveMailboxes.data.data);
+                    if (doRefreshData && payloadActiveMailboxes.data.meta.activateAutomaticRefreshEmailData) {
+                        refreshData();
+                    }
+                    setIsLoadingMailboxes(false);
+                })
+            )
+            .catch(error => {
+                console.log(error);
+                setIsLoadingMailboxes(false);
+            });
+    };
     const updateEmailAttributes = (emailId, attributes) => {
         const newEmails = emails.map(email => {
             if (email.id === emailId) {
@@ -178,6 +202,7 @@ export default function EmailSplitView({ router }) {
             .then(() => {
                 setMessage('Ophalen nieuwe e-mails is voltooid.');
                 refetchCurrentEmails();
+                fetchActiveMailboxes(false);
                 setTimeout(closeModal, 5000);
             })
             .catch(error => {
@@ -194,7 +219,15 @@ export default function EmailSplitView({ router }) {
 
     return (
         <div>
-            {!hasMailboxes ? (
+            {isLoadingMailboxes ? (
+                <div className={'row'}>
+                    <div className="col-xs-12">
+                        <div className="alert alert-info" role="alert">
+                            Bezig met ophalen mailbox statussen ...
+                        </div>
+                    </div>
+                </div>
+            ) : !hasMailboxes ? (
                 <div className={'row'}>
                     <div className="col-xs-12">
                         <div className="alert alert-info" role="alert">
@@ -203,68 +236,74 @@ export default function EmailSplitView({ router }) {
                     </div>
                 </div>
             ) : (
-                <div className="row">
-                    <div className="col-md-4" style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}>
-                        <div className="btn-group" role="group">
-                            <ButtonIcon
-                                iconName={'refresh'}
-                                onClickAction={refreshData}
-                                title={'Alle mappen verzenden/ontvangen'}
-                            />
-                            <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
-                            <ButtonIcon
-                                iconName={'check'}
-                                onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
-                                title="Contactselectie maken"
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
-                        {contact && (
-                            <span style={{ marginLeft: '6px' }}>
-                                Email voor contact <strong>{contact?.fullName}</strong>
-                                <a
-                                    role="button"
-                                    style={{ marginLeft: '10px' }}
-                                    className="btn btn-success btn-sm"
-                                    onClick={() => hashHistory.push(router.location.pathname)}
-                                >
-                                    Filter wissen
-                                </a>
-                            </span>
-                        )}
-                    </div>
-                    <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
-                        {hasFilters() && (
-                            <button
-                                type="button"
-                                className="btn btn-success pull-right btn-sm"
-                                style={{ marginRight: '4px' }}
-                                onClick={resetFilters}
-                            >
-                                Wis alle filters
-                            </button>
-                        )}
-                    </div>
-                    {isRefreshingData && (
-                        <Modal
-                            buttonClassName={'btn-danger'}
-                            closeModal={closeModal}
-                            buttonCancelText={'Sluiten'}
-                            showConfirmAction={false}
-                            title="Alle mappen verzenden/ontvangen"
+                <>
+                    <EmailMailboxStatuses activeMailboxes={activeMailboxes} />
+                    <div className="row">
+                        <div
+                            className="col-md-4"
+                            style={{ paddingLeft: '17px', marginTop: '-10px', marginBottom: '5px' }}
                         >
-                            <p>{message}</p>
-                            {/*{errors.length ? (*/}
-                            {/*    <ul>*/}
-                            {/*        {errors.map(item => (*/}
-                            {/*            <li>{item}</li>*/}
-                            {/*        ))}*/}
-                            {/*    </ul>*/}
-                            {/*) : null}*/}
-                        </Modal>
-                    )}
-                </div>
+                            <div className="btn-group" role="group">
+                                <ButtonIcon
+                                    iconName={'refresh'}
+                                    onClickAction={refreshData}
+                                    title={'Alle mappen ontvangen'}
+                                />
+                                <ButtonIcon iconName={'plus'} onClickAction={createMail} title={'Nieuwe e-mail'} />
+                                <ButtonIcon
+                                    iconName={'check'}
+                                    onClickAction={() => setMultiselectEnabled(!multiselectEnabled)}
+                                    title="Contactselectie maken"
+                                />
+                            </div>
+                        </div>
+                        <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                            {contact && (
+                                <span style={{ marginLeft: '6px' }}>
+                                    Email voor contact <strong>{contact?.fullName}</strong>
+                                    <a
+                                        role="button"
+                                        style={{ marginLeft: '10px' }}
+                                        className="btn btn-success btn-sm"
+                                        onClick={() => hashHistory.push(router.location.pathname)}
+                                    >
+                                        Filter wissen
+                                    </a>
+                                </span>
+                            )}
+                        </div>
+                        <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
+                            {hasFilters() && (
+                                <button
+                                    type="button"
+                                    className="btn btn-success pull-right btn-sm"
+                                    style={{ marginRight: '4px' }}
+                                    onClick={resetFilters}
+                                >
+                                    Wis alle filters
+                                </button>
+                            )}
+                        </div>
+                        {isRefreshingData && (
+                            <Modal
+                                buttonClassName={'btn-danger'}
+                                closeModal={closeModal}
+                                buttonCancelText={'Sluiten'}
+                                showConfirmAction={false}
+                                title="Alle mappen ontvangen"
+                            >
+                                <p>{message}</p>
+                                {/*{errors.length ? (*/}
+                                {/*    <ul>*/}
+                                {/*        {errors.map(item => (*/}
+                                {/*            <li>{item}</li>*/}
+                                {/*        ))}*/}
+                                {/*    </ul>*/}
+                                {/*) : null}*/}
+                            </Modal>
+                        )}
+                    </div>
+                </>
             )}
             <div className="row">
                 <div className="col-md-12">

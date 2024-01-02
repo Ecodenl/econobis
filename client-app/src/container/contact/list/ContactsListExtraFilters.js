@@ -17,6 +17,7 @@ class ContactsListExtraFilters extends Component {
             filters: props.extraFilters,
             contactFreeFieldsFields: null,
             addressFreeFieldsFields: null,
+            measuresToSelect: props.measures.filter(measure => measure.visible === 1),
             yesNoOptions: [
                 {
                     id: 0,
@@ -315,10 +316,21 @@ class ContactsListExtraFilters extends Component {
                 return filter;
             });
         }
+        let measuresToSelect = this.state.measuresToSelect;
+        if (filters[filterNumber].field === 'opportunityMeasureCategory') {
+            if (filters[filterNumber].data) {
+                measuresToSelect = this.props.measures.filter(
+                    measure => measure.visible === 1 && measure.measureCategoryId == filters[filterNumber].data
+                );
+            } else {
+                measuresToSelect = this.props.measures.filter(measure => measure.visible === 1);
+            }
+        }
 
         this.setState({
             ...this.state,
             filters,
+            measuresToSelect,
         });
     }
 
@@ -535,7 +547,7 @@ class ContactsListExtraFilters extends Component {
             opportunityMeasure: {
                 name: 'Kans maatregel specifiek',
                 type: 'dropdownHas',
-                dropDownOptions: this.props.measures.filter(measure => measure.visible === true),
+                dropDownOptions: this.state.measuresToSelect,
             },
             opportunityEvaluationRealised: {
                 name: 'Kans status evaluatie uitgevoerd',

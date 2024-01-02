@@ -21,17 +21,17 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
-        primaryOccupations,
         isParticipantPcrProject,
         freeFieldsFieldRecords,
     } = initialContact;
 
-    console.log('initialContact.visitAddress');
-    console.log(visitAddress);
-    console.log('initialContact.postalAddress');
-    console.log(postalAddress);
-    console.log('initialContact.invoiceAddress');
-    console.log(invoiceAddress);
+    // todo WM: opschonen
+    // console.log('initialContact.visitAddress');
+    // console.log(visitAddress);
+    // console.log('initialContact.postalAddress');
+    // console.log(postalAddress);
+    // console.log('initialContact.invoiceAddress');
+    // console.log(invoiceAddress);
     return (
         <Row>
             <Col xs={12} md={6}>

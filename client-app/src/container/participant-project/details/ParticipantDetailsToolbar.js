@@ -84,12 +84,12 @@ class ParticipantDetailsToolbar extends Component {
             allowDeleteAndTerminateButtons = true;
         }
 
-        let isTransferable =
-            project.isParticipationTransferable &&
-            participantProject.participationsCurrent > 0 &&
-            participantProject.participationsCurrent &&
-            this.props.permissions.manageFinancial;
-        isTransferable = participantProject.statusId == 2 ? isTransferable : false;
+        // let isTransferable =
+        //     project.isParticipationTransferable &&
+        //     participantProject.participationsCurrent > 0 &&
+        //     participantProject.participationsCurrent &&
+        //     this.props.permissions.manageFinancial;
+        // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
         const projectTypeCodeRef = project ? project.typeCodeRef : '';
 

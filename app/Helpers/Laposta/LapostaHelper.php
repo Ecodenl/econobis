@@ -68,6 +68,9 @@ class LapostaHelper
                         if($contactGroupsPivot != null) {
                             $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState, 'laposta_last_error_message' => null]);
                         }
+                    } else {
+                        $lapostaMemberEmail = $member['member']['email'];
+                        Log::info("Member niet in (meer) in Econobis: " . $lapostaMemberId . " voor email: " . $lapostaMemberEmail . " status: " . $lapostaMemberState);
                     }
                 }
             }

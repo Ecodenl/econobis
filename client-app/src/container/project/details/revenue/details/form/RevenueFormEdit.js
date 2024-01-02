@@ -973,6 +973,7 @@ class RevenueFormEdit extends Component {
                         </p>
                         {(!payPercentage || payPercentage == 0) &&
                         (!payAmount || payAmount == 0) &&
+                        (!revenue || revenue == 0) &&
                         (!payPercentageValidFromKeyAmount || payPercentageValidFromKeyAmount == 0) ? (
                             category.codeRef === 'redemptionEuro' ? (
                                 <p>

@@ -12,6 +12,7 @@ import ParticipantDetailsUndoTerminate from './ParticipantDetailsUndoTerminate';
 import moment from 'moment';
 import validator from 'validator';
 import ErrorModal from '../../../components/modal/ErrorModal';
+import ParticipantDetailsTerminateObligation from './ParticipantDetailsTerminateObligation';
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -77,9 +78,10 @@ class ParticipantDetailsToolbar extends Component {
         let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
         let allowDeleteAndTerminateButtons = false;
         if (
-            numberOfMutations == 0 ||
-            validator.isEmpty(disableBeforeEntryDate) ||
-            moment().format('YYYY-01-01') >= disableBeforeEntryDate
+            this.props.permissions.manageParticipation &&
+            (numberOfMutations == 0 ||
+                validator.isEmpty(disableBeforeEntryDate) ||
+                moment().format('YYYY-01-01') >= disableBeforeEntryDate)
         ) {
             allowDeleteAndTerminateButtons = true;
         }
@@ -103,33 +105,19 @@ class ParticipantDetailsToolbar extends Component {
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {allowDeleteAndTerminateButtons && (
                                         <>
-                                            {this.props.permissions.manageParticipation && (
-                                                <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
-                                            )}
-                                            {/*todo WM: tijdelijk even ook voor loan en obligation*/}
-                                            {/*{projectTypeCodeRef === 'capital' ||*/}
-                                            {/*projectTypeCodeRef === 'postalcode_link_capital' ? (*/}
-                                            <ButtonText
-                                                buttonText={
-                                                    participantProject.dateTerminated
-                                                        ? `Beëindiging ongedaan maken`
-                                                        : `Beëindigen`
-                                                }
-                                                onClickAction={
-                                                    participantProject.dateTerminated
-                                                        ? this.toggleUndoTerminate
-                                                        : this.toggleTerminate
-                                                }
-                                                // disabled={participantProject.dateTerminated}
-                                            />
-                                            {/*todo WM: tijdelijk even ook voor loan en obligation*/}
-                                            {/*) : (*/}
-                                            {/*    <ButtonText*/}
-                                            {/*        buttonText={`Beëindigen`}*/}
-                                            {/*        onClickAction={this.toggleTerminate}*/}
-                                            {/*        disabled={participantProject.dateTerminated}*/}
-                                            {/*    />*/}
-                                            {/*)}*/}
+                                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                            {participantProject.terminatedAllowed ? (
+                                                <ButtonText
+                                                    buttonText={`Beëindigen`}
+                                                    onClickAction={this.toggleTerminate}
+                                                />
+                                            ) : null}
+                                            {participantProject.undoTerminatedAllowed ? (
+                                                <ButtonText
+                                                    buttonText={`Beëindiging ongedaan maken`}
+                                                    onClickAction={this.toggleUndoTerminate}
+                                                />
+                                            ) : null}
                                         </>
                                     )}
 
@@ -167,14 +155,22 @@ class ParticipantDetailsToolbar extends Component {
                         projectid={participantProject.project.id}
                     />
                 )}
-                {this.state.showTerminate && (
-                    <ParticipantDetailsTerminate
-                        participantProject={participantProject}
-                        setErrorModal={this.setErrorModal}
-                        closeDeleteItemModal={this.toggleTerminate}
-                        projectTypeCodeRef={participantProject.project.typeCodeRef}
-                    />
-                )}
+                {this.state.showTerminate &&
+                    (projectTypeCodeRef === 'obligation' ? (
+                        <ParticipantDetailsTerminateObligation
+                            participantProject={participantProject}
+                            setErrorModal={this.setErrorModal}
+                            closeDeleteItemModal={this.toggleTerminate}
+                            projectTypeCodeRef={participantProject.project.typeCodeRef}
+                        />
+                    ) : (
+                        <ParticipantDetailsTerminate
+                            participantProject={participantProject}
+                            setErrorModal={this.setErrorModal}
+                            closeDeleteItemModal={this.toggleTerminate}
+                            projectTypeCodeRef={participantProject.project.typeCodeRef}
+                        />
+                    ))}
                 {this.state.showUndoTerminate && (
                     <ParticipantDetailsUndoTerminate
                         participantProject={participantProject}

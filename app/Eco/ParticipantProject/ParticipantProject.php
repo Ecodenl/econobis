@@ -23,6 +23,7 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantProject extends Model
@@ -238,6 +239,13 @@ class ParticipantProject extends Model
 
     public function getDateTerminatedAllowedFromAttribute()
     {
+        $dateEntryLastMutation = $this->date_entry_last_mutation
+            ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
+            : null;
+        if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
+            return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
+        }
+
         $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
         $dateInterestBearing = $this->project->date_interest_bearing
             ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
@@ -247,9 +255,6 @@ class ParticipantProject extends Model
             : null;
         $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
             ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
-            : null;
-        $dateEntryLastMutation = $this->date_entry_last_mutation
-            ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
             : null;
         if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateInterestBearing;
@@ -263,9 +268,30 @@ class ParticipantProject extends Model
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
-        return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
+        return Carbon::parse($dateTerminatedAllowedFrom)->format('Y-m-d');
+    }
+    public function getDateTerminatedAllowedToAttribute()
+    {
+        $dateEntryLastMutation = $this->date_entry_last_mutation
+            ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
+            : null;
+        if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
+            return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
+        }
+
+        return Carbon::parse($this->date_terminated_allowed_from)->addYear()->subDay()->format('Y-m-d');
     }
 
+    public function getTerminatedAllowedAttribute()
+    {
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        return $this->date_terminated == null && ($this->date_terminated_allowed_to >= $this->date_terminated_allowed_from) && $this->mutations()->where('status_id', $mutationStatusFinal)->exists();
+    }
+    public function getUndoTerminatedAllowedAttribute()
+    {
+        return $this->date_terminated != null;
+    }
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution
 //    public function getParticipantInDefinitiveRevenueAttribute()

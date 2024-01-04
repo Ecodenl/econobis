@@ -21,30 +21,18 @@ const ParticipantDetailsTerminate = ({
     projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom)
+            .subtract(1, 'day')
+            .format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment()
-                  .add(1, 'years')
-                  .format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedTo).format('Y-MM-DD')
     );
 
-    const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
+    const [payPercentage, setPayPercentage] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
     const [errors, setErrors] = useState({
         dateTerminated: false,
@@ -57,9 +45,9 @@ const ParticipantDetailsTerminate = ({
         setDateTerminated(value);
     };
 
-    const onChangePayoutPercentageTerminated = event => {
+    const onChangePayPercentage = event => {
         const value = event.target.value;
-        setPayoutPercentageTerminated(value);
+        setPayPercentage(value);
     };
 
     const onChangeRedirectRevenueSplit = event => {
@@ -88,7 +76,7 @@ const ParticipantDetailsTerminate = ({
         if (!hasErrors) {
             ParticipantProjectDetailsAPI.terminateParticipantProject(participantProject.id, {
                 dateTerminated,
-                payoutPercentageTerminated,
+                payPercentage,
             })
                 .then(payload => {
                     fetchParticipantProjectDetails(participantProject.id);
@@ -144,7 +132,7 @@ const ParticipantDetailsTerminate = ({
                         name="dateTerminated"
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={dateTerminatedAllowedFrom}
+                        disabledBefore={moment(dateTerminatedAllowedFrom).subtract(1, 'day')}
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}
@@ -154,9 +142,9 @@ const ParticipantDetailsTerminate = ({
                         <InputText
                             type={'number'}
                             label={'Uitkeringspercentage'}
-                            name="payoutPercentageTerminated"
-                            value={payoutPercentageTerminated}
-                            onChangeAction={onChangePayoutPercentageTerminated}
+                            name="payPercentage"
+                            value={payPercentage}
+                            onChangeAction={onChangePayPercentage}
                         />
                     ) : null}
                 </div>

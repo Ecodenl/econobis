@@ -3,6 +3,7 @@
 namespace App\Eco\Project;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
@@ -20,7 +21,8 @@ class ProjectRevenueDistributionCalculator
     {
         // Revenue category REVENUE EURO of REDEMPTION EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
-        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id
+            || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueParticipant')->first())->id) {
             if($this->projectTypeCodeRef === 'loan') {
                 $this->projectRevenueDistribution->participations_loan_amount = $this->calculateParticipationsCount();
             }else{

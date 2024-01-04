@@ -24,8 +24,13 @@ class ProjectRevenueObserver
     {
         if($projectRevenue->confirmed == 1) {
             $project = $projectRevenue->project;
+
+            // Skip for revenueParticipant
+            if($projectRevenue->category->code_ref == 'revenueParticipant') {
+                return;
+
             // Set next (begin) date revenueEuro
-            if($projectRevenue->category->code_ref == 'revenueEuro') {
+            }elseif($projectRevenue->category->code_ref == 'revenueEuro') {
                 $project->date_interest_bearing = Carbon::parse($projectRevenue->date_end)->addDay();
             // Set next (begin) date redemptionEuro (only if later then current value)
             }elseif($projectRevenue->category->code_ref == 'redemptionEuro') {

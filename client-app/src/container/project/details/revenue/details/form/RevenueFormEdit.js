@@ -302,7 +302,8 @@ class RevenueFormEdit extends Component {
         }
         if (
             !hasErrors &&
-            this.props.revenue.category.codeRef === 'revenueEuro' &&
+            (this.props.revenue.category.codeRef === 'revenueEuro' ||
+                this.props.revenue.category.codeRef === 'revenueParticipant') &&
             moment(revenue.dateBegin).format('Y-MM-DD') <
                 moment(revenue.dateEnd)
                     .add(-1, 'year')
@@ -506,13 +507,14 @@ class RevenueFormEdit extends Component {
                     <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} className={'form-group col-sm-6'} />
                 </div>
 
-                {category.codeRef === 'revenueEuro' ? (
+                {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                     <div className="row">
                         {projectTypeCodeRef !== 'loan' ? (
                             <InputSelect
                                 label={'Type opbrengst verdeling'}
                                 name={'distributionTypeId'}
                                 options={this.props.projectRevenueDistributionTypes}
+                                emptyOption={false}
                                 value={distributionTypeId}
                                 onChangeAction={this.handleInputChange}
                             />
@@ -829,7 +831,7 @@ class RevenueFormEdit extends Component {
                     </React.Fragment>
                 ) : null}
 
-                {category.codeRef === 'revenueEuro' ? (
+                {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                     <React.Fragment>
                         <div className="row">
                             <div className={'panel-part panel-heading'}>

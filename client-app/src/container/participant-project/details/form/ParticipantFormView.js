@@ -34,7 +34,7 @@ const ParticipantFormView = props => {
         participationsIndicationOfRestitutionEnergyTaxTotal,
     } = props.participantProject;
 
-    const projectTypeCodeRef = props.participantProject.project.projectType.codeRef;
+    const projectTypeCodeRef = props.participantProject.project.typeCodeRef;
 
     return (
         <div>
@@ -125,7 +125,7 @@ const ParticipantFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Totale opbrengsten'} value={moneyPresenter(participationsReturnsTotal)} />
-                {project.projectType.codeRef === 'loan' ? (
+                {project.typeCodeRef === 'loan' ? (
                     <ViewText label={'Uitkeren op'} value={type ? type.name : ''} />
                 ) : null}
             </div>

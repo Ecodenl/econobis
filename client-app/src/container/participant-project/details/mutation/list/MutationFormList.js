@@ -60,7 +60,7 @@ const MutationFormList = ({ projectTypeCodeRef, participantMutations }) => {
 const mapStateToProps = state => {
     return {
         participantMutations: state.participantProjectDetails.participantMutations,
-        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
     };
 };
 

@@ -3,6 +3,7 @@
 namespace App\Eco\Project;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
@@ -20,7 +21,8 @@ class ProjectRevenueDistributionCalculator
     {
         // Revenue category REVENUE EURO of REDEMPTION EURO
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
-        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id) {
+        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id
+            || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueParticipant')->first())->id) {
             if($this->projectTypeCodeRef === 'loan') {
                 $this->projectRevenueDistribution->participations_loan_amount = $this->calculateParticipationsCount();
             }else{
@@ -43,7 +45,6 @@ class ProjectRevenueDistributionCalculator
 
     protected function calculateCapitalResult()
     {
-
         $projectRevenue = $this->projectRevenueDistribution->revenue;
         $totalResult = $projectRevenue->revenue;
 
@@ -58,7 +59,6 @@ class ProjectRevenueDistributionCalculator
         }
         // --- HOW LONG IN POSSESSION --- //
         if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'howLongInPossession') {
-
             $dateBegin = Carbon::parse($this->projectRevenueDistribution->revenue->date_begin);
             $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
 
@@ -131,6 +131,7 @@ class ProjectRevenueDistributionCalculator
 
             return $this->calculatePayoutHowLongInPossession();
         }
+        return 0;
     }
 
     protected function calculatePayoutInPossessionOf()

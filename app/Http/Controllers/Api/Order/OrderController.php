@@ -26,7 +26,6 @@ use App\Http\Resources\Order\FullOrderProduct;
 use App\Http\Resources\Order\GridOrder;
 use App\Http\Resources\Order\OrderPeek;
 use App\Jobs\Order\CreateAllInvoices;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;

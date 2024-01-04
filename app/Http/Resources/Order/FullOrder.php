@@ -46,7 +46,6 @@ class FullOrder extends JsonResource
                 'contact' => FullContact::make($this->whenLoaded('contact')),
 
                 'participationId' => $this->participation_id,
-                'participations' => FullParticipantProject::make($this->whenLoaded('participations')),
 
                 'administrationId' => $this->administration_id,
                 'administration' => FullAdministration::make($this->whenLoaded('administration')),

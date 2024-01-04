@@ -68,6 +68,11 @@ export default {
 
         return axiosInstance.post(requestUrl, payload);
     },
+    terminateParticipantProjectObligation: (id, payload) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate-obligation`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
     undoTerminateParticipantProject: (id, payload) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/undo-terminate`;
 

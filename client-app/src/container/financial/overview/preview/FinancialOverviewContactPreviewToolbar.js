@@ -9,6 +9,13 @@ class FinancialOverviewContactPreviewToolbar extends Component {
     }
 
     render() {
+        const status =
+            this.props.financialOverviewContactDetails &&
+            this.props.financialOverviewContactDetails.financialOverviewContact &&
+            this.props.financialOverviewContactDetails.financialOverviewContact.status_id == 'concept'
+                ? 'text-danger'
+                : '';
+
         return (
             <div className="row">
                 <div className="col-md-3">
@@ -35,11 +42,25 @@ class FinancialOverviewContactPreviewToolbar extends Component {
                                       .description
                                 : '')}
                         <br />
-                        {'Status: ' +
-                            (this.props.financialOverviewContactDetails &&
-                            this.props.financialOverviewContactDetails.financialOverviewContact
-                                ? this.props.financialOverviewContactDetails.financialOverviewContact.status
-                                : '')}
+
+                        {/*{'Status: ' +*/}
+                        {/*    (this.props.financialOverviewContactDetails &&*/}
+                        {/*    this.props.financialOverviewContactDetails.financialOverviewContact*/}
+                        {/*        ? this.props.financialOverviewContactDetails.financialOverviewContact.status !=*/}
+                        {/*          'Concept'*/}
+                        {/*            ? this.props.financialOverviewContactDetails.financialOverviewContact.status*/}
+                        {/*            : '<span style="color: #ff0000">' +*/}
+                        {/*              this.props.financialOverviewContactDetails.financialOverviewContact.status +*/}
+                        {/*              '</span>'*/}
+                        {/*        : '')}*/}
+
+                        <span class={status}>
+                            {'Status: ' +
+                                (this.props.financialOverviewContactDetails &&
+                                this.props.financialOverviewContactDetails.financialOverviewContact
+                                    ? this.props.financialOverviewContactDetails.financialOverviewContact.status
+                                    : '')}
+                        </span>
                     </h4>
                 </div>
                 <div className="col-md-3" />

@@ -214,11 +214,11 @@
     <h3 class="subject-text">Specificaties</h3>
 
     @if($financialOverviewContactLoanProjects && count($financialOverviewContactLoanProjects)>0)
-        <h4 class="subject-text">Lening per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h4>
+        <h4 class="subject-text">Lening {{ $financialOverviewContact->financialOverview->year }}</h4>
         <table>
             <tr>
                 <th class="align-left" style="width:45%;">Project</th>
-                <th class="align-left" style="width:20%;">Type</th>
+                <th class="align-left" style="width:20%;">Per</th>
                 <th class="align-right" style="width:10%;">&nbsp;</th>
                 <th class="align-right" style="width:10%;">&nbsp;</th>
                 <th class="align-right" style="width:15%;">Totale waarde</th>
@@ -227,7 +227,16 @@
             @foreach($financialOverviewContactLoanProjects as $financialOverviewContactLoanProject)
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactLoanProject->name }}</td>
-                    <td class="align-left">Lening</td>
+                    <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
+                    <td class="align-right">&nbsp;</td>
+                    <td class="align-right">&nbsp;</td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactLoanProject->amount_start_value, 2, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-left">&nbsp;</td>
+                    <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                     <td class="align-right">&nbsp;</td>
                     <td class="align-right">&nbsp;</td>
                     <td class="align-right"><span
@@ -238,7 +247,16 @@
 
             <tr>
                 <td class="align-left"><strong>Totaal</strong></td>
+                <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactLoanTotalStart, 2, ',', '.') }}
+                    </strong></td>
+            </tr>
+            <tr>
+                <td class="align-left"><strong>&nbsp;</strong></td>
+                <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right"><strong><span
@@ -250,11 +268,11 @@
 
     @if($financialOverviewContactObligationProjects && count($financialOverviewContactObligationProjects)>0)
         <br/>
-        <h4 class="subject-text">Obligaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h4>
+        <h4 class="subject-text">Obligaties {{ $financialOverviewContact->financialOverview->year }}</h4>
         <table>
             <tr>
                 <th class="align-left" style="width:45%;">Project</th>
-                <th class="align-left" style="width:20%;">Type</th>
+                <th class="align-left" style="width:20%;">Per</th>
                 <th class="align-right" style="width:10%;">Aantal</th>
                 <th class="align-right" style="width:10%;">Waarde</th>
                 <th class="align-right" style="width:15%;">Totale waarde</th>
@@ -263,7 +281,18 @@
             @foreach($financialOverviewContactObligationProjects as $financialOverviewContactObligationProject)
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactObligationProject->name }}</td>
-                    <td class="align-left">Obligaties</td>
+                    <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
+                    <td class="align-right">{{ $financialOverviewContactObligationProject->quantity_start_value }}</td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactObligationProject->bookworth_start_value, 2, ',', '.') }}
+                    </td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactObligationProject->amount_start_value, 2, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-left">&nbsp;</td>
+                    <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                     <td class="align-right">{{ $financialOverviewContactObligationProject->quantity_end_value }}</td>
                     <td class="align-right"><span
                                 class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactObligationProject->bookworth_end_value, 2, ',', '.') }}
@@ -276,7 +305,16 @@
 
             <tr>
                 <td class="align-left"><strong>Totaal</strong></td>
+                <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactObligationTotalStart, 2, ',', '.') }}
+                    </strong></td>
+            </tr>
+            <tr>
+                <td class="align-left"><strong>&nbsp;</strong></td>
+                <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right"><strong><span
@@ -289,11 +327,11 @@
 
     @if($financialOverviewContactCapitalProjects && count($financialOverviewContactCapitalProjects)>0)
         <br/>
-        <h4 class="subject-text">Participaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h4>
+        <h4 class="subject-text">Participaties {{ $financialOverviewContact->financialOverview->year }}</h4>
         <table>
             <tr>
                 <th class="align-left" style="width:45%;">Project</th>
-                <th class="align-left" style="width:20%;">Type</th>
+                <th class="align-left" style="width:20%;">Per</th>
                 <th class="align-right" style="width:10%;">Aantal</th>
                 <th class="align-right" style="width:10%;">Waarde</th>
                 <th class="align-right" style="width:15%;">Totale waarde</th>
@@ -302,7 +340,18 @@
             @foreach($financialOverviewContactCapitalProjects as $financialOverviewContactCapitalProject)
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactCapitalProject->name }}</td>
-                    <td class="align-left">Participaties</td>
+                    <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
+                    <td class="align-right">{{ $financialOverviewContactCapitalProject->quantitystart_value }}</td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactCapitalProject->bookworth_start_value, 2, ',', '.') }}
+                    </td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactCapitalProject->amount_start_value, 2, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-left">&nbsp;</td>
+                    <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                     <td class="align-right">{{ $financialOverviewContactCapitalProject->quantity_end_value }}</td>
                     <td class="align-right"><span
                                 class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactCapitalProject->bookworth_end_value, 2, ',', '.') }}
@@ -315,7 +364,16 @@
 
             <tr>
                 <td class="align-left"><strong>Totaal</strong></td>
+                <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactCapitalTotalStart, 2, ',', '.') }}
+                    </strong></td>
+            </tr>
+            <tr>
+                <td class="align-left"><strong>&nbsp;</strong></td>
+                <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right"><strong><span
@@ -328,11 +386,11 @@
 
     @if($financialOverviewContactPcrProjects && count($financialOverviewContactPcrProjects)>0)
         <br/>
-        <h4 class="subject-text">Participaties per 31-12-{{ $financialOverviewContact->financialOverview->year }}</h4>
+        <h4 class="subject-text">Participaties {{ $financialOverviewContact->financialOverview->year }}</h4>
         <table>
             <tr>
                 <th class="align-left" style="width:45%;">Project</th>
-                <th class="align-left" style="width:20%;">Type</th>
+                <th class="align-left" style="width:20%;">Per</th>
                 <th class="align-right" style="width:10%;">Aantal</th>
                 <th class="align-right" style="width:10%;">Waarde</th>
                 <th class="align-right" style="width:15%;">Totale waarde</th>
@@ -341,7 +399,18 @@
             @foreach($financialOverviewContactPcrProjects as $financialOverviewContactPcrProject)
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactPcrProject->name }}</td>
-                    <td class="align-left">Participaties</td>
+                    <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
+                    <td class="align-right">{{ $financialOverviewContactPcrProject->quantity_start_value }}</td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactPcrProject->bookworth_start_value, 2, ',', '.') }}
+                    </td>
+                    <td class="align-right"><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactPcrProject->amount_start_value, 2, ',', '.') }}
+                    </td>
+                </tr>
+                <tr>
+                    <td class="align-left">&nbsp;</td>
+                    <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                     <td class="align-right">{{ $financialOverviewContactPcrProject->quantity_end_value }}</td>
                     <td class="align-right"><span
                                 class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactPcrProject->bookworth_end_value, 2, ',', '.') }}
@@ -354,7 +423,16 @@
 
             <tr>
                 <td class="align-left"><strong>Totaal</strong></td>
+                <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
+                <td class="align-right">&nbsp;</td>
+                <td class="align-right"><strong><span
+                                class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactPcrTotalStart, 2, ',', '.') }}
+                    </strong></td>
+            </tr>
+            <tr>
+                <td class="align-left"><strong>&nbsp;</strong></td>
+                <td class="align-left">31-12-{{ $financialOverviewContact->financialOverview->year }}</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right">&nbsp;</td>
                 <td class="align-right"><strong><span

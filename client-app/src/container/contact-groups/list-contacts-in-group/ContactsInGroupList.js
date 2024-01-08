@@ -11,6 +11,8 @@ import { connect } from 'react-redux';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import { setContactsInGroupPagination } from '../../../actions/contact-group/ContactsInGroupPaginationActions';
 import { bindActionCreators } from 'redux';
+import ContactsListFilter from '../../contact/list/ContactsListFilter';
+import ContactsInGroupListFilter from './ContactsInGroupListFilter';
 
 class ContactsInGroupList extends Component {
     constructor(props) {
@@ -31,6 +33,13 @@ class ContactsInGroupList extends Component {
         };
         this.handlePageClick = this.handlePageClick.bind(this);
     }
+
+    // On key Enter filter form will submit
+    handleKeyUp = e => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
 
     showDeleteItemModal = (id, name) => {
         this.setState({
@@ -121,6 +130,11 @@ class ContactsInGroupList extends Component {
                                 showCheckbox={this.props.showCheckboxList}
                                 refreshContactsInGroupData={this.props.refreshContactsInGroupData}
                                 isUsedInLaposta={this.props.contactGroupDetails.isUsedInLaposta}
+                            />
+                            <ContactsInGroupListFilter
+                                showCheckbox={this.props.showCheckboxList}
+                                selectAllCheckboxes={() => this.props.selectAllCheckboxes()}
+                                onSubmitFilter={this.props.onSubmitFilter}
                             />
                         </DataTableHead>
                         <DataTableBody>

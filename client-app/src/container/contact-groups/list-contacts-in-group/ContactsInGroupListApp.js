@@ -11,6 +11,7 @@ import {
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
 import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
+import filterHelper from '../../../helpers/FilterHelper';
 
 class ContactsInGroupListApp extends Component {
     constructor(props) {
@@ -38,12 +39,19 @@ class ContactsInGroupListApp extends Component {
 
     fetchContactsInGroup = (groupId, page = null) => {
         const pagination = { limit: 50, offset: page };
-
-        ContactsInGroupAPI.fetchContactsInGroupPaginated(groupId, pagination).then(payload => {
+        const filters = filterHelper(this.props.contactsInGroupFilters);
+        console.log(this.props.contactsInGroupFilters);
+        ContactsInGroupAPI.fetchContactsInGroupPaginated(groupId, pagination, filters).then(payload => {
             this.setState({ contactsInGroup: payload.gridContactGroupContacts });
             this.setState({ total: payload.total });
         });
     };
+
+    onSubmitFilter() {
+        console.log('test');
+        this.fetchContactsInGroup(this.props.params.contactGroup, 0);
+        console.log(this.state.contactsInGroup);
+    }
 
     render() {
         return (
@@ -63,6 +71,7 @@ class ContactsInGroupListApp extends Component {
                                 total={this.state.total}
                                 groupId={this.props.params.contactGroup}
                                 refreshContactsInGroupData={this.refreshContactsInGroupData}
+                                onSubmitFilter={() => this.onSubmitFilter()}
                             />
                         </div>
                     </div>
@@ -76,6 +85,7 @@ const mapStateToProps = state => {
     return {
         contactsInGroup: state.contactsInGroup,
         total: state.total,
+        contactsInGroupFilters: state.contactsInGroup.filters,
     };
 };
 

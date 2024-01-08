@@ -13,14 +13,16 @@ export default {
             });
     },
 
-    fetchContactsInGroupPaginated: (contactGroup, pagination) => {
+    fetchContactsInGroupPaginated: (contactGroup, pagination, filters) => {
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
-
+        console.log('00000');
+        console.log(JSON.stringify(filters));
         return axiosInstance
             .get(requestUrl, {
                 params: {
                     limit: pagination.limit,
                     offset: pagination.offset,
+                    filters: JSON.stringify(filters),
                 },
             })
             .then(response => response.data)

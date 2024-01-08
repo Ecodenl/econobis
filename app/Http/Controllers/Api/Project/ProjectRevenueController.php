@@ -265,7 +265,8 @@ class ProjectRevenueController extends ApiController
         } else {
             $participants = ParticipantProject::where('project_id', $project->id)
                 ->where(function ($query) use($dateBegin) {
-                    $query->whereNull('date_terminated');
+                    $query->whereNull('date_terminated')
+                        ->orWhere('date_terminated',  '>=', $dateBegin);
                 })
                 ->where(function ($query) use($mutationType, $mutationStatusFinal) {
                     $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {

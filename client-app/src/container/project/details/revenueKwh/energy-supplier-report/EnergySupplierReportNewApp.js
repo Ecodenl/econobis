@@ -14,6 +14,17 @@ class EnergySupplierReportNewApp extends Component {
     constructor(props) {
         super(props);
 
+        // const revenueKwh = RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId);
+        RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
+            this.setState({
+                document: {
+                    projectName: payload.project.name,
+                    yearBegin: payload.dateBegin,
+                    yearEnd: payload.dateEnd,
+                },
+            });
+        });
+
         this.state = {
             templates: [],
             report: {
@@ -100,6 +111,7 @@ class EnergySupplierReportNewApp extends Component {
                                 <div className="col-md-12">
                                     <EnergySupplierReportNew
                                         report={this.state.report}
+                                        documentData={this.state.document}
                                         errors={this.state.errors}
                                         templates={this.state.templates}
                                         handleInputChange={this.handleInputChange}

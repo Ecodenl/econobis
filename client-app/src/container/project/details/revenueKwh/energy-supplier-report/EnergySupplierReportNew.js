@@ -9,7 +9,21 @@ import PanelFooter from '../../../../../components/panel/PanelFooter';
 import InputText from '../../../../../components/form/InputText';
 
 const EnergySupplierReportNew = props => {
-    const { templateId, documentName } = props.report;
+    const { templateId, revenueId } = props.report;
+    console.log(props.documentData);
+    let defaultDocumentName = '';
+    if (props.documentData) {
+        const yearBegin = moment(props.documentData.yearBegin, 'YYYY-MM-DD').year();
+        const yearEnd = moment(props.documentData.yearEnd, 'YYYY-MM-DD').year();
+        const year = yearEnd == yearBegin ? yearBegin : yearBegin + '-' + yearEnd;
+        defaultDocumentName =
+            'ledenverklaring of productiespecificatie ' +
+            revenueId +
+            ' ' +
+            props.documentData.projectName.substring(0, 136) +
+            ' ' +
+            year;
+    }
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -22,6 +36,7 @@ const EnergySupplierReportNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.templateId}
+                    size={'col-sm-12'}
                 />
             </div>
 
@@ -29,10 +44,13 @@ const EnergySupplierReportNew = props => {
                 <InputText
                     label={'Document naam'}
                     name={'documentName'}
-                    value={documentName}
+                    value={defaultDocumentName}
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.documentName}
+                    divSize={'col-sm-12'}
+                    labelSize={'col-sm-6'}
+                    size={'col-sm-6'}
                 />
                 .pdf
             </div>

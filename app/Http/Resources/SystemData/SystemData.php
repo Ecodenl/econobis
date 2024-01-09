@@ -222,7 +222,7 @@ class SystemData extends JsonResource
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),
-            'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::all()),
+            'opportunityStatus' => OpportunityStatusResource::collection(OpportunityStatus::orderBy('order')->get()),
             'orderCollectionFrequencies' => FullEnumWithIdAndName::collection(OrderCollectionFrequency::collection()),
             'orderPaymentTypes' => FullEnumWithIdAndName::collection(OrderPaymentType::collection()),
             'orderStatuses' => FullEnumWithIdAndName::collection(OrderStatusToSelect::collection()),

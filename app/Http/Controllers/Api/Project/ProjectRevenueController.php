@@ -267,12 +267,12 @@ class ProjectRevenueController extends ApiController
                 ->where(function ($query) use($dateBegin) {
                     $query->whereNull('date_terminated')
                         ->orWhere('date_terminated',  '>=', $dateBegin);
-            })
-            ->where(function ($query) use($mutationType, $mutationStatusFinal) {
-                $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
-                    $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
-                });
-            })->get();
+                })
+                ->where(function ($query) use($mutationType, $mutationStatusFinal) {
+                    $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
+                        $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
+                    });
+                })->get();
 
             foreach ($participants as $participant) {
                 $this->saveDistribution($projectRevenue, $participant, $closing);

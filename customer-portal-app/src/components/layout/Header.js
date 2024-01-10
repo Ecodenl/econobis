@@ -143,7 +143,7 @@ function Header({ location, history }) {
                         </PortalUserConsumer>
                     </div>
 
-                    <Container>
+                    <div class={'content-container w-container'}>
                         <Row>
                             <Col xs={6}>
                                 <ThemeSettingsConsumer>
@@ -245,7 +245,7 @@ function Header({ location, history }) {
                                 </Button>
                             </div>
                         ) : null}
-                    </Container>
+                    </div>
                 </div>
                 {/* Sidebar menu */}
                 <Menu

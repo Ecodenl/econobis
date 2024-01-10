@@ -73,7 +73,7 @@ function MailboxDefaultFormGeneral({
         }
         return validationSchema;
     }
-
+    console.log(initialValues.primary);
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>
@@ -119,7 +119,12 @@ function MailboxDefaultFormGeneral({
                                 event.persist();
                                 setFieldValue(event.target.name, event.target.checked);
                             }}
-                            disabled={!values.isActive}
+                            disabled={!values.isActive || initialValues.primary}
+                            size={'col-sm-5'}
+                            textToolTip={
+                                initialValues.primary &&
+                                `Switchen van primaire mailbox is alleen mogelijk door een andere mailbox op primair te zetten.`
+                            }
                         />
                     </div>
                     <div className="row">

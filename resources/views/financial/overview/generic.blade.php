@@ -214,7 +214,7 @@
     <h3 class="subject-text">Specificaties</h3>
 
     @if($financialOverviewContactLoanProjects && count($financialOverviewContactLoanProjects)>0)
-        <h4 class="subject-text">Leningen {{ $financialOverviewContact->financialOverview->year }}</h4>
+        <h4 class="subject-text">Lening {{ $financialOverviewContact->financialOverview->year }}</h4>
         <table>
             <tr>
                 <th class="align-left" style="width:45%;">Project</th>

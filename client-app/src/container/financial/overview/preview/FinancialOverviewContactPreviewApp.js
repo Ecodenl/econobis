@@ -53,6 +53,9 @@ class FinancialOverviewContactPreviewApp extends Component {
                 <div className="col-md-12">
                     {this.state.isLoading ? (
                         <div>Gegevens aan het laden.</div>
+                    ) : !this.state.financialOverviewContactDetails ||
+                      !this.state.financialOverviewContactDetails.financialOverviewContact ? (
+                        <div>Geen gegegevens gevonden.</div>
                     ) : (
                         <>
                             <div className="col-md-12 margin-10-top">

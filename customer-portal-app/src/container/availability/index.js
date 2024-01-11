@@ -1,11 +1,13 @@
 import React from 'react';
 import Container from 'react-bootstrap/Container';
-import ContactAvailabilityDetailsPlanningPanel from "./ContactAvailabilityDetailsPlanningPanel";
+import ContactAvailabilityDetailsPlanningPanel from './ContactAvailabilityDetailsPlanningPanel';
 
 export default function AvailabilityDetails() {
     return (
-        <Container className={'content-section'}>
-            <ContactAvailabilityDetailsPlanningPanel/>
-        </Container>
+        <div className={'content-section'}>
+            <div className="content-container w-container">
+                <ContactAvailabilityDetailsPlanningPanel />
+            </div>
+        </div>
     );
 }

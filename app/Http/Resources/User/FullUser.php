@@ -10,6 +10,7 @@ namespace App\Http\Resources\User;
 
 
 use App\Http\Resources\Administration\AdministrationPeek;
+use App\Http\Resources\GenericResource;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Mailbox\MailboxPeek;
 use App\Http\Resources\Title\FullTitle;
@@ -48,7 +49,7 @@ class FullUser extends JsonResource
             'showTwoFactorNotification' => $this->show_two_factor_notification,
             'defaultMailboxId' => $this->default_mailbox_id,
             'defaultMailbox' => MailboxPeek::make($this->whenLoaded('defaultMailbox')),
-            'mailboxes' => $this->whenLoaded('mailboxes'),
+//            'mailboxes' =>$this->whenLoaded('mailboxes'),
         ];
     }
 

@@ -51,7 +51,9 @@ const RevenueFormView = props => {
                 <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} />
             </div>
 
-            {category.codeRef === 'revenueEuro' || category.codeRef === 'redemptionEuro' ? (
+            {category.codeRef === 'revenueEuro' ||
+            category.codeRef === 'redemptionEuro' ||
+            category.codeRef === 'revenueParticipant' ? (
                 <div className="row" onClick={props.switchToEdit}>
                     {project.projectType.codeRef !== 'loan' ? (
                         <ViewText
@@ -172,7 +174,7 @@ const RevenueFormView = props => {
                 </React.Fragment>
             ) : null}
 
-            {category.codeRef === 'revenueEuro' ? (
+            {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                 <React.Fragment>
                     <div className={'panel-part panel-heading'} onClick={props.switchToEdit}>
                         <span className={'h5 text-bold'}>Opbrengst euro</span>

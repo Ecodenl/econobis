@@ -199,6 +199,14 @@ class checkFetchEmail extends Command
         }
 
         $subject = $emailData->subject ?: '';
+        $currentEncodingTextSubject= mb_detect_encoding( $subject, 'UTF-8', true);
+        if(false === $currentEncodingTextSubject){
+            Log::info('Testen opangen ongeldige encoding in subject');
+            Log::info($subject);
+            $subject = mb_convert_encoding($subject, 'UTF-8', mb_list_encodings());
+        }
+        Log::info($subject);
+
 
         if(strlen($subject) > 250){
             $subject = substr($subject, 0, 249);

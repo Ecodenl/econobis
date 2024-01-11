@@ -311,6 +311,7 @@ Route::namespace('Api')
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
+        Route::get('mailbox/logged-in/only-active', 'Mailbox\MailboxController@loggedInUserOnlyActive');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/for-user/{user}/email-peek', 'Mailbox\MailboxController@forUserEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
@@ -512,6 +513,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
+        Route::post('project/participant/{participantProject}/terminate-obligation', 'ParticipationProject\ParticipationProjectController@terminateObligation');
         Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
@@ -710,7 +712,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
-        Route::get('free-fields-field/get-for-filter-contact', 'FreeFields\FreeFieldsFieldController@getForFilterContact');
+        Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
         Route::post('free-fields-field', 'FreeFields\FreeFieldsFieldController@store');

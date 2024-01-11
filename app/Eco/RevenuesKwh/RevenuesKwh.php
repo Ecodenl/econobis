@@ -142,6 +142,10 @@ class RevenuesKwh extends Model
         return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
     }
 
+    public function getDefaultDocumentNameAttribute(){
+        return "test default document name van Patrick";
+    }
+
     public function getHasNewPartsKwh(){
         return $this->newPartsKwh()->count() > 0;
     }

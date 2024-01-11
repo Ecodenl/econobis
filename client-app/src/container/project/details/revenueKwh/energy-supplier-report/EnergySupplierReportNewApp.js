@@ -9,21 +9,22 @@ import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
+import axios from 'axios';
 
 class EnergySupplierReportNewApp extends Component {
     constructor(props) {
         super(props);
 
         // const revenueKwh = RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId);
-        RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
-            this.setState({
-                document: {
-                    projectName: payload.project.name,
-                    yearBegin: payload.dateBegin,
-                    yearEnd: payload.dateEnd,
-                },
-            });
-        });
+        // RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
+        //     this.setState({
+        //         document: {
+        //             projectName: payload.project.name,
+        //             yearBegin: payload.dateBegin,
+        //             yearEnd: payload.dateEnd,
+        //         },
+        //     });
+        // });
 
         this.state = {
             templates: [],
@@ -40,19 +41,55 @@ class EnergySupplierReportNewApp extends Component {
     }
 
     componentDidMount() {
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-            let templates = [];
+        console.log('test: props revenueId: ' + this.props.params.revenueId);
+        console.log('test: state revenueId: ' + this.state.report.revenueId);
+        axios
+            .all([
+                RevenuesKwhAPI.fetchRevenuesKwh(this.props.params.revenueId),
+                DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral(),
+            ])
+            .then(
+                axios.spread((payloadRevenuesKwh, payLoadDocumentTemplates) => {
+                    let templates = [];
 
-            payload.forEach(function(template) {
-                if (template.group == 'revenue') {
-                    templates.push({ id: template.id, name: template.name });
-                }
-            });
+                    payLoadDocumentTemplates.forEach(function(template) {
+                        if (template.group == 'revenue') {
+                            templates.push({ id: template.id, name: template.name });
+                        }
+                    });
 
-            this.setState({
-                templates: templates,
-            });
-        });
+                    this.setState({
+                        templates: templates,
+                        report: {
+                            documentName: payloadRevenuesKwh.defaultDocumentName,
+                        },
+                    });
+                })
+            );
+
+        // RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
+        //     this.setState({
+        //         document: {
+        //             projectName: payload.project.name,
+        //             yearBegin: payload.dateBegin,
+        //             yearEnd: payload.dateEnd,
+        //         },
+        //     });
+        // });
+
+        // DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
+        //     let templates = [];
+        //
+        //     payload.forEach(function(template) {
+        //         if (template.group == 'revenue') {
+        //             templates.push({ id: template.id, name: template.name });
+        //         }
+        //     });
+        //
+        //     this.setState({
+        //         templates: templates,
+        //     });
+        // });
     }
 
     handleInputChange = event => {
@@ -111,7 +148,7 @@ class EnergySupplierReportNewApp extends Component {
                                 <div className="col-md-12">
                                     <EnergySupplierReportNew
                                         report={this.state.report}
-                                        documentData={this.state.document}
+                                        // documentData={this.state.document}
                                         errors={this.state.errors}
                                         templates={this.state.templates}
                                         handleInputChange={this.handleInputChange}

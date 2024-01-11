@@ -74,7 +74,7 @@ function RegistrationDetails({ match: { params } }) {
                 <LoadingView />
             ) : (
                 <>
-                    <div className="content-container container">
+                    <div className="content-container w-container">
                         <Row>
                             <ButtonGroup aria-label="current-participations" className="w-button-group-left">
                                 <Link to={`/inschrijvingen-projecten`}>
@@ -84,8 +84,7 @@ function RegistrationDetails({ match: { params } }) {
                                 </Link>
                             </ButtonGroup>
                         </Row>
-                    </div>
-                    <div className="content-container w-container">
+
                         <RegistrationDetailsTitle {...state.result.basicInformation} />
                         {state.result.length === 0 ? (
                             <Row>

@@ -54,7 +54,7 @@ function AboutUsAdministration({ match }) {
                 <LoadingView />
             ) : (
                 <>
-                    <div className="content-container container">
+                    <div className="content-container w-container">
                         <Row>
                             <ButtonGroup aria-label="about-us" className="w-button-group-left">
                                 <Link to={`/over-ons`}>
@@ -64,8 +64,7 @@ function AboutUsAdministration({ match }) {
                                 </Link>
                             </ButtonGroup>
                         </Row>
-                    </div>
-                    <div className="content-container w-container">
+
                         <Row className={'justify-content-center align-content-center flex-wrap'}>
                             <Col xs={12} lg={6} className={'mb-3'}>
                                 <Card>

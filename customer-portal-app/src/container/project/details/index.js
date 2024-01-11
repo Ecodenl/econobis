@@ -91,7 +91,7 @@ function ProjectDetails({ match }) {
                 <LoadingView />
             ) : (
                 <>
-                    <div className="content-container container">
+                    <div className="content-container w-container">
                         <Row>
                             <ButtonGroup aria-label="project-details" className="w-button-group-left">
                                 <Link to={`/inschrijven-projecten`}>
@@ -101,8 +101,7 @@ function ProjectDetails({ match }) {
                                 </Link>
                             </ButtonGroup>
                         </Row>
-                    </div>
-                    <div className="content-container w-container">
+
                         <Row>
                             <Col>
                                 <h1 className="content-heading">Inschrijven project</h1>

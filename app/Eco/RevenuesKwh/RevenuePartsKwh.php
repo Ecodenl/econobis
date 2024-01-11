@@ -184,7 +184,7 @@ class RevenuePartsKwh extends Model
             $projectNameSubstring = substr($projectName, 0, 164);
         }
 
-        $defaultDocumentName = "obprengst " . $projectNameSubstring . " " . $year . " ";
+        $defaultDocumentName = "opbrengst " . $projectNameSubstring . " " . $year . " ";
 
         return $defaultDocumentName;
     }

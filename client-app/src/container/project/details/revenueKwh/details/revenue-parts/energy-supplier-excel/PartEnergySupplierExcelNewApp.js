@@ -8,7 +8,6 @@ import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
 import Panel from '../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../components/panel/PanelBody';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
-import RevenuesKwhAPI from '../../../../../../../api/project/RevenuesKwhAPI';
 
 class PartEnergySupplierExcelNewApp extends Component {
     constructor(props) {

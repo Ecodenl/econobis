@@ -15,17 +15,6 @@ class EnergySupplierReportNewApp extends Component {
     constructor(props) {
         super(props);
 
-        // const revenueKwh = RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId);
-        // RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
-        //     this.setState({
-        //         document: {
-        //             projectName: payload.project.name,
-        //             yearBegin: payload.dateBegin,
-        //             yearEnd: payload.dateEnd,
-        //         },
-        //     });
-        // });
-
         this.state = {
             templates: [],
             report: {
@@ -41,8 +30,6 @@ class EnergySupplierReportNewApp extends Component {
     }
 
     componentDidMount() {
-        console.log('test: props revenueId: ' + this.props.params.revenueId);
-        console.log('test: state revenueId: ' + this.state.report.revenueId);
         axios
             .all([
                 RevenuesKwhAPI.fetchRevenuesKwh(this.props.params.revenueId),
@@ -66,30 +53,6 @@ class EnergySupplierReportNewApp extends Component {
                     });
                 })
             );
-
-        // RevenuesKwhAPI.fetchRevenuesKwh(props.params.revenueId).then(payload => {
-        //     this.setState({
-        //         document: {
-        //             projectName: payload.project.name,
-        //             yearBegin: payload.dateBegin,
-        //             yearEnd: payload.dateEnd,
-        //         },
-        //     });
-        // });
-
-        // DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-        //     let templates = [];
-        //
-        //     payload.forEach(function(template) {
-        //         if (template.group == 'revenue') {
-        //             templates.push({ id: template.id, name: template.name });
-        //         }
-        //     });
-        //
-        //     this.setState({
-        //         templates: templates,
-        //     });
-        // });
     }
 
     handleInputChange = event => {

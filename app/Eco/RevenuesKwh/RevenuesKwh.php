@@ -143,7 +143,23 @@ class RevenuesKwh extends Model
     }
 
     public function getDefaultDocumentNameAttribute(){
-        return "test default document name van Patrick";
+        // if (props.documentData) {
+        //     const yearBegin = moment(props.documentData.yearBegin, 'YYYY-MM-DD').year();
+        //     const yearEnd = moment(props.documentData.yearEnd, 'YYYY-MM-DD').year();
+        //     const year = yearEnd == yearBegin ? yearBegin : yearBegin + '-' + yearEnd;
+        //     defaultDocumentName =
+        //         'ledenverklaring of productiespecificatie ' + props.documentData.projectName.substring(0, 136) + ' ' + year;
+        // }
+
+        $defaultDocumentName = "ledenverklaring of productiespecificatie";
+        $this->project ? $defaultDocumentName .= " " . $this->project->name . " " : $defaultDocumentName .= " ";
+
+        $yearBegin = Carbon::parse($this->date_begin)->format('Y');
+        $yearEnd = Carbon::parse($this->date_end)->format('Y');
+
+        $defaultDocumentName .= $yearEnd === $yearBegin ? $yearBegin : $yearBegin . '-' . $yearEnd;
+
+        return $this->translateToValidCharacterSet($defaultDocumentName);
     }
 
     public function getHasNewPartsKwh(){
@@ -154,4 +170,13 @@ class RevenuesKwh extends Model
         return $this->confirmedPartsKwh()->count() > 0;
     }
 
+    protected function translateToValidCharacterSet($field){
+
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
 }

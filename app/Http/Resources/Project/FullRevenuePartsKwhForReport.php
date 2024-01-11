@@ -15,10 +15,12 @@ class FullRevenuePartsKwhForReport extends JsonResource
      */
     public function toArray($request)
     {
+
         return
             [
                 'id' => $this->id,
                 'revenueId' => $this->revenue_id,
+                'defaultDocumentName' => $this->default_document_name,
                 'distributionForReportEnergySupplier' => $this->getDistributionForReportEnergySupplier(),
             ];
     }

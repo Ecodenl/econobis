@@ -143,23 +143,22 @@ class RevenuesKwh extends Model
     }
 
     public function getDefaultDocumentNameAttribute(){
-        // if (props.documentData) {
-        //     const yearBegin = moment(props.documentData.yearBegin, 'YYYY-MM-DD').year();
-        //     const yearEnd = moment(props.documentData.yearEnd, 'YYYY-MM-DD').year();
-        //     const year = yearEnd == yearBegin ? yearBegin : yearBegin + '-' + yearEnd;
-        //     defaultDocumentName =
-        //         'ledenverklaring of productiespecificatie ' + props.documentData.projectName.substring(0, 136) + ' ' + year;
-        // }
-
-        $defaultDocumentName = "ledenverklaring of productiespecificatie";
-        $this->project ? $defaultDocumentName .= " " . $this->project->name . " " : $defaultDocumentName .= " ";
+        $projectName = $this->translateToValidCharacterSet($this->project->name);
 
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');
         $yearEnd = Carbon::parse($this->date_end)->format('Y');
 
-        $defaultDocumentName .= $yearEnd === $yearBegin ? $yearBegin : $yearBegin . '-' . $yearEnd;
+        if($yearEnd === $yearBegin) {
+            $year = $yearBegin;
+            $projectNameSubstring = substr($projectName, 0, 141);
+        } else {
+            $year = $yearBegin . '-' . $yearEnd;
+            $projectNameSubstring = substr($projectName, 0, 136);
+        }
 
-        return $this->translateToValidCharacterSet($defaultDocumentName);
+        $defaultDocumentName = "ledenverklaring of productiespecificatie " . $projectNameSubstring . " " . $year;
+
+        return $defaultDocumentName;
     }
 
     public function getHasNewPartsKwh(){

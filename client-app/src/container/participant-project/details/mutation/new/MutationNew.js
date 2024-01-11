@@ -14,6 +14,7 @@ import MutationNewSubmitHelper from './MutationNewSubmitHelper';
 import MutationNewWithDrawal from './MutationNewWithDrawal';
 import Modal from '../../../../../components/modal/Modal';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
+import ViewText from '../../../../../components/form/ViewText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -41,6 +42,7 @@ class MutationFormNew extends Component {
                 dateEntry: this.props.projectDateEntry
                     ? moment(this.props.projectDateEntry).format('YYYY-MM-DD')
                     : moment().format('YYYY-MM-DD'),
+                transactionCostsAmount: 0,
             },
             errors: {},
             errorMessage: {},
@@ -189,6 +191,8 @@ class MutationFormNew extends Component {
                 participantMutationType.codeRef === 'sell'
         );
 
+        const transactionCostsAmount = this.state.participationMutation.transactionCostsAmount;
+
         return (
             <React.Fragment>
                 <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -215,6 +219,13 @@ class MutationFormNew extends Component {
                                     required={'required'}
                                     error={this.state.errors.statusId}
                                 />
+                                {transactionCostsAmount !== 0 && transactionCostsAmount !== 0 ? (
+                                    <ViewText
+                                        label={'Transactiekosten (berekend)'}
+                                        value={transactionCostsAmount}
+                                        className={'form-group col-sm-6 '}
+                                    />
+                                ) : null}
                             </div>
 
                             {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (

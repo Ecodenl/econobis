@@ -77,6 +77,7 @@ const RevenueNew = props => {
                             label={'Type opbrengst verdeling'}
                             name={'distributionTypeId'}
                             options={props.projectRevenueDistributionTypes}
+                            emptyOption={false}
                             value={distributionTypeId}
                             onChangeAction={props.handleInputChange}
                             error={props.errors.distributionTypeId}

@@ -21,7 +21,7 @@ class UserController extends Controller
 {
     public function me(Request $request)
     {
-        $request->user()->load(['lastNamePrefix', 'title', 'administrations', 'mailboxes']);
+        $request->user()->load(['lastNamePrefix', 'title', 'administrations']);
 
         return FullUser::make($request->user());
     }

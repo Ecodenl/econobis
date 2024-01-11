@@ -143,7 +143,7 @@ function Header({ location, history }) {
                         </PortalUserConsumer>
                     </div>
 
-                    <div class={'content-container w-container'}>
+                    <div className={'content-container w-container'}>
                         <Row>
                             <Col xs={6}>
                                 <ThemeSettingsConsumer>

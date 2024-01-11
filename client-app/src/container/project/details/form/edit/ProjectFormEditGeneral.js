@@ -202,7 +202,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     disabled={!useSceProject}
                 />
-                {isSceProject === true && (
+                {isSceProject && (
                     <InputSelect
                         label={'Basis project'}
                         name={'baseProjectCodeRef'}
@@ -223,7 +223,7 @@ const ProjectFormEditGeneral = ({
                     value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
-                {isSceProject === true && (
+                {isSceProject && (
                     <ViewText
                         className={'form-group col-sm-6'}
                         label={'Benodigd aantal deelnemende leden'}
@@ -232,7 +232,7 @@ const ProjectFormEditGeneral = ({
                 )}
             </div>
 
-            {isSceProject === true && (
+            {isSceProject && (
                 <>
                     <div className="row">
                         <div className="form-group col-sm-6" />
@@ -400,7 +400,7 @@ const ProjectFormEditGeneral = ({
                     value={dateEnd}
                     onChangeAction={handleInputChangeDate}
                 />
-                {isMembershipRequired === true && (
+                {isMembershipRequired && (
                     <div className={'row'}>
                         <InputMultiSelect
                             label={'Onderdeel van groep'}
@@ -795,7 +795,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             disabled={!permissions.managePortalSettings}
                         />
-                        {showQuestionAboutMembership === true && (
+                        {showQuestionAboutMembership && (
                             <InputToggle
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 name={'useTransactionCostsWithMembership'}
@@ -805,7 +805,7 @@ const ProjectFormEditGeneral = ({
                             />
                         )}
                     </div>
-                    {showQuestionAboutMembership === true && (
+                    {showQuestionAboutMembership && (
                         <>
                             <div className={'row'}>
                                 <InputReactSelectLong

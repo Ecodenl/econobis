@@ -111,7 +111,6 @@ class EnergySupplierReportNewApp extends Component {
                                 <div className="col-md-12">
                                     <EnergySupplierReportNew
                                         report={this.state.report}
-                                        // documentData={this.state.document}
                                         errors={this.state.errors}
                                         templates={this.state.templates}
                                         handleInputChange={this.handleInputChange}

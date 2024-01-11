@@ -68,14 +68,8 @@ class FinancialOverviewContactController extends Controller
         $contactId = $financialOverviewContact->contact->id;
         $financialOverviewId = $financialOverviewContact->financialOverview->id;
 
-        if($preview){
-            $definitiveFilter = [true, false];
-        } else {
-            $definitiveFilter = [true];
-        }
-        $financialOverviewContactTotalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $definitiveFilter){
-            $query->whereIn('definitive', $definitiveFilter)
-                ->where('financial_overview_id', $financialOverviewId);
+        $financialOverviewContactTotalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
         })
             ->whereHas('participantProject', function ($query) use($contactId){
                 $query->where('contact_id', $contactId);
@@ -90,8 +84,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $loanTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($loanTypeId){
                     $query->where('project_type_id', $loanTypeId);
                 });
@@ -106,8 +99,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $obligationTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($obligationTypeId){
                     $query->where('project_type_id', $obligationTypeId);
                 });
@@ -122,8 +114,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $capitalTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($capitalTypeId){
                     $query->where('project_type_id', $capitalTypeId);
                 });
@@ -138,8 +129,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactPcrProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $pcrTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($pcrTypeId){
                     $query->where('project_type_id', $pcrTypeId);
                 });

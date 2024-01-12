@@ -39,6 +39,9 @@ class PartEnergySupplierExcelNewApp extends Component {
             .then(payload => {
                 this.setState({
                     revenuePartsKwhForReport: payload,
+                    excel: {
+                        documentName: payload.defaultDocumentName,
+                    },
                     isLoading: false,
                 });
             })

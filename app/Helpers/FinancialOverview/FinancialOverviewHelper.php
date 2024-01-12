@@ -408,6 +408,7 @@ class FinancialOverviewHelper
 
             $wsAdditionalInfo = TemplateTableHelper::replaceTemplateTables($wsAdditionalInfo, $contact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'contact', $contact);
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'waardestaat', $financialOverviewContact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'contacten_portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateCooperativeVariables($wsAdditionalInfo, 'cooperatie');

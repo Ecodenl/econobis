@@ -5,9 +5,7 @@ namespace App\Http\Controllers\Api\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewProject;
-use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
-use App\Eco\Project\Project;
 use App\Eco\Project\ProjectType;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
@@ -44,7 +42,15 @@ class FinancialOverviewParticipantProjectController extends Controller
             $startDate = Carbon::createFromDate($financialOverview->year, 1, 1);
             $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
-            $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
+            if($participant->date_terminated && Carbon::parse($participant->date_terminated)->format('Y-m-d') < Carbon::parse($startDate)->format('Y-m-d') ) {
+                $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('financial_overview_project_id', $financialOverviewProject->id)->where('participant_project_id', $participant->id)->first();
+                if($financialOverviewParticipantProject){
+                    $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                    $deleteFinancialOverviewParticipantProject->delete();
+                }
+            } else {
+                $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
+            }
         }
     }
 

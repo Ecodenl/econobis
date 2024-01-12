@@ -293,12 +293,7 @@ class ParticipationProjectController extends ApiController
         $this->storeFirstMutation($requestInput, $participantProject, $project);
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         $message = [];
 
@@ -367,12 +362,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->project->calculator()->run()->save();
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         return $this->show($participantProject);
     }
@@ -478,6 +468,7 @@ class ParticipationProjectController extends ApiController
         $projectType = $participantProject->project->projectType;
         DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
             $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
             if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
@@ -535,6 +526,7 @@ class ParticipationProjectController extends ApiController
             // Set terminated date
             $participantProject->date_terminated = $data['date_terminated'];
             $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             $projectType = $participantProject->project->projectType;
 
@@ -575,6 +567,7 @@ class ParticipationProjectController extends ApiController
 
         DB::transaction(function () use ($participantProject) {
             $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
     }
 
@@ -1437,6 +1430,20 @@ class ParticipationProjectController extends ApiController
             }
         }
         return $hasPeriod29February ? 366 : 365;
+    }
+
+    /**
+     * @param ParticipantProject $participantProject
+     * @return void
+     */
+    function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participantProject): void
+    {
+        // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+        if ($participantProject->project->financialOverviewProjects
+            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0) {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
+        }
     }
 
 }

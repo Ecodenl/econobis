@@ -432,6 +432,7 @@ class InvoiceHelper
                 'contactName' => $contactName,
                 'logo' => $img,
             ]);
+            $pdf->getDomPDF()->set_option("enable_php", true);
             return $pdf->output();
         }
 
@@ -466,6 +467,7 @@ class InvoiceHelper
             'contactName' => $contactName,
             'logo' => $img,
         ]);
+        $pdf->getDomPDF()->set_option("enable_php", true);
 
         $name = $invoice->number . '.pdf';
 

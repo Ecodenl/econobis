@@ -12,7 +12,7 @@ class FinancialOverviewContactPreviewApp extends Component {
 
         this.state = {
             financialOverviewContactDetails: {},
-            isLoading: false,
+            isLoading: true,
             hasError: false,
             scale: 1,
         };
@@ -23,12 +23,11 @@ class FinancialOverviewContactPreviewApp extends Component {
     }
 
     callFetchFinancialOverviewContactDetails = () => {
-        this.setState({ isLoading: true, hasError: false });
         FinancialOverviewContactAPI.fetchFinancialOverviewContactDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
-                    isLoading: false,
                     financialOverviewContactDetails: payload.data,
+                    isLoading: false,
                 });
             })
             .catch(error => {
@@ -52,26 +51,35 @@ class FinancialOverviewContactPreviewApp extends Component {
         return (
             <div className="row">
                 <div className="col-md-12">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-small'}>
-                                <FinancialOverviewContactPreviewToolbar
-                                    financialOverviewContactDetails={this.state.financialOverviewContactDetails}
-                                    zoomIn={this.zoomIn}
-                                    zoomOut={this.zoomOut}
-                                />
-                            </PanelBody>
-                        </Panel>
-                    </div>
+                    {this.state.isLoading ? (
+                        <div>Gegevens aan het laden.</div>
+                    ) : !this.state.financialOverviewContactDetails ||
+                      !this.state.financialOverviewContactDetails.financialOverviewContact ? (
+                        <div>Geen gegegevens gevonden.</div>
+                    ) : (
+                        <>
+                            <div className="col-md-12 margin-10-top">
+                                <Panel>
+                                    <PanelBody className={'panel-small'}>
+                                        <FinancialOverviewContactPreviewToolbar
+                                            financialOverviewContactDetails={this.state.financialOverviewContactDetails}
+                                            zoomIn={this.zoomIn}
+                                            zoomOut={this.zoomOut}
+                                        />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
 
-                    <div className="col-md-12 margin-10-top">
-                        <FinancialOverviewContactPreviewForm
-                            financialOverviewContactDetails={this.state.financialOverviewContactDetails}
-                            financialOverviewId={this.props.params.id}
-                            contactId={this.props.params.contactId}
-                            scale={this.state.scale}
-                        />
-                    </div>
+                            <div className="col-md-12 margin-10-top">
+                                <FinancialOverviewContactPreviewForm
+                                    financialOverviewContactDetails={this.state.financialOverviewContactDetails}
+                                    financialOverviewId={this.props.params.id}
+                                    contactId={this.props.params.contactId}
+                                    scale={this.state.scale}
+                                />
+                            </div>
+                        </>
+                    )}
                 </div>
             </div>
         );

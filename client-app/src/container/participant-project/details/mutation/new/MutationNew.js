@@ -15,11 +15,12 @@ import MutationNewWithDrawal from './MutationNewWithDrawal';
 import Modal from '../../../../../components/modal/Modal';
 import ErrorModal from '../../../../../components/modal/ErrorModal';
 import ViewText from '../../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
+import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
 
 class MutationFormNew extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             participationMutation: {
                 participationId: this.props.id,
@@ -191,7 +192,72 @@ class MutationFormNew extends Component {
                 participantMutationType.codeRef === 'sell'
         );
 
-        const transactionCostsAmount = this.state.participationMutation.transactionCostsAmount;
+        const { project } = this.props;
+
+        function calculateAmount() {
+            let amountMutation = 0;
+            let quantityMutation = calculateQuantity();
+
+            if (projectTypeCodeRef === 'loan') {
+                if (participantMutationType.codeRef === 'interest') {
+                    amountMutation = this.state.participationMutation.amountInterest;
+                }
+                if (participantMutationType.codeRef === 'option') {
+                    amountMutation = this.state.participationMutation.amountOption;
+                }
+
+                if (participantMutationType.codeRef === 'granted') {
+                    amountMutation = this.state.participationMutation.amountGranted;
+                }
+
+                if (participantMutationType.codeRef === 'final') {
+                    amountMutation = this.state.participationMutation.amountFinal;
+                }
+            } else {
+                amountMutation = quantityMutation * project.currentBookWorth;
+            }
+
+            return amountMutation;
+        }
+
+        const { quantityOption, quantityInterest, quantityGranted, quantityFinal } = this.state.participationMutation;
+
+        function calculateQuantity() {
+            let quantityMutation = 0;
+
+            if (projectTypeCodeRef === 'loan') {
+                return 0;
+            } else {
+                if (statusCodeRef === 'interest') {
+                    quantityMutation = quantityInterest;
+                }
+
+                if (statusCodeRef === 'option') {
+                    quantityMutation = quantityOption;
+                }
+
+                if (statusCodeRef === 'granted') {
+                    quantityMutation = quantityGranted;
+                }
+
+                if (statusCodeRef === 'final') {
+                    quantityMutation = quantityFinal;
+                }
+            }
+
+            return quantityMutation;
+        }
+        function calculateTransactionCostsAmount() {
+            //Vragen over lid worden aan en Transactie kosten ook bij lidmaatschap Uit (keuze 1)
+            if (project.showQuestionAboutMembership && !project.useTransactionCostsWithMembership) {
+                //Indien al lid of indien keuze 1 (wil lid worden) dan geen transactiekosten,
+                if (participantBelongsToMembershipGroup || participantChoiceMembership === 1) {
+                    return 0;
+                }
+            }
+
+            return calculateTransactionCosts(project, calculateAmount(), calculateQuantity());
+        }
 
         return (
             <React.Fragment>
@@ -219,13 +285,19 @@ class MutationFormNew extends Component {
                                     required={'required'}
                                     error={this.state.errors.statusId}
                                 />
-                                {transactionCostsAmount !== 0 && transactionCostsAmount !== 0 ? (
+                                {this.props.projectTransactionCostsCodeRef === 'none' ||
+                                (typeCodeRef !== 'first_deposit' &&
+                                    typeCodeRef !== 'deposit' &&
+                                    typeCodeRef !== 'withDrawal' &&
+                                    typeCodeRef !== 'sell') ||
+                                statusId == '' ? null : (
                                     <ViewText
                                         label={'Transactiekosten (berekend)'}
-                                        value={transactionCostsAmount}
+                                        // value={this.props.projectTransactionCostsAmount}
+                                        value={MoneyPresenter(calculateTransactionCostsAmount())}
                                         className={'form-group col-sm-6 '}
                                     />
-                                ) : null}
+                                )}
                             </div>
 
                             {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
@@ -302,6 +374,10 @@ const mapStateToProps = state => {
         projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
         projectDateEntry: state.participantProjectDetails.project.dateEntry,
         projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
+        projectTransactionCostsAmount: state.participantProjectDetails.project.transactionCostsAmount,
+        projectTransactionCostsCodeRef: state.participantProjectDetails.project.transactionCostsCodeRef,
+        project: state.participantProjectDetails.project,
+        participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
     };
 };
 

@@ -169,6 +169,9 @@ class TemplateVariableHelper
             case 'Administration':
                 return TemplateVariableHelper::getAdministrationVar($model, $varname);
                 break;
+            case 'FinancialOverviewContact':
+                return TemplateVariableHelper::getFinancialOverviewContactVar($model, $varname);
+                break;
             default:
                 return '';
                 break;
@@ -2616,6 +2619,16 @@ class TemplateVariableHelper
                     $img = '<img src="' . $src . '" style="width:auto; height:156px;" alt="logo"/>';
                 }
                 return $img;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+    public static function getFinancialOverviewContactVar ($model, $varname){
+        switch ($varname) {
+            case 'belastingjaar':
+                return $model->financialOverview->year;
                 break;
             default:
                 return '';

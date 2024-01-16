@@ -51,44 +51,52 @@ class FinancialOverviewDetailsApp extends Component {
 
     render() {
         // list of administration ids that the current user has access to
-        const administrationIds = this.props.administrations.map((administration) => administration.id);
+        const administrationIds = this.props.administrations.map(administration => administration.id);
 
-        if (administrationIds.indexOf(this.state.financialOverview.administrationId) > -1) {
-            return (
-                <div className="row">
-                    <div className="col-md-9">
-                        <div className="col-md-12 margin-10-top">
-                            <Panel>
-                                <PanelBody className={'panel-small'}>
-                                    <FinancialOverviewDetailsToolbar
-                                        financialOverview={this.state.financialOverview}
-                                        deleteFinancialOverview={this.deleteFinancialOverview}
-                                    />
-                                </PanelBody>
-                            </Panel>
-                        </div>
-
-                        <div className="col-md-12 margin-10-top">
-                            <FinancialOverviewDetailsForm
-                                financialOverview={this.state.financialOverview}
-                                isLoading={this.state.isLoading}
-                                hasError={this.state.hasError}
-                                callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
-                            />
-                        </div>
-                    </div>
-                    <div className="col-md-3" />
+        if (this.state.isLoading) {
+            <div className="row">
+                <div className="col-md-12">
+                    <div>Gegevens aan het laden.</div>
                 </div>
-            );
+            </div>;
         } else {
-            return (
-                <div className="row">
-                    <div className="col-md-9 margin-10-top text-center">
-                        Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe te voegen aan
-                        deze administratie via instellingen > administraties
+            if (administrationIds.indexOf(this.state.financialOverview.administrationId) > -1) {
+                return (
+                    <div className="row">
+                        <div className="col-md-9">
+                            <div className="col-md-12 margin-10-top">
+                                <Panel>
+                                    <PanelBody className={'panel-small'}>
+                                        <FinancialOverviewDetailsToolbar
+                                            financialOverview={this.state.financialOverview}
+                                            deleteFinancialOverview={this.deleteFinancialOverview}
+                                        />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
+
+                            <div className="col-md-12 margin-10-top">
+                                <FinancialOverviewDetailsForm
+                                    financialOverview={this.state.financialOverview}
+                                    isLoading={this.state.isLoading}
+                                    hasError={this.state.hasError}
+                                    callFetchFinancialOverviewDetails={this.callFetchFinancialOverviewDetails}
+                                />
+                            </div>
+                        </div>
+                        <div className="col-md-3" />
                     </div>
-                </div>
-            );
+                );
+            } else {
+                return (
+                    <div className="row">
+                        <div className="col-md-9 margin-10-top text-center">
+                            Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe
+                            te voegen aan deze administratie via instellingen > administraties
+                        </div>
+                    </div>
+                );
+            }
         }
     }
 }
@@ -105,4 +113,3 @@ const mapStateToProps = state => {
     };
 };
 export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsApp);
-

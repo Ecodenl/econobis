@@ -50,7 +50,7 @@ const ParticipantDetailsTerminateObligation = ({
                   .subtract(1, 'day')
                   .format('Y-MM-DD')
     );
-    const [payPercentage, setPayPercentage] = useState(0);
+    const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
     const [payPercentageValidFromKeyAmount, setPayPercentageValidFromKeyAmount] = useState(null);
@@ -114,15 +114,102 @@ const ParticipantDetailsTerminateObligation = ({
     const confirmAction = () => {
         let errors = {
             dateTerminated: false,
+            distributionTypeId: false,
+            dateReference: false,
+            dateBegin: false,
+            dateEnd: false,
+            payPercentage: false,
+            payAmount: false,
+            keyAmountFirstPercentage: false,
+            payPercentageValidFromKeyAmount: false,
         };
         let errorMessages = {
             dateTerminated: '',
+            distributionTypeId: '',
+            dateReference: '',
+            dateBegin: '',
+            dateEnd: '',
+            payPercentage: '',
+            payAmount: '',
+            keyAmountFirstPercentage: '',
+            payPercentageValidFromKeyAmount: '',
         };
         let hasErrors = false;
 
         if (validator.isEmpty(dateTerminated)) {
             errors.dateTerminated = true;
             errorMessages.dateTerminated = 'Ongeldige datum';
+            hasErrors = true;
+        }
+
+        if (!dateBegin) {
+            errors.dateBegin = true;
+            errorMessages.dateBegin = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!dateEnd) {
+            errors.dateEnd = true;
+            errorMessages.dateEnd = 'Verplicht';
+            hasErrors = true;
+        }
+        if (!hasErrors && dateEnd < dateBegin) {
+            errors.dateEnd = true;
+            errorMessages.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
+            hasErrors = true;
+        }
+
+        if (
+            !hasErrors &&
+            moment(dateBegin).format('Y-MM-DD') <
+                moment(dateEnd)
+                    .add(-1, 'year')
+                    .add(1, 'day')
+                    .format('Y-MM-DD')
+        ) {
+            errors.dateBegin = true;
+            errorMessages.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
+            errors.dateEnd = true;
+            errorMessages.dateEnd = 'Periode mag maximaal 1 jaar zijn.';
+            hasErrors = true;
+        }
+
+        if (distributionTypeId === 'inPossessionOf') {
+            if (!hasErrors && validator.isEmpty('' + dateReference)) {
+                errors.dateReference = true;
+                hasErrors = true;
+            }
+        }
+        if (payAmount && !validator.isEmpty('' + payAmount)) {
+            if (!hasErrors && distributionTypeId !== 'inPossessionOf') {
+                errors.payAmount = true;
+                errorMessages.payAmount = 'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                hasErrors = true;
+            }
+            if (!hasErrors && payAmount && payAmount < 0) {
+                errors.payAmount = true;
+                errorMessages.payAmount = 'Bedrag mag niet negatief zijn.';
+                hasErrors = true;
+            }
+        }
+        if (!hasErrors && payPercentage && payPercentage < 0) {
+            errors.payPercentage = true;
+            errorMessages.payPercentage = 'Percentage mag niet negatief zijn.';
+            hasErrors = true;
+        }
+
+        if (
+            !hasErrors &&
+            ((payPercentage && !validator.isEmpty('' + payPercentage)) ||
+                (keyAmountFirstPercentage && !validator.isEmpty(keyAmountFirstPercentage)) ||
+                (payPercentageValidFromKeyAmount && !validator.isEmpty('' + payPercentageValidFromKeyAmount))) &&
+            payAmount &&
+            !validator.isEmpty('' + payAmount)
+        ) {
+            errors.payAmount = true;
+            errors.payPercentage = true;
+            errors.keyAmountFirstPercentage = true;
+            errors.payPercentageValidFromKeyAmount = true;
+            errorMessages.payAmount = 'Percentage(s) en Bedrag mogen niet allebei ingevuld zijn.';
             hasErrors = true;
         }
 
@@ -221,6 +308,7 @@ const ParticipantDetailsTerminateObligation = ({
                                 name={'dateBegin'}
                                 value={dateBegin}
                                 onChangeAction={onChangeDateBegin}
+                                required={'required'}
                                 error={errors.dateBegin}
                                 errorMessage={errorMessages.dateBegin}
                                 disabledBefore={participantProject.dateTerminatedAllowedFrom}
@@ -231,6 +319,7 @@ const ParticipantDetailsTerminateObligation = ({
                                 name={'dateEnd'}
                                 value={dateEnd}
                                 onChangeAction={onChangeDateEnd}
+                                required={'required'}
                                 error={errors.dateEnd}
                                 errorMessage={errorMessages.dateEnd}
                                 disabledBefore={dateBegin}

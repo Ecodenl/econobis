@@ -108,6 +108,10 @@ class RevenueNewApp extends Component {
             //     revenue.payoutTypeId = payoutTypeId;
             // }
 
+            // set distributionTypeId to 'inPossessionOf' if 'redemptionEuro'
+            if (category.codeRef === 'redemptionEuro') {
+                revenue.distributionTypeId = 'inPossessionOf';
+            }
             // set distributionTypeId default to 'inPossessionOf' if not 'redemptionEuro' and not 'loan' (distribution type for 'revenueEuro' and 'loan' is always set per participationProject)
             if (category.codeRef !== 'redemptionEuro' && payload.projectType.codeRef !== 'loan') {
                 revenue.distributionTypeId = 'inPossessionOf';

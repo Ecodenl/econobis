@@ -295,7 +295,7 @@ class ProjectRevenueController extends ApiController
             if($projectRevenue->category->code_ref == 'redemptionEuro'
                 && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
                 foreach($projectRevenue->distribution as $distribution) {
-                    $distribution->calculator()->runRevenueEuro();
+                    $distribution->calculator()->runRedemptionEuro();
                     $distribution->save();
                 }
                 foreach($projectRevenue->distribution as $distribution) {
@@ -311,6 +311,8 @@ class ProjectRevenueController extends ApiController
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+
         $contact = Contact::find($participant->contact_id);
         if($participant->address){
             $participantAddress = $participant->address;
@@ -376,9 +378,15 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
-        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'redemptionEuro' || $projectRevenue->category->code_ref == 'revenueParticipant') {
+        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'revenueParticipant') {
             // Recalculate values of distribution after saving
             $distribution->calculator()->runRevenueEuro();
+            $distribution->save();
+        }
+        if($projectRevenue->category->code_ref == 'redemptionEuro'
+            && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
+            // Recalculate values of distribution after saving
+            $distribution->calculator()->runRedemptionEuro();
             $distribution->save();
         }
     }

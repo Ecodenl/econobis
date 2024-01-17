@@ -2,32 +2,44 @@
 
 namespace App\Eco\Project;
 
+use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
     protected $projectRevenueDistribution;
-    protected $mutationStatusFinal;
+    protected $projectTypeId;
     protected $projectTypeCodeRef;
 
     public function __construct(ProjectRevenueDistribution $projectRevenueDistribution)
     {
         $this->projectRevenueDistribution = $projectRevenueDistribution;
+        $this->projectTypeId = $this->projectRevenueDistribution->revenue->project->project_type_id;
         $this->projectTypeCodeRef = (ProjectType::where('id', $this->projectRevenueDistribution->revenue->project->project_type_id)->first())->code_ref;
     }
 
     public function runRevenueEuro()
     {
-        // Revenue category REVENUE EURO of REDEMPTION EURO
+        // Revenue category REVENUE EURO of REVENUE PARTICIPANT
         if($this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first())->id
-        || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first())->id
             || $this->projectRevenueDistribution->revenue->category_id === (ProjectRevenueCategory::where('code_ref', 'revenueParticipant')->first())->id) {
             if($this->projectTypeCodeRef === 'loan') {
                 $this->projectRevenueDistribution->participations_loan_amount = $this->calculateParticipationsCount();
             }else{
                 $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
             }
+            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+        }
+
+        return $this->projectRevenueDistribution;
+    }
+    public function runRedemptionEuro()
+    {
+        if($this->projectTypeCodeRef === 'loan') {
+            $this->projectRevenueDistribution->participations_loan_amount = $this->calculateLoanAmountForRedemption();
+            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+        }elseif($this->projectTypeCodeRef === 'obligation'){
+            $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
             $this->projectRevenueDistribution->payout = $this->calculatePayout();
         }
 
@@ -297,6 +309,28 @@ class ProjectRevenueDistributionCalculator
 
         return number_format($payout, 2, '.', '');
     }
+    protected function calculateLoanAmountForRedemption()
+    {
+        $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
+        $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes);
+
+//        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
+//            $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
+//            $mutations->whereDate('date_entry', '<=', $dateReference);
+//        } else {
+//            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
+//
+//            $mutations->whereDate('date_entry', '<=', $dateEnd);
+//        }
+
+        $loanCount = 0;
+        $measureType = 'amount';
+        foreach ($mutations->get() as $mutation) {
+            $loanCount += $mutation[$measureType];
+        }
+        return $loanCount;
+    }
+
 
     protected function calculateParticipationsCount()
     {

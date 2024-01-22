@@ -143,6 +143,7 @@ class RevenuesKwh extends Model
     }
 
     public function getDefaultDocumentName($reportType){
+        $administrationName = $this->translateToValidCharacterSet($this->project->administration->name);
         $projectName = $this->translateToValidCharacterSet($this->project->name);
 
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');
@@ -151,14 +152,14 @@ class RevenuesKwh extends Model
         if($yearEnd === $yearBegin) {
             $year = $yearBegin;
             $maxProjectNameLength = 181 - strlen($reportType);
-            $projectNameSubstring = substr($projectName, 0, $maxProjectNameLength);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
         } else {
             $year = $yearBegin . '-' . $yearEnd;
             $maxProjectNameLength = 176 - strlen($reportType);
-            $projectNameSubstring = substr($projectName, 0, $maxProjectNameLength);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
         }
 
-        $defaultDocumentName = $reportType . " " . $projectNameSubstring . " " . $year;
+        $defaultDocumentName = $reportType . " " . $administrationNameAndProjectNameSubstring . " " . $year;
 
         return $defaultDocumentName;
     }

@@ -42,7 +42,8 @@ class RevenuesKwhdetailsToolbar extends Component {
 
     render() {
         const { revenuesKwh } = this.props;
-        const pdfLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport`;
+        const pdfLinkLedenverklaring = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
+        const pdfLinkProductieSpecificatie = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productiespecificatie`;
         const excelLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
 
         return (
@@ -52,10 +53,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     ) : null}
@@ -66,7 +64,12 @@ class RevenuesKwhdetailsToolbar extends Component {
                                             </button>
                                             <ul className="dropdown-menu">
                                                 <li>
-                                                    <Link to={pdfLink}>Ledenverklaring of productie specificatie</Link>
+                                                    <Link to={pdfLinkLedenverklaring}>Ledenverklaring</Link>
+                                                </li>
+                                                <li>
+                                                    <Link to={pdfLinkProductieSpecificatie}>
+                                                        Productie specificatie
+                                                    </Link>
                                                 </li>
                                             </ul>
                                         </div>

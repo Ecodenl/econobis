@@ -32,7 +32,7 @@ class EnergySupplierReportNewApp extends Component {
     componentDidMount() {
         axios
             .all([
-                RevenuesKwhAPI.fetchRevenuesKwh(this.props.params.revenueId),
+                RevenuesKwhAPI.fetchRevenuesKwhForReport(this.props.params.revenueId, this.props.params.reportType),
                 DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral(),
             ])
             .then(

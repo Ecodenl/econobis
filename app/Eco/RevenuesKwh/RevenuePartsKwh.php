@@ -170,7 +170,7 @@ class RevenuePartsKwh extends Model
         return new RevenuePartsKwhCalculator($this);
     }
 
-    public function getDefaultDocumentNameAttribute(){
+    public function getDefaultDocumentName(){
         $projectName = $this->translateToValidCharacterSet($this->revenuesKwh->project->name);
 
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');

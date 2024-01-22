@@ -142,7 +142,7 @@ class RevenuesKwh extends Model
         return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
     }
 
-    public function getDefaultDocumentNameAttribute(){
+    public function getDefaultDocumentName($reportType){
         $projectName = $this->translateToValidCharacterSet($this->project->name);
 
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');
@@ -150,13 +150,15 @@ class RevenuesKwh extends Model
 
         if($yearEnd === $yearBegin) {
             $year = $yearBegin;
-            $projectNameSubstring = substr($projectName, 0, 141);
+            $maxProjectNameLength = 181 - strlen($reportType);
+            $projectNameSubstring = substr($projectName, 0, $maxProjectNameLength);
         } else {
             $year = $yearBegin . '-' . $yearEnd;
-            $projectNameSubstring = substr($projectName, 0, 136);
+            $maxProjectNameLength = 176 - strlen($reportType);
+            $projectNameSubstring = substr($projectName, 0, $maxProjectNameLength);
         }
 
-        $defaultDocumentName = "ledenverklaring of productiespecificatie " . $projectNameSubstring . " " . $year;
+        $defaultDocumentName = $reportType . " " . $projectNameSubstring . " " . $year;
 
         return $defaultDocumentName;
     }

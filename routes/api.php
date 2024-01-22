@@ -472,6 +472,7 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
+        Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');
         Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
         Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
         Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');

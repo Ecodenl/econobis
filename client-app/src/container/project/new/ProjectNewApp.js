@@ -119,6 +119,7 @@ class ProjectNewApp extends Component {
                 // countryId: false,
                 contactGroupIds: false,
                 dateEntry: false,
+                // postalCodeLink: false,
             },
             loading: false,
         };
@@ -156,8 +157,10 @@ class ProjectNewApp extends Component {
         projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
 
         let isSceProject = this.state.project.isSceProject;
+        let checkPostalcodeLink = this.state.project.checkPostalcodeLink;
         if (projectType && projectType.codeRef === 'postalcode_link_capital') {
             isSceProject = false;
+            checkPostalcodeLink = true;
         }
 
         this.setState({
@@ -165,6 +168,7 @@ class ProjectNewApp extends Component {
             project: {
                 ...this.state.project,
                 isSceProject: isSceProject,
+                checkPostalcodeLink: checkPostalcodeLink,
                 projectTypeId: projectTypeId,
             },
         });
@@ -291,6 +295,15 @@ class ProjectNewApp extends Component {
             errors.dateEntry = true;
             hasErrors = true;
         }
+
+        //todo controle postalcodeLink uit ProjectNewGeneral hiernaar toe halen ivm afhandeling errors
+        // Er zit aparte checks in ProjectNewGeneral for postalCodeLink
+        // if (project.checkPostalcodeLink || (projectType && projectType.codeRef !== 'postalcode_link_capital')) {
+        //     if (!postalCodeLink && validator.isEmpty('' + project.postalCodeLink)) {
+        //         errors.postalCodeLink = trueProjectFormNewGeneral;
+        //         hasErrors = true;
+        //     }
+        // }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string
         if (!project.isMembershipRequired) {

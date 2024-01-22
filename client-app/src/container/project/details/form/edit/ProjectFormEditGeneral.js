@@ -11,6 +11,7 @@ import InputReactSelectLong from '../../../../../components/form/InputReactSelec
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+import validator from 'validator';
 
 const ProjectFormEditGeneral = ({
     showCustomerPortalSettings,
@@ -150,11 +151,35 @@ const ProjectFormEditGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
-    let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
-    errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
+    // todo controle postalcodeLink hier moet naar ProjectFormEdit toe halen ivm afhandeling errors
+    //
+    console.log('check error postalcodeLink');
+    let errorMessagePostalcodeLink = '';
+    if (
+        (checkPostalcodeLink || projectType.codeRef === 'postalcode_link_capital') &&
+        (!postalcodeLink || validator.isEmpty('' + postalcodeLink))
+    ) {
+        console.log('postalcodeLink verplicht');
+        errors.postalcodeLink = true;
+        errorMessagePostalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+    } else if (postalcodeLink) {
+        console.log('nog geen error');
+        let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+        errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
+        errorMessagePostalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+    }
+
+    let errorMessageAddressNumberSeries = '';
+    // if (errors.addressNumberSeries == true) {
+    //     console.log('Heeft al error');
+    //     errors.addressNumberSeries = true;
+    //     errorMessageAddressNumberSeries = 'Verplicht.';
+    // } else {
 
     let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
     errors.addressNumberSeries = addressNumberSeries ? !regExpAddressNumberSeries.exec(addressNumberSeries) : false;
+    errorMessageAddressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+    // }
 
     return (
         <React.Fragment>
@@ -263,10 +288,12 @@ const ProjectFormEditGeneral = ({
                             value={postalcodeLink}
                             maxLength="300"
                             onChangeAction={handleInputChange}
+                            required={checkPostalcodeLink ? 'required' : ''}
                             size={'col-sm-5'}
                             textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             error={errors.postalcodeLink}
-                            errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                            // errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                            errorMessage={errorMessagePostalcodeLink}
                         />
                         {addressNumberSeriesFieldEnabled ? (
                             <InputText
@@ -278,7 +305,8 @@ const ProjectFormEditGeneral = ({
                                 textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
                                       Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 error={errors.addressNumberSeries}
-                                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                                // errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                                errorMessage={errorMessageAddressNumberSeries}
                             />
                         ) : (
                             <div className="form-group col-sm-6" />

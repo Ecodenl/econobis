@@ -84,6 +84,8 @@ class ProjectFormEdit extends Component {
                 // countryId: false,
                 contactGroupIds: false,
                 dateEntry: false,
+                // postalcodeLink: false,
+                // addressNumberSeries: false,
             },
             isSaving: false,
         };
@@ -672,6 +674,18 @@ class ProjectFormEdit extends Component {
             errors.dateEntry = true;
             hasErrors = true;
         }
+
+        //todo controle postalcodeLink uit ProjectFormEditGeneral hiernaar toe halen ivm afhandeling errors
+        // Er zit aparte checks in ProjectFormEditGeneral for postalcodeLink
+        // if (project.checkPostalcodeLink || (projectType && projectType.codeRef !== 'postalcode_link_capital')) {
+        //     console.log('check ?');
+        //     if (!project.postalcodeLink || validator.isEmpty('' + project.postalcodeLink)) {
+        //         console.log('error postalcodeLink');
+        //         console.log(project.postalcodeLink);
+        //         errors.postalcodeLink = true;
+        //         hasErrors = true;
+        //     }
+        // }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
         if (!project.isMembershipRequired) {

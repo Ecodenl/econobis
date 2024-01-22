@@ -61,6 +61,7 @@ const ProjectFormNewGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
+    //todo controle postalcodeLink hier moet naar ProjectNewApp toe halen ivm afhandeling errors
     let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
     errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
 

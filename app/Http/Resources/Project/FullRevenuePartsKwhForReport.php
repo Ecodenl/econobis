@@ -20,7 +20,7 @@ class FullRevenuePartsKwhForReport extends JsonResource
             [
                 'id' => $this->id,
                 'revenueId' => $this->revenue_id,
-                'defaultDocumentName' => $this->default_document_name,
+                'defaultDocumentName' => $this->getDefaultDocumentName(),
                 'distributionForReportEnergySupplier' => $this->getDistributionForReportEnergySupplier(),
             ];
     }

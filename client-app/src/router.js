@@ -500,7 +500,7 @@ const Routes = () => {
                     <Route path="project/opbrengst-kwh/:id" component={RevenuesKwhDetailsApp} />
                     <Route path="project/opbrengst-kwh/:id/rapportage" component={CreateRevenuesKwhReportApp} />
                     <Route
-                        path="project/opbrengst-kwh/:revenueId/energieleverancier-rapport"
+                        path="project/opbrengst-kwh/:revenueId/energieleverancier-rapport/:reportType"
                         component={EnergySupplierReportNewApp}
                     />
                     <Route

@@ -46,8 +46,10 @@ class EnergySupplierReportNewApp extends Component {
                     });
 
                     this.setState({
+                        ...this.state,
                         templates: templates,
                         report: {
+                            ...this.state.report,
                             documentName: payloadRevenuesKwh.defaultDocumentName,
                         },
                     });

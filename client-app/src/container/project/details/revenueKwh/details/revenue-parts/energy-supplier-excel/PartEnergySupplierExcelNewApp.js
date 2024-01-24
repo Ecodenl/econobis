@@ -38,8 +38,10 @@ class PartEnergySupplierExcelNewApp extends Component {
         RevenuePartsKwhAPI.fetchRevenuePartsKwhForReport(this.props.params.revenuePartId)
             .then(payload => {
                 this.setState({
+                    ...this.state,
                     revenuePartsKwhForReport: payload,
                     excel: {
+                        ...this.state.excel,
                         documentName: payload.defaultDocumentName,
                     },
                     isLoading: false,

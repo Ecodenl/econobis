@@ -432,7 +432,8 @@ class InvoiceHelper
                 'contactName' => $contactName,
                 'logo' => $img,
             ]);
-            return $pdf->output();
+
+            return $pdf->setOption('isPhpEnabled', true)->output();
         }
 
         // indien geen preview, dan gaan nu definitief notanummer bepalen
@@ -474,7 +475,7 @@ class InvoiceHelper
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $invoiceDocument = new InvoiceDocument();
         $invoiceDocument->invoice_id = $invoice->id;

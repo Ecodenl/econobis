@@ -14,6 +14,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Options;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -106,7 +107,7 @@ class FinancialOverviewHelper
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
 
-            return $pdf->output();
+            return $pdf->setOption('isPhpEnabled', true)->output();
         }
 
         // PDF maken
@@ -132,7 +133,6 @@ class FinancialOverviewHelper
             'logo' => $img,
             'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
-
         $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
@@ -140,7 +140,7 @@ class FinancialOverviewHelper
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $financialOverviewContact->filename = $path;
         $financialOverviewContact->name = $name;

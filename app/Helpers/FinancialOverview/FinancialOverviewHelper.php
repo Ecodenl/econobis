@@ -106,8 +106,8 @@ class FinancialOverviewHelper
                 'logo' => $img,
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
-            $pdf->getDomPDF()->set_option("enable_php", true);
-            return $pdf->output();
+
+            return $pdf->setOption('isPhpEnabled', true)->output();
         }
 
         // PDF maken
@@ -133,7 +133,6 @@ class FinancialOverviewHelper
             'logo' => $img,
             'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
-        $pdf->getDomPDF()->set_option("enable_php", true);
         $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
@@ -141,7 +140,7 @@ class FinancialOverviewHelper
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $financialOverviewContact->filename = $path;
         $financialOverviewContact->name = $name;

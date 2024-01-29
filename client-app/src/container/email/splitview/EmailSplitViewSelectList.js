@@ -82,6 +82,28 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
         return email.date && moment(email.date).format('DD-MM-YYYY HH:mm');
     }
 
+    const getEmailaddressToBeDisplayed = (email) => {
+        if(email.folder === 'sent') {
+            if(email.to.length === 0){
+                return 'Geen ontvanger';
+            }else if(email.to.length === 1){
+                return email.to[0];
+            }else {
+                return email.to[0] + ' (+' + (email.to.length - 1) + ')';
+            }
+        }
+
+        return email.from;
+    }
+
+    const getUserToBeDisplayed = (email) => {
+        if(email.folder === 'sent') {
+            return email.sentByUserName;
+        }
+
+        return email.responsibleName;
+    }
+
     useEffect(() => {
         if (selectedEmailId) {
             return;
@@ -189,7 +211,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                             </div>
                                         )}
                                         <div style={{flex: 1}} onClick={() => selectEmail(email)}>
-                                            <span style={{fontSize: '15px'}}>{getStatusIcon(email.status)} {email.from}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
+                                            <span style={{fontSize: '15px'}}>{getStatusIcon(email.status)} {getEmailaddressToBeDisplayed(email)}</span> <span style={{fontSize: '12px'}}>({email.mailbox.name})</span>
                                             <br/><span>{email.subject}</span>
                                         </div>
                                         <div style={{
@@ -200,7 +222,7 @@ export default function EmailSplitViewSelectList({emails, folder, emailCount, fe
                                              onClick={() => selectEmail(email)}>
                                             <span style={{fontSize: '12px'}}>{getEmailDate(email)}</span>
                                             <div>
-                                                <span style={{color: '#999'}}>{email.responsibleName}</span>
+                                                <span style={{color: '#999'}}>{getUserToBeDisplayed(email)}</span>
                                                 {
                                                     email.hasAttachments && (
                                                         <Icon icon={paperclip} size={18}/>

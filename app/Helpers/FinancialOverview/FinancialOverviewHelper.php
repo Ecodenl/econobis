@@ -85,17 +85,20 @@ class FinancialOverviewHelper
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
                 'financialOverviewContact' => $financialOverviewContact,
-                'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-                'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-                'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
+                'financialOverviewContactTotalLoanProjects' => $financialOverviewContactData['financialOverviewContactTotalLoanProjects'],
+                'financialOverviewContactTotalObligationProjects' => $financialOverviewContactData['financialOverviewContactTotalObligationProjects'],
+                'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactData['financialOverviewContactTotalCapitalProjects'],
+                'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalStart'],
+                'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalEnd'],
                 'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+                'financialOverviewContactLoanTotalStart' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_start_value'),
                 'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
                 'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+                'financialOverviewContactObligationTotalStart' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_start_value'),
                 'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
                 'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+                'financialOverviewContactCapitalTotalStart' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_start_value'),
                 'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-                'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
                 'contactPerson' => $contactPerson,
                 'contactName' => $contactName,
                 'financialOverviewContactReference' => $financialOverviewContactReference,
@@ -109,17 +112,20 @@ class FinancialOverviewHelper
         // PDF maken
         $pdf = PDF::loadView('financial.overview.generic', [
             'financialOverviewContact' => $financialOverviewContact,
-            'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-            'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-            'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
+            'financialOverviewContactTotalLoanProjects' => $financialOverviewContactData['financialOverviewContactTotalLoanProjects'],
+            'financialOverviewContactTotalObligationProjects' => $financialOverviewContactData['financialOverviewContactTotalObligationProjects'],
+            'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactData['financialOverviewContactTotalCapitalProjects'],
+            'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalStart'],
+            'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalEnd'],
             'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+            'financialOverviewContactLoanTotalStart' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_start_value'),
             'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
             'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+            'financialOverviewContactObligationTotalStart' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_start_value'),
             'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
             'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+            'financialOverviewContactCapitalTotalStart' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_start_value'),
             'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-            'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-            'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
             'contactPerson' => $contactPerson,
             'contactName' => $contactName,
             'financialOverviewContactReference' => $financialOverviewContactReference,
@@ -402,6 +408,7 @@ class FinancialOverviewHelper
 
             $wsAdditionalInfo = TemplateTableHelper::replaceTemplateTables($wsAdditionalInfo, $contact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'contact', $contact);
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'waardestaat', $financialOverviewContact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'contacten_portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateCooperativeVariables($wsAdditionalInfo, 'cooperatie');

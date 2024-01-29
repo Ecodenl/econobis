@@ -17,6 +17,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\Project\ProjectRevenue;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Project\ProjectType;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -50,6 +51,7 @@ class ProjectRevenueController extends ApiController
         $projectRevenue->load([
             'type',
             'category',
+            'participant',
             'project.administration',
             'project.projectType',
             'participantProjectPayoutType',
@@ -63,14 +65,7 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(0);
 
-        //todo WM Volgens mij kan RevenueParticipantsCSVHelper dan helemaal weg cq opgeschoond worden, toch?
-//        if ($projectRevenue->confirmed) {
-//            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution);
-//        } else {
-//            $projectRevenue = new RevenueParticipantsCSVHelper($projectRevenue->project->participantsProject, $projectRevenue);
-//        }
-            $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution, $projectRevenue->project->project_type_id);
-
+        $projectRevenue = new RevenueDistributionCSVHelper($projectRevenue->distribution, $projectRevenue->project->project_type_id);
 
         return $projectRevenue->downloadCSV();
     }
@@ -146,8 +141,49 @@ class ProjectRevenueController extends ApiController
 
         return FullProjectRevenue::make($projectRevenue);
     }
+    public function storeForParticipant(RequestInput $requestInput, ParticipantProject $participantProject): void
+    {
+        $this->authorize('manage', ProjectRevenue::class);
 
+        $projectRevenueCategoryParticipant = ProjectRevenueCategory::where('code_ref', 'revenueParticipant' )->first()->id;
 
+        $data = $requestInput
+            ->integer('categoryId')->alias('category_id')->default($projectRevenueCategoryParticipant)->next()
+            ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
+            ->integer('projectId')->alias('project_id')->default($participantProject->project_id)->next()
+            ->integer('participationId')->alias('participation_id')->default($participantProject->id)->next()
+            ->integer('addressEnergySupplierId')->validate('nullable|exists:address_energy_suppliers,id')->onEmpty(null)->alias('address_energy_supplier_id')->next()
+            ->boolean('confirmed')->next()
+            ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
+            ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
+            ->date('dateReference')->validate('required|date')->alias('date_reference')->next()
+            ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
+            ->integer('kwhStart')->alias('kwh_start')->onEmpty(null)->next()
+            ->integer('kwhEnd')->alias('kwh_end')->onEmpty(null)->next()
+            ->integer('kwhStartHigh')->alias('kwh_start_high')->onEmpty(null)->next()
+            ->integer('kwhEndCalendarYearHigh')->alias('kwh_end_calendar_year_high')->onEmpty(null)->next()
+            ->integer('kwhEndHigh')->alias('kwh_end_high')->onEmpty(null)->next()
+            ->integer('kwhStartLow')->alias('kwh_start_low')->onEmpty(null)->next()
+            ->integer('kwhEndLow')->alias('kwh_end_low')->onEmpty(null)->next()
+            ->integer('kwhEndCalendarYearLow')->alias('kwh_end_calendar_year_low')->onEmpty(null)->next()
+            ->double('revenue')->onEmpty(null)->next()
+            ->string('datePayed')->validate('nullable|date')->alias('date_payed')->whenMissing(null)->onEmpty(null)->next()
+            ->double('payPercentage')->onEmpty(null)->alias('pay_percentage')->next()
+            ->double('payAmount')->onEmpty(null)->alias('pay_amount')->next()
+            ->double('keyAmountFirstPercentage')->onEmpty(null)->alias('key_amount_first_percentage')->next()
+            ->double('payPercentageValidFromKeyAmount')->onEmpty(null)->alias('pay_percentage_valid_from_key_amount')->next()
+            ->integer('typeId')->validate('nullable|exists:project_revenue_type,id')->onEmpty(null)->alias('type_id')->next()
+            ->double('payoutKwh')->alias('payout_kwh')->onEmpty(null)->whenMissing(null)->next()
+            ->integer('payoutTypeId')->onEmpty(null)->alias('payout_type_id')->next()
+            ->get();
+
+        $projectRevenue = new ProjectRevenue();
+        $projectRevenue->fill($data);
+        $projectRevenue->save();
+        $this->saveParticipantsOfDistribution($projectRevenue, false);
+
+        return;
+    }
     public function update(
         RequestInput $requestInput,
         ProjectRevenue $projectRevenue
@@ -205,14 +241,6 @@ class ProjectRevenueController extends ApiController
             $recalculateDistribution = true;
         }
 
-        // If period is changed then remove all values from revenue distribution period
-        // todo WM: volgens mij kan dit ook opgeschoond worden.
-        if($projectRevenue->category->code_ref != 'revenueKwhSplit') {
-            if ($projectRevenue->isDirty('date_begin') ||
-                $projectRevenue->isDirty('date_end')) {
-                $projectRevenue->deliveredKwhPeriod()->delete();
-            }
-        }
         $projectRevenue->save();
 
         if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue, false);
@@ -232,45 +260,49 @@ class ProjectRevenueController extends ApiController
         $projectType = $project->projectType;
         $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-        $participants = ParticipantProject::where('project_id', $project->id)
-            ->where(function ($query) use($dateBegin) {
-                $query->whereNull('date_terminated');
-            })
-            ->where(function ($query) use($mutationType, $mutationStatusFinal) {
-                $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
-                    $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
-                });
-            })->get();
+        if($projectRevenue->participant){
+            $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
+        } else {
+            $participants = ParticipantProject::where('project_id', $project->id)
+                ->where(function ($query) use($dateBegin) {
+                    $query->whereNull('date_terminated')
+                        ->orWhere('date_terminated',  '>=', $dateBegin);
+                })
+                ->where(function ($query) use($mutationType, $mutationStatusFinal) {
+                    $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
+                        $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
+                    });
+                })->get();
 
-        foreach ($participants as $participant) {
-            $this->saveDistribution($projectRevenue, $participant, $closing);
-        }
-
-        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
-        if($projectRevenue->category->code_ref == 'revenueEuro'
-            && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
-            foreach($projectRevenue->distribution as $distribution) {
-                $distribution->calculator()->runRevenueCapitalResult();
-                $distribution->save();
+            foreach ($participants as $participant) {
+                $this->saveDistribution($projectRevenue, $participant, $closing);
             }
-            foreach($projectRevenue->distribution as $distribution) {
-                if($distribution->payout == 0)
-                {
-                    $distribution->forceDelete();
+            $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+            if($projectRevenue->category->code_ref == 'revenueEuro'
+                && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
+                foreach($projectRevenue->distribution as $distribution) {
+                    $distribution->calculator()->runRevenueCapitalResult();
+                    $distribution->save();
+                }
+                foreach($projectRevenue->distribution as $distribution) {
+                    if($distribution->payout == 0)
+                    {
+                        $distribution->forceDelete();
+                    }
                 }
             }
-        }
 
-        if($projectRevenue->category->code_ref == 'redemptionEuro'
-            && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
-            foreach($projectRevenue->distribution as $distribution) {
-                $distribution->calculator()->runRevenueEuro();
-                $distribution->save();
-            }
-            foreach($projectRevenue->distribution as $distribution) {
-                if($distribution->payout == 0)
-                {
-                    $distribution->forceDelete();
+            if($projectRevenue->category->code_ref == 'redemptionEuro'
+                && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
+                foreach($projectRevenue->distribution as $distribution) {
+                    $distribution->calculator()->runRedemptionEuro();
+                    $distribution->save();
+                }
+                foreach($projectRevenue->distribution as $distribution) {
+                    if($distribution->payout == 0)
+                    {
+                        $distribution->forceDelete();
+                    }
                 }
             }
         }
@@ -279,6 +311,8 @@ class ProjectRevenueController extends ApiController
 
     public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
     {
+        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+
         $contact = Contact::find($participant->contact_id);
         if($participant->address){
             $participantAddress = $participant->address;
@@ -344,9 +378,15 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
-        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'redemptionEuro') {
+        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'revenueParticipant') {
             // Recalculate values of distribution after saving
             $distribution->calculator()->runRevenueEuro();
+            $distribution->save();
+        }
+        if($projectRevenue->category->code_ref == 'redemptionEuro'
+            && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
+            // Recalculate values of distribution after saving
+            $distribution->calculator()->runRedemptionEuro();
             $distribution->save();
         }
     }
@@ -486,8 +526,8 @@ class ProjectRevenueController extends ApiController
 
                 // indien bijschrijven
                 if ($distribution->payout_type_id === $payoutTypeCreditId) {
-                    // indien payout > 0 result bijschrijven
-                    if($distribution->payout > 0){
+                    // indien payout != 0 result bijschrijven (of opname)
+                    if($distribution->payout != 0){
                         $participantMutation = new ParticipantMutation();
                         $participantMutation->participation_id = $distribution->participation_id;
                         $participantMutation->type_id = ParticipantMutationType::where('code_ref', 'result_deposit')
@@ -777,8 +817,6 @@ class ProjectRevenueController extends ApiController
             CreateRevenueReport::dispatch($distributionId, $subject, $documentTemplateId, $emailTemplateId, $showOnPortal, Auth::id(), $emailModel);
         }
 
-// null voor succesboodschap. todo nog even checken of wat nut was om hier ProjectRevenueDistiibution terug te geven.
-//        return ProjectRevenueDistribution::find($distributionIds[0])->revenue->project->administration_id;
         return null;
     }
 

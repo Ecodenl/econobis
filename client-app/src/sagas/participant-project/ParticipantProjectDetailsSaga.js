@@ -44,12 +44,3 @@ export function* deleteObligationNumberSaga({ id }) {
         yield put({ type: 'DELETE_OBLIGATION_NUMBER_ERROR', error });
     }
 }
-
-export function* deleteRevenueSplitSaga({ id }) {
-    try {
-        yield call(ProjectRevenueAPI.deleteProjectRevenue, id);
-        yield put({ type: 'DELETE_REVENUE_SPLIT_SUCCESS', id });
-    } catch (error) {
-        yield put({ type: 'DELETE_REVENUE_SPLIT_ERROR', error });
-    }
-}

@@ -51,6 +51,21 @@ class RevenuesKwhController extends ApiController
 
         return FullRevenuesKwh::make($revenuesKwh);
     }
+    public function showForReport(RevenuesKwh $revenuesKwh, $reportType )
+    {
+        $revenuesKwh->reportType = $reportType;
+
+        $revenuesKwh->load([
+            'category',
+            'project.administration',
+            'project.projectType',
+            'partsKwh',
+            'createdBy',
+        ]);
+
+
+        return FullRevenuesKwh::make($revenuesKwh);
+    }
 
     public function csv(RevenuesKwh $revenuesKwh)
     {

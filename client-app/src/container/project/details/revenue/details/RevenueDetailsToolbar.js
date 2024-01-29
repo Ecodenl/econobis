@@ -53,10 +53,7 @@ class RevenueDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
@@ -78,6 +75,7 @@ class RevenueDetailsToolbar extends Component {
                         closeDeleteItemModal={this.toggleDelete}
                         id={revenue.id}
                         projectId={revenue.project.id}
+                        participationId={revenue.participationId}
                     />
                 )}
             </div>

@@ -98,7 +98,7 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                 htmlBody: email.htmlBody,
             }
 
-            if(email.subject.startsWith('Re: ') || email.subject.startsWith('Fwd: ')) {
+            if(email.isForwardOrReply) {
                 emailData.htmlBody = payload.htmlBody + '<br />' + email.htmlBody;
             }else{
                 emailData.subject = payload.subject;
@@ -184,9 +184,9 @@ export default function EmailSendModal({emailId, showModal, setShowModal}) {
                     title={'Email versturen'}
                     modalMainClassName="modal-fullscreen"
                     extraButtonAction={moveToRemoved}
-                    extraButtonClass={'pull-left btn-danger'}
+                    extraButtonClass={'btn btn-danger'}
                     extraButtonLabel={'Concept verwijderen'}
-                    buttonCancelText="Sluiten"
+                    buttonCancelText="Concept opslaan"
                 >
                     <div className="row">
                         <InputReactSelectLong

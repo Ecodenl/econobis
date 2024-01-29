@@ -105,24 +105,24 @@ const ProjectFormViewGeneral = ({
                 </div>
                 <div className="row">
                     <ViewText label={'Controle voor SCE subsidie'} value={isSceProject ? 'Ja' : 'Nee'} />
-                    {isSceProject === true && (
+                    {isSceProject ? (
                         <ViewText
                             label={'Basis project'}
                             value={baseProjectCodeRefWithName ? baseProjectCodeRefWithName.name : ''}
                         />
-                    )}
+                    ) : null}
                 </div>
                 <div className="row">
                     <ViewText label={'Opgesteld vermogen kWp'} value={powerKwAvailable} />
-                    {isSceProject === true && (
+                    {isSceProject ? (
                         <ViewText
                             className={'form-group col-sm-6'}
                             label={'Benodigd aantal deelnemende leden'}
                             value={requiredParticipants}
                         />
-                    )}
+                    ) : null}
                 </div>
-                {isSceProject === true && (
+                {isSceProject ? (
                     <>
                         <div className="row">
                             <div className="col-sm-6" />
@@ -169,7 +169,7 @@ const ProjectFormViewGeneral = ({
                             />
                         </div>
                     </>
-                )}
+                ) : null}
                 <div className="row">
                     <div className="col-sm-3">
                         <label htmlFor="description" className="col-sm-12">
@@ -399,14 +399,14 @@ const ProjectFormViewGeneral = ({
                             label={'Vragen over lid worden aan of uit?'}
                             value={showQuestionAboutMembership ? 'Ja' : 'Nee'}
                         />
-                        {showQuestionAboutMembership === true && (
+                        {showQuestionAboutMembership && (
                             <ViewText
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
                             />
                         )}
                     </div>
-                    {showQuestionAboutMembership === true && (
+                    {showQuestionAboutMembership && (
                         <>
                             <div className={'row'}>
                                 <ViewTextLong

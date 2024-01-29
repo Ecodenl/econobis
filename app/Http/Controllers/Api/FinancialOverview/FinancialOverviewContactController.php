@@ -68,14 +68,11 @@ class FinancialOverviewContactController extends Controller
         $contactId = $financialOverviewContact->contact->id;
         $financialOverviewId = $financialOverviewContact->financialOverview->id;
 
-        if($preview){
-            $definitiveFilter = [true, false];
-        } else {
-            $definitiveFilter = [true];
-        }
-        $financialOverviewContactTotalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $definitiveFilter){
-            $query->whereIn('definitive', $definitiveFilter)
-                ->where('financial_overview_id', $financialOverviewId);
+        $financialOverviewContactTotalStart = 0;
+        $financialOverviewContactTotalEnd = 0;
+
+        $financialOverviewContactTotalLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
         })
             ->whereHas('participantProject', function ($query) use($contactId){
                 $query->where('contact_id', $contactId);
@@ -84,14 +81,55 @@ class FinancialOverviewContactController extends Controller
             ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
             ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
             ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
-            ->select('project_type.code_ref', DB::raw('SUM(quantity_start_value) as total_quantity_start_value'), DB::raw('SUM(quantity_end_value) as total_quantity_end_value'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
-            ->groupBy('project_type.code_ref')
-            ->orderBy('project_type.id')
-            ->get();
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->where('project_type.id', $loanTypeId)
+            ->first();
+
+        if($financialOverviewContactTotalLoanProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalLoanProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalLoanProjects->total_amount_end_value;
+        }
+
+        $financialOverviewContactTotalObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
+        })
+            ->whereHas('participantProject', function ($query) use($contactId){
+                $query->where('contact_id', $contactId);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->where('project_type.id', $obligationTypeId)
+            ->first();
+
+        if($financialOverviewContactTotalObligationProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalObligationProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalObligationProjects->total_amount_end_value;
+        }
+
+        $financialOverviewContactTotalCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId){
+            $query->where('financial_overview_id', $financialOverviewId);
+        })
+            ->whereHas('participantProject', function ($query) use($contactId){
+                $query->where('contact_id', $contactId);
+            })
+            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
+            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
+            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
+            ->join('project_type', 'projects.project_type_id', '=', 'project_type.id')
+            ->select(DB::raw('COUNT(*) as numberOfRecords'), DB::raw('SUM(amount_start_value) as total_amount_start_value'), DB::raw('SUM(amount_end_value) as total_amount_end_value'))
+            ->whereIn('project_type.id', [$capitalTypeId, $pcrTypeId])
+            ->first();
+
+        if($financialOverviewContactTotalCapitalProjects){
+            $financialOverviewContactTotalStart += $financialOverviewContactTotalCapitalProjects->total_amount_start_value;
+            $financialOverviewContactTotalEnd += $financialOverviewContactTotalCapitalProjects->total_amount_end_value;
+        }
 
         $financialOverviewContactLoanProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $loanTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($loanTypeId){
                     $query->where('project_type_id', $loanTypeId);
                 });
@@ -106,8 +144,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactObligationProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $obligationTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
+            $query->where('financial_overview_id', $financialOverviewId)
                 ->whereHas('project', function ($query) use($obligationTypeId){
                     $query->where('project_type_id', $obligationTypeId);
                 });
@@ -121,27 +158,10 @@ class FinancialOverviewContactController extends Controller
             ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
             ->get();
 
-        $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $capitalTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
-                ->whereHas('project', function ($query) use($capitalTypeId){
-                    $query->where('project_type_id', $capitalTypeId);
-                });
-        })
-            ->whereHas('participantProject', function ($query) use($contactId){
-                $query->where('contact_id', $contactId);
-            })
-            ->join('financial_overview_projects', 'financial_overview_project_id', '=', 'financial_overview_projects.id')
-            ->join('projects', 'financial_overview_projects.project_id', '=', 'projects.id')
-            ->join('participation_project', 'participant_project_id', '=', 'participation_project.id')
-            ->select('participant_project_id', 'participation_project.contact_id', 'financial_overview_projects.project_id', 'projects.name', 'quantity_start_value', 'quantity_end_value', 'bookworth_start_value', 'bookworth_end_value', 'amount_start_value', 'amount_end_value')
-            ->get();
-
-        $financialOverviewContactPcrProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $pcrTypeId, $contactId){
-            $query->where('definitive', true)
-                ->where('financial_overview_id', $financialOverviewId)
-                ->whereHas('project', function ($query) use($pcrTypeId){
-                    $query->where('project_type_id', $pcrTypeId);
+        $financialOverviewContactCapitalProjects = FinancialOverviewParticipantProject::whereHas('financialOverviewProject', function ($query) use($financialOverviewId, $capitalTypeId, $pcrTypeId, $contactId){
+            $query->where('financial_overview_id', $financialOverviewId)
+                ->whereHas('project', function ($query) use($capitalTypeId, $pcrTypeId){
+                    $query->whereIn('project_type_id', [$capitalTypeId, $pcrTypeId]);
                 });
         })
             ->whereHas('participantProject', function ($query) use($contactId){
@@ -155,11 +175,14 @@ class FinancialOverviewContactController extends Controller
 
         $financialOverviewContactData = collect([
             'financialOverviewContact' => $financialOverviewContact,
-            'financialOverviewContactTotalProjects' => $financialOverviewContactTotalProjects,
+            'financialOverviewContactTotalLoanProjects' => $financialOverviewContactTotalLoanProjects->numberOfRecords > 0 ? $financialOverviewContactTotalLoanProjects : null,
+            'financialOverviewContactTotalObligationProjects' => $financialOverviewContactTotalObligationProjects->numberOfRecords > 0 ? $financialOverviewContactTotalObligationProjects : null,
+            'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactTotalCapitalProjects->numberOfRecords > 0 ? $financialOverviewContactTotalCapitalProjects : null,
+            'financialOverviewContactTotalStart' => $financialOverviewContactTotalStart,
+            'financialOverviewContactTotalEnd' => $financialOverviewContactTotalEnd,
             'financialOverviewContactLoanProjects' => $financialOverviewContactLoanProjects,
             'financialOverviewContactObligationProjects' => $financialOverviewContactObligationProjects,
             'financialOverviewContactCapitalProjects' => $financialOverviewContactCapitalProjects,
-            'financialOverviewContactPcrProjects' => $financialOverviewContactPcrProjects,
         ]);
         return $financialOverviewContactData;
     }

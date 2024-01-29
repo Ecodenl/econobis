@@ -212,8 +212,26 @@ class ContactGroupController extends Controller
         return FullContact::collection($contactGroup->contacts);
     }
 
-    public function gridContacts(ContactGroup $contactGroup)
+    public function gridContacts(ContactGroup $contactGroup, RequestQuery $query)
     {
+
+        $this->authorize('view', ContactGroup::class);
+
+//        $total = $contactGroup->all_contact_group_contacts->count();
+//        $contactGroupPaginated = $contactGroup->all_contact_group_contacts->skip($request->get('offset'))->take($request->get('limit'));
+//        $gridContactGroupContacts = GridContactGroupContacts::collection($contactGroupPaginated);
+
+//        $contactGroupContacts = $query->get();
+
+//Log::info($query->all_contact_group_contacts->total());
+
+        return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts)
+            ->additional([
+                'meta' => [
+                    'total' => $contactGroup->all_contact_group_contacts->count(),
+                ]
+            ]);
+
         return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts);
     }
 

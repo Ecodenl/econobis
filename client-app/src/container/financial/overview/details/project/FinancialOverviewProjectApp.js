@@ -77,6 +77,11 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
                         <Icon size={14} icon={plus} />
                     </a>
                 )}
+                <br />
+                <small style={{ color: 'red', fontWeight: 'normal' }}>
+                    Je kan 1 waardestaat per administratie per jaar aanmaken. Verwijder alleen projecten waarvan je geen
+                    waardestaat wilt verzenden.
+                </small>
             </PanelHeader>
             <PanelBody>
                 <div className="col-md-12 margin-10-top">

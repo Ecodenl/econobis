@@ -1062,9 +1062,12 @@ class RevenuePartsKwhController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
+
+        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

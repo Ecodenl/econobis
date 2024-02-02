@@ -73,7 +73,7 @@ function MailboxDefaultFormGeneral({
         }
         return validationSchema;
     }
-    console.log(initialValues.primary);
+
     return (
         <form className="form-horizontal" onSubmit={handleSubmit}>
             <Panel>

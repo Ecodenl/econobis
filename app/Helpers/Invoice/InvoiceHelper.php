@@ -433,7 +433,13 @@ class InvoiceHelper
                 'logo' => $img,
             ]);
 
-            return $pdf->setOption('isPhpEnabled', true)->output();
+            // Preview op scherm levert een fout op servers: file_exists(): open_basedir restriction in effect. File(/.ufm) is not within the allowed path(s)
+            // Setten van option "isPphpEnabled" is nodig voor toevoegen pagina nummers in PDF zelf.
+            // Op scherm zelf staat ook al een paginator, dus doen we het maar even zonder die in PDF zelf.
+            // Bij het daadwerkelijk maken van de PDF werkt dit wel op de server, dus dan kunnen paginanummers wel toevoegen in echte PDF zelf.
+            //
+            //  return $pdf->setOption('isPhpEnabled', true)->output();
+            return $pdf->output();
         }
 
         // indien geen preview, dan gaan nu definitief notanummer bepalen

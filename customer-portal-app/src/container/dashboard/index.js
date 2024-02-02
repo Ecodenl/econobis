@@ -96,7 +96,7 @@ const Dashboard = function(props) {
                             .filter(w => w.active)
                             .sort((a, b) => (a.order > b.order ? 1 : -1))
                             .map(widget => (
-                                <Col md={6}>
+                                <Col xl={4} md={6}>
                                     <DashboardWidget
                                         id={widget.codeRef}
                                         image={widget.widgetImageFileName}

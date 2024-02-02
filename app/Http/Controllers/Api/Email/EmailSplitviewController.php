@@ -27,6 +27,7 @@ class EmailSplitviewController extends Controller
             'responsibleUser',
             'responsibleTeam',
             'mailbox',
+            'sentByUser',
         ]);
 
         return response()->json([
@@ -35,6 +36,7 @@ class EmailSplitviewController extends Controller
                     'id' => $mail->id,
                     'date' => $mail->date_sent,
                     'from' => $mail->from,
+                    'to' => $mail->getToRecipients()->getEmailAdresses(),
                     'subject' => $mail->subject,
                     'status' => $mail->status,
                     'hasAttachments' => $mail->attachmentsWithoutCids->isNotEmpty(),
@@ -44,6 +46,7 @@ class EmailSplitviewController extends Controller
                     ],
                     'folder' => $mail->folder,
                     'createdAt' => $mail->created_at,
+                    'sentByUserName' => $mail->sentByUser ? $mail->sentByUser->present()->fullName() : '',
                 ];
             }),
             'total' => $query->count()

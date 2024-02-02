@@ -56,8 +56,10 @@ class ExtraFilter extends RequestExtraFilter
         'housingFileFieldValue',
         'inspectionPersonType',
         'sharedArea',
-        'freeFieldsFieldName',
-        'freeFieldsFieldValue',
+        'contactFreeFieldsFieldName',
+        'contactFreeFieldsFieldValue',
+        'addressFreeFieldsFieldName',
+        'addressFreeFieldsFieldValue',
         'hoomdossierExists',
     ];
 
@@ -169,13 +171,23 @@ class ExtraFilter extends RequestExtraFilter
         }
 
         // Ook Uitzondering voor freefields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
-        if($filter['field'] == 'freeFieldsFieldName' ){
+        if($filter['field'] == 'contactFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
-                    $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                    $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'contacts');
                 });
             }else{
-                $this->applyFreeFieldsFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'contacts');
+            }
+            return;
+        }
+        if($filter['field'] == 'addressFreeFieldsFieldName'){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'addresses');
+                });
+            }else{
+                $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'addresses');
             }
             return;
         }
@@ -390,39 +402,75 @@ class ExtraFilter extends RequestExtraFilter
         if(empty($data))
         {
             switch($type){
-                case 'neq':
-                    $query->whereDoesntHave('isSecondaryOccupant');
-                    break;
                 case 'eq':
-                    $query->whereHas('isSecondaryOccupant');
+                    $query->whereHas('isSecondaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
+                    break;
+                case 'neq':
+                    $query->whereDoesntHave('isSecondaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'rel':
-                    $query->whereDoesntHave('isPrimaryOccupant');
+                    $query->whereHas('isPrimaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'nrel':
-                    $query->whereHas('isPrimaryOccupant');
+                    $query->whereDoesntHave('isPrimaryOccupant', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
             }
         }else{
             switch($type){
                 case 'eq':
                     $query->whereHas('isSecondaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'neq':
                     $query->whereDoesntHave('isSecondaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'rel':
                     $query->whereHas('isPrimaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'nrel':
                     $query->whereDoesntHave('isPrimaryOccupant', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
             }
@@ -435,38 +483,74 @@ class ExtraFilter extends RequestExtraFilter
         {
             switch($type){
                 case 'eq':
-                    $query->whereDoesntHave('isSecondaryOccupantPrimary');
+                    $query->whereHas('isSecondaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'neq':
-                    $query->whereHas('isSecondaryOccupantPrimary');
+                    $query->whereDoesntHave('isSecondaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'rel':
-                    $query->whereDoesntHave('isPrimaryOccupantPrimary');
+                    $query->whereHas('isPrimaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
                 case 'nrel':
-                    $query->whereHas('isPrimaryOccupantPrimary');
+                    $query->whereDoesntHave('isPrimaryOccupantPrimary', function($join){
+                        $join->where(function ($query) {
+                            $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                ->orWhereNull('occupation_contact.end_date');
+                        });
+                    });
                     break;
             }
         }else{
             switch($type){
                 case 'eq':
                     $query->whereHas('isSecondaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'neq':
                     $query->whereDoesntHave('isSecondaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'rel':
                     $query->whereHas('isPrimaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
                 case 'nrel':
                     $query->whereDoesntHave('isPrimaryOccupantPrimary', function($join) use ($data){
-                        $join->where('occupation_contact.occupation_id', $data);
+                        $join->where('occupation_contact.occupation_id', $data)
+                            ->where(function ($query) use ($data) {
+                                $query->whereDate('occupation_contact.end_date', '>=', Carbon::now())
+                                    ->orWhereNull('occupation_contact.end_date');
+                            });
                     });
                     break;
             }
@@ -743,7 +827,7 @@ class ExtraFilter extends RequestExtraFilter
                 if(empty($data)){
                     RequestFilter::applyFilter($query, 'inspection_person_type_id', 'nl', null);
                 }else{
-                    $query->Where(function ($query) use ($type, $data) {
+                    $query->where(function ($query) use ($type, $data) {
                         RequestFilter::applyFilter($query, 'inspection_person_type_id', $type, $data);
                     })
                         ->orWhere(function ($query) use ($data) {
@@ -1107,7 +1191,7 @@ class ExtraFilter extends RequestExtraFilter
         }
     }
 
-    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameType, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName)
+    protected function applyFreeFieldsFilter($query, $freeFieldsFieldNameData, $freeFieldsFieldNameConnectName, $freeFieldsFieldTable)
     {
         if (empty($freeFieldsFieldNameData)) {
             return;
@@ -1118,52 +1202,112 @@ class ExtraFilter extends RequestExtraFilter
             return;
         }
 
-        $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName) {
-            return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'freeFieldsFieldValue');
+        $freeFieldsFieldValueFilter = array_values(array_filter($this->filters, function ($element) use ($freeFieldsFieldNameConnectName, $freeFieldsFieldTable) {
+            if($freeFieldsFieldTable === "contacts") {
+                return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'contactFreeFieldsFieldValue');
+            } elseif ($freeFieldsFieldTable === "addresses") {
+                return ($element['connectedTo'] == $freeFieldsFieldNameConnectName && $element['field'] == 'addressFreeFieldsFieldValue');
+            }
         }));
         $freeFieldsFieldValueFilter = $freeFieldsFieldValueFilter ? $freeFieldsFieldValueFilter[0] : null;
 
         $freeFieldsFieldValueType = $freeFieldsFieldValueFilter['type'];
         $freeFieldsFieldValueData = $freeFieldsFieldValueFilter['data'];
 
-        switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
-            case 'boolean':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'int':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'double_2_dec':
-            case 'amount_euro':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
-                });
-                break;
-            case 'date':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
-                });
-                break;
-            case 'datetime':
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d'). "'");
-                });
-                break;
-            default:
-                $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
-                    $query->where('field_id', $freeFieldsFieldNameData);
-                    static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
-                });
-                break;
+        if($freeFieldsFieldTable === "contacts") {
+            switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                case 'boolean':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'int':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'double_2_dec':
+                case 'amount_euro':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
+                    });
+                    break;
+                case 'date':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                    });
+                    break;
+                case 'datetime':
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                    });
+                    break;
+                default:
+                    $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->where('field_id', $freeFieldsFieldNameData);
+                        static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
+                    });
+                    break;
+            }
+        }
+
+        if($freeFieldsFieldTable === "addresses") {
+            switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                case 'boolean':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_boolean', $freeFieldsFieldValueType, (boolean)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'int':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_int', $freeFieldsFieldValueType, (int)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'double_2_dec':
+                case 'amount_euro':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_double', $freeFieldsFieldValueType, (float)$freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+                case 'date':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                        });
+                    });
+                    break;
+                case 'datetime':
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilterWhereRaw($query, 'cast(`free_fields_field_records`.`field_value_datetime` as date)', $freeFieldsFieldValueType, "'" . Carbon::parse($freeFieldsFieldValueData)->format('Y-m-d') . "'");
+                        });
+                    });
+                    break;
+                default:
+                    $query->whereHas('addresses', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                        $query->whereHas('freeFieldsFieldRecords', function ($query) use ($freeFieldsFieldNameData, $freeFieldsFieldValueData, $freeFieldsFieldValueType) {
+                            $query->where('field_id', $freeFieldsFieldNameData);
+                            static::applyFilter($query, 'free_fields_field_records.field_value_text', $freeFieldsFieldValueType, $freeFieldsFieldValueData);
+                        });
+                    });
+                    break;
+            }
         }
 
 //        Log::info('------------');

@@ -120,7 +120,7 @@ class ParticipantFormEdit extends Component {
             errors.projectId = true;
             hasErrors = true;
         }
-        if (this.props.participation.project.projectType.codeRef === 'loan') {
+        if (this.props.participation.project.typeCodeRef === 'loan') {
             if (validator.isEmpty(participation.typeId + '')) {
                 errors.typeId = true;
                 hasErrors = true;
@@ -175,7 +175,7 @@ class ParticipantFormEdit extends Component {
             participationsIndicationOfRestitutionEnergyTaxTotal,
         } = this.props.participation;
 
-        const projectTypeCodeRef = project.projectType.codeRef;
+        const projectTypeCodeRef = project.typeCodeRef;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>

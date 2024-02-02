@@ -29,7 +29,8 @@ const RevenueDistributionFormList = props => {
                 ) : (
                     ''
                 )}
-                {props.projectRevenue.category.codeRef === 'revenueEuro' ? (
+                {props.projectRevenue.category.codeRef === 'revenueEuro' ||
+                props.projectRevenue.category.codeRef === 'revenueParticipant' ? (
                     <React.Fragment>
                         <div className="col-sm-2">Uit te keren bedrag</div>
                         <div className="col-sm-1">Uitkeren op</div>

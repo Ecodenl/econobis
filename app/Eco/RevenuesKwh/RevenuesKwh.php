@@ -142,6 +142,28 @@ class RevenuesKwh extends Model
         return $lastConfirmedPartsKwh ? $lastConfirmedPartsKwh->date_end : null;
     }
 
+    public function getDefaultDocumentName($reportType){
+        $administrationName = $this->translateToValidCharacterSet($this->project->administration->name);
+        $projectName = $this->translateToValidCharacterSet($this->project->name);
+
+        $yearBegin = Carbon::parse($this->date_begin)->format('Y');
+        $yearEnd = Carbon::parse($this->date_end)->format('Y');
+
+        if($yearEnd === $yearBegin) {
+            $year = $yearBegin;
+            $maxProjectNameLength = 181 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
+        } else {
+            $year = $yearBegin . '-' . $yearEnd;
+            $maxProjectNameLength = 176 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
+        }
+
+        $defaultDocumentName = $reportType . " " . $administrationNameAndProjectNameSubstring . " " . $year;
+
+        return $defaultDocumentName;
+    }
+
     public function getHasNewPartsKwh(){
         return $this->newPartsKwh()->count() > 0;
     }
@@ -150,4 +172,13 @@ class RevenuesKwh extends Model
         return $this->confirmedPartsKwh()->count() > 0;
     }
 
+    protected function translateToValidCharacterSet($field){
+
+//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
+//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
 }

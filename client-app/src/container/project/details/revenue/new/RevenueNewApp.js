@@ -93,19 +93,28 @@ class RevenueNewApp extends Component {
 
             let revenue = this.state.revenue;
 
+            // if (category.codeRef === 'redemptionEuro') {
+            //     const payoutTypeId = this.props.participantProjectPayoutTypes.find(
+            //         participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+            //     ).id;
+            //     revenue.payoutTypeId = payoutTypeId;
+            //     revenue.distributionTypeId = 'inPossessionOf';
+            // } else if (payload.projectType.codeRef !== 'loan') {
+            //     revenue.distributionTypeId = 'inPossessionOf';
+            // } else if (payload.projectType.codeRef === 'obligation') {
+            //     const payoutTypeId = this.props.participantProjectPayoutTypes.find(
+            //         participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
+            //     ).id;
+            //     revenue.payoutTypeId = payoutTypeId;
+            // }
+
+            // set distributionTypeId to 'inPossessionOf' if 'redemptionEuro'
             if (category.codeRef === 'redemptionEuro') {
-                const payoutTypeId = this.props.participantProjectPayoutTypes.find(
-                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
-                ).id;
-                revenue.payoutTypeId = payoutTypeId;
                 revenue.distributionTypeId = 'inPossessionOf';
-            } else if (payload.projectType.codeRef !== 'loan') {
+            }
+            // set distributionTypeId default to 'inPossessionOf' if not 'redemptionEuro' and not 'loan' (distribution type for 'revenueEuro' and 'loan' is always set per participationProject)
+            if (category.codeRef !== 'redemptionEuro' && payload.projectType.codeRef !== 'loan') {
                 revenue.distributionTypeId = 'inPossessionOf';
-            } else if (payload.projectType.codeRef === 'obligation') {
-                const payoutTypeId = this.props.participantProjectPayoutTypes.find(
-                    participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
-                ).id;
-                revenue.payoutTypeId = payoutTypeId;
             }
 
             if (category.codeRef === 'revenueEuro') {

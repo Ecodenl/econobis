@@ -118,7 +118,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChange}
                     disabled={!useSceProject}
                 />
-                {isSceProject == true && (
+                {isSceProject ? (
                     <InputSelect
                         label={'Basis project'}
                         name={'baseProjectCodeRef'}
@@ -128,7 +128,7 @@ const ProjectFormNewGeneral = ({
                         required={isSceProject ? 'required' : ''}
                         error={errors.baseProjectCodeRef}
                     />
-                )}
+                ) : null}
             </div>
 
             <div className="row">
@@ -139,16 +139,16 @@ const ProjectFormNewGeneral = ({
                     value={powerKwAvailable}
                     onChangeAction={handleInputChange}
                 />
-                {isSceProject == true && (
+                {isSceProject ? (
                     <ViewText
                         className={'form-group col-sm-6'}
                         label={'Benodigd aantal deelnemende leden'}
                         value={requiredParticipants}
                     />
-                )}
+                ) : null}
             </div>
 
-            {isSceProject == true && (
+            {isSceProject ? (
                 <>
                     <div className="row">
                         <div className="form-group col-sm-6" />
@@ -210,7 +210,7 @@ const ProjectFormNewGeneral = ({
                         <div className={'form-group col-sm-6'} />
                     </div>
                 </>
-            )}
+            ) : null}
 
             <div className="row">
                 <div className="form-group col-sm-12">

@@ -31,6 +31,7 @@ class EmailSendController extends Controller
             'subject' => $email->subject,
             'htmlBody' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'mailContactGroupWithSingleMail' => $email->mail_contact_group_with_single_mail,
+            'isForwardOrReply' => !!$email->old_email_id,
             'attachments' => $email->attachmentsWithoutCids->map(function (EmailAttachment $attachment) {
                 return [
                     'id' => $attachment->id,

@@ -395,9 +395,9 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         id: state.participantProjectDetails.id,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
-        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
-        projectDateEntry: state.participantProjectDetails.project.dateEntry,
-        projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
+        projectDateEntry: state.participantProjectDetails.project?.dateEntry,
+        projectDateInterestBearingKwh: state.participantProjectDetails.project?.dateInterestBearingKwh,
     };
 };
 

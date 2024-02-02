@@ -6,6 +6,8 @@ import ParticipantFormGeneral from './form/ParticipantFormGeneral';
 import ObligationNumberForm from './obligation-number/ObligationNumberForm';
 import MutationForm from './mutation/list/MutationForm';
 import ParticipantDetailsConclusion from './conclusion';
+import RevenuesListForm from './revenue/RevenuesListForm';
+import RevenuesKwhListForm from './revenueKwh/RevenuesKwhListForm';
 
 class ParticipantDetailsForm extends Component {
     render() {
@@ -14,15 +16,15 @@ class ParticipantDetailsForm extends Component {
         let projectTypeCodeRef = '';
 
         if (this.props.participantProject.project) {
-            projectTypeCodeRef = this.props.participantProject.project.projectType.codeRef;
+            projectTypeCodeRef = this.props.participantProject.project.typeCodeRef;
         }
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van deelnemers.';
+            loadingText = 'Fout bij het ophalen van deelnemer.';
         } else if (this.props.isLoading && !this.props.participantProject.id) {
             loadingText = 'Gegevens aan het laden.';
         } else if (isEmpty(this.props.participantProject)) {
-            loadingText = 'Geen deelnemers gevonden!';
+            loadingText = 'Geen deelnemer gevonden!';
         } else {
             loading = false;
         }
@@ -31,18 +33,16 @@ class ParticipantDetailsForm extends Component {
         ) : (
             <div>
                 <ParticipantFormGeneral />
+                <>
+                    <RevenuesListForm />
+                    {this.props.participantProject.project &&
+                    this.props.participantProject.project.typeCodeRef === 'postalcode_link_capital' ? (
+                        <RevenuesKwhListForm />
+                    ) : null}
+                </>
+
                 <MutationForm isTerminated={Boolean(this.props.participantProject.dateTerminated)} />
                 {projectTypeCodeRef === 'obligation' ? <ObligationNumberForm /> : null}
-                {/*todo WM: vervangen door revenue distributies ?*/}
-                {/*{this.props.project &&*/}
-                {/*this.props.project.projectStatus &&*/}
-                {/*this.props.project.projectStatus.codeRef !== 'concept' &&*/}
-                {/*projectTypeCodeRef === 'postalcode_link_capital' ? (*/}
-                {/*    <RevenuesListForm*/}
-                {/*        projectId={this.props.project.id}*/}
-                {/*        participationId={this.props.participantProject.id}*/}
-                {/*    />*/}
-                {/*) : null}*/}
                 <ParticipantDetailsConclusion />
             </div>
         );

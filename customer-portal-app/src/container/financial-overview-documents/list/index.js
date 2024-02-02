@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import LoadingView from '../../../components/general/LoadingView';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import { PortalUserContext } from '../../../context/PortalUserContext';

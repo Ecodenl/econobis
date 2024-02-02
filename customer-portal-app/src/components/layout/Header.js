@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import { AuthConsumer } from '../../context/AuthContext';
 import { Link, withRouter } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
 import { ThemeSettingsConsumer } from '../../context/ThemeSettingsContext';

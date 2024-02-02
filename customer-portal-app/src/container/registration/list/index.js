@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
@@ -9,8 +8,6 @@ import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 import moment from 'moment';
 import { Link } from 'react-router-dom';
-import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import Button from 'react-bootstrap/Button';
 
 function RegistrationList(props) {
     const [contact, setContact] = useState({});

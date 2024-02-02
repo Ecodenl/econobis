@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 import RegistrationDetailsTitle from './Title';

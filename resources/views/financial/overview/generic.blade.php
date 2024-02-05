@@ -356,7 +356,7 @@
                 <tr>
                     <td class="align-left">{{ $financialOverviewContactCapitalProject->name }}</td>
                     <td class="align-left">01-01-{{ $financialOverviewContact->financialOverview->year }}</td>
-                    <td class="align-right">{{ $financialOverviewContactCapitalProject->quantitystart_value }}</td>
+                    <td class="align-right">{{ $financialOverviewContactCapitalProject->quantity_start_value }}</td>
                     <td class="align-right"><span
                                 class="euro-sign">&euro; </span>{{ number_format($financialOverviewContactCapitalProject->bookworth_start_value, 2, ',', '.') }}
                     </td>

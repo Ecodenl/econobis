@@ -8,6 +8,7 @@ import 'moment/locale/nl';
 import 'bootstrap-sass';
 
 import * as authActions from './actions/general/AuthActions';
+import { createRoot } from 'react-dom/client';
 
 const store = require('./store/configureStore').configure();
 
@@ -50,8 +51,11 @@ const IEPage = () => {
     );
 };
 
+const container = document.getElementById('root');
+const root = createRoot(container); // createRoot(container!) if you use TypeScript
+
 if (isNotIE) {
-    ReactDOM.render(<App />, document.getElementById('root'));
+    root.render(<App />);
 } else {
-    ReactDOM.render(<IEPage />, document.getElementById('root'));
+    root.render(<IEPage />);
 }

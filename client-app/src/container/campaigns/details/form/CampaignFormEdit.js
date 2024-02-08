@@ -31,6 +31,10 @@ function CampaignFormEdit({
         measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
         opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
         opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
+        inspectionPlannedEmailTemplateId: campaign.inspectionPlannedEmailTemplate?.id || '',
+        inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
+        inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
+        inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
     });
     const [errors, setErrors] = useState({
         name: false,

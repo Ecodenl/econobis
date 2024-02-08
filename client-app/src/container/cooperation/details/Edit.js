@@ -331,7 +331,9 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                 </Panel>
                 <Panel>
                     <PanelHeader>
-                        <span className="h5 text-bold">Buurtaanpak</span>
+                        <span className="h5 text-bold" style={{ color: 'red' }}>
+                            Buurtaanpak (komt te vervallen)
+                        </span>
                     </PanelHeader>
                     <PanelBody>
                         <div className="row">

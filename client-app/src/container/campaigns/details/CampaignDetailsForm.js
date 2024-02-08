@@ -10,6 +10,8 @@ import CampaignDetailsResponses from './responses/CampaignDetailsResponses';
 import CampaignDetailsCoaches from './coaches/CampaignDetailsCoaches';
 import CampaignDetailsProjectManagers from './project-managers/CampaignDetailsProjectManagers';
 import CampaignDetailsExternalParties from './external-parties/CampaignDetailsExternalParties';
+import CampaignInspectionFormGeneral from './form/CampaignInspectionFormGeneral';
+import CampaignDetailsWorkflows from './campaign-workflows/CampaignDetailsWorkflows';
 
 function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData }) {
     if (hasError) return <div>Fout bij het ophalen van campagne.</div>;
@@ -43,6 +45,21 @@ function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData 
                 campaignId={campaign.id}
                 campaignName={campaign.name}
                 externalParties={campaign.externalParties}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignInspectionFormGeneral campaign={campaign} fetchCampaignData={fetchCampaignData} />
+            <CampaignDetailsWorkflows
+                workflowType={'opportunity'}
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                campaignWorkflows={campaign.campaignWorkflows}
+                fetchCampaignData={fetchCampaignData}
+            />
+            <CampaignDetailsWorkflows
+                workflowType={'quotationrequest'}
+                campaignId={campaign.id}
+                campaignName={campaign.name}
+                campaignWorkflows={campaign.campaignWorkflows}
                 fetchCampaignData={fetchCampaignData}
             />
             <CampaignDetailsIntakes campaignId={campaign.id} />

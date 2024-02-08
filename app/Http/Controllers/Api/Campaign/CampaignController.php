@@ -49,12 +49,16 @@ class CampaignController extends ApiController
     public function show(Campaign $campaign)
     {
         $this->authorize('view', Campaign::class);
-
         $campaign->load([
             'measureCategories',
             'opportunityActions',
             'status',
             'type',
+            'inspectionPlannedEmailTemplate',
+            'inspectionRecordedEmailTemplate',
+            'inspectionReleasedEmailTemplate',
+            'inspectionPlannedMailbox',
+            'campaignWorkflows',
             'responses.contact.primaryAddress',
             'organisations',
             'organisations.contact.contactPerson.contact',

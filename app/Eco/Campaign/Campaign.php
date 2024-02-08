@@ -4,6 +4,8 @@ namespace App\Eco\Campaign;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
+use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
@@ -55,6 +57,30 @@ class Campaign extends Model
     public function type()
     {
         return $this->belongsTo(CampaignType::class);
+    }
+
+    public function inspectionPlannedEmailTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'inspection_planned_email_template_id');
+    }
+
+    public function inspectionRecordedEmailTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'inspection_recorded_email_template_id');
+    }
+
+    public function inspectionReleasedEmailTemplate()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'inspection_released_email_template_id');
+    }
+
+    public function inspectionPlannedMailbox()
+    {
+        return $this->belongsTo(Mailbox::class, 'inspection_planned_mailbox_id');
+    }
+    public function campaignWorkflows()
+    {
+        return $this->hasMany(CampaignWorkflow::class);
     }
 
     public function opportunityActions()

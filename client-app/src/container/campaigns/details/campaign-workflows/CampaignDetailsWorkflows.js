@@ -12,6 +12,10 @@ import { plus } from 'react-icons-kit/fa/plus';
 function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, campaignWorkflows, fetchCampaignData }) {
     const [showNew, setShowNew] = useState(false);
 
+    const reducedCampaignWorkflows = campaignWorkflows.filter(campaignWorkflow => {
+        return campaignWorkflow.workflowForType === workflowType;
+    });
+
     function toggleShowNew() {
         setShowNew(prevState => !prevState);
     }
@@ -19,7 +23,9 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
     return (
         <Panel>
             <PanelHeader>
-                <span className="h5 text-bold">Workflow instellingen {workflowType}</span>
+                <span className="h5 text-bold">
+                    Workflow op {workflowType === 'opportunity' ? 'kansstatus' : 'kansactie status'}
+                </span>
                 <a role="button" className="pull-right" onClick={toggleShowNew}>
                     <Icon size={14} icon={plus} />
                 </a>
@@ -27,7 +33,7 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
             <PanelBody>
                 <div className="col-md-12">
                     <CampaignDetailsWorkflowsList
-                        campaignWorkflows={campaignWorkflows}
+                        campaignWorkflows={reducedCampaignWorkflows}
                         campaignId={campaignId}
                         fetchCampaignData={fetchCampaignData}
                     />

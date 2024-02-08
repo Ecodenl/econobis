@@ -1,5 +1,6 @@
 import React from 'react';
 import CampaignDetailsWorkflowItem from './CampaignDetailsWorkflowItem';
+import useSwitchToEditView from '../../../../hooks/useSwitchToEditView';
 
 const CampaignDetailsWorkflowsList = ({ campaignWorkflows, campaignId, fetchCampaignData }) => {
     return (

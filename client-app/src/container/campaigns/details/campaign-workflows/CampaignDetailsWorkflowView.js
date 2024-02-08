@@ -19,9 +19,9 @@ const CampaignDetailsWorkflowView = ({
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
             <div onClick={() => hashHistory.push(`/contact/${id}`)}>
-                <div className="col-sm-2">{status ? status : ''}</div>
+                <div className="col-sm-3">{status ? status : ''}</div>
                 <div className="col-sm-4">{emailTemplateIdWf ? emailTemplateIdWf : ''}</div>
-                <div className="col-sm-4">{numberOfDaysToSendEmail ? numberOfDaysToSendEmail : ''}</div>
+                <div className="col-sm-4">{numberOfDaysToSendEmail ? numberOfDaysToSendEmail : 'Direct'}</div>
             </div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.manageMarketing ? (

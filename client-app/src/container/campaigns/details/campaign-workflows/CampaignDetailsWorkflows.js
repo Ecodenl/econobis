@@ -24,7 +24,7 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
         <Panel>
             <PanelHeader>
                 <span className="h5 text-bold">
-                    Workflow op {workflowType === 'opportunity' ? 'kansstatus' : 'kansactie status'}
+                    Workflow op {workflowType === 'opportunity' ? 'kans status' : 'kansactie status'}
                 </span>
                 <a role="button" className="pull-right" onClick={toggleShowNew}>
                     <Icon size={14} icon={plus} />

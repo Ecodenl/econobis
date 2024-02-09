@@ -104,4 +104,11 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    deleteCampaignWorkflow: campaignWorkflowId => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/${campaignWorkflowId}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
 };

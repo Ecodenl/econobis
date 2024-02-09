@@ -16,7 +16,7 @@ const CampaignDetailsWorkflowDelete = ({ toggleDelete, fetchCampaignData, campai
             );
         }
     }
-
+    console.log(campaignWorkflow);
     return (
         <Modal
             buttonConfirmText="Verwijder"

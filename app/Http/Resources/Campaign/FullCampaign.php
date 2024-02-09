@@ -39,6 +39,7 @@ class FullCampaign extends JsonResource
             'inspectionRecordedEmailTemplate' => GenericResource::make($this->whenLoaded('inspectionRecordedEmailTemplate')),
             'inspectionReleasedEmailTemplate' => GenericResource::make($this->whenLoaded('inspectionReleasedEmailTemplate')),
             'inspectionPlannedMailbox' => GenericResource::make($this->whenLoaded('inspectionPlannedMailbox')),
+            'defaultWorkflowMailbox' => GenericResource::make($this->whenLoaded('defaultWorkflowMailbox')),
             'campaignWorkflows' => FullCampaignWorkflow::collection($this->whenLoaded('campaignWorkflows')),
             'responses' => FullCampaignResponse::collection($this->whenLoaded('responses')),
             'organisations' => FullOrganisation::collection($this->whenLoaded('organisations')),

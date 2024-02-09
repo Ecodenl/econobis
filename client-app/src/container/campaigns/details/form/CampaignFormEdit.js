@@ -35,6 +35,7 @@ function CampaignFormEdit({
         inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
         inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
         inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
+        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
     });
     const [errors, setErrors] = useState({
         name: false,

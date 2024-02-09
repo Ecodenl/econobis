@@ -113,6 +113,10 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->integer('inspectionPlannedMailboxId')->validate('required|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
+            ->integer('inspectionPlannedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
+            ->integer('inspectionRecordedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
+            ->integer('inspectionReleasedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
             ->get();
 
         $campaign = new Campaign();
@@ -151,6 +155,10 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('nullable|date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->integer('inspectionPlannedMailboxId')->validate('required|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
+            ->integer('inspectionPlannedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
+            ->integer('inspectionRecordedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
+            ->integer('inspectionReleasedEmailTemplate')->validate('required|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
             ->get();
 
         $measureCategoryIds = explode(',', $request->measureCategoryIds);

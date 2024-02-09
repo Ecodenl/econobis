@@ -1,29 +1,18 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import validator from 'validator';
 
-import InputText from '../../../../components/form/InputText';
-import InputSelect from '../../../../components/form/InputSelect';
-import InputDate from '../../../../components/form/InputDate';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
-import InputMultiSelect from '../../../../components/form/InputMultiSelect';
-import PanelBody from '../../../../components/panel/PanelBody';
-import Panel from '../../../../components/panel/Panel';
-import PanelHeader from '../../../../components/panel/PanelHeader';
-import ViewText from '../../../../components/form/ViewText';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import axios from 'axios';
+import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
+import InputReactSelect from '../../../../components/form/InputReactSelect';
 
 moment.locale('nl');
 
-function CampaignInspectionFormEdit({
-    campaign,
-    fetchCampaignData,
-    switchToView,
-    // mailboxes,
-    // emailtemplates,
-}) {
+function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView }) {
     const [formState, setFormState] = useState({
         ...campaign,
         description: campaign.description || '',
@@ -33,35 +22,34 @@ function CampaignInspectionFormEdit({
         measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
         opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
         opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
-        inspectionPlannedEmailTemplateId: campaign.inspectionPlannedEmailTemplate?.id || '',
+        inspectionPlannedEmailTemplate: campaign.inspectionPlannedEmailTemplate?.id || '',
         inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
-        inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
-        inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
+        inspectionRecordedEmailTemplate: campaign.inspectionRecordedEmailTemplate?.id || '',
+        inspectionReleasedEmailTemplate: campaign.inspectionReleasedEmailTemplate?.id || '',
     });
     const [errors, setErrors] = useState({
-        inspectionPlannedEmailTemplateId: false,
+        inspectionPlannedEmailTemplate: false,
         inspectionPlannedMailboxId: false,
-        inspectionRecordedEmailTemplateId: false,
-        inspectionReleasedEmailTemplateId: false,
+        inspectionRecordedEmailTemplate: false,
+        inspectionReleasedEmailTemplate: false,
     });
 
-    function handleInputChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    const [mailboxAddresses, setMailboxAddresses] = useState([]);
+    const [emailtemplates, setEmailtemplates] = useState([]);
 
+    useEffect(function() {
+        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek(), MailboxAPI.fetchMailboxesLoggedInUserPeek()]).then(
+            axios.spread((emailtemplates, mailboxAddresses) => {
+                setMailboxAddresses(mailboxAddresses.data.data);
+                setEmailtemplates(emailtemplates);
+            })
+        );
+    }, []);
+
+    function setFieldValue(name, value) {
         setFormState({
             ...formState,
             [name]: value,
-        });
-    }
-
-    function handleInputChangeDate(date, name) {
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-
-        setFormState({
-            ...formState,
-            [name]: formattedDate,
         });
     }
 
@@ -87,34 +75,66 @@ function CampaignInspectionFormEdit({
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={handleSubmit}>
-            <div className="row">
-                <ViewText
-                    label={'Buurtaanpak afspraak e-mail template'}
-                    value={formState.inspectionPlannedEmailTemplate && formState.inspectionPlannedEmailTemplate.name}
-                />
-                <ViewText
-                    label={'Mailbox buurtaanpak e-mail bevestigingen'}
-                    value={formState.inspectionPlannedMailbox && formState.inspectionPlannedMailbox.name}
-                />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Buurtaanpak opname e-mail template'}
-                    value={formState.inspectionRecordedEmailTemplate && formState.inspectionRecordedEmailTemplate.name}
-                />
-            </div>
-            <div className="row">
-                <ViewText
-                    label={'Buurtaanpak uitgebracht e-mail template'}
-                    value={formState.inspectionReleasedEmailTemplate && formState.inspectionReleasedEmailTemplate.name}
-                />
-            </div>
-            <PanelFooter>
-                <div className="pull-right btn-group" role="group">
-                    <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={switchToView} />
-                    <ButtonText buttonText={'Opslaan'} onClickAction={handleSubmit} type={'submit'} value={'Submit'} />
+            <div>
+                <div className="row">
+                    <InputReactSelect
+                        label={'Buurtaanpak afspraak e-mail template'}
+                        name={'inspectionPlannedEmailTemplate'}
+                        options={emailtemplates}
+                        optionName={'name'}
+                        value={formState.inspectionPlannedEmailTemplate}
+                        onChangeAction={(value, name) => setFieldValue(name, value)}
+                        clearable={true}
+                    />
+
+                    <InputReactSelect
+                        label={'Mailbox buurtaanpak e-mail bevestigingen'}
+                        name={'inspectionPlannedMailboxId'}
+                        options={mailboxAddresses}
+                        optionName={'email'}
+                        value={formState.inspectionPlannedMailboxId}
+                        onChangeAction={(value, name) => setFieldValue(name, value)}
+                        clearable={true}
+                    />
                 </div>
-            </PanelFooter>
+                <div className="row">
+                    <InputReactSelect
+                        label={'Buurtaanpak opname e-mail template'}
+                        name={'inspectionRecordedEmailTemplate'}
+                        options={emailtemplates}
+                        optionName={'name'}
+                        value={formState.inspectionRecordedEmailTemplate}
+                        onChangeAction={(value, name) => setFieldValue(name, value)}
+                        clearable={true}
+                    />
+                </div>
+                <div className="row">
+                    <InputReactSelect
+                        label={'Buurtaanpak uitgebracht e-mail template'}
+                        name={'inspectionReleasedEmailTemplate'}
+                        options={emailtemplates}
+                        optionName={'name'}
+                        value={formState.inspectionReleasedEmailTemplate}
+                        onChangeAction={(value, name) => setFieldValue(name, value)}
+                        clearable={true}
+                    />
+                </div>
+                <PanelFooter>
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText
+                            buttonClassName={'btn-default'}
+                            buttonText={'Annuleren'}
+                            onClickAction={switchToView}
+                        />
+                        <ButtonText
+                            buttonText={'Opslaan'}
+                            onClickAction={handleSubmit}
+                            type={'submit'}
+                            value={'Submit'}
+                        />
+                    </div>
+                </PanelFooter>
+            </div>
         </form>
     );
 }

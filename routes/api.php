@@ -275,6 +275,7 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
+        Route::post('campaign/campaignworkflow/add', 'Campaign\CampaignWorkflowController@add');
         Route::post('campaign/campaignworkflow/{campaignworkflow}/delete', 'Campaign\CampaignWorkflowController@delete');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');

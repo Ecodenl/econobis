@@ -7,10 +7,8 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
-import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 
-function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult }) {
-    const [statusesToSelect, setStatusesToSelect] = useState([]);
+function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult, statusesToSelect, workflowType }) {
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
@@ -51,13 +49,22 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult }) {
             });
         }
 
+        const data = new FormData();
+        data.append('statusId', statusId);
+        data.append('emailTemplatedIdWf', emailTemplatedIdWf);
+        data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
+        data.append('workflowForType', workflowType);
+        data.append('campaignId', campaignId);
+
         if (!errors.hasErrors) {
+            console.log(data);
             try {
-                await CampaignDetailsAPI.addCampaignWorkflow(campaignWorkflow);
+                await CampaignDetailsAPI.addCampaignWorkflow(data);
 
                 fetchCampaignData();
                 toggleShowNew();
             } catch (error) {
+                console.log(error);
                 alert(
                     'Er is iets misgegaan met het toevoegen van de status. Herlaad de pagina en probeer het nogmaals.'
                 );

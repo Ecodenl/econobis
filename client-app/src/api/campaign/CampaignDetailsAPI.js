@@ -111,4 +111,11 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    addCampaignWorkflow: campaignWorkflow => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/add`;
+
+        return axiosInstance.post(requestUrl, campaignWorkflow);
+    },
 };

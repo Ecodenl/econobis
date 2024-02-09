@@ -30,7 +30,7 @@ class FullCampaignWorkflow extends JsonResource
             'mailCcToCoachWf' => $this->mail_cc_to_coach_wf,
             'isActive' => $this->is_active,
             'status' => $this->status,
-            'emailTemplateWorkflow' => $this->emailTemplateWorkflow
+            'emailTemplateWorkflow' => $this->emailTemplateWorkflow,
         ];
     }
 }

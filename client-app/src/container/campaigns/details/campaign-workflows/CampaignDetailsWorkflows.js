@@ -8,8 +8,17 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
+import { connect } from 'react-redux';
 
-function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, campaignWorkflows, fetchCampaignData }) {
+function CampaignDetailsWorkflows({
+    workflowType,
+    campaignId,
+    campaignName,
+    campaignWorkflows,
+    fetchCampaignData,
+    opportunityStatusses,
+    quotationRequestStatusses,
+}) {
     const [showNew, setShowNew] = useState(false);
 
     const reducedCampaignWorkflows = campaignWorkflows.filter(campaignWorkflow => {
@@ -45,6 +54,10 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
                             campaignName={campaignName}
                             toggleShowNew={toggleShowNew}
                             fetchCampaignData={fetchCampaignData}
+                            statusesToSelect={
+                                workflowType === 'opportunity' ? opportunityStatusses : quotationRequestStatusses
+                            }
+                            workflowType={workflowType}
                         />
                     )}
                 </div>
@@ -53,4 +66,11 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
     );
 }
 
-export default CampaignDetailsWorkflows;
+const mapStateToProps = state => {
+    return {
+        opportunityStatusses: state.systemData.opportunityStatus,
+        quotationRequestStatusses: state.systemData.quotationRequestStatus,
+    };
+};
+
+export default connect(mapStateToProps)(CampaignDetailsWorkflows);

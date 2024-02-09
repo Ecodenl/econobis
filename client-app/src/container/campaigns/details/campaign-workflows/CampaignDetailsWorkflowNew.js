@@ -5,34 +5,40 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import axios from 'axios';
+import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import MailboxAPI from '../../../../api/mailbox/MailboxAPI';
 
 function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult }) {
     const [statusesToSelect, setStatusesToSelect] = useState([]);
     const [statusId, setStatusId] = useState('');
-    const [emailTemplatedIdWf, setEmailTemplateId] = useState('');
+    const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
+    const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
     const [errors, setErrors] = useState({
         status: false,
         hasErrors: false,
     });
 
-    useEffect(function() {
-        (async function fetchStatus() {
-            try {
-                const response = await CampaignDetailsAPI.getStatusPeek();
+    const [emailtemplates, setEmailtemplates] = useState([]);
 
-                setStatusesToSelect(response);
-            } catch (error) {
-                alert('Er is iets misgegaan met ophalen van de statussen! Herlaad de pagina en probeer het nogmaals.');
-            }
-        })();
+    useEffect(function() {
+        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
+            axios.spread((emailtemplates, mailboxAddresses) => {
+                setEmailtemplates(emailtemplates);
+            })
+        );
     }, []);
 
     function handleStatusChange(event) {
         setStatusId(event.target.value);
     }
 
-    function handleEmailTemplateChange(event) {
-        setEmailTemplateId(event.target.value);
+    function handleChangeEmailTemplateChange(event) {
+        setEmailTemplateIdWf(event.target.value);
+    }
+
+    function handleNumberOfDaysToSendEmailChange(event) {
+        setNumberOfDaysToSendEmail(event.target.value);
     }
 
     async function handleSubmit(event) {
@@ -79,9 +85,23 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult }) {
                             label={'E-email template'}
                             size={'col-sm-6'}
                             name={'emailTemplatedIdWf'}
-                            options={emailTemplates}
+                            options={emailtemplates}
                             value={emailTemplatedIdWf}
                             onChangeAction={handleChangeEmailTemplateChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label={'Aantal dagen e-mail na deze status'}
+                            divSize={'col-sm-6'}
+                            type={'number'}
+                            id={'numberOfDaysToSendEmail'}
+                            name={'numberOfDaysToSendEmail'}
+                            value={numberOfDaysToSendEmail}
+                            onChangeAction={handleNumberOfDaysToSendEmailChange}
+                            required={'required'}
+                            min={0}
                         />
                     </div>
 

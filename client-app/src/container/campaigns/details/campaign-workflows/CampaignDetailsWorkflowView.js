@@ -7,7 +7,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const CampaignDetailsWorkflowView = ({
-    campaignWorkflow: { id, status, emailTemplateIdWf, numberOfDaysToSendEmail },
+    campaignWorkflow: { id, status, emailTemplateWorkflow, numberOfDaysToSendEmail },
     highlightLine,
     onLineEnter,
     onLineLeave,
@@ -19,8 +19,8 @@ const CampaignDetailsWorkflowView = ({
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
             <div onClick={() => hashHistory.push(`/contact/${id}`)}>
-                <div className="col-sm-3">{status ? status : ''}</div>
-                <div className="col-sm-4">{emailTemplateIdWf ? emailTemplateIdWf : ''}</div>
+                <div className="col-sm-3">{status ? status.name : ''}</div>
+                <div className="col-sm-4">{emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}</div>
                 <div className="col-sm-4">{numberOfDaysToSendEmail ? numberOfDaysToSendEmail : 'Direct'}</div>
             </div>
             <div className="col-sm-1">

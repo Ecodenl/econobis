@@ -74,6 +74,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             name={'emailTemplatedWfId'}
                             options={emailtemplates}
                             value={emailTemplatedIdWf}
+                            required={'required'}
                             onChangeAction={handleChangeEmailTemplateChange}
                         />
 

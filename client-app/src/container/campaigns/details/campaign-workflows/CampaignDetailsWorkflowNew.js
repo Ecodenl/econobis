@@ -105,6 +105,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, statusesToSelec
                             name={'emailTemplatedIdWf'}
                             options={emailtemplates}
                             value={emailTemplatedIdWf}
+                            required={'required'}
                             onChangeAction={handleChangeEmailTemplateChange}
                         />
                     </div>

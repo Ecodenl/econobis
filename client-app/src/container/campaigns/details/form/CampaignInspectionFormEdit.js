@@ -24,6 +24,7 @@ function CampaignInspectionFormEdit({
     // mailboxes,
     // emailtemplates,
 }) {
+    // todo WM: opschonen inspection* velden
     const [formState, setFormState] = useState({
         ...campaign,
         description: campaign.description || '',

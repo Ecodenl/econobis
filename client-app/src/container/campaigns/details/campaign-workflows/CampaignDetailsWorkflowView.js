@@ -18,7 +18,7 @@ const CampaignDetailsWorkflowView = ({
 }) => {
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
-            <div onClick={() => hashHistory.push(`/contact/${id}`)}>
+            <div onClick={openEdit}>
                 <div className="col-sm-3">{status ? status.name : ''}</div>
                 <div className="col-sm-4">{emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}</div>
                 <div className="col-sm-4">{numberOfDaysToSendEmail ? numberOfDaysToSendEmail : 'Direct'}</div>

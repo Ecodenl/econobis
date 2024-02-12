@@ -73,8 +73,8 @@ function CampaignDetailsWorkflowNew({
         data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
         data.append('workflowForType', workflowType);
         data.append('campaignId', campaignId);
-        data.append('isActive', isActive);
-        data.append('mailCcToCoachWf', mailCcToCoachWf);
+        data.append('isActive', isActive == 1 ? 1 : 0);
+        data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
 
         if (!errors.hasErrors) {
             try {

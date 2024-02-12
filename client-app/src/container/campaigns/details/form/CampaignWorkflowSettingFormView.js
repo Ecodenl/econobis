@@ -5,7 +5,6 @@ import ViewText from '../../../../components/form/ViewText';
 moment.locale('nl');
 
 const CampaignWorkflowSettingFormView = ({ campaign: { defaultWorkflowMailbox }, switchToEdit }) => {
-    console.log(defaultWorkflowMailbox);
     return (
         <div>
             <div className="row" onClick={switchToEdit}>

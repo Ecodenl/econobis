@@ -53,17 +53,12 @@ function CampaignDetailsWorkflowEdit({
     async function handleSubmit(event) {
         event.preventDefault();
 
-        console.log('isActive');
-        console.log(isActive);
-
         const data = new FormData();
         data.append('emailTemplatedIdWf', emailTemplatedIdWf);
         data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
         data.append('isActive', isActive == 1 ? 1 : 0);
         data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
 
-        console.log('data');
-        console.log(data);
         // if (!errors.hasErrors) {
         try {
             await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);

@@ -10,15 +10,7 @@ import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
-function CampaignDetailsWorkflowEdit({
-    campaignWorkflow,
-    cancelEdit,
-    updateResult,
-    statusesToSelect,
-    fetchCampaignData,
-}) {
-    const [isLoading, setIsLoading] = useState(true);
-
+function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampaignData }) {
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
@@ -66,7 +58,6 @@ function CampaignDetailsWorkflowEdit({
             fetchCampaignData();
             cancelEdit(true);
         } catch (error) {
-            console.log(error);
             alert('Er is iets misgegaan met het toevoegen van de status. Herlaad de pagina en probeer het nogmaals.');
         }
         // }

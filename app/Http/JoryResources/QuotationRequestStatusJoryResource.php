@@ -19,6 +19,7 @@ class QuotationRequestStatusJoryResource extends JoryResource
 
     protected function configureForApp(): void
     {
+        // todo WM: opschonen velden email_template_id_wf, mail_cc_to_coach_wf en number_of_days_to_send_email
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
         $this->field('uses_wf')->filterable()->sortable();

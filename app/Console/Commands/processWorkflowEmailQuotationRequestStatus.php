@@ -2,8 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Schedule\CommandRun;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Illuminate\Console\Command;
@@ -54,18 +54,41 @@ class processWorkflowEmailQuotationRequestStatus extends Command
         $commandRun->save();
 
         // Get quotation request statussen with workflow enabled and number of days to send not 0 (they are sent immediately)
-        $quotationRequestStatusesToProcess = QuotationRequestStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
-        foreach ($quotationRequestStatusesToProcess as $quotationRequestStatus) {
-            Log::info("Proces: Workflow email voor status '" . $quotationRequestStatus->name . "' (" . $quotationRequestStatus->id . ") met aantal dagen na datum status: " . $quotationRequestStatus->number_of_days_to_send_email);
+//        $quotationRequestStatusesToProcess = QuotationRequestStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
+//        foreach ($quotationRequestStatusesToProcess as $quotationRequestStatus) {
+//            Log::info("Proces: Workflow email voor status '" . $quotationRequestStatus->name . "' (" . $quotationRequestStatus->id . ") met aantal dagen na datum status: " . $quotationRequestStatus->number_of_days_to_send_email);
+//
+//            $quotationRequestsToProcess = QuotationRequest::where('status_id', $quotationRequestStatus->id)
+//                ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
+//                ->get();
+//            foreach ($quotationRequestsToProcess as $quotationRequest) {
+//                $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+//                $quotationRequestWorkflowHelper->processWorkflowEmail();
+//            }
+//
+//        }
+        // Get campaign workflows with workflow enabled and active and number of days to send not 0 (they are sent immediately)
+        $campaignWorkflowsToProces = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')
+            ->where('number_of_days_to_send_email', '!=', 0)
+            ->where('is_active', true)
+            ->whereHas('status', function($query){
+                $query->where('uses_wf', true);
+            })->get();
+        foreach ($campaignWorkflowsToProces as $campaignWorkflow) {
+            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->status->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
+            $campaignId = $campaignWorkflow->campaign_id;
 
-            $quotationRequestsToProcess = QuotationRequest::where('status_id', $quotationRequestStatus->id)
+            $quotationRequestsToProcess = QuotationRequest::where('status_id', $campaignWorkflow->status_id)
                 ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
-                ->get();
+                ->whereHas('opportunity', function ($query) use ($campaignId) {
+                    $query->whereHas('intakes', function ($query) use ($campaignId) {
+                        $query->where('campaign_id', $campaignId);
+                    });
+                })->get();
             foreach ($quotationRequestsToProcess as $quotationRequest) {
                 $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                 $quotationRequestWorkflowHelper->processWorkflowEmail();
             }
-
         }
 
         $commandRun->end_at = Carbon::now();

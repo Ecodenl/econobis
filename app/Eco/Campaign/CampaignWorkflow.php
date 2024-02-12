@@ -25,20 +25,29 @@ class CampaignWorkflow extends Model
         'id', 'workflow_for_type'
     ];
 
+    public function status()
+    {
+        if($this->workflow_for_type === "opportunity") {
+            return $this->belongsTo(OpportunityStatus::class, 'opportunity_status_id');
+        } else {
+            return $this->belongsTo(QuotationrequestStatus::class, 'quotation_request_status_id');
+        }
+    }
+
     public function campaign()
     {
         return $this->belongsTo(Campaign::class);
     }
 
-    public function opportunity()
-    {
-        return $this->belongsTo(Opportunity::class);
-    }
-
-    public function quotationRequest()
-    {
-        return $this->belongsTo(QuotationRequest::class);
-    }
+//    public function opportunity()
+//    {
+//        return $this->belongsTo(Opportunity::class);
+//    }
+//
+//    public function quotationRequest()
+//    {
+//        return $this->belongsTo(QuotationRequest::class);
+//    }
 
     public function emailTemplateWorkflow()
     {

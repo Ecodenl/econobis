@@ -283,6 +283,8 @@ Route::namespace('Api')
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
+        Route::post('campaign/inspection/{campaign}', 'Campaign\CampaignController@updateInspection');
+        Route::post('campaign/workflow-setting/{campaign}', 'Campaign\CampaignController@updateWorkflowSetting');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
         Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');
         Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');

@@ -114,11 +114,6 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
-            ->integer('inspectionPlannedMailboxId')->validate('nullable|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
-            ->integer('inspectionPlannedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
-            ->integer('inspectionRecordedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
-            ->integer('inspectionReleasedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
-            ->integer('defaultWorkflowMailboxId')->validate('nullable|exists:mailboxes,id')->alias('default_workflow_mailbox_id')->next()
             ->get();
 
         $campaign = new Campaign();
@@ -157,11 +152,6 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('nullable|date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
-            ->integer('inspectionPlannedMailboxId')->validate('nullable|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
-            ->integer('inspectionPlannedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
-            ->integer('inspectionRecordedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
-            ->integer('inspectionReleasedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
-            ->integer('defaultWorkflowMailboxId')->validate('nullable|exists:mailboxes,id')->alias('default_workflow_mailbox_id')->next()
             ->get();
 
         $measureCategoryIds = explode(',', $request->measureCategoryIds);
@@ -185,6 +175,38 @@ class CampaignController extends ApiController
         $data['default_workflow_mailbox_id'] = $data['default_workflow_mailbox_id'] != 0 ? $data['default_workflow_mailbox_id'] : null;
 
         $campaign->opportunityActions()->sync($opportunityActionIds);
+
+        $campaign->fill($data);
+        $campaign->save();
+
+        return FullCampaign::make($campaign->fresh());
+    }
+    public function updateInspection(Request $request, RequestInput $requestInput, Campaign $campaign)
+    {
+
+        $this->authorize('manage', Campaign::class);
+
+        $data = $requestInput
+            ->integer('inspectionPlannedMailboxId')->validate('nullable|exists:mailboxes,id')->alias('inspection_planned_mailbox_id')->next()
+            ->integer('inspectionPlannedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_planned_email_template_id')->next()
+            ->integer('inspectionRecordedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_recorded_email_template_id')->next()
+            ->integer('inspectionReleasedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
+            ->get();
+
+        $campaign->fill($data);
+        $campaign->save();
+
+        return FullCampaign::make($campaign->fresh());
+    }
+
+    public function updateWorkflowSetting(Request $request, RequestInput $requestInput, Campaign $campaign)
+    {
+
+        $this->authorize('manage', Campaign::class);
+
+        $data = $requestInput
+            ->integer('defaultWorkflowMailboxId')->validate('nullable|exists:mailboxes,id')->alias('default_workflow_mailbox_id')->next()
+            ->get();
 
         $campaign->fill($data);
         $campaign->save();

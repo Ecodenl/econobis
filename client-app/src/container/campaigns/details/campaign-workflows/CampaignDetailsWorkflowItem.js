@@ -5,7 +5,7 @@ import CampaignDetailsWorkflowEdit from './CampaignDetailsWorkflowEdit';
 import CampaignDetailsWorkflowDelete from './CampaignDetailsWorkflowDelete';
 
 function CampaignDetailsWorkflowItem(
-    { campaignWorkflow, campaignId, fetchCampaignData },
+    { campaignWorkflow, campaignId, fetchCampaignData, statusesToSelect },
     opportunityStatus,
     quotationrequestStatus
 ) {
@@ -13,6 +13,7 @@ function CampaignDetailsWorkflowItem(
         showActionButtons: false,
         highlightLine: '',
         showDelete: false,
+        showEdit: false,
     });
 
     function onLineEnter() {
@@ -32,10 +33,10 @@ function CampaignDetailsWorkflowItem(
     }
 
     function openEdit() {
-        // nog
+        setState({ showEdit: true });
     }
     function cancelEdit() {
-        // nog
+        setState({ showEdit: false });
     }
 
     function toggleDelete() {
@@ -58,6 +59,8 @@ function CampaignDetailsWorkflowItem(
                     cancelEdit={cancelEdit}
                     campaignWorkflow={campaignWorkflow}
                     campaignId={campaignId}
+                    statusesToSelect={statusesToSelect}
+                    fetchCampaignData={fetchCampaignData}
                 />
             )}
             {state.showDelete && (

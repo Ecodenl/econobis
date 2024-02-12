@@ -118,4 +118,11 @@ export default {
 
         return axiosInstance.post(requestUrl, campaignWorkflow);
     },
+
+    editCampaignWorkflow: (campaignWorkflowId, campaignWorkflow) => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/${campaignWorkflowId}/edit`;
+
+        return axiosInstance.post(requestUrl, campaignWorkflow);
+    },
 };

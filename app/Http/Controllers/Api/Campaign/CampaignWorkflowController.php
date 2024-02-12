@@ -31,7 +31,6 @@ class CampaignWorkflowController extends ApiController
 
     public function add(Request $request, RequestInput $requestInput)
     {
-        Log::info(json_encode($requestInput));
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
@@ -59,5 +58,27 @@ class CampaignWorkflowController extends ApiController
         $campaignworkflow->save();
 
         return FullCampaignWorkflow::make($campaignworkflow->fresh());
+    }
+
+    public function edit(Request $request, RequestInput $requestInput, CampaignWorkflow $campaignWorkflow)
+    {
+        $this->authorize('manage', Campaign::class);
+
+        $data = $requestInput
+            ->integer('emailTemplatedIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
+            ->integer('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
+            ->integer('isActive')->validate('required')->alias('is_active')->next()
+            ->integer('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
+            ->get();
+        Log::info('$data');
+Log::info($data);
+
+        $campaignWorkflow->email_template_id_wf = $data['email_template_id_wf'];
+        $campaignWorkflow->number_of_days_to_send_email = $data['number_of_days_to_send_email'];
+        $campaignWorkflow->is_active = $data['is_active'];
+        $campaignWorkflow->mail_cc_to_coach_wf = $data['mail_cc_to_coach_wf'];
+        $campaignWorkflow->save();
+
+        return FullCampaignWorkflow::make($campaignWorkflow->fresh());
     }
 }

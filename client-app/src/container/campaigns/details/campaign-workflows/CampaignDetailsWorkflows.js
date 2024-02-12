@@ -45,6 +45,9 @@ function CampaignDetailsWorkflows({
                         campaignWorkflows={reducedCampaignWorkflows}
                         campaignId={campaignId}
                         fetchCampaignData={fetchCampaignData}
+                        statusesToSelect={
+                            workflowType === 'opportunity' ? opportunityStatusses : quotationRequestStatusses
+                        }
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">

@@ -2,7 +2,7 @@ import React from 'react';
 import CampaignDetailsWorkflowItem from './CampaignDetailsWorkflowItem';
 import useSwitchToEditView from '../../../../hooks/useSwitchToEditView';
 
-const CampaignDetailsWorkflowsList = ({ campaignWorkflows, campaignId, fetchCampaignData }) => {
+const CampaignDetailsWorkflowsList = ({ campaignWorkflows, campaignId, fetchCampaignData, statusesToSelect }) => {
     return (
         <div>
             <div className="row border header">
@@ -19,6 +19,7 @@ const CampaignDetailsWorkflowsList = ({ campaignWorkflows, campaignId, fetchCamp
                             campaignWorkflow={campaignWorkflow}
                             campaignId={campaignId}
                             fetchCampaignData={fetchCampaignData}
+                            statusesToSelect={statusesToSelect}
                         />
                     );
                 })

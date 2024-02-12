@@ -8,17 +8,8 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
-import { connect } from 'react-redux';
 
-function CampaignDetailsWorkflows({
-    workflowType,
-    campaignId,
-    campaignName,
-    campaignWorkflows,
-    fetchCampaignData,
-    opportunityStatusses,
-    quotationRequestStatusses,
-}) {
+function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, campaignWorkflows, fetchCampaignData }) {
     const [showNew, setShowNew] = useState(false);
 
     const reducedCampaignWorkflows = campaignWorkflows.filter(campaignWorkflow => {
@@ -45,9 +36,6 @@ function CampaignDetailsWorkflows({
                         campaignWorkflows={reducedCampaignWorkflows}
                         campaignId={campaignId}
                         fetchCampaignData={fetchCampaignData}
-                        statusesToSelect={
-                            workflowType === 'opportunity' ? opportunityStatusses : quotationRequestStatusses
-                        }
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">
@@ -57,9 +45,6 @@ function CampaignDetailsWorkflows({
                             campaignName={campaignName}
                             toggleShowNew={toggleShowNew}
                             fetchCampaignData={fetchCampaignData}
-                            statusesToSelect={
-                                workflowType === 'opportunity' ? opportunityStatusses : quotationRequestStatusses
-                            }
                             workflowType={workflowType}
                         />
                     )}
@@ -69,11 +54,4 @@ function CampaignDetailsWorkflows({
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        opportunityStatusses: state.systemData.opportunityStatus,
-        quotationRequestStatusses: state.systemData.quotationRequestStatus,
-    };
-};
-
-export default connect(mapStateToProps)(CampaignDetailsWorkflows);
+export default CampaignDetailsWorkflows;

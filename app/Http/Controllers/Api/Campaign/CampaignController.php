@@ -11,7 +11,9 @@ namespace App\Http\Controllers\Api\Campaign;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignResponse;
 use App\Eco\Contact\Contact;
+use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Organisation\Organisation;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\User\User;
 use App\Helpers\Delete\Models\DeleteCampaign;
 use App\Helpers\RequestInput\RequestInput;
@@ -20,6 +22,7 @@ use App\Http\RequestQueries\Campaign\Grid\RequestQuery;
 use App\Http\Resources\Campaign\CampaignIntakesCollection;
 use App\Http\Resources\Campaign\CampaignOpportunityCollection;
 use App\Http\Resources\Campaign\CampaignPeek;
+use App\Http\Resources\Campaign\CampaignWorkflowStatusPeek;
 use App\Http\Resources\Campaign\FullCampaign;
 use App\Http\Resources\Campaign\GridCampaign;
 use Carbon\Carbon;
@@ -316,6 +319,21 @@ class CampaignController extends ApiController
         }
 
         return CampaignPeek::collection($campaigns);
+    }
+    public function workflowStatuses(Campaign $campaign, $workflowType = null)
+    {
+        if($workflowType === 'opportunity'){
+            $existingOpportunityStatusIds = $campaign->campaignWorkflows()->get()->pluck('opportunity_status_id')->toArray();
+            Log::info($existingOpportunityStatusIds);
+            $workflowStatuses =  OpportunityStatus::orderBy('order')->get()->whereNotIn('id', $existingOpportunityStatusIds);
+        } else if ($workflowType === 'quotationrequest'){
+            $existingQuotationRequestStatusIds = $campaign->campaignWorkflows()->get()->pluck('qotation_request_status_id')->toArray();
+            $workflowStatuses =  QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('order')->get()->whereNotIn('id', $existingQuotationRequestStatusIds);
+        } else {
+            return null;
+        }
+
+        return CampaignWorkflowStatusPeek::collection($workflowStatuses);
     }
 
     public function peekNotFinished()

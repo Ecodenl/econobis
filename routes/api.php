@@ -281,6 +281,7 @@ Route::namespace('Api')
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
+        Route::get('campaign/{campaign}/workflow-statuses/{workflowType?}', 'Campaign\CampaignController@workflowStatuses');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
         Route::post('campaign/inspection/{campaign}', 'Campaign\CampaignController@updateInspection');

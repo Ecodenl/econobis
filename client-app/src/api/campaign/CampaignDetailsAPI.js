@@ -21,6 +21,12 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchCampaignWorkflowStatuses: ({ campaignId, workflowType }) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/workflow-statuses/${workflowType}`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     updateCampaign: (id, data) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
 

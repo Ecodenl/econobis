@@ -8,8 +8,9 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
+import validator from 'validator';
 
-function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, statusesToSelect, workflowType, fetchCampaignData }) {
+function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, fetchCampaignData }) {
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
@@ -21,14 +22,31 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, statusesToSelec
     });
 
     const [emailtemplates, setEmailtemplates] = useState([]);
+    const [statusesToSelect, setStatusesToSelect] = useState([]);
 
-    useEffect(function() {
-        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
-            axios.spread((emailtemplates, mailboxAddresses) => {
-                setEmailtemplates(emailtemplates);
-            })
-        );
-    }, []);
+    useEffect(
+        function() {
+            axios
+                .all([
+                    EmailTemplateAPI.fetchEmailTemplatesPeek(),
+                    CampaignDetailsAPI.fetchCampaignWorkflowStatuses({ campaignId, workflowType }),
+                ])
+                .then(
+                    axios.spread((emailtemplates, statusesToSelect) => {
+                        setEmailtemplates(emailtemplates);
+                        setStatusesToSelect(statusesToSelect.data.data);
+                    })
+                );
+        },
+        [campaignId, workflowType]
+    );
+    // useEffect(function() {
+    //     axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
+    //         axios.spread((emailtemplates, mailboxAddresses) => {
+    //             setEmailtemplates(emailtemplates);
+    //         })
+    //     );
+    // }, []);
 
     function handleIsActiveChange(event) {
         setIsActive(event.target.value);
@@ -53,7 +71,9 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, statusesToSelec
     async function handleSubmit(event) {
         event.preventDefault();
 
-        if (!statusId) {
+        console.log('test check statusId');
+        console.log(statusId);
+        if (validator.isEmpty(statusId + '')) {
             setErrors({
                 status: true,
                 hasErrors: true,

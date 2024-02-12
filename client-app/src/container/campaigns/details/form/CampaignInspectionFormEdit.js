@@ -15,18 +15,10 @@ moment.locale('nl');
 function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView }) {
     const [formState, setFormState] = useState({
         ...campaign,
-        description: campaign.description || '',
-        statusId: campaign.status?.id || '',
-        typeId: campaign.type?.id || '',
-        measureCategoryIds: campaign.measureCategories?.map(item => item.id).join(','),
-        measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
-        opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
-        opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
         inspectionPlannedEmailTemplateId: campaign.inspectionPlannedEmailTemplate?.id || '',
         inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
         inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
         inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
-        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
     });
     const [errors, setErrors] = useState({
         inspectionPlannedEmailTemplateId: false,
@@ -74,7 +66,7 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
 
         if (!hasErrors) {
             try {
-                await CampaignDetailsAPI.updateCampaign(formState.id, formState);
+                await CampaignDetailsAPI.updateCampaignInspection(formState.id, formState);
 
                 fetchCampaignData();
                 switchToView();

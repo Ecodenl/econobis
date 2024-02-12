@@ -10,7 +10,6 @@ import CampaignWorkflowSettingFormView from './CampaignWorkflowSettingFormView';
 import CampaignWorkflowSettingFormEdit from './CampaignWorflowSettingFormEdit';
 
 function CampaignWorkflowSettingFormGeneral({ campaign, permissions, fetchCampaignData }) {
-    console.log(campaign);
     const { state, switchToEdit, switchToView, onDivEnter, onDivLeave } = useSwitchToEditView();
 
     return (

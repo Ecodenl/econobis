@@ -26,6 +26,16 @@ export default {
 
         return axiosInstance.post(requestUrl, data);
     },
+    updateCampaignInspection: (id, data) => {
+        const requestUrl = `${URL_CAMPAIGN}/inspection/${id}`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
+    updateCampaignWorkflowSetting: (id, data) => {
+        const requestUrl = `${URL_CAMPAIGN}/workflow-setting/${id}`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
 
     storeCampaign: data => {
         const requestUrl = `${URL_CAMPAIGN}`;

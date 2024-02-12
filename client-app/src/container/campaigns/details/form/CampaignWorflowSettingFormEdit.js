@@ -13,18 +13,7 @@ moment.locale('nl');
 function CampaignWorkflowSettingFormEdit({ campaign, fetchCampaignData, switchToView }) {
     const [formState, setFormState] = useState({
         ...campaign,
-        description: campaign.description || '',
-        statusId: campaign.status?.id || '',
-        typeId: campaign.type?.id || '',
-        measureCategoryIds: campaign.measureCategories?.map(item => item.id).join(','),
-        measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
-        opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
-        opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
-        inspectionPlannedEmailTemplateId: campaign.inspectionPlannedEmailTemplate?.id || '',
-        inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
-        inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
-        inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
-        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
+        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || null,
     });
     const [errors, setErrors] = useState({
         defaultWorkflowMailbox: false,
@@ -57,7 +46,7 @@ function CampaignWorkflowSettingFormEdit({ campaign, fetchCampaignData, switchTo
 
         if (!hasErrors) {
             try {
-                await CampaignDetailsAPI.updateCampaign(formState.id, formState);
+                await CampaignDetailsAPI.updateCampaignWorkflowSetting(formState.id, formState);
 
                 fetchCampaignData();
                 switchToView();

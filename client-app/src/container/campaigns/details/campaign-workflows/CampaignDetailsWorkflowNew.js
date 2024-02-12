@@ -20,7 +20,7 @@ function CampaignDetailsWorkflowNew({
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
-    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(false);
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         status: false,

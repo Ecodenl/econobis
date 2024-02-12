@@ -7,11 +7,21 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
+import InputToggle from '../../../../components/form/InputToggle';
 
-function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult, statusesToSelect, workflowType }) {
+function CampaignDetailsWorkflowNew({
+    campaignId,
+    toggleShowNew,
+    addResult,
+    statusesToSelect,
+    workflowType,
+    fetchCampaignData,
+}) {
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(false);
+    const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         status: false,
         hasErrors: false,
@@ -26,6 +36,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult, stat
             })
         );
     }, []);
+
+    function handleIsActiveChange(event) {
+        setIsActive(event.target.value);
+    }
+
+    function handleMailCcToCoachWfChange(event) {
+        setMailCcToCoachWf(event.target.value);
+    }
 
     function handleStatusChange(event) {
         setStatusId(event.target.value);
@@ -55,9 +73,10 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult, stat
         data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
         data.append('workflowForType', workflowType);
         data.append('campaignId', campaignId);
+        data.append('isActive', isActive);
+        data.append('mailCcToCoachWf', mailCcToCoachWf);
 
         if (!errors.hasErrors) {
-            console.log(data);
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);
 
@@ -109,6 +128,21 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, addResult, stat
                             onChangeAction={handleNumberOfDaysToSendEmailChange}
                             required={'required'}
                             min={0}
+                        />
+                        <InputToggle
+                            label={'Email cc naar coach'}
+                            name={'mailCcToCoachWf'}
+                            value={Boolean(mailCcToCoachWf)}
+                            onChangeAction={handleMailCcToCoachWfChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputToggle
+                            label={'Actief'}
+                            name={'isActive'}
+                            value={Boolean(isActive)}
+                            onChangeAction={handleIsActiveChange}
                         />
                     </div>
 

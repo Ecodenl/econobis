@@ -35,11 +35,13 @@ class CampaignWorkflowController extends ApiController
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
-            ->string('statusId')->validate('required')->alias('status_id')->next()
-            ->string('emailTemplatedIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
-            ->string('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
+            ->integer('statusId')->validate('required')->alias('status_id')->next()
+            ->integer('emailTemplatedIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
+            ->integer('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
             ->string('workflowForType')->validate('required')->alias('workflow_for_type')->next()
-            ->string('campaignId')->validate('required')->alias('campaign_id')->next()
+            ->integer('campaignId')->validate('required')->alias('campaign_id')->next()
+            ->boolean('isActive')->validate('required')->alias('is_active')->next()
+            ->boolean('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
             ->get();
 
         $campaignworkflow = new CampaignWorkflow();
@@ -52,6 +54,8 @@ class CampaignWorkflowController extends ApiController
         $campaignworkflow->email_template_id_wf = $data['email_template_id_wf'];
         $campaignworkflow->number_of_days_to_send_email = $data['number_of_days_to_send_email'];
         $campaignworkflow->campaign_id = $data['campaign_id'];
+        $campaignworkflow->is_active = $data['is_active'];
+        $campaignworkflow->mail_cc_to_coach_wf = $data['mail_cc_to_coach_wf'];
         $campaignworkflow->save();
 
         return FullCampaignWorkflow::make($campaignworkflow->fresh());

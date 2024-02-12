@@ -8,7 +8,6 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
-import validator from 'validator';
 
 function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, fetchCampaignData }) {
     const [statusId, setStatusId] = useState('');
@@ -17,8 +16,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
-        status: false,
-        hasErrors: false,
+        statusId: false,
+        emailTemplatedIdWf: false,
+        numberOfDaysToSendEmail: false,
+    });
+    const [errorMessages, setErrorMessages] = useState({
+        statusId: '',
+        emailTemplatedIdWf: '',
+        numberOfDaysToSendEmail: '',
     });
 
     const [emailtemplates, setEmailtemplates] = useState([]);
@@ -71,25 +76,47 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
     async function handleSubmit(event) {
         event.preventDefault();
 
-        console.log('test check statusId');
-        console.log(statusId);
-        if (validator.isEmpty(statusId + '')) {
-            setErrors({
-                status: true,
-                hasErrors: true,
-            });
+        //todo Patrick: uit ParticipantDetailsTerminateObligation.js
+        let errors = {
+            statusId: false,
+            emailTemplatedIdWf: false,
+            numberOfDaysToSendEmail: false,
+        };
+        let errorMessages = {
+            statusId: '',
+            emailTemplatedIdWf: '',
+            numberOfDaysToSendEmail: '',
+        };
+        let hasErrors = false;
+
+        if (!statusId) {
+            errors.statusId = true;
+            errorMessages.statusId = 'Status is verplicht.';
+            hasErrors = true;
         }
 
-        const data = new FormData();
-        data.append('statusId', statusId);
-        data.append('emailTemplatedIdWf', emailTemplatedIdWf);
-        data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
-        data.append('workflowForType', workflowType);
-        data.append('campaignId', campaignId);
-        data.append('isActive', isActive == 1 ? 1 : 0);
-        data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+        if (!emailTemplatedIdWf) {
+            errors.emailTemplatedIdWf = true;
+            errorMessages.emailTemplatedIdWf = 'E-email template is verplicht.';
+            hasErrors = true;
+        }
 
-        if (!errors.hasErrors) {
+        if (!numberOfDaysToSendEmail) {
+            errors.numberOfDaysToSendEmail = true;
+            errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        }
+
+        if (!hasErrors) {
+            const data = new FormData();
+            data.append('statusId', statusId);
+            data.append('emailTemplatedIdWf', emailTemplatedIdWf);
+            data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
+            data.append('workflowForType', workflowType);
+            data.append('campaignId', campaignId);
+            data.append('isActive', isActive == 1 ? 1 : 0);
+            data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);
 
@@ -100,6 +127,9 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                     'Er is iets misgegaan met het toevoegen van de status. Herlaad de pagina en probeer het nogmaals.'
                 );
             }
+        } else {
+            setErrors(errors);
+            setErrorMessages(errorMessages);
         }
     }
 
@@ -116,8 +146,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                             value={statusId}
                             onChangeAction={handleStatusChange}
                             required={'required'}
-                            error={errors.statusId && touched.statusId}
-                            errorMessage={errors.status}
+                            error={errors.statusId}
+                            errorMessage={errorMessages.statusId}
                         />
                         <InputSelect
                             label={'E-email template'}
@@ -127,6 +157,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                             value={emailTemplatedIdWf}
                             required={'required'}
                             onChangeAction={handleChangeEmailTemplateChange}
+                            error={errors.emailTemplatedIdWf}
+                            errorMessage={errorMessages.emailTemplatedIdWf}
                         />
                     </div>
 
@@ -141,6 +173,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                             onChangeAction={handleNumberOfDaysToSendEmailChange}
                             required={'required'}
                             min={0}
+                            error={errors.numberOfDaysToSendEmail}
+                            errorMessage={errorMessages.numberOfDaysToSendEmail}
                         />
                         <InputToggle
                             label={'Email cc naar coach'}

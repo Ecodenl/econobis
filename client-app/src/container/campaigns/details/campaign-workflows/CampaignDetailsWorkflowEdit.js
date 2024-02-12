@@ -15,6 +15,14 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
     const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
+    const [errors, setErrors] = useState({
+        emailTemplatedIdWf: false,
+        numberOfDaysToSendEmail: false,
+    });
+    const [errorMessages, setErrorMessages] = useState({
+        emailTemplatedIdWf: '',
+        numberOfDaysToSendEmail: '',
+    });
 
     function handleChangeEmailTemplateChange(event) {
         setEmailTemplateIdWf(event.target.value);
@@ -45,22 +53,50 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     async function handleSubmit(event) {
         event.preventDefault();
 
-        const data = new FormData();
-        data.append('emailTemplatedIdWf', emailTemplatedIdWf);
-        data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
-        data.append('isActive', isActive == 1 ? 1 : 0);
-        data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+        //todo Patrick: uit ParticipantDetailsTerminateObligation.js
+        let errors = {
+            emailTemplatedIdWf: false,
+            numberOfDaysToSendEmail: false,
+        };
+        let errorMessages = {
+            emailTemplatedIdWf: '',
+            numberOfDaysToSendEmail: '',
+        };
+        let hasErrors = false;
 
-        // if (!errors.hasErrors) {
-        try {
-            await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
-
-            fetchCampaignData();
-            cancelEdit(true);
-        } catch (error) {
-            alert('Er is iets misgegaan met het toevoegen van de status. Herlaad de pagina en probeer het nogmaals.');
+        if (!emailTemplatedIdWf) {
+            errors.emailTemplatedIdWf = true;
+            errorMessages.emailTemplatedIdWf = 'E-email template is verplicht.';
+            hasErrors = true;
         }
-        // }
+
+        if (!numberOfDaysToSendEmail) {
+            errors.numberOfDaysToSendEmail = true;
+            errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        }
+
+        if (!hasErrors) {
+            try {
+                const data = new FormData();
+                data.append('emailTemplatedIdWf', emailTemplatedIdWf);
+                data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
+                data.append('isActive', isActive == 1 ? 1 : 0);
+                data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+
+                await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
+
+                fetchCampaignData();
+                cancelEdit(true);
+            } catch (error) {
+                alert(
+                    'Er is iets misgegaan met het toevoegen van de status. Herlaad de pagina en probeer het nogmaals.'
+                );
+            }
+        } else {
+            setErrors(errors);
+            setErrorMessages(errorMessages);
+        }
     }
 
     return (
@@ -76,6 +112,8 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             value={emailTemplatedIdWf}
                             required={'required'}
                             onChangeAction={handleChangeEmailTemplateChange}
+                            error={errors.emailTemplatedIdWf}
+                            errorMessage={errorMessages.emailTemplatedIdWf}
                         />
 
                         <InputText
@@ -88,6 +126,8 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             onChangeAction={handleNumberOfDaysToSendEmailChange}
                             required={'required'}
                             min={0}
+                            error={errors.numberOfDaysToSendEmail}
+                            errorMessage={errorMessages.numberOfDaysToSendEmail}
                         />
                     </div>
 

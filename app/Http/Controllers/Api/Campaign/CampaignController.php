@@ -168,12 +168,6 @@ class CampaignController extends ApiController
             $opportunityActionIds = [];
         }
 
-        $data['inspection_planned_mailbox_id'] = $data['inspection_planned_mailbox_id'] != 0 ? $data['inspection_planned_mailbox_id'] : null;
-        $data['inspection_planned_email_template_id'] = $data['inspection_planned_email_template_id'] != 0 ? $data['inspection_planned_email_template_id'] : null;
-        $data['inspection_recorded_email_template_id'] = $data['inspection_recorded_email_template_id'] != 0 ? $data['inspection_recorded_email_template_id'] : null;
-        $data['inspection_released_email_template_id'] = $data['inspection_released_email_template_id'] != 0 ? $data['inspection_released_email_template_id'] : null;
-        $data['default_workflow_mailbox_id'] = $data['default_workflow_mailbox_id'] != 0 ? $data['default_workflow_mailbox_id'] : null;
-
         $campaign->opportunityActions()->sync($opportunityActionIds);
 
         $campaign->fill($data);
@@ -193,6 +187,11 @@ class CampaignController extends ApiController
             ->integer('inspectionReleasedEmailTemplateId')->validate('nullable|exists:email_templates,id')->alias('inspection_released_email_template_id')->next()
             ->get();
 
+        $data['inspection_planned_mailbox_id'] = $data['inspection_planned_mailbox_id'] != 0 ? $data['inspection_planned_mailbox_id'] : null;
+        $data['inspection_planned_email_template_id'] = $data['inspection_planned_email_template_id'] != 0 ? $data['inspection_planned_email_template_id'] : null;
+        $data['inspection_recorded_email_template_id'] = $data['inspection_recorded_email_template_id'] != 0 ? $data['inspection_recorded_email_template_id'] : null;
+        $data['inspection_released_email_template_id'] = $data['inspection_released_email_template_id'] != 0 ? $data['inspection_released_email_template_id'] : null;
+
         $campaign->fill($data);
         $campaign->save();
 
@@ -207,6 +206,8 @@ class CampaignController extends ApiController
         $data = $requestInput
             ->integer('defaultWorkflowMailboxId')->validate('nullable|exists:mailboxes,id')->alias('default_workflow_mailbox_id')->next()
             ->get();
+
+        $data['default_workflow_mailbox_id'] = $data['default_workflow_mailbox_id'] != 0 ? $data['default_workflow_mailbox_id'] : null;
 
         $campaign->fill($data);
         $campaign->save();

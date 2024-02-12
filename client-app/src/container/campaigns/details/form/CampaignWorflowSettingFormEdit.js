@@ -13,7 +13,7 @@ moment.locale('nl');
 function CampaignWorkflowSettingFormEdit({ campaign, fetchCampaignData, switchToView }) {
     const [formState, setFormState] = useState({
         ...campaign,
-        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || null,
+        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
     });
     const [errors, setErrors] = useState({
         defaultWorkflowMailbox: false,

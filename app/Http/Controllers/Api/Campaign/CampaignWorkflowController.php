@@ -70,8 +70,6 @@ class CampaignWorkflowController extends ApiController
             ->integer('isActive')->validate('required')->alias('is_active')->next()
             ->integer('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
             ->get();
-        Log::info('$data');
-Log::info($data);
 
         $campaignWorkflow->email_template_id_wf = $data['email_template_id_wf'];
         $campaignWorkflow->number_of_days_to_send_email = $data['number_of_days_to_send_email'];

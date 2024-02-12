@@ -78,6 +78,12 @@ class Campaign extends Model
     {
         return $this->belongsTo(Mailbox::class, 'inspection_planned_mailbox_id');
     }
+
+    public function defaultWorkflowMailbox()
+    {
+        return $this->belongsTo(Mailbox::class, 'default_workflow_mailbox_id');
+    }
+
     public function campaignWorkflows()
     {
         return $this->hasMany(CampaignWorkflow::class);

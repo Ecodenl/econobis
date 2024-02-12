@@ -22,16 +22,17 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
         measureCategoryIdsSelected: campaign.measureCategories ? campaign.measureCategories : [],
         opportunityActionIds: campaign.opportunityActions?.map(item => item.id).join(','),
         opportunityActionIdsSelected: campaign.opportunityActions ? campaign.opportunityActions : [],
-        inspectionPlannedEmailTemplate: campaign.inspectionPlannedEmailTemplate?.id || '',
+        inspectionPlannedEmailTemplateId: campaign.inspectionPlannedEmailTemplate?.id || '',
         inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
-        inspectionRecordedEmailTemplate: campaign.inspectionRecordedEmailTemplate?.id || '',
-        inspectionReleasedEmailTemplate: campaign.inspectionReleasedEmailTemplate?.id || '',
+        inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
+        inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
+        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
     });
     const [errors, setErrors] = useState({
-        inspectionPlannedEmailTemplate: false,
+        inspectionPlannedEmailTemplateId: false,
         inspectionPlannedMailboxId: false,
-        inspectionRecordedEmailTemplate: false,
-        inspectionReleasedEmailTemplate: false,
+        inspectionRecordedEmailTemplateId: false,
+        inspectionReleasedEmailTemplateId: false,
     });
 
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
@@ -46,6 +47,16 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
         );
     }, []);
 
+    // function handleInputChange(event) {
+    //     const target = event.target;
+    //     const value = target.type === 'checkbox' ? target.checked : target.value;
+    //     const name = target.name;
+    //
+    //     setFormState({
+    //         ...formState,
+    //         [name]: value,
+    //     });
+    // }
     function setFieldValue(name, value) {
         setFormState({
             ...formState,

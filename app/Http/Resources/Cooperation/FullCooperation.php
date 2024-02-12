@@ -14,6 +14,7 @@ class FullCooperation extends JsonResource
      */
     public function toArray($request)
     {
+        // todo WM: opschonen inspection* velden
         return [
             'id' => $this->id,
             'name' => $this->name,

@@ -22,6 +22,7 @@ function CampaignFormEdit({
     measureCategories,
     opportunityActions,
 }) {
+    // todo WM: opschonen inspection* velden
     const [formState, setFormState] = useState({
         ...campaign,
         description: campaign.description || '',
@@ -35,6 +36,7 @@ function CampaignFormEdit({
         inspectionPlannedMailboxId: campaign.inspectionPlannedMailbox?.id || '',
         inspectionRecordedEmailTemplateId: campaign.inspectionRecordedEmailTemplate?.id || '',
         inspectionReleasedEmailTemplateId: campaign.inspectionReleasedEmailTemplate?.id || '',
+        defaultWorkflowMailboxId: campaign.defaultWorkflowMailbox?.id || '',
     });
     const [errors, setErrors] = useState({
         name: false,

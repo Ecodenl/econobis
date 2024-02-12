@@ -41,16 +41,6 @@ class CampaignWorkflow extends Model
         return $this->belongsTo(Campaign::class);
     }
 
-//    public function opportunity()
-//    {
-//        return $this->belongsTo(Opportunity::class);
-//    }
-//
-//    public function quotationRequest()
-//    {
-//        return $this->belongsTo(QuotationRequest::class);
-//    }
-
     public function emailTemplateWorkflow()
     {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf');

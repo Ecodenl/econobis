@@ -90,10 +90,10 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                 <div className="row">
                     <InputReactSelect
                         label={'Buurtaanpak afspraak e-mail template'}
-                        name={'inspectionPlannedEmailTemplate'}
+                        name={'inspectionPlannedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}
-                        value={formState.inspectionPlannedEmailTemplate}
+                        value={formState.inspectionPlannedEmailTemplateId}
                         onChangeAction={(value, name) => setFieldValue(name, value)}
                         clearable={true}
                     />
@@ -111,10 +111,10 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                 <div className="row">
                     <InputReactSelect
                         label={'Buurtaanpak opname e-mail template'}
-                        name={'inspectionRecordedEmailTemplate'}
+                        name={'inspectionRecordedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}
-                        value={formState.inspectionRecordedEmailTemplate}
+                        value={formState.inspectionRecordedEmailTemplateId}
                         onChangeAction={(value, name) => setFieldValue(name, value)}
                         clearable={true}
                     />
@@ -122,10 +122,10 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                 <div className="row">
                     <InputReactSelect
                         label={'Buurtaanpak uitgebracht e-mail template'}
-                        name={'inspectionReleasedEmailTemplate'}
+                        name={'inspectionReleasedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}
-                        value={formState.inspectionReleasedEmailTemplate}
+                        value={formState.inspectionReleasedEmailTemplateId}
                         onChangeAction={(value, name) => setFieldValue(name, value)}
                         clearable={true}
                     />

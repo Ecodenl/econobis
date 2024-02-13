@@ -1,14 +1,9 @@
 import React, { useState } from 'react';
-import { connect } from 'react-redux';
 import CampaignDetailsWorkflowView from './CampaignDetailsWorkflowView';
 import CampaignDetailsWorkflowEdit from './CampaignDetailsWorkflowEdit';
 import CampaignDetailsWorkflowDelete from './CampaignDetailsWorkflowDelete';
 
-function CampaignDetailsWorkflowItem(
-    { campaignWorkflow, campaignId, fetchCampaignData, statusesToSelect },
-    opportunityStatus,
-    quotationrequestStatus
-) {
+function CampaignDetailsWorkflowItem({ campaignWorkflow, campaignId, fetchCampaignData, statusesToSelect }) {
     const [state, setState] = useState({
         showActionButtons: false,
         highlightLine: '',
@@ -74,11 +69,4 @@ function CampaignDetailsWorkflowItem(
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        opportunityStatus: state.systemData.opportunityStatus,
-        quotationrequestStatus: state.systemData.quotationrequestStatus,
-    };
-};
-
-export default connect(mapStateToProps)(CampaignDetailsWorkflowItem);
+export default CampaignDetailsWorkflowItem;

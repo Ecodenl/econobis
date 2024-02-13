@@ -53,39 +53,25 @@ class processWorkflowEmailOpportunityStatus extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        // Get opportunity statussen with workflow enabled and number of days to send not 0 (they are sent immediately)
-//        $opportunityStatusesToProcess = OpportunityStatus::where('uses_wf', true)->where('number_of_days_to_send_email', '!=', 0)->get();
-//        foreach ($opportunityStatusesToProcess as $opportunityStatus) {
-//            Log::info("Proces: Workflow email voor status '" . $opportunityStatus->name . "' met aantal dagen na datum status: " . $opportunityStatus->number_of_days_to_send_email);
-//
-//            $opportunitiesToProcess = Opportunity::where('status_id', $opportunityStatus->id)
-//                ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
-//                ->get();
-//            foreach ($opportunitiesToProcess as $opportunity) {
-//                $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
-//                $opportunityWorkflowHelper->processWorkflowEmail();
-//            }
-//        }
-
         // Get campaign workflows with workflow enabled and active and number of days to send not 0 (they are sent immediately)
         $campaignWorkflowsToProces = CampaignWorkflow::where('workflow_for_type', 'opportunity')
             ->where('number_of_days_to_send_email', '!=', 0)
             ->where('is_active', true)
-            ->whereHas('status', function($query){
+            ->whereHas('opportunityStatus', function($query){
                 $query->where('uses_wf', true);
             })->get();
         foreach ($campaignWorkflowsToProces as $campaignWorkflow) {
-            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->status->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
+            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->opportunityStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
             $campaignId = $campaignWorkflow->campaign_id;
 
-            $opportunitiesToProcess = Opportunity::where('status_id', $campaignWorkflow->status_id)
+            $opportunitiesToProcess = Opportunity::where('status_id', $campaignWorkflow->opportunity_status_id)
                 ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
-                ->whereHas('intakes', function ($query) use ($campaignId) {
+                ->whereHas('intake', function ($query) use ($campaignId) {
                     $query->where('campaign_id', $campaignId);
                 })->get();
             foreach ($opportunitiesToProcess as $opportunity) {
                 $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
-                $opportunityWorkflowHelper->processWorkflowEmail();
+                $opportunityWorkflowHelper->processWorkflowEmail($campaignWorkflow);
             }
         }
 

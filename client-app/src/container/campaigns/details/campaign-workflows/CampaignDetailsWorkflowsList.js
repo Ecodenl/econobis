@@ -6,9 +6,11 @@ const CampaignDetailsWorkflowsList = ({ campaignWorkflows, campaignId, fetchCamp
         <div>
             <div className="row border header">
                 <div className="col-sm-3">Status</div>
-                <div className="col-sm-4">Email template</div>
-                <div className="col-sm-4">Versturen na aantal dagen</div>
-                <div className="col-sm-1" />
+                <div className="col-sm-3">Email template</div>
+                <div className="col-sm-2">Versturen na aantal dagen</div>
+                <div className="col-sm-1">Gebruikt workflow</div>
+                <div className="col-sm-1">Workflow actief</div>
+                <div className="col-sm-1">&nbsp;</div>
             </div>
             {campaignWorkflows.length > 0 ? (
                 campaignWorkflows.map(campaignWorkflow => {

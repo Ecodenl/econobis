@@ -63,6 +63,8 @@ class CampaignController extends ApiController
             'inspectionPlannedMailbox',
             'defaultWorkflowMailbox',
             'campaignWorkflows',
+            'campaignWorkflows.opportunityStatus',
+            'campaignWorkflows.quotationRequestStatus',
             'responses.contact.primaryAddress',
             'organisations',
             'organisations.contact.contactPerson.contact',

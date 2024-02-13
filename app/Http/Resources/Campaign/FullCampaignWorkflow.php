@@ -8,6 +8,7 @@
 
 namespace App\Http\Resources\Campaign;
 
+use App\Http\Resources\GenericResource;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullCampaignWorkflow extends JsonResource
@@ -29,7 +30,7 @@ class FullCampaignWorkflow extends JsonResource
             'emailTemplateIdWf' => $this->email_template_id_wf,
             'mailCcToCoachWf' => $this->mail_cc_to_coach_wf,
             'isActive' => $this->is_active,
-            'status' => $this->status,
+            'status' => $this->workflow_for_type === 'opportunity' ? GenericResource::make($this->whenLoaded('opportunityStatus')) : GenericResource::make($this->whenLoaded('quotationRequestStatus')),
             'emailTemplateWorkflow' => $this->emailTemplateWorkflow,
         ];
     }

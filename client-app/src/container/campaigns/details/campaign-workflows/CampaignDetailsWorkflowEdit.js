@@ -140,12 +140,14 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                     </div>
 
                     <div className="row">
-                        <InputToggle
-                            label={'Email cc naar coach'}
-                            name={'mailCcToCoachWf'}
-                            value={Boolean(mailCcToCoachWf)}
-                            onChangeAction={handleMailCcToCoachWfChange}
-                        />
+                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email cc naar coach'}
+                                name={'mailCcToCoachWf'}
+                                value={Boolean(mailCcToCoachWf)}
+                                onChangeAction={handleMailCcToCoachWfChange}
+                            />
+                        ) : null}
                         <InputToggle
                             label={'Actief'}
                             name={'isActive'}

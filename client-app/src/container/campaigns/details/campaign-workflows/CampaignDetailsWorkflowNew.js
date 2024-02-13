@@ -175,12 +175,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                             error={errors.numberOfDaysToSendEmail}
                             errorMessage={errorMessages.numberOfDaysToSendEmail}
                         />
-                        <InputToggle
-                            label={'Email cc naar coach'}
-                            name={'mailCcToCoachWf'}
-                            value={Boolean(mailCcToCoachWf)}
-                            onChangeAction={handleMailCcToCoachWfChange}
-                        />
+                        {workflowType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email cc naar coach'}
+                                name={'mailCcToCoachWf'}
+                                value={Boolean(mailCcToCoachWf)}
+                                onChangeAction={handleMailCcToCoachWfChange}
+                            />
+                        ) : null}
                     </div>
 
                     <div className="row">

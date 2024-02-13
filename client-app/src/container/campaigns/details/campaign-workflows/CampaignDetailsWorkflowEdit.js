@@ -69,9 +69,17 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             hasErrors = true;
         }
 
-        if (!numberOfDaysToSendEmail) {
+        if (numberOfDaysToSendEmail === null || numberOfDaysToSendEmail === '') {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        } else {
+            console.log('numberOfDaysToSendEmail');
+            console.log(numberOfDaysToSendEmail);
+        }
+        if (numberOfDaysToSendEmail < 0) {
+            errors.numberOfDaysToSendEmail = true;
+            errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
             hasErrors = true;
         }
 
@@ -122,6 +130,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             id={'numberOfDaysToSendEmail'}
                             name={'numberOfDaysToSendEmail'}
                             value={numberOfDaysToSendEmail}
+                            allowZero={true}
                             onChangeAction={handleNumberOfDaysToSendEmailChange}
                             required={'required'}
                             min={0}

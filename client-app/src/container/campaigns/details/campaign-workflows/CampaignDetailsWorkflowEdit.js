@@ -53,7 +53,6 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     async function handleSubmit(event) {
         event.preventDefault();
 
-        //todo Patrick: uit ParticipantDetailsTerminateObligation.js
         let errors = {
             emailTemplatedIdWf: false,
             numberOfDaysToSendEmail: false,
@@ -70,9 +69,17 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             hasErrors = true;
         }
 
-        if (!numberOfDaysToSendEmail) {
+        if (numberOfDaysToSendEmail === null || numberOfDaysToSendEmail === '') {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        } else {
+            console.log('numberOfDaysToSendEmail');
+            console.log(numberOfDaysToSendEmail);
+        }
+        if (numberOfDaysToSendEmail < 0) {
+            errors.numberOfDaysToSendEmail = true;
+            errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
             hasErrors = true;
         }
 
@@ -123,6 +130,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             id={'numberOfDaysToSendEmail'}
                             name={'numberOfDaysToSendEmail'}
                             value={numberOfDaysToSendEmail}
+                            allowZero={true}
                             onChangeAction={handleNumberOfDaysToSendEmailChange}
                             required={'required'}
                             min={0}
@@ -132,12 +140,14 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                     </div>
 
                     <div className="row">
-                        <InputToggle
-                            label={'Email cc naar coach'}
-                            name={'mailCcToCoachWf'}
-                            value={Boolean(mailCcToCoachWf)}
-                            onChangeAction={handleMailCcToCoachWfChange}
-                        />
+                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email cc naar coach'}
+                                name={'mailCcToCoachWf'}
+                                value={Boolean(mailCcToCoachWf)}
+                                onChangeAction={handleMailCcToCoachWfChange}
+                            />
+                        ) : null}
                         <InputToggle
                             label={'Actief'}
                             name={'isActive'}

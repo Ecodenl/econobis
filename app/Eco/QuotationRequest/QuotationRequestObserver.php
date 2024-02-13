@@ -225,7 +225,7 @@ class QuotationRequestObserver
             $quotationRequestActionsLog->new_status_id = $quotationRequest->status_id;
             $quotationRequestActionsLog->save();
 
-            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->opportunity->status_id)->first();
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
             if ($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
                 $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                 $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);

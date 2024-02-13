@@ -8,6 +8,7 @@
 
 namespace App\Eco\Opportunity;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -42,8 +43,12 @@ class OpportunityObserver
     {
         if ($opportunity->isDirty('status_id'))
         {
-            $days = $opportunity->status->uses_wf ? $opportunity->status->number_of_days_to_send_email : 0;
-//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'opportunity')->where('campaign_id', $opportunity->intake->campaign_id)->where('opportunity_status_id', $opportunity->status_id)->first();
+            if($opportunity->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active){
+                $days = $campaignWorkflow->number_of_days_to_send_email;
+            } else {
+                $days = 0;
+            }
             $mailDate = Carbon::now()->addDays($days);
             $opportunity->date_planned_to_send_wf_email_status = $mailDate;
         }
@@ -53,9 +58,10 @@ class OpportunityObserver
     {
         if ($opportunity->isDirty('status_id'))
         {
-            if ($opportunity->status->uses_wf && $opportunity->status->number_of_days_to_send_email === 0){
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'opportunity')->where('campaign_id', $opportunity->intake->campaign_id)->where('opportunity_status_id', $opportunity->status_id)->first();
+            if ($opportunity->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
                 $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
-                $opportunityWorkflowHelper->processWorkflowEmail();
+                $opportunityWorkflowHelper->processWorkflowEmail($campaignWorkflow);
             }
         }
     }

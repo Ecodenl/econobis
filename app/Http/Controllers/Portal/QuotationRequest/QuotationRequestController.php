@@ -384,18 +384,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionPlannedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionPlannedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
@@ -414,18 +419,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionRecordedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionRecordedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
@@ -444,18 +454,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionReleasedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionReleasedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }

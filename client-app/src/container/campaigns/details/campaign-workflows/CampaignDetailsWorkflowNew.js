@@ -76,7 +76,6 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
     async function handleSubmit(event) {
         event.preventDefault();
 
-        //todo Patrick: uit ParticipantDetailsTerminateObligation.js
         let errors = {
             statusId: false,
             emailTemplatedIdWf: false,

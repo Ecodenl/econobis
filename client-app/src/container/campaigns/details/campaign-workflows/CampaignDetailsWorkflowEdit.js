@@ -53,7 +53,6 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     async function handleSubmit(event) {
         event.preventDefault();
 
-        //todo Patrick: uit ParticipantDetailsTerminateObligation.js
         let errors = {
             emailTemplatedIdWf: false,
             numberOfDaysToSendEmail: false,

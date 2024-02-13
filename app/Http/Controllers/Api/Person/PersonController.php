@@ -27,6 +27,7 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -219,6 +220,8 @@ class PersonController extends ApiController
     {
         $this->authorize('update', $person);
 
+        $duplicateHoomAccountIdName = Contact::where('hoom_account_id', $request['hoomAccountId'])->first() ? Contact::where('hoom_account_id', $request['hoomAccountId'])->first()->full_name : '';
+
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
@@ -234,8 +237,8 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
-            'hoomAccountId' => '',
-        ]);
+            'hoomAccountId' => 'unique:contacts,hoom_account_id,'.$person->contact_id,
+        ], ['hoomAccountId' => 'Er bestaat al een gebruiker met dit Hoom account id: ' . $duplicateHoomAccountIdName]);
 
         $personData = $request->validate([
             'initials' => '',

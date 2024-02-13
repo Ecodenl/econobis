@@ -51,14 +51,14 @@ function CampaignDetailsForm({ campaign, isLoading, hasError, fetchCampaignData 
             <CampaignInspectionFormGeneral campaign={campaign} fetchCampaignData={fetchCampaignData} />
             <CampaignWorkflowSettingFormGeneral campaign={campaign} fetchCampaignData={fetchCampaignData} />
             <CampaignDetailsWorkflows
-                workflowType={'opportunity'}
+                workflowForType={'opportunity'}
                 campaignId={campaign.id}
                 campaignName={campaign.name}
                 campaignWorkflows={campaign.campaignWorkflows}
                 fetchCampaignData={fetchCampaignData}
             />
             <CampaignDetailsWorkflows
-                workflowType={'quotationrequest'}
+                workflowForType={'quotationrequest'}
                 campaignId={campaign.id}
                 campaignName={campaign.name}
                 campaignWorkflows={campaign.campaignWorkflows}

@@ -320,13 +320,13 @@ class CampaignController extends ApiController
 
         return CampaignPeek::collection($campaigns);
     }
-    public function workflowStatuses(Campaign $campaign, $workflowType = null)
+    public function workflowStatuses(Campaign $campaign, $workflowForType = null)
     {
-        if($workflowType === 'opportunity'){
+        if($workflowForType === 'opportunity'){
             $existingOpportunityStatusIds = $campaign->campaignWorkflows()->get()->pluck('opportunity_status_id')->toArray();
             Log::info($existingOpportunityStatusIds);
             $workflowStatuses =  OpportunityStatus::orderBy('order')->get()->whereNotIn('id', $existingOpportunityStatusIds);
-        } else if ($workflowType === 'quotationrequest'){
+        } else if ($workflowForType === 'quotationrequest'){
             $existingQuotationRequestStatusIds = $campaign->campaignWorkflows()->get()->pluck('qotation_request_status_id')->toArray();
             $workflowStatuses =  QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('order')->get()->whereNotIn('id', $existingQuotationRequestStatusIds);
         } else {

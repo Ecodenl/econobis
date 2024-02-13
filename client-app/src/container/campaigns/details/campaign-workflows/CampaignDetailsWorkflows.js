@@ -9,11 +9,11 @@ import PanelHeader from '../../../../components/panel/PanelHeader';
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
-function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, campaignWorkflows, fetchCampaignData }) {
+function CampaignDetailsWorkflows({ workflowForType, campaignId, campaignName, campaignWorkflows, fetchCampaignData }) {
     const [showNew, setShowNew] = useState(false);
 
     const reducedCampaignWorkflows = campaignWorkflows.filter(campaignWorkflow => {
-        return campaignWorkflow.workflowForType === workflowType;
+        return campaignWorkflow.workflowForType === workflowForType;
     });
 
     function toggleShowNew() {
@@ -24,7 +24,7 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
         <Panel>
             <PanelHeader>
                 <span className="h5 text-bold">
-                    Workflow op {workflowType === 'opportunity' ? 'kans status' : 'kansactie status'}
+                    Workflow op {workflowForType === 'opportunity' ? 'kans status' : 'kansactie status'}
                 </span>
                 <a role="button" className="pull-right" onClick={toggleShowNew}>
                     <Icon size={14} icon={plus} />
@@ -45,7 +45,7 @@ function CampaignDetailsWorkflows({ workflowType, campaignId, campaignName, camp
                             campaignName={campaignName}
                             toggleShowNew={toggleShowNew}
                             fetchCampaignData={fetchCampaignData}
-                            workflowType={workflowType}
+                            workflowForType={workflowForType}
                         />
                     )}
                 </div>

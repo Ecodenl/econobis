@@ -9,11 +9,11 @@ import axios from 'axios';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
-function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, fetchCampaignData }) {
+function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType, fetchCampaignData }) {
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
-    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowType === 'opportunity' ? false : true);
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         statusId: false,
@@ -34,7 +34,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
             axios
                 .all([
                     EmailTemplateAPI.fetchEmailTemplatesPeek(),
-                    CampaignDetailsAPI.fetchCampaignWorkflowStatuses({ campaignId, workflowType }),
+                    CampaignDetailsAPI.fetchCampaignWorkflowStatuses({ campaignId, workflowForType }),
                 ])
                 .then(
                     axios.spread((emailtemplates, statusesToSelect) => {
@@ -43,7 +43,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                     })
                 );
         },
-        [campaignId, workflowType]
+        [campaignId, workflowForType]
     );
     // useEffect(function() {
     //     axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
@@ -111,7 +111,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
             data.append('statusId', statusId);
             data.append('emailTemplatedIdWf', emailTemplatedIdWf);
             data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
-            data.append('workflowForType', workflowType);
+            data.append('workflowForType', workflowForType);
             data.append('campaignId', campaignId);
             data.append('isActive', isActive == 1 ? 1 : 0);
             data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
@@ -175,7 +175,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowType, f
                             error={errors.numberOfDaysToSendEmail}
                             errorMessage={errorMessages.numberOfDaysToSendEmail}
                         />
-                        {workflowType === 'quotationrequest' ? (
+                        {workflowForType === 'quotationrequest' ? (
                             <InputToggle
                                 label={'Email cc naar coach'}
                                 name={'mailCcToCoachWf'}

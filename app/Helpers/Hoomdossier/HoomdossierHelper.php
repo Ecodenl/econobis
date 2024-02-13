@@ -31,6 +31,16 @@ class HoomdossierHelper
     }
 
     public function make() {
+        //check if there is a user with a hoom_account_id and the same email address
+        $thisContactEmail = $this->contact->primaryEmailAddress;
+
+        if(Contact::where('id', '!=', $thisContactEmail->contact_id)->whereNotNull('hoom_account_id')->whereHas('primaryEmailAddress', function ($query) use($thisContactEmail) {
+                $query->where('email', $thisContactEmail->email);
+            })->count() > 0) {
+            $errors = array("econobis" => ['Er bestaat al een gebruiker met dit e-mailadres en een Hoomdossier']);
+            throw ValidationException::withMessages($errors);
+        }
+        
         // Check if all necessary fields are filled
         $this->validateRequiredFields();
 

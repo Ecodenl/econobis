@@ -2,7 +2,9 @@
 
 namespace App\Helpers\Workflow;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -21,7 +23,7 @@ class OpportunityWorkflowHelper
 
     }
 
-    public function processWorkflowEmail(){
+    public function processWorkflowEmail(CampaignWorkflow $campaignWorkflow){
         set_time_limit(0);
 
         if (!$this->opportunity_status) {
@@ -35,7 +37,11 @@ class OpportunityWorkflowHelper
             return false;
         }
 
-        $emailTemplate = EmailTemplate::find($this->opportunity_status->email_template_id_wf);
+        if (!$campaignWorkflow->is_active) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($campaignWorkflow->email_template_id_wf);
         if (!$emailTemplate) {
             return false;
         }
@@ -44,7 +50,18 @@ class OpportunityWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+        $campaign = $this->opportunity->intake->campaign;
+        if ($campaign->default_workflow_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->default_workflow_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($this->contact->primaryEmailAddress);
         $this->mailWorkflow($emailTemplate, $mail);
         return true;
     }

@@ -61,7 +61,7 @@ class OpportunityObserver
             $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'opportunity')->where('campaign_id', $opportunity->intake->campaign_id)->where('opportunity_status_id', $opportunity->status_id)->first();
             if ($opportunity->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
                 $opportunityWorkflowHelper = new OpportunityWorkflowHelper($opportunity);
-                $opportunityWorkflowHelper->processWorkflowEmail();
+                $opportunityWorkflowHelper->processWorkflowEmail($campaignWorkflow);
             }
         }
     }

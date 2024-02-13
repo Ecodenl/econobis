@@ -3,10 +3,7 @@
 namespace App\Eco\Campaign;
 
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Eco\Opportunity\Campaign;
-use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityStatus;
-use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
@@ -32,8 +29,16 @@ class CampaignWorkflow extends Model
         if($this->workflow_for_type === "opportunity") {
             return $this->belongsTo(OpportunityStatus::class, 'opportunity_status_id');
         } else {
-            return $this->belongsTo(QuotationrequestStatus::class, 'quotation_request_status_id');
+            return $this->belongsTo(QuotationRequestStatus::class, 'quotation_request_status_id');
         }
+    }
+    public function opportunityStatus()
+    {
+        return $this->belongsTo(OpportunityStatus::class, 'opportunity_status_id');
+    }
+    public function quotationRequestStatus()
+    {
+        return $this->belongsTo(QuotationRequestStatus::class, 'quotation_request_status_id');
     }
 
     public function campaign()

@@ -2,7 +2,9 @@
 
 namespace App\Helpers\Workflow;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -21,7 +23,7 @@ class QuotationRequestWorkflowHelper
 
     }
 
-    public function processWorkflowEmail(){
+    public function processWorkflowEmail(CampaignWorkflow $campaignWorkflow){
         set_time_limit(0);
 
         if (!$this->quotationRequest_status) {
@@ -35,7 +37,11 @@ class QuotationRequestWorkflowHelper
             return false;
         }
 
-        $emailTemplate = EmailTemplate::find($this->quotationRequest_status->email_template_id_wf);
+        if (!$campaignWorkflow->is_active) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($campaignWorkflow->email_template_id_wf);
         if (!$emailTemplate) {
             return false;
         }
@@ -44,13 +50,23 @@ class QuotationRequestWorkflowHelper
             return false;
         }
 
-        $mail = Mail::to($this->contact->primaryEmailAddress);
-        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $this->quotationRequest_status->mail_cc_to_coach_wf) {
+        $campaign = $this->quotationRequest->opportunity->intake->campaign;
+        if ($campaign->default_workflow_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->default_workflow_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($this->contact->primaryEmailAddress);
+        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
             $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
         }
 
         $this->mailWorkflow($emailTemplate, $mail);
-
         return true;
     }
 

@@ -15,7 +15,7 @@ function CampaignInspectionFormGeneral({ campaign, permissions, fetchCampaignDat
     return (
         <Panel className={state.activeDiv} onMouseEnter={() => onDivEnter()} onMouseLeave={() => onDivLeave()}>
             <PanelHeader>
-                <span className="h5 text-bold">Buurtaanpak</span>
+                <span className="h5 text-bold">Portaal workflow instellingen</span>
             </PanelHeader>
             <PanelBody>
                 {state.showEdit && permissions.manageMarketing ? (

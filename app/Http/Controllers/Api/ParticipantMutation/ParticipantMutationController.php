@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
 {
-    public function store(RequestInput $requestInput)
+    public function store(RequestInput $requestInput, Request $request)
     {
         $this->authorize('manage', ParticipantMutation::class);
 
@@ -75,7 +75,14 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        if($request->get('differentTransactionCostsAmount')){
+            $participantMutation->transaction_costs_amount = $request->get('differentTransactionCostsAmount');
+        } else {
+            if (($participantMutation->participation->project->projectType->code_ref === 'loan' && $participantMutation->getOriginal('amount') != $participantMutation->amount)
+                || ($participantMutation->participation->project->projectType->code_ref !== 'loan' && $participantMutation->getOriginal('quantity') != $participantMutation->quantity)) {
+                $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+            }
+        }
 
         $result = $this->checkMutationAllowed($participantMutation);
 

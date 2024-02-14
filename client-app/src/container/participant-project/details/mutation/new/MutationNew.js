@@ -17,6 +17,7 @@ import ErrorModal from '../../../../../components/modal/ErrorModal';
 import ViewText from '../../../../../components/form/ViewText';
 import MoneyPresenter from '../../../../../helpers/MoneyPresenter';
 import calculateTransactionCosts from '../../../../../helpers/CalculateTransactionCosts';
+import InputText from '../../../../../components/form/InputText';
 
 class MutationFormNew extends Component {
     constructor(props) {
@@ -45,6 +46,7 @@ class MutationFormNew extends Component {
                     ? moment(this.props.projectDateEntry).format('YYYY-MM-DD')
                     : moment().format('YYYY-MM-DD'),
                 transactionCostsAmount: 0,
+                differentTransactionCostsAmount: null,
             },
             errors: {},
             errorMessage: {},
@@ -169,7 +171,7 @@ class MutationFormNew extends Component {
     };
 
     render() {
-        const { typeId, statusId } = this.state.participationMutation;
+        const { typeId, statusId, differentTransactionCostsAmount } = this.state.participationMutation;
 
         const { participantMutationStatuses, projectTypeCodeRef } = this.props;
 
@@ -286,18 +288,36 @@ class MutationFormNew extends Component {
                                     required={'required'}
                                     error={this.state.errors.statusId}
                                 />
+                            </div>
+                            <div className="row">
                                 {this.props.projectTransactionCostsCodeRef === 'none' ||
                                 (typeCodeRef !== 'first_deposit' &&
                                     typeCodeRef !== 'deposit' &&
                                     typeCodeRef !== 'withDrawal' &&
                                     typeCodeRef !== 'sell') ||
                                 statusId == '' ? null : (
-                                    <ViewText
-                                        label={'Transactiekosten (berekend)'}
-                                        // value={this.props.projectTransactionCostsAmount}
-                                        value={MoneyPresenter(calculateTransactionCostsAmount())}
-                                        className={'form-group col-sm-6 '}
-                                    />
+                                    <>
+                                        <ViewText
+                                            label={'Transactiekosten (berekend)'}
+                                            value={MoneyPresenter(calculateTransactionCostsAmount())}
+                                            className={'form-group col-sm-6 '}
+                                        />
+
+                                        <InputText
+                                            type={'number'}
+                                            label={'Transactiekosten (afwijkend)'}
+                                            id={'differentTransactionCostsAmount'}
+                                            name={'differentTransactionCostsAmount'}
+                                            labelClassName={
+                                                calculateTransactionCostsAmount() != differentTransactionCostsAmount
+                                                    ? 'text-danger'
+                                                    : ''
+                                            }
+                                            value={differentTransactionCostsAmount}
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                        />
+                                    </>
                                 )}
                             </div>
 

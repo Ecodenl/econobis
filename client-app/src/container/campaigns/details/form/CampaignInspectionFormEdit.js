@@ -81,7 +81,7 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
             <div>
                 <div className="row">
                     <InputReactSelect
-                        label={'Buurtaanpak afspraak e-mail template'}
+                        label={'Afspraak e-mail template'}
                         name={'inspectionPlannedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}
@@ -91,7 +91,7 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                     />
 
                     <InputReactSelect
-                        label={'Mailbox buurtaanpak e-mail bevestigingen'}
+                        label={'Mailbox e-mail bevestigingen'}
                         name={'inspectionPlannedMailboxId'}
                         options={mailboxAddresses}
                         optionName={'email'}
@@ -102,7 +102,7 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                 </div>
                 <div className="row">
                     <InputReactSelect
-                        label={'Buurtaanpak opname e-mail template'}
+                        label={'Opname e-mail template'}
                         name={'inspectionRecordedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}
@@ -113,7 +113,7 @@ function CampaignInspectionFormEdit({ campaign, fetchCampaignData, switchToView 
                 </div>
                 <div className="row">
                     <InputReactSelect
-                        label={'Buurtaanpak uitgebracht e-mail template'}
+                        label={'Uitgebracht e-mail template'}
                         name={'inspectionReleasedEmailTemplateId'}
                         options={emailtemplates}
                         optionName={'name'}

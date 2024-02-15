@@ -225,10 +225,14 @@ class QuotationRequestObserver
             $quotationRequestActionsLog->new_status_id = $quotationRequest->status_id;
             $quotationRequestActionsLog->save();
 
-            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
-            if ($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
-                $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
-                $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
+            // ProcesWorkflowEmail doen we alleen vanuit econobis. Indien deze status wijziging dus voorkomt uit portal, dan niet.
+            // In dat geval is er namelijk al een ander proces die email verstuurd bij bepaalde datum zetting die dan weer auutomatisch een status wijziging tot gevolg heeft.
+            if (!Auth::isPortalUser()) {
+                $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
+                if ($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
+                    $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+                    $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
+                }
             }
         }
     }

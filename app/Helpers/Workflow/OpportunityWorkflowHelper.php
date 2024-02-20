@@ -3,12 +3,15 @@
 namespace App\Helpers\Workflow;
 
 use App\Eco\Campaign\CampaignWorkflow;
+use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Opportunity\Opportunity;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 
 class OpportunityWorkflowHelper
@@ -105,6 +108,34 @@ class OpportunityWorkflowHelper
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
+        //log the mail
+        $mailbox = Mailbox::getDefault();
+
+        $email = new Email();
+        $email->mailbox_id = $mailbox->id;
+        $email->from = $mailbox->email;
+
+        if($this->contact && $this->contact->primaryEmailAddress) {
+            $email->to = [$this->contact->primaryEmailAddress->email];
+        }
+
+        $email->cc = [];
+        $email->bcc = [];
+        $email->subject = $subject;
+        $email->folder = 'sent';
+
+        if($this->opportunity) {
+            $email->opportunity_id = $this->opportunity->id;
+        }
+
+        $email->date_sent = new Carbon();;
+        $email->html_body = $htmlBody;
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        $email->contacts()->attach([$this->contact->id]);
+        //end log the mail
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

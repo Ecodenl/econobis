@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
+use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -514,6 +515,38 @@ class QuotationRequestController
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
+        //log the mail
+        $mailbox = Mailbox::getDefault();
+
+        $email = new Email();
+        $email->mailbox_id = $mailbox->id;
+        $email->from = $mailbox->email;
+
+        if($contact && $contact->primaryEmailAddress) {
+            $email->to = [$contact->primaryEmailAddress->email];
+        }
+
+        $email->cc = [];
+        $email->bcc = [];
+        $email->subject = $subject;
+        $email->folder = 'sent';
+
+        if($quotationRequest) {
+            $email->quotation_request_id = $quotationRequest->id;
+
+            if($quotationRequest->opportunity) {
+                $email->opportunity_id = $quotationRequest->opportunity->id;
+            }
+        }
+
+        $email->date_sent = new Carbon();
+        $email->html_body = $htmlBody;
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        $email->contacts()->attach([$contact->id]);
+        //end log the mail
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

@@ -73,15 +73,18 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
             <PanelHeader>
                 <span className="h5 text-bold">Projecten</span>
                 {financialOverview && !financialOverview.definitive && (
-                    <a role="button" className="pull-right" onClick={toggleShowNew}>
-                        <Icon size={14} icon={plus} />
-                    </a>
+                    <>
+                        <a role="button" className="pull-right" onClick={toggleShowNew}>
+                            <Icon size={14} icon={plus} />
+                        </a>
+                        <br />
+                        <small style={{ color: 'red', fontWeight: 'normal' }}>
+                            Je kan 1 waardestaat per administratie per jaar aanmaken. Verwijder alleen projecten waarvan
+                            je geen waardestaat wilt verzenden. Als een waardestaat eenmaal definitief is kan je geen
+                            projecten meer toevoegen voor betreffende administratie en jaar.
+                        </small>
+                    </>
                 )}
-                <br />
-                <small style={{ color: 'red', fontWeight: 'normal' }}>
-                    Je kan 1 waardestaat per administratie per jaar aanmaken. Verwijder alleen projecten waarvan je geen
-                    waardestaat wilt verzenden.
-                </small>
             </PanelHeader>
             <PanelBody>
                 <div className="col-md-12 margin-10-top">

@@ -14,7 +14,6 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
-use Dompdf\Options;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -228,10 +227,12 @@ class FinancialOverviewHelper
 
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $financialOverviewContact->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'waardestaat', $financialOverviewContact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'administratie', $financialOverviewContact->financialOverview->administration);
 
         $htmlBody = TemplateTableHelper::replaceTemplateTables($htmlBody, $financialOverviewContact->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'waardestaat', $financialOverviewContact);
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'portal');
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'contacten_portal');
         $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody, 'cooperatie');

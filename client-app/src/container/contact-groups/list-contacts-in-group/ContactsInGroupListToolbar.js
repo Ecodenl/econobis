@@ -1,4 +1,4 @@
-import React, {useContext, useState} from 'react';
+import React, { useContext, useState } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
@@ -11,17 +11,20 @@ import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
-import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
-import {hashHistory} from "react-router";
-import {EmailModalContext} from "../../../context/EmailModalContext";
+import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
+import { hashHistory } from 'react-router';
+import { EmailModalContext } from '../../../context/EmailModalContext';
+import MailboxAPI from '../../../api/mailbox/MailboxAPI';
+import ErrorModal from '../../../components/modal/ErrorModal';
 
 const ContactsInGroupListToolbar = ({
-                                        permissions,
-                                        contactGroupDetails,
-                                        blockUI,
-                                        unblockUI,
-                                        refreshContactsInGroupData,
-                                    }) => {
+    permissions,
+    contactGroupDetails,
+    blockUI,
+    unblockUI,
+    refreshContactsInGroupData,
+}) => {
+    const [showModalError, setShowModalError] = useState(false);
     const [showModalAddToGroup, setShowModalAddToGroup] = useState(false);
     const { openEmailSendModal } = useContext(EmailModalContext);
 
@@ -29,7 +32,11 @@ const ContactsInGroupListToolbar = ({
         setShowModalAddToGroup(false);
     };
 
-    const addPersonToGroup = (contactId) => {
+    const closeModalError = () => {
+        setShowModalError(false);
+    };
+
+    const addPersonToGroup = contactId => {
         const contact = {
             groupId: contactGroupDetails.id,
             contactId,
@@ -45,27 +52,39 @@ const ContactsInGroupListToolbar = ({
         setShowModalAddToGroup(!showModalAddToGroup);
     };
 
+    const toggleModalError = () => {
+        setShowModalError(!showModalError);
+    };
+
     const sendEmail = () => {
-        EmailGenericAPI.storeGroupMail(contactGroupDetails.id).then((payload) => {
-            openEmailSendModal(payload.data.id);
+        MailboxAPI.fetchMailboxesLoggedInUserPeek().then(payload => {
+            if (payload.data.data.length > 0) {
+                EmailGenericAPI.storeGroupMail(contactGroupDetails.id).then(payload => {
+                    console.log('mail test 2');
+                    console.log(payload);
+                    openEmailSendModal(payload.data.id);
+                });
+            } else {
+                toggleModalError();
+            }
         });
     };
 
     const getCSV = () => {
         blockUI();
         ContactGroupAPI.getCsv(contactGroupDetails.id)
-            .then((payload) => {
+            .then(payload => {
                 fileDownload(
                     payload.data,
                     'Groep-' +
-                    contactGroupDetails.name.substring(0, 20) +
-                    '-' +
-                    moment().format('YYYY-MM-DD HH:mm:ss') +
-                    '.csv'
+                        contactGroupDetails.name.substring(0, 20) +
+                        '-' +
+                        moment().format('YYYY-MM-DD HH:mm:ss') +
+                        '.csv'
                 );
                 unblockUI();
             })
-            .catch((error) => {
+            .catch(error => {
                 unblockUI();
             });
     };
@@ -78,19 +97,13 @@ const ContactsInGroupListToolbar = ({
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon
-                        iconName={'refresh'}
-                        onClickAction={refreshContactsInGroupData}
-                    />
+                    <ButtonIcon iconName={'refresh'} onClickAction={refreshContactsInGroupData} />
                     {(permissions.updateContactGroupMembers ||
-                            (permissions.updatePerson && permissions.updateOrganisation)) &&
+                        (permissions.updatePerson && permissions.updateOrganisation)) &&
                         contactGroupDetails.type &&
                         contactGroupDetails.type.id === 'static' && (
                             <div className="nav navbar-nav btn-group">
-                                <button
-                                    onClick={toggleModalAddToGroup}
-                                    className="btn btn-success btn-sm"
-                                >
+                                <button onClick={toggleModalAddToGroup} className="btn btn-success btn-sm">
                                     <Icon size={14} icon={plus} />
                                 </button>
                             </div>
@@ -100,11 +113,7 @@ const ContactsInGroupListToolbar = ({
                 </div>
             </div>
             <div className="col-md-4">
-                <h3
-                    className="text-center table-title"
-                    onClick={openGroupDetails}
-                    role="button"
-                >
+                <h3 className="text-center table-title" onClick={openGroupDetails} role="button">
                     Contacten in groep: {contactGroupDetails.name}
                 </h3>
             </div>
@@ -119,22 +128,29 @@ const ContactsInGroupListToolbar = ({
                     inspectionPersonTypeId={contactGroupDetails.inspectionPersonTypeId}
                 />
             )}
+
+            {showModalError && (
+                <ErrorModal
+                    closeModal={closeModalError}
+                    title={'Waarschuwing'}
+                    errorMessage={
+                        'Je bent nog niet toegevoegd aan een mailbox en kan geen groepsmail versturen. Toevoegen aan mailboxen kan via instellingen > mailboxen mits je de juiste rechten hebt!'
+                    }
+                />
+            )}
         </div>
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         contactGroupDetails: state.contactGroupDetails,
     };
 };
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(
-    mapStateToProps,
-    mapDispatchToProps
-)(ContactsInGroupListToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListToolbar);

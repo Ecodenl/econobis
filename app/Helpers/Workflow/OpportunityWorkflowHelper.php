@@ -129,7 +129,7 @@ class OpportunityWorkflowHelper
             $email->opportunity_id = $this->opportunity->id;
         }
 
-        $email->date_sent = new Carbon();;
+        $email->date_sent = new Carbon();
         $email->html_body = $htmlBody;
         $email->sent_by_user_id = Auth::id();
         $email->save();

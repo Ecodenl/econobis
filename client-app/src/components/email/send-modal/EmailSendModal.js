@@ -318,7 +318,7 @@ export default function EmailSendModal({ emailId, showModal, setShowModal }) {
                             onChangeAction={value => updateEmail({ manualContacts: value ? value : [] })}
                             allowCreate={false}
                             textToolTip={
-                                'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens. <br> Bij het gebruik van dit veld bij het versturen van een e-mail zal dit contact geen email ontvangen maar is deze mail wel te zien bij het contact rechtsboven bij “email verzonden”'
+                                'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens. <br> Bij het gebruik van dit veld bij het versturen van een e-mail zal dit contact geen email ontvangen maar is deze mail wel te zien bij het contact rechtsboven bij “email verzonden”.'
                             }
                         />
                     </div>

@@ -410,7 +410,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
@@ -445,7 +445,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionReleasedMail(QuotationRequest $quotationRequest)
@@ -480,7 +480,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     /**
@@ -491,7 +491,7 @@ class QuotationRequestController
      * @param QuotationRequest $quotationRequest
      * @param \Illuminate\Mail\PendingMail $mail
      */
-    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail): void
+    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail, Mailbox $mailbox): void
     {
         $htmlBody = $emailTemplate->html_body;
 
@@ -512,41 +512,33 @@ class QuotationRequestController
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
-        //log the mail
-        $mailbox = Mailbox::getDefault();
-
-        $email = new Email();
-        $email->mailbox_id = $mailbox->id;
-        $email->from = $mailbox->email;
-
+        //save the mail to send
         if($contact && $contact->primaryEmailAddress) {
+            $email = new Email();
+            $email->mailbox_id = $mailbox->id;
+            $email->from = $mailbox->email;
             $email->to = [$contact->primaryEmailAddress->email];
-        }
-
-        $email->cc = [];
-        $email->bcc = [];
-        $email->subject = $subject;
-        $email->folder = 'sent';
-
-        if($quotationRequest) {
-            $email->quotation_request_id = $quotationRequest->id;
-
-            if($quotationRequest->opportunity) {
-                $email->opportunity_id = $quotationRequest->opportunity->id;
+            $email->cc = [];
+            $email->bcc = [];
+            $email->subject = $subject;
+            $email->folder = 'sent';
+            if($quotationRequest) {
+                $email->quotation_request_id = $quotationRequest->id;
+                if($quotationRequest->opportunity) {
+                    $email->opportunity_id = $quotationRequest->opportunity->id;
+                }
             }
+            $email->date_sent = new Carbon();
+            $email->html_body = $htmlBody;
+            $email->sent_by_user_id = $quotationRequest->updated_by_id;
+            $email->save();
+
+            $email->contacts()->attach([$contact->id]);
         }
-
-        $email->date_sent = new Carbon();
-        $email->html_body = $htmlBody;
-        $email->sent_by_user_id = Auth::id();
-        $email->save();
-
-        $email->contacts()->attach([$contact->id]);
-        //end log the mail
+        //save the mail to send
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

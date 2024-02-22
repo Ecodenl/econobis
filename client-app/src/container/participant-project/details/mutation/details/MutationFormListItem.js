@@ -71,9 +71,7 @@ class MutationFormListItem extends Component {
                 amountFinal: props.participantMutation.amountFinal
                     ? props.participantMutation.amountFinal
                     : props.participantMutation.amount,
-                differentTransactionCostsAmount: props.participantMutation.transactionCostsAmount
-                    ? props.participantMutation.transactionCostsAmount
-                    : null,
+                differentTransactionCostsAmount: props.participantMutation.transactionCostsAmount,
                 createdWith: props.participantMutation.createdWith ? props.participantMutation.createdWith : '',
             },
             errors: {},
@@ -137,9 +135,7 @@ class MutationFormListItem extends Component {
                     amountFinal: this.props.participantMutation.amountFinal
                         ? this.props.participantMutation.amountFinal
                         : this.props.participantMutation.amount,
-                    differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount
-                        ? this.props.participantMutation.transactionCostsAmount
-                        : null,
+                    differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount,
                 },
             });
         }
@@ -194,9 +190,7 @@ class MutationFormListItem extends Component {
                     : this.props.projectDateEntry
                     ? this.props.projectDateEntry
                     : moment().format('YYYY-MM-DD'),
-                differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount
-                    ? this.props.participantMutation.transactionCostsAmount
-                    : null,
+                differentTransactionCostsAmount: this.props.participantMutation.transactionCostsAmount,
                 createdWith: this.props.participantMutation.createdWith
                     ? this.props.participantMutation.createdWith
                     : '',
@@ -213,9 +207,16 @@ class MutationFormListItem extends Component {
 
     handleInputChange = event => {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
 
+        if (name === 'differentTransactionCostsAmount') {
+            if (value) {
+                value = Number(value);
+            } else {
+                value = null;
+            }
+        }
         this.setState({
             participantMutation: {
                 ...this.state.participantMutation,

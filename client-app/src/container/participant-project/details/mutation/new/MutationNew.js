@@ -57,8 +57,16 @@ class MutationFormNew extends Component {
 
     handleInputChange = event => {
         const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
+        let value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
+        if (name === 'differentTransactionCostsAmount') {
+            if (value) {
+                value = Number(value);
+            } else {
+                value = null;
+            }
+        }
 
         this.setState(
             {
@@ -113,12 +121,14 @@ class MutationFormNew extends Component {
         const type = this.props.participantMutationTypes.find(
             participantMutationType => participantMutationType.id == participationMutation.typeId
         );
-        const typeCodeRef = type ? type.codeRef : null;
+        const mutationTypeCodeRef = type ? type.codeRef : null;
 
         const status = this.props.participantMutationStatuses.find(
             participantMutationStatus => participantMutationStatus.id == participationMutation.statusId
         );
         const statusCodeRef = status ? status.codeRef : null;
+
+        const projectTypeCodeRef = this.props.project ? this.props.project.typeCodeRef : null;
 
         const validatedForm = MutationNewValidateForm(
             participationMutation,
@@ -126,8 +136,8 @@ class MutationFormNew extends Component {
             errorMessage,
             hasErrors,
             statusCodeRef,
-            typeCodeRef,
-            this.props.projectTypeCodeRef
+            mutationTypeCodeRef,
+            projectTypeCodeRef
         );
 
         this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });
@@ -137,8 +147,8 @@ class MutationFormNew extends Component {
             const values = MutationNewSubmitHelper(
                 participationMutation,
                 statusCodeRef,
-                typeCodeRef,
-                this.props.projectTypeCodeRef
+                mutationTypeCodeRef,
+                projectTypeCodeRef
             );
 
             ParticipantMutationAPI.newParticipantMutation(values)
@@ -173,14 +183,29 @@ class MutationFormNew extends Component {
     render() {
         const { typeId, statusId, differentTransactionCostsAmount } = this.state.participationMutation;
 
-        const { participantMutationStatuses, projectTypeCodeRef } = this.props;
+        const {
+            project,
+            participantMutationStatuses,
+            participantBelongsToMembershipGroup,
+            participantChoiceMembership,
+        } = this.props;
+
+        const {
+            projectDateInterestBearingKwh,
+            currentBookWorth,
+            showQuestionAboutMembership,
+            useTransactionCostsWithMembership,
+            projectTransactionCostsCodeRef,
+        } = project;
+
+        const projectTypeCodeRef = project ? project.typeCodeRef : null;
 
         const participantMutationTypes = this.props.participantMutationTypes.filter(
             participantMutationType => participantMutationType.projectTypeCodeRef === projectTypeCodeRef
         );
 
         const type = participantMutationTypes.find(participantMutationType => participantMutationType.id == typeId);
-        const typeCodeRef = type ? type.codeRef : null;
+        const mutationTypeCodeRef = type ? type.codeRef : null;
 
         const status = participantMutationStatuses.find(
             participantMutationStatus => participantMutationStatus.id == statusId
@@ -191,33 +216,32 @@ class MutationFormNew extends Component {
             participantMutationType =>
                 participantMutationType.codeRef === 'first_deposit' ||
                 participantMutationType.codeRef === 'deposit' ||
-                participantMutationType.codeRef === 'withDrawal' ||
-                participantMutationType.codeRef === 'sell'
+                participantMutationType.codeRef === 'withDrawal'
         );
 
-        const { project } = this.props;
+        const { amountInterest, amountOption, amountGranted, amountFinal } = this.state.participationMutation;
 
         function calculateAmount() {
             let amountMutation = 0;
             let quantityMutation = calculateQuantity();
 
             if (projectTypeCodeRef === 'loan') {
-                if (participantMutationType.codeRef === 'interest') {
-                    amountMutation = this.state.participationMutation.amountInterest;
+                if (statusCodeRef === 'interest') {
+                    amountMutation = amountInterest;
                 }
-                if (participantMutationType.codeRef === 'option') {
-                    amountMutation = this.state.participationMutation.amountOption;
-                }
-
-                if (participantMutationType.codeRef === 'granted') {
-                    amountMutation = this.state.participationMutation.amountGranted;
+                if (statusCodeRef === 'option') {
+                    amountMutation = amountOption;
                 }
 
-                if (participantMutationType.codeRef === 'final') {
-                    amountMutation = this.state.participationMutation.amountFinal;
+                if (statusCodeRef === 'granted') {
+                    amountMutation = amountGranted;
+                }
+
+                if (statusCodeRef === 'final') {
+                    amountMutation = amountFinal;
                 }
             } else {
-                amountMutation = quantityMutation * project.currentBookWorth;
+                amountMutation = quantityMutation * currentBookWorth;
             }
 
             return amountMutation;
@@ -252,7 +276,7 @@ class MutationFormNew extends Component {
         }
         function calculateTransactionCostsAmount() {
             //Vragen over lid worden aan en Transactie kosten ook bij lidmaatschap Uit (keuze 1)
-            if (project.showQuestionAboutMembership && !project.useTransactionCostsWithMembership) {
+            if (showQuestionAboutMembership && !useTransactionCostsWithMembership) {
                 //Indien al lid of indien keuze 1 (wil lid worden) dan geen transactiekosten,
                 if (participantBelongsToMembershipGroup || participantChoiceMembership === 1) {
                     return 0;
@@ -290,11 +314,10 @@ class MutationFormNew extends Component {
                                 />
                             </div>
                             <div className="row">
-                                {this.props.projectTransactionCostsCodeRef === 'none' ||
-                                (typeCodeRef !== 'first_deposit' &&
-                                    typeCodeRef !== 'deposit' &&
-                                    typeCodeRef !== 'withDrawal' &&
-                                    typeCodeRef !== 'sell') ||
+                                {projectTransactionCostsCodeRef === 'none' ||
+                                (mutationTypeCodeRef !== 'first_deposit' &&
+                                    mutationTypeCodeRef !== 'deposit' &&
+                                    mutationTypeCodeRef !== 'withDrawal') ||
                                 statusId == '' ? null : (
                                     <>
                                         <ViewText
@@ -304,7 +327,7 @@ class MutationFormNew extends Component {
                                         />
 
                                         <InputText
-                                            type={'number'}
+                                            // type={'number'}
                                             label={'Transactiekosten (afwijkend)'}
                                             id={'differentTransactionCostsAmount'}
                                             name={'differentTransactionCostsAmount'}
@@ -314,6 +337,7 @@ class MutationFormNew extends Component {
                                                     : ''
                                             }
                                             value={differentTransactionCostsAmount}
+                                            allowZero={true}
                                             onChangeAction={this.handleInputChange}
                                             required={'required'}
                                         />
@@ -321,7 +345,7 @@ class MutationFormNew extends Component {
                                 )}
                             </div>
 
-                            {typeCodeRef === 'first_deposit' || typeCodeRef === 'deposit' ? (
+                            {mutationTypeCodeRef === 'first_deposit' || mutationTypeCodeRef === 'deposit' ? (
                                 <MutationNewDeposit
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
@@ -329,12 +353,12 @@ class MutationFormNew extends Component {
                                     errorMessage={this.state.errorMessage}
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
-                                    projectTypeCodeRef={this.props.projectTypeCodeRef}
-                                    projectDateInterestBearingKwh={this.props.projectDateInterestBearingKwh}
+                                    projectTypeCodeRef={projectTypeCodeRef}
+                                    projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                                 />
                             ) : null}
 
-                            {typeCodeRef === 'withDrawal' || typeCodeRef === 'sell' ? (
+                            {mutationTypeCodeRef === 'withDrawal' ? (
                                 <MutationNewWithDrawal
                                     statusCodeRef={statusCodeRef}
                                     {...this.state.participationMutation}
@@ -342,8 +366,8 @@ class MutationFormNew extends Component {
                                     errorMessage={this.state.errorMessage}
                                     handleInputChange={this.handleInputChange}
                                     handleInputChangeDate={this.handleInputChangeDate}
-                                    projectTypeCodeRef={this.props.projectTypeCodeRef}
-                                    projectDateInterestBearingKwh={this.props.projectDateInterestBearingKwh}
+                                    projectTypeCodeRef={projectTypeCodeRef}
+                                    projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                                 />
                             ) : null}
 
@@ -392,13 +416,9 @@ const mapStateToProps = state => {
         participantMutationTypes: state.systemData.participantMutationTypes,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         id: state.participantProjectDetails.id,
-        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
-        projectDateEntry: state.participantProjectDetails.project?.dateEntry,
-        projectDateInterestBearingKwh: state.participantProjectDetails.project?.dateInterestBearingKwh,
-        projectTransactionCostsAmount: state.participantProjectDetails.project.transactionCostsAmount,
-        projectTransactionCostsCodeRef: state.participantProjectDetails.project.transactionCostsCodeRef,
         project: state.participantProjectDetails.project,
         participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
+        participantChoiceMembership: state.participantProjectDetails.participantChoiceMembership,
     };
 };
 

@@ -29,7 +29,7 @@ export default function(participantMutation, projectTypeCodeRef) {
             }
             values.dateOption = participantMutation.dateOption;
         }
-        values.differentTransactionCostsAmount = null;
+        values.differentTransactionCostsAmount = participantMutation.differentTransactionCostsAmount;
     }
 
     if (orginalStatusCodeRef === 'option') {

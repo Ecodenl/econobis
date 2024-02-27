@@ -13,7 +13,6 @@ import { plus } from 'react-icons-kit/fa/plus';
 class MutationForm extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showNew: false,
             successNewMessage: '',

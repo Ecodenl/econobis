@@ -195,11 +195,9 @@ function MutationFormEditDeposit({
                             className={'col-sm-6 form-group'}
                             value={MoneyPresenter(calculateTransactionCostsAmount())}
                         />
-                        {participantMutationFromState.createdWith === 'econobis' &&
-                        (participantMutationFromProps.status.codeRef === 'option' ||
-                            participantMutationFromProps.status.codeRef === 'granted') ? (
+                        {participantMutationFromState.createdWith === 'econobis' ? (
                             <InputText
-                                type={'number'}
+                                // type={'number'}
                                 label={'Transactiekosten (afwijkend)'}
                                 id={'differentTransactionCostsAmount'}
                                 name={'differentTransactionCostsAmount'}
@@ -210,8 +208,13 @@ function MutationFormEditDeposit({
                                         : ''
                                 }
                                 value={participantMutationFromState.differentTransactionCostsAmount}
+                                allowZero={true}
                                 onChangeAction={handleInputChange}
                                 required={'required'}
+                                readOnly={
+                                    participantMutationFromProps.status.codeRef === 'final' &&
+                                    !participantMutationFromProps.changeAllowed
+                                }
                                 error={errors.differentTransactionCostsAmount}
                                 errorMessage={errorMessage.differentTransactionCostsAmount}
                             />

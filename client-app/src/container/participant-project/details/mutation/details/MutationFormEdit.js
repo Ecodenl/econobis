@@ -98,7 +98,7 @@ const MutationFormEdit = ({
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
-                    {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
+                    {type.codeRef === 'withDrawal' ? (
                         <MutationFormEditWithDrawal
                             readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}

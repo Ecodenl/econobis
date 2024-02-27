@@ -13,6 +13,7 @@ import {mailForward} from 'react-icons-kit/fa/mailForward';
 import {trash} from 'react-icons-kit/fa/trash';
 import {pencil} from 'react-icons-kit/fa/pencil';
 import {copy} from 'react-icons-kit/fa/copy';
+import {arrowLeft} from 'react-icons-kit/fa/arrowLeft';
 import {EmailModalContext} from "../../../context/EmailModalContext";
 
 export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
@@ -123,6 +124,16 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
                     title={(
                         <div className="row" style={{marginLeft: '-5px'}}>
                             <div className="col-md-12">
+                                <div className="btn-group margin-small margin-10-right" role="group">
+                                    <button
+                                        type="button"
+                                        title="Terug"
+                                        className={'btn btn-success btn-sm'}
+                                        onClick={() => setShowModal(false)}
+                                    >
+                                        <Icon icon={arrowLeft} size={13}/>
+                                    </button>
+                                </div>
                                 {email.folder !== 'concept' && (
                                     <div className="btn-group margin-small margin-10-right" role="group">
                                         <button
@@ -218,9 +229,11 @@ export default function EmailDetailsModal({emailId, showModal, setShowModal}) {
                     )}
                 >
                     {showEdit ? (
-                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes} setShowEdit={setShowEdit}/>
+                        <EmailDetailsModalEdit email={email} updateEmailAttributes={updateEmailAttributes}
+                                               setShowEdit={setShowEdit}/>
                     ) : (
-                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes} createContact={createContact}
+                        <EmailDetailsModalView email={email} updateEmailAttributes={updateEmailAttributes}
+                                               createContact={createContact}
                                                goTo={goTo} setShowEdit={setShowEdit}/>
                     )}
                 </Modal>

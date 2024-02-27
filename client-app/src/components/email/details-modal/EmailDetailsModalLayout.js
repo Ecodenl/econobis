@@ -152,7 +152,7 @@ export default function EmailDetailsModalLayout({
                     onChangeAction={value => updateEmailAttributes({ manualContacts: value ? value : [] })}
                     clearable={true}
                     textToolTip={
-                        'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.'
+                        'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.<br> Bij het gebruik van dit veld bij het versturen van een e-mail zal dit contact geen email ontvangen maar is deze mail wel te zien bij het contact rechtsboven bij “email verzonden.”'
                     }
                 />
             </div>

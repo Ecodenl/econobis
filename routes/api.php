@@ -607,7 +607,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+//        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');

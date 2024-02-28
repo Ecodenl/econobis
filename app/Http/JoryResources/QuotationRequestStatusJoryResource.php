@@ -31,6 +31,9 @@ class QuotationRequestStatusJoryResource extends JoryResource
 
         // Relations
         $this->relation('emailTemplateWorkflow');
+
+        // Attributes
+        $this->field('opportunity_action_name')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void

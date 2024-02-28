@@ -7,7 +7,16 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'name', 'usesWf', 'emailTemplateIdWf', 'numberOfDaysToSendEmail', 'order', 'mailCcToCoachWf'],
+                    fld: [
+                        'id',
+                        'name',
+                        'usesWf',
+                        'emailTemplateIdWf',
+                        'numberOfDaysToSendEmail',
+                        'order',
+                        'mailCcToCoachWf',
+                        'opportunityActionName',
+                    ],
                 },
             },
         });

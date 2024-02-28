@@ -28,6 +28,7 @@ class QuotationRequestStatusJoryResource extends JoryResource
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
         $this->field('order')->filterable()->sortable();
+        $this->field('opportunity_action_id')->filterable()->sortable();
 
         // Relations
         $this->relation('emailTemplateWorkflow');

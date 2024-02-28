@@ -17,6 +17,7 @@ export default {
                         'mailCcToCoachWf',
                         'opportunityActionName',
                     ],
+                    srt: ['opportunityActionId', 'order'],
                 },
             },
         });

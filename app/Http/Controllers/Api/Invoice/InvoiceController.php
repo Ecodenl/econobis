@@ -21,6 +21,7 @@ use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
+use App\Jobs\FinancialOverview\CreateAllFinancialOverviewContactsPost;
 use App\Jobs\Invoice\SendAllInvoices;
 use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -452,12 +453,7 @@ class InvoiceController extends ApiController
             return ($invoice->administration->uses_twinfield && $invoice->invoiceProducts()->whereNull('twinfield_ledger_code')->exists());
         });
 
-        $html
-            = '<style>
-.page-break {
-    page-break-after: always;
-}
-</style>';
+        $response = [];
 
         if ($validatedInvoices->count() > 0) {
             // Eerst hele zet in progress zetten
@@ -466,8 +462,22 @@ class InvoiceController extends ApiController
                     InvoiceHelper::invoiceInProgress($invoice);
                 }else{
                     abort(404, "Nota met ID " . $invoice->id . " heeft geen status Te verzenden");
-                }            }
+                }
+            }
 
+            $chunkNumber = 0;
+            $itemsPerChunk = 50;
+            $numberOfChunks = ceil($validatedInvoices->count() / $itemsPerChunk);
+            foreach ($validatedInvoices->chunk($itemsPerChunk) as $validatedInvoicesSet) {
+                $chunkNumber = $chunkNumber + 1;
+                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $validatedInvoicesSet, Auth::id());
+            }
+        }
+
+        return $response;
+
+        //todo: oude functionaliteit staat hieronder
+        /*
             $orderController = new OrderController;
 
             foreach ($validatedInvoices as $k => $invoice) {
@@ -538,6 +548,7 @@ class InvoiceController extends ApiController
         header('Access-Control-Expose-Headers: X-Filename');
 
         return $pdfOutput->output();
+        */
     }
 
     public function download(Invoice $invoice)

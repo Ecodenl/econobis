@@ -22,13 +22,15 @@ const HousingFileSpecificationsListHead = props => {
                     </div>
                 </th>
             ) : null}
+            <DataTableHeadTitleAndSort sortColumn={'typeBrand'} title={'Type/merk'} width={'10%'} setSorts={setSorts} />
+
             <DataTableHeadTitleAndSort
                 sortColumn={'fullName'}
                 title={'Contact'}
-                width={props.showCheckboxList ? '12%' : '15%'}
+                width={props.showCheckboxList ? '12%' : '10%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'15%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'5%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort

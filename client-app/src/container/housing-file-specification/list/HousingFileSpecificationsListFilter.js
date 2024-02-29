@@ -5,6 +5,7 @@ import moment from 'moment';
 
 import {
     clearFilterHousingFileSpecifications,
+    setFilterHousingFileSpecificationTypeBrand,
     setFilterHousingFileSpecificationFullName,
     setFilterHousingFileSpecificationPostalCode,
     setFilterHousingFileSpecificationCity,
@@ -20,6 +21,14 @@ import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/Da
 const HousingFileSpecificationsListFilter = props => {
     const onAddressChange = e => {
         props.setFilterHousingFileSpecificationAddress(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onTypeBrandChange = e => {
+        props.setFilterHousingFileSpecificationTypeBrand(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -91,6 +100,14 @@ const HousingFileSpecificationsListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.typeBrand.data}
+                    onChange={onTypeBrandChange}
+                />
+            </th>
             <th>
                 <input
                     type="text"
@@ -172,6 +189,7 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
             clearFilterHousingFileSpecifications,
+            setFilterHousingFileSpecificationTypeBrand,
             setFilterHousingFileSpecificationFullName,
             setFilterHousingFileSpecificationPostalCode,
             setFilterHousingFileSpecificationCity,

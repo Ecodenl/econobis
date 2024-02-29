@@ -24,7 +24,7 @@ use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\Excel\HousingFileExcel2Helper;
-use App\Helpers\Excel\HousingFileExcel2SpecificationsHelper;
+use App\Helpers\Excel\HousingFileExcelSpecificationsHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\HousingFileSpecification\Grid\RequestQuery;
 use App\Http\Resources\HousingFile\GridHousingFileSpecification;
@@ -132,7 +132,7 @@ class HousingFileSpecificationController extends ApiController
 
         $housingFileSpecifications->load(['housingFile.address', 'housingFile.address.contact', 'status', 'floor', 'side']);
 
-        $housingFileExcelSpecificationsHelper = new HousingFileExcel2SpecificationsHelper($housingFileSpecifications);
+        $housingFileExcelSpecificationsHelper = new HousingFileExcelSpecificationsHelper($housingFileSpecifications);
 
         return $housingFileExcelSpecificationsHelper->downloadExcel();
     }

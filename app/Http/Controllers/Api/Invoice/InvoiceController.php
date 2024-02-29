@@ -21,7 +21,7 @@ use App\Http\Resources\Invoice\FullInvoiceProduct;
 use App\Http\Resources\Invoice\GridInvoice;
 use App\Http\Resources\Invoice\InvoicePeek;
 use App\Http\Resources\Invoice\SendInvoice;
-use App\Jobs\FinancialOverview\CreateAllFinancialOverviewContactsPost;
+use App\Jobs\Invoice\CreateAllInvoicesPost;
 use App\Jobs\Invoice\SendAllInvoices;
 use App\Jobs\Invoice\SendInvoiceNotifications;
 use Barryvdh\DomPDF\Facade\Pdf;

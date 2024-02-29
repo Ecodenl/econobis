@@ -30,9 +30,6 @@ class HousingFileExcel2SpecificationsHelper
 
         $headerData = [];
 
-//        $headerData[] = 'Woningspecificatie ID';
-//        $headerData[] = 'Contact ID';
-//        $headerData[] = 'Woningdossier ID';
         $headerData[] = 'Adres';
         $headerData[] = 'Postcode';
         $headerData[] = 'Woonplaats';

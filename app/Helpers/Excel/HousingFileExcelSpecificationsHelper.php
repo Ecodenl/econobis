@@ -13,32 +13,34 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class HousingFileExcelSpecificationsHelper
 {
-    private $housingFiles;
+    private $housingFileSpecifications;
 
-    public function __construct($housingFiles)
+    public function __construct($housingFileSpecifications)
     {
-        $this->housingFiles = $housingFiles;
+        $this->housingFileSpecifications = $housingFileSpecifications;
     }
 
     public function downloadExcel()
     {
-        if($this->housingFiles->count() === 0){
-            abort(403, 'Geen woningdossiers specificaties aanwezig in selectie');
+        if($this->housingFileSpecifications->count() === 0){
+            abort(403, 'Geen woningdossier specificaties aanwezig in selectie');
         }
 
         $completeData = [];
 
         $headerData = [];
 
-        $headerData[] = 'Woningspecificatie ID';
-        $headerData[] = 'Contact ID';
-        $headerData[] = 'Woningdossier ID';
+        $headerData[] = 'Adres';
+        $headerData[] = 'Postcode';
+        $headerData[] = 'Woonplaats';
         $headerData[] = 'Maatregel categorie';
         $headerData[] = 'Maatregel';
         $headerData[] = 'Status';
         $headerData[] = 'Datum realisatie';
+        $headerData[] = 'Waarde';
         $headerData[] = 'Verdieping';
         $headerData[] = 'Zijde';
+        $headerData[] = 'Type/merk';
         $headerData[] = 'Uitvoering';
         $headerData[] = 'Besparing gas';
         $headerData[] = 'Besparing elektriciteit';
@@ -50,27 +52,28 @@ class HousingFileExcelSpecificationsHelper
         $typeOfExecutionOptions['Z'] = 'Zelf doen';
         $typeOfExecutionOptions['L'] = 'Laten doen';
 
-        foreach ($this->housingFiles->chunk(300) as $chunk) {
-            foreach ($chunk as $housingFile) {
-                foreach($housingFile->housingFileSpecifications as $housingFileSpecifications) {
-                    $rowData = [];
-                    //$rowData[0] = $housingFile->address->contact ? $housingFile->address->contact->full_name : '';
-                    $rowData[0] = $housingFileSpecifications->id; //'Woningspecificatie ID'
-                    $rowData[1] = $housingFile->address->contact ? $housingFile->address->contact->id : ''; //'Contact ID'
-                    $rowData[2] = $housingFile->id; //'Woningdossier ID'
-                    $rowData[3] = $housingFileSpecifications->measure ? $housingFileSpecifications->measure->name : ''; //'Maatregel categorie'
-                    $rowData[4] = ($housingFileSpecifications->measure && $housingFileSpecifications->measure->measureCategory) ? $housingFileSpecifications->measure->measureCategory->name : ''; //'Maatregel'
-                    $rowData[5] = $housingFileSpecifications->status ? $housingFileSpecifications->status->name : ''; //'Status'
-                    $rowData[6] = $housingFileSpecifications->measure_date; //'Datum realisatie'
-                    $rowData[7] = $housingFileSpecifications->floor ? $housingFileSpecifications->floor->name : ''; //'Verdieping'
-                    $rowData[8] = $housingFileSpecifications->side ? $housingFileSpecifications->side->name : ''; //'Zijde'
-                    $rowData[9] = $housingFileSpecifications->type_of_execution ? $typeOfExecutionOptions[$housingFileSpecifications->type_of_execution] : 'Onbekend'; //'Uitvoering'
-                    $rowData[10] = $housingFileSpecifications->savings_gas; //'Savings gas'
-                    $rowData[11] = $housingFileSpecifications->savings_electricity; //'Savings elektriciteit'
-                    $rowData[12] = $housingFileSpecifications->co2_savings; //'Savings Co2 '
+        foreach ($this->housingFileSpecifications->chunk(300) as $chunk) {
+            foreach ($chunk as $housingFileSpecification) {
+                $housingFile = $housingFileSpecification->housingFile;
+                $rowData = [];
 
-                    $completeData[] = $rowData;
-                }
+                $rowData[0] = $housingFile->address ? $housingFile->address->fullAddress : '';
+                $rowData[1] = $housingFile->address ? $housingFile->address->postal_code : '';
+                $rowData[2] = $housingFile->address ? $housingFile->address->city : '';
+                $rowData[3] = $housingFileSpecification->measure ? $housingFileSpecification->measure->name : ''; //'Maatregel categorie'
+                $rowData[4] = ($housingFileSpecification->measure && $housingFileSpecification->measure->measureCategory) ? $housingFileSpecification->measure->measureCategory->name : ''; //'Maatregel'
+                $rowData[5] = $housingFileSpecification->status ? $housingFileSpecification->status->name : ''; //'Status'
+                $rowData[6] = $housingFileSpecification->measure_date; //'Datum realisatie'
+                $rowData[7] = $housingFileSpecification->answer;
+                $rowData[8] = $housingFileSpecification->floor ? $housingFileSpecification->floor->name : ''; //'Verdieping'
+                $rowData[9] = $housingFileSpecification->side ? $housingFileSpecification->side->name : ''; //'Zijde'
+                $rowData[10] = $housingFileSpecification->type_brand;
+                $rowData[11] = $housingFileSpecification->type_of_execution ? $typeOfExecutionOptions[$housingFileSpecification->type_of_execution] : 'Onbekend'; //'Uitvoering'
+                $rowData[12] = $housingFileSpecification->savings_gas; //'Savings gas'
+                $rowData[13] = $housingFileSpecification->savings_electricity; //'Savings elektriciteit'
+                $rowData[14] = $housingFileSpecification->co2_savings; //'Savings Co2 '
+
+                $completeData[] = $rowData;
             }
         }
 

@@ -137,7 +137,7 @@ class CreateAllInvoicesPost implements ShouldQueue
         }else{
             $jobLog->value = "Notas (" . ($this->countValidatedInvoicesSet) . ") gemaakt voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ") (id: " . $InvoicePost->id . ").";
         }
-        $jobLog->job_category_id = 'create-invoice-contact-post';
+        $jobLog->job_category_id = 'create-invoices-post';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
@@ -157,7 +157,7 @@ class CreateAllInvoicesPost implements ShouldQueue
     {
         $jobLog = new JobsLog();
         $jobLog->value = "Notas maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ")";
-        $jobLog->job_category_id = 'create-invoice-contact-post';
+        $jobLog->job_category_id = 'create-invoices-post';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 

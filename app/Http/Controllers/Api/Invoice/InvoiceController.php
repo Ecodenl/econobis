@@ -470,7 +470,7 @@ class InvoiceController extends ApiController
             $numberOfChunks = ceil($validatedInvoices->count() / $itemsPerChunk);
             foreach ($validatedInvoices->chunk($itemsPerChunk) as $validatedInvoicesSet) {
                 $chunkNumber = $chunkNumber + 1;
-                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $validatedInvoicesSet, Auth::id());
+                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $invoice->id, $validatedInvoicesSet, Auth::id());
             }
         }
 

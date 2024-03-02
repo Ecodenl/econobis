@@ -257,6 +257,7 @@ class ProjectRevenueController extends ApiController
         $project = $projectRevenue->project;
 
         $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
+        $dateEnd = Carbon::parse($projectRevenue->date_end)->format('Y-m-d');
         $projectType = $project->projectType;
         $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
@@ -278,16 +279,28 @@ class ProjectRevenueController extends ApiController
                 $this->saveDistribution($projectRevenue, $participant, $closing);
             }
             $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
-            if($projectRevenue->category->code_ref == 'revenueEuro'
-                && ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital')) {
-                foreach($projectRevenue->distribution as $distribution) {
-                    $distribution->calculator()->runRevenueCapitalResult();
-                    $distribution->save();
+            if($projectRevenue->category->code_ref == 'revenueEuro'){
+                if ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
+                    foreach($projectRevenue->distribution as $distribution) {
+                        $distribution->calculator()->runRevenueCapitalResult();
+                        $distribution->save();
+                    }
+                    foreach($projectRevenue->distribution as $distribution) {
+                        if($distribution->payout == 0)
+                        {
+                            $distribution->forceDelete();
+                        }
+                    }
                 }
-                foreach($projectRevenue->distribution as $distribution) {
-                    if($distribution->payout == 0)
-                    {
-                        $distribution->forceDelete();
+                if ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation') {
+                    foreach ($projectRevenue->distribution as $distribution) {
+                        if ($distribution->status == 'concept'
+                            && $distribution->participation->date_terminated != null
+                            && $distribution->participation->date_terminated >= $dateBegin
+                            && $distribution->participation->date_terminated < $dateEnd) {
+//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
+                            $distribution->forceDelete();
+                        }
                     }
                 }
             }

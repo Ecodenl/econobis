@@ -297,7 +297,7 @@ class ProjectRevenueController extends ApiController
                         if ($distribution->status == 'concept'
                             && $distribution->participation->date_terminated != null
                             && $distribution->participation->date_terminated >= $dateBegin
-                            && $distribution->participation->date_terminated < $dateEnd) {
+                            && $distribution->participation->date_terminated <= $dateEnd) {
 //                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
                             $distribution->forceDelete();
                         }

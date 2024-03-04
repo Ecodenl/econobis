@@ -211,7 +211,7 @@ class ParticipationProjectController extends ApiController
 
     public function show(ParticipantProject $participantProject)
     {
-        set_time_limit(60);
+        set_time_limit(120);
 
         $this->authorize('view', ParticipantProject::class);
 

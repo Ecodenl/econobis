@@ -180,15 +180,15 @@ class RevenuePartsKwh extends Model
 
         if($yearEnd === $yearBegin) {
             $year = $yearBegin;
-            $maxProjectNameLength = 181 - strlen($reportType);
-            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
+            $maxProjectNameLength = 179 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
         } else {
             $year = $yearBegin . '-' . $yearEnd;
-            $maxProjectNameLength = 176 - strlen($reportType);
-            $administrationNameAndProjectNameSubstring = substr($administrationName . " " . $projectName, 0, $maxProjectNameLength);
+            $maxProjectNameLength = 174 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
         }
 
-        $defaultDocumentName = $reportType . " " . $administrationNameAndProjectNameSubstring . " " . $year;
+        $defaultDocumentName = $reportType . " - " . $administrationNameAndProjectNameSubstring . " " . $year;
 
         return $defaultDocumentName;
     }

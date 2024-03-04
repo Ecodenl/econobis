@@ -244,6 +244,7 @@ class ParticipantProject extends Model
             : null;
         if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
             return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
+//            return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
 
         $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');

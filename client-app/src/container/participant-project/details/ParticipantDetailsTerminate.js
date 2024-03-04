@@ -24,6 +24,7 @@ const ParticipantDetailsTerminate = ({
         moment(participantProject.dateTerminatedAllowedFrom)
             .subtract(1, 'day')
             .format('Y-MM-DD')
+        // moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
         moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
@@ -133,6 +134,7 @@ const ParticipantDetailsTerminate = ({
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
                         disabledBefore={moment(dateTerminatedAllowedFrom).subtract(1, 'day')}
+                        // disabledBefore={dateTerminatedAllowedFrom}
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}

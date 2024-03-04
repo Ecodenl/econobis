@@ -28,6 +28,7 @@ const ParticipantDetailsTerminateObligation = ({
         moment(participantProject.dateTerminatedAllowedFrom)
             .subtract(1, 'day')
             .format('Y-MM-DD')
+        // moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
         moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
@@ -39,6 +40,11 @@ const ParticipantDetailsTerminateObligation = ({
     const [distributionTypeId, setDistributionTypeId] = useState('inPossessionOf');
     const [dateReference, setDateReference] = useState(dateTerminated);
     const [dateBegin, setDateBegin] = useState(dateTerminatedAllowedFrom);
+    // const [dateBegin, setDateBegin] = useState(
+    //     moment(dateTerminatedAllowedFrom)
+    //         .add(1, 'day')
+    //         .format('Y-MM-DD')
+    // );
     const [dateEnd, setDateEnd] = useState(
         moment(dateTerminatedAllowedFrom)
             .add(1, 'year')
@@ -49,6 +55,14 @@ const ParticipantDetailsTerminateObligation = ({
                   .add(1, 'year')
                   .subtract(1, 'day')
                   .format('Y-MM-DD')
+        // moment(dateTerminatedAllowedFrom)
+        //     .add(1, 'year')
+        //     .format('Y-MM-DD') > participantProject.dateTerminatedAllowedTo
+        //     ? participantProject.dateTerminatedAllowedTo
+        //     : moment(dateTerminatedAllowedFrom)
+        //         .add(1, 'year')
+        //         .subtract(1, 'day')
+        //         .format('Y-MM-DD')
     );
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
@@ -261,6 +275,7 @@ const ParticipantDetailsTerminateObligation = ({
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
                         disabledBefore={moment(dateTerminatedAllowedFrom).subtract(1, 'day')}
+                        // disabledBefore={dateTerminatedAllowedFrom}
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}

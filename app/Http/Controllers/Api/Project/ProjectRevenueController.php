@@ -269,6 +269,8 @@ class ProjectRevenueController extends ApiController
                     $query->whereNull('date_terminated')
                         ->orWhere('date_terminated',  '>=', $dateBegin);
                 })
+//                ->whereNotNull('date_register')
+//                ->where('date_register',  '<', $dateEnd)
                 ->where(function ($query) use($mutationType, $mutationStatusFinal) {
                     $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
                         $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
@@ -294,12 +296,17 @@ class ProjectRevenueController extends ApiController
                 }
                 if ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation') {
                     foreach ($projectRevenue->distribution as $distribution) {
-                        if ($distribution->status == 'concept'
-                            && $distribution->participation->date_terminated != null
-                            && $distribution->participation->date_terminated >= $dateBegin
-                            && $distribution->participation->date_terminated <= $dateEnd) {
+                        if ($distribution->status == 'concept'){
+                            if($distribution->payout == 0)
+                            {
+//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met payout 0 en 1e ingangsdatum: ' . Carbon::parse($distribution->participation->date_register)->format('Y-m-d'));
+                                $distribution->forceDelete();
+                            } else if ($distribution->participation->date_terminated != null
+                                && $distribution->participation->date_terminated >= $dateBegin
+                                && $distribution->participation->date_terminated <= $dateEnd) {
 //                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
-                            $distribution->forceDelete();
+                                $distribution->forceDelete();
+                            }
                         }
                     }
                 }

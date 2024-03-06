@@ -43,6 +43,8 @@ class FinancialOverviewProjectController extends Controller
 
     public function store(RequestInput $input, Request $request)
     {
+        set_time_limit(300);
+
         $this->authorize('manage', FinancialOverview::class);
 
         $financialOverview = FinancialOverview::find($request->get('financialOverviewId'));

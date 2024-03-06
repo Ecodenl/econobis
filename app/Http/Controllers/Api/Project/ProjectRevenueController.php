@@ -255,12 +255,21 @@ class ProjectRevenueController extends ApiController
     {
         set_time_limit(300);
         $project = $projectRevenue->project;
+        $revenueCategory = $projectRevenue->category->code_ref;
 
         $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
         $dateEnd = Carbon::parse($projectRevenue->date_end)->format('Y-m-d');
         $projectType = $project->projectType;
-        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $projectType->id)->first()->id;
-        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')
+            ->where('project_type_id', $projectType->id)
+            ->first()
+            ->id;
+
+        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')
+            ->first())
+            ->id;
+
         if($projectRevenue->participant){
             $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
         } else {
@@ -269,62 +278,27 @@ class ProjectRevenueController extends ApiController
                     $query->whereNull('date_terminated')
                         ->orWhere('date_terminated',  '>=', $dateBegin);
                 })
-//                ->whereNotNull('date_register')
-//                ->where('date_register',  '<', $dateEnd)
-                ->where(function ($query) use($mutationType, $mutationStatusFinal) {
-                    $query->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
-                        $query->where('type_id', $mutationType)->where('status_id', $mutationStatusFinal);
-                    });
+                ->where('date_register',  '<', $dateEnd)
+                ->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
+                    $query->where('type_id', $mutationType)
+                        ->where('status_id', $mutationStatusFinal);
                 })->get();
 
             foreach ($participants as $participant) {
                 $this->saveDistribution($projectRevenue, $participant, $closing);
             }
-            $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
-            if($projectRevenue->category->code_ref == 'revenueEuro'){
-                if ($projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
-                    foreach($projectRevenue->distribution as $distribution) {
-                        $distribution->calculator()->runRevenueCapitalResult();
-                        $distribution->save();
-                    }
-                    foreach($projectRevenue->distribution as $distribution) {
-                        if($distribution->payout == 0)
-                        {
-                            $distribution->forceDelete();
-                        }
-                    }
-                }
-                if ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation') {
-                    foreach ($projectRevenue->distribution as $distribution) {
-                        if ($distribution->status == 'concept'){
-                            if($distribution->payout == 0)
-                            {
-//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met payout 0 en 1e ingangsdatum: ' . Carbon::parse($distribution->participation->date_register)->format('Y-m-d'));
-                                $distribution->forceDelete();
-                            } else if ($distribution->participation->date_terminated != null
-                                && $distribution->participation->date_terminated >= $dateBegin
-                                && $distribution->participation->date_terminated <= $dateEnd) {
-//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
-                                $distribution->forceDelete();
-                            }
-                        }
-                    }
-                }
+
+            $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)
+                ->first())
+                ->code_ref;
+
+            if (in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])) {
+                $this->processCapitalDistribution($projectRevenue, $revenueCategory);
+            }
+            if (in_array($projectTypeCodeRef, ['loan', 'obligation'])) {
+                $this->processLoanOrDistribution($projectRevenue, $dateBegin, $dateEnd, $revenueCategory);
             }
 
-            if($projectRevenue->category->code_ref == 'redemptionEuro'
-                && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
-                foreach($projectRevenue->distribution as $distribution) {
-                    $distribution->calculator()->runRedemptionEuro();
-                    $distribution->save();
-                }
-                foreach($projectRevenue->distribution as $distribution) {
-                    if($distribution->payout == 0)
-                    {
-                        $distribution->forceDelete();
-                    }
-                }
-            }
         }
 
     }
@@ -1112,6 +1086,63 @@ class ProjectRevenueController extends ApiController
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
+    }
+
+    /**
+     * @param ProjectRevenue $projectRevenue
+     * @return mixed
+     */
+    private function processCapitalDistribution(ProjectRevenue $projectRevenue, string $revenueCategory): void
+    {
+        if($revenueCategory == 'revenueEuro'){
+            $projectRevenue->distribution->each(function ($distribution) {
+                $distribution->calculator()->runRevenueCapitalResult();
+                $distribution->save();
+            });
+            $projectRevenue->distribution->each(function ($distribution) {
+                if ($distribution->payout == 0) {
+                    $distribution->forceDelete();
+                }
+            });
+        }
+    }
+
+    /**
+     * @param ProjectRevenue $projectRevenue
+     * @param string $dateBegin
+     * @param string $dateEnd
+     * @return mixed
+     */
+    private function processLoanOrDistribution(ProjectRevenue $projectRevenue, string $dateBegin, string $dateEnd, string $revenueCategory): void
+    {
+        if($revenueCategory == 'revenueEuro') {
+            $projectRevenue->distribution->each(function ($distribution) use ($dateBegin, $dateEnd) {
+                if ($distribution->status == 'concept') {
+                    if ($distribution->payout == 0) {
+//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met payout 0 en 1e ingangsdatum: ' . Carbon::parse($distribution->participation->date_register)->format('Y-m-d'));
+                        $distribution->forceDelete();
+                    } else if ($distribution->participation->date_terminated != null
+                        && $distribution->participation->date_terminated >= $dateBegin
+                        && $distribution->participation->date_terminated <= $dateEnd) {
+//                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
+                        $distribution->forceDelete();
+                    }
+                }
+            });
+        }
+        if($revenueCategory == 'redemptionEuro') {
+            $projectRevenue->distribution->each(function ($distribution) {
+                $distribution->calculator()->runRedemptionEuro();
+                $distribution->save();
+            });
+            $projectRevenue->distribution->each(function ($distribution) {
+                if($distribution->payout == 0)
+                {
+                    $distribution->forceDelete();
+                }
+            });
+        }
+
     }
 
 }

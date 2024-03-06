@@ -158,11 +158,13 @@ const ParticipantDetailsTerminate = ({
                         />
                     </div>
                 ) : null}
-                <p className={'has-error-message'}>
-                    LET OP: zodra een deelname beëindigd is zal deze NOOIT meer in nieuw aangemaakte opbrengst
-                    verdelingen voorkomen, ook niet als je een nieuwe opbrengst verdeling aanmaakt op de datum voor de
-                    beëindiging.
-                </p>
+                {projectTypeCodeRef === 'loan' ? (
+                    <p className={'has-error-message'}>
+                        LET OP: zodra een deelname beëindigd is zal deze NOOIT meer in nieuw aangemaakte opbrengst
+                        verdelingen voorkomen, ook niet als je een nieuwe opbrengst verdeling aanmaakt op de datum voor
+                        de beëindiging.
+                    </p>
+                ) : null}
             </Modal>
         </>
     );

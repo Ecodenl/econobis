@@ -65,6 +65,8 @@ class FinancialOverviewController extends Controller
 
     public function destroy(FinancialOverview $financialOverview)
     {
+        set_time_limit(120);
+
         $this->authorize('manage', FinancialOverview::class);
 
         try {
@@ -88,6 +90,8 @@ class FinancialOverviewController extends Controller
 
     public function createProjectsForFinancialOverview(FinancialOverview $financialOverview)
     {
+        set_time_limit(600);
+
         $projects = $this->getNewProjectsForFinancialOverview($financialOverview);
         if(count($projects) == 0){
             $financialOverview->status_id = 'concept';

@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class CostCenterController extends Controller

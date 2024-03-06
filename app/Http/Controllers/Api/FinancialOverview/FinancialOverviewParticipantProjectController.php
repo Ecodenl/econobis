@@ -62,8 +62,8 @@ class FinancialOverviewParticipantProjectController extends Controller
      */
     protected function createFinancialOverviewParticipantProjects(ParticipantProject $participant, Carbon $startDate, Carbon $endDate, FinancialOverviewProject $financialOverviewProject)
     {
-        $startValue = $this->calculateParticipationsValue($participant, $startDate);
-        $endValue = $this->calculateParticipationsValue($participant, $endDate);
+        $startValue = $this->calculateParticipationsValue($participant, $startDate, $startDate);
+        $endValue = $this->calculateParticipationsValue($participant, $endDate, $endDate->addDay());
 
         if ($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
             || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0) {
@@ -92,14 +92,14 @@ class FinancialOverviewParticipantProjectController extends Controller
 
     }
 
-    protected function calculateParticipationsValue($participant, $dateReference)
+    protected function calculateParticipationsValue($participant, $dateReference1, $dateReference2)
     {
         $projectTypeCodeRef = (ProjectType::where('id', $participant->project->project_type_id)->first())->code_ref;
-        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project->id)->where('date', '<=', $dateReference->format('Y-m-d'))->orderBy('date', 'DESC')->first();
+        $projectValueCourse = ProjectValueCourse::where('project_id', $participant->project->id)->where('date', '<=', $dateReference1->format('Y-m-d'))->orderBy('date', 'DESC')->first();
         $projectBookWorth = $projectValueCourse ? $projectValueCourse->book_worth : 0;
 
         $mutations = $participant->mutationsDefinitive()
-            ->whereDate('date_entry', '<=', $dateReference)
+            ->whereDate('date_entry', '<', $dateReference2->format('Y-m-d'))
             ->get();
 
         $participationsQBA['quantity'] = 0;

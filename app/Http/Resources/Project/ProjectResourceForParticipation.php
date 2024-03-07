@@ -24,6 +24,7 @@ class ProjectResourceForParticipation extends JsonResource
                 'administrationName' => $this->administration ? $this->administration->name : null,
                 'dateEntry' => $this->date_entry,
                 'lastYearFinancialOverviewDefinitive' => $this->last_year_financial_overview_definitive,
+                'dateInterestBearing' => $this->date_interest_bearing,
                 'dateInterestBearingKwh' => $this->date_interest_bearing_kwh,
                 'participationWorth' => $this->participation_worth,
                 'currentBookWorth' => $this->currentBookWorth(),

@@ -161,7 +161,7 @@ class ParticipantDetailsToolbar extends Component {
                             participantProject={participantProject}
                             setErrorModal={this.setErrorModal}
                             closeDeleteItemModal={this.toggleTerminate}
-                            projectTypeCodeRef={participantProject.project.typeCodeRef}
+                            dateInterestBearing={participantProject.project.dateInterestBearing}
                         />
                     ) : (
                         <ParticipantDetailsTerminate

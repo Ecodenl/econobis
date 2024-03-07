@@ -20,14 +20,12 @@ const ParticipantDetailsTerminateObligation = ({
     participantProject,
     setErrorModal,
     closeDeleteItemModal,
-    projectTypeCodeRef,
+    dateInterestBearing,
     fetchParticipantProjectDetails,
     projectRevenueDistributionTypes,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(
-        moment(participantProject.dateTerminatedAllowedFrom)
-            .subtract(1, 'day')
-            .format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
         moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
@@ -38,18 +36,26 @@ const ParticipantDetailsTerminateObligation = ({
 
     const [distributionTypeId, setDistributionTypeId] = useState('inPossessionOf');
     const [dateReference, setDateReference] = useState(dateTerminated);
-    const [dateBegin, setDateBegin] = useState(dateTerminatedAllowedFrom);
+    const [dateBegin, setDateBegin] = useState(dateInterestBearing ? dateInterestBearing : '');
+
     const [dateEnd, setDateEnd] = useState(
-        moment(dateTerminatedAllowedFrom)
-            .add(1, 'year')
-            .subtract(1, 'day')
-            .format('Y-MM-DD') > participantProject.dateTerminatedAllowedTo
-            ? participantProject.dateTerminatedAllowedTo
-            : moment(dateTerminatedAllowedFrom)
+        dateInterestBearing
+            ? moment(dateInterestBearing)
+                  .endOf('year')
+                  .format('Y-MM-DD')
+            : ''
+    );
+
+    const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState(dateInterestBearing ? dateInterestBearing : '');
+    const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState(
+        dateInterestBearing
+            ? moment(dateInterestBearing)
                   .add(1, 'year')
                   .subtract(1, 'day')
                   .format('Y-MM-DD')
+            : ''
     );
+
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
@@ -260,10 +266,11 @@ const ParticipantDetailsTerminateObligation = ({
                         name="dateTerminated"
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(dateTerminatedAllowedFrom).subtract(1, 'day')}
+                        disabledBefore={dateTerminatedAllowedFrom}
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}
+                        readOnly={dateTerminatedAllowedFrom == dateTerminatedAllowedTo}
                     />
                     <ViewText
                         label={'Datum laatste mutatie storting/terugbetaling'}
@@ -311,8 +318,8 @@ const ParticipantDetailsTerminateObligation = ({
                                 required={'required'}
                                 error={errors.dateBegin}
                                 errorMessage={errorMessages.dateBegin}
-                                disabledBefore={participantProject.dateTerminatedAllowedFrom}
-                                disabledAfter={participantProject.dateTerminatedAllowedTo}
+                                disabledBefore={dateBeginAllowedFrom}
+                                disabledAfter={dateBeginAllowedTo}
                             />
                             <InputDate
                                 label={'Eind periode'}
@@ -327,8 +334,8 @@ const ParticipantDetailsTerminateObligation = ({
                                     moment(dateBegin)
                                         .add(1, 'year')
                                         .subtract(1, 'day')
-                                        .format('Y-MM-DD') > participantProject.dateTerminatedAllowedTo
-                                        ? participantProject.dateTerminatedAllowedTo
+                                        .format('Y-MM-DD') > dateBeginAllowedTo
+                                        ? dateBeginAllowedTo
                                         : moment(dateBegin)
                                               .add(1, 'year')
                                               .subtract(1, 'day')

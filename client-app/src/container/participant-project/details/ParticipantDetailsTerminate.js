@@ -18,12 +18,9 @@ const ParticipantDetailsTerminate = ({
     closeDeleteItemModal,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
-    projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(
-        moment(participantProject.dateTerminatedAllowedFrom)
-            .subtract(1, 'day')
-            .format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
         moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
@@ -132,11 +129,11 @@ const ParticipantDetailsTerminate = ({
                         name="dateTerminated"
                         value={dateTerminated}
                         onChangeAction={onChangeDateTerminated}
-                        disabledBefore={moment(dateTerminatedAllowedFrom).subtract(1, 'day')}
+                        disabledBefore={dateTerminatedAllowedFrom}
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}
-                        // readOnly={participantProject.participationsDefinitive == 0  && participantProject.amountDefinitive == 0}
+                        readOnly={dateTerminatedAllowedFrom == dateTerminatedAllowedTo}
                     />
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                         <InputText
@@ -175,10 +172,5 @@ const mapDispatchToProps = dispatch => ({
         dispatch(fetchParticipantProjectDetails(participantProjectId));
     },
 });
-const mapStateToProps = state => {
-    return {
-        projectRevenueCategories: state.systemData.projectRevenueCategories,
-    };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminate);
+export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);

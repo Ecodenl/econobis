@@ -8,6 +8,7 @@
 
 namespace App\Eco\QuotationRequest;
 
+use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
@@ -195,8 +196,12 @@ class QuotationRequestObserver
 
         if ($quotationRequest->isDirty('status_id'))
         {
-            $days = $quotationRequest->status->uses_wf ? $quotationRequest->status->number_of_days_to_send_email : 0;
-//            $mailDate = Carbon::now()->addDays($days)->addDay(1);
+            $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
+            if($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active){
+                $days = $campaignWorkflow->number_of_days_to_send_email;
+            } else {
+                $days = 0;
+            }
             $mailDate = Carbon::now()->addDays($days);
             $quotationRequest->date_planned_to_send_wf_email_status = $mailDate;
         }
@@ -220,9 +225,14 @@ class QuotationRequestObserver
             $quotationRequestActionsLog->new_status_id = $quotationRequest->status_id;
             $quotationRequestActionsLog->save();
 
-            if ($quotationRequest->status->uses_wf && $quotationRequest->status->number_of_days_to_send_email === 0){
-                $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
-                $quotationRequestflowHelper->processWorkflowEmail();
+            // ProcesWorkflowEmail doen we alleen vanuit econobis. Indien deze status wijziging dus voorkomt uit portal, dan niet.
+            // In dat geval is er namelijk al een ander proces die email verstuurd bij bepaalde datum zetting die dan weer auutomatisch een status wijziging tot gevolg heeft.
+            if (!Auth::isPortalUser()) {
+                $campaignWorkflow = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')->where('campaign_id', $quotationRequest->opportunity->intake->campaign_id)->where('quotation_request_status_id', $quotationRequest->status_id)->first();
+                if ($quotationRequest->status->uses_wf && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email === 0){
+                    $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+                    $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
+                }
             }
         }
     }

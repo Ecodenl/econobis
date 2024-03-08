@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Link } from 'react-router-dom';
@@ -96,132 +95,136 @@ function ProjectList(props) {
     }
 
     return (
-        <Container className={'content-section'}>
-            <Row>
-                <Col>
-                    <h1 className="content-heading">
-                        Overzicht projecten waarop <strong>{props.currentSelectedContact.fullNameFnf}</strong> kan
-                        inschrijven.
-                    </h1>
-                </Col>
-            </Row>
-            {sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'person' ? (
-                <PersonalAddressEdit
-                    initialContact={contact}
-                    handleSubmitContactAddressValues={handleSubmitContactAddressValues}
-                />
-            ) : sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'organisation' ? (
-                <OrganisationAddressEdit
-                    initialContact={contact}
-                    handleSubmitContactAddressValues={handleSubmitContactAddressValues}
-                />
-            ) : (
-                <>
-                    <Row>
-                        <Col>
-                            <p>Klik op het project voor meer details.</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            {isLoading ? (
-                                <LoadingView />
-                            ) : contactProjectsArray.length === 0 ? (
-                                'Geen projecten beschikbaar om op in te schrijven.'
-                            ) : (
-                                <Table responsive>
-                                    <thead>
-                                        <tr>
-                                            <th>Organisatie</th>
-                                            <th>Project</th>
-                                            <th>Ingeschreven</th>
-                                            <th>Start inschrijving</th>
-                                            <th>Einde inschrijving</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {contactProjectsArray.map(project => (
-                                            <tr key={project.id}>
-                                                <td>{project.administrationName}</td>
-                                                <td>
-                                                    {project.allowChangeParticipation ? (
-                                                        <>
-                                                            {project.name} (
-                                                            <Link to={`/project/${project.id}`}>
-                                                                wijzig inschrijving
-                                                            </Link>
-                                                            )
-                                                        </>
-                                                    ) : (
-                                                        <>
-                                                            {!project.hasParticipation &&
-                                                            project.allowRegisterToProject ? (
-                                                                <Link to={`/project/${project.id}`}>
-                                                                    {project.name}
-                                                                </Link>
-                                                            ) : (
-                                                                <span className={'text-muted'}>{project.name}</span>
-                                                            )}
-                                                        </>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    {project.hasParticipation ? (
-                                                        <>
-                                                            {project.allowPayMollie ? (
-                                                                <div className="text-center">
-                                                                    Nog niet betaald,
-                                                                    <br />
-                                                                    <a href={project.econobisPaymentLink}>betaal nu</a>
-                                                                </div>
-                                                            ) : (
-                                                                <div className="text-success text-center">✔</div>
-                                                            )}
-                                                        </>
-                                                    ) : (
-                                                        <div className="text-center">
-                                                            {!project.allowRegisterToProject ? (
-                                                                <>
-                                                                    <FaInfoCircle
-                                                                        color={'blue'}
-                                                                        size={'15px'}
-                                                                        data-tip={`${project.textNotAllowedRegisterToProject}`}
-                                                                        data-for={`project-${project.id}`}
-                                                                    />
-                                                                    <ReactTooltip
-                                                                        id={`project-${project.id}`}
-                                                                        effect="float"
-                                                                        place="bottom"
-                                                                        multiline={true}
-                                                                        aria-haspopup="true"
-                                                                    />
-                                                                </>
-                                                            ) : (
-                                                                ''
-                                                            )}
-                                                        </div>
-                                                    )}
-                                                </td>
-                                                <td>
-                                                    {project.dateStartRegistrations
-                                                        ? moment(project.dateStartRegistrations).format('LL')
-                                                        : ''}
-                                                </td>
-                                                <td>
-                                                    {project.dateEndRegistrations
-                                                        ? moment(project.dateEndRegistrations).format('LL')
-                                                        : ''}
-                                                </td>
+        <div className={'content-section'}>
+            <div className="content-container w-container">
+                <Row>
+                    <Col>
+                        <h1 className="content-heading">
+                            Overzicht projecten waarop <strong>{props.currentSelectedContact.fullNameFnf}</strong> kan
+                            inschrijven.
+                        </h1>
+                    </Col>
+                </Row>
+                {sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'person' ? (
+                    <PersonalAddressEdit
+                        initialContact={contact}
+                        handleSubmitContactAddressValues={handleSubmitContactAddressValues}
+                    />
+                ) : sceOrPcrProjectsAvailable && contact.noAddressesFound && contact.typeId === 'organisation' ? (
+                    <OrganisationAddressEdit
+                        initialContact={contact}
+                        handleSubmitContactAddressValues={handleSubmitContactAddressValues}
+                    />
+                ) : (
+                    <>
+                        <Row>
+                            <Col>
+                                <p>Klik op het project voor meer details.</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                {isLoading ? (
+                                    <LoadingView />
+                                ) : contactProjectsArray.length === 0 ? (
+                                    'Geen projecten beschikbaar om op in te schrijven.'
+                                ) : (
+                                    <Table responsive>
+                                        <thead>
+                                            <tr>
+                                                <th>Organisatie</th>
+                                                <th>Project</th>
+                                                <th>Ingeschreven</th>
+                                                <th>Start inschrijving</th>
+                                                <th>Einde inschrijving</th>
                                             </tr>
-                                        ))}
-                                    </tbody>
-                                </Table>
-                            )}
-                        </Col>
-                    </Row>
-                </>
-            )}
-        </Container>
+                                        </thead>
+                                        <tbody>
+                                            {contactProjectsArray.map(project => (
+                                                <tr key={project.id}>
+                                                    <td>{project.administrationName}</td>
+                                                    <td>
+                                                        {project.allowChangeParticipation ? (
+                                                            <>
+                                                                {project.name} (
+                                                                <Link to={`/project/${project.id}`}>
+                                                                    wijzig inschrijving
+                                                                </Link>
+                                                                )
+                                                            </>
+                                                        ) : (
+                                                            <>
+                                                                {!project.hasParticipation &&
+                                                                project.allowRegisterToProject ? (
+                                                                    <Link to={`/project/${project.id}`}>
+                                                                        {project.name}
+                                                                    </Link>
+                                                                ) : (
+                                                                    <span className={'text-muted'}>{project.name}</span>
+                                                                )}
+                                                            </>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {project.hasParticipation ? (
+                                                            <>
+                                                                {project.allowPayMollie ? (
+                                                                    <div className="text-center">
+                                                                        Nog niet betaald,
+                                                                        <br />
+                                                                        <a href={project.econobisPaymentLink}>
+                                                                            betaal nu
+                                                                        </a>
+                                                                    </div>
+                                                                ) : (
+                                                                    <div className="text-success text-center">✔</div>
+                                                                )}
+                                                            </>
+                                                        ) : (
+                                                            <div className="text-center">
+                                                                {!project.allowRegisterToProject ? (
+                                                                    <>
+                                                                        <FaInfoCircle
+                                                                            color={'blue'}
+                                                                            size={'15px'}
+                                                                            data-tip={`${project.textNotAllowedRegisterToProject}`}
+                                                                            data-for={`project-${project.id}`}
+                                                                        />
+                                                                        <ReactTooltip
+                                                                            id={`project-${project.id}`}
+                                                                            effect="float"
+                                                                            place="bottom"
+                                                                            multiline={true}
+                                                                            aria-haspopup="true"
+                                                                        />
+                                                                    </>
+                                                                ) : (
+                                                                    ''
+                                                                )}
+                                                            </div>
+                                                        )}
+                                                    </td>
+                                                    <td>
+                                                        {project.dateStartRegistrations
+                                                            ? moment(project.dateStartRegistrations).format('LL')
+                                                            : ''}
+                                                    </td>
+                                                    <td>
+                                                        {project.dateEndRegistrations
+                                                            ? moment(project.dateEndRegistrations).format('LL')
+                                                            : ''}
+                                                    </td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </Table>
+                                )}
+                            </Col>
+                        </Row>
+                    </>
+                )}
+            </div>
+        </div>
     );
 }
 

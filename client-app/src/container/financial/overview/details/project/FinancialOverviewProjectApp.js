@@ -79,9 +79,9 @@ function FinancialOverviewProjectApp({ financialOverview, callFetchFinancialOver
                         </a>
                         <br />
                         <small style={{ color: 'red', fontWeight: 'normal' }}>
-                            Je kan 1 waardestaat per administratie per jaar aanmaken. Verwijder alleen projecten waarvan
-                            je geen waardestaat wilt verzenden. Als een waardestaat eenmaal definitief is kan je geen
-                            projecten meer toevoegen voor betreffende administratie en jaar.
+                            Je kan per administratie per jaar slechts 1 keer waardestaten aanmaken. Verwijder alleen
+                            projecten waarvan je geen waardestaat wilt verzenden. Als een waardestaat eenmaal definitief
+                            is kan je geen projecten meer toevoegen voor betreffende administratie en jaar.
                         </small>
                     </>
                 )}

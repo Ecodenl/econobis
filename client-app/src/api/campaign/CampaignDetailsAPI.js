@@ -21,8 +21,24 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchCampaignWorkflowStatuses: ({ campaignId, workflowForType }) => {
+        const requestUrl = `${URL_CAMPAIGN}/${campaignId}/workflow-statuses/${workflowForType}`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     updateCampaign: (id, data) => {
         const requestUrl = `${URL_CAMPAIGN}/${id}`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
+    updateCampaignInspection: (id, data) => {
+        const requestUrl = `${URL_CAMPAIGN}/inspection/${id}`;
+
+        return axiosInstance.post(requestUrl, data);
+    },
+    updateCampaignWorkflowSetting: (id, data) => {
+        const requestUrl = `${URL_CAMPAIGN}/workflow-setting/${id}`;
 
         return axiosInstance.post(requestUrl, data);
     },
@@ -103,5 +119,26 @@ export default {
         const requestUrl = `${URL_CAMPAIGN}/${campaignId}/owner/${userId}/associate`;
 
         return axiosInstance.post(requestUrl);
+    },
+
+    deleteCampaignWorkflow: campaignWorkflowId => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/${campaignWorkflowId}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
+    addCampaignWorkflow: campaignWorkflow => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/add`;
+
+        return axiosInstance.post(requestUrl, campaignWorkflow);
+    },
+
+    editCampaignWorkflow: (campaignWorkflowId, campaignWorkflow) => {
+        //todo van Patrick: netter om deze ook naar /${campaignId} te laten linken?
+        const requestUrl = `${URL_CAMPAIGN}/campaignworkflow/${campaignWorkflowId}/edit`;
+
+        return axiosInstance.post(requestUrl, campaignWorkflow);
     },
 };

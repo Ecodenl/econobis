@@ -29,31 +29,31 @@ export default function EmailDetailsModalLayout({
     const statusses = useSelector(state => mapEmojiToStatuses(state.systemData.emailStatuses));
     const { openEmailSendModal } = useContext(EmailModalContext);
 
-    useEffect(() => {
-        document.getElementById('details-modal-email-html').addEventListener('click', captureMailtoLinks);
-
-        return () => {
-            if (document.getElementById('details-modal-email-html')) {
-                document.getElementById('details-modal-email-html').removeEventListener('click', captureMailtoLinks);
-            }
-        };
-    }, []);
-
-    const captureMailtoLinks = event => {
-        if (event.target.tagName === 'A' && event.target.href && event.target.href.indexOf('mailto:') !== -1) {
-            event.preventDefault();
-
-            if (
-                confirm('Wil je een e-mail opstellen aan mailadres ' + event.target.href.replace('mailto:', '') + '?')
-            ) {
-                EmailGenericAPI.storeNew({
-                    to: [event.target.href.replace('mailto:', '')],
-                }).then(payload => {
-                    openEmailSendModal(payload.data.id);
-                });
-            }
-        }
-    };
+    // FIXME : captureMailtoLinks werkt niet goed (ook niet in EmailSplitViewDetails.js).
+    //  voorlopig even geen captureMailtoLinks click event
+    // useEffect(() => {
+    //     document.getElementById("details-modal-email-html").addEventListener("click", captureMailtoLinks);
+    //
+    //     return () => {
+    //         if(document.getElementById("details-modal-email-html")){
+    //             document.getElementById("details-modal-email-html").removeEventListener("click", captureMailtoLinks);
+    //         }
+    //     }
+    // }, []);
+    //
+    // const captureMailtoLinks = (event) => {
+    //     if (event.target.tagName === 'A' && event.target.href && event.target.href.indexOf('mailto:') !== -1) {
+    //         event.preventDefault();
+    //
+    //         if(confirm('Wil je een e-mail opstellen aan mailadres ' + event.target.href.replace('mailto:', '') + '?')) {
+    //             EmailGenericAPI.storeNew({
+    //                 to: [event.target.href.replace('mailto:', '')],
+    //             }).then(payload => {
+    //                 openEmailSendModal(payload.data.id)
+    //             });
+    //         }
+    //     }
+    // }
 
     const getContactOptions = searchTerm => {
         return ContactsAPI.fetchContactSearch(searchTerm).then(payload => payload.data.data);
@@ -152,7 +152,7 @@ export default function EmailDetailsModalLayout({
                     onChangeAction={value => updateEmailAttributes({ manualContacts: value ? value : [] })}
                     clearable={true}
                     textToolTip={
-                        'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens. <br> Bij het gebruik van dit veld bij het versturen van een e-mail zal dit contact geen email ontvangen maar is deze mail wel te zien bij het contact rechtsboven bij “email verzonden.”'
+                        'Bij contacten die je hier invult, wordt wel deze e-mail gekoppeld, maar niet het afzender e-mailadres gekoppeld in hun contactgegevens.<br> Bij het gebruik van dit veld bij het versturen van een e-mail zal dit contact geen email ontvangen maar is deze mail wel te zien bij het contact rechtsboven bij “email verzonden.”'
                     }
                 />
             </div>

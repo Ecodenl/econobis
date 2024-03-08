@@ -47,7 +47,7 @@ class AddressObserver
     public function saved(Address $address)
     {
         if($address->isDirty('type_id') && $address->type_id == 'old') {
-            if ($address->used_in_active_participation_in_sce_or_pcr_project || $address->primary) {
+            if ($address->used_in_active_participation_in_sce_or_pcr_project && $address->primary) {
                 $addressHelper = new AddressHelper( $address->contact, $address);
                 $addressHelper->addTaskAddressChangeParticipation(Auth::id());
             }

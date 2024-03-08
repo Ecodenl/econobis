@@ -27,7 +27,8 @@ const OpportunityStatusLists = ({ opportunityStatus, hasError, isLoading }) => {
                     <tr className="thead-title">
                         <DataTableHeadTitle title={'Omschrijving'} width={'50%'} />
                         <DataTableHeadTitle title={'Actief'} width={'20%'} />
-                        <DataTableHeadTitle title={'Aantal dagen email'} width={'20%'} />
+                        {/*todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail*/}
+                        {/*<DataTableHeadTitle title={'Aantal dagen email'} width={'20%'} />*/}
                         <DataTableHeadTitle title={''} width={'10%'} />
                     </tr>
                 </DataTableHead>

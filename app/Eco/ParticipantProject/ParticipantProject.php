@@ -279,7 +279,7 @@ class ParticipantProject extends Model
             return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
         }
 
-        return Carbon::parse($this->date_terminated_allowed_from)->addYear()->subDay()->format('Y-m-d');
+        return Carbon::parse('9999-12-31')->format('Y-m-d');
     }
 
     public function getTerminatedAllowedAttribute()

@@ -8,6 +8,7 @@ import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
 
+// todo WM: opschonen inspection* velden
 const INITIAL_STATE = {
     result: {
         id: null,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Portal\QuotationRequest;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
+use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
@@ -384,18 +385,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionPlannedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionPlannedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionPlannedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
@@ -404,7 +410,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Afspraak schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionRecordedMail(QuotationRequest $quotationRequest)
@@ -414,18 +420,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionRecordedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionRecordedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionRecordedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
@@ -434,7 +445,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
 
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     private function sendInspectionReleasedMail(QuotationRequest $quotationRequest)
@@ -444,18 +455,23 @@ class QuotationRequestController
             return;
         }
 
-        $emailTemplate = $cooperation->inspectionReleasedEmailTemplate;
-        if (!$emailTemplate) {
-            return;
-        }
-
         $contact = $quotationRequest->opportunity->intake->contact;
         if (!$contact->primaryEmailAddress) {
             return;
         }
 
-        if ($cooperation->inspection_planned_mailbox_id) {
-            $mailbox = Mailbox::find($cooperation->inspection_planned_mailbox_id);
+        $campaign = $quotationRequest->opportunity->intake->campaign;
+        if ($campaign && $campaign->inspectionReleasedEmailTemplate) {
+            $emailTemplate = $campaign->inspectionReleasedEmailTemplate;
+        } else {
+            return;
+        }
+
+        if ($campaign->inspection_planned_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->inspection_planned_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
         } else {
             $mailbox = Mailbox::getDefault();
         }
@@ -464,7 +480,7 @@ class QuotationRequestController
             ->to($contact->primaryEmailAddress);
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Opname schouwen';
 
-        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail);
+        $this->sendInspectionMailToContact($emailTemplate, $cooperation, $subject, $contact, $quotationRequest, $mail, $mailbox);
     }
 
     /**
@@ -475,7 +491,7 @@ class QuotationRequestController
      * @param QuotationRequest $quotationRequest
      * @param \Illuminate\Mail\PendingMail $mail
      */
-    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail): void
+    private function sendInspectionMailToContact($emailTemplate, $cooperation, string $subject, $contact, QuotationRequest $quotationRequest, \Illuminate\Mail\PendingMail $mail, Mailbox $mailbox): void
     {
         $htmlBody = $emailTemplate->html_body;
 
@@ -496,9 +512,33 @@ class QuotationRequestController
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
+        //save the mail to send
+        if($contact && $contact->primaryEmailAddress) {
+            $email = new Email();
+            $email->mailbox_id = $mailbox->id;
+            $email->from = $mailbox->email;
+            $email->to = [$contact->primaryEmailAddress->email];
+            $email->cc = [];
+            $email->bcc = [];
+            $email->subject = $subject;
+            $email->folder = 'sent';
+            if($quotationRequest) {
+                $email->quotation_request_id = $quotationRequest->id;
+                if($quotationRequest->opportunity) {
+                    $email->opportunity_id = $quotationRequest->opportunity->id;
+                }
+            }
+            $email->date_sent = new Carbon();
+            $email->html_body = $htmlBody;
+            $email->sent_by_user_id = $quotationRequest->updated_by_id;
+            $email->save();
+
+            $email->contacts()->attach([$contact->id]);
+        }
+        //save the mail to send
 
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }

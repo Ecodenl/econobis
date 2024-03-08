@@ -28,7 +28,8 @@ class AppServiceProvider extends ServiceProvider
 //        Log::info("ip " . $ip);
 //        [2023-10-30 15:53:29] production.INFO: host vps10.xarishosting.nl  {"Coöperatie":"Econobis Xaris"}
 //        [2023-10-30 15:53:29] production.INFO: ip 37.97.146.3  {"Coöperatie":"Econobis Xaris"}
-            if($ip == '37.97.146.3') {
+//            if($ip == '37.97.146.3') {
+            if($ip == '85.10.155.161') {
                 $slackChannelName = '#eco-vps10';
             } else {
                 $slackChannelName = '#eco';

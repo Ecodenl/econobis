@@ -170,4 +170,39 @@ class RevenuePartsKwh extends Model
         return new RevenuePartsKwhCalculator($this);
     }
 
+    public function getDefaultDocumentName(){
+        $administrationName = $this->translateToValidCharacterSet($this->revenuesKwh->project->administration->name);
+        $projectName = $this->translateToValidCharacterSet($this->revenuesKwh->project->name);
+        $reportType = "opbrengst";
+
+        $yearBegin = Carbon::parse($this->date_begin)->format('Y');
+        $yearEnd = Carbon::parse($this->date_end)->format('Y');
+
+        if($yearEnd === $yearBegin) {
+            $year = $yearBegin;
+            $maxProjectNameLength = 179 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
+        } else {
+            $year = $yearBegin . '-' . $yearEnd;
+            $maxProjectNameLength = 174 - strlen($reportType);
+            $administrationNameAndProjectNameSubstring = substr($administrationName . " - " . $projectName, 0, $maxProjectNameLength);
+        }
+
+        $defaultDocumentName = $reportType . " - " . $administrationNameAndProjectNameSubstring . " " . $year;
+
+        return $defaultDocumentName;
+    }
+
+    protected function translateToValidCharacterSet($field){
+
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
+
+        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
+        $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
+
+        return $field;
+    }
 }

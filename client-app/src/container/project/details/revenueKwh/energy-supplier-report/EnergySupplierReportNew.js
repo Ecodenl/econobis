@@ -22,6 +22,7 @@ const EnergySupplierReportNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.templateId}
+                    size={'col-sm-12'}
                 />
             </div>
 
@@ -33,6 +34,9 @@ const EnergySupplierReportNew = props => {
                     onChangeAction={props.handleInputChange}
                     required={'required'}
                     error={props.errors.documentName}
+                    divSize={'col-sm-12'}
+                    labelSize={'col-sm-6'}
+                    size={'col-sm-6'}
                 />
                 .pdf
             </div>

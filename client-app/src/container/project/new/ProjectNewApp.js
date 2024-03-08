@@ -112,14 +112,34 @@ class ProjectNewApp extends Component {
                 name: false,
                 code: false,
                 projectTypeId: false,
-                baseProjectCodeRef: false,
                 projectStatusId: false,
-                ownedById: false,
+                baseProjectCodeRef: false,
+                postalCodeLink: false,
+                postalcodeLink: false,
+                addressNumberSeries: false,
+                description: false,
                 postalCode: false,
                 // countryId: false,
+                ownedById: false,
+                administrationId: false,
                 contactGroupIds: false,
                 dateEntry: false,
-                // postalCodeLink: false,
+            },
+            errorMessages: {
+                name: '',
+                code: '',
+                projectTypeId: '',
+                projectStatusId: '',
+                baseProjectCodeRef: '',
+                postalcodeLink: '',
+                addressNumberSeries: '',
+                description: '',
+                postalCode: '',
+                // countryId: '',
+                ownedById: '',
+                administrationId: '',
+                contactGroupIds: '',
+                dateEntry: '',
             },
             loading: false,
         };
@@ -216,20 +236,24 @@ class ProjectNewApp extends Component {
         const { project } = this.state;
 
         let errors = {};
+        let errorMessages = {};
         let hasErrors = false;
 
         if (validator.isEmpty(project.name)) {
             errors.name = true;
+            errorMessages.name = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            errorMessages.code = 'Verplicht';
             hasErrors = true;
         }
 
         if (!project.projectTypeId) {
             errors.projectTypeId = true;
+            errorMessages.projectTypeId = 'Verplicht';
             hasErrors = true;
         }
         let projectType;
@@ -240,21 +264,25 @@ class ProjectNewApp extends Component {
             (project.baseProjectCodeRef == null || validator.isEmpty(project.baseProjectCodeRef))
         ) {
             errors.baseProjectCodeRef = true;
+            errorMessages.baseProjectCodeRef = 'Verplicht';
             hasErrors = true;
         }
 
         if (!project.projectStatusId) {
             errors.projectStatusId = true;
+            errorMessages.projectStatusId = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.ownedById)) {
             errors.ownedById = true;
+            errorMessages.ownedById = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
+            errorMessages.administrationId = 'Verplicht';
             hasErrors = true;
         }
 
@@ -274,16 +302,20 @@ class ProjectNewApp extends Component {
         //     if (!postalCodeValid) {
         //         errors.postalCode = true;
         //         errors.countryId = true;
+        //         errorMessages.postalCode = 'Ongeldige postcode voor dit land';
+        //         errorMessages.countryId = 'Ongeldige postcode voor dit land';
         //         hasErrors = true;
         //     }
         // }
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
+            errorMessages.postalCode = 'Ongeldige postcode';
             hasErrors = true;
         }
 
         if (project.isMembershipRequired && validator.isEmpty(project.contactGroupIds)) {
             errors.contactGroupIds = true;
+            errorMessages.contactGroupIds = 'Verplicht';
             hasErrors = true;
         }
 
@@ -293,17 +325,57 @@ class ProjectNewApp extends Component {
             project.dateEntry < this.state.disableBeforeEntryDate
         ) {
             errors.dateEntry = true;
+            errorMessages.dateEntry =
+                'Ongeldige ingangsdatum, mag niet liggen voor ' +
+                moment(this.state.disableBeforeEntryDate).format('DD-MM-YYYY');
             hasErrors = true;
         }
 
-        //todo controle postalcodeLink uit ProjectNewGeneral hiernaar toe halen ivm afhandeling errors
-        // Er zit aparte checks in ProjectNewGeneral for postalCodeLink
-        // if (project.checkPostalcodeLink || (projectType && projectType.codeRef !== 'postalcode_link_capital')) {
-        //     if (!postalCodeLink && validator.isEmpty('' + project.postalCodeLink)) {
-        //         errors.postalCodeLink = trueProjectFormNewGeneral;
-        //         hasErrors = true;
-        //     }
-        // }
+        // If isSceProject is false, init related fields.
+        if (!project.isSceProject) {
+            project.baseProjectCodeRef = null;
+            project.checkDoubleAddresses = false;
+            project.addressNumberSeries = '';
+            project.hideWhenNotMatchingPostalCheck = true;
+            if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+                project.checkPostalcodeLink = false;
+                project.postalcodeLink = '';
+            }
+        }
+
+        // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectNewGeneral
+        if (projectType) {
+            if (
+                (project.checkPostalcodeLink || projectType.codeRef === 'postalcode_link_capital') &&
+                (!project.postalcodeLink || validator.isEmpty('' + project.postalcodeLink))
+            ) {
+                errors.postalcodeLink = true;
+                errorMessages.postalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+                hasErrors = true;
+            } else if (project.postalcodeLink) {
+                let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+                if (!regExpPostalcodeLink.exec(project.postalcodeLink)) {
+                    errors.postalcodeLink = true;
+                    errorMessages.postalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+                    hasErrors = true;
+                }
+            }
+        }
+        if (
+            project.postalcodeLink &&
+            (project.postalcodeLink.replace(/\D/g, '').length !== 4 ||
+                project.postalcodeLink.replace(/[0-9]/g, '').trim().length !== 2)
+        ) {
+            project.addressNumberSeries = '';
+        }
+        if (project.addressNumberSeries) {
+            let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+            if (!regExpAddressNumberSeries.exec(project.addressNumberSeries)) {
+                errors.addressNumberSeries = true;
+                errorMessages.addressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+                hasErrors = true;
+            }
+        }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string
         if (!project.isMembershipRequired) {
@@ -321,19 +393,7 @@ class ProjectNewApp extends Component {
             project.baseProjectCodeRef = null;
         }
 
-        // If isSceProject is false, init related fields.
-        if (!project.isSceProject) {
-            project.baseProjectCodeRef = null;
-            project.checkDoubleAddresses = false;
-            project.addressNumberSeries = null;
-            project.hideWhenNotMatchingPostalCheck = true;
-            if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
-                project.postalcodeLink = null;
-                project.checkPostalcodeLink = false;
-            }
-        }
-
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         if (!hasErrors) {
             this.setState({ loading: true });
@@ -422,6 +482,7 @@ class ProjectNewApp extends Component {
         } = this.state.project;
 
         const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
+        const projectTypeCodeRef = projectType ? projectType.codeRef : null;
 
         const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
 
@@ -448,6 +509,7 @@ class ProjectNewApp extends Component {
                                         description={description}
                                         projectStatusId={projectStatusId}
                                         projectTypeId={projectTypeId}
+                                        projectTypeCodeRef={projectTypeCodeRef}
                                         useSceProject={useSceProject}
                                         isSceProject={isSceProject}
                                         postalcodeLink={postalcodeLink}
@@ -482,6 +544,7 @@ class ProjectNewApp extends Component {
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleContactGroupIds={this.handleContactGroupIds}
                                         errors={this.state.errors}
+                                        errorMessages={this.state.errorMessages}
                                         contactGroups={this.state.contactGroups}
                                         disableBeforeEntryDate={this.state.disableBeforeEntryDate}
                                     />

@@ -275,11 +275,17 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
+        Route::post('campaign/campaignworkflow/add', 'Campaign\CampaignWorkflowController@add');
+        Route::post('campaign/campaignworkflow/{campaignworkflow}/delete', 'Campaign\CampaignWorkflowController@delete');
+        Route::post('campaign/campaignworkflow/{campaignWorkflow}/edit', 'Campaign\CampaignWorkflowController@edit');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
+        Route::get('campaign/{campaign}/workflow-statuses/{workflowForType?}', 'Campaign\CampaignController@workflowStatuses');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
+        Route::post('campaign/inspection/{campaign}', 'Campaign\CampaignController@updateInspection');
+        Route::post('campaign/workflow-setting/{campaign}', 'Campaign\CampaignController@updateWorkflowSetting');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
         Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');
         Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');
@@ -473,6 +479,7 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
+        Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');
         Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
         Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
         Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');

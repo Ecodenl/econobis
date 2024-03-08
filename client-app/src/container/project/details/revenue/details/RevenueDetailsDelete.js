@@ -7,7 +7,9 @@ import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 const RevenueDetailsDelete = props => {
     const confirmAction = () => {
         ProjectRevenueAPI.deleteProjectRevenue(props.id).then(() => {
-            hashHistory.push(`/project/details/${props.projectId}`);
+            props.participationId
+                ? hashHistory.push(`/project/deelnemer/${props.participationId}`)
+                : hashHistory.push(`/project/details/${props.projectId}`);
         });
     };
 

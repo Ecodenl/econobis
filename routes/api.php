@@ -275,11 +275,17 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
+        Route::post('campaign/campaignworkflow/add', 'Campaign\CampaignWorkflowController@add');
+        Route::post('campaign/campaignworkflow/{campaignworkflow}/delete', 'Campaign\CampaignWorkflowController@delete');
+        Route::post('campaign/campaignworkflow/{campaignWorkflow}/edit', 'Campaign\CampaignWorkflowController@edit');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
+        Route::get('campaign/{campaign}/workflow-statuses/{workflowForType?}', 'Campaign\CampaignController@workflowStatuses');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
+        Route::post('campaign/inspection/{campaign}', 'Campaign\CampaignController@updateInspection');
+        Route::post('campaign/workflow-setting/{campaign}', 'Campaign\CampaignController@updateWorkflowSetting');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
         Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');
         Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');
@@ -311,6 +317,7 @@ Route::namespace('Api')
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
+        Route::get('mailbox/logged-in/only-active', 'Mailbox\MailboxController@loggedInUserOnlyActive');
         Route::get('mailbox/logged-in/email-peek', 'Mailbox\MailboxController@loggedInEmailPeek');
         Route::get('mailbox/for-user/{user}/email-peek', 'Mailbox\MailboxController@forUserEmailPeek');
         Route::get('mailbox/{mailbox}', 'Mailbox\MailboxController@show');
@@ -472,6 +479,7 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
+        Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');
         Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
         Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
         Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');
@@ -512,6 +520,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
+        Route::post('project/participant/{participantProject}/terminate-obligation', 'ParticipationProject\ParticipationProjectController@terminateObligation');
         Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
@@ -710,7 +719,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
-        Route::get('free-fields-field/get-for-filter-contact', 'FreeFields\FreeFieldsFieldController@getForFilterContact');
+        Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
         Route::post('free-fields-field', 'FreeFields\FreeFieldsFieldController@store');

@@ -83,7 +83,7 @@ class HousingFileSpecificationsListApp extends Component {
         }, 100);
     };
 
-    resetHousingFileFilters = () => {
+    resetHousingFileSpecificationFilters = () => {
         this.props.clearFilterHousingFileSpecifications();
 
         this.setState({

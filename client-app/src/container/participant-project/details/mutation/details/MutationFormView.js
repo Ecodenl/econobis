@@ -123,7 +123,7 @@ const MutationFormView = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
         participantProjectDateTerminated: state.participantProjectDetails.dateTerminated,
     };
 };

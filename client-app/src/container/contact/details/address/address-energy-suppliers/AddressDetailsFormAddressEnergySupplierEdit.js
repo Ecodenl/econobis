@@ -142,8 +142,6 @@ const AddressDetailsFormAddressEnergySupplierEdit = props => {
 
 const mapStateToProps = state => {
     return {
-        // todo: Deze zou nodig zijn voor button Tussentijdse opbrengstverdeling
-        // contactDetails: state.contactDetails,
         energySuppliers: state.systemData.energySuppliers,
         energySupplierTypes: state.systemData.energySupplierTypes,
         energySupplierStatuses: state.systemData.energySupplierStatuses,

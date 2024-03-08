@@ -16,7 +16,7 @@ class ParticipantMutationCollection extends JsonResource
      */
     public function toArray($request)
     {
-        $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->first()->id;
+        $mutationResultType = ParticipantMutationType::where('code_ref', 'result')->where('project_type_id', $this->participation->project->project_type_id)->first()->id;
         $mutationEnergyTaxRefundType = ParticipantMutationType::where('code_ref', 'energyTaxRefund')->first()->id;
         $projectTypeCodeRef = $this->participation->project->projectType->code_ref;
         $projectTransactionCostsCodeRef = $this->participation->project->transaction_costs_code_ref;

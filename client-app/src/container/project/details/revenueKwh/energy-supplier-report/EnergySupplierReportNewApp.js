@@ -9,6 +9,7 @@ import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
+import axios from 'axios';
 
 class EnergySupplierReportNewApp extends Component {
     constructor(props) {
@@ -29,19 +30,31 @@ class EnergySupplierReportNewApp extends Component {
     }
 
     componentDidMount() {
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-            let templates = [];
+        axios
+            .all([
+                RevenuesKwhAPI.fetchRevenuesKwhForReport(this.props.params.revenueId, this.props.params.reportType),
+                DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral(),
+            ])
+            .then(
+                axios.spread((payloadRevenuesKwh, payLoadDocumentTemplates) => {
+                    let templates = [];
 
-            payload.forEach(function(template) {
-                if (template.group == 'revenue') {
-                    templates.push({ id: template.id, name: template.name });
-                }
-            });
+                    payLoadDocumentTemplates.forEach(function(template) {
+                        if (template.group == 'revenue') {
+                            templates.push({ id: template.id, name: template.name });
+                        }
+                    });
 
-            this.setState({
-                templates: templates,
-            });
-        });
+                    this.setState({
+                        ...this.state,
+                        templates: templates,
+                        report: {
+                            ...this.state.report,
+                            documentName: payloadRevenuesKwh.defaultDocumentName,
+                        },
+                    });
+                })
+            );
     }
 
     handleInputChange = event => {

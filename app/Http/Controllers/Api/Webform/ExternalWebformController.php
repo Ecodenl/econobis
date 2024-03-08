@@ -2027,7 +2027,7 @@ class ExternalWebformController extends Controller
      */
     protected function addOpportunity($measure, $intake)
     {
-        $statusOpportunity = OpportunityStatus::where('name', 'Actief')->first()->id;
+        $statusOpportunity = OpportunityStatus::where('code_ref', 'active')->first()->id;
         $opportunity = null;
         if($statusOpportunity) {
             $opportunity = Opportunity::create([

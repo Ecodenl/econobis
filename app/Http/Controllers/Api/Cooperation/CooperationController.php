@@ -47,6 +47,7 @@ class CooperationController extends ApiController
         if($cooperation->hoom_email_template_id == '') {
             $cooperation->hoom_email_template_id = null;
         }
+        // todo WM: opschonen inspection* velden
         if($cooperation->inspection_planned_email_template_id == '') {
             $cooperation->inspection_planned_email_template_id = null;
         }
@@ -92,6 +93,7 @@ class CooperationController extends ApiController
         if($cooperation->hoom_email_template_id == '') {
             $cooperation->hoom_email_template_id = null;
         }
+        // todo WM: opschonen inspection* velden
         if($cooperation->inspection_planned_mailbox_id == '') {
             $cooperation->inspection_planned_mailbox_id = null;
         }

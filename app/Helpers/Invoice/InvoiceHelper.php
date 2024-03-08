@@ -232,11 +232,19 @@ class InvoiceHelper
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        if($invoice->order->participation){
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $invoice->order->participation->project);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'ik', $user);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'contact', $invoice->order->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        if($invoice->order->participation){
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'project', $invoice->order->participation->project);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 
@@ -359,11 +367,19 @@ class InvoiceHelper
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'contact', $invoice->order->contact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'order', $invoice->order);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'nota', $invoice);
+        if($invoice->order->participation){
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'project', $invoice->order->participation->project);
+            $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'ik', $user);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $invoice->order->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'order', $invoice->order);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody,'nota', $invoice);
+        if($invoice->order->participation){
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'project', $invoice->order->participation->project);
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'deelname', $invoice->order->participation);
+        }
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);
 

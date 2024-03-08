@@ -26,6 +26,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -40,6 +41,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewParticipantProjectController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
+use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
@@ -222,10 +224,14 @@ class ParticipationProjectController extends ApiController
             'contact',
             'contact.primaryAddress',
             'address.currentAddressEnergySupplierElectricity',
-            'project.projectType',
             'project.administration',
-            'project.projectValueCourses',
+            'projectRevenues.type',
+            'projectRevenues.category',
+            'projectRevenues.createdBy',
+            'revenuesKwh.createdBy',
             'participantProjectPayoutType',
+            'projectRevenues',
+            'revenuesKwh',
             'giftedByContact',
             'legalRepContact',
             'mutations.type',
@@ -287,12 +293,7 @@ class ParticipationProjectController extends ApiController
         $this->storeFirstMutation($requestInput, $participantProject, $project);
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         $message = [];
 
@@ -361,12 +362,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->project->calculator()->run()->save();
 
         // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
-        if($participantProject->project->financialOverviewProjects
-            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0)
-        {
-            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
-            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
-        }
+        $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
         return $this->show($participantProject);
     }
@@ -462,28 +458,37 @@ class ParticipationProjectController extends ApiController
 
         $data = $requestInput
             ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->double('payoutPercentageTerminated')->validate('nullable')->onEmpty(null)->alias('payout_percentage_terminated')->next()
+            ->double('payPercentage')->validate('nullable')->onEmpty(null)->alias('pay_percentage')->next()
             ->get();
 
         // Set terminated date
         $participantProject->date_terminated = $data['date_terminated'];
-        $payoutPercentageTerminated = $data['payout_percentage_terminated'];
+        $payPercentage = $data['pay_percentage'];
 
         $projectType = $participantProject->project->projectType;
-        DB::transaction(function () use ($participantProject, $payoutPercentageTerminated, $projectType) {
+        DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
             $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
-            if ($payoutPercentageTerminated && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
+            if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
                 // Calculate result from last revenue distribution till date terminate
-                $this->createMutationResult($participantProject, $payoutPercentageTerminated, $projectType);
+                $this->createMutationResult($participantProject, $payPercentage, $projectType);
             }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
 
-            if($payoutPercentageTerminated) {
-                // Remove distributions on active revenue(s)
-                $participantProject->projectRevenueDistributions()->where('status', 'concept')->forceDelete();
+            if($payPercentage) {
+                // Remove distributions on active concept Euro and Redemption revenue(s)
+                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+                $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+
+                $participantProject->projectRevenueDistributions()
+                    ->where('status', 'concept')
+                    ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
+                        $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
+                    })
+                ->forceDelete();
             }
         });
 
@@ -508,6 +513,46 @@ class ParticipationProjectController extends ApiController
         }
 
     }
+    public function terminateObligation(ParticipantProject $participantProject, RequestInput $requestInput)
+    {
+        $this->authorize('manage', ParticipantProject::class);
+
+        DB::transaction(function () use ($participantProject, $requestInput) {
+
+            $data = $requestInput
+                ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
+                ->get();
+
+            // Set terminated date
+            $participantProject->date_terminated = $data['date_terminated'];
+            $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
+
+            $projectType = $participantProject->project->projectType;
+
+            if($participantProject->participations_definitive != 0){
+                // Make new projectRevenue
+                $projectRevenueController = new ProjectRevenueController();
+                $projectRevenueController->storeForParticipant($requestInput, $participantProject);
+
+                // Make mutation withdrawal of total participations/loan
+                $this->createMutationWithDrawal($participantProject, $projectType);
+            }
+
+            // Remove distributions on active concept Euro and Redemption revenue(s)
+            $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+            $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+
+            $participantProject->projectRevenueDistributions()
+                ->where('status', 'concept')
+                ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
+                    $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
+                })
+                ->forceDelete();
+
+        });
+
+    }
 
     public function undoTerminate(ParticipantProject $participantProject, RequestInput $requestInput)
     {
@@ -522,6 +567,7 @@ class ParticipationProjectController extends ApiController
 
         DB::transaction(function () use ($participantProject) {
             $participantProject->save();
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
     }
 
@@ -1185,12 +1231,12 @@ class ParticipationProjectController extends ApiController
 
     /**
      * @param ParticipantProject $participantProject
-     * @param $payoutPercentageTerminated
+     * @param $payPercentage
      * @param $projectType
      */
-    protected function createMutationResult(ParticipantProject $participantProject, $payoutPercentageTerminated, $projectType): void
+    protected function createMutationResult(ParticipantProject $participantProject, $payPercentage, $projectType): void
     {
-        $result = $this->calculatePayoutHowLongInPossession($participantProject, $payoutPercentageTerminated);
+        $result = $this->calculatePayoutHowLongInPossession($participantProject, $payPercentage);
 
         $mutationStatusFinalId = ParticipantMutationStatus::where('code_ref', 'final')->value('id');
         $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id', $projectType->id)->value('id');
@@ -1241,7 +1287,7 @@ class ParticipationProjectController extends ApiController
         return $mailboxToSendFrom;
     }
 
-    protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payoutPercentageTerminated)
+    protected function calculatePayoutHowLongInPossession(ParticipantProject $participantProject, $payPercentage)
     {
         $currentBookWorth = $participantProject->project->currentBookWorth();
         $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
@@ -1291,7 +1337,7 @@ class ParticipationProjectController extends ApiController
                 }
 
                 if($dateEntry > $dateEnd) $mutationValue = 0;
-                $payout += ($mutationValue * $payoutPercentageTerminated) / 100 / $daysOfYear * $daysOfPeriod;
+                $payout += ($mutationValue * $payPercentage) / 100 / $daysOfYear * $daysOfPeriod;
             }
         }
         return number_format($payout, 2, '.', '');
@@ -1324,9 +1370,12 @@ class ParticipationProjectController extends ApiController
 
     protected function translateToValidCharacterSet($field){
 
-//        $field = strtr(utf8_decode($field), utf8_decode('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ'), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-        $field = strtr(mb_convert_encoding($field, 'UTF-8', mb_list_encodings()), mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'UTF-8', mb_list_encodings()), 'AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy');
-//        $field = iconv('UTF-8', 'ASCII//TRANSLIT', $field);
+        $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
+        $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
+        $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
+//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
+
+        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
@@ -1384,6 +1433,20 @@ class ParticipationProjectController extends ApiController
             }
         }
         return $hasPeriod29February ? 366 : 365;
+    }
+
+    /**
+     * @param ParticipantProject $participantProject
+     * @return void
+     */
+    function recalculateParticipantProjectForFinancialOverviews(ParticipantProject $participantProject): void
+    {
+        // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+        if ($participantProject->project->financialOverviewProjects
+            && $participantProject->project->financialOverviewProjects->where('definitive', false)->count() > 0) {
+            $financialOverviewParticipantProjectController = new FinancialOverviewParticipantProjectController();
+            $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
+        }
     }
 
 }

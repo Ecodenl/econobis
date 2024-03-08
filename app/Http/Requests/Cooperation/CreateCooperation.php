@@ -24,6 +24,7 @@ class CreateCooperation extends FormRequest
      */
     public function rules()
     {
+        // todo WM: opschonen inspection* velden
         return [
             'name' => ['required'],
             'address' => [''],

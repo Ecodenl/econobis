@@ -71,6 +71,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 collectMandateFirstRunDate: false,
             },
             showErrorModal: false,
+            modalTitleMessage: '',
             modalErrorMessage: '',
         };
     }
@@ -159,13 +160,14 @@ class ContactDetailsFormOrganisationEdit extends Component {
 
                     this.setState({
                         showErrorModal: true,
+                        modalTitleMessage: error.response.status === 412 ? 'Twinfield meldingen' : 'Fout bij opslaan',
                         modalErrorMessage: errorMessage,
                     });
                 });
     };
 
     closeErrorModal = () => {
-        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+        this.setState({ showErrorModal: false, modalErrorMessage: '', modalTitleMessage: '' });
     };
 
     render() {
@@ -404,7 +406,7 @@ class ContactDetailsFormOrganisationEdit extends Component {
                 {this.state.showErrorModal && (
                     <ErrorModal
                         closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
+                        title={this.state.modalTitleMessage}
                         errorMessage={this.state.modalErrorMessage}
                     />
                 )}

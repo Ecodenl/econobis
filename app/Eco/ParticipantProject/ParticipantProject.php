@@ -243,7 +243,7 @@ class ParticipantProject extends Model
             ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
             : null;
         if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
-            return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
+            return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
 
         $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
@@ -268,7 +268,7 @@ class ParticipantProject extends Model
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
-        return Carbon::parse($dateTerminatedAllowedFrom)->format('Y-m-d');
+        return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
     public function getDateTerminatedAllowedToAttribute()
     {
@@ -276,7 +276,7 @@ class ParticipantProject extends Model
             ? Carbon::parse($this->date_entry_last_mutation)->format('Y-m-d')
             : null;
         if($this->participations_definitive == 0 && $this->amount_definitive == 0 && $dateEntryLastMutation){
-            return Carbon::parse($dateEntryLastMutation)->format('Y-m-d');
+            return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
 
         return Carbon::parse('9999-12-31')->format('Y-m-d');

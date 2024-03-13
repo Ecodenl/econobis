@@ -50,8 +50,12 @@ class checkWrongProjectPCRSettings extends Command
 
         $counter = 1;
 
+        // Regular expression to match Dutch postal codes in the format "1234AB" or "1234"
+        $patternPostalcodes =  '/^[1-9]{4}[a-zA-Z]{0,2}(,[1-9]{4}[a-zA-Z]{0,2})*$/';
+        $patternPostalcode = '/^[1-9]{4}[a-zA-Z]{0,2}$/';
+
         foreach($projects as $project) {
-            if ($project->project_type_id === 8 && ($project->postalcode_link == "" || !preg_match('/^[0-9a-zA-Z,]*$/', $project->postalcode_link))) {
+            if ($project->project_type_id === 8 && ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link))) {
                 //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                 $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
                 $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg of niet geldig';
@@ -61,7 +65,7 @@ class checkWrongProjectPCRSettings extends Command
                     //De postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
                     $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is leeg of niet geldig';
-                } else if(preg_match('/^[1-9]{4}[A-Za-z]{2}$/', $project->postalcode_link) || preg_match('/^[1-9]{4}$/', $project->postalcode_link)) {
+                } else if(preg_match($patternPostalcode, $project->postalcode_link)) {
                     //De postalcode_link is een enkele postcode
                     if($project->address_number_series == "" || !preg_match('/^[0-9a-zA-Z,:-]*$/', $project->address_number_series)) {
                         //De address_number_series is leeg of niet geldig
@@ -97,11 +101,9 @@ class checkWrongProjectPCRSettings extends Command
 
         $projectsWithWrongPCRSettingsHtml = "<p>De volgende project id's hebben ongeldige projectgegevens inzake PCR instellingen:</p>";
         foreach ($projectsWithWrongPCRSettings as $projectWithWrongPCRSettings) {
-            Log::info($projectWithWrongPCRSettings['id']);
-            Log::info($projectWithWrongPCRSettings['reason']);
             $projectsWithWrongPCRSettingsHtml .=
                 "Project Id: " . $projectWithWrongPCRSettings['id'] . "</br>" .
-                "Reden: " . $projectWithWrongPCRSettings['reason'] . "</br><br>"
+                "Fout reden: " . $projectWithWrongPCRSettings['reason'] . "</br><br>"
             ;
         }
 

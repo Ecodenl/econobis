@@ -17,7 +17,7 @@ function FinancialOverviewPostApp({ financialOverview }) {
         function() {
             fetchFinancialOverviewPosts();
         },
-        [financialOverview.statusId]
+        [financialOverview.id]
     );
 
     function fetchFinancialOverviewPosts() {
@@ -51,7 +51,6 @@ function FinancialOverviewPostApp({ financialOverview }) {
             <PanelBody>
                 <div className="col-md-12">
                     <FinancialOverviewPostList
-                        financialOverview={financialOverview}
                         financialOverviewPosts={financialOverviewPosts}
                         meta={meta}
                         isLoading={isLoading}

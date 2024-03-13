@@ -52,7 +52,7 @@ class checkWrongProjectPCRSettings extends Command
 
         // Regular expression to match Dutch postal codes in the format "1234AB" or "1234"
         $patternPostalcodes =  '/^[1-9]{4}[a-zA-Z]{0,2}(,[1-9]{4}[a-zA-Z]{0,2})*$/';
-        $patternPostalcode = '/^[1-9]{4}[a-zA-Z]{0,2}$/';
+        $patternPostalcode = '/^[1-9]{4}[a-zA-Z]{2}$/';
 
         foreach($projects as $project) {
             if ($project->project_type_id === 8 && ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link))) {

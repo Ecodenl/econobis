@@ -14,7 +14,6 @@ use App\Eco\Invoice\InvoicePost;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\Invoice\InvoiceHelper;
-//use App\Http\Controllers\Api\Invoice\InvoiceContactController;
 use Carbon\Carbon;
 use iio\libmergepdf\Merger;
 use Illuminate\Bus\Queueable;
@@ -40,16 +39,16 @@ class CreateAllInvoicesPost implements ShouldQueue
     private $countValidatedInvoicesSet;
     private $validatedInvoicesOk;
     private $validatedInvoicesError;
-    private $invoiceId;
+    private $dateCollection;
 
-    public function __construct($chunkNumber, $numberOfChunks, $invoiceId, $validatedInvoicesSet, $userId)
+    public function __construct($chunkNumber, $numberOfChunks, $validatedInvoicesSet, $userId, $dateCollection)
     {
         $this->first = true;
         $this->chunkNumber = $chunkNumber;
         $this->numberOfChunks = $numberOfChunks;
-        $this->invoiceId = $invoiceId;
         $this->validatedInvoicesSet = $validatedInvoicesSet;
         $this->userId = $userId;
+        $this->dateCollection = $dateCollection;
 
         $countValidatedInvoicesSet = $validatedInvoicesSet ? $validatedInvoicesSet->count() : 0;
         $this->countValidatedInvoicesSet = $countValidatedInvoicesSet;
@@ -57,8 +56,8 @@ class CreateAllInvoicesPost implements ShouldQueue
         $this->validatedInvoicesError = 0;
 
         $jobLog = new JobsLog();
-        $jobLog->value = "Start notas (" . ($countValidatedInvoicesSet) . ") maken voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";
-        $jobLog->job_category_id = 'create-invoices-post';
+        $jobLog->value = "Start nota's (" . ($countValidatedInvoicesSet) . ") maken voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ").";
+        $jobLog->job_category_id = 'create-invoice-post';
         $jobLog->user_id = $userId;
         $jobLog->save();
     }
@@ -71,14 +70,13 @@ class CreateAllInvoicesPost implements ShouldQueue
         foreach ($this->validatedInvoicesSet as $validatedInvoice) {
 
             $jobLog = new JobsLog();
-            $jobLog->value = 'Start maken waardestaat (' . ($validatedInvoice->id) . ') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ').';
-            $jobLog->job_category_id = 'create-invoices-post';
+            $jobLog->value = 'Start maken nota (' . ($validatedInvoice->id) . ') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ').';
+            $jobLog->job_category_id = 'create-invoice-post';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
 
             $validatedInvoice->date_sent = Carbon::today();
-            //todo: moet er nog weer in
-//            $validatedInvoice->date_collection = $request->input('dateCollection');
+            $validatedInvoice->date_collection = $this->dateCollection;
             $validatedInvoice->save();
 
             $pdf = InvoiceHelper::createInvoiceDocument($validatedInvoice);
@@ -87,16 +85,17 @@ class CreateAllInvoicesPost implements ShouldQueue
                 InvoiceHelper::invoiceSend($validatedInvoice);
             }
             $jobLog = new JobsLog();
-            $notaReference = 'Post-notas-' . Carbon::now()->format("Y-m-d-H-i-s");
+            $dateTime = Carbon::now()->format("Y-m-d-H-i-s");
+            $invoiceReference = 'Post-notas-' . $dateTime;
 
             if(!empty($pdf) && $validatedInvoice->status_id === 'sent'){
                 $this->validatedInvoicesOk += 1;
-                $jobLog->value = 'Maken nota ' . ($notaReference) . ' (' . ($validatedInvoice->id) . ') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ') voltooid.';
+                $jobLog->value = 'Maken nota ' . ($invoiceReference) . ' (' . ($validatedInvoice->id) . ') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ') voltooid.';
             }else{
                 $this->validatedInvoicesError += 1;
-                $jobLog->value = 'Maken nota ' . ($notaReference) . ' (' . $validatedInvoice->id.') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ') mislukt. Status: '.$validatedInvoice->status_id;
+                $jobLog->value = 'Maken nota ' . ($invoiceReference) . ' (' . $validatedInvoice->id.') voor ' . ($validatedInvoice->order->contact->full_name) . ' (' . ($validatedInvoice->order->contact->id) . ') mislukt. Status: '.$validatedInvoice->status_id;
             }
-            $jobLog->job_category_id = 'create-invoices-post';
+            $jobLog->job_category_id = 'create-invoice-post';
             $jobLog->user_id = $this->userId;
             $jobLog->save();
 
@@ -104,24 +103,26 @@ class CreateAllInvoicesPost implements ShouldQueue
         }
 
         $invoicePost = New InvoicePost();
-        $invoicePost->invoice_id = $this->invoiceId;
-        $invoicePost->invoice_contact_ids = implode(',', $this->validatedInvoicesSet->pluck('id')->toArray() );
+        $invoicePost->invoice_ids = implode(',', $this->validatedInvoicesSet->pluck('id')->toArray() );
+        $invoicePost->contact_ids = implode(',', $this->validatedInvoicesSet->pluck('order.contact_id')->toArray() );
         $invoicePost->filename = '';
         $invoicePost->name = 'Wordt gemaakt...';
 
         $invoicePost->save();
 
-        $name = 'Post-notas-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+        if($this->numberOfChunks > 1){
+            $name = 'Post-notas-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . $dateTime . '.pdf';
+        } else {
+            $name = 'Post-notas-' . $dateTime . '.pdf';
+        }
 
         $path = 'administration_' . $validatedInvoice->administration->id
-            . DIRECTORY_SEPARATOR . 'notas' . DIRECTORY_SEPARATOR . $name;
+            . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        //todo: hier gaat nog iets fout
         $merger = new Merger;
         foreach ($createdPdfs as $createdPdf){
-            Log::info(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
             $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
         }
         $createdPdf = $merger->merge();
@@ -133,11 +134,11 @@ class CreateAllInvoicesPost implements ShouldQueue
 
         $jobLog = new JobsLog();
         if($this->validatedInvoicesError>0){
-            $jobLog->value = "Fouten bij maken notas voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ") (id: " . $invoicePost->id . "). Aangemaakte waardestaten: " . ($this->validatedInvoicesOk) . ". Niet aangemaakte waardestaten: " . ($this->validatedInvoicesError) . "." ;
+            $jobLog->value = "Fouten bij maken nota's voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ") (id: " . $invoicePost->id . "). Aangemaakte nota's: " . ($this->validatedInvoicesOk) . ". Niet aangemaakte nota's: " . ($this->validatedInvoicesError) . "." ;
         }else{
-            $jobLog->value = "Notas (" . ($this->countValidatedInvoicesSet) . ") gemaakt voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ") (id: " . $InvoicePost->id . ").";
+            $jobLog->value = "Nota's (" . ($this->countValidatedInvoicesSet) . ") gemaakt voor post (" . $this->chunkNumber . "/" . $this->numberOfChunks . ") (id: " . $invoicePost->id . ").";
         }
-        $jobLog->job_category_id = 'create-invoices-post';
+        $jobLog->job_category_id = 'create-invoice-post';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
@@ -156,11 +157,11 @@ class CreateAllInvoicesPost implements ShouldQueue
     public function failed(\Throwable $exception)
     {
         $jobLog = new JobsLog();
-        $jobLog->value = "Notas maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ")";
-        $jobLog->job_category_id = 'create-invoices-post';
+        $jobLog->value = "Nota's maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . ")";
+        $jobLog->job_category_id = 'create-invoice-post';
         $jobLog->user_id = $this->userId;
         $jobLog->save();
 
-        Log::error("Notas maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . "): " . $exception->getMessage());
+        Log::error("Nota's maken mislukt voor post (" . $this->chunkNumber . "/". $this->numberOfChunks . "): " . $exception->getMessage());
     }
 }

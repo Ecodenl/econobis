@@ -491,7 +491,7 @@ class InvoiceHelper
 
         self::invoicePdfIsCreated($invoice);
 
-        return true;
+        return $path;
     }
 
     public static function checkStorageDir($administration_id)

@@ -465,12 +465,13 @@ class InvoiceController extends ApiController
                 }
             }
 
+            $dateCollection = $request->input('dateCollection');
             $chunkNumber = 0;
             $itemsPerChunk = 50;
             $numberOfChunks = ceil($validatedInvoices->count() / $itemsPerChunk);
             foreach ($validatedInvoices->chunk($itemsPerChunk) as $validatedInvoicesSet) {
                 $chunkNumber = $chunkNumber + 1;
-                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $invoice->id, $validatedInvoicesSet, Auth::id());
+                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $validatedInvoicesSet, Auth::id(), $dateCollection);
             }
         }
 

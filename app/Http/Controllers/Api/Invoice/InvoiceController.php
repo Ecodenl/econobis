@@ -441,7 +441,7 @@ class InvoiceController extends ApiController
         return $response;
     }
 
-    public function sendAllPost(Request $request)
+    public function sendAllPost(Administration $administration, Request $request)
     {
         set_time_limit(0);
         $this->authorize('manage', Invoice::class);
@@ -471,7 +471,7 @@ class InvoiceController extends ApiController
             $numberOfChunks = ceil($validatedInvoices->count() / $itemsPerChunk);
             foreach ($validatedInvoices->chunk($itemsPerChunk) as $validatedInvoicesSet) {
                 $chunkNumber = $chunkNumber + 1;
-                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $validatedInvoicesSet, Auth::id(), $dateCollection);
+                CreateAllInvoicesPost::dispatch($chunkNumber, $numberOfChunks, $administration->id, $validatedInvoicesSet, Auth::id(), $dateCollection);
             }
         }
 

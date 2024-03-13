@@ -34,6 +34,7 @@ class CreateAllInvoicesPost implements ShouldQueue
     public $timeout = 300;
     private $chunkNumber;
     private $numberOfChunks;
+    private $administrationId;
     private $validatedInvoicesSet;
     private $userId;
     private $countValidatedInvoicesSet;
@@ -41,11 +42,12 @@ class CreateAllInvoicesPost implements ShouldQueue
     private $validatedInvoicesError;
     private $dateCollection;
 
-    public function __construct($chunkNumber, $numberOfChunks, $validatedInvoicesSet, $userId, $dateCollection)
+    public function __construct($chunkNumber, $numberOfChunks, $administrationId, $validatedInvoicesSet, $userId, $dateCollection)
     {
         $this->first = true;
         $this->chunkNumber = $chunkNumber;
         $this->numberOfChunks = $numberOfChunks;
+        $this->administrationId = $administrationId;
         $this->validatedInvoicesSet = $validatedInvoicesSet;
         $this->userId = $userId;
         $this->dateCollection = $dateCollection;
@@ -103,6 +105,7 @@ class CreateAllInvoicesPost implements ShouldQueue
         }
 
         $invoicePost = New InvoicePost();
+        $invoicePost->administration_id = $this->administrationId;
         $invoicePost->invoice_ids = implode(',', $this->validatedInvoicesSet->pluck('id')->toArray() );
         $invoicePost->contact_ids = implode(',', $this->validatedInvoicesSet->pluck('order.contact_id')->toArray() );
         $invoicePost->filename = '';
@@ -145,6 +148,7 @@ class CreateAllInvoicesPost implements ShouldQueue
         //cleanup
         unset($this->chunkNumber);
         unset($this->numberOfChunks);
+        unset($this->administrationId);
         unset($this->validatedInvoicesSet);
         unset($this->userId);
         unset($this->countValidatedInvoicesSet);

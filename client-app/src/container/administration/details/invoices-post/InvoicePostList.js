@@ -1,18 +1,18 @@
 import React from 'react';
 
-import FinancialOverviewPostItem from './FinancialOverviewPostItem';
-import ButtonIcon from '../../../../../components/button/ButtonIcon';
-import DataTable from '../../../../../components/dataTable/DataTable';
-import DataTableHead from '../../../../../components/dataTable/DataTableHead';
-import DataTableBody from '../../../../../components/dataTable/DataTableBody';
+import InvoicePostItem from './InvoicePostItem';
+import ButtonIcon from '../../../../components/button/ButtonIcon';
+import DataTable from '../../../../components/dataTable/DataTable';
+import DataTableHead from '../../../../components/dataTable/DataTableHead';
+import DataTableBody from '../../../../components/dataTable/DataTableBody';
 
-function FinancialOverviewPostList({ financialOverviewPosts, meta, isLoading, refreshFinancialOverviewPosts }) {
+function InvoicePostList({ invoicePosts, meta, isLoading, refreshInvoicePosts }) {
     return (
         <div>
             <div className="row">
                 <div className="col-md-6">
                     <div className="btn-group btn-group-flex" role="group">
-                        <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewPosts} />
+                        <ButtonIcon iconName={'refresh'} onClickAction={refreshInvoicePosts} />
                     </div>
                 </div>
                 <div className="col-md-6">
@@ -40,14 +40,9 @@ function FinancialOverviewPostList({ financialOverviewPosts, meta, isLoading, re
                             <tr>
                                 <td colSpan={4}>Bezig met gegevens laden</td>
                             </tr>
-                        ) : financialOverviewPosts.length > 0 ? (
-                            financialOverviewPosts.map(financialOverviewPost => {
-                                return (
-                                    <FinancialOverviewPostItem
-                                        key={financialOverviewPost.id}
-                                        financialOverviewPost={financialOverviewPost}
-                                    />
-                                );
+                        ) : invoicePosts.length > 0 ? (
+                            invoicePosts.map(invoicePost => {
+                                return <InvoicePostItem key={invoicePost.id} invoicePost={invoicePost} />;
                             })
                         ) : (
                             <tr>
@@ -61,4 +56,4 @@ function FinancialOverviewPostList({ financialOverviewPosts, meta, isLoading, re
     );
 }
 
-export default FinancialOverviewPostList;
+export default InvoicePostList;

@@ -48,28 +48,30 @@ class InvoiceSendConfirmPost extends Component {
                 this.setState({
                     loading: true,
                 });
-                InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, dateCollection).then(payload => {
-                    if (payload && payload.headers && payload.headers['x-filename']) {
-                        fileDownload(payload.data, payload.headers['x-filename']);
+                InvoiceDetailsAPI.sendAllPost(this.props.administrationId, this.props.invoiceIds, dateCollection).then(
+                    payload => {
+                        if (payload && payload.headers && payload.headers['x-filename']) {
+                            fileDownload(payload.data, payload.headers['x-filename']);
 
-                        InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
-                            if (payload && payload.headers && payload.headers['x-filename']) {
-                                fileDownload(payload.data, payload.headers['x-filename']);
-                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
-                            } else {
-                                hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
-                            }
-                        });
-                    } else {
-                        hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
+                                if (payload && payload.headers && payload.headers['x-filename']) {
+                                    fileDownload(payload.data, payload.headers['x-filename']);
+                                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                } else {
+                                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                }
+                            });
+                        } else {
+                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                        }
                     }
-                });
+                );
             }
         } else {
             this.setState({
                 loading: true,
             });
-            InvoiceDetailsAPI.sendAllPost(this.props.invoiceIds, null).then(payload => {
+            InvoiceDetailsAPI.sendAllPost(this.props.administrationId, this.props.invoiceIds, null).then(payload => {
                 if (payload && payload.headers && payload.headers['x-filename']) {
                     fileDownload(payload.data, payload.headers['x-filename']);
 

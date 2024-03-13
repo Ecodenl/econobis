@@ -17,6 +17,8 @@ class CreateInvoicePostTable extends Migration
             $table->increments('id');
             $table->string('filename');
             $table->string('name');
+            $table->unsignedInteger('administration_id');
+            $table->foreign('administration_id', 'invoice_post_administration_id_foreign')->references('id')->on('administrations');
             $table->text('invoice_ids');
             $table->text('contact_ids');
             $table->timestamps();

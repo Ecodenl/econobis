@@ -83,17 +83,13 @@ const ContactDetailsFormPersonalView = props => {
                 />
             </div>
 
-            {isCoach ? (
-                <div className="row">
-                    <ViewText
-                        className={'col-xs-12'}
-                        label={'Hoom account id'}
-                        value={hoomAccountId ? hoomAccountId : ''}
-                    />
-                </div>
-            ) : (
-                ''
-            )}
+            <div className="row">
+                <ViewText
+                    className={'col-xs-12'}
+                    label={'Hoom account id'}
+                    value={hoomAccountId ? hoomAccountId : ''}
+                />
+            </div>
 
             <div className="row">
                 <ViewText label="Portal gebruiker" value={portalUser ? 'Ja' : 'Nee'} className={'col-xs-12'} />

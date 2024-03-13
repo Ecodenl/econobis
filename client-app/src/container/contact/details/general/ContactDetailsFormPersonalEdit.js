@@ -313,8 +313,8 @@ class ContactDetailsFormPersonalEdit extends Component {
                         />
                     </div>
 
-                    {isCoach ? (
-                        <div className="row">
+                    <div className="row">
+                        {isCoach ? (
                             <InputText
                                 label={'Hoom account id'}
                                 divSize={'col-xs-12'}
@@ -322,10 +322,14 @@ class ContactDetailsFormPersonalEdit extends Component {
                                 value={hoomAccountId}
                                 onChangeAction={this.handleInputChange}
                             />
-                        </div>
-                    ) : (
-                        ' '
-                    )}
+                        ) : (
+                            <ViewText
+                                label={'Hoom account id'}
+                                className={'form-group col-xs-12'}
+                                value={hoomAccountId}
+                            />
+                        )}
+                    </div>
 
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">

@@ -14,7 +14,6 @@ use App\Eco\FinancialOverview\FinancialOverviewPost;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
-use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use Carbon\Carbon;
 use iio\libmergepdf\Merger;
 use Illuminate\Bus\Queueable;
@@ -85,6 +84,8 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
                 FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
             }
             $jobLog = new JobsLog();
+            $dateTime = Carbon::now()->format("Y-m-d-H-i-s");
+
             if($financialOverviewContact->financialOverview->administration->administration_code){
                 $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
             } else {
@@ -114,9 +115,9 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $financialOverviewPost->save();
 
         if($this->numberOfChunks > 1){
-            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . $dateTime . '.pdf';
         } else {
-            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . $dateTime . '.pdf';
         }
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id

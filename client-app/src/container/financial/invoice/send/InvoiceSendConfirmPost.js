@@ -104,8 +104,8 @@ class InvoiceSendConfirmPost extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Nota downloaden"
-                buttonConfirmText={'Downloaden'}
+                title="Nota's post aanmaken"
+                buttonConfirmText={'Aanmaken'}
                 loading={this.state.loading}
             >
                 {this.props.paymentType === 'incasso' && (
@@ -125,7 +125,8 @@ class InvoiceSendConfirmPost extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Wilt u alle nota's definitief maken, downloaden en doorzetten naar status verzonden?
+                            Wilt u geselecteerde nota's definitief maken en doorzetten naar status verzonden? Gemaakte
+                            bestanden nota's voor post zijn naderhand te downloaden via administratie detail scherm.
                         </span>
                     </div>
                 </div>

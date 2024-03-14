@@ -21,7 +21,7 @@ class InvoicePostController extends Controller
     {
         $invoicePosts = $requestQuery->get();
 
-        $invoicePosts->load(['invoice']);
+        $invoicePosts->load(['administration']);
 
         return GridInvoicePost::collection($invoicePosts)
             ->additional([

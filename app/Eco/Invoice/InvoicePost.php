@@ -2,7 +2,7 @@
 
 namespace App\Eco\Invoice;
 
-use App\Eco\Invoice\Invoice;
+use App\Eco\Administration\Administration;
 use Illuminate\Database\Eloquent\Model;
 
 class InvoicePost extends Model
@@ -18,9 +18,9 @@ class InvoicePost extends Model
         'id'
     ];
 
-    public function Invoice()
+    public function Administration()
     {
-        return $this->belongsTo(Invoice::class);
+        return $this->belongsTo(Administration::class);
     }
 
 }

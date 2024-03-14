@@ -41,14 +41,14 @@ class InvoiceSendToolbar extends Component {
                             this.props.type === 'post' &&
                             this.props.paymentType === 'incasso' && (
                                 <ButtonText
-                                    buttonText={"Nota's downloaden en sepa bestand maken"}
+                                    buttonText={"Nota's aanmaken en sepa bestand maken"}
                                     onClickAction={this.showSend}
                                 />
                             )}
                         {this.props.amountOfInvoices > 0 &&
                             this.props.type === 'post' &&
                             this.props.paymentType === 'overboeken' && (
-                                <ButtonText buttonText={"Nota's downloaden"} onClickAction={this.showSend} />
+                                <ButtonText buttonText={"Nota's aanmaken"} onClickAction={this.showSend} />
                             )}
                     </div>
                 </div>

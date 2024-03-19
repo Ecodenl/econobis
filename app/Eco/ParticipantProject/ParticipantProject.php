@@ -246,30 +246,69 @@ class ParticipantProject extends Model
             return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
 
-        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
-        $dateInterestBearing = $this->project->date_interest_bearing
-            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
-            : null;
-        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
-            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
-            : null;
+//        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
+//        $dateInterestBearing = $this->project->date_interest_bearing
+//            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
+//            : null;
+//        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
+//            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
+//            : null;
+
+//        $lastRevenueWithProcessedDistribution2 = $this->projectRevenues()->whereIn('project_revenue_distribution.status', ['processed'])->orderByDesc('date_end')->first();
+
+        $revenueIdsWithProcessedDistributions = $this->projectRevenueDistributions()->whereIn('status', ['processed'])->get()->pluck('revenue_id')->toArray();
+        $lastRevenueWithProcessedDistribution = ProjectRevenue::whereIn('id', $revenueIdsWithProcessedDistributions)->orderByDesc('date_end')->first();
+        $dateTerminatedAllowedFrom = $lastRevenueWithProcessedDistribution ? Carbon::parse($lastRevenueWithProcessedDistribution->date_end)->addDay()->format('Y-m-d') : Carbon::parse('2000-01-01')->format('Y-m-d');
+        Log::info('lastRevenueWithProcessedDistribution next begin date: ' . $dateTerminatedAllowedFrom);
+
         $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
             ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
             : null;
-        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearing;
-        }
-        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
-        }
+//        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
+//            $dateTerminatedAllowedFrom = $dateInterestBearing;
+//        }
+//        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
+//            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
+//        }
+
         if ($dateInterestBearingKwh != null && $dateInterestBearingKwh > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateInterestBearingKwh;
+            Log::info('dateInterestBearingKwh next begin date: ' . $dateTerminatedAllowedFrom);
         }
+
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
+            Log::info('dateEntryLastMutation next begin date: ' . $dateTerminatedAllowedFrom);
         }
+
+
+
         return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
+
+//    const [dateBegin, setDateBegin] = useState(dateInterestBearing ? dateInterestBearing : '');
+//    const [dateEnd, setDateEnd] = useState(
+//        dateInterestBearing
+//            ? moment(dateInterestBearing)
+//                  .endOf('year')
+//                  .format('Y-MM-DD')
+//            : ''
+//    );
+    public function getDateBeginRevenueTerminatedAttribute()
+    {
+        $dateBegin = $this->project->date_interest_bearing_kwh
+            ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
+            : null;
+        return $dateBegin;
+    }
+    public function getDateEndRevenueTerminatedAttribute()
+    {
+        $dateEnd = $this->date_begin_revenue_terminated
+            ? Carbon::parse($this->date_begin_revenue_terminated)->endOfYear()->format('Y-m-d')
+            : null;
+        return $dateEnd;
+    }
+
     public function getDateTerminatedAllowedToAttribute()
     {
         $dateEntryLastMutation = $this->date_entry_last_mutation
@@ -290,6 +329,7 @@ class ParticipantProject extends Model
     }
     public function getUndoTerminatedAllowedAttribute()
     {
+        // todo WM:
         return $this->date_terminated != null;
     }
 

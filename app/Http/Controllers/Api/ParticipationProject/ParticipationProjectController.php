@@ -48,6 +48,7 @@ use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
+use App\Http\Resources\ParticipantProject\ResourceForTerminatingParticipantProject;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
 use App\Jobs\ParticipationProject\CreateParticipantReport;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -249,6 +250,22 @@ class ParticipationProjectController extends ApiController
         ]);
 
         return FullParticipantProject::make($participantProject);
+    }
+    public function getAdditionalInfoForTerminating(ParticipantProject $participantProject)
+    {
+        set_time_limit(120);
+
+        $this->authorize('view', ParticipantProject::class);
+
+//        $participantProjectAdditional->load([
+//            'mutations' => function($query){
+//                $query->orderBy('id', 'desc');
+//            },
+//        ]);
+//        $participantProjectAdditional->load([
+//        ]);
+
+        return ResourceForTerminatingParticipantProject::make($participantProject);
     }
 
     public function store(RequestInput $requestInput)
@@ -463,33 +480,36 @@ class ParticipationProjectController extends ApiController
 
         // Set terminated date
         $participantProject->date_terminated = $data['date_terminated'];
-        $payPercentage = $data['pay_percentage'];
-
         $projectType = $participantProject->project->projectType;
-        DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
+        // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
+//        $payPercentage = $data['pay_percentage'];
+//        DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
+        DB::transaction(function () use ($participantProject, $projectType) {
             $participantProject->save();
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
-            if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
-                // Calculate result from last revenue distribution till date terminate
-                $this->createMutationResult($participantProject, $payPercentage, $projectType);
-            }
+            // Here in function terminate projecttype can only by capital or postalcode_link_capital !
+//            if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
+//                // Calculate result from last revenue distribution till date terminate
+//                $this->createMutationResult($participantProject, $payPercentage, $projectType);
+//            }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
 
-            if($payPercentage) {
-                // Remove distributions on active concept Euro and Redemption revenue(s)
-                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
-                $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
-
-                $participantProject->projectRevenueDistributions()
-                    ->where('status', 'concept')
-                    ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
-                        $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
-                    })
-                ->forceDelete();
-            }
+            // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
+//            if($payPercentage) {
+//                // Remove distributions on active concept Euro and Redemption revenue(s)
+//                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+//                $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+//
+//                $participantProject->projectRevenueDistributions()
+//                    ->where('status', 'concept')
+//                    ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
+//                        $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
+//                    })
+//                ->forceDelete();
+//            }
         });
 
         if($projectType->code_ref === 'postalcode_link_capital') {
@@ -512,8 +532,9 @@ class ParticipationProjectController extends ApiController
             return $responseParticipations;
         }
 
+        return null;
     }
-    public function terminateObligation(ParticipantProject $participantProject, RequestInput $requestInput)
+    public function terminateLoanOrObligation(ParticipantProject $participantProject, RequestInput $requestInput)
     {
         $this->authorize('manage', ParticipantProject::class);
 
@@ -529,22 +550,26 @@ class ParticipationProjectController extends ApiController
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             $projectType = $participantProject->project->projectType;
+            if ($projectType->code_ref == 'loan') {
+                $amountOrParticipationsDefinitive = $participantProject->amount_definitive;
+            } else {
+                $amountOrParticipationsDefinitive = $participantProject->participations_definitive;
+            }
 
-            if($participantProject->participations_definitive != 0){
+            if($amountOrParticipationsDefinitive != 0){
                 // Make new projectRevenue
                 $projectRevenueController = new ProjectRevenueController();
                 $projectRevenueController->storeForParticipant($requestInput, $participantProject);
-
-                // Make mutation withdrawal of total participations/loan
-                $this->createMutationWithDrawal($participantProject, $projectType);
             }
+            // Make mutation withdrawal of total participations/loan
+            $this->createMutationWithDrawal($participantProject, $projectType);
 
             // Remove distributions on active concept Euro and Redemption revenue(s)
             $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
             $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
 
             $participantProject->projectRevenueDistributions()
-                ->where('status', 'concept')
+                ->whereIn('status', ['concept', 'confirmed'])
                 ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
                     $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
                 })
@@ -561,6 +586,7 @@ class ParticipationProjectController extends ApiController
         $data = $requestInput
             ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
             ->get();
+
 
         // Set terminated date
         $participantProject->date_terminated = $data['date_terminated'];

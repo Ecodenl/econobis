@@ -21,6 +21,7 @@ use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
@@ -92,10 +93,31 @@ class ParticipantProject extends Model
     public function projectRevenues(){
         return $this->hasManyThrough(ProjectRevenue::class, ProjectRevenueDistribution::class, 'participation_id', 'id','id', 'revenue_id');
     }
+    public function getParticipantProjectRevenues(){
+		$participantProjectRevenuesCollection = new Collection();
 
+		forEach($this->projectRevenues as $projectRevenue){
+            $projectRevenueDistribution = $projectRevenue->distribution->where('participation_id', $this->id)->first();
+            $projectRevenue->project_revenue_distribution_status = $projectRevenueDistribution ? $projectRevenueDistribution->status : null;
+            $participantProjectRevenuesCollection->push($projectRevenue);
+		}
+
+        return $participantProjectRevenuesCollection;
+    }
     public function revenuesKwh()
     {
         return $this->hasManyThrough(RevenuesKwh::class, RevenueDistributionKwh::class, 'participation_id', 'id', 'id', 'revenue_id');
+    }
+    public function getParticipantProjectRevenuesKwh(){
+        $participantProjectRevenuesKwhCollection = new Collection();
+
+        forEach($this->revenuesKwh as $revenueKwh){
+            $revenueKwhDistribution = $revenueKwh->distributionKwh->where('participation_id', $this->id)->first();
+            $revenueKwh->revenue_kwh_distribution_status = $revenueKwhDistribution ? $revenueKwhDistribution->status : null;
+            $participantProjectRevenuesKwhCollection->push($revenueKwh);
+        }
+
+        return $participantProjectRevenuesKwhCollection;
     }
 
     public function financialOverviewParticipantProjects()

@@ -35,8 +35,11 @@ class FullParticipantProject extends JsonResource
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
-                'relatedRevenues' => GridParticipantProjectRevenue::collection($this->getParticipantProjectRevenues()),
-                'relatedRevenuesKwh' => GridParticipantProjectRevenueKwh::collection($this->getParticipantProjectRevenuesKwh()),
+// todo WM terminated :  opsachonen
+//                'relatedRevenues' => GridParticipantProjectRevenue::collection($this->getParticipantProjectRevenues()),
+//                'relatedRevenuesKwh' => GridParticipantProjectRevenueKwh::collection($this->getParticipantProjectRevenuesKwh()),
+                'relatedRevenues' => $this->participantProjectRevenues ? GridParticipantProjectRevenue::collection($this->participantProjectRevenues) : null,
+                'relatedRevenuesKwh' => $this->participantProjectRevenuesKwh ? GridParticipantProjectRevenueKwh::collection($this->participantProjectRevenuesKwh) : null,
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
@@ -78,15 +81,18 @@ class FullParticipantProject extends JsonResource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
+// todo WM terminated :  opsachonen
 //                'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
 //                'dateEntryLastMutation' => $this->dateEntryLastMutation,
                 'terminatedAllowed' => $this->terminatedAllowed,
                 'undoTerminatedAllowed' => $this->undoTerminatedAllowed,
+// todo WM terminated :  opsachonen
 //                'dateTerminatedAllowedFrom' => $this->dateTerminatedAllowedFrom,
 //                'dateTerminatedAllowedTo' => $this->dateTerminatedAllowedTo,
                 'participantBelongsToMembershipGroup' => $this->participant_belongs_to_membership_group,
                 'participantChoiceMembership' => $this->choice_membership,
-                'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
+// todo WM terminated :  opsachonen
+//                'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
             ];
     }
 }

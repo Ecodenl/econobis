@@ -165,7 +165,6 @@ class ParticipantDetailsToolbar extends Component {
                                 participantProject={participantProject}
                                 setErrorModal={this.setErrorModal}
                                 closeDeleteItemModal={this.toggleTerminate}
-                                dateInterestBearing={participantProject.project.dateInterestBearing}
                                 projectTypeCodeRef={participantProject.project.typeCodeRef}
                             />
                         ) : (
@@ -181,7 +180,6 @@ class ParticipantDetailsToolbar extends Component {
                             participantProject={participantProject}
                             setErrorModal={this.setErrorModal}
                             closeDeleteItemModal={this.toggleUndoTerminate}
-                            projectTypeCodeRef={participantProject.project.typeCodeRef}
                         />
                     )}
                     {this.state.showErrorModal && (

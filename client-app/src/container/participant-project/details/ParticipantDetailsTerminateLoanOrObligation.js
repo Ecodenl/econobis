@@ -20,7 +20,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     participantProject,
     setErrorModal,
     closeDeleteItemModal,
-    dateInterestBearing,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
     projectRevenueDistributionTypes,
@@ -31,39 +30,33 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
 
     function getAdditionalInfoForTerminating(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminating(participantProjectId).then(payload => {
-            // hier vullen van additionalInfoForTerminating
-            console.log('additionalInfoForTerminating');
-            console.log(payload);
             setDateTerminated(payload.dateTerminatedAllowedFrom);
             setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom);
             setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo);
+            setDateEntryLastMutation(payload.dateEntryLastMutation);
             setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
             setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+            setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+            setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+            setDateReference(
+                projectTypeCodeRef === 'loan'
+                    ? moment()
+                    : payload.dateEndRevenueTerminated
+                    ? payload.dateEndRevenueTerminated
+                    : dateTerminatedAllowedFrom
+            );
         });
     }
 
-    // const [dateTerminated, setDateTerminated] = useState(
-    //     moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
-    // );
-    // const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
-    //     moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
-    // );
-    // const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
-    //     moment(participantProject.dateTerminatedAllowedTo).format('Y-MM-DD')
-    // );
-    // const [dateBegin, setDateBegin] = useState(dateInterestBearing ? dateInterestBearing : '');
-    // const [dateEnd, setDateEnd] = useState(
-    //     dateInterestBearing
-    //         ? moment(dateInterestBearing)
-    //             .endOf('year')
-    //             .format('Y-MM-DD')
-    //         : ''
-    // );
     const [dateTerminated, setDateTerminated] = useState(null);
-    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(null);
-    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(null);
+    const [dateEntryLastMutation, setDateEntryLastMutation] = useState(null);
+    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
+    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
     const [dateBegin, setDateBegin] = useState(null);
     const [dateEnd, setDateEnd] = useState(null);
+    const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState('');
+    const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState('');
+    const [dateReference, setDateReference] = useState(moment());
 
     const [distributionTypeId, setDistributionTypeId] = useState(
         projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
@@ -72,17 +65,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
         projectTypeCodeRef === 'loan'
             ? participantProject.amountDefinitive
             : participantProject.participationsDefinitive
-    );
-    const [dateReference, setDateReference] = useState(dateTerminated);
-
-    const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState(dateInterestBearing ? dateInterestBearing : '');
-    const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState(
-        dateInterestBearing
-            ? moment(dateInterestBearing)
-                  .add(1, 'year')
-                  .subtract(1, 'day')
-                  .format('Y-MM-DD')
-            : ''
     );
 
     const [payPercentage, setPayPercentage] = useState(null);
@@ -304,17 +286,30 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                         errorMessage={errorMessages.dateTerminated}
                         readOnly={dateTerminatedAllowedFrom == dateTerminatedAllowedTo}
                     />
-                    <ViewText
-                        label={'Datum laatste mutatie storting/terugbetaling'}
-                        value={
-                            participantProject.dateEntryLastMutation
-                                ? moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')
-                                : ''
-                        }
-                    />
+                    {amountOrParticipationsDefinitive != 0 ? (
+                        <ViewText
+                            label={
+                                'Datum laatste ' +
+                                (projectTypeCodeRef === 'loan' ? 'aflossing' : 'terugbetaling') +
+                                ' wordt'
+                            }
+                            value={
+                                dateEntryLastMutation
+                                    ? moment(dateTerminated)
+                                          .add(1, 'day')
+                                          .format('DD-MM-Y')
+                                    : ''
+                            }
+                        />
+                    ) : (
+                        <ViewText
+                            label={'Datum laatste mutatie inleg/opname was'}
+                            value={dateEntryLastMutation ? moment(dateEntryLastMutation).format('DD-MM-Y') : ''}
+                        />
+                    )}
                 </div>
 
-                {amountOrParticipationsDefinitive != 0 ? (
+                {amountOrParticipationsDefinitive != 0 && dateTerminated >= dateBegin ? (
                     <>
                         <p>Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken?</p>
                         {projectTypeCodeRef === 'obligation' ? (

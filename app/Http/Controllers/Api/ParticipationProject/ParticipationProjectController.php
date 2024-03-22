@@ -31,6 +31,7 @@ use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
+use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
@@ -250,21 +251,25 @@ class ParticipationProjectController extends ApiController
             'updatedBy',
         ]);
 
+        $participantProject->participantProjectRevenues = $this->getParticipantProjectRevenues($participantProject);
+        $participantProject->participantProjectRevenuesKwh = $this->getParticipantProjectRevenuesKwh($participantProject);
+
         return FullParticipantProject::make($participantProject);
     }
     public function getAdditionalInfoForTerminating(ParticipantProject $participantProject)
     {
         set_time_limit(120);
 
-        $this->authorize('view', ParticipantProject::class);
+// todo WM terminated :  opsachonen
+//        Log::info('projectRevenues');
+//        Log::info($participantProject->id);
+//        Log::info($participantProject->projectRevenues()
+//            ->where('project_revenues.date_begin', '<=', Carbon::parse('2023-03-31')->format('Y-m-d'))
+//            ->where('project_revenues.date_end', '>=', Carbon::parse('2023-03-31')->format('Y-m-d'))
+//            ->whereNull('project_revenues.participation_id')
+//            ->where('project_revenues.confirmed', true )->get());
 
-//        $participantProjectAdditional->load([
-//            'mutations' => function($query){
-//                $query->orderBy('id', 'desc');
-//            },
-//        ]);
-//        $participantProjectAdditional->load([
-//        ]);
+        $this->authorize('view', ParticipantProject::class);
 
         return ResourceForTerminatingParticipantProject::make($participantProject);
     }
@@ -302,7 +307,7 @@ class ParticipationProjectController extends ApiController
         $participantProject->save();
 
         // Loan / Obligation: Default type id is account.
-        if($project->projectType->code_ref == 'loan' ||$project->projectType->code_ref == 'obligation'){
+        if($project->projectType->code_ref == 'loan' || $project->projectType->code_ref == 'obligation'){
             $participantProject->type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
             $participantProject->save();
         }
@@ -584,16 +589,61 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
+        $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+
         $data = $requestInput
             ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
             ->get();
 
-
         // Set terminated date
         $participantProject->date_terminated = $data['date_terminated'];
 
-        DB::transaction(function () use ($participantProject) {
+        DB::transaction(function () use ($participantProject, $originalDateTerminated) {
             $participantProject->save();
+
+            $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
+            if($projectTypeCodeRef == 'loan' || $projectTypeCodeRef == 'obligation'){
+                // todo WM terminated:: Indien participant in concept of definitieve deelnemer verdeling waar oorspronkelijk beeindigsdatum in periode lag,
+                //  dan die verwijderen.
+                $projectRevenueParticipant =  $participantProject->projectRevenues()
+                    ->where('date_begin', '<=', $originalDateTerminated)
+                    ->where('date_end', '>=', $originalDateTerminated)
+                    ->where('project_revenues.participation_id', $participantProject->id )
+                    ->whereIn('project_revenue_distribution.status', ['concept', 'confirmed'] )
+                    ->orderByDesc('date_end')
+                    ->first();
+
+                if($projectRevenueParticipant){
+                    $deleteProjectRevenueParticipant = new DeleteRevenue($projectRevenueParticipant);
+                    $deleteProjectRevenueParticipant->delete();
+                }
+
+                // todo WM terminated:: verder altijd laatste opname mutatieregel weer ongedaan maken. (check huidige voorwaarde voor verwijderen muatieregel!)
+                $projectType = $participantProject->project->projectType;
+                $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+                $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+                $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
+                    ->whereIn('type_id', $withDrawalTypes)
+                    ->where('status_id', $mutationStatusFinal)
+                    ->orderByDesc('date_entry')
+                    ->first();
+
+                if($mutationDefinitiveLast) {
+                    $statusLogs = $mutationDefinitiveLast->statusLog;
+                    foreach ($statusLogs as $statusLog)
+                    {
+                        $statusLog->delete();
+                    }
+                    $mutationDefinitiveLast->delete();
+
+                    // Recalculate dependent data in participantProject
+                    $participantProject->calculator()->run()->save();
+
+                    // Recalculate dependent data in project
+                    $participantProject->project->calculator()->run()->save();
+                }
+            }
+
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
     }
@@ -1476,4 +1526,25 @@ class ParticipationProjectController extends ApiController
         }
     }
 
+    public function getParticipantProjectRevenues(ParticipantProject $participantProject){
+        $participantProjectRevenuesCollection = new Collection();
+
+        forEach($participantProject->projectRevenues as $projectRevenue){
+            $projectRevenueDistribution = $projectRevenue->distribution->where('participation_id', $participantProject->id)->first();
+            $projectRevenue->project_revenue_distribution_status = $projectRevenueDistribution ? $projectRevenueDistribution->status : null;
+            $participantProjectRevenuesCollection->push($projectRevenue);
+        }
+        return $participantProjectRevenuesCollection;
+    }
+    public function getParticipantProjectRevenuesKwh(ParticipantProject $participantProject){
+        $participantProjectRevenuesKwhCollection = new Collection();
+
+        forEach($participantProject->revenuesKwh as $revenueKwh){
+            $revenueKwhDistribution = $revenueKwh->distributionKwh->where('participation_id', $participantProject->id)->first();
+            $revenueKwh->revenue_kwh_distribution_status = $revenueKwhDistribution ? $revenueKwhDistribution->status : null;
+            $participantProjectRevenuesKwhCollection->push($revenueKwh);
+        }
+
+        return $participantProjectRevenuesKwhCollection;
+    }
 }

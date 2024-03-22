@@ -93,32 +93,40 @@ class ParticipantProject extends Model
     public function projectRevenues(){
         return $this->hasManyThrough(ProjectRevenue::class, ProjectRevenueDistribution::class, 'participation_id', 'id','id', 'revenue_id');
     }
-    public function getParticipantProjectRevenues(){
-		$participantProjectRevenuesCollection = new Collection();
 
-		forEach($this->projectRevenues as $projectRevenue){
-            $projectRevenueDistribution = $projectRevenue->distribution->where('participation_id', $this->id)->first();
-            $projectRevenue->project_revenue_distribution_status = $projectRevenueDistribution ? $projectRevenueDistribution->status : null;
-            $participantProjectRevenuesCollection->push($projectRevenue);
-		}
+// todo WM terminated :  opsachonen
+//    public function projectRevenuesParticipant(){
+//        return $this->hasMany(ProjectRevenue::class, 'participation_id');
+//    }
 
-        return $participantProjectRevenuesCollection;
-    }
+//    public function getParticipantProjectRevenues(){
+//		$participantProjectRevenuesCollection = new Collection();
+//
+//		forEach($this->projectRevenues as $projectRevenue){
+//            $projectRevenueDistribution = $projectRevenue->distribution->where('participation_id', $this->id)->first();
+//            $projectRevenue->project_revenue_distribution_status = $projectRevenueDistribution ? $projectRevenueDistribution->status : null;
+//            $participantProjectRevenuesCollection->push($projectRevenue);
+//		}
+//
+//        return $participantProjectRevenuesCollection;
+//    }
     public function revenuesKwh()
     {
         return $this->hasManyThrough(RevenuesKwh::class, RevenueDistributionKwh::class, 'participation_id', 'id', 'id', 'revenue_id');
     }
-    public function getParticipantProjectRevenuesKwh(){
-        $participantProjectRevenuesKwhCollection = new Collection();
 
-        forEach($this->revenuesKwh as $revenueKwh){
-            $revenueKwhDistribution = $revenueKwh->distributionKwh->where('participation_id', $this->id)->first();
-            $revenueKwh->revenue_kwh_distribution_status = $revenueKwhDistribution ? $revenueKwhDistribution->status : null;
-            $participantProjectRevenuesKwhCollection->push($revenueKwh);
-        }
-
-        return $participantProjectRevenuesKwhCollection;
-    }
+// todo WM terminated :  opsachonen
+//    public function getParticipantProjectRevenuesKwh(){
+//        $participantProjectRevenuesKwhCollection = new Collection();
+//
+//        forEach($this->revenuesKwh as $revenueKwh){
+//            $revenueKwhDistribution = $revenueKwh->distributionKwh->where('participation_id', $this->id)->first();
+//            $revenueKwh->revenue_kwh_distribution_status = $revenueKwhDistribution ? $revenueKwhDistribution->status : null;
+//            $participantProjectRevenuesKwhCollection->push($revenueKwh);
+//        }
+//
+//        return $participantProjectRevenuesKwhCollection;
+//    }
 
     public function financialOverviewParticipantProjects()
     {
@@ -318,9 +326,18 @@ class ParticipantProject extends Model
 //    );
     public function getDateBeginRevenueTerminatedAttribute()
     {
-        $dateBegin = $this->project->date_interest_bearing_kwh
-            ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
-            : null;
+        // todo WM terminated: Indien participant in concept of definitieve verdeling dan laatste begindatum daarvan.
+        //  anders date_interest_bearing
+
+        $revenueIdsWithNotProcessedDistributions = $this->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
+        $lastRevenueWithNotProcessedDistributions = ProjectRevenue::whereIn('id', $revenueIdsWithNotProcessedDistributions)->orderByDesc('date_end')->first();
+        if( $lastRevenueWithNotProcessedDistributions){
+            $dateBegin = Carbon::parse($lastRevenueWithNotProcessedDistributions->date_begin)->format('Y-m-d');
+        } else {
+            $dateBegin = $this->project->date_interest_bearing
+                ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
+                : null;
+        }
         return $dateBegin;
     }
     public function getDateEndRevenueTerminatedAttribute()
@@ -351,7 +368,16 @@ class ParticipantProject extends Model
     }
     public function getUndoTerminatedAllowedAttribute()
     {
-        // todo WM:
+        if ($this->date_terminated != null && $this->project->projectType->code_ref == 'loan' || $this->project->projectType->code_ref == 'obligation') {
+            // indien date_terminated is gezet, check bij leningen en obligaties of die datum voorkomt in een opbrengst deelnemer.
+            // zo ja, dan mogen we beeindiging terugdraaien, anders niet want dan gaan we voorlopig er even van uit
+            // dat deze deelname is beeindigd in oude situatie (directe aanmaak uitkeringsmutatie)
+            return $this->projectRevenues()
+                ->where('date_begin', '<=', Carbon::parse($this->date_terminated)->format('Y-m-d'))
+                ->where('date_end', '>=', Carbon::parse($this->date_terminated)->format('Y-m-d'))
+                ->where('project_revenues.participation_id', $this->id )
+                ->exists();
+        }
         return $this->date_terminated != null;
     }
 
@@ -390,18 +416,19 @@ class ParticipantProject extends Model
         return ($this->project->is_sce_project == false && $this->project->project_type_id != $pcrTypeId);
     }
 
-    public function getHasNotConfirmedRevenuesKwh(){
-
-        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
-            foreach ($this->project->revenuesKwh as $revenuesKwh) {
-                if ($revenuesKwh->category->code_ref == 'revenueKwh' && !$revenuesKwh->confirmed) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
+// todo WM terminated :  opsachonen
+//    public function getHasNotConfirmedRevenuesKwh(){
+//
+//        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
+//            foreach ($this->project->revenuesKwh as $revenuesKwh) {
+//                if ($revenuesKwh->category->code_ref == 'revenueKwh' && !$revenuesKwh->confirmed) {
+//                    return true;
+//                }
+//            }
+//        }
+//
+//        return false;
+//    }
 
     public function getParticipationsReturnsTotalAttribute()
     {
@@ -436,27 +463,28 @@ class ParticipantProject extends Model
         return floatval( number_format( $total, 2, '.', ''));
     }
 
-    public function getAddressEnergySupplierInAPeriod($dateBegin, $dateEnd)
-    {
-        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $this->address_id)
-            ->whereIn('energy_supply_type_id', [2, 3] )
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('member_since')
-                            ->where('member_since', '<=', $dateBegin);
-                    })
-                    ->orWhereNull('member_since');
-            })
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $dateBegin);
-                    })
-                    ->orWhereNull('end_date');
-            })->first();
-        return $addressEnergySupplier;
-    }
+// todo WM terminated :  opsachonen
+//    public function getAddressEnergySupplierInAPeriod($dateBegin, $dateEnd)
+//    {
+//        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $this->address_id)
+//            ->whereIn('energy_supply_type_id', [2, 3] )
+//            ->where(function ($addressEnergySupplier) use ($dateBegin) {
+//                $addressEnergySupplier
+//                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
+//                        $addressEnergySupplier->whereNotNull('member_since')
+//                            ->where('member_since', '<=', $dateBegin);
+//                    })
+//                    ->orWhereNull('member_since');
+//            })
+//            ->where(function ($addressEnergySupplier) use ($dateBegin) {
+//                $addressEnergySupplier
+//                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
+//                        $addressEnergySupplier->whereNotNull('end_date')
+//                            ->where('end_date', '>=', $dateBegin);
+//                    })
+//                    ->orWhereNull('end_date');
+//            })->first();
+//        return $addressEnergySupplier;
+//    }
 
 }

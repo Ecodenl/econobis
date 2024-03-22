@@ -83,7 +83,8 @@ class FullProject extends JsonResource
                 'currentBookWorth' => $this->currentBookWorth(),
                 'revenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
                 'revenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
-                'participants' => FullParticipantProject::collection($this->whenLoaded('participantsProject')),
+// todo WM terminated :  opsachonen
+//                'participants' => FullParticipantProject::collection($this->whenLoaded('participantsProject')),
                 'typeId' => $this->project_type_id,
                 'amountOfParticipants' => $this->participantsProject()->count(),
                 'taskCount' => $this->tasks()->count(),

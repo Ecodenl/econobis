@@ -72,6 +72,7 @@ class ParticipantDetailsToolbar extends Component {
 
     render() {
         const { participantProject, project } = this.props;
+
         if (!participantProject || !project) {
             return;
         } else {

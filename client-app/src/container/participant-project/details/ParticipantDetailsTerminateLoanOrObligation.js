@@ -30,25 +30,35 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
 
     function getAdditionalInfoForTerminating(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminating(participantProjectId).then(payload => {
-            setDateTerminated(payload.dateTerminatedAllowedFrom);
-            setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom);
-            setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo);
-            setDateEntryLastMutation(payload.dateEntryLastMutation);
+            setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+            setDateReference(payload.dateReference ? payload.dateReference : '');
+            setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+            setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
+            setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
             setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
             setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
             setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
             setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-            setDateReference(
-                projectTypeCodeRef === 'loan'
-                    ? moment()
-                    : payload.dateEndRevenueTerminated
-                    ? payload.dateEndRevenueTerminated
-                    : dateTerminatedAllowedFrom
+            setHasLastRevenueWithNotProcessedDistributions(
+                payload.hasLastRevenueWithNotProcessedDistributions
+                    ? payload.hasLastRevenueWithNotProcessedDistributions
+                    : false
+            );
+            setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
+            setPayAmount(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
+            setKeyAmountFirstPercentage(
+                payload.lastRevenueKeyAmountFirstPercentage ? payload.lastRevenueKeyAmountFirstPercentage : null
+            );
+            setPayPercentageValidFromKeyAmount(
+                payload.lastRevenuePayPercentageValidFromKeyAmount
+                    ? payload.lastRevenuePayPercentageValidFromKeyAmount
+                    : null
             );
         });
     }
 
     const [dateTerminated, setDateTerminated] = useState(null);
+    const [dateReference, setDateReference] = useState(moment());
     const [dateEntryLastMutation, setDateEntryLastMutation] = useState(null);
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
@@ -56,7 +66,9 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     const [dateEnd, setDateEnd] = useState(null);
     const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState('');
     const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState('');
-    const [dateReference, setDateReference] = useState(moment());
+    const [hasLastRevenueWithNotProcessedDistributions, setHasLastRevenueWithNotProcessedDistributions] = useState(
+        false
+    );
 
     const [distributionTypeId, setDistributionTypeId] = useState(
         projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
@@ -71,6 +83,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
     const [payPercentageValidFromKeyAmount, setPayPercentageValidFromKeyAmount] = useState(null);
+
     const [errors, setErrors] = useState({
         dateTerminated: false,
         distributionTypeId: false,
@@ -378,6 +391,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 label={'Uitkering (rente) %'}
                                 name={'payPercentage'}
                                 value={payPercentage}
+                                disabled={hasLastRevenueWithNotProcessedDistributions}
                                 onChangeAction={onChangePayPercentage}
                                 error={errors.payPercentage}
                                 errorMessage={errorMessages.payPercentage}
@@ -388,6 +402,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={'of uitkeringsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
+                                    disabled={hasLastRevenueWithNotProcessedDistributions}
                                     onChangeAction={onChangePayAmount}
                                     error={errors.payAmount}
                                     errorMessage={errorMessages.payAmount}
@@ -403,6 +418,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 }
                                 name={'keyAmountFirstPercentage'}
                                 value={keyAmountFirstPercentage}
+                                disabled={hasLastRevenueWithNotProcessedDistributions}
                                 onChangeAction={onChangeKeyAmountFirstPercentage}
                                 error={errors.keyAmountFirstPercentage}
                                 errorMessage={errorMessages.keyAmountFirstPercentage}
@@ -415,6 +431,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={<>Uitkering (rente) % vanaf bedrag</>}
                                     name={'payPercentageValidFromKeyAmount'}
                                     value={payPercentageValidFromKeyAmount}
+                                    disabled={hasLastRevenueWithNotProcessedDistributions}
                                     onChangeAction={onChangePayPercentageValidFromKeyAmount}
                                     error={errors.payPercentageValidFromKeyAmount}
                                     errorMessage={errorMessages.payPercentageValidFromKeyAmount}

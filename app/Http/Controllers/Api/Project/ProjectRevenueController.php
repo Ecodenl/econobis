@@ -147,7 +147,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenueCategoryParticipant = ProjectRevenueCategory::where('code_ref', 'revenueParticipant' )->first()->id;
 
-        // todo WM terminated:: confirmed direct op true indien beeindigingsdatum in een opbrengst verdeling zit die ook al definitief is.
+        // confirmed direct op true indien beeindigingsdatum in een opbrengst verdeling zit die ook al definitief is.
         $projectRevenueConfirmed =  $participantProject->projectRevenues()
             ->where('date_begin', '<=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))
             ->where('date_end', '>=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))

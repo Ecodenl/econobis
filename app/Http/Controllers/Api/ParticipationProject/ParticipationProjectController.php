@@ -26,6 +26,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\ParticipantProject\ParticipantProjectStatus;
 use App\Eco\Project\Project;
+use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
@@ -253,6 +254,7 @@ class ParticipationProjectController extends ApiController
 
         $participantProject->participantProjectRevenues = $this->getParticipantProjectRevenues($participantProject);
         $participantProject->participantProjectRevenuesKwh = $this->getParticipantProjectRevenuesKwh($participantProject);
+        $participantProject->undoTerminatedAllowed = $this->getUndoTerminatedAllowed($participantProject);
 
         return FullParticipantProject::make($participantProject);
     }
@@ -260,19 +262,65 @@ class ParticipationProjectController extends ApiController
     {
         set_time_limit(120);
 
-// todo WM terminated :  opsachonen
-//        Log::info('projectRevenues');
-//        Log::info($participantProject->id);
-//        Log::info($participantProject->projectRevenues()
-//            ->where('project_revenues.date_begin', '<=', Carbon::parse('2023-03-31')->format('Y-m-d'))
-//            ->where('project_revenues.date_end', '>=', Carbon::parse('2023-03-31')->format('Y-m-d'))
-//            ->whereNull('project_revenues.participation_id')
-//            ->where('project_revenues.confirmed', true )->get());
-
         $this->authorize('view', ParticipantProject::class);
+
+        $lastRevenueWithNotProcessedDistributions = $this->getLastRevenueWithNotProcessedDistributions($participantProject);
+        $lastRevenueBeginDate = $lastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->date_begin : null;
+
+        $participantProject->dateBeginRevenueTerminated = $this->getDateBeginRevenueTerminated($participantProject, $lastRevenueBeginDate);
+        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated);
+
+        $hasLastRevenueWithNotProcessedDistributions = (bool)$lastRevenueWithNotProcessedDistributions;
+
+        if($hasLastRevenueWithNotProcessedDistributions) {
+            $participantProject->dateReference = $lastRevenueWithNotProcessedDistributions->date_reference;
+        } else {
+            if($participantProject->project->projectType->code_ref == 'loan' ){
+                $participantProject->dateReference = Carbon::now()->format('Y-m-d');
+            } elseif ($participantProject->dateEndRevenueTerminated) {
+                $participantProject->dateReference = $participantProject->dateEndRevenueTerminated;
+            } else {
+                $participantProject->dateReference = $participantProject->dateTerminatedAllowedFrom;
+            }
+        }
+
+        $participantProject->hasLastRevenueWithNotProcessedDistributions = $hasLastRevenueWithNotProcessedDistributions;
+        $participantProject->lastRevenuePayPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_percentage : null;
+        $participantProject->lastRevenuePayAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_amount : null;
+        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->key_amount_first_percentage : null;
+        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_Percentage_valid_from_key_amount : null;
 
         return ResourceForTerminatingParticipantProject::make($participantProject);
     }
+
+    private function getDateBeginRevenueTerminated(ParticipantProject $participantProject, $lastRevenueBeginDate)
+    {
+        // Indien participant in concept of definitieve verdeling dan laatste begindatum daarvan.
+        //  anders date_interest_bearing
+        if( $lastRevenueBeginDate != null){
+            $dateBegin = Carbon::parse($lastRevenueBeginDate)->format('Y-m-d');
+        } else {
+            $dateBegin = $participantProject->project->date_interest_bearing
+                ? Carbon::parse($participantProject->project->date_interest_bearing)->format('Y-m-d')
+                : null;
+        }
+        return $dateBegin;
+    }
+    private function getDateEndRevenueTerminated($dateBegin)
+    {
+        $dateEnd = $dateBegin
+            ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
+            : null;
+        return $dateEnd;
+    }
+
+    private function getLastRevenueWithNotProcessedDistributions(ParticipantProject $participantProject)
+    {
+        $revenueIdsWithNotProcessedDistributions = $participantProject->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
+        $lastRevenueWithNotProcessedDistributions = ProjectRevenue::whereIn('id', $revenueIdsWithNotProcessedDistributions)->orderByDesc('date_end')->first();
+        return $lastRevenueWithNotProcessedDistributions;
+    }
+
 
     public function store(RequestInput $requestInput)
     {
@@ -573,11 +621,15 @@ class ParticipationProjectController extends ApiController
             // Remove distributions on active concept Euro and Redemption revenue(s)
             $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
             $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+            $dateTerminated = $participantProject->date_terminated;
 
             $participantProject->projectRevenueDistributions()
                 ->whereIn('status', ['concept', 'confirmed'])
-                ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
-                    $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
+                ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro, $dateTerminated) {
+                    $query->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro])
+                        ->where('date_begin', '<=', $dateTerminated)
+                        ->where('date_end', '>=', $dateTerminated)
+                    ;
                 })
                 ->forceDelete();
 
@@ -603,7 +655,8 @@ class ParticipationProjectController extends ApiController
 
             $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
             if($projectTypeCodeRef == 'loan' || $projectTypeCodeRef == 'obligation'){
-                // todo WM terminated:: Indien participant in concept of definitieve deelnemer verdeling waar oorspronkelijk beeindigsdatum in periode lag,
+
+                // Indien participant in concept deelnemer verdeling waar oorspronkelijk beeindigsdatum in periode lag,
                 //  dan die verwijderen.
                 $projectRevenueParticipant =  $participantProject->projectRevenues()
                     ->where('date_begin', '<=', $originalDateTerminated)
@@ -614,17 +667,18 @@ class ParticipationProjectController extends ApiController
                     ->first();
 
                 if($projectRevenueParticipant){
-                    $deleteProjectRevenueParticipant = new DeleteRevenue($projectRevenueParticipant);
-                    $deleteProjectRevenueParticipant->delete();
+                    $deleteRevenue = new DeleteRevenue($projectRevenueParticipant);
+                    $deleteRevenue->delete();
                 }
 
-                // todo WM terminated:: verder altijd laatste opname mutatieregel weer ongedaan maken. (check huidige voorwaarde voor verwijderen muatieregel!)
+                // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
                 $projectType = $participantProject->project->projectType;
                 $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
                 $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
                     ->whereIn('type_id', $withDrawalTypes)
                     ->where('status_id', $mutationStatusFinal)
+                    ->where('financial_overview_definitive', false)
                     ->orderByDesc('date_entry')
                     ->first();
 
@@ -1547,4 +1601,25 @@ class ParticipationProjectController extends ApiController
 
         return $participantProjectRevenuesKwhCollection;
     }
+
+    public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
+    {
+        // Deelname beeindigd bij leningen en obligaties voorlopig alleen terugdraaien indien deelname niet al in een verdeling zit die niet concept is.
+        $dateTerminated = $participantProject->date_terminated;
+        if ( $dateTerminated != null && ($participantProject->project->projectType->code_ref == 'loan' || $participantProject->project->projectType->code_ref == 'obligation') ) {
+            $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
+                ->whereNotIn('status', ['concept'])
+                ->whereHas('revenue', function ($query) use($dateTerminated) {
+                    $query->where('date_begin', '<=', $dateTerminated)
+                        ->where('date_end', '>=', $dateTerminated);
+                })
+                ->exists();
+
+            return !$projectRevenueDistributionsNotConcept;
+        }
+
+        return $dateTerminated != null;
+    }
+
+
 }

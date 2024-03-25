@@ -63,13 +63,26 @@ export default {
             });
     },
 
+    getAdditionalInfoForTerminating: participantId => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${participantId}/additional-info-for-terminating`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     terminateParticipantProject: (id, payload) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate`;
 
         return axiosInstance.post(requestUrl, payload);
     },
-    terminateParticipantProjectObligation: (id, payload) => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate-obligation`;
+    terminateParticipantProjectLoanOrObligation: (id, payload) => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate-loan-or-obligation`;
 
         return axiosInstance.post(requestUrl, payload);
     },

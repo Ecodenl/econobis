@@ -23,8 +23,6 @@ class FullProjectRevenue extends JsonResource
                 'id' => $this->id,
                 'participationId' => $this->participation_id,
                 'participationName' => $this->participant ? $this->participant->contact->full_name : '',
-                'typeId' => $this->type_id,
-                'type' => GenericResource::make($this->whenLoaded('type')),
                 'distributionTypeId' => $this->distribution_type_id,
                 'distributionType' => FullEnumWithIdAndName::make($this->getDistributionType()),
                 'projectId' => $this->project_id,

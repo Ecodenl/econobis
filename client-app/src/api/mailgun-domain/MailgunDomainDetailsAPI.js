@@ -9,7 +9,8 @@ export default {
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'domain', 'secret', 'isVerified'],
+                    // fld: ['id', 'domain', 'secret', 'isVerified'],
+                    fld: ['id', 'domain', 'isVerified'],
                 },
             },
         });

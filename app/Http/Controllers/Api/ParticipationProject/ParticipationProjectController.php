@@ -233,8 +233,6 @@ class ParticipationProjectController extends ApiController
             'projectRevenues.createdBy',
             'revenuesKwh.createdBy',
             'participantProjectPayoutType',
-//            'projectRevenueDistributions',
-//            'projectRevenueDistributions.revenue.category',
             'revenuesKwh',
             'giftedByContact',
             'legalRepContact',

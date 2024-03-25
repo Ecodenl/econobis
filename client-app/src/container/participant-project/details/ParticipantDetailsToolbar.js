@@ -98,8 +98,7 @@ class ParticipantDetailsToolbar extends Component {
             // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
             const projectTypeCodeRef = project ? project.typeCodeRef : '';
-            // console.log(project);
-            // console.log(projectTypeCodeRef);
+
             return (
                 <div className="row">
                     <div className="col-sm-12">

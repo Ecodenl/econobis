@@ -11,6 +11,8 @@ import InputReactSelectLong from '../../../../../components/form/InputReactSelec
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+import validator from 'validator';
+import InputTextArea from '../../../../../components/form/InputTextArea';
 
 const ProjectFormEditGeneral = ({
     showCustomerPortalSettings,
@@ -76,6 +78,7 @@ const ProjectFormEditGeneral = ({
     contactGroups,
     staticContactGroups,
     errors,
+    errorMessages,
     amountOfParticipants,
     documentTemplateAgreementId,
     documentTemplates,
@@ -150,11 +153,32 @@ const ProjectFormEditGeneral = ({
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
-    let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
-    errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
+    // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectFormEdit
+    errors.postalcodeLink = false;
+    errorMessages.postalcodeLink = '';
+    if (
+        (checkPostalcodeLink || projectType.codeRef === 'postalcode_link_capital') &&
+        (!postalcodeLink || validator.isEmpty('' + postalcodeLink))
+    ) {
+        errors.postalcodeLink = true;
+        errorMessages.postalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+    } else if (postalcodeLink) {
+        let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+        if (!regExpPostalcodeLink.exec(postalcodeLink)) {
+            errors.postalcodeLink = true;
+            errorMessages.postalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+        }
+    }
 
-    let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
-    errors.addressNumberSeries = addressNumberSeries ? !regExpAddressNumberSeries.exec(addressNumberSeries) : false;
+    errors.addressNumberSeries = false;
+    errorMessages.addressNumberSeries = '';
+    if (addressNumberSeries) {
+        let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+        if (!regExpAddressNumberSeries.exec(addressNumberSeries)) {
+            errors.addressNumberSeries = true;
+            errorMessages.addressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+        }
+    }
 
     return (
         <React.Fragment>
@@ -167,6 +191,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.name}
+                    errorMessage={errorMessages.name}
                 />
                 <InputText
                     label={'Projectcode'}
@@ -175,6 +200,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.code}
+                    errorMessage={errorMessages.code}
                 />
             </div>
 
@@ -192,6 +218,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.projectStatusId}
+                    errorMessage={errorMessages.projectStatusId}
                 />
             </div>
             <div className="row">
@@ -211,6 +238,7 @@ const ProjectFormEditGeneral = ({
                         onChangeAction={handleInputChange}
                         required={isSceProject ? 'required' : ''}
                         error={errors.baseProjectCodeRef}
+                        errorMessage={errorMessages.baseProjectCodeRef}
                     />
                 ) : null}
             </div>
@@ -263,10 +291,11 @@ const ProjectFormEditGeneral = ({
                             value={postalcodeLink}
                             maxLength="300"
                             onChangeAction={handleInputChange}
+                            required={checkPostalcodeLink ? 'required' : ''}
                             size={'col-sm-5'}
                             textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             error={errors.postalcodeLink}
-                            errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                            errorMessage={errorMessages.postalcodeLink}
                         />
                         {addressNumberSeriesFieldEnabled ? (
                             <InputText
@@ -278,7 +307,7 @@ const ProjectFormEditGeneral = ({
                                 textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
                                       Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 error={errors.addressNumberSeries}
-                                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                                errorMessage={errorMessages.addressNumberSeries}
                             />
                         ) : (
                             <div className="form-group col-sm-6" />
@@ -296,23 +325,34 @@ const ProjectFormEditGeneral = ({
             ) : null}
 
             <div className="row">
-                <div className="form-group col-sm-12">
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="description" className="col-sm-12">
-                                Omschrijving
-                            </label>
-                        </div>
-                        <div className="col-sm-8">
-                            <textarea
-                                name="description"
-                                value={description}
-                                onChange={handleInputChange}
-                                className="form-control input-sm"
-                            />
-                        </div>
-                    </div>
-                </div>
+                {/*<div className="form-group col-sm-12">*/}
+                {/*    <div className="row">*/}
+                {/*        <div className="col-sm-3">*/}
+                {/*            <label htmlFor="description" className="col-sm-12">*/}
+                {/*                Omschrijving*/}
+                {/*            </label>*/}
+                {/*        </div>*/}
+                {/*        <div className="col-sm-8">*/}
+                {/*            <textarea*/}
+                {/*                name="description"*/}
+                {/*                value={description}*/}
+                {/*                onChange={handleInputChange}*/}
+                {/*                className="form-control input-sm"*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+                <InputTextArea
+                    label="Omschrijving"
+                    name={'description'}
+                    sizeInput={'col-sm-8'}
+                    rows={2}
+                    value={description}
+                    onChangeAction={handleInputChange}
+                    // required={'required'}
+                    // error={errors.description}
+                    // errorMessage={errorMessages.description}
+                />
             </div>
 
             <div className="row">
@@ -322,6 +362,7 @@ const ProjectFormEditGeneral = ({
                     value={postalCode}
                     onChangeAction={handleInputChange}
                     error={errors.postalCode}
+                    errorMessage={errorMessages.postalCode}
                 />
                 <InputText label={'Adres'} name={'address'} value={address} onChangeAction={handleInputChange} />
             </div>
@@ -346,6 +387,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.ownedById}
+                    errorMessage={errorMessages.ownedById}
                 />
             </div>
 
@@ -374,6 +416,7 @@ const ProjectFormEditGeneral = ({
                         onChangeAction={handleInputChangeAdministration}
                         required={'required'}
                         error={errors.administrationId}
+                        errorMessage={errorMessages.administrationId}
                     />
                 )}
             </div>
@@ -409,6 +452,7 @@ const ProjectFormEditGeneral = ({
                             value={contactGroupIdsSelected}
                             onChangeAction={handleContactGroupIds}
                             error={errors.contactGroupIds}
+                            errorMessage={errorMessages.contactGroupIds}
                             required={'required'}
                         />
                     </div>
@@ -453,6 +497,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={disableBeforeEntryDate}
                     error={errors.dateEntry}
+                    errorMessage={errorMessages.dateEntry}
                 />
             </div>
 
@@ -591,6 +636,7 @@ const ProjectFormEditGeneral = ({
                             value={linkProjectInfo}
                             onChangeAction={handleInputChange}
                             error={errors.linkProjectInfo}
+                            errorMessage={errorMessages.linkProjectInfo}
                             readOnly={!permissions.managePortalSettings || projectInfoLinkOrDocument !== 'link'}
                         />
                     </div>
@@ -605,6 +651,7 @@ const ProjectFormEditGeneral = ({
                             value={documentIdProjectInfo}
                             onChangeAction={handleReactSelectChange}
                             error={errors.documentIdProjectInfo}
+                            errorMessage={errorMessages.documentIdProjectInfo}
                             disabled={!permissions.managePortalSettings || projectInfoLinkOrDocument !== 'document'}
                         />
                     </div>
@@ -624,6 +671,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.transactionCostsCodeRef}
+                            errorMessage={errorMessages.transactionCostsCodeRef}
                             readOnly={!permissions.managePortalSettings}
                         />
                         <InputText
@@ -634,6 +682,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textTransactionCosts}
+                            errorMessage={errorMessages.textTransactionCosts}
                             readOnly={!permissions.managePortalSettings}
                         />
                     </div>
@@ -646,7 +695,7 @@ const ProjectFormEditGeneral = ({
                                 value={transactionCostsAmountMin}
                                 onChangeAction={handleInputChange}
                                 error={errors.transactionCostsAmountMin}
-                                // errorMessage={errorMessage.transactionCostsAmountMin}
+                                errorMessage={errorMessages.transactionCostsAmountMin}
                                 readOnly={!permissions.managePortalSettings}
                             />
                             <InputText
@@ -656,7 +705,7 @@ const ProjectFormEditGeneral = ({
                                 value={transactionCostsAmountMax}
                                 onChangeAction={handleInputChange}
                                 error={errors.transactionCostsAmountMax}
-                                // errorMessage={errorMessage.transactionCostsAmountMax}
+                                errorMessage={errorMessages.transactionCostsAmountMax}
                                 readOnly={!permissions.managePortalSettings}
                             />
                         </div>
@@ -672,7 +721,7 @@ const ProjectFormEditGeneral = ({
                                 onChangeAction={handleInputChange}
                                 required={'required'}
                                 error={errors.transactionCostsAmount}
-                                // errorMessage={errorMessage.transactionCostsAmount}
+                                errorMessage={errorMessages.transactionCostsAmount}
                                 readOnly={!permissions.managePortalSettings}
                             />
                         </div>
@@ -691,7 +740,7 @@ const ProjectFormEditGeneral = ({
                                 onChangeAction={handleInputChange}
                                 required={'required'}
                                 error={errors.transactionCostsAmount}
-                                // errorMessage={errorMessage.transactionCostsAmount}
+                                errorMessage={errorMessages.transactionCostsAmount}
                                 readOnly={!permissions.managePortalSettings}
                             />
                         </div>
@@ -707,7 +756,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.transactionCostsAmount}
-                                    // errorMessage={errorMessage.transactionCostsAmount}
+                                    errorMessage={errorMessages.transactionCostsAmount}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                                 <InputText
@@ -718,7 +767,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.transactionCostsPercentage}
-                                    // errorMessage={errorMessage.transactionCostsPercentage}
+                                    errorMessage={errorMessages.transactionCostsPercentage}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -731,7 +780,7 @@ const ProjectFormEditGeneral = ({
                                         value={transactionCostsAmount2}
                                         onChangeAction={handleInputChange}
                                         error={errors.transactionCostsAmount2}
-                                        // errorMessage={errorMessage.transactionCostsAmount2}
+                                        errorMessage={errorMessages.transactionCostsAmount2}
                                         readOnly={!permissions.managePortalSettings}
                                     />
                                     {transactionCostsAmount2 !== null ? (
@@ -743,7 +792,7 @@ const ProjectFormEditGeneral = ({
                                                 value={transactionCostsPercentage2}
                                                 onChangeAction={handleInputChange}
                                                 error={errors.transactionCostsPercentage2}
-                                                // errorMessage={errorMessage.transactionCostsPercentage2}
+                                                errorMessage={errorMessages.transactionCostsPercentage2}
                                                 readOnly={!permissions.managePortalSettings}
                                             />
                                         </>
@@ -760,7 +809,7 @@ const ProjectFormEditGeneral = ({
                                             value={transactionCostsAmount3}
                                             onChangeAction={handleInputChange}
                                             error={errors.transactionCostsAmount3}
-                                            // errorMessage={errorMessage.transactionCostsAmount3}
+                                            errorMessage={errorMessages.transactionCostsAmount3}
                                             readOnly={!permissions.managePortalSettings}
                                         />
                                         {transactionCostsAmount3 !== null ? (
@@ -771,7 +820,7 @@ const ProjectFormEditGeneral = ({
                                                 value={transactionCostsPercentage3}
                                                 onChangeAction={handleInputChange}
                                                 error={errors.transactionCostsPercentage3}
-                                                // errorMessage={errorMessage.transactionCostsPercentage3}
+                                                errorMessage={errorMessages.transactionCostsPercentage3}
                                                 readOnly={!permissions.managePortalSettings}
                                             />
                                         ) : null}
@@ -816,6 +865,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleReactSelectChange}
                                     required={'required'}
                                     error={errors.questionAboutMembershipGroupId}
+                                    errorMessage={errorMessages.questionAboutMembershipGroupId}
                                     disabled={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -829,6 +879,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.textIsMember}
+                                    errorMessage={errorMessages.textIsMember}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -842,6 +893,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.textIsNoMember}
+                                    errorMessage={errorMessages.textIsNoMember}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -854,6 +906,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.textBecomeMember}
+                                    errorMessage={errorMessages.textBecomeMember}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -866,6 +919,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleReactSelectChange}
                                     required={'required'}
                                     error={errors.memberGroupId}
+                                    errorMessage={errorMessages.memberGroupId}
                                     disabled={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -878,6 +932,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleInputChange}
                                     required={'required'}
                                     error={errors.textBecomeNoMember}
+                                    errorMessage={errorMessages.textBecomeNoMember}
                                     readOnly={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -890,6 +945,7 @@ const ProjectFormEditGeneral = ({
                                     onChangeAction={handleReactSelectChange}
                                     required={'required'}
                                     error={errors.noMemberGroupId}
+                                    errorMessage={errorMessages.noMemberGroupId}
                                     disabled={!permissions.managePortalSettings}
                                 />
                             </div>
@@ -903,26 +959,39 @@ const ProjectFormEditGeneral = ({
                         </label>
                     </div>
                     <div className={'row'}>
-                        <div className="form-group col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label htmlFor="textAgreeTerms" className="col-sm-12">
-                                        Voorwaarden tekst
-                                    </label>
-                                </div>
-                                <div className="col-sm-8">
-                                    <textarea
-                                        name="textAgreeTerms"
-                                        value={textAgreeTerms}
-                                        onChange={handleInputChange}
-                                        className="form-control input-sm"
-                                        required={'required'}
-                                        // error={errors.textAgreeTerms}
-                                        readOnly={!permissions.managePortalSettings}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        {/*<div className="form-group col-sm-12">*/}
+                        {/*    <div className="row">*/}
+                        {/*        <div className="col-sm-3">*/}
+                        {/*            <label htmlFor="textAgreeTerms" className="col-sm-12">*/}
+                        {/*                Voorwaarden tekst*/}
+                        {/*            </label>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="col-sm-8">*/}
+                        {/*            <textarea*/}
+                        {/*                name="textAgreeTerms"*/}
+                        {/*                value={textAgreeTerms}*/}
+                        {/*                onChange={handleInputChange}*/}
+                        {/*                className="form-control input-sm"*/}
+                        {/*                required={'required'}*/}
+                        {/*                // error={errors.textAgreeTerms}*/}
+                        {/*                // errorMessage={errorMessages.textAgreeTerms}*/}
+                        {/*                readOnly={!permissions.managePortalSettings}*/}
+                        {/*            />*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        <InputTextArea
+                            label="Voorwaarden tekst"
+                            name={'textAgreeTerms'}
+                            sizeInput={'col-sm-8'}
+                            rows={2}
+                            value={textAgreeTerms}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textAgreeTerms}
+                            errorMessage={errorMessages.textAgreeTerms}
+                            disabled={!permissions.managePortalSettings}
+                        />
                     </div>
                     <hr />
 
@@ -973,6 +1042,7 @@ const ProjectFormEditGeneral = ({
                             value={linkAgreeTerms}
                             onChangeAction={handleInputChange}
                             error={errors.linkAgreeTerms}
+                            errorMessage={errorMessages.linkAgreeTerms}
                             readOnly={!permissions.managePortalSettings || agreeTermsLinkOrDocument !== 'link'}
                         />
                     </div>
@@ -987,6 +1057,7 @@ const ProjectFormEditGeneral = ({
                             value={documentIdAgreeTerms}
                             onChangeAction={handleReactSelectChange}
                             error={errors.documentIdAgreeTerms}
+                            errorMessage={errorMessages.documentIdAgreeTerms}
                             disabled={!permissions.managePortalSettings || agreeTermsLinkOrDocument !== 'document'}
                         />
                     </div>
@@ -1000,6 +1071,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textLinkAgreeTerms}
+                            errorMessage={errorMessages.textLinkAgreeTerms}
                             readOnly={!permissions.managePortalSettings}
                             textToolTip={helpTextLinkAgreeTerms}
                         />
@@ -1054,6 +1126,7 @@ const ProjectFormEditGeneral = ({
                             value={linkUnderstandInfo}
                             onChangeAction={handleInputChange}
                             error={errors.linkUnderstandInfo}
+                            errorMessage={errorMessages.linkUnderstandInfo}
                             readOnly={!permissions.managePortalSettings || understandInfoLinkOrDocument !== 'link'}
                         />
                     </div>
@@ -1068,6 +1141,7 @@ const ProjectFormEditGeneral = ({
                             value={documentIdUnderstandInfo}
                             onChangeAction={handleReactSelectChange}
                             error={errors.documentIdUnderstandInfo}
+                            errorMessage={errorMessages.documentIdUnderstandInfo}
                             disabled={!permissions.managePortalSettings || understandInfoLinkOrDocument !== 'document'}
                         />
                     </div>
@@ -1081,6 +1155,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             required={'required'}
                             error={errors.textLinkUnderstandInfo}
+                            errorMessage={errorMessages.textLinkUnderstandInfo}
                             readOnly={!permissions.managePortalSettings}
                             textToolTip={helpTextLinkUnderstandInfo}
                         />
@@ -1093,26 +1168,39 @@ const ProjectFormEditGeneral = ({
                         </label>
                     </div>
                     <div className={'row'}>
-                        <div className="form-group col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label htmlFor="textAcceptAgreement" className="col-sm-12">
-                                        Bevestigen tekst
-                                    </label>
-                                </div>
-                                <div className="col-sm-8">
-                                    <textarea
-                                        name="textAcceptAgreement"
-                                        value={textAcceptAgreement}
-                                        onChange={handleInputChange}
-                                        className="form-control input-sm"
-                                        required={'required'}
-                                        // error={errors.textAcceptAgreement}
-                                        readOnly={!permissions.managePortalSettings}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        {/*<div className="form-group col-sm-12">*/}
+                        {/*    <div className="row">*/}
+                        {/*        <div className="col-sm-3">*/}
+                        {/*            <label htmlFor="textAcceptAgreement" className="col-sm-12">*/}
+                        {/*                Bevestigen tekst*/}
+                        {/*            </label>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="col-sm-8">*/}
+                        {/*            <textarea*/}
+                        {/*                name="textAcceptAgreement"*/}
+                        {/*                value={textAcceptAgreement}*/}
+                        {/*                onChange={handleInputChange}*/}
+                        {/*                className="form-control input-sm"*/}
+                        {/*                required={'required'}*/}
+                        {/*                // error={errors.textAcceptAgreement}*/}
+                        {/*                // errorMessage={errorMessages.textAcceptAgreement}*/}
+                        {/*                readOnly={!permissions.managePortalSettings}*/}
+                        {/*            />*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        <InputTextArea
+                            label="Bevestigen tekst"
+                            name={'textAcceptAgreement'}
+                            sizeInput={'col-sm-8'}
+                            rows={2}
+                            value={textAcceptAgreement}
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textAcceptAgreement}
+                            errorMessage={errorMessages.textAcceptAgreement}
+                            disabled={!permissions.managePortalSettings}
+                        />
                     </div>
                     <div className="row">
                         <InputTextLong
@@ -1121,6 +1209,7 @@ const ProjectFormEditGeneral = ({
                             value={textAcceptAgreementQuestion}
                             onChangeAction={handleInputChange}
                             error={errors.textAcceptAgreementQuestion}
+                            errorMessage={errorMessages.textAcceptAgreementQuestion}
                             readOnly={!permissions.managePortalSettings}
                         />
                     </div>
@@ -1134,6 +1223,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleReactSelectChange}
                             // isLoading={peekLoading.documentTemplates}
                             error={errors.documentTemplateAgreementId}
+                            errorMessage={errorMessages.documentTemplateAgreementId}
                             disabled={!permissions.managePortalSettings}
                         />
                     </div>
@@ -1146,6 +1236,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleReactSelectChange}
                             // isLoading={peekLoading.emailTemplates}
                             error={errors.emailTemplateAgreementId}
+                            errorMessage={errorMessages.emailTemplateAgreementId}
                             disabled={!permissions.managePortalSettings}
                         />
                     </div>
@@ -1176,25 +1267,36 @@ const ProjectFormEditGeneral = ({
                     </div>
 
                     <div className={'row'}>
-                        <div className="form-group col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label htmlFor="textRegistrationFinished" className="col-sm-12">
-                                        Inschrijving afgerond tekst
-                                    </label>
-                                </div>
-                                <div className="col-sm-8">
-                                    <textarea
-                                        name="textRegistrationFinished"
-                                        value={textRegistrationFinished}
-                                        onChange={handleInputChange}
-                                        className="form-control input-sm"
-                                        required={'required'}
-                                        readOnly={!permissions.managePortalSettings}
-                                    />
-                                </div>
-                            </div>
-                        </div>
+                        {/*<div className="form-group col-sm-12">*/}
+                        {/*    <div className="row">*/}
+                        {/*        <div className="col-sm-3">*/}
+                        {/*            <label htmlFor="textRegistrationFinished" className="col-sm-12">*/}
+                        {/*                Inschrijving afgerond tekst*/}
+                        {/*            </label>*/}
+                        {/*        </div>*/}
+                        {/*        <div className="col-sm-8">*/}
+                        {/*            <textarea*/}
+                        {/*                name="textRegistrationFinished"*/}
+                        {/*                value={textRegistrationFinished}*/}
+                        {/*                onChange={handleInputChange}*/}
+                        {/*                className="form-control input-sm"*/}
+                        {/*                required={'required'}*/}
+                        {/*                readOnly={!permissions.managePortalSettings}*/}
+                        {/*            />*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                        <InputTextArea
+                            label="Inschrijving afgerond tekst"
+                            name={'textRegistrationFinished'}
+                            sizeInput={'col-sm-8'}
+                            rows={2}
+                            value={textRegistrationFinished}
+                            onChangeAction={handleInputChange}
+                            // required={'required'}
+                            // error={errors.textRegistrationFinished}
+                            // errorMessage={errorMessages.textRegistrationFinished}
+                        />
                     </div>
                 </>
             ) : null}

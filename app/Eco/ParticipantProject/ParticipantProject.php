@@ -21,6 +21,7 @@ use App\Eco\Task\Task;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
@@ -246,30 +247,46 @@ class ParticipantProject extends Model
             return Carbon::parse($dateEntryLastMutation)->subDay()->format('Y-m-d');
         }
 
-        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
-        $dateInterestBearing = $this->project->date_interest_bearing
-            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
-            : null;
-        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
-            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
-            : null;
+//        $dateTerminatedAllowedFrom = Carbon::parse('2000-01-01')->format('Y-m-d');
+//        $dateInterestBearing = $this->project->date_interest_bearing
+//            ? Carbon::parse($this->project->date_interest_bearing)->format('Y-m-d')
+//            : null;
+//        $dateInterestBearingRedemption = $this->project->date_interest_bearing_redemption
+//            ? Carbon::parse($this->project->date_interest_bearing_redemption)->format('Y-m-d')
+//            : null;
+
+//        $lastRevenueWithProcessedDistribution2 = $this->projectRevenues()->whereIn('project_revenue_distribution.status', ['processed'])->orderByDesc('date_end')->first();
+
+        $revenueIdsWithProcessedDistributions = $this->projectRevenueDistributions()->whereIn('status', ['processed'])->get()->pluck('revenue_id')->toArray();
+        $lastRevenueWithProcessedDistribution = ProjectRevenue::whereIn('id', $revenueIdsWithProcessedDistributions)->orderByDesc('date_end')->first();
+        $dateTerminatedAllowedFrom = $lastRevenueWithProcessedDistribution ? Carbon::parse($lastRevenueWithProcessedDistribution->date_end)->addDay()->format('Y-m-d') : Carbon::parse('2000-01-01')->format('Y-m-d');
+        Log::info('lastRevenueWithProcessedDistribution next begin date: ' . $dateTerminatedAllowedFrom);
+
         $dateInterestBearingKwh = $this->project->date_interest_bearing_kwh
             ? Carbon::parse($this->project->date_interest_bearing_kwh)->format('Y-m-d')
             : null;
-        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearing;
-        }
-        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
-            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
-        }
+//        if ($dateInterestBearing != null && $dateInterestBearing > $dateTerminatedAllowedFrom) {
+//            $dateTerminatedAllowedFrom = $dateInterestBearing;
+//        }
+//        if ($dateInterestBearingRedemption != null && $dateInterestBearingRedemption > $dateTerminatedAllowedFrom) {
+//            $dateTerminatedAllowedFrom = $dateInterestBearingRedemption;
+//        }
+
         if ($dateInterestBearingKwh != null && $dateInterestBearingKwh > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateInterestBearingKwh;
+            Log::info('dateInterestBearingKwh next begin date: ' . $dateTerminatedAllowedFrom);
         }
+
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
+            Log::info('dateEntryLastMutation next begin date: ' . $dateTerminatedAllowedFrom);
         }
+
+
+
         return Carbon::parse($dateTerminatedAllowedFrom)->subDay()->format('Y-m-d');
     }
+
     public function getDateTerminatedAllowedToAttribute()
     {
         $dateEntryLastMutation = $this->date_entry_last_mutation
@@ -288,10 +305,27 @@ class ParticipantProject extends Model
 
         return $this->date_terminated == null && ($this->date_terminated_allowed_to >= $this->date_terminated_allowed_from) && $this->mutations()->where('status_id', $mutationStatusFinal)->exists();
     }
-    public function getUndoTerminatedAllowedAttribute()
-    {
-        return $this->date_terminated != null;
-    }
+// todo WM terminated :  opschonen
+//    public function getUndoTerminatedAllowedAttribute()
+//    {
+//        // indien date_terminated is gezet, check bij leningen en obligaties of die datum voorkomt in een opbrengst deelnemer.
+//        // zo ja, dan mogen we beeindiging terugdraaien, anders niet want dan gaan we voorlopig er even van uit
+//        // dat deze deelname is beeindigd in oude situatie (directe aanmaak uitkeringsmutatie)
+////        if ( $this->date_terminated != null && ($this->project->projectType->code_ref == 'loan' || $this->project->projectType->code_ref == 'obligation') ) {
+////            return $this->projectRevenues()
+////                ->where('date_begin', '<=', Carbon::parse($this->date_terminated)->format('Y-m-d'))
+////                ->where('date_end', '>=', Carbon::parse($this->date_terminated)->format('Y-m-d'))
+////                ->where('project_revenues.participation_id', $this->id )
+////                ->exists();
+////        }
+//
+//        // Deelname beeindigd bij leningen en obligaties voorlopig nooit terugdraaien
+//        if ( $this->date_terminated != null && ($this->project->projectType->code_ref == 'loan' || $this->project->projectType->code_ref == 'obligation') ) {
+//            return false;
+//        }
+//
+//        return $this->date_terminated != null;
+//    }
 
     // Return if projectparicipant already has a link in a non-concept revenue distribution
 //    public function getParticipantInDefinitiveRevenueAttribute()
@@ -328,19 +362,6 @@ class ParticipantProject extends Model
         return ($this->project->is_sce_project == false && $this->project->project_type_id != $pcrTypeId);
     }
 
-    public function getHasNotConfirmedRevenuesKwh(){
-
-        if($this->project->projectType->code_ref == 'postalcode_link_capital') {
-            foreach ($this->project->revenuesKwh as $revenuesKwh) {
-                if ($revenuesKwh->category->code_ref == 'revenueKwh' && !$revenuesKwh->confirmed) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
     public function getParticipationsReturnsTotalAttribute()
     {
         $total = 0;
@@ -372,29 +393,6 @@ class ParticipantProject extends Model
         }
 
         return floatval( number_format( $total, 2, '.', ''));
-    }
-
-    public function getAddressEnergySupplierInAPeriod($dateBegin, $dateEnd)
-    {
-        $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $this->address_id)
-            ->whereIn('energy_supply_type_id', [2, 3] )
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('member_since')
-                            ->where('member_since', '<=', $dateBegin);
-                    })
-                    ->orWhereNull('member_since');
-            })
-            ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                $addressEnergySupplier
-                    ->where(function ($addressEnergySupplier) use ($dateBegin) {
-                        $addressEnergySupplier->whereNotNull('end_date')
-                            ->where('end_date', '>=', $dateBegin);
-                    })
-                    ->orWhereNull('end_date');
-            })->first();
-        return $addressEnergySupplier;
     }
 
 }

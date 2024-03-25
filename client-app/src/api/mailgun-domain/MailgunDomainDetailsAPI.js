@@ -6,7 +6,6 @@ export default {
     fetchMailgunDomainDetails: id => {
         const requestUrl = `jory/mailgun-domain/${id}`;
 
-
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
@@ -19,7 +18,6 @@ export default {
     newMailgunDomain: mailgunDomain => {
         const requestUrl = URL_MAILGUN_DOMAIN;
 
-
         mailgunDomain.jory = JSON.stringify({
             fld: ['id'],
         });
@@ -29,7 +27,6 @@ export default {
 
     updateMailgunDomain: mailgunDomain => {
         const requestUrl = `${URL_MAILGUN_DOMAIN}/${mailgunDomain.id}`;
-
 
         return axiosInstance.post(requestUrl, mailgunDomain);
     },

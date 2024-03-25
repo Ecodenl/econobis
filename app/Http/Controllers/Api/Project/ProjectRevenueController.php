@@ -147,13 +147,21 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenueCategoryParticipant = ProjectRevenueCategory::where('code_ref', 'revenueParticipant' )->first()->id;
 
+        // confirmed direct op true indien beeindigingsdatum in een opbrengst verdeling zit die ook al definitief is.
+        $projectRevenueConfirmed =  $participantProject->projectRevenues()
+            ->where('date_begin', '<=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))
+            ->where('date_end', '>=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))
+            ->whereNull('project_revenues.participation_id')
+            ->where('project_revenues.confirmed', true )
+            ->exists();
+
         $data = $requestInput
             ->integer('categoryId')->alias('category_id')->default($projectRevenueCategoryParticipant)->next()
             ->string('distributionTypeId')->onEmpty(null)->alias('distribution_type_id')->next()
             ->integer('projectId')->alias('project_id')->default($participantProject->project_id)->next()
             ->integer('participationId')->alias('participation_id')->default($participantProject->id)->next()
             ->integer('addressEnergySupplierId')->validate('nullable|exists:address_energy_suppliers,id')->onEmpty(null)->alias('address_energy_supplier_id')->next()
-            ->boolean('confirmed')->next()
+            ->boolean('confirmed')->default($projectRevenueConfirmed)->next()
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateReference')->validate('required|date')->alias('date_reference')->next()
@@ -1117,7 +1125,7 @@ class ProjectRevenueController extends ApiController
     {
         if($revenueCategory == 'revenueEuro') {
             $projectRevenue->distribution->each(function ($distribution) use ($dateBegin, $dateEnd) {
-                if ($distribution->status == 'concept') {
+                if( in_array($distribution->status, ['concept', 'confirmed']) ) {
                     if ($distribution->payout == 0) {
 //                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met payout 0 en 1e ingangsdatum: ' . Carbon::parse($distribution->participation->date_register)->format('Y-m-d'));
                         $distribution->forceDelete();

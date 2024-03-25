@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import Modal from '../../../components/modal/Modal';
 import { fetchParticipantProjectDetails } from '../../../actions/participants-project/ParticipantProjectDetailsActions';
@@ -16,50 +16,74 @@ const StyledEm = styled.em`
     font-weight: normal;
 `;
 
-const ParticipantDetailsTerminateObligation = ({
+const ParticipantDetailsTerminateLoanOrObligation = ({
     participantProject,
     setErrorModal,
     closeDeleteItemModal,
-    dateInterestBearing,
+    projectTypeCodeRef,
     fetchParticipantProjectDetails,
     projectRevenueDistributionTypes,
 }) => {
-    const [dateTerminated, setDateTerminated] = useState(
-        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
-    );
-    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
-        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
-    );
-    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
-        moment(participantProject.dateTerminatedAllowedTo).format('Y-MM-DD')
+    useEffect(() => {
+        getAdditionalInfoForTerminating(participantProject.id);
+    }, [participantProject.id]);
+
+    function getAdditionalInfoForTerminating(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminating(participantProjectId).then(payload => {
+            setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+            setDateReference(payload.dateReference ? payload.dateReference : '');
+            setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+            setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
+            setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
+            setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+            setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+            setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+            setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+            setHasLastRevenueWithNotProcessedDistributions(
+                payload.hasLastRevenueWithNotProcessedDistributions
+                    ? payload.hasLastRevenueWithNotProcessedDistributions
+                    : false
+            );
+            setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
+            setPayAmount(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
+            setKeyAmountFirstPercentage(
+                payload.lastRevenueKeyAmountFirstPercentage ? payload.lastRevenueKeyAmountFirstPercentage : null
+            );
+            setPayPercentageValidFromKeyAmount(
+                payload.lastRevenuePayPercentageValidFromKeyAmount
+                    ? payload.lastRevenuePayPercentageValidFromKeyAmount
+                    : null
+            );
+        });
+    }
+
+    const [dateTerminated, setDateTerminated] = useState(null);
+    const [dateReference, setDateReference] = useState(moment());
+    const [dateEntryLastMutation, setDateEntryLastMutation] = useState(null);
+    const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
+    const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
+    const [dateBegin, setDateBegin] = useState(null);
+    const [dateEnd, setDateEnd] = useState(null);
+    const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState('');
+    const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState('');
+    const [hasLastRevenueWithNotProcessedDistributions, setHasLastRevenueWithNotProcessedDistributions] = useState(
+        false
     );
 
-    const [distributionTypeId, setDistributionTypeId] = useState('inPossessionOf');
-    const [dateReference, setDateReference] = useState(dateTerminated);
-    const [dateBegin, setDateBegin] = useState(dateInterestBearing ? dateInterestBearing : '');
-
-    const [dateEnd, setDateEnd] = useState(
-        dateInterestBearing
-            ? moment(dateInterestBearing)
-                  .endOf('year')
-                  .format('Y-MM-DD')
-            : ''
+    const [distributionTypeId, setDistributionTypeId] = useState(
+        projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
     );
-
-    const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState(dateInterestBearing ? dateInterestBearing : '');
-    const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState(
-        dateInterestBearing
-            ? moment(dateInterestBearing)
-                  .add(1, 'year')
-                  .subtract(1, 'day')
-                  .format('Y-MM-DD')
-            : ''
+    const [amountOrParticipationsDefinitive, setAmountOrParticipationsDefinitive] = useState(
+        projectTypeCodeRef === 'loan'
+            ? participantProject.amountDefinitive
+            : participantProject.participationsDefinitive
     );
 
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
     const [payPercentageValidFromKeyAmount, setPayPercentageValidFromKeyAmount] = useState(null);
+
     const [errors, setErrors] = useState({
         dateTerminated: false,
         distributionTypeId: false,
@@ -148,82 +172,85 @@ const ParticipantDetailsTerminateObligation = ({
             hasErrors = true;
         }
 
-        if (!dateBegin) {
-            errors.dateBegin = true;
-            errorMessages.dateBegin = 'Verplicht';
-            hasErrors = true;
-        }
-        if (!dateEnd) {
-            errors.dateEnd = true;
-            errorMessages.dateEnd = 'Verplicht';
-            hasErrors = true;
-        }
-        if (!hasErrors && dateEnd < dateBegin) {
-            errors.dateEnd = true;
-            errorMessages.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
-            hasErrors = true;
-        }
-
-        if (
-            !hasErrors &&
-            moment(dateBegin).format('Y-MM-DD') <
-                moment(dateEnd)
-                    .add(-1, 'year')
-                    .add(1, 'day')
-                    .format('Y-MM-DD')
-        ) {
-            errors.dateBegin = true;
-            errorMessages.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
-            errors.dateEnd = true;
-            errorMessages.dateEnd = 'Periode mag maximaal 1 jaar zijn.';
-            hasErrors = true;
-        }
-
-        if (distributionTypeId === 'inPossessionOf') {
-            if (!hasErrors && validator.isEmpty('' + dateReference)) {
-                errors.dateReference = true;
+        if (amountOrParticipationsDefinitive != 0) {
+            if (!dateBegin) {
+                errors.dateBegin = true;
+                errorMessages.dateBegin = 'Verplicht';
                 hasErrors = true;
             }
-        }
-        if (payAmount && !validator.isEmpty('' + payAmount)) {
-            if (!hasErrors && distributionTypeId !== 'inPossessionOf') {
+            if (!dateEnd) {
+                errors.dateEnd = true;
+                errorMessages.dateEnd = 'Verplicht';
+                hasErrors = true;
+            }
+            if (!hasErrors && dateEnd < dateBegin) {
+                errors.dateEnd = true;
+                errorMessages.dateEnd = 'Eind periode mag niet voor Begin periode liggen.';
+                hasErrors = true;
+            }
+
+            if (
+                !hasErrors &&
+                moment(dateBegin).format('Y-MM-DD') <
+                    moment(dateEnd)
+                        .add(-1, 'year')
+                        .add(1, 'day')
+                        .format('Y-MM-DD')
+            ) {
+                errors.dateBegin = true;
+                errorMessages.dateBegin = 'Periode mag maximaal 1 jaar zijn.';
+                errors.dateEnd = true;
+                errorMessages.dateEnd = 'Periode mag maximaal 1 jaar zijn.';
+                hasErrors = true;
+            }
+
+            if (distributionTypeId === 'inPossessionOf') {
+                if (!hasErrors && validator.isEmpty('' + dateReference)) {
+                    errors.dateReference = true;
+                    hasErrors = true;
+                }
+            }
+            if (payAmount && !validator.isEmpty('' + payAmount)) {
+                if (!hasErrors && distributionTypeId !== 'inPossessionOf') {
+                    errors.payAmount = true;
+                    errorMessages.payAmount =
+                        'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                    hasErrors = true;
+                }
+                if (!hasErrors && payAmount && payAmount < 0) {
+                    errors.payAmount = true;
+                    errorMessages.payAmount = 'Bedrag mag niet negatief zijn.';
+                    hasErrors = true;
+                }
+            }
+            if (!hasErrors && payPercentage && payPercentage < 0) {
+                errors.payPercentage = true;
+                errorMessages.payPercentage = 'Percentage mag niet negatief zijn.';
+                hasErrors = true;
+            }
+
+            if (
+                !hasErrors &&
+                ((payPercentage && !validator.isEmpty('' + payPercentage)) ||
+                    (keyAmountFirstPercentage && !validator.isEmpty(keyAmountFirstPercentage)) ||
+                    (payPercentageValidFromKeyAmount && !validator.isEmpty('' + payPercentageValidFromKeyAmount))) &&
+                payAmount &&
+                !validator.isEmpty('' + payAmount)
+            ) {
                 errors.payAmount = true;
-                errorMessages.payAmount = 'Bedrag mag alleen bij type opbrengst verdeling "In bezit op" ingevuld zijn.';
+                errors.payPercentage = true;
+                errors.keyAmountFirstPercentage = true;
+                errors.payPercentageValidFromKeyAmount = true;
+                errorMessages.payAmount = 'Percentage(s) en Bedrag mogen niet allebei ingevuld zijn.';
                 hasErrors = true;
             }
-            if (!hasErrors && payAmount && payAmount < 0) {
-                errors.payAmount = true;
-                errorMessages.payAmount = 'Bedrag mag niet negatief zijn.';
-                hasErrors = true;
-            }
-        }
-        if (!hasErrors && payPercentage && payPercentage < 0) {
-            errors.payPercentage = true;
-            errorMessages.payPercentage = 'Percentage mag niet negatief zijn.';
-            hasErrors = true;
-        }
-
-        if (
-            !hasErrors &&
-            ((payPercentage && !validator.isEmpty('' + payPercentage)) ||
-                (keyAmountFirstPercentage && !validator.isEmpty(keyAmountFirstPercentage)) ||
-                (payPercentageValidFromKeyAmount && !validator.isEmpty('' + payPercentageValidFromKeyAmount))) &&
-            payAmount &&
-            !validator.isEmpty('' + payAmount)
-        ) {
-            errors.payAmount = true;
-            errors.payPercentage = true;
-            errors.keyAmountFirstPercentage = true;
-            errors.payPercentageValidFromKeyAmount = true;
-            errorMessages.payAmount = 'Percentage(s) en Bedrag mogen niet allebei ingevuld zijn.';
-            hasErrors = true;
         }
 
         setErrors(errors);
         setErrorMessages(errorMessages);
 
         if (!hasErrors) {
-            ParticipantProjectDetailsAPI.terminateParticipantProjectObligation(participantProject.id, {
+            ParticipantProjectDetailsAPI.terminateParticipantProjectLoanOrObligation(participantProject.id, {
                 dateTerminated,
                 distributionTypeId,
                 dateReference,
@@ -272,43 +299,57 @@ const ParticipantDetailsTerminateObligation = ({
                         errorMessage={errorMessages.dateTerminated}
                         readOnly={dateTerminatedAllowedFrom == dateTerminatedAllowedTo}
                     />
-                    <ViewText
-                        label={'Datum laatste mutatie storting/terugbetaling'}
-                        value={
-                            participantProject.dateEntryLastMutation
-                                ? moment(participantProject.dateEntryLastMutation).format('DD-MM-Y')
-                                : ''
-                        }
-                    />
+                    {amountOrParticipationsDefinitive != 0 ? (
+                        <ViewText
+                            label={
+                                'Datum laatste ' +
+                                (projectTypeCodeRef === 'loan' ? 'aflossing' : 'terugbetaling') +
+                                ' wordt'
+                            }
+                            value={
+                                dateEntryLastMutation
+                                    ? moment(dateTerminated)
+                                          .add(1, 'day')
+                                          .format('DD-MM-Y')
+                                    : ''
+                            }
+                        />
+                    ) : (
+                        <ViewText
+                            label={'Datum laatste mutatie inleg/opname was'}
+                            value={dateEntryLastMutation ? moment(dateEntryLastMutation).format('DD-MM-Y') : ''}
+                        />
+                    )}
                 </div>
 
-                {participantProject.participationsDefinitive != 0 ? (
+                {amountOrParticipationsDefinitive != 0 && dateTerminated >= dateBegin ? (
                     <>
                         <p>Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken?</p>
-                        <div className="row">
-                            <InputSelect
-                                label={'Type opbrengst verdeling'}
-                                name={'distributionTypeId'}
-                                options={projectRevenueDistributionTypes}
-                                emptyOption={false}
-                                value={distributionTypeId}
-                                onChangeAction={onChangeDistributionTypeId}
-                                error={errors.distributionTypeId}
-                                errorMessage={errorMessages.distributionTypeId}
-                            />
-                            {distributionTypeId === 'inPossessionOf' ? (
-                                <InputDate
-                                    label={'Peildatum'}
-                                    name={'dateReference'}
-                                    value={dateReference}
-                                    required={'required'}
-                                    onChangeAction={onChangeDateReference}
-                                    error={errors.dateReference}
-                                    errorMessage={errorMessages.dateReference}
+                        {projectTypeCodeRef === 'obligation' ? (
+                            <div className="row">
+                                <InputSelect
+                                    label={'Type opbrengst verdeling'}
+                                    name={'distributionTypeId'}
+                                    options={projectRevenueDistributionTypes}
+                                    emptyOption={false}
+                                    value={distributionTypeId}
+                                    onChangeAction={onChangeDistributionTypeId}
+                                    error={errors.distributionTypeId}
+                                    errorMessage={errorMessages.distributionTypeId}
                                 />
-                            ) : null}
-                        </div>
-
+                                {distributionTypeId === 'inPossessionOf' ? (
+                                    <InputDate
+                                        label={'Peildatum'}
+                                        name={'dateReference'}
+                                        value={dateReference}
+                                        required={'required'}
+                                        onChangeAction={onChangeDateReference}
+                                        error={errors.dateReference}
+                                        errorMessage={errorMessages.dateReference}
+                                    />
+                                ) : null}
+                            </div>
+                        ) : null}
                         <div className="row">
                             <InputDate
                                 label={'Begin periode'}
@@ -350,19 +391,23 @@ const ParticipantDetailsTerminateObligation = ({
                                 label={'Uitkering (rente) %'}
                                 name={'payPercentage'}
                                 value={payPercentage}
+                                disabled={hasLastRevenueWithNotProcessedDistributions}
                                 onChangeAction={onChangePayPercentage}
                                 error={errors.payPercentage}
                                 errorMessage={errorMessages.payPercentage}
                             />
-                            <InputText
-                                type={'number'}
-                                label={'of uitkeringsbedrag per deelname'}
-                                name={'payAmount'}
-                                value={payAmount}
-                                onChangeAction={onChangePayAmount}
-                                error={errors.payAmount}
-                                errorMessage={errorMessages.payAmount}
-                            />
+                            {projectTypeCodeRef === 'obligation' ? (
+                                <InputText
+                                    type={'number'}
+                                    label={'of uitkeringsbedrag per deelname'}
+                                    name={'payAmount'}
+                                    value={payAmount}
+                                    disabled={hasLastRevenueWithNotProcessedDistributions}
+                                    onChangeAction={onChangePayAmount}
+                                    error={errors.payAmount}
+                                    errorMessage={errorMessages.payAmount}
+                                />
+                            ) : null}
                         </div>
                         <div className="row">
                             <InputText
@@ -373,6 +418,7 @@ const ParticipantDetailsTerminateObligation = ({
                                 }
                                 name={'keyAmountFirstPercentage'}
                                 value={keyAmountFirstPercentage}
+                                disabled={hasLastRevenueWithNotProcessedDistributions}
                                 onChangeAction={onChangeKeyAmountFirstPercentage}
                                 error={errors.keyAmountFirstPercentage}
                                 errorMessage={errorMessages.keyAmountFirstPercentage}
@@ -385,6 +431,7 @@ const ParticipantDetailsTerminateObligation = ({
                                     label={<>Uitkering (rente) % vanaf bedrag</>}
                                     name={'payPercentageValidFromKeyAmount'}
                                     value={payPercentageValidFromKeyAmount}
+                                    disabled={hasLastRevenueWithNotProcessedDistributions}
                                     onChangeAction={onChangePayPercentageValidFromKeyAmount}
                                     error={errors.payPercentageValidFromKeyAmount}
                                     errorMessage={errorMessages.payPercentageValidFromKeyAmount}
@@ -415,4 +462,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminateObligation);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminateLoanOrObligation);

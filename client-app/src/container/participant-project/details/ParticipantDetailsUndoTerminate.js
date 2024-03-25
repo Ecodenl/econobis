@@ -9,7 +9,6 @@ const ParticipantDetailsUndoTerminate = ({
     participantProject,
     setErrorModal,
     closeDeleteItemModal,
-    projectTypeCodeRef,
     fetchParticipantProjectDetails,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(null);

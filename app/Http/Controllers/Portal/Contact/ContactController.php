@@ -9,13 +9,13 @@ use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
@@ -176,7 +176,9 @@ class ContactController extends ApiController
     {
         $this->setContactProjectIndicators($project, $contact, null, 0);
 
-        $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllGroups() );
+//        $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $contact->getAllGroups() );
+        $questionAboutMembershipGroupContactsIds = ContactGroup::find($project->question_about_membership_group_id)->getAllContacts(true);
+        $belongsToMembershipGroup = in_array( $contact->id, $questionAboutMembershipGroupContactsIds );
 
         $textIsMemberMerged = $project->text_is_member;
         $textIsMemberMerged = TemplateVariableHelper::replaceTemplateVariables($textIsMemberMerged, 'contact', $contact);

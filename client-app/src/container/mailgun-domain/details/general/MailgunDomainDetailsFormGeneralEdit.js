@@ -56,10 +56,10 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(mailgunDomain.secret)) {
-            errors.secret = true;
-            hasErrors = true;
-        }
+        // if (validator.isEmpty(mailgunDomain.secret)) {
+        //     errors.secret = true;
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -68,7 +68,8 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
     }
 
     render() {
-        const { domain, secret, isVerified } = this.state.mailgunDomain;
+        // const { domain, secret, isVerified } = this.state.mailgunDomain;
+        const { domain, isVerified } = this.state.mailgunDomain;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -83,14 +84,14 @@ class MailgunDomainDetailsFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={this.state.errors.domain}
                             />
-                            <InputText
-                                label="Mailgun API Key"
-                                name={'secret'}
-                                value={secret}
-                                onChangeAction={this.handleInputChange}
-                                required={'required'}
-                                error={this.state.errors.secret}
-                            />
+                            {/*<InputText*/}
+                            {/*    label="Mailgun API Key"*/}
+                            {/*    name={'secret'}*/}
+                            {/*    value={secret}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    required={'required'}*/}
+                            {/*    error={this.state.errors.secret}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputToggle

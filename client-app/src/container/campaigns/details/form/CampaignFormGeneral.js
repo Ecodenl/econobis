@@ -8,7 +8,7 @@ import CampaignFormEdit from './CampaignFormEdit';
 import CampaignFormView from './CampaignFormView';
 import useSwitchToEditView from '../../../../hooks/useSwitchToEditView';
 
-function OpportunityFormGeneral({ campaign, permissions, fetchCampaignData }) {
+function CampaignFormGeneral({ campaign, permissions, fetchCampaignData }) {
     const { state, switchToEdit, switchToView, onDivEnter, onDivLeave } = useSwitchToEditView();
 
     return (
@@ -34,4 +34,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunityFormGeneral);
+export default connect(mapStateToProps)(CampaignFormGeneral);

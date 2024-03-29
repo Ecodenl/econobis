@@ -329,56 +329,59 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                     </PanelBody>
                 </Panel>
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">Buurtaanpak</span>
-                    </PanelHeader>
-                    <PanelBody>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Buurtaanpak afspraak e-mail template'}
-                                name={'inspectionPlannedEmailTemplateId'}
-                                options={emailTemplates}
-                                value={values.inspectionPlannedEmailTemplateId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
-                            />
-                            <InputReactSelect
-                                label={'Mailbox afspraak/opname/uitgebracht bevestigingen'}
-                                name={'inspectionPlannedMailboxId'}
-                                options={mailboxAddresses}
-                                optionName={'email'}
-                                value={values.inspectionPlannedMailboxId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Buurtaanpak opname e-mail template'}
-                                name={'inspectionRecordedEmailTemplateId'}
-                                options={emailTemplates}
-                                value={values.inspectionRecordedEmailTemplateId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Buurtaanpak uitgebracht e-mail template'}
-                                name={'inspectionReleasedEmailTemplateId'}
-                                options={emailTemplates}
-                                value={values.inspectionReleasedEmailTemplateId}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                                isLoading={isLoading}
-                                clearable={true}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
+                {/*todo WM: opschonen inspection* velden*/}
+                {/*<Panel>*/}
+                {/*    <PanelHeader>*/}
+                {/*        <span className="h5 text-bold">*/}
+                {/*            Buurtaanpak*/}
+                {/*        </span>*/}
+                {/*    </PanelHeader>*/}
+                {/*    <PanelBody>*/}
+                {/*        <div className="row">*/}
+                {/*            <InputReactSelect*/}
+                {/*                label={'Buurtaanpak afspraak e-mail template'}*/}
+                {/*                name={'inspectionPlannedEmailTemplateId'}*/}
+                {/*                options={emailTemplates}*/}
+                {/*                value={values.inspectionPlannedEmailTemplateId}*/}
+                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
+                {/*                isLoading={isLoading}*/}
+                {/*                clearable={true}*/}
+                {/*            />*/}
+                {/*            <InputReactSelect*/}
+                {/*                label={'Mailbox afspraak/opname/uitgebracht bevestigingen'}*/}
+                {/*                name={'inspectionPlannedMailboxId'}*/}
+                {/*                options={mailboxAddresses}*/}
+                {/*                optionName={'email'}*/}
+                {/*                value={values.inspectionPlannedMailboxId}*/}
+                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
+                {/*                isLoading={isLoading}*/}
+                {/*                clearable={true}*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*        <div className="row">*/}
+                {/*            <InputReactSelect*/}
+                {/*                label={'Buurtaanpak opname e-mail template'}*/}
+                {/*                name={'inspectionRecordedEmailTemplateId'}*/}
+                {/*                options={emailTemplates}*/}
+                {/*                value={values.inspectionRecordedEmailTemplateId}*/}
+                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
+                {/*                isLoading={isLoading}*/}
+                {/*                clearable={true}*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*        <div className="row">*/}
+                {/*            <InputReactSelect*/}
+                {/*                label={'Buurtaanpak uitgebracht e-mail template'}*/}
+                {/*                name={'inspectionReleasedEmailTemplateId'}*/}
+                {/*                options={emailTemplates}*/}
+                {/*                value={values.inspectionReleasedEmailTemplateId}*/}
+                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
+                {/*                isLoading={isLoading}*/}
+                {/*                clearable={true}*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*    </PanelBody>*/}
+                {/*</Panel>*/}
 
                 {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
                     <Panel>

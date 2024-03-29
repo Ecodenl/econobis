@@ -125,7 +125,7 @@ class ContactDetailsFormAddressItem extends Component {
         if (
             name === 'typeId' &&
             value === 'old' &&
-            (this.state.address.usedInActiveParticipationInSceOrPcrProject || this.state.address.primary)
+            this.state.address.usedInActiveParticipationInSceOrPcrProject && this.state.address.primary
         ) {
             this.setState({
                 showModal: true,

@@ -3,6 +3,7 @@ export default function(participantMutation, statusCodeRef, typeCodeRef, project
         participationId: participantMutation.participationId,
         statusId: participantMutation.statusId,
         typeId: participantMutation.typeId,
+        differentTransactionCostsAmount: participantMutation.differentTransactionCostsAmount,
     };
 
     // Form values based on current status

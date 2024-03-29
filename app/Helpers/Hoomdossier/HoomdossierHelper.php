@@ -31,6 +31,9 @@ class HoomdossierHelper
     }
 
     public function make() {
+        // Check if all necessary fields are filled
+        $this->validateRequiredFields();
+
         //check if there is a user with a hoom_account_id and the same email address
         $thisContactEmail = $this->contact->primaryEmailAddress;
 
@@ -40,9 +43,6 @@ class HoomdossierHelper
             $errors = array("econobis" => ['Er bestaat al een gebruiker met dit e-mailadres en een Hoomdossier']);
             throw ValidationException::withMessages($errors);
         }
-        
-        // Check if all necessary fields are filled
-        $this->validateRequiredFields();
 
         // Send to hoomdossier url
         $hoomResponse = $this->sendToHoomdossier();

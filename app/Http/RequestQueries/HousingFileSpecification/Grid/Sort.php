@@ -23,6 +23,7 @@ class Sort extends RequestSort
         'measureName',
         'status',
         'measureDate',
+        'typeBrand'
     ];
 
     protected $mapping = [
@@ -34,6 +35,7 @@ class Sort extends RequestSort
         'measureName' => 'measures.name',
         'status' => 'housing_file_specification_statuses.name',
         'measureDate' => 'measure_date',
+        'typeBrand' => 'type_brand'
     ];
 
     protected $joins = [

@@ -385,12 +385,6 @@ const ProjectFormEditGeneral = ({
                     value={dateStart}
                     onChangeAction={handleInputChangeDate}
                 />
-                <InputToggle
-                    label={'Deelname aan groep verplicht'}
-                    name={'isMembershipRequired'}
-                    value={isMembershipRequired}
-                    onChangeAction={handleInputChange}
-                />
             </div>
 
             <div className="row">
@@ -400,20 +394,27 @@ const ProjectFormEditGeneral = ({
                     value={dateEnd}
                     onChangeAction={handleInputChangeDate}
                 />
-                {isMembershipRequired && (
-                    <div className={'row'}>
-                        <InputMultiSelect
-                            label={'Onderdeel van groep'}
-                            name={'contactGroupsIds'}
-                            options={contactGroups}
-                            value={contactGroupIdsSelected}
-                            onChangeAction={handleContactGroupIds}
-                            error={errors.contactGroupIds}
-                            required={'required'}
-                        />
-                    </div>
-                )}
+                <InputToggle
+                    label={'Deelname aan groep verplicht'}
+                    name={'isMembershipRequired'}
+                    value={isMembershipRequired}
+                    onChangeAction={handleInputChange}
+                />
             </div>
+            {isMembershipRequired && (
+                <div className={'row'}>
+                    <InputMultiSelect
+                        label={'Onderdeel van groep'}
+                        name={'contactGroupsIds'}
+                        size={'col-sm-8'}
+                        options={contactGroups}
+                        value={contactGroupIdsSelected}
+                        onChangeAction={handleContactGroupIds}
+                        error={errors.contactGroupIds}
+                        required={'required'}
+                    />
+                </div>
+            )}
             {isMembershipRequired ? (
                 <>
                     <div className="row">

@@ -8,7 +8,6 @@ import {
     setFilterHousingFileSpecificationAnswer,
     setFilterHousingFileSpecificationFloor,
     setFilterHousingFileSpecificationSide,
-    setFilterHousingFileSpecificationTypeBrand,
     setFilterHousingFileSpecificationTypeOfExecution,
     setFilterHousingFileSpecificationSavingsGasFrom,
     setFilterHousingFileSpecificationSavingsGasTill,
@@ -61,13 +60,6 @@ class HousingFileSpecificationsListExtraFilters extends Component {
     };
     onSideChange = e => {
         this.props.setFilterHousingFileSpecificationSide(e.target.value);
-
-        setTimeout(() => {
-            this.props.onSubmitFilter();
-        }, 100);
-    };
-    onTypeBrandChange = e => {
-        this.props.setFilterHousingFileSpecificationTypeBrand(e.target.value);
 
         setTimeout(() => {
             this.props.onSubmitFilter();
@@ -208,19 +200,6 @@ class HousingFileSpecificationsListExtraFilters extends Component {
                             <td className="col-md-1" />
                         </tr>
                         <tr>
-                            <td className="col-md-4">Type/Merk</td>
-                            <td className="col-md-3">
-                                <input
-                                    type="text"
-                                    className="form-control input-sm"
-                                    value={this.props.filters.typeBrand.data}
-                                    onChange={this.onTypeBrandChange}
-                                />
-                            </td>
-                            <td className="col-md-3" />
-                            <td className="col-md-1" />
-                        </tr>
-                        <tr>
                             <td className="col-md-4">Uitvoering</td>
                             <td className="col-md-3">
                                 <select
@@ -327,7 +306,6 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileSpecificationAnswer,
             setFilterHousingFileSpecificationFloor,
             setFilterHousingFileSpecificationSide,
-            setFilterHousingFileSpecificationTypeBrand,
             setFilterHousingFileSpecificationTypeOfExecution,
             setFilterHousingFileSpecificationSavingsGasFrom,
             setFilterHousingFileSpecificationSavingsGasTill,

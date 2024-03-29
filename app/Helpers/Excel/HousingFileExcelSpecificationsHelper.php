@@ -83,13 +83,13 @@ class HousingFileExcelSpecificationsHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'N'; $col++) {
+        for ($col = 'A'; $col !== 'P'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:M1')
+        $sheet->getStyle('A1:O1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

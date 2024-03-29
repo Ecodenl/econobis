@@ -22,8 +22,6 @@ const HousingFileSpecificationsListHead = props => {
                     </div>
                 </th>
             ) : null}
-            <DataTableHeadTitleAndSort sortColumn={'typeBrand'} title={'Type/merk'} width={'10%'} setSorts={setSorts} />
-
             <DataTableHeadTitleAndSort
                 sortColumn={'fullName'}
                 title={'Contact'}
@@ -52,6 +50,8 @@ const HousingFileSpecificationsListHead = props => {
                 width={'10%'}
                 setSorts={setSorts}
             />
+            <DataTableHeadTitleAndSort sortColumn={'typeBrand'} title={'Type/merk'} width={'10%'} setSorts={setSorts} />
+
             <th width="5%" />
         </tr>
     );

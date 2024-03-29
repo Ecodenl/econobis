@@ -104,14 +104,6 @@ const HousingFileSpecificationsListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={props.filters.typeBrand.data}
-                    onChange={onTypeBrandChange}
-                />
-            </th>
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
                     value={props.filters.fullName.data}
                     onChange={onFullNameChange}
                 />
@@ -174,6 +166,14 @@ const HousingFileSpecificationsListFilter = props => {
                 onChangeActionStart={onMeasureDateStartChange}
                 onChangeActionEnd={onMeasureDateEndChange}
             />
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.typeBrand.data}
+                    onChange={onTypeBrandChange}
+                />
+            </th>
 
             <th />
         </tr>

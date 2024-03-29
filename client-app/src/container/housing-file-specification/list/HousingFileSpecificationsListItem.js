@@ -66,8 +66,7 @@ class HousingFileSpecificationsListItem extends Component {
 
         const { showMore, showActionButtons } = this.state;
 
-        const hasMore =
-            answer || floor || side || typeBrand || typeOfExecution || savingsGas || savingsElectricity || co2Savings;
+        const hasMore = answer || floor || side || typeOfExecution || savingsGas || savingsElectricity || co2Savings;
         return (
             <>
                 <tr
@@ -97,7 +96,6 @@ class HousingFileSpecificationsListItem extends Component {
                             </div>
                         </td>
                     ) : null}
-                    <td>{typeBrand}</td>
                     <td>{fullName}</td>
                     <td>{fullAddress}</td>
                     <td>{postalCode}</td>
@@ -106,6 +104,7 @@ class HousingFileSpecificationsListItem extends Component {
                     <td>{isDefaultEconobisMeasure ? externalHoomName : measureName}</td>
                     <td>{status ? status.name : ''}</td>
                     <td>{measureDate ? moment(measureDate).format('DD-MM-Y') : ''}</td>
+                    <td>{typeBrand}</td>
                     <td>
                         {!showCheckboxList && hasMore ? (
                             <a role="button" onClick={() => this.toggleShowMore()}>

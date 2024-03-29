@@ -57,7 +57,7 @@ class CampaignsList extends Component {
         if (this.props.hasError) {
             if (!permissions.manageMarketing) {
                 loadingText =
-                    'Je moet de rol “marketingmedewerker” of “key-user” hebben om campagnes te kunnen inzien/aanpassen vraag jou admin/key-user om jou deze rechten via instellingen > gebruikers te geven indien nodig.';
+                    'Je moet de rol “Marketing medewerker” of “Key user” hebben om campagnes te kunnen inzien/aanpassen, vraag jou admin/key-user om jou deze rechten via instellingen > gebruikers te geven indien nodig.';
             } else {
                 loadingText = 'Fout bij het ophalen van campagnes.';
             }

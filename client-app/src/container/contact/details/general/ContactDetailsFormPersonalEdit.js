@@ -175,13 +175,6 @@ class ContactDetailsFormPersonalEdit extends Component {
             hoomAccountId,
         } = this.state.person;
 
-        // const { isInInspectionPersonTypeGroup } = this.props.contactDetails;
-
-        let isCoach = false;
-        if (inspectionPersonType && inspectionPersonType.id === 'coach') {
-            isCoach = true;
-        }
-
         return (
             <React.Fragment>
                 <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -315,19 +308,18 @@ class ContactDetailsFormPersonalEdit extends Component {
                         />
                     </div>
 
-                    {isCoach ? (
-                        <div className="row">
-                            <InputText
-                                label={'Hoom account id'}
-                                divSize={'col-xs-12'}
-                                name="hoomAccountId"
-                                value={hoomAccountId}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                    ) : (
-                        ' '
-                    )}
+                    <div className="row">
+                        <InputText
+                            label={'Hoom account id'}
+                            divSize={'col-xs-12'}
+                            name="hoomAccountId"
+                            value={hoomAccountId}
+                            onChangeAction={this.handleInputChange}
+                            textToolTip={
+                                'Vul hier alleen uw Hoom account id in wanneer het met de "Hoomdossier maken" knop niet lukt.'
+                            }
+                        />
+                    </div>
 
                     <PanelFooter>
                         <div className="pull-right btn-group" role="group">

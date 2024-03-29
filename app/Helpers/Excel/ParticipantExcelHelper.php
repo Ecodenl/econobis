@@ -513,7 +513,7 @@ class ParticipantExcelHelper
                         $rowData[125]= "";
                     }
 
-                    if($mutationType->code_ref === 'redemption')
+                    else if($mutationType->code_ref === 'redemption')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -541,7 +541,7 @@ class ParticipantExcelHelper
                         $rowData[124] = "";
                         $rowData[125] = "";
                     }
-                    if($mutationType->code_ref === 'result')
+                    else if($mutationType->code_ref === 'result' || $mutationType->code_ref === 'result_deposit')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -569,7 +569,7 @@ class ParticipantExcelHelper
                         $rowData[124] = "";
                         $rowData[125] = "";
                     }
-                    if($mutationType->code_ref === 'energyTaxRefund')
+                    else if($mutationType->code_ref === 'energyTaxRefund')
                     {
 // [96] of [102]
                         $rowData[102] = "";
@@ -596,6 +596,34 @@ class ParticipantExcelHelper
                         $rowData[123] = $mutation->payout_kwh_price;
                         $rowData[124] = $mutation->payout_kwh;
                         $rowData[125] = $mutation->indication_of_restitution_energy_tax;
+                    }
+                    else
+                    {
+// [96] of [102]
+                        $rowData[102] = "";
+                        $rowData[103] = "";
+                        $rowData[104] = "";
+                        $rowData[105] = "";
+                        $rowData[106] = "";
+                        $rowData[107] = "";
+                        $rowData[108] = "";
+                        $rowData[109] = "";
+                        $rowData[110] = "";
+                        $rowData[111] = "";
+                        $rowData[112] = "";
+                        $rowData[113] = "";
+                        $rowData[114] = "";
+                        $rowData[115] = "";
+                        $rowData[116] = "";
+                        $rowData[117] = "";
+                        $rowData[118] = "";
+                        $rowData[119] = "";
+                        $rowData[120] = "";
+                        $rowData[121] = "";
+                        $rowData[122] = "";
+                        $rowData[123] = "";
+                        $rowData[124] = "";
+                        $rowData[125] = "";
                     }
 
                     $completeData[] = $rowData;

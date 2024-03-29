@@ -318,46 +318,77 @@ class ContactGroup extends Model
         return $contacts->unique('id')->values();
     }
 
-    public function getAllContacts()
+    public function getAllContacts(bool $onlyIds = false)
     {
         if ($this->type_id === 'static' || $this->type_id === 'simulated') {
             if ($this->composed_of === 'contacts') {
-                return $this->contacts()->get();
+                if($onlyIds){
+                    return $this->contacts()->get()->pluck('id')->toArray();
+                } else {
+                    return $this->contacts()->get();
+                }
             } else {
                 if ($this->composed_of === 'participants') {
                     $participants = $this->participants()->get();
 
                     $participants->load(['contact']);
 
+                    $contactIds = array();
                     $contactCollections = new Collection();
 
                     foreach ($participants as $participant) {
-                        $contactCollections->push($participant->contact);
+                        if($onlyIds){
+                            $contactIds[] = $participant->contact_id;
+                        } else {
+                            $contactCollections->push($participant->contact);
+                        }
                     }
 
-                    return $contactCollections;
+                    if($onlyIds){
+                        return $contactIds;
+                    } else {
+                        return $contactCollections;
+                    }
                 }
             }
         } elseif ($this->type_id === 'dynamic') {
             if ($this->composed_of === 'contacts') {
-                return $this->getDynamicContacts()->get();
+                if($onlyIds){
+                    return $this->getDynamicContacts()->get()->pluck('id')->toArray();
+                } else {
+                    return $this->getDynamicContacts()->get();
+                }
             } else {
                 if ($this->composed_of === 'participants') {
                     $participants = $this->getDynamicContacts()->get();
 
                     $participants->load(['contact']);
 
+                    $contactIds = [];
                     $contactCollections = new Collection();
 
                     foreach ($participants as $participant) {
-                        $contactCollections->push($participant->contact);
+                        if($onlyIds){
+                            $contactIds[] = $participant->contact_id;
+                        } else {
+                            $contactCollections->push($participant->contact);
+                        }
                     }
 
-                    return $contactCollections;
+                    if($onlyIds){
+                        return $contactIds;
+                    } else {
+                        return $contactCollections;
+                    }
                 }
             }
         } elseif ($this->type_id === 'composed') {
-            return $this->composed_contacts->diff($this->composed_except_contacts);
+            $contactCollections = $this->composed_contacts->diff($this->composed_except_contacts);
+            if($onlyIds){
+                return $contactCollections->pluck('id')->toArray();
+            } else {
+                return $contactCollections;
+            }
         }
 
         return false;

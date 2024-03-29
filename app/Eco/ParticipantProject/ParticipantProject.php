@@ -284,10 +284,10 @@ class ParticipantProject extends Model
         return $this->date_terminated == null && ($this->date_terminated_allowed_to >= $this->date_terminated_allowed_from) && $this->mutations()->where('status_id', $mutationStatusFinal)->exists();
     }
 
-    public function getParticipantBelongsToMembershipGroupAttribute()
-    {
-        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
-    }
+//    public function getParticipantBelongsToMembershipGroupAttribute()
+//    {
+//        return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
+//    }
 
     // Return if projectparicipant is in a sce or pcr project
     public function getParticipantInSceOrPcrProjectAttribute()

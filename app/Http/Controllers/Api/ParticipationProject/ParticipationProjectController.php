@@ -1456,7 +1456,7 @@ class ParticipationProjectController extends ApiController
         }
     }
 
-    public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject)
+    public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject) :bool
     {
         if(!$participantProject->project->question_about_membership_group_id || $participantProject->project->show_question_about_membership == false || $participantProject->project->use_transaction_costs_with_membership == true){
             return false;

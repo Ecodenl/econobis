@@ -16,7 +16,9 @@ export default {
                         'numberOfDaysToSendEmail',
                         'order',
                         'mailCcToCoachWf',
+                        'opportunityActionName',
                     ],
+                    srt: ['opportunityActionId', 'order'],
                 },
             },
         });

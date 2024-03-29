@@ -66,8 +66,7 @@ class HousingFileSpecificationsListItem extends Component {
 
         const { showMore, showActionButtons } = this.state;
 
-        const hasMore =
-            answer || floor || side || typeBrand || typeOfExecution || savingsGas || savingsElectricity || co2Savings;
+        const hasMore = answer || floor || side || typeOfExecution || savingsGas || savingsElectricity || co2Savings;
         return (
             <>
                 <tr
@@ -105,6 +104,7 @@ class HousingFileSpecificationsListItem extends Component {
                     <td>{isDefaultEconobisMeasure ? externalHoomName : measureName}</td>
                     <td>{status ? status.name : ''}</td>
                     <td>{measureDate ? moment(measureDate).format('DD-MM-Y') : ''}</td>
+                    <td>{typeBrand}</td>
                     <td>
                         {!showCheckboxList && hasMore ? (
                             <a role="button" onClick={() => this.toggleShowMore()}>
@@ -123,35 +123,28 @@ class HousingFileSpecificationsListItem extends Component {
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Waarde:</td>
-                        <td colSpan={'4'}>{answer}</td>
+                        <td colSpan={'5'}>{answer}</td>
                     </tr>
                 ) : null}
                 {!showCheckboxList && showMore && floor ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Verdieping:</td>
-                        <td colSpan={'4'}>{floor ? floor.name : ''}</td>
+                        <td colSpan={'5'}>{floor ? floor.name : ''}</td>
                     </tr>
                 ) : null}
                 {!showCheckboxList && showMore && side ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Zijde:</td>
-                        <td colSpan={'4'}>{side ? side.name : ''}</td>
-                    </tr>
-                ) : null}
-                {!showCheckboxList && showMore && typeBrand ? (
-                    <tr style={{ backgroundColor: 'initial' }}>
-                        <td colSpan={'4'}>&nbsp;</td>
-                        <td>Type/merk:</td>
-                        <td colSpan={'4'}>{typeBrand}</td>
+                        <td colSpan={'5'}>{side ? side.name : ''}</td>
                     </tr>
                 ) : null}
                 {!showCheckboxList && showMore && typeOfExecution ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Uitvoering:</td>
-                        <td colSpan={'4'}>
+                        <td colSpan={'5'}>
                             {typeOfExecution === null
                                 ? 'Onbekend'
                                 : typeOfExecution === 'Z'
@@ -164,21 +157,21 @@ class HousingFileSpecificationsListItem extends Component {
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Besparing gas:</td>
-                        <td colSpan={'4'}>{savingsGas}</td>
+                        <td colSpan={'5'}>{savingsGas}</td>
                     </tr>
                 ) : null}
                 {!showCheckboxList && showMore && savingsElectricity ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>Besparing elektriciteit:</td>
-                        <td colSpan={'4'}>{savingsElectricity}</td>
+                        <td colSpan={'5'}>{savingsElectricity}</td>
                     </tr>
                 ) : null}
                 {!showCheckboxList && showMore && co2Savings ? (
                     <tr style={{ backgroundColor: 'initial' }}>
                         <td colSpan={'4'}>&nbsp;</td>
                         <td>CO2 besparing:</td>
-                        <td colSpan={'4'}>{co2Savings}</td>
+                        <td colSpan={'5'}>{co2Savings}</td>
                     </tr>
                 ) : null}
             </>

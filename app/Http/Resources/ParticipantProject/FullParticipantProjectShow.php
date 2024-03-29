@@ -15,7 +15,7 @@ use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantProject extends JsonResource
+class FullParticipantProjectShow extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -26,7 +26,6 @@ class FullParticipantProject extends JsonResource
      */
     public function toArray($request)
     {
-        //todo WM: kijken welke gegevens we echt nodig hebben?
         return
             [
                 'id' => $this->id,
@@ -36,8 +35,8 @@ class FullParticipantProject extends JsonResource
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
-//                'relatedRevenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
-//                'relatedRevenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
+                'relatedRevenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
+                'relatedRevenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
@@ -85,7 +84,7 @@ class FullParticipantProject extends JsonResource
                 'undoTerminatedAllowed' => $this->undoTerminatedAllowed,
                 'dateTerminatedAllowedFrom' => $this->dateTerminatedAllowedFrom,
                 'dateTerminatedAllowedTo' => $this->dateTerminatedAllowedTo,
-//                'participantBelongsToMembershipGroup' => $this->participantBelongsToMembershipGroup,
+                'participantBelongsToMembershipGroup' => $this->participantBelongsToMembershipGroup,
                 'participantChoiceMembership' => $this->choice_membership,
                 'hasNotConfirmedRevenuesKwh' => $this->hasNotConfirmedRevenuesKwh,
             ];

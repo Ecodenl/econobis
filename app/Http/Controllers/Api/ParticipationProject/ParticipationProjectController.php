@@ -45,7 +45,7 @@ use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProjectShow;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
@@ -209,6 +209,11 @@ class ParticipationProjectController extends ApiController
         return $participantExcelHelper->downloadExcelParticipants();
     }
 
+    public function belongsToMembershipGroup(ParticipantProject $participantProject)
+    {
+        return collect(['participantBelongsToMembershipGroup' => $this->getParticipantBelongsToMembershipGroup($participantProject)]);
+    }
+
     public function show(ParticipantProject $participantProject)
     {
         set_time_limit(120);
@@ -248,7 +253,9 @@ class ParticipationProjectController extends ApiController
             'updatedBy',
         ]);
 
-        return FullParticipantProject::make($participantProject);
+        $participantProject->participantBelongsToMembershipGroup = $this->getParticipantBelongsToMembershipGroup($participantProject);
+
+        return FullParticipantProjectShow::make($participantProject);
     }
 
     public function store(RequestInput $requestInput)
@@ -1448,5 +1455,18 @@ class ParticipationProjectController extends ApiController
             $financialOverviewParticipantProjectController->recalculateParticipantProjectForFinancialOverviews($participantProject);
         }
     }
+
+    public function getParticipantBelongsToMembershipGroup(ParticipantProject $participantProject)
+    {
+        if(!$participantProject->project->question_about_membership_group_id || $participantProject->project->show_question_about_membership == false || $participantProject->project->use_transaction_costs_with_membership == true){
+            return false;
+        }
+
+//        return in_array( $participantProject->contact_id, $questionAboutMembershipGroupContactsIds );
+        $questionAboutMembershipGroupContactsIds = ContactGroup::find($participantProject->project->question_about_membership_group_id)->getAllContacts(true);
+        $contactInGroup =  in_array( $participantProject->contact_id, $questionAboutMembershipGroupContactsIds );
+        return $contactInGroup;
+    }
+
 
 }

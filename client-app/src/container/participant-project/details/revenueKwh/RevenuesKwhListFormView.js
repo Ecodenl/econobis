@@ -78,9 +78,8 @@ const RevenuesKwhListFormView = ({
                 {' t/m '}
                 {dateEnd ? moment(dateEnd).format('L') : 'onbekend'}
             </div>
-            <div className="col-sm-2">
-                {statusName(status)} / {statusRevenueName(statusRevenue)}
-            </div>
+            <div className="col-sm-1">{statusName(status)}</div>
+            <div className="col-sm-1">{statusRevenueName(statusRevenue)}</div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.menuProjects ? (
                     <a role="button" onClick={() => hashHistory.push(`/project/opbrengst-kwh/${revenueId}`)}>

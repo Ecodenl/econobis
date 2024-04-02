@@ -98,6 +98,7 @@ class ParticipantDetailsToolbar extends Component {
             // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
             const projectTypeCodeRef = project ? project.typeCodeRef : '';
+            const isTerminated = Boolean(participantProject.dateTerminated);
 
             return (
                 <div className="row">
@@ -110,16 +111,18 @@ class ParticipantDetailsToolbar extends Component {
                                         {allowDeleteAndTerminateButtons && (
                                             <>
                                                 <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
-                                                {participantProject.terminatedAllowed ? (
+                                                {!isTerminated ? (
                                                     <ButtonText
                                                         buttonText={`Beëindigen`}
                                                         onClickAction={this.toggleTerminate}
+                                                        disabled={!participantProject.terminatedAllowed}
                                                     />
                                                 ) : null}
-                                                {participantProject.undoTerminatedAllowed ? (
+                                                {isTerminated ? (
                                                     <ButtonText
                                                         buttonText={`Beëindiging ongedaan maken`}
                                                         onClickAction={this.toggleUndoTerminate}
+                                                        disabled={!participantProject.undoTerminatedAllowed}
                                                     />
                                                 ) : null}
                                             </>

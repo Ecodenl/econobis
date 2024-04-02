@@ -28,6 +28,7 @@ class ResourceForTerminatingParticipantProject extends JsonResource
                 'lastRevenuePayAmount' => $this->lastRevenuePayAmount,
                 'lastRevenueKeyAmountFirstPercentage' => $this->lastRevenueKeyAmountFirstPercentage,
                 'lastRevenuePayPercentageValidFromKeyAmount' => $this->lastRevenuePayPercentageValidFromKeyAmount,
+                'dateEndLastConfirmedPartsKwh' => $this->dateEndLastConfirmedPartsKwh,
             ];
     }
 }

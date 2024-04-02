@@ -258,6 +258,16 @@ class ParticipantProject extends Model
             $dateTerminatedAllowedFrom = $dateInterestBearingKwh;
         }
 
+        if ( $this->project->projectType->code_ref == 'postalcode_link_capital' ) {
+            $dateEndLastConfirmedPartsKwh = $this->getDateEndLastConfirmedPartsKwh($dateTerminatedAllowedFrom);
+            if($dateEndLastConfirmedPartsKwh != null) {
+                $checkDateEndLastConfirmedPartsKwh = $dateEndLastConfirmedPartsKwh->addDay()->format('Y-m-d');
+                    if ($checkDateEndLastConfirmedPartsKwh > $dateTerminatedAllowedFrom) {
+                        $dateTerminatedAllowedFrom = $checkDateEndLastConfirmedPartsKwh;
+                    }
+            }
+        }
+
         if ($dateEntryLastMutation != null && $dateEntryLastMutation > $dateTerminatedAllowedFrom) {
             $dateTerminatedAllowedFrom = $dateEntryLastMutation;
         }
@@ -275,6 +285,11 @@ class ParticipantProject extends Model
         }
 
         return Carbon::parse('9999-12-31')->format('Y-m-d');
+    }
+
+    public function getDateEndLastConfirmedPartsKwhAttribute()
+    {
+        return $this->getDateEndLastConfirmedPartsKwh() ? Carbon::parse($this->getDateEndLastConfirmedPartsKwh())->format('Y-m-d') : null;
     }
 
     public function getTerminatedAllowedAttribute()
@@ -344,4 +359,22 @@ class ParticipantProject extends Model
         return floatval( number_format( $total, 2, '.', ''));
     }
 
+    /**
+     * @param string $dateTerminatedAllowedFrom
+     * @return string
+     */
+
+    private function getDateEndLastConfirmedPartsKwh()
+    {
+        $dateEndLastConfirmedPartsKwh = null;
+        foreach ($this->revenueDistributionKwh as $revenueDistributionKwh) {
+            if ($revenueDistributionKwh->date_end_last_confirmed_parts_kwh != null) {
+                $checkDateEndLastConfirmedPartsKwh = Carbon::parse($revenueDistributionKwh->date_end_last_confirmed_parts_kwh);
+                if ($checkDateEndLastConfirmedPartsKwh > $dateEndLastConfirmedPartsKwh) {
+                    $dateEndLastConfirmedPartsKwh = $checkDateEndLastConfirmedPartsKwh;
+                }
+            }
+        }
+        return $dateEndLastConfirmedPartsKwh;
+    }
 }

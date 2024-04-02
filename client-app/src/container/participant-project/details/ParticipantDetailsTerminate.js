@@ -36,8 +36,6 @@ const ParticipantDetailsTerminate = ({
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
 
-    const [payPercentage, setPayPercentage] = useState(null);
-
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
     const [errors, setErrors] = useState({
         dateTerminated: false,
@@ -76,23 +74,10 @@ const ParticipantDetailsTerminate = ({
         if (!hasErrors) {
             ParticipantProjectDetailsAPI.terminateParticipantProject(participantProject.id, {
                 dateTerminated,
-                payPercentage,
             })
                 .then(payload => {
                     fetchParticipantProjectDetails(participantProject.id);
                     closeDeleteItemModal();
-                    if (
-                        projectTypeCodeRef === 'postalcode_link_capital' &&
-                        redirectRevenueSplit &&
-                        payload.data.projectsArray &&
-                        payload.data.projectsArray.length > 0
-                    ) {
-                        if (payload.data.projectsArray.success) {
-                            hashHistory.push(`${payload.data.revenuePartsKwhRedirect}`);
-                        } else {
-                            setErrorModal(payload.data.projectsArray.errorMessage);
-                        }
-                    }
                 })
                 .catch(error => {
                     // let errorObject = JSON.parse(JSON.stringify(error));
@@ -146,16 +131,16 @@ const ParticipantDetailsTerminate = ({
                         />
                     )}
                 </div>
-                {projectTypeCodeRef === 'postalcode_link_capital' ? (
-                    <div className="row">
-                        <InputToggle
-                            label={'Na beëindigen maken eindafrekening voor teruggave EB'}
-                            name={'redirectRevenueSplit'}
-                            onChangeAction={onChangeRedirectRevenueSplit}
-                            value={redirectRevenueSplit}
-                        />
-                    </div>
-                ) : null}
+                {/*{projectTypeCodeRef === 'postalcode_link_capital' ? (*/}
+                {/*    <div className="row">*/}
+                {/*        <InputToggle*/}
+                {/*            label={'Na beëindigen maken eindafrekening voor teruggave EB'}*/}
+                {/*            name={'redirectRevenueSplit'}*/}
+                {/*            onChangeAction={onChangeRedirectRevenueSplit}*/}
+                {/*            value={redirectRevenueSplit}*/}
+                {/*        />*/}
+                {/*    </div>*/}
+                {/*) : null}*/}
             </Modal>
         </>
     );

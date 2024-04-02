@@ -633,6 +633,30 @@ class RevenuesKwhHelper
         return ['success' => false, 'errorMessage' => 'Onbekende fout'];
 
     }
+    public function updateIndicatorFieldEndParticipation(ParticipantProject $participant, $originalSplitDate)
+    {
+        $splitDateString = Carbon::parse($originalSplitDate)->format('Y-m-d');
+
+        $distributionsKwhThisParticipantIds = RevenueDistributionKwh::where('participation_id', $participant->id)
+            ->whereIn('status', ['concept', 'confirmed'])
+            ->pluck('id')->toArray();
+
+        // Wel evt. bijwerken indicator fields
+        $distributionPartsKwhThisParticipant = RevenueDistributionPartsKwh::whereIn('distribution_id', $distributionsKwhThisParticipantIds)
+            ->where('is_end_participation', true)
+            ->whereIn('status', ['concept', 'confirmed'])
+            ->whereHas('partsKwh', function ($query) use($splitDateString) {
+                $query->where('date_end', '=', $splitDateString);
+            })
+            ->get();
+
+        foreach ($distributionPartsKwhThisParticipant as $distributionPartsKwh){
+            $distributionPartsKwh->is_end_participation = false;
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
+        }
+
+    }
 
     protected function splitRevenuePartsKwh(RevenuePartsKwh $revenuePartsKwhToSplit, ParticipantProject $participant, $splitDate, AddressEnergySupplier $addressEnergySupplier = null)
     {

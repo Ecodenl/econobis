@@ -527,41 +527,18 @@ class ParticipationProjectController extends ApiController
 
         $data = $requestInput
             ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->double('payPercentage')->validate('nullable')->onEmpty(null)->alias('pay_percentage')->next()
             ->get();
 
         // Set terminated date
         $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
         $projectType = $participantProject->project->projectType;
-        // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
-//        $payPercentage = $data['pay_percentage'];
-//        DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
+
         DB::transaction(function () use ($participantProject, $projectType) {
             $participantProject->save();
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
-            // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
-            // Here in function terminate projecttype can only by capital or postalcode_link_capital !
-//            if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
-//                // Calculate result from last revenue distribution till date terminate
-//                $this->createMutationResult($participantProject, $payPercentage, $projectType);
-//            }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
-
-            // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
-//            if($payPercentage) {
-//                // Remove distributions on active concept Euro and Redemption revenue(s)
-//                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
-//                $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
-//
-//                $participantProject->projectRevenueDistributions()
-//                    ->where('status', 'concept')
-//                    ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
-//                        $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
-//                    })
-//                ->forceDelete();
-//            }
         });
 
         if($projectType->code_ref === 'postalcode_link_capital') {
@@ -1606,9 +1583,9 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
-        // Deelname beeindigd bij leningen en obligaties voorlopig alleen terugdraaien indien deelname niet al in een verdeling zit die niet concept is.
-        $dateTerminated = $participantProject->date_terminated;
-        if ( $dateTerminated != null && ($participantProject->project->projectType->code_ref == 'loan' || $participantProject->project->projectType->code_ref == 'obligation') ) {
+        // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
+        $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+        if ( $dateTerminated != null) {
             $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
                 ->whereNotIn('status', ['concept'])
                 ->whereHas('revenue', function ($query) use($dateTerminated) {
@@ -1617,7 +1594,28 @@ class ParticipationProjectController extends ApiController
                 })
                 ->exists();
 
-            return !$projectRevenueDistributionsNotConcept;
+            if($projectRevenueDistributionsNotConcept){
+                return false;
+            }
+
+            // Deelname beeindigd bij PCR dan ook alleen terugdraaien indien beeindigingsdatum deelname nog niet in een deel kwh verdeling zit die niet concept of new is is
+            if ( $participantProject->project->projectType->code_ref == 'postalcode_link_capital' ) {
+                $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
+                    ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
+                        $query->where('date_begin', '<=', $dateTerminated)
+                            ->where('date_end', '>=', $dateTerminated);
+                    })
+                    ->whereHas('distributionPartsKwh', function ($query) use ($dateTerminated) {
+                        $query->whereHas('partsKwh', function ($query) use ($dateTerminated) {
+                            $query->whereNotIn('status', ['concept', 'concept-to-update']);
+                        });
+                    })
+                    ->exists();
+
+                if($revenueDistributionKwh){
+                    return false;
+                }
+            }
         }
 
         return $dateTerminated != null;

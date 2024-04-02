@@ -531,7 +531,7 @@ class ParticipationProjectController extends ApiController
             ->get();
 
         // Set terminated date
-        $participantProject->date_terminated = $data['date_terminated'];
+        $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
         $projectType = $participantProject->project->projectType;
         // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
 //        $payPercentage = $data['pay_percentage'];
@@ -694,6 +694,10 @@ class ParticipationProjectController extends ApiController
                     // Recalculate dependent data in project
                     $participantProject->project->calculator()->run()->save();
                 }
+            }
+            if($projectTypeCodeRef == 'postalcode_link_capital'){
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->updateIndicatorFieldEndParticipation($participantProject, $originalDateTerminated);
             }
 
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);

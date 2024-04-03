@@ -21,6 +21,7 @@ class FreeFieldNewForm extends Component {
                 tableId: '',
                 fieldFormatId: '',
                 fieldName: '',
+                fieldNameWebform: '',
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -31,10 +32,12 @@ class FreeFieldNewForm extends Component {
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
+            fieldNameWebformLabel: ' ',
             errors: {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
+                fieldNameWebform: false,
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -47,6 +50,7 @@ class FreeFieldNewForm extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
+                fieldNameWebform: false,
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -85,12 +89,22 @@ class FreeFieldNewForm extends Component {
     };
 
     handleReactSelectChange(selectedOption, name) {
+        let fieldNameWebformLabel = this.state.fieldNameWebformLabel;
+        if (name === 'tableId') {
+            fieldNameWebformLabel = this.state.freeFieldsTables.filter(
+                freeFieldsTable => freeFieldsTable.id == selectedOption
+            )[0].prefixFieldNameWebform;
+        }
+
+        console.log(fieldNameWebformLabel);
+
         this.setState({
             ...this.state,
             freeField: {
                 ...this.state.freeField,
                 [name]: selectedOption,
             },
+            fieldNameWebformLabel,
         });
     }
 
@@ -131,6 +145,12 @@ class FreeFieldNewForm extends Component {
         if (validator.isEmpty(freeField.fieldName)) {
             errors.fieldName = true;
             errorsMessage.fieldName = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (validator.isEmpty(freeField.fieldNameWebform)) {
+            errors.fieldNameWebform = true;
+            errorsMessage.fieldNameWebform = 'verplicht';
             hasErrors = true;
         }
 
@@ -189,6 +209,7 @@ class FreeFieldNewForm extends Component {
             tableId,
             fieldFormatId,
             fieldName,
+            fieldNameWebform,
             visiblePortal,
             changePortal,
             mandatory,
@@ -296,6 +317,22 @@ class FreeFieldNewForm extends Component {
                                 error={this.state.errors.sortOrder}
                                 errorMessage={this.state.errorsMessage.sortOrder}
                                 type={'number'}
+                            />
+                        </div>
+
+                        <div className="row">
+                            <label className="col-sm-3">Veld naam webformulier</label>
+
+                            <InputText
+                                divSize={'col-sm-3'}
+                                label={this.state.fieldNameWebformLabel}
+                                labelSize={'col-sm-4'}
+                                name={'fieldNameWebform'}
+                                value={fieldNameWebform}
+                                size={'col-sm-8'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.fieldNameWebform}
+                                errorMessage={this.state.errorsMessage.fieldNameWebform}
                             />
                         </div>
                         <hr />

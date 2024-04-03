@@ -7,12 +7,14 @@ import PanelBody from '../../../../components/panel/PanelBody';
 
 const FreeFieldDetailsFormGeneralView = ({
     fieldName,
+    fieldNameWebform,
     mandatory,
     visiblePortal,
     changePortal,
     defaultValue,
     switchToEdit,
     table,
+    tablePrefixFieldNameWebform,
     fieldFormat,
     exportable,
     sortOrder,
@@ -44,6 +46,14 @@ const FreeFieldDetailsFormGeneralView = ({
 
                     <div className="row">
                         <ViewText label={'Volgorde'} value={sortOrder} />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={'Veld naam webformulier'}
+                            value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
+                        />
+                        <ViewText label={'Verplicht'} value={mandatory ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">

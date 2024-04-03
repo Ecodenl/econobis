@@ -18,8 +18,10 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         const {
             id,
             tableId,
+            tablePrefixFieldNameWebform,
             fieldFormatId,
             fieldName,
+            fieldNameWebform,
             visiblePortal,
             changePortal,
             mandatory,
@@ -33,8 +35,10 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             freeField: {
                 id,
                 tableId,
+                tablePrefixFieldNameWebform,
                 fieldFormatId,
                 fieldName,
+                fieldNameWebform,
                 visiblePortal,
                 changePortal,
                 mandatory,
@@ -49,6 +53,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
+                fieldNameWebform: false,
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -61,6 +66,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
+                fieldNameWebform: false,
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -202,8 +208,10 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
     render() {
         const {
             tableId,
+            tablePrefixFieldNameWebform,
             fieldFormatId,
             fieldName,
+            fieldNameWebform,
             visiblePortal,
             changePortal,
             mandatory,
@@ -241,7 +249,6 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 // error={this.state.errors.fieldFormatId}
                                 // errorMessage={this.state.errorsMessage.fieldFormatId}
                                 disabled={true}
-                            />
                             />
                         </div>
                         <div className="row">
@@ -314,6 +321,21 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.sortOrder}
                                 errorMessage={this.state.errorsMessage.sortOrder}
                                 type={'number'}
+                            />
+                        </div>
+                        <div className="row">
+                            <label className="col-sm-3">Veld naam webformulier</label>
+
+                            <InputText
+                                divSize={'col-sm-3'}
+                                label={tablePrefixFieldNameWebform}
+                                labelSize={'col-sm-4'}
+                                name={'fieldNameWebform'}
+                                value={fieldNameWebform}
+                                size={'col-sm-8'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.fieldNameWebform}
+                                errorMessage={this.state.errorsMessage.fieldNameWebform}
                             />
                         </div>
                         <hr />

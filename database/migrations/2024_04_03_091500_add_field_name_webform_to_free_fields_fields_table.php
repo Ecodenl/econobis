@@ -14,7 +14,7 @@ class AddFieldNameWebformToFreeFieldsFieldsTable extends Migration
     public function up()
     {
         Schema::table('free_fields_fields', function (Blueprint $table) {
-            $table->string('field_name_webform')->after('field_name');
+            $table->string('field_name_webform')->nullable()->after('field_name');
         });
     }
 

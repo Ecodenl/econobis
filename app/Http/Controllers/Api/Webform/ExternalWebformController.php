@@ -1663,7 +1663,6 @@ class ExternalWebformController extends Controller
         //explode the mask
         $explodedMask = str_split($mask);
         $explodedValue = str_split($value);
-        $i = 0;
 
         //if mask contains no ? and value and mask are not the same length we can skip all this and return false
         if (!strpos($mask, '?') && count($explodedMask) != count($explodedValue)) {

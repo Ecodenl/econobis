@@ -1642,11 +1642,60 @@ class ExternalWebformController extends Controller
             if (isSet($data[$freeFieldsField->field_name_webform]) && $data[$freeFieldsField->field_name_webform] != "") {
                 $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $contact->id)->where('field_id', $freeFieldsField->id)->first();
                 $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->field_name_webform];
-                $freeFieldsFieldRecord->save();
+
+                if($freeFieldsField->mask != '') {
+                    if($this->checkMask($data[$freeFieldsField->field_name_webform], $freeFieldsField->mask)) {
+                        $freeFieldsFieldRecord->save();
+                    } else {
+                        $this->log('De waarde \'' . $data[$freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
+                    }
+                } else {
+                    $freeFieldsFieldRecord->save();
+                }
             }
         }
 
         return $contact;
+    }
+
+    protected function checkMask($value, $mask)
+    {
+        //explode the mask
+        $explodedMask = str_split($mask);
+        $explodedValue = str_split($value);
+        $i = 0;
+
+        //if mask contains no ? and value and mask are not the same length we can skip all this and return false
+        if (!strpos($mask, '?') && count($explodedMask) != count($explodedValue)) {
+            return false;
+        }
+
+        foreach($explodedMask as $key => $char) {
+            switch ($char) {
+                case '9':
+                    if (empty($explodedValue[$key]) || !preg_match('/^[0-9]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                case 'a':
+                    if (empty($explodedValue[$key]) || !preg_match('/^[a-zA-Z]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                case 'x':
+                    if (empty($explodedValue[$key]) || !preg_match('/^[a-zA-Z0-9]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                default:
+                    if ($explodedValue[$key] != $char) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
     }
 
     protected function addEnergySupplierToAddress(Address $address, $data)

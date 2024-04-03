@@ -1641,6 +1641,13 @@ class ExternalWebformController extends Controller
         foreach(FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
             if (isSet($data[$freeFieldsField->field_name_webform]) && $data[$freeFieldsField->field_name_webform] != "") {
                 $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $contact->id)->where('field_id', $freeFieldsField->id)->first();
+
+                if(!$freeFieldsFieldRecord) {
+                    $freeFieldsFieldRecord = new FreeFieldsFieldRecord();
+                    $freeFieldsFieldRecord->table_record_id = $contact->id;
+                    $freeFieldsFieldRecord->field_id = $freeFieldsField->id;
+                }
+
                 $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->field_name_webform];
 
                 if($freeFieldsField->mask != '') {

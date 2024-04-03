@@ -26,6 +26,8 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
@@ -552,6 +554,23 @@ class ExternalWebformController extends Controller
                 'kansactie_update_afspraak_coach' => 'coach_id',
             ]
         ];
+
+        // Vrije velden contacten
+        $freeFieldsTable = FreeFieldsTable::where('table', 'contacts')->first();
+        if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
+                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
+            }
+        }
+        // Vrije velden adressen
+        $freeFieldsTable = FreeFieldsTable::where('table', 'addresses')->first();
+        if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
+                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
+            }
+        }
+        Log::info('vrije velden contacten / adressen');
+        Log::info($mapping['contact']);
 
         // Task properties toevoegen met prefix 'taak_'
         foreach (TaskProperty::all() as $taskProperty) {

@@ -2,10 +2,9 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class AddPrefixToFreeFieldsTablesTable extends Migration
+class AddFieldNameWebformToFreeFieldsFieldsTableAndPrefixFieldNameWebformToFreeFieldsTablesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -14,6 +13,10 @@ class AddPrefixToFreeFieldsTablesTable extends Migration
      */
     public function up()
     {
+        Schema::table('free_fields_fields', function (Blueprint $table) {
+            $table->string('field_name_webform')->nullable()->after('field_name');
+        });
+
         Schema::table('free_fields_tables', function (Blueprint $table) {
             $table->string('prefix_field_name_webform', 25)->nullable()->after('name');
         });
@@ -30,6 +33,10 @@ class AddPrefixToFreeFieldsTablesTable extends Migration
      */
     public function down()
     {
+        Schema::table('free_fields_fields', function (Blueprint $table) {
+            $table->dropColumn('field_name_webform');
+        });
+
         Schema::table('free_fields_tables', function (Blueprint $table) {
             $table->dropColumn('prefix_field_name_webform');
         });

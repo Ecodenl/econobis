@@ -27,6 +27,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
@@ -558,14 +559,14 @@ class ExternalWebformController extends Controller
         // Vrije velden contacten
         $freeFieldsTable = FreeFieldsTable::where('table', 'contacts')->first();
         if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
-            foreach (FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
                 $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
             }
         }
         // Vrije velden adressen
         $freeFieldsTable = FreeFieldsTable::where('table', 'addresses')->first();
         if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
-            foreach (FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
                 $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
             }
         }
@@ -1634,6 +1635,15 @@ class ExternalWebformController extends Controller
         }
         if($data['contact_attachment_3']){
             $this->addContactAttachment($contact, $data['contact_attachment_3']);
+        }
+
+        //freeFieldsFieldRecords updaten
+        foreach(FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
+            if (isSet($data[$freeFieldsField->field_name_webform]) && $data[$freeFieldsField->field_name_webform] != "") {
+                $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $contact->id)->where('field_id', $freeFieldsField->id)->first();
+                $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->field_name_webform];
+                $freeFieldsFieldRecord->save();
+            }
         }
 
         return $contact;

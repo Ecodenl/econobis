@@ -15,12 +15,12 @@ class AddPrefixToFreeFieldsTablesTable extends Migration
     public function up()
     {
         Schema::table('free_fields_tables', function (Blueprint $table) {
-            $table->string('prefix')->nullable()->after('name');
+            $table->string('prefix_field_name_webform', 25)->nullable()->after('name');
         });
 
-        DB::table('free_fields_tables')->where('table', 'contacts')->update(["prefix" => 'contact_']);
-        DB::table('free_fields_tables')->where('table', 'addresses')->update(["prefix" => 'adres_']);
-        DB::table('free_fields_tables')->where('table', 'projects')->update(["prefix" => 'project_']);
+        DB::table('free_fields_tables')->where('table', 'contacts')->update(["prefix_field_name_webform" => 'contact_']);
+        DB::table('free_fields_tables')->where('table', 'addresses')->update(["prefix_field_name_webform" => 'adres_']);
+        DB::table('free_fields_tables')->where('table', 'projects')->update(["prefix_field_name_webform" => 'project_']);
     }
 
     /**
@@ -31,7 +31,7 @@ class AddPrefixToFreeFieldsTablesTable extends Migration
     public function down()
     {
         Schema::table('free_fields_tables', function (Blueprint $table) {
-            $table->dropColumn('prefix');
+            $table->dropColumn('prefix_field_name_webform');
         });
     }
 }

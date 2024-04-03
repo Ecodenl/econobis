@@ -1468,6 +1468,9 @@ class ExternalWebformController extends Controller
             $this->addContactAttachment($contact, $data['contact_attachment_3']);
         }
 
+        //freeFieldsFieldRecords aanmaken
+        $this->setFreeFieldsFieldRecords($contact, $data);
+
         return $contact;
     }
 
@@ -1638,6 +1641,12 @@ class ExternalWebformController extends Controller
         }
 
         //freeFieldsFieldRecords updaten
+        $this->setFreeFieldsFieldRecords($contact, $data);
+
+        return $contact;
+    }
+
+    protected function setFreeFieldsFieldRecords ($contact, $data) {
         foreach(FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
             if (isSet($data[$freeFieldsField->field_name_webform]) && $data[$freeFieldsField->field_name_webform] != "") {
                 $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $contact->id)->where('field_id', $freeFieldsField->id)->first();
@@ -1661,8 +1670,6 @@ class ExternalWebformController extends Controller
                 }
             }
         }
-
-        return $contact;
     }
 
     protected function checkMask($value, $mask)

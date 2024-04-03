@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
 class AddPrefixToFreeFieldsTablesTable extends Migration
@@ -16,6 +17,10 @@ class AddPrefixToFreeFieldsTablesTable extends Migration
         Schema::table('free_fields_tables', function (Blueprint $table) {
             $table->string('prefix')->nullable()->after('name');
         });
+
+        DB::table('free_fields_tables')->where('table', 'contacts')->update(["prefix" => 'contact_']);
+        DB::table('free_fields_tables')->where('table', 'addresses')->update(["prefix" => 'adres_']);
+        DB::table('free_fields_tables')->where('table', 'projects')->update(["prefix" => 'project_']);
     }
 
     /**

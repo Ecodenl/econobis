@@ -12,7 +12,7 @@ import ParticipantDetailsUndoTerminate from './ParticipantDetailsUndoTerminate';
 import moment from 'moment';
 import validator from 'validator';
 import ErrorModal from '../../../components/modal/ErrorModal';
-import ParticipantDetailsTerminateObligation from './ParticipantDetailsTerminateObligation';
+import ParticipantDetailsTerminateLoanOrObligation from './ParticipantDetailsTerminateLoanOrObligation';
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -71,123 +71,127 @@ class ParticipantDetailsToolbar extends Component {
     }
 
     render() {
-        const { participantProject, project = {} } = this.props;
-        let numberOfMutations = participantProject.participantMutations
-            ? participantProject.participantMutations.length
-            : null;
-        let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
-        let allowDeleteAndTerminateButtons = false;
-        if (
-            this.props.permissions.manageParticipation &&
-            (numberOfMutations == 0 ||
-                validator.isEmpty(disableBeforeEntryDate) ||
-                moment().format('YYYY-01-01') >= disableBeforeEntryDate)
-        ) {
-            allowDeleteAndTerminateButtons = true;
-        }
+        const { participantProject, project } = this.props;
 
-        // let isTransferable =
-        //     project.isParticipationTransferable &&
-        //     participantProject.participationsCurrent > 0 &&
-        //     participantProject.participationsCurrent &&
-        //     this.props.permissions.manageFinancial;
-        // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
+        if (!participantProject || !project) {
+            return;
+        } else {
+            let numberOfMutations = participantProject.participantMutations
+                ? participantProject.participantMutations.length
+                : null;
+            let disableBeforeEntryDate = this.getDisableBeforeEntryDate(project);
+            let allowDeleteAndTerminateButtons = false;
+            if (
+                this.props.permissions.manageParticipation &&
+                (numberOfMutations == 0 ||
+                    validator.isEmpty(disableBeforeEntryDate) ||
+                    moment().format('YYYY-01-01') >= disableBeforeEntryDate)
+            ) {
+                allowDeleteAndTerminateButtons = true;
+            }
 
-        const projectTypeCodeRef = project ? project.typeCodeRef : '';
+            // let isTransferable =
+            //     project.isParticipationTransferable &&
+            //     participantProject.participationsCurrent > 0 &&
+            //     participantProject.participationsCurrent &&
+            //     this.props.permissions.manageFinancial;
+            // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
-        return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <Panel>
-                        <PanelBody className={'panel-small'}>
-                            <div className="col-md-3">
-                                <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                                    {allowDeleteAndTerminateButtons && (
-                                        <>
-                                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
-                                            {participantProject.terminatedAllowed ? (
-                                                <ButtonText
-                                                    buttonText={`Beëindigen`}
-                                                    onClickAction={this.toggleTerminate}
-                                                />
-                                            ) : null}
-                                            {participantProject.undoTerminatedAllowed ? (
-                                                <ButtonText
-                                                    buttonText={`Beëindiging ongedaan maken`}
-                                                    onClickAction={this.toggleUndoTerminate}
-                                                />
-                                            ) : null}
-                                        </>
-                                    )}
+            const projectTypeCodeRef = project ? project.typeCodeRef : '';
 
-                                    {/*{isTransferable ? (*/}
-                                    {/*    <ButtonText*/}
-                                    {/*        buttonText={`Deelnames overdragen`}*/}
-                                    {/*        onClickAction={() =>*/}
-                                    {/*            hashHistory.push(*/}
-                                    {/*                `/project/deelnemer/${participantProject.id}/overdragen`*/}
-                                    {/*            )*/}
-                                    {/*        }*/}
-                                    {/*    />*/}
-                                    {/*) : (*/}
-                                    {/*    <ButtonText buttonText={`Deelnames niet overdraagbaar`} readOnly={true} />*/}
-                                    {/*)}*/}
+            return (
+                <div className="row">
+                    <div className="col-sm-12">
+                        <Panel>
+                            <PanelBody className={'panel-small'}>
+                                <div className="col-md-3">
+                                    <div className="btn-group btn-group-flex margin-small" role="group">
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        {allowDeleteAndTerminateButtons && (
+                                            <>
+                                                <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                                {participantProject.terminatedAllowed ? (
+                                                    <ButtonText
+                                                        buttonText={`Beëindigen`}
+                                                        onClickAction={this.toggleTerminate}
+                                                    />
+                                                ) : null}
+                                                {participantProject.undoTerminatedAllowed ? (
+                                                    <ButtonText
+                                                        buttonText={`Beëindiging ongedaan maken`}
+                                                        onClickAction={this.toggleUndoTerminate}
+                                                    />
+                                                ) : null}
+                                            </>
+                                        )}
+
+                                        {/*{isTransferable ? (*/}
+                                        {/*    <ButtonText*/}
+                                        {/*        buttonText={`Deelnames overdragen`}*/}
+                                        {/*        onClickAction={() =>*/}
+                                        {/*            hashHistory.push(*/}
+                                        {/*                `/project/deelnemer/${participantProject.id}/overdragen`*/}
+                                        {/*            )*/}
+                                        {/*        }*/}
+                                        {/*    />*/}
+                                        {/*) : (*/}
+                                        {/*    <ButtonText buttonText={`Deelnames niet overdraagbaar`} readOnly={true} />*/}
+                                        {/*)}*/}
+                                    </div>
                                 </div>
-                            </div>
-                            <div className="col-md-6">
-                                <h4 className="text-center text-success margin-small">
-                                    <strong>
-                                        {participantProject.contact ? participantProject.contact.fullName : ''}/
-                                        {project ? project.name : ''}
-                                    </strong>
-                                </h4>
-                            </div>
-                            <div className="col-md-3" />
-                        </PanelBody>
-                    </Panel>
-                </div>
+                                <div className="col-md-6">
+                                    <h4 className="text-center text-success margin-small">
+                                        <strong>
+                                            {participantProject.contact ? participantProject.contact.fullName : ''}/
+                                            {project ? project.name : ''}
+                                        </strong>
+                                    </h4>
+                                </div>
+                                <div className="col-md-3" />
+                            </PanelBody>
+                        </Panel>
+                    </div>
 
-                {this.state.showDelete && (
-                    <ParticipantDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        id={participantProject.id}
-                        projectid={participantProject.project.id}
-                    />
-                )}
-                {this.state.showTerminate &&
-                    (projectTypeCodeRef === 'obligation' ? (
-                        <ParticipantDetailsTerminateObligation
+                    {this.state.showDelete && (
+                        <ParticipantDetailsDelete
+                            closeDeleteItemModal={this.toggleDelete}
+                            id={participantProject.id}
+                            projectid={participantProject.project.id}
+                        />
+                    )}
+                    {this.state.showTerminate &&
+                        (projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
+                            <ParticipantDetailsTerminateLoanOrObligation
+                                participantProject={participantProject}
+                                setErrorModal={this.setErrorModal}
+                                closeDeleteItemModal={this.toggleTerminate}
+                                projectTypeCodeRef={participantProject.project.typeCodeRef}
+                            />
+                        ) : (
+                            <ParticipantDetailsTerminate
+                                participantProject={participantProject}
+                                setErrorModal={this.setErrorModal}
+                                closeDeleteItemModal={this.toggleTerminate}
+                                projectTypeCodeRef={participantProject.project.typeCodeRef}
+                            />
+                        ))}
+                    {this.state.showUndoTerminate && (
+                        <ParticipantDetailsUndoTerminate
                             participantProject={participantProject}
                             setErrorModal={this.setErrorModal}
-                            closeDeleteItemModal={this.toggleTerminate}
-                            dateInterestBearing={participantProject.project.dateInterestBearing}
+                            closeDeleteItemModal={this.toggleUndoTerminate}
                         />
-                    ) : (
-                        <ParticipantDetailsTerminate
-                            participantProject={participantProject}
-                            setErrorModal={this.setErrorModal}
-                            closeDeleteItemModal={this.toggleTerminate}
-                            projectTypeCodeRef={participantProject.project.typeCodeRef}
+                    )}
+                    {this.state.showErrorModal && (
+                        <ErrorModal
+                            closeModal={this.closeErrorModal}
+                            title={'Fout bij opslaan'}
+                            errorMessage={this.state.modalErrorMessage}
                         />
-                    ))}
-                {this.state.showUndoTerminate && (
-                    <ParticipantDetailsUndoTerminate
-                        participantProject={participantProject}
-                        setErrorModal={this.setErrorModal}
-                        closeDeleteItemModal={this.toggleUndoTerminate}
-                        projectTypeCodeRef={participantProject.project.typeCodeRef}
-                    />
-                )}
-                {this.state.showErrorModal && (
-                    <ErrorModal
-                        closeModal={this.closeErrorModal}
-                        title={'Fout bij opslaan'}
-                        errorMessage={this.state.modalErrorMessage}
-                    />
-                )}
-            </div>
-        );
+                    )}
+                </div>
+            );
+        }
     }
 }
 

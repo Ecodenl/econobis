@@ -9,11 +9,13 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
+use App\Http\Resources\Project\GridProjectRevenue;
+use App\Http\Resources\Project\GridRevenuesKwh;
 use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullParticipantProject extends JsonResource
+class FullParticipantProjectShow extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -24,7 +26,6 @@ class FullParticipantProject extends JsonResource
      */
     public function toArray($request)
     {
-        //todo WM: kijken welke gegevens we echt nodig hebben?
         return
             [
                 'id' => $this->id,
@@ -34,8 +35,8 @@ class FullParticipantProject extends JsonResource
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
-//                'relatedRevenues' => $this->participantProjectRevenues ? GridParticipantProjectRevenue::collection($this->participantProjectRevenues) : null,
-//                'relatedRevenuesKwh' => $this->participantProjectRevenuesKwh ? GridParticipantProjectRevenueKwh::collection($this->participantProjectRevenuesKwh) : null,
+                'relatedRevenues' => $this->participantProjectRevenues ? GridParticipantProjectRevenue::collection($this->participantProjectRevenues) : null,
+                'relatedRevenuesKwh' => $this->participantProjectRevenuesKwh ? GridParticipantProjectRevenueKwh::collection($this->participantProjectRevenuesKwh) : null,
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
@@ -79,7 +80,7 @@ class FullParticipantProject extends JsonResource
                 'dateRegister' => $this->date_register,
                 'terminatedAllowed' => $this->terminatedAllowed,
                 'undoTerminatedAllowed' => $this->undoTerminatedAllowed,
-//                'participantBelongsToMembershipGroup' => $this->participant_belongs_to_membership_group,
+                'participantBelongsToMembershipGroup' => $this->participantBelongsToMembershipGroup,
                 'participantChoiceMembership' => $this->choice_membership,
             ];
     }

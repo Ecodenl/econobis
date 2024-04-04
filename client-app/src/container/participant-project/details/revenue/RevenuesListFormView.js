@@ -18,7 +18,30 @@ const RevenuesListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
-    const { id, confirmed, category, dateBegin, dateEnd, datePayed, type, amountRevenue } = revenueDetails;
+    const { revenueId, categoryName, dateBegin, dateEnd, status, statusRevenue } = revenueDetails;
+
+    const statusName = status => {
+        switch (status) {
+            case 'concept':
+                return 'Concept';
+            case 'confirmed':
+                return 'Definitief';
+            case 'processed':
+                return 'Verwerkt';
+        }
+        return '';
+    };
+    const statusRevenueName = statusRevenue => {
+        switch (statusRevenue) {
+            case 'concept':
+                return 'Concept';
+            case 'confirmed':
+                return 'Definitief';
+            case 'processed':
+                return 'Verwerkt';
+        }
+        return '';
+    };
 
     return (
         <div
@@ -27,16 +50,18 @@ const RevenuesListFormView = ({
             onMouseLeave={() => onLineLeave()}
         >
             <div className="col-sm-4">{projectName ? projectName : ''}</div>
-            <div className="col-sm-2">{category ? category.name : ''}</div>
+            <div className="col-sm-2">{categoryName}</div>
             <div className={'col-sm-3'}>
                 {dateBegin ? moment(dateBegin).format('L') : 'onbekend'}
                 {' t/m '}
                 {dateEnd ? moment(dateEnd).format('L') : 'onbekend'}
             </div>
-            <div className="col-sm-2">{confirmed ? 'Definitief' : 'Concept'}</div>
+            <div className="col-sm-2">
+                {statusName(status)} / {statusRevenueName(statusRevenue)}
+            </div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.menuProjects ? (
-                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
+                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${revenueId}`)}>
                         <Icon className="mybtn-success" size={14} icon={eye} />
                     </a>
                 ) : (

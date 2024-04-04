@@ -362,16 +362,36 @@ class ExternalWebformController extends Controller
         }
 
         if ($this->address) {
+            // hier verwerken van vrije velden adressen
+
             $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
+
+            $this->log("Vrij velden aanmaken/bijwerken ...");
+            //freeFieldsFieldRecords updaten
+            $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+            $this->setFreeFieldsFieldRecords($this->address, $data['contact'], $tableId);
         } else {
             $intake = null;
             $housingFile = null;
-            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en/of woondossier konden niet worden aangemaakt.");
+
+            $address = $contact->addresses()
+                ->where('postal_code', $data['address_postal_code'])
+                ->where('number', $data['address_number'])
+                ->where('addition', $data['address_addition'])
+                ->first();
+            if($address){
+                $this->log("Vrij velden aanmaken/bijwerken ...");
+                //freeFieldsFieldRecords updaten
+                $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+                $this->setFreeFieldsFieldRecords($address, $data['contact'], $tableId);
+            } else {
+                $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
+            }
         }
 
         // Bewaar intake en housingfile voor verdere acties later hiermee
@@ -560,18 +580,16 @@ class ExternalWebformController extends Controller
         $freeFieldsTable = FreeFieldsTable::where('table', 'contacts')->first();
         if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
             foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
-                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
+                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform;
             }
         }
         // Vrije velden adressen
         $freeFieldsTable = FreeFieldsTable::where('table', 'addresses')->first();
         if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
             foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
-                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsField->field_name_webform;
+                $mapping['contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform;
             }
         }
-        Log::info('vrije velden contacten / adressen');
-        Log::info($mapping['contact']);
 
         // Task properties toevoegen met prefix 'taak_'
         foreach (TaskProperty::all() as $taskProperty) {
@@ -1469,7 +1487,8 @@ class ExternalWebformController extends Controller
         }
 
         //freeFieldsFieldRecords aanmaken
-        $this->setFreeFieldsFieldRecords($contact, $data);
+        $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $this->setFreeFieldsFieldRecords($contact, $data, $tableId);
 
         return $contact;
     }
@@ -1641,33 +1660,35 @@ class ExternalWebformController extends Controller
         }
 
         //freeFieldsFieldRecords updaten
-        $this->setFreeFieldsFieldRecords($contact, $data);
+        $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+
+        $this->setFreeFieldsFieldRecords($contact, $data, $tableId);
 
         return $contact;
     }
 
-    protected function setFreeFieldsFieldRecords ($contact, $data) {
-        foreach(FreeFieldsField::whereNotNull('field_name_webform')->get() as $freeFieldsField) {
-            if (isSet($data[$freeFieldsField->field_name_webform]) && $data[$freeFieldsField->field_name_webform] != "") {
-                $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $contact->id)->where('field_id', $freeFieldsField->id)->first();
+    protected function setFreeFieldsFieldRecords ($parent, $data, $tableId) {
+        foreach(FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $tableId)->get() as $freeFieldsField) {
+            $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $parent->id)->where('field_id', $freeFieldsField->id)->whereHas('freeFieldsField', function ($query) use ($tableId) {
+                $query->where('table_id', $tableId);
+            })->first();
 
-                if(!$freeFieldsFieldRecord) {
-                    $freeFieldsFieldRecord = new FreeFieldsFieldRecord();
-                    $freeFieldsFieldRecord->table_record_id = $contact->id;
-                    $freeFieldsFieldRecord->field_id = $freeFieldsField->id;
-                }
+            if(!$freeFieldsFieldRecord) {
+                $freeFieldsFieldRecord = new FreeFieldsFieldRecord();
+                $freeFieldsFieldRecord->table_record_id = $parent->id;
+                $freeFieldsFieldRecord->field_id = $freeFieldsField->id;
+            }
 
-                $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->field_name_webform];
+            $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
 
-                if($freeFieldsField->mask != '') {
-                    if($this->checkMask($data[$freeFieldsField->field_name_webform], $freeFieldsField->mask)) {
-                        $freeFieldsFieldRecord->save();
-                    } else {
-                        $this->log('De waarde \'' . $data[$freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
-                    }
-                } else {
+            if($freeFieldsField->mask != '') {
+                if($this->checkMask($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform], $freeFieldsField->mask)) {
                     $freeFieldsFieldRecord->save();
+                } else {
+                    $this->log('De waarde \'' . $data[$freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
                 }
+            } else {
+                $freeFieldsFieldRecord->save();
             }
         }
     }
@@ -2631,10 +2652,10 @@ class ExternalWebformController extends Controller
 
                 foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
-                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
-                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                            $this->log('Groep ' . $contactGroup->name . ' al gekoppeld aan: ' . $contact->id);
                         } else {
                             $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
@@ -2679,10 +2700,10 @@ class ExternalWebformController extends Controller
 
                 foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
-                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
-                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                            $this->log('Groep ' . $contactGroup->name . ' al gekoppeld aan: ' . $contact->id);
                         } else {
                             $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');

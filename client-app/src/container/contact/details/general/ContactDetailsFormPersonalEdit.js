@@ -314,7 +314,7 @@ class ContactDetailsFormPersonalEdit extends Component {
                             value={hoomAccountId}
                             onChangeAction={this.handleInputChange}
                             textToolTip={
-                                'Vul hier alleen uw Hoom account id in wanneer het met de "Hoomdossier maken" knop niet lukt.'
+                                'Vul hier alleen uw Hoom account id in wanneer het met de "Hoomdossier maken" knop niet lukt, wanneer u dit veld leeg maakt moet u ook nog het contact_id in het Hoomdossier verwijderen.'
                             }
                         />
                     </div>

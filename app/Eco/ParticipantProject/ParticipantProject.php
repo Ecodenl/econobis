@@ -303,6 +303,10 @@ class ParticipantProject extends Model
 
     public function getParticipantBelongsToMembershipGroupAttribute()
     {
+        if(!$this->project->question_about_membership_group_id || $this->project->show_question_about_membership == false || $this->project->use_transaction_costs_with_membership == true){
+            return false;
+        }
+
         return in_array( $this->project->question_about_membership_group_id, $this->contact->getAllGroups() );
     }
 

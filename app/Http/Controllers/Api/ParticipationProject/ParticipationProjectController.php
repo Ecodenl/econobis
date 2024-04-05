@@ -262,16 +262,17 @@ class ParticipationProjectController extends ApiController
 
         $this->authorize('view', ParticipantProject::class);
 
-        $lastRevenueWithNotProcessedDistributions = $this->getLastRevenueWithNotProcessedDistributions($participantProject);
-        $lastRevenueBeginDate = $lastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->date_begin : null;
+        $lastRevenueConceptOrDefinitiveDistribution = $this->getLastRevenueConceptOrDefinitiveDistribution($participantProject);
+        $lastRevenueBeginDate = $lastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->date_begin : null;
+        $lastRevenueEndDate = $lastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->date_end : null;
 
         $participantProject->dateBeginRevenueTerminated = $this->getDateBeginRevenueTerminated($participantProject, $lastRevenueBeginDate);
-        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated);
+        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated, $lastRevenueEndDate);
 
-        $hasLastRevenueWithNotProcessedDistributions = (bool)$lastRevenueWithNotProcessedDistributions;
+        $hasLastRevenueConceptOrDefinitiveDistribution = (bool)$lastRevenueConceptOrDefinitiveDistribution;
 
-        if($hasLastRevenueWithNotProcessedDistributions) {
-            $participantProject->dateReference = $lastRevenueWithNotProcessedDistributions->date_reference;
+        if($hasLastRevenueConceptOrDefinitiveDistribution) {
+            $participantProject->dateReference = $lastRevenueConceptOrDefinitiveDistribution->date_reference;
         } else {
             if($participantProject->project->projectType->code_ref == 'loan' ){
                 $participantProject->dateReference = Carbon::now()->format('Y-m-d');
@@ -282,11 +283,11 @@ class ParticipationProjectController extends ApiController
             }
         }
 
-        $participantProject->hasLastRevenueWithNotProcessedDistributions = $hasLastRevenueWithNotProcessedDistributions;
-        $participantProject->lastRevenuePayPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_percentage : null;
-        $participantProject->lastRevenuePayAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_amount : null;
-        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->key_amount_first_percentage : null;
-        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_Percentage_valid_from_key_amount : null;
+        $participantProject->hasLastRevenueConceptOrDefinitiveDistribution = $hasLastRevenueConceptOrDefinitiveDistribution;
+        $participantProject->lastRevenuePayPercentage = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_percentage : null;
+        $participantProject->lastRevenuePayAmount = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_amount : null;
+        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->key_amount_first_percentage : null;
+        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_Percentage_valid_from_key_amount : null;
 
         return ResourceForTerminatingParticipantProject::make($participantProject);
     }
@@ -304,19 +305,34 @@ class ParticipationProjectController extends ApiController
         }
         return $dateBegin;
     }
-    private function getDateEndRevenueTerminated($dateBegin)
+    private function getDateEndRevenueTerminated($dateBegin, $lastRevenueEndDate)
     {
-        $dateEnd = $dateBegin
-            ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
-            : null;
+        // Indien participant in concept of definitieve verdeling dan laatste einddatum daarvan.
+        //  anders Einde jaar van beginatum.
+        if( $lastRevenueEndDate != null){
+            $dateEnd = Carbon::parse($lastRevenueEndDate)->format('Y-m-d');
+        } else {
+            $dateEnd = $dateBegin
+                ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
+                : null;
+        }
         return $dateEnd;
     }
 
-    private function getLastRevenueWithNotProcessedDistributions(ParticipantProject $participantProject)
+    private function getLastRevenueConceptOrDefinitiveDistribution(ParticipantProject $participantProject)
     {
-        $revenueIdsWithNotProcessedDistributions = $participantProject->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
-        $lastRevenueWithNotProcessedDistributions = ProjectRevenue::whereIn('id', $revenueIdsWithNotProcessedDistributions)->orderByDesc('date_end')->first();
-        return $lastRevenueWithNotProcessedDistributions;
+//        $revenueIdsWithNotProcessedDistributions = $participantProject->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
+        $revenueIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('revenue_id')->toArray();
+        $distributionIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('id')->toArray();
+
+        $lastRevenueConceptOrDefinitiveDistribution = ProjectRevenue::whereIn('id', $revenueIdsForThisParticipant)->orderByDesc('date_end')->first();
+
+        $hasLastRevenueNotConceptOrDefinitiveDistribution = false;
+        if($lastRevenueConceptOrDefinitiveDistribution){
+            $hasLastRevenueNotConceptOrDefinitiveDistribution = $participantProject->projectRevenueDistributions()->where('revenue_id', $lastRevenueConceptOrDefinitiveDistribution->id)->whereIn('id', $distributionIdsForThisParticipant)->whereNotIn('status', ['concept', 'confirmed'])->exists();
+        }
+
+        return $hasLastRevenueNotConceptOrDefinitiveDistribution ? null : $lastRevenueConceptOrDefinitiveDistribution;
     }
 
 

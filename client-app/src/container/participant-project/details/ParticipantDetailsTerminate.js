@@ -117,7 +117,7 @@ const ParticipantDetailsTerminate = ({
                         <ViewText
                             label={'Datum laatste terugbetaling wordt'}
                             value={
-                                dateEntryLastMutation
+                                dateEntryLastMutation && dateTerminated
                                     ? moment(dateTerminated)
                                           .add(1, 'day')
                                           .format('DD-MM-Y')

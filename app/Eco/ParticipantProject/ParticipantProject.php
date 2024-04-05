@@ -359,11 +359,6 @@ class ParticipantProject extends Model
         return floatval( number_format( $total, 2, '.', ''));
     }
 
-    /**
-     * @param string $dateTerminatedAllowedFrom
-     * @return string
-     */
-
     private function getDateEndLastConfirmedPartsKwh()
     {
         $dateEndLastConfirmedPartsKwh = null;

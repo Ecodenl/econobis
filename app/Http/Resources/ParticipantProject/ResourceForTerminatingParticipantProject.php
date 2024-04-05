@@ -23,7 +23,7 @@ class ResourceForTerminatingParticipantProject extends JsonResource
                 'dateTerminatedAllowedTo' => $this->dateTerminatedAllowedTo,
                 'dateBeginRevenueTerminated' => $this->dateBeginRevenueTerminated,
                 'dateEndRevenueTerminated' => $this->dateEndRevenueTerminated,
-                'hasLastRevenueWithNotProcessedDistributions' => $this->hasLastRevenueWithNotProcessedDistributions,
+                'hasLastRevenueConceptOrDefinitiveDistribution' => $this->hasLastRevenueConceptOrDefinitiveDistribution,
                 'lastRevenuePayPercentage' => $this->lastRevenuePayPercentage,
                 'lastRevenuePayAmount' => $this->lastRevenuePayAmount,
                 'lastRevenueKeyAmountFirstPercentage' => $this->lastRevenueKeyAmountFirstPercentage,

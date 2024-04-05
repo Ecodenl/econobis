@@ -39,9 +39,9 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
             setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
             setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
             setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-            setHasLastRevenueWithNotProcessedDistributions(
-                payload.hasLastRevenueWithNotProcessedDistributions
-                    ? payload.hasLastRevenueWithNotProcessedDistributions
+            setHasLastRevenueConceptOrDefinitiveDistribution(
+                payload.hasLastRevenueConceptOrDefinitiveDistribution
+                    ? payload.hasLastRevenueConceptOrDefinitiveDistribution
                     : false
             );
             setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
@@ -66,7 +66,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     const [dateEnd, setDateEnd] = useState(null);
     const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState('');
     const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState('');
-    const [hasLastRevenueWithNotProcessedDistributions, setHasLastRevenueWithNotProcessedDistributions] = useState(
+    const [hasLastRevenueConceptOrDefinitiveDistribution, setHasLastRevenueConceptOrDefinitiveDistribution] = useState(
         false
     );
 
@@ -307,7 +307,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 ' wordt'
                             }
                             value={
-                                dateEntryLastMutation
+                                dateEntryLastMutation && dateTerminated
                                     ? moment(dateTerminated)
                                           .add(1, 'day')
                                           .format('DD-MM-Y')
@@ -391,7 +391,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 label={'Uitkering (rente) %'}
                                 name={'payPercentage'}
                                 value={payPercentage}
-                                disabled={hasLastRevenueWithNotProcessedDistributions}
+                                disabled={hasLastRevenueConceptOrDefinitiveDistribution}
                                 onChangeAction={onChangePayPercentage}
                                 error={errors.payPercentage}
                                 errorMessage={errorMessages.payPercentage}
@@ -402,7 +402,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={'of uitkeringsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
-                                    disabled={hasLastRevenueWithNotProcessedDistributions}
+                                    disabled={hasLastRevenueConceptOrDefinitiveDistribution}
                                     onChangeAction={onChangePayAmount}
                                     error={errors.payAmount}
                                     errorMessage={errorMessages.payAmount}
@@ -418,7 +418,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 }
                                 name={'keyAmountFirstPercentage'}
                                 value={keyAmountFirstPercentage}
-                                disabled={hasLastRevenueWithNotProcessedDistributions}
+                                disabled={hasLastRevenueConceptOrDefinitiveDistribution}
                                 onChangeAction={onChangeKeyAmountFirstPercentage}
                                 error={errors.keyAmountFirstPercentage}
                                 errorMessage={errorMessages.keyAmountFirstPercentage}
@@ -431,7 +431,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={<>Uitkering (rente) % vanaf bedrag</>}
                                     name={'payPercentageValidFromKeyAmount'}
                                     value={payPercentageValidFromKeyAmount}
-                                    disabled={hasLastRevenueWithNotProcessedDistributions}
+                                    disabled={hasLastRevenueConceptOrDefinitiveDistribution}
                                     onChangeAction={onChangePayPercentageValidFromKeyAmount}
                                     error={errors.payPercentageValidFromKeyAmount}
                                     errorMessage={errorMessages.payPercentageValidFromKeyAmount}

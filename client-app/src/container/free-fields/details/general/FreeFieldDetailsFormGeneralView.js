@@ -48,13 +48,14 @@ const FreeFieldDetailsFormGeneralView = ({
                         <ViewText label={'Volgorde'} value={sortOrder} />
                     </div>
 
-                    <div className="row">
-                        <ViewText
-                            label={'Veld naam webformulier'}
-                            value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
-                        />
-                        <ViewText label={'Verplicht'} value={mandatory ? 'Ja' : 'Nee'} />
-                    </div>
+                    {tablePrefixFieldNameWebform != null ? (
+                        <div className="row">
+                            <ViewText
+                                label={'Veld naam webformulier'}
+                                value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
+                            />
+                        </div>
+                    ) : null}
 
                     <div className="row">
                         <ViewText label={'Masker'} value={mask} />

@@ -32,7 +32,6 @@ class FreeFieldNewForm extends Component {
             },
             freeFieldsTables: [],
             freeFieldsFieldFormats: [],
-            fieldNameWebformLabel: ' ',
             errors: {
                 tableId: false,
                 fieldFormatId: false,
@@ -47,17 +46,17 @@ class FreeFieldNewForm extends Component {
                 mask: false,
             },
             errorsMessage: {
-                tableId: false,
-                fieldFormatId: false,
-                fieldName: false,
-                fieldNameWebform: false,
-                visiblePortal: false,
-                changePortal: false,
-                mandatory: false,
-                defaultValue: false,
-                exportable: false,
-                sortOrder: false,
-                mask: false,
+                tableId: '',
+                fieldFormatId: '',
+                fieldName: '',
+                fieldNameWebform: '',
+                visiblePortal: '',
+                changePortal: '',
+                mandatory: '',
+                defaultValue: '',
+                exportable: '',
+                sortOrder: '',
+                mask: '',
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -89,22 +88,12 @@ class FreeFieldNewForm extends Component {
     };
 
     handleReactSelectChange(selectedOption, name) {
-        let fieldNameWebformLabel = this.state.fieldNameWebformLabel;
-        if (name === 'tableId') {
-            fieldNameWebformLabel = this.state.freeFieldsTables.filter(
-                freeFieldsTable => freeFieldsTable.id == selectedOption
-            )[0].prefixFieldNameWebform;
-        }
-
-        console.log(fieldNameWebformLabel);
-
         this.setState({
             ...this.state,
             freeField: {
                 ...this.state.freeField,
                 [name]: selectedOption,
             },
-            fieldNameWebformLabel,
         });
     }
 
@@ -148,9 +137,18 @@ class FreeFieldNewForm extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(freeField.fieldNameWebform)) {
+        // if (validator.isEmpty(freeField.fieldNameWebform)) {
+        //     errors.fieldNameWebform = true;
+        //     errorsMessage.fieldNameWebform = 'verplicht';
+        //     hasErrors = true;
+        // }
+        if (
+            freeField.fieldNameWebform != null &&
+            !validator.isEmpty(freeField.fieldNameWebform) &&
+            !freeField.fieldNameWebform.match(/^[a-z_]+$/)
+        ) {
             errors.fieldNameWebform = true;
-            errorsMessage.fieldNameWebform = 'verplicht';
+            errorsMessage.fieldNameWebform = 'Waarde ongeldig';
             hasErrors = true;
         }
 
@@ -192,8 +190,12 @@ class FreeFieldNewForm extends Component {
 
         this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
-        // If no errors send form
-        !hasErrors &&
+        if (!hasErrors) {
+            if (this.getTablePrefixFieldNameWebform(tableId) == null) {
+                freeField.fieldNameWebform = null;
+            }
+
+            // If no errors send form
             FreeFieldsAPI.newFreeFieldsField(freeField)
                 .then(payload => {
                     hashHistory.push(`/vrije-velden/${payload.data.id}`);
@@ -202,7 +204,21 @@ class FreeFieldNewForm extends Component {
                     console.log(error);
                     alert('Er is iets mis gegaan met opslaan!');
                 });
+        }
     };
+
+    getTablePrefixFieldNameWebform(tableId) {
+        let tablePrefixFieldNameWebform = null;
+        if (tableId) {
+            const selectedFreeFieldsTabel = this.state.freeFieldsTables.find(
+                freeFieldsTable => freeFieldsTable.id == tableId
+            );
+            tablePrefixFieldNameWebform = selectedFreeFieldsTabel
+                ? selectedFreeFieldsTabel.prefixFieldNameWebform
+                : null;
+        }
+        return tablePrefixFieldNameWebform;
+    }
 
     render() {
         const {
@@ -218,6 +234,7 @@ class FreeFieldNewForm extends Component {
             sortOrder,
             mask,
         } = this.state.freeField;
+        let tablePrefixFieldNameWebform = this.getTablePrefixFieldNameWebform(tableId);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -320,21 +337,27 @@ class FreeFieldNewForm extends Component {
                             />
                         </div>
 
-                        <div className="row">
-                            <label className="col-sm-3">Veld naam webformulier</label>
+                        {tablePrefixFieldNameWebform != null ? (
+                            <div className="row">
+                                <label className="col-sm-3">Veld naam webformulier</label>
 
-                            <InputText
-                                divSize={'col-sm-3'}
-                                label={this.state.fieldNameWebformLabel}
-                                labelSize={'col-sm-4'}
-                                name={'fieldNameWebform'}
-                                value={fieldNameWebform}
-                                size={'col-sm-8'}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.fieldNameWebform}
-                                errorMessage={this.state.errorsMessage.fieldNameWebform}
-                            />
-                        </div>
+                                <InputText
+                                    divSize={'col-sm-3'}
+                                    label={tablePrefixFieldNameWebform != null ? tablePrefixFieldNameWebform : ''}
+                                    labelSize={'col-sm-4'}
+                                    name={'fieldNameWebform'}
+                                    value={fieldNameWebform}
+                                    size={'col-sm-8'}
+                                    onChangeAction={this.handleInputChange}
+                                    error={this.state.errors.fieldNameWebform}
+                                    errorMessage={this.state.errorsMessage.fieldNameWebform}
+                                    textToolTip={
+                                        'Te gebruiken veld naam voor webformulier in camel_case notatie (alleen kleine letters en liggend streepje (undescore) toegestaan'
+                                    }
+                                />
+                            </div>
+                        ) : null}
+
                         <hr />
                         <div className="row">
                             <InputText

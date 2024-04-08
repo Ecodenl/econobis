@@ -63,17 +63,17 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                 mask: false,
             },
             errorsMessage: {
-                tableId: false,
-                fieldFormatId: false,
-                fieldName: false,
-                fieldNameWebform: false,
-                visiblePortal: false,
-                changePortal: false,
-                mandatory: false,
-                defaultValue: false,
-                exportable: false,
-                sortOrder: false,
-                mask: false,
+                tableId: '',
+                fieldFormatId: '',
+                fieldName: '',
+                fieldNameWebform: '',
+                visiblePortal: '',
+                changePortal: '',
+                mandatory: '',
+                defaultValue: '',
+                exportable: '',
+                sortOrder: '',
+                mask: '',
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -151,6 +151,16 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         if (validator.isEmpty(freeField.fieldName)) {
             errors.fieldName = true;
             errorsMessage.fieldName = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (
+            freeField.fieldNameWebform != null &&
+            !validator.isEmpty(freeField.fieldNameWebform) &&
+            !freeField.fieldNameWebform.match(/^[a-z_]+$/)
+        ) {
+            errors.fieldNameWebform = true;
+            errorsMessage.fieldNameWebform = 'Waarde ongeldig';
             hasErrors = true;
         }
 
@@ -323,21 +333,28 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 type={'number'}
                             />
                         </div>
-                        <div className="row">
-                            <label className="col-sm-3">Veld naam webformulier</label>
 
-                            <InputText
-                                divSize={'col-sm-3'}
-                                label={tablePrefixFieldNameWebform}
-                                labelSize={'col-sm-4'}
-                                name={'fieldNameWebform'}
-                                value={fieldNameWebform}
-                                size={'col-sm-8'}
-                                onChangeAction={this.handleInputChange}
-                                error={this.state.errors.fieldNameWebform}
-                                errorMessage={this.state.errorsMessage.fieldNameWebform}
-                            />
-                        </div>
+                        {tablePrefixFieldNameWebform != null ? (
+                            <div className="row">
+                                <label className="col-sm-3">Veld naam webformulier</label>
+
+                                <InputText
+                                    divSize={'col-sm-3'}
+                                    label={tablePrefixFieldNameWebform != null ? tablePrefixFieldNameWebform : ''}
+                                    labelSize={'col-sm-4'}
+                                    name={'fieldNameWebform'}
+                                    value={fieldNameWebform}
+                                    size={'col-sm-8'}
+                                    onChangeAction={this.handleInputChange}
+                                    error={this.state.errors.fieldNameWebform}
+                                    errorMessage={this.state.errorsMessage.fieldNameWebform}
+                                    textToolTip={
+                                        'Te gebruiken veld naam voor webformulier in camel_case notatie (alleen kleine letters en liggend streepje (undescore) toegestaan'
+                                    }
+                                />
+                            </div>
+                        ) : null}
+
                         <hr />
                         <div className="row">
                             <InputText

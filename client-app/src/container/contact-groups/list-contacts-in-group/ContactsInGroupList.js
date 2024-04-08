@@ -109,6 +109,11 @@ class ContactsInGroupList extends Component {
                                 refreshContactsInGroupData={this.props.refreshContactsInGroupData}
                                 isUsedInLaposta={this.props.contactGroupDetails.isUsedInLaposta}
                             />
+                            {/*<ContactsInGroupListFilter*/}
+                            {/*    showCheckbox={this.props.showCheckboxList}*/}
+                            {/*    selectAllCheckboxes={() => this.props.selectAllCheckboxes()}*/}
+                            {/*    onSubmitFilter={this.props.onSubmitFilter}*/}
+                            {/*/>*/}
                         </DataTableHead>
                         <DataTableBody>
                             {loading ? (
@@ -132,6 +137,13 @@ class ContactsInGroupList extends Component {
                         </DataTableBody>
                     </DataTable>
                 </form>
+                {/*<div className="col-md-6 col-md-offset-3">*/}
+                {/*    <DataTablePagination*/}
+                {/*        onPageChangeAction={this.handlePageClick}*/}
+                {/*        totalRecords={this.props.total}*/}
+                {/*        recordsPerPage={50}*/}
+                {/*    />*/}
+                {/*</div>*/}
                 {this.state.showDeleteItem && (
                     <ContactsInGroupDeleteItem
                         closeDeleteItemModal={this.closeDeleteItemModal}

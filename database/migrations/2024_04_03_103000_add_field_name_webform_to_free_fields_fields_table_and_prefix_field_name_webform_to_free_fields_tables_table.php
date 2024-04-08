@@ -23,7 +23,6 @@ class AddFieldNameWebformToFreeFieldsFieldsTableAndPrefixFieldNameWebformToFreeF
 
         DB::table('free_fields_tables')->where('table', 'contacts')->update(["prefix_field_name_webform" => 'contact_']);
         DB::table('free_fields_tables')->where('table', 'addresses')->update(["prefix_field_name_webform" => 'adres_']);
-        DB::table('free_fields_tables')->where('table', 'projects')->update(["prefix_field_name_webform" => 'project_']);
     }
 
     /**

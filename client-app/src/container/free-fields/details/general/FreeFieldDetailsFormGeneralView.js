@@ -30,7 +30,7 @@ const FreeFieldDetailsFormGeneralView = ({
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Veld naam'} value={fieldName} />
+                        <ViewText label={'Veldnaam'} value={fieldName} />
                         <ViewText label={'Verplicht'} value={mandatory ? 'Ja' : 'Nee'} />
                     </div>
 
@@ -51,7 +51,7 @@ const FreeFieldDetailsFormGeneralView = ({
                     {tablePrefixFieldNameWebform != null ? (
                         <div className="row">
                             <ViewText
-                                label={'Veld naam webformulier'}
+                                label={'Veldnaam webformulier'}
                                 value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
                             />
                         </div>

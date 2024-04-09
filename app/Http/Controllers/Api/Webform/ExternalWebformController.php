@@ -371,7 +371,6 @@ class ExternalWebformController extends Controller
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
 
-            $this->log("Vrij velden aanmaken/bijwerken ...");
             //freeFieldsFieldRecords updaten
             $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
             $this->setFreeFieldsFieldRecords($this->address, $data['contact'], $tableId);
@@ -385,7 +384,6 @@ class ExternalWebformController extends Controller
                 ->where('addition', $data['address_addition'])
                 ->first();
             if($address){
-                $this->log("Vrij velden aanmaken/bijwerken ...");
                 //freeFieldsFieldRecords updaten
                 $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
                 $this->setFreeFieldsFieldRecords($address, $data['contact'], $tableId);
@@ -1661,7 +1659,6 @@ class ExternalWebformController extends Controller
 
         //freeFieldsFieldRecords updaten
         $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
-
         $this->setFreeFieldsFieldRecords($contact, $data, $tableId);
 
         return $contact;
@@ -1669,25 +1666,37 @@ class ExternalWebformController extends Controller
 
     protected function setFreeFieldsFieldRecords ($parent, $data, $tableId) {
         foreach(FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $tableId)->get() as $freeFieldsField) {
+            $this->log("Vrij velden aanmaken/bijwerken voor tableId: " . $tableId . " en fieldId: " . $freeFieldsField->id . " (" .$freeFieldsField->field_name_webform. ")");
+
             $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $parent->id)->where('field_id', $freeFieldsField->id)->whereHas('freeFieldsField', function ($query) use ($tableId) {
                 $query->where('table_id', $tableId);
             })->first();
 
             if(!$freeFieldsFieldRecord) {
+                $this->log("Nieuw vrije veld aanmaken voor parent id: " . $parent->id);
                 $freeFieldsFieldRecord = new FreeFieldsFieldRecord();
                 $freeFieldsFieldRecord->table_record_id = $parent->id;
                 $freeFieldsFieldRecord->field_id = $freeFieldsField->id;
+            } else {
+                $this->log("Bestaande vrije veld wijzen voor parent id: " . $parent->id);
             }
 
+            $this->log("Mapping veld: " . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform);
+            $this->log("Waarde: " . $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform]);
+
             $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
+            $this->log("field_value_text: " . $freeFieldsFieldRecord->field_value_text);
 
             if($freeFieldsField->mask != '') {
+                $this->log("free field heeft een mask: " . $freeFieldsField->mask);
                 if($this->checkMask($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform], $freeFieldsField->mask)) {
+                    $this->log("Mask check ok, opslaan freeFieldsFieldRecord");
                     $freeFieldsFieldRecord->save();
                 } else {
                     $this->log('De waarde \'' . $data[$freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
                 }
             } else {
+                $this->log("Geen Mask, opslaan freeFieldsFieldRecord");
                 $freeFieldsFieldRecord->save();
             }
         }

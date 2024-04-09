@@ -10,6 +10,7 @@ import InputToggle from '../../../../components/form/InputToggle';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
 import { checkFieldRecord } from '../../../../helpers/FreeFieldsHelpers';
+import ViewText from '../../../../components/form/ViewText';
 
 class FreeFieldDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -157,7 +158,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         if (
             freeField.fieldNameWebform != null &&
             !validator.isEmpty(freeField.fieldNameWebform) &&
-            !freeField.fieldNameWebform.match(/^[a-z_]+$/)
+            !freeField.fieldNameWebform.match(/^[a-z0-9_]+$/)
         ) {
             errors.fieldNameWebform = true;
             errorsMessage.fieldNameWebform = 'Waarde ongeldig';
@@ -263,7 +264,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Veld naam"
+                                label="Veldnaam"
                                 name={'fieldName'}
                                 value={fieldName}
                                 onChangeAction={this.handleInputChange}
@@ -336,20 +337,22 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
 
                         {tablePrefixFieldNameWebform != null ? (
                             <div className="row">
-                                <label className="col-sm-3">Veld naam webformulier</label>
-
+                                <ViewText
+                                    className={'form-group col-sm-6 '}
+                                    label={'Veldnaam webformulier'}
+                                    value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
+                                />
                                 <InputText
-                                    divSize={'col-sm-3'}
-                                    label={tablePrefixFieldNameWebform != null ? tablePrefixFieldNameWebform : ''}
-                                    labelSize={'col-sm-4'}
+                                    label="Wijzig veldnaam webformulier"
                                     name={'fieldNameWebform'}
                                     value={fieldNameWebform}
-                                    size={'col-sm-8'}
+                                    size={'col-sm-5'}
                                     onChangeAction={this.handleInputChange}
                                     error={this.state.errors.fieldNameWebform}
                                     errorMessage={this.state.errorsMessage.fieldNameWebform}
                                     textToolTip={
-                                        'Te gebruiken veld naam voor webformulier in camel_case notatie (alleen kleine letters en liggend streepje (undescore) toegestaan'
+                                        'Te gebruiken veldnaam voor webformulier in camel_case notatie. Alleen kleine letters, cijfers en liggend streepje (undescore) toegestaan.' +
+                                        'Veldnamen voor webformulieren hebben altijd een vaste prefix, afhankelijk van onderdeel.'
                                     }
                                 />
                             </div>

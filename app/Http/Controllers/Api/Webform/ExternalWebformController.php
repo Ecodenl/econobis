@@ -1684,8 +1684,63 @@ class ExternalWebformController extends Controller
             $this->log("Mapping veld: " . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform);
             $this->log("Waarde: " . $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform]);
 
-            $freeFieldsFieldRecord->field_value_text = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
-            $this->log("field_value_text: " . $freeFieldsFieldRecord->field_value_text);
+            $fieldValue = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
+
+            if($freeFieldsField->mandatory === 1 && $fieldValue == "") {
+                $fieldValue = $freeFieldsField->default_value;
+            }
+
+            if($fieldValue != "") {
+                switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
+                    case 'boolean':
+                        if($fieldValue != 1 && $fieldValue != 0) {
+                            $this->error("Opgegeven waarde moet een 1 of een 0 zijn");
+                            $fieldValue = "";
+                        }
+                        $freeFieldsFieldRecord->field_value_boolean = $fieldValue;
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        $freeFieldsFieldRecord->field_value_text = $fieldValue;
+                        break;
+                    case 'int':
+                        if(!is_numeric($fieldValue)) {
+                            $this->error("Opgegeven waarde moet een cijfer zijn");
+                            $fieldValue = "";
+                        }
+                        $freeFieldsFieldRecord->field_value_int = $fieldValue;
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $formattedField = number_format($fieldValue, 2, ',', '');
+
+                        if(!is_numeric($formattedField)) {
+                            $this->error("Opgegeven waarde moet een cijfer zijn met twee getallen achter de comma of punt");
+                            $fieldValue = "";
+                        }
+
+                        $freeFieldsFieldRecord->field_value_double = number_format($fieldValue, 2, ',', '');
+                        break;
+                    case 'date':
+                        try {
+                            $dateTime = Carbon::createFromFormat('d-m-Y', $fieldValue);
+                            $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
+                        } catch (\InvalidArgumentException $e) {
+                            $this->error("Opgegeven waarde moet een datum zijn van het formaat: d-m-Y");
+                            $freeFieldsFieldRecord->field_value_datetime = "";
+                        }
+                        break;
+                    case 'datetime':
+                        try {
+                            $dateTime = Carbon::createFromFormat('d-m-Y H:i', $fieldValue);
+                            $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
+                        } catch (\InvalidArgumentException $e) {
+                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: d-m-Y H:i");
+                            $freeFieldsFieldRecord->field_value_datetime = "";
+                        }
+                        break;
+                }
+            }
 
             if($freeFieldsField->mask != '') {
                 $this->log("free field heeft een mask: " . $freeFieldsField->mask);

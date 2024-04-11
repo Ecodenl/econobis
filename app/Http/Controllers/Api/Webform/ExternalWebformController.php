@@ -1691,7 +1691,7 @@ class ExternalWebformController extends Controller
             }
 
             if($fieldValue != "") {
-                switch ($freeFieldsFieldRecord->freeFieldsField->freeFieldsFieldFormat->format_type) {
+                switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
                     case 'boolean':
                         if($fieldValue != 1 && $fieldValue != 0) {
                             $this->error("Opgegeven waarde moet een 1 of een 0 zijn");
@@ -1735,8 +1735,9 @@ class ExternalWebformController extends Controller
                             $dateTime = Carbon::createFromFormat('d-m-Y H:i', $fieldValue);
                             $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
                         } catch (\InvalidArgumentException $e) {
-                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: d-m-Y H:i");
+                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: d-m-Y H:i ");
                             $freeFieldsFieldRecord->field_value_datetime = "";
+
                         }
                         break;
                 }

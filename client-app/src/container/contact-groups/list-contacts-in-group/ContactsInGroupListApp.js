@@ -58,6 +58,9 @@ class ContactsInGroupListApp extends Component {
 }
 
 const mapStateToProps = state => {
+    // todo WM: opschonen
+    // console.log('state - contactsInGroup');
+    // console.log(state.contactsInGroup);
     return {
         contactsInGroup: state.contactsInGroup,
     };

@@ -1690,6 +1690,10 @@ class ExternalWebformController extends Controller
                 $fieldValue = $freeFieldsField->default_value;
             }
 
+            if ($freeFieldsField->freeFieldsFieldFormat->format_length > 0 && (strlen($fieldValue) > $freeFieldsField->freeFieldsFieldFormat->format_length)) {
+                $this->error("Opgegeven waarde is te lang, maximaal " . $freeFieldsField->freeFieldsFieldFormat->format_length . " karakter(s)  toegestaan");
+            }
+
             if($fieldValue != "") {
                 switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
                     case 'boolean':
@@ -1712,14 +1716,16 @@ class ExternalWebformController extends Controller
                         break;
                     case 'double_2_dec':
                     case 'amount_euro':
-                        $formattedField = number_format($fieldValue, 2, ',', '');
+                        $formattedField = str_replace(',', '.', $fieldValue);
+                        $formattedFieldArray = explode(".", $formattedField);
 
-                        if(!is_numeric($formattedField)) {
+                        if(!is_numeric($formattedField) || (isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) != $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
                             $this->error("Opgegeven waarde moet een cijfer zijn met twee getallen achter de comma of punt");
-                            $fieldValue = "";
+                            $formattedField = "";
                         }
 
-                        $freeFieldsFieldRecord->field_value_double = number_format($fieldValue, 2, ',', '');
+                        $freeFieldsFieldRecord->field_value_double = $formattedField;
+
                         break;
                     case 'date':
                         try {

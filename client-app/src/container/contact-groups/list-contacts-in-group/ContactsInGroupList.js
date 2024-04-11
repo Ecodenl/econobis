@@ -16,16 +16,16 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 
 const recordsPerPage = 20;
 
-function ContactsInGroupList(
+function ContactsInGroupList({
     groupId,
     total,
     contactsInGroup,
     showCheckboxList,
-    refreshContactsInGroupData
+    refreshContactsInGroupData,
     // contactGroupDetails,
     // hasError,
     // isLoading,
-) {
+}) {
     const [contactGroupDetails, setContactGroupDetails] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
     const [showEditItem, setShowEditItem] = useState(false);
@@ -38,8 +38,8 @@ function ContactsInGroupList(
         emailAddress: '',
         memberToGroupSince: '',
     });
-    const [hasError, setHasError] = useState(true);
-    const [isLoading, setLoading] = useState(true);
+    // const [hasError, setHasError] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
@@ -72,7 +72,7 @@ function ContactsInGroupList(
     );
 
     function fetchContactGroupDetails() {
-        setLoading(true);
+        setIsLoading(true);
         setContactGroupDetails([]);
 
         axios
@@ -88,14 +88,16 @@ function ContactsInGroupList(
                 axios.spread(payloadContactGroupDetails => {
                     console.log('payloadContactGroupDetails');
                     console.log(payloadContactGroupDetails);
-                    setContactGroupDetails(payloadContactGroupDetails.data.data);
-                    setMetaData(payloadContactGroupDetails.data.meta);
+                    setContactGroupDetails(payloadContactGroupDetails);
+                    // setMetaData(payloadContactGroupDetails.data.meta);
 
-                    setLoading(false);
+                    setIsLoading(false);
                 })
             )
             .catch(error => {
-                setLoading(false);
+                setIsLoading(false);
+                console.log('error fetchContactGroupDetails ?');
+                console.log(error);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
     }
@@ -150,12 +152,13 @@ function ContactsInGroupList(
     let loadingText = '';
     let loading = true;
 
-    if (hasError) {
-        loadingText = 'Fout bij het ophalen van contact in groep.';
-    } else if (isLoading) {
-        loadingText = 'Gegevens aan het laden.';
+    // if (hasError) {
+    //     loadingText = 'Fout bij het ophalen van contact in groep.';
+    // } else if (isLoading) {
+    if (isLoading) {
+        loadingText = 'Gegevens (groep) aan het laden...';
     } else if (!contactsInGroup) {
-        loadingText = 'Gegevens aan het laden....';
+        loadingText = 'Gegevens (leden in groep) aan het laden...';
     } else if (contactsInGroup.length === 0) {
         loadingText = 'Geen contact in groep gevonden!';
     } else {
@@ -230,13 +233,16 @@ function ContactsInGroupList(
     );
 }
 
-// const mapStateToProps = state => {
-//     return {
-// isLoading: state.loadingData.isLoading,
-// hasError: state.loadingData.hasError,
-// contactGroupDetails: state.contactGroupDetails,
-//     };
-// };
+const mapStateToProps = state => {
+    // console.log('state loadingData');
+    // console.log(state.loadingData);
+    return {
+        // isLoading: state.loadingData.isLoading,
+        // hasError: state.loadingData.hasError,
+        // contactGroupDetails: state.contactGroupDetails,
+        contactsInGroup: state.contactsInGroup,
+    };
+};
 
-// export default connect(mapStateToProps)(ContactsInGroupList);
-export default ContactsInGroupList;
+export default connect(mapStateToProps)(ContactsInGroupList);
+// export default ContactsInGroupList;

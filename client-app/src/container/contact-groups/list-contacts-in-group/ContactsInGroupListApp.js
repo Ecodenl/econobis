@@ -45,7 +45,7 @@ class ContactsInGroupListApp extends Component {
 
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupList
-                                contactsInGroup={this.props.contactsInGroup}
+                                // contactsInGroup={this.props.contactsInGroup}
                                 groupId={this.props.params.contactGroup}
                                 refreshContactsInGroupData={this.refreshContactsInGroupData}
                             />
@@ -59,8 +59,8 @@ class ContactsInGroupListApp extends Component {
 
 const mapStateToProps = state => {
     // todo WM: opschonen
-    // console.log('state - contactsInGroup');
-    // console.log(state.contactsInGroup);
+    console.log('state - contactsInGroup');
+    console.log(state.contactsInGroup);
     return {
         contactsInGroup: state.contactsInGroup,
     };

@@ -44,7 +44,7 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
         function() {
             fetchContactGroupDetails();
         },
-        [pagination.offset, sort, filter.fullName, filter.emailAddress]
+        [pagination.offset, sort]
     );
 
     // If pressed enter then reload data
@@ -68,6 +68,7 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
             ])
             .then(
                 axios.spread((payloadContactGroupDetails, payloadContactsInGroup) => {
+                    setContactGroupDetails(payloadContactGroupDetails);
                     setContactsInGroup(payloadContactsInGroup.data.data);
                     setMetaData(payloadContactsInGroup.data.meta);
 
@@ -115,8 +116,6 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     }
 
     function onSubmitFilter() {
-        setContactsInGroup([]);
-
         let page = 0;
         let offset = 0;
         setPagination({ ...pagination, page, offset });
@@ -124,7 +123,6 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
 
     function handlePageClick(page) {
         let offset = Math.ceil(page.selected * recordsPerPage);
-
         setPagination({ ...pagination, offset });
     }
 
@@ -192,7 +190,11 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
                             isUsedInLaposta={contactGroupDetails.isUsedInLaposta}
                             handleChangeSort={handleChangeSort}
                         />
-                        <ContactsInGroupListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
+                        <ContactsInGroupListFilter
+                            filter={filter}
+                            handleChangeFilter={handleChangeFilter}
+                            isUsedInLaposta={contactGroupDetails.isUsedInLaposta}
+                        />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (

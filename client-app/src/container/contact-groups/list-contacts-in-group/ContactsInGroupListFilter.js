@@ -1,6 +1,6 @@
 import React from 'react';
 
-function ContactsInGroupListFilter({ filter, handleChangeFilter }) {
+function ContactsInGroupListFilter({ filter, handleChangeFilter, isUsedInLaposta }) {
     return (
         <tr className="thead-filter">
             <th />
@@ -21,6 +21,7 @@ function ContactsInGroupListFilter({ filter, handleChangeFilter }) {
                     onChange={e => handleChangeFilter('emailAddress', e.target.value)}
                 />
             </th>
+            {isUsedInLaposta ? <th /> : null}
             <th />
             <th />
         </tr>

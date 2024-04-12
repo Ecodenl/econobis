@@ -15,7 +15,7 @@ import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
 import ContactsInGroupListFilter from './ContactsInGroupListFilter';
 import moment from 'moment/moment';
 
-const recordsPerPage = 20;
+const recordsPerPage = 50;
 
 function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     const [contactGroupDetails, setContactGroupDetails] = useState([]);

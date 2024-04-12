@@ -13,11 +13,17 @@ import axios from 'axios';
 import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
 import ContactsInGroupListFilter from './ContactsInGroupListFilter';
 import { connect } from 'react-redux';
+import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import ContactListAddPersonToGroup from './ContactListAddPersonToGroup';
+import Icon from 'react-icons-kit';
+import { plus } from 'react-icons-kit/fa/plus';
 
 const recordsPerPage = 50;
 
-function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, hasError, contactGroupDetails }) {
+function ContactsInGroupList({ groupId, isLoading, hasError, permissions, contactGroupDetails }) {
     const [contactsInGroup, setContactsInGroup] = useState([]);
+
+    const [showModalAddToGroup, setShowModalAddToGroup] = useState(false);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
     const [showEditItem, setShowEditItem] = useState(false);
     const [deleteItem, setDeleteItem] = useState({
@@ -54,6 +60,10 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
         [pressedEnter]
     );
 
+    function refreshContactsInGroupData() {
+        fetchContactsInGroup();
+    }
+
     function fetchContactsInGroup() {
         setIsLoadingContactsInGroup(true);
         setContactsInGroup([]);
@@ -62,7 +72,6 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
             .all([ContactsInGroupAPI.fetchContactsInGroup(groupId, formatFilterHelper(), sort, pagination)])
             .then(
                 axios.spread(payloadContactsInGroup => {
-                    // setContactGroupDetails(payloadContactGroupDetails);
                     setContactsInGroup(payloadContactsInGroup.data.data);
                     setMetaData(payloadContactsInGroup.data.meta);
 
@@ -73,6 +82,26 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
                 setIsLoadingContactsInGroup(false);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
+    }
+
+    function closeModalAddToGroup() {
+        setShowModalAddToGroup(false);
+    }
+
+    function addPersonToGroup(contactId) {
+        const contact = {
+            groupId: contactGroupDetails.id,
+            contactId,
+        };
+
+        ContactGroupAPI.addContactToGroup(contact).then(() => {
+            setShowModalAddToGroup(false);
+            refreshContactsInGroupData();
+        });
+    }
+
+    function toggleModalAddToGroup() {
+        setShowModalAddToGroup(!showModalAddToGroup);
     }
 
     function showDeleteItemModal(id, name) {
@@ -176,6 +205,23 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
                     <span>Totaal leden in groep: {loading ? 'bezig...' : <strong>{meta.total}</strong>}</span>
                 </div>
             </div>
+            {(permissions.updateContactGroupMembers || (permissions.updatePerson && permissions.updateOrganisation)) &&
+                contactGroupDetails.type &&
+                contactGroupDetails.type.id === 'static' && (
+                    <div className="row">
+                        <div className="col-xs-12">
+                            <div className="nav navbar-nav btn-group">
+                                <button
+                                    onClick={toggleModalAddToGroup}
+                                    className="btn btn-success btn-sm"
+                                    title="Contact toevoegen aan groep"
+                                >
+                                    <Icon size={14} icon={plus} />
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
 
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
                 <DataTable>
@@ -219,9 +265,19 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
                     recordsPerPage={recordsPerPage}
                 />
             </div>
+            {showModalAddToGroup && (
+                <ContactListAddPersonToGroup
+                    closeModalAddToGroup={closeModalAddToGroup}
+                    addPersonToGroup={addPersonToGroup}
+                    groupName={contactGroupDetails.name}
+                    sendEmailNewContactLink={contactGroupDetails.sendEmailNewContactLink}
+                    inspectionPersonTypeId={contactGroupDetails.inspectionPersonTypeId}
+                />
+            )}
             {showDeleteItem && (
                 <ContactsInGroupDeleteItem
                     closeDeleteItemModal={closeDeleteItemModal}
+                    refreshContactsInGroupData={refreshContactsInGroupData}
                     groupId={groupId}
                     {...deleteItem}
                 />
@@ -229,9 +285,9 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, h
             {showEditItem && (
                 <ContactsInGroupEditItem
                     closeEditItemModal={closeEditItemModal}
+                    refreshContactsInGroupData={refreshContactsInGroupData}
                     groupId={groupId}
                     {...editItem}
-                    refreshContactsInGroupData={refreshContactsInGroupData}
                 />
             )}
         </div>
@@ -242,6 +298,7 @@ const mapStateToProps = state => {
     return {
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
+        permissions: state.meDetails.permissions,
         contactGroupDetails: state.contactGroupDetails,
     };
 };

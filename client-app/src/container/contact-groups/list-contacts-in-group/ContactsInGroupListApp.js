@@ -1,9 +1,7 @@
-import React, { Component } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-// todo WM: opschonen ContactsInGroup
-// import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import {
     fetchContactGroupDetails,
     clearContactGroupDetails,
@@ -12,69 +10,33 @@ import {
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
 
-class ContactsInGroupListApp extends Component {
-    constructor(props) {
-        super(props);
-    }
+function ContactsInGroupListApp({ params, fetchContactGroupDetails, clearContactGroupDetails }) {
+    useEffect(() => {
+        fetchContactGroupDetails(params.contactGroup);
+        return () => {
+            clearContactGroupDetails();
+        };
+    }, [fetchContactGroupDetails, clearContactGroupDetails, params.contactGroup]);
 
-    componentDidMount() {
-        // todo WM: opschonen ContactsInGroup
-        // this.props.fetchContactsInGroup(this.props.params.contactGroup);
-        this.props.fetchContactGroupDetails(this.props.params.contactGroup);
-    }
+    return (
+        <div>
+            <div className="panel panel-default">
+                <div className="panel-body">
+                    <div className="col-md-12 margin-10-top">
+                        <ContactsInGroupListToolbar groupId={params.contactGroup} />
+                    </div>
 
-    componentWillUnmount() {
-        // todo WM: opschonen ContactsInGroup
-        // this.props.clearContactsInGroup();
-        this.props.clearContactGroupDetails();
-    }
-
-    // todo WM: opschonen ContactsInGroup
-    // refreshContactsInGroupData = () => {
-    //     this.props.clearContactsInGroup();
-    //     this.props.fetchContactsInGroup(this.props.params.contactGroup);
-    // };
-
-    render() {
-        return (
-            <div>
-                <div className="panel panel-default">
-                    <div className="panel-body">
-                        <div className="col-md-12 margin-10-top">
-                            <ContactsInGroupListToolbar
-                                // todo WM: opschonen ContactsInGroup
-                                // refreshContactsInGroupData={this.refreshContactsInGroupData}
-                                groupId={this.props.params.contactGroup}
-                            />
-                        </div>
-
-                        <div className="col-md-12 margin-10-top">
-                            <ContactsInGroupList
-                                groupId={this.props.params.contactGroup}
-                                // todo WM: opschonen ContactsInGroup
-                                // refreshContactsInGroupData={this.refreshContactsInGroupData}
-                            />
-                        </div>
+                    <div className="col-md-12 margin-10-top">
+                        <ContactsInGroupList groupId={params.contactGroup} />
                     </div>
                 </div>
             </div>
-        );
-    }
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        contactsInGroup: state.contactsInGroup,
-    };
-};
-
 const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        // todo WM: opschonen ContactsInGroup
-        // { fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails },
-        { fetchContactGroupDetails, clearContactGroupDetails },
-        dispatch
-    );
+    return bindActionCreators({ fetchContactGroupDetails, clearContactGroupDetails }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsInGroupListApp);
+export default connect(null, mapDispatchToProps)(ContactsInGroupListApp);

@@ -276,6 +276,11 @@ class ContactGroup extends Model
         return $groupContacts;
     }
 
+    public function getAllContactGroupContactsIdsAttribute()
+    {
+        return $this->all_contacts->pluck('id')->toArray();
+    }
+
     public function getAllContactGroupContactsForReportAttribute()
     {
         $groupContactsForReport = [];

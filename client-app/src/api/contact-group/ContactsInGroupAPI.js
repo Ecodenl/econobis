@@ -3,12 +3,20 @@ import axiosInstance from '../default-setup/AxiosInstance';
 const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
 
 export default {
-    fetchContactsInGroup: contactGroup => {
-        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup}/contacts/grid`;
+    fetchContactsInGroup: (contactGroupId, filters, sorts, pagination) => {
+        const requestUrl = `${URL_CONTACT_GROUP}/${contactGroupId}/contacts/grid`;
 
         return axiosInstance
-            .get(requestUrl)
-            .then(response => response.data.data)
+            .get(requestUrl, {
+                params: {
+                    contactGroupId: contactGroupId,
+                    filters: JSON.stringify(filters),
+                    sorts: JSON.stringify(sorts),
+                    limit: pagination.limit,
+                    offset: pagination.offset,
+                },
+            })
+            .then(response => response)
             .catch(error => {
                 console.log(error);
             });

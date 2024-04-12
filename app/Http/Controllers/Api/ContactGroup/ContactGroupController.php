@@ -13,6 +13,7 @@ use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\RequestQueries\ContactGroup\Grid\RequestQuery;
+use App\Http\RequestQueries\ContactGroup\GridContacts\RequestQueryContactsInGroup;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Contact\GridContactGroupContacts;
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
@@ -212,27 +213,35 @@ class ContactGroupController extends Controller
         return FullContact::collection($contactGroup->contacts);
     }
 
-    public function gridContacts(ContactGroup $contactGroup, RequestQuery $query)
+    public function gridContacts(ContactGroup $contactGroup, Request $request, RequestQueryContactsInGroup $requestQuery)
     {
 
         $this->authorize('view', ContactGroup::class);
 
-//        $total = $contactGroup->all_contact_group_contacts->count();
-//        $contactGroupPaginated = $contactGroup->all_contact_group_contacts->skip($request->get('offset'))->take($request->get('limit'));
-//        $gridContactGroupContacts = GridContactGroupContacts::collection($contactGroupPaginated);
+        $contactGroupPaginated = $requestQuery->get();
+        $contactGroupPaginated->load(['emailAddresses']);
 
-//        $contactGroupContacts = $query->get();
+        foreach ($contactGroupPaginated as $groupContact){
 
-//Log::info($query->all_contact_group_contacts->total());
+            $contactGroupsPivot = null;
+            if($groupContact->groups()->where('contact_group_id', ($contactGroup->simulatedGroup ? $contactGroup->simulatedGroup->id : $contactGroup->id))->exists()){
+                $contactGroupsPivot = $groupContact->groups()->where('contact_group_id', ($contactGroup->simulatedGroup ? $contactGroup->simulatedGroup->id : $contactGroup->id))->first()->pivot;
+            }
 
-        return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts)
+            $groupContact->laposta_member_id = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_id : null;
+            $groupContact->laposta_member_state = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_state : null;
+            $groupContact->laposta_last_error_message = $contactGroupsPivot ? $contactGroupsPivot->laposta_last_error_message : null;
+            $groupContact->member_created_at = $contactGroupsPivot ? $contactGroupsPivot->member_created_at : null;
+            $groupContact->member_to_group_since = $contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null;
+        }
+
+        return GridContactGroupContacts::collection($contactGroupPaginated)
             ->additional([
                 'meta' => [
-                    'total' => $contactGroup->all_contact_group_contacts->count(),
+                    'total' => $requestQuery->total(),
                 ]
             ]);
 
-        return GridContactGroupContacts::collection($contactGroup->all_contact_group_contacts);
     }
 
     public function addContact(ContactGroup $contactGroup, Contact $contact, $collectMessages = false)

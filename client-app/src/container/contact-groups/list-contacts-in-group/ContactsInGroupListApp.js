@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
+// import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import {
     fetchContactGroupDetails,
     clearContactGroupDetails,
@@ -17,19 +17,19 @@ class ContactsInGroupListApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchContactsInGroup(this.props.params.contactGroup);
+        // this.props.fetchContactsInGroup(this.props.params.contactGroup);
         this.props.fetchContactGroupDetails(this.props.params.contactGroup);
     }
 
     componentWillUnmount() {
-        this.props.clearContactsInGroup();
+        // this.props.clearContactsInGroup();
         this.props.clearContactGroupDetails();
     }
 
-    refreshContactsInGroupData = () => {
-        this.props.clearContactsInGroup();
-        this.props.fetchContactsInGroup(this.props.params.contactGroup);
-    };
+    // refreshContactsInGroupData = () => {
+    //     this.props.clearContactsInGroup();
+    //     this.props.fetchContactsInGroup(this.props.params.contactGroup);
+    // };
 
     render() {
         return (
@@ -38,16 +38,15 @@ class ContactsInGroupListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupListToolbar
-                                refreshContactsInGroupData={this.refreshContactsInGroupData}
+                                // refreshContactsInGroupData={this.refreshContactsInGroupData}
                                 groupId={this.props.params.contactGroup}
                             />
                         </div>
 
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupList
-                                // contactsInGroup={this.props.contactsInGroup}
                                 groupId={this.props.params.contactGroup}
-                                refreshContactsInGroupData={this.refreshContactsInGroupData}
+                                // refreshContactsInGroupData={this.refreshContactsInGroupData}
                             />
                         </div>
                     </div>
@@ -58,9 +57,6 @@ class ContactsInGroupListApp extends Component {
 }
 
 const mapStateToProps = state => {
-    // todo WM: opschonen
-    console.log('state - contactsInGroup');
-    console.log(state.contactsInGroup);
     return {
         contactsInGroup: state.contactsInGroup,
     };
@@ -68,7 +64,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails },
+        // { fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails },
+        { fetchContactGroupDetails, clearContactGroupDetails },
         dispatch
     );
 };

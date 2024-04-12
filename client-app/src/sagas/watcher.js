@@ -31,7 +31,7 @@ import {
 } from './contact-group/ContactGroupsSaga';
 import {
     deleteContactInGroupSaga,
-    fetchContactsInGroupSaga,
+    // fetchContactsInGroupSaga,
     updateContactInGroupSaga,
 } from './contact-group/ContactsInGroupSaga';
 import {
@@ -170,7 +170,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
     yield takeLatest('ADD_CONTACT_TO_GROUP', addContactToGroupSaga);
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
-    yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
+    // yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
     yield takeLatest('UPDATE_CONTACT_IN_GROUP', updateContactInGroupSaga);
     yield takeLatest('DELETE_COMPOSED_GROUP', deleteComposedGroupSaga);

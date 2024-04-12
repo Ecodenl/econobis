@@ -7,26 +7,19 @@ import ContactsInGroupListHead from './ContactsInGroupListHead';
 import ContactsInGroupListItem from './ContactsInGroupListItem';
 import ContactsInGroupDeleteItem from './ContactsInGroupDeleteItem';
 import ContactsInGroupEditItem from './ContactsInGroupEditItem';
-import { connect } from 'react-redux';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
-import { fetchContactGroupDetails } from '../../../actions/contact-group/ContactGroupDetailsActions';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
+import ContactsInGroupListFilter from './ContactsInGroupListFilter';
+import moment from 'moment/moment';
 
 const recordsPerPage = 20;
 
-function ContactsInGroupList({
-    groupId,
-    total,
-    contactsInGroup,
-    showCheckboxList,
-    refreshContactsInGroupData,
-    // contactGroupDetails,
-    // hasError,
-    // isLoading,
-}) {
+function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     const [contactGroupDetails, setContactGroupDetails] = useState([]);
+    const [contactsInGroup, setContactsInGroup] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
     const [showEditItem, setShowEditItem] = useState(false);
     const [deleteItem, setDeleteItem] = useState({
@@ -41,6 +34,8 @@ function ContactsInGroupList({
     // const [hasError, setHasError] = useState(false);
     const [isLoading, setIsLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
+    const [filter, setFilter] = useState([]);
+    const [sort, setSort] = useState([{ field: 'fullName', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
 
@@ -48,17 +43,8 @@ function ContactsInGroupList({
     useEffect(
         function() {
             fetchContactGroupDetails();
-            console.log('test useEffect - group: ' + groupId);
-            console.log('contactsInGroup');
-            console.log(contactsInGroup ? contactsInGroup : 'nog niet aanwezig');
-            console.log(contactGroupDetails);
         },
-        [
-            pagination.offset,
-            // sort,
-            // filter.contact,
-            // filter.emailedTo,
-        ]
+        [pagination.offset, sort, filter.fullName, filter.emailAddress]
     );
 
     // If pressed enter then reload data
@@ -77,27 +63,19 @@ function ContactsInGroupList({
 
         axios
             .all([
-                ContactGroupAPI.fetchContactGroupDetails(
-                    // formatFilterHelper(),
-                    // sort,
-                    // pagination,
-                    groupId
-                ),
+                ContactGroupAPI.fetchContactGroupDetails(groupId),
+                ContactsInGroupAPI.fetchContactsInGroup(groupId, formatFilterHelper(), sort, pagination),
             ])
             .then(
-                axios.spread(payloadContactGroupDetails => {
-                    console.log('payloadContactGroupDetails');
-                    console.log(payloadContactGroupDetails);
-                    setContactGroupDetails(payloadContactGroupDetails);
-                    // setMetaData(payloadContactGroupDetails.data.meta);
+                axios.spread((payloadContactGroupDetails, payloadContactsInGroup) => {
+                    setContactsInGroup(payloadContactsInGroup.data.data);
+                    setMetaData(payloadContactsInGroup.data.meta);
 
                     setIsLoading(false);
                 })
             )
             .catch(error => {
                 setIsLoading(false);
-                console.log('error fetchContactGroupDetails ?');
-                console.log(error);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
     }
@@ -136,17 +114,50 @@ function ContactsInGroupList({
         });
     }
 
-    // On key Enter filter form will submit
-    function handleKeyUp(e) {
-        if (e.keyCode === 13) {
-            onSubmitFilter();
-        }
+    function onSubmitFilter() {
+        setContactsInGroup([]);
+
+        let page = 0;
+        let offset = 0;
+        setPagination({ ...pagination, page, offset });
     }
 
     function handlePageClick(page) {
         let offset = Math.ceil(page.selected * recordsPerPage);
 
         setPagination({ ...pagination, offset });
+    }
+
+    function handleChangeSort(column, value) {
+        let originalSort = sort;
+        if (originalSort.length === 3) originalSort.pop();
+
+        let sortItem = { field: `${column}`, order: `${value}` };
+        setSort([sortItem, ...originalSort]);
+    }
+
+    function handleChangeFilter(column, value) {
+        setFilter({ ...filter, [column]: value });
+        onSubmitFilter();
+    }
+
+    function formatFilterHelper() {
+        let filters = [];
+        if (filter.fullName) {
+            filters.push({ field: 'fullName', data: filter.fullName });
+        }
+
+        if (filter.emailAddress) {
+            filters.push({ field: 'emailAddress', data: filter.emailAddress });
+        }
+        return filters;
+    }
+
+    // On key Enter filter form will submit
+    function handleKeyUp(e) {
+        if (e.keyCode === 13) {
+            onSubmitFilter();
+        }
     }
 
     let loadingText = '';
@@ -161,6 +172,7 @@ function ContactsInGroupList({
         loadingText = 'Gegevens (leden in groep) aan het laden...';
     } else if (contactsInGroup.length === 0) {
         loadingText = 'Geen contact in groep gevonden!';
+        loading = false;
     } else {
         loading = false;
     }
@@ -169,9 +181,7 @@ function ContactsInGroupList({
         <div>
             <div className="row">
                 <div className="col-xs-12">
-                    <span>
-                        Totaal leden in groep: {loading ? 'bezig...' : <strong>{contactsInGroup.length}</strong>}
-                    </span>
+                    <span>Totaal leden in groep: {loading ? 'bezig...' : <strong>{meta.total}</strong>}</span>
                 </div>
             </div>
 
@@ -179,15 +189,10 @@ function ContactsInGroupList({
                 <DataTable>
                     <DataTableHead>
                         <ContactsInGroupListHead
-                            showCheckbox={showCheckboxList}
-                            refreshContactsInGroupData={refreshContactsInGroupData}
                             isUsedInLaposta={contactGroupDetails.isUsedInLaposta}
+                            handleChangeSort={handleChangeSort}
                         />
-                        {/*<ContactsInGroupListFilter*/}
-                        {/*    showCheckbox={showCheckboxList}*/}
-                        {/*    selectAllCheckboxes={() => selectAllCheckboxes()}*/}
-                        {/*    onSubmitFilter={onSubmitFilter}*/}
-                        {/*/>*/}
+                        <ContactsInGroupListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
@@ -212,7 +217,11 @@ function ContactsInGroupList({
                 </DataTable>
             </form>
             <div className="col-md-6 col-md-offset-3">
-                <DataTablePagination onPageChangeAction={handlePageClick} totalRecords={total} recordsPerPage={10} />
+                <DataTablePagination
+                    onPageChangeAction={handlePageClick}
+                    totalRecords={meta.total}
+                    recordsPerPage={recordsPerPage}
+                />
             </div>
             {showDeleteItem && (
                 <ContactsInGroupDeleteItem
@@ -233,16 +242,4 @@ function ContactsInGroupList({
     );
 }
 
-const mapStateToProps = state => {
-    // console.log('state loadingData');
-    // console.log(state.loadingData);
-    return {
-        // isLoading: state.loadingData.isLoading,
-        // hasError: state.loadingData.hasError,
-        // contactGroupDetails: state.contactGroupDetails,
-        contactsInGroup: state.contactsInGroup,
-    };
-};
-
-export default connect(mapStateToProps)(ContactsInGroupList);
-// export default ContactsInGroupList;
+export default ContactsInGroupList;

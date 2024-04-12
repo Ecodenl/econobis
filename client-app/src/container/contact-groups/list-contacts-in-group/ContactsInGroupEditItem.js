@@ -2,7 +2,8 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import { fetchContactsInGroup, updateContactInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
+// import { fetchContactsInGroup, updateContactInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
+import { updateContactInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import InputDate from '../../../components/form/InputDate';
 import InputText from '../../../components/form/InputText';
 import moment from 'moment';

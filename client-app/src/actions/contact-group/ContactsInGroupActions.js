@@ -1,3 +1,4 @@
+// todo WM: opschonen ContactsInGroup
 // export const fetchContactsInGroup = contactGroup => {
 //     return {
 //         type: 'FETCH_CONTACTS_IN_GROUP',
@@ -5,6 +6,7 @@
 //     };
 // };
 
+// todo WM: opschonen ContactsInGroup
 // export const clearContactsInGroup = () => {
 //     return {
 //         type: 'CLEAR_CONTACTS_IN_GROUP',

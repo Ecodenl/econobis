@@ -1,6 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import ContactsInGroupAPI from '../../api/contact-group/ContactsInGroupAPI';
 
+// todo WM: opschonen ContactsInGroup
 // export function* fetchContactsInGroupSaga({ contactGroup }) {
 //     try {
 //         yield put({ type: 'IS_LOADING' });

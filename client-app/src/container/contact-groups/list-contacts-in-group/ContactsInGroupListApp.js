@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
+// todo WM: opschonen ContactsInGroup
 // import { fetchContactsInGroup, clearContactsInGroup } from '../../../actions/contact-group/ContactsInGroupActions';
 import {
     fetchContactGroupDetails,
@@ -17,15 +18,18 @@ class ContactsInGroupListApp extends Component {
     }
 
     componentDidMount() {
+        // todo WM: opschonen ContactsInGroup
         // this.props.fetchContactsInGroup(this.props.params.contactGroup);
         this.props.fetchContactGroupDetails(this.props.params.contactGroup);
     }
 
     componentWillUnmount() {
+        // todo WM: opschonen ContactsInGroup
         // this.props.clearContactsInGroup();
         this.props.clearContactGroupDetails();
     }
 
+    // todo WM: opschonen ContactsInGroup
     // refreshContactsInGroupData = () => {
     //     this.props.clearContactsInGroup();
     //     this.props.fetchContactsInGroup(this.props.params.contactGroup);
@@ -38,6 +42,7 @@ class ContactsInGroupListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupListToolbar
+                                // todo WM: opschonen ContactsInGroup
                                 // refreshContactsInGroupData={this.refreshContactsInGroupData}
                                 groupId={this.props.params.contactGroup}
                             />
@@ -46,6 +51,7 @@ class ContactsInGroupListApp extends Component {
                         <div className="col-md-12 margin-10-top">
                             <ContactsInGroupList
                                 groupId={this.props.params.contactGroup}
+                                // todo WM: opschonen ContactsInGroup
                                 // refreshContactsInGroupData={this.refreshContactsInGroupData}
                             />
                         </div>
@@ -64,6 +70,7 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
+        // todo WM: opschonen ContactsInGroup
         // { fetchContactsInGroup, clearContactsInGroup, fetchContactGroupDetails, clearContactGroupDetails },
         { fetchContactGroupDetails, clearContactGroupDetails },
         dispatch

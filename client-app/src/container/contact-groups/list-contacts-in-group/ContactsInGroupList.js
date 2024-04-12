@@ -10,15 +10,13 @@ import ContactsInGroupEditItem from './ContactsInGroupEditItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
-import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import ContactsInGroupAPI from '../../../api/contact-group/ContactsInGroupAPI';
 import ContactsInGroupListFilter from './ContactsInGroupListFilter';
-import moment from 'moment/moment';
+import { connect } from 'react-redux';
 
 const recordsPerPage = 50;
 
-function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
-    const [contactGroupDetails, setContactGroupDetails] = useState([]);
+function ContactsInGroupList({ groupId, refreshContactsInGroupData, isLoading, hasError, contactGroupDetails }) {
     const [contactsInGroup, setContactsInGroup] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
     const [showEditItem, setShowEditItem] = useState(false);
@@ -31,8 +29,7 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
         emailAddress: '',
         memberToGroupSince: '',
     });
-    // const [hasError, setHasError] = useState(false);
-    const [isLoading, setIsLoading] = useState(true);
+    const [isLoadingContactsInGroup, setIsLoadingContactsInGroup] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState([]);
     const [sort, setSort] = useState([{ field: 'fullName', order: 'ASC' }]);
@@ -42,7 +39,7 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
-            fetchContactGroupDetails();
+            fetchContactsInGroup();
         },
         [pagination.offset, sort]
     );
@@ -51,32 +48,29 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     useEffect(
         function() {
             if (pressedEnter) {
-                fetchContactGroupDetails();
+                fetchContactsInGroup();
             }
         },
         [pressedEnter]
     );
 
-    function fetchContactGroupDetails() {
-        setIsLoading(true);
-        setContactGroupDetails([]);
+    function fetchContactsInGroup() {
+        setIsLoadingContactsInGroup(true);
+        setContactsInGroup([]);
 
         axios
-            .all([
-                ContactGroupAPI.fetchContactGroupDetails(groupId),
-                ContactsInGroupAPI.fetchContactsInGroup(groupId, formatFilterHelper(), sort, pagination),
-            ])
+            .all([ContactsInGroupAPI.fetchContactsInGroup(groupId, formatFilterHelper(), sort, pagination)])
             .then(
-                axios.spread((payloadContactGroupDetails, payloadContactsInGroup) => {
-                    setContactGroupDetails(payloadContactGroupDetails);
+                axios.spread(payloadContactsInGroup => {
+                    // setContactGroupDetails(payloadContactGroupDetails);
                     setContactsInGroup(payloadContactsInGroup.data.data);
                     setMetaData(payloadContactsInGroup.data.meta);
 
-                    setIsLoading(false);
+                    setIsLoadingContactsInGroup(false);
                 })
             )
             .catch(error => {
-                setIsLoading(false);
+                setIsLoadingContactsInGroup(false);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
     }
@@ -161,12 +155,12 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     let loadingText = '';
     let loading = true;
 
-    // if (hasError) {
-    //     loadingText = 'Fout bij het ophalen van contact in groep.';
-    // } else if (isLoading) {
-    if (isLoading) {
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen gegevens voor deze groep.';
+    } else if (isLoading) {
+        // if (isLoading) {
         loadingText = 'Gegevens (groep) aan het laden...';
-    } else if (!contactsInGroup) {
+    } else if (isLoadingContactsInGroup) {
         loadingText = 'Gegevens (leden in groep) aan het laden...';
     } else if (contactsInGroup.length === 0) {
         loadingText = 'Geen contact in groep gevonden!';
@@ -244,4 +238,12 @@ function ContactsInGroupList({ groupId, refreshContactsInGroupData }) {
     );
 }
 
-export default ContactsInGroupList;
+const mapStateToProps = state => {
+    return {
+        isLoading: state.loadingData.isLoading,
+        hasError: state.loadingData.hasError,
+        contactGroupDetails: state.contactGroupDetails,
+    };
+};
+
+export default connect(mapStateToProps)(ContactsInGroupList);

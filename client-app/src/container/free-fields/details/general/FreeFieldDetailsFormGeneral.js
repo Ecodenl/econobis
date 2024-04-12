@@ -9,7 +9,7 @@ class FreeFieldDetailsFormGeneral extends Component {
         super(props);
 
         this.state = {
-            showEdit: true,
+            showEdit: false,
             activeDiv: '',
         };
     }

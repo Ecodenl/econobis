@@ -12,6 +12,8 @@ import axios from 'axios';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import { checkFieldRecord } from '../../../helpers/FreeFieldsHelpers';
 import ViewText from '../../../components/form/ViewText';
+import FreeFieldsDefaultValueEdit from '../defaultValue/FreeFieldsDefaultValueEdit';
+import moment from 'moment';
 
 class FreeFieldNewForm extends Component {
     constructor(props) {
@@ -78,6 +80,58 @@ class FreeFieldNewForm extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (date, name) => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: formattedDate,
+            },
+        });
+    };
+
+    handleInputChangeDatetimeDate = (dateOrTime, name) => {
+        let date = dateOrTime ? dateOrTime : '';
+        let time = '08:00';
+        if (this.state.freeField.defaultValue) {
+            time = moment(this.state.freeField.defaultValue).format('HH:mm');
+        }
+
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+    handleInputChangeDatetimeTime = (dateOrTime, name) => {
+        let date = '';
+        let time = dateOrTime ? dateOrTime : '08:00';
+        if (this.state.freeField.defaultValue) {
+            date = moment(this.state.freeField.defaultValue).format('Y-MM-DD');
+        }
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
 
         this.setState({
             ...this.state,
@@ -166,7 +220,7 @@ class FreeFieldNewForm extends Component {
         //     hasErrors = true;
         // }
 
-        if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
+        if (freeField.mandatory && validator.isEmpty('' + freeField.defaultValue)) {
             errors.defaultValue = true;
             errorsMessage.defaultValue = 'verplicht';
             hasErrors = true;
@@ -227,6 +281,11 @@ class FreeFieldNewForm extends Component {
             mask,
         } = this.state.freeField;
         let tablePrefixFieldNameWebform = this.getTablePrefixFieldNameWebform(tableId);
+
+        const fieldFormat = this.state.freeFieldsFieldFormats.find(
+            freeFieldsFieldFormat => freeFieldsFieldFormat.id == fieldFormatId
+        );
+        const fieldFormatType = fieldFormat ? fieldFormat.formatType : null;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -297,15 +356,16 @@ class FreeFieldNewForm extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Standaard waarde"
-                                name={'defaultValue'}
-                                value={defaultValue}
-                                onChangeAction={this.handleInputChange}
-                                required={mandatory ? 'required' : ''}
-                                error={this.state.errors.defaultValue}
-                                errorMessage={this.state.errorsMessage.defaultValue}
-                            />
+                            {/*<InputText*/}
+                            {/*    label="Standaard waarde"*/}
+                            {/*    name={'defaultValue'}*/}
+                            {/*    value={defaultValue}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    required={mandatory ? 'required' : ''}*/}
+                            {/*    error={this.state.errors.defaultValue}*/}
+                            {/*    errorMessage={this.state.errorsMessage.defaultValue}*/}
+                            {/*/>*/}
+                            <div className="form-group col-sm-6">&nbsp;</div>
                             <InputToggle
                                 label={'Exporteerbaar'}
                                 name={'exportable'}
@@ -315,6 +375,21 @@ class FreeFieldNewForm extends Component {
                                 error={this.state.errors.exportable}
                                 errorMessage={this.state.errorsMessage.exportable}
                             />
+                        </div>
+                        <div className="row">
+                            {fieldFormatType && (
+                                <FreeFieldsDefaultValueEdit
+                                    fieldFormatType={fieldFormatType}
+                                    defaultValue={defaultValue}
+                                    mandatory={mandatory}
+                                    errors={this.state.errors}
+                                    errorsMessage={this.state.errorsMessage}
+                                    handleInputChange={this.handleInputChange}
+                                    handleInputChangeDate={this.handleInputChangeDate}
+                                    handleInputChangeDatetimeDate={this.handleInputChangeDatetimeDate}
+                                    handleInputChangeDatetimeTime={this.handleInputChangeDatetimeTime}
+                                />
+                            )}
                         </div>
                         <div className="row">
                             <InputText

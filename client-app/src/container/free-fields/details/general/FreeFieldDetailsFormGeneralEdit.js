@@ -11,6 +11,8 @@ import InputReactSelect from '../../../../components/form/InputReactSelect';
 import axios from 'axios';
 import { checkFieldRecord } from '../../../../helpers/FreeFieldsHelpers';
 import ViewText from '../../../../components/form/ViewText';
+import FreeFieldsDefaultValueEdit from '../../defaultValue/FreeFieldsDefaultValueEdit';
+import moment from 'moment';
 
 class FreeFieldDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -20,6 +22,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
             id,
             tableId,
             tablePrefixFieldNameWebform,
+            fieldFormat,
             fieldFormatId,
             fieldName,
             fieldNameWebform,
@@ -95,6 +98,58 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (date, name) => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: formattedDate,
+            },
+        });
+    };
+
+    handleInputChangeDatetimeDate = (dateOrTime, name) => {
+        let date = dateOrTime ? dateOrTime : '';
+        let time = '08:00';
+        if (this.state.freeField.defaultValue) {
+            time = moment(this.state.freeField.defaultValue).format('HH:mm');
+        }
+
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+    handleInputChangeDatetimeTime = (dateOrTime, name) => {
+        let date = '';
+        let time = dateOrTime ? dateOrTime : '08:00';
+        if (this.state.freeField.defaultValue) {
+            date = moment(this.state.freeField.defaultValue).format('Y-MM-DD');
+        }
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
 
         this.setState({
             ...this.state,
@@ -183,7 +238,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
         //     hasErrors = true;
         // }
 
-        if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
+        if (freeField.mandatory && validator.isEmpty('' + freeField.defaultValue)) {
             errors.defaultValue = true;
             errorsMessage.defaultValue = 'verplicht';
             hasErrors = true;
@@ -243,10 +298,6 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'tableId'}
                                 options={this.state.freeFieldsTables}
                                 value={tableId}
-                                // onChangeAction={this.handleReactSelectChange}
-                                // required={'required'}
-                                // error={this.state.errors.tableId}
-                                // errorMessage={this.state.errorsMessage.tableId}
                                 disabled={true}
                             />
                             <InputReactSelect
@@ -255,10 +306,6 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                 name={'fieldFormatId'}
                                 options={this.state.freeFieldsFieldFormats}
                                 value={fieldFormatId}
-                                // onChangeAction={this.handleReactSelectChange}
-                                // required={'required'}
-                                // error={this.state.errors.fieldFormatId}
-                                // errorMessage={this.state.errorsMessage.fieldFormatId}
                                 disabled={true}
                             />
                         </div>
@@ -303,14 +350,25 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Standaard waarde"
-                                name={'defaultValue'}
-                                value={defaultValue}
-                                onChangeAction={this.handleInputChange}
-                                required={mandatory ? 'required' : ''}
-                                error={this.state.errors.defaultValue}
-                                errorMessage={this.state.errorsMessage.defaultValue}
+                            {/*<InputText*/}
+                            {/*    label="Standaard waarde"*/}
+                            {/*    name={'defaultValue'}*/}
+                            {/*    value={defaultValue}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    required={mandatory ? 'required' : ''}*/}
+                            {/*    error={this.state.errors.defaultValue}*/}
+                            {/*    errorMessage={this.state.errorsMessage.defaultValue}*/}
+                            {/*/>*/}
+                            <FreeFieldsDefaultValueEdit
+                                fieldFormatType={this.props.freeField.fieldFormat.formatType}
+                                defaultValue={defaultValue}
+                                mandatory={mandatory}
+                                errors={this.state.errors}
+                                errorsMessage={this.state.errorsMessage}
+                                handleInputChange={this.handleInputChange}
+                                handleInputChangeDate={this.handleInputChangeDate}
+                                handleInputChangeDatetimeDate={this.handleInputChangeDatetimeDate}
+                                handleInputChangeDatetimeTime={this.handleInputChangeDatetimeTime}
                             />
                             <InputToggle
                                 label={'Exporteerbaar'}

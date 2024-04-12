@@ -4,6 +4,7 @@ import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import FreeFieldsDefaultValueView from '../../defaultValue/FreeFieldsDefaultValueView';
 
 const FreeFieldDetailsFormGeneralView = ({
     fieldName,
@@ -40,7 +41,11 @@ const FreeFieldDetailsFormGeneralView = ({
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Standaard waarde'} value={defaultValue} />
+                        {/*<ViewText label={'Standaard waarde x'} value={defaultValue} />*/}
+                        <FreeFieldsDefaultValueView
+                            fieldFormatType={fieldFormat.formatType}
+                            defaultValue={defaultValue}
+                        />
                         <ViewText label={'Exporteerbaar'} value={exportable ? 'Ja' : 'Nee'} />
                     </div>
 

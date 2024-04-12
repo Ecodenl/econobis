@@ -1729,19 +1729,19 @@ class ExternalWebformController extends Controller
                         break;
                     case 'date':
                         try {
-                            $dateTime = Carbon::createFromFormat('d-m-Y', $fieldValue);
+                            $dateTime = Carbon::createFromFormat('Y-m-d', $fieldValue);
                             $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
                         } catch (\InvalidArgumentException $e) {
-                            $this->error("Opgegeven waarde moet een datum zijn van het formaat: d-m-Y");
+                            $this->error("Opgegeven waarde moet een datum zijn van het formaat: Y-m-d");
                             $freeFieldsFieldRecord->field_value_datetime = "";
                         }
                         break;
                     case 'datetime':
                         try {
-                            $dateTime = Carbon::createFromFormat('d-m-Y H:i', $fieldValue);
+                            $dateTime = Carbon::createFromFormat('Y-m-d H:i', $fieldValue);
                             $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
                         } catch (\InvalidArgumentException $e) {
-                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: d-m-Y H:i ");
+                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: Y-m-d H:i ");
                             $freeFieldsFieldRecord->field_value_datetime = "";
 
                         }

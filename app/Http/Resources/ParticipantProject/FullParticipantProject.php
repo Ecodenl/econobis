@@ -14,6 +14,7 @@ use App\Http\Resources\Project\GridRevenuesKwh;
 use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class FullParticipantProject extends JsonResource
 {
@@ -55,7 +56,7 @@ class FullParticipantProject extends JsonResource
                 'updatedAt' => $this->updated_at,
                 'updatedWith' => $this->updated_with,
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
-                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')),
+                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')->sortByDesc('date_sort')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),

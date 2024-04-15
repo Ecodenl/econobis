@@ -77,6 +77,19 @@ class ParticipantMutation extends Model
         ]);
     }
 
+    public function getDateSortAttribute()
+    {
+        if($this->date_entry !== null) {
+            $dateSort = strtotime($this->date_entry);
+        } else if ($this->date_payment) {
+            $dateSort = strtotime($this->date_payment);
+        } else {
+            $dateSort = strtotime($this->created_at);
+        }
+
+        return $dateSort;
+    }
+
     public function getMollieAmount()
     {
         switch ($this->participation->project->projectType->code_ref){

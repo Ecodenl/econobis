@@ -1,4 +1,4 @@
-import React, { Component, useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -8,19 +8,10 @@ import TasksListFilter from './TasksListFilter';
 import TasksListItem from './TasksListItem';
 import TasksDeleteItem from './TasksDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { connect, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-function TasksList({
-    tasks,
-    multiSelectEnabled,
-    onSubmitFilter,
-    tasksPagination,
-    handlePageClick,
-    fetchTasksData,
-    hasError,
-    isLoading,
-}) {
+function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination, handlePageClick, fetchTasksData }) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [taskIds, setTaskIds] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -29,6 +20,8 @@ function TasksList({
         name: '',
     });
     const permissions = useSelector(state => state.meDetails.permissions);
+    const isLoading = useSelector(state => state.loadingData.isLoading);
+    const hasError = useSelector(state => state.loadingData.hasError);
 
     // On key Enter filter form will submit
     function handleKeyUp(e) {
@@ -184,11 +177,4 @@ function TasksList({
     );
 }
 
-const mapStateToProps = state => {
-    return {
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps)(TasksList);
+export default TasksList;

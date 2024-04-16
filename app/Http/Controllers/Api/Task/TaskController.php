@@ -28,18 +28,18 @@ class TaskController extends Controller
     {
         $tasks = $requestQuery->get();
 
-        $selectedTasks = new Collection();
-        foreach ($requestQuery->totalIds() as $taskId) {
-            $task = Task::find($taskId);
-            $selectedTasks->push($task);
-        }
-
-        $totalIds = $selectedTasks->pluck("id");
+//        $selectedTasks = new Collection();
+//        foreach ($requestQuery->totalIds() as $taskId) {
+//            $task = Task::find($taskId);
+//            $selectedTasks->push($task);
+//        }
+//
+//        $totalIds = $selectedTasks->pluck("id");
 
         return GridTask::collection($tasks)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
-                'taskIdsTotal' => $totalIds,
+                'taskIdsTotal' => $requestQuery->totalIds(),
             ]
         ]);
     }
@@ -51,6 +51,7 @@ class TaskController extends Controller
         return GridTask::collection($tasks)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+                'noteIdsTotal' => $requestQuery->totalIds(),
             ]
             ]);
     }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -7,74 +7,68 @@ import QuotationRequestsListHead from './QuotationRequestsListHead';
 import QuotationRequestsListFilter from './QuotationRequestsListFilter';
 import QuotationRequestsListItem from './QuotationRequestsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-class QuotationRequestsList extends Component {
-    constructor(props) {
-        super(props);
-    }
+function QuotationRequestsList({
+    quotationRequests,
+    onSubmitFilter,
+    refreshQuotationRequestsData,
+    quotationRequestsPagination,
+    handlePageClick,
+}) {
+    const isLoading = useSelector(state => state.loadingData.isLoading);
+    const hasError = useSelector(state => state.loadingData.hasError);
 
     // On key Enter filter form will submit
-    handleKeyUp = e => {
+    function handleKeyUp(e) {
         if (e.keyCode === 13) {
-            this.props.onSubmitFilter();
+            onSubmitFilter();
         }
-    };
-
-    render() {
-        const { data = [], meta = {} } = this.props.quotationRequests;
-
-        let loadingText = '';
-        let loading = true;
-
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van kansacties.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (data.length === 0) {
-            loadingText = 'Geen kansacties gevonden!';
-        } else {
-            loading = false;
-        }
-
-        return (
-            <form onKeyUp={this.handleKeyUp}>
-                <DataTable>
-                    <DataTableHead>
-                        <QuotationRequestsListHead
-                            refreshQuotationRequestsData={() => this.props.refreshQuotationRequestsData()}
-                        />
-                        <QuotationRequestsListFilter onSubmitFilter={this.props.onSubmitFilter} />
-                    </DataTableHead>
-                    <DataTableBody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={11}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(quotationRequest => {
-                                return <QuotationRequestsListItem key={quotationRequest.id} {...quotationRequest} />;
-                            })
-                        )}
-                    </DataTableBody>
-                </DataTable>
-                <div className="col-md-4 col-md-offset-4">
-                    <DataTablePagination
-                        onPageChangeAction={this.props.handlePageClick}
-                        totalRecords={meta.total}
-                        initialPage={this.props.quotationRequestsPagination.page}
-                    />
-                </div>
-            </form>
-        );
     }
+
+    const { data = [], meta = {} } = quotationRequests;
+
+    let loadingText = '';
+    let loading = true;
+
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen van kansacties.';
+    } else if (isLoading) {
+        loadingText = 'Gegevens aan het laden.';
+    } else if (data.length === 0) {
+        loadingText = 'Geen kansacties gevonden!';
+    } else {
+        loading = false;
+    }
+
+    return (
+        <form onKeyUp={handleKeyUp}>
+            <DataTable>
+                <DataTableHead>
+                    <QuotationRequestsListHead refreshQuotationRequestsData={() => refreshQuotationRequestsData()} />
+                    <QuotationRequestsListFilter onSubmitFilter={onSubmitFilter} />
+                </DataTableHead>
+                <DataTableBody>
+                    {loading ? (
+                        <tr>
+                            <td colSpan={11}>{loadingText}</td>
+                        </tr>
+                    ) : (
+                        data.map(quotationRequest => {
+                            return <QuotationRequestsListItem key={quotationRequest.id} {...quotationRequest} />;
+                        })
+                    )}
+                </DataTableBody>
+            </DataTable>
+            <div className="col-md-4 col-md-offset-4">
+                <DataTablePagination
+                    onPageChangeAction={handlePageClick}
+                    totalRecords={meta.total}
+                    initialPage={quotationRequestsPagination.page}
+                />
+            </div>
+        </form>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps)(QuotationRequestsList);
+export default QuotationRequestsList;

@@ -54,9 +54,9 @@ class QuotationRequestController extends ApiController
 
         return GridQuotationRequest::collection($quotationRequests)
             ->additional(['meta' => [
-            'total' => $requestQuery->total(),
-            ]
-        ]);
+                'total' => $requestQuery->total(),
+                'quotationRequestIdsTotal' => $requestQuery->totalIds(),            ]
+            ]);
     }
 
     public function show(QuotationRequest $quotationRequest)

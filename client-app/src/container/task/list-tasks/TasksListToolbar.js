@@ -21,7 +21,7 @@ const TasksListToolbar = props => {
                     {permissions.manageTask && (
                         <ButtonIcon
                             iconName={'check'}
-                            onClickAction={props.setMultiselectEnabled}
+                            onClickAction={props.setMultiSelectEnabled}
                             title="Taakselectie maken"
                         />
                     )}

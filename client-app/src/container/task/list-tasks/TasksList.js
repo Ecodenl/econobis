@@ -13,7 +13,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 
 function TasksList({
     tasks,
-    multiselectEnabled,
+    multiSelectEnabled,
     onSubmitFilter,
     tasksPagination,
     handlePageClick,
@@ -21,7 +21,6 @@ function TasksList({
     hasError,
     isLoading,
 }) {
-    const [showSelectTasks, setShowSelectTasks] = useState(false);
     const [checkedAll, setCheckedAll] = useState(false);
     const [taskIds, setTaskIds] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -31,24 +30,10 @@ function TasksList({
     });
     const permissions = useSelector(state => state.meDetails.permissions);
 
-    useEffect(() => {
-        setShowSelectTasks(multiselectEnabled);
-    }, [multiselectEnabled]);
-
     // On key Enter filter form will submit
     function handleKeyUp(e) {
         if (e.keyCode === 13) {
             onSubmitFilter();
-        }
-    }
-
-    function toggleShowCheckboxList() {
-        if (showSelectTasks) {
-            setShowSelectTasks(false);
-            setTaskIds([]);
-        } else {
-            setShowSelectTasks(true);
-            setTaskIds([]);
         }
     }
 
@@ -132,7 +117,7 @@ function TasksList({
     return (
         <div>
             <form onKeyUp={handleKeyUp}>
-                {showSelectTasks && (
+                {multiSelectEnabled && (
                     <>
                         <div className="col-md-12">
                             <div className="alert alert-success">Geselecteerde taken: {numberSelectedNumberTotal}</div>
@@ -158,17 +143,17 @@ function TasksList({
 
                 <DataTable>
                     <DataTableHead>
-                        <TasksListHead fetchTasksData={() => fetchTasksData()} showSelectTasks={showSelectTasks} />
+                        <TasksListHead fetchTasksData={() => fetchTasksData()} showSelectTasks={multiSelectEnabled} />
                         <TasksListFilter
                             onSubmitFilter={onSubmitFilter}
-                            showSelectTasks={showSelectTasks}
+                            showSelectTasks={multiSelectEnabled}
                             toggleCheckedAll={toggleCheckedAll}
                         />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={showSelectTasks ? 8 : 7}>{loadingText}</td>
+                                <td colSpan={multiSelectEnabled ? 8 : 7}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(task => {
@@ -177,7 +162,7 @@ function TasksList({
                                         key={task.id}
                                         {...task}
                                         showDeleteItemModal={showDeleteItemModal}
-                                        showSelectTasks={showSelectTasks}
+                                        showSelectTasks={multiSelectEnabled}
                                         toggleTaskCheck={toggleTaskCheck}
                                         taskIds={taskIds}
                                     />

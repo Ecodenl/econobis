@@ -13,7 +13,7 @@ import PanelBody from '../../../components/panel/PanelBody';
 import { isEmpty } from 'lodash';
 
 function TasksListApp(props) {
-    const [multiselectEnabled, setMultiselectEnabled] = useState(false);
+    const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
     const tasks = useSelector(state => state.tasks.list);
     const tasksFilters = useSelector(state => state.tasks.filters);
     const tasksSorts = useSelector(state => state.tasks.sorts);
@@ -73,14 +73,14 @@ function TasksListApp(props) {
                     <TasksListToolbar
                         resetTaskFilters={resetTaskFilters}
                         me={me}
-                        setMultiselectEnabled={() => setMultiselectEnabled(!multiselectEnabled)}
+                        setMultiSelectEnabled={() => setMultiSelectEnabled(!multiSelectEnabled)}
                     />
                 </div>
 
                 <div className="col-md-12 margin-10-top">
                     <TasksList
                         tasks={tasks}
-                        multiselectEnabled={multiselectEnabled}
+                        multiSelectEnabled={multiSelectEnabled}
                         tasksPagination={tasksPagination}
                         onSubmitFilter={onSubmitFilter}
                         fetchTasksData={fetchTasksData}

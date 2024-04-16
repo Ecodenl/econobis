@@ -37,6 +37,7 @@ class OpportunityController extends ApiController
         return GridOpportunity::collection($opportunities)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+                'opportunityIdsTotal' => $requestQuery->totalIds(),
             ]
             ]);
     }

@@ -42,6 +42,7 @@ class IntakeController extends ApiController
         return GridIntake::collection($intakes)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
+            'intakeIdsTotal' => $requestQuery->totalIds(),
             ]
         ]);
     }

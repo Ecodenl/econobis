@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.opportunities.data.data,
                 meta: {
                     total: action.opportunities.data.meta.total,
+                    opportunityIdsTotal: action.opportunities.data.meta.opportunityIdsTotal,
                 },
                 isLoading: false,
             };

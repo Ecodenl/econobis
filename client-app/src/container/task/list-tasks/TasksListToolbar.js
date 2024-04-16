@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import { hashHistory, Link } from 'react-router';
 
@@ -18,6 +18,13 @@ const TasksListToolbar = props => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetTaskFilters} />
                     {permissions.manageTask && <ButtonIcon iconName={'plus'} onClickAction={newTask} />}
+                    {permissions.manageTask && (
+                        <ButtonIcon
+                            iconName={'check'}
+                            onClickAction={props.setMultiselectEnabled}
+                            title="Taakselectie maken"
+                        />
+                    )}
                 </div>
             </div>
             <div className="col-md-4">

@@ -53,7 +53,18 @@ class TasksListItem extends Component {
     }
 
     render() {
-        const { id, createdAt, typeName, noteSummary, contactFullName, datePlannedStart, responsibleName } = this.props;
+        const {
+            id,
+            createdAt,
+            typeName,
+            noteSummary,
+            contactFullName,
+            datePlannedStart,
+            responsibleName,
+            showSelectTasks,
+            toggleTaskCheck,
+            taskIds,
+        } = this.props;
 
         return (
             <tr
@@ -62,6 +73,16 @@ class TasksListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
+                {showSelectTasks && (
+                    <td>
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={toggleTaskCheck}
+                            checked={taskIds && taskIds.length > 0 ? taskIds.includes(id) : false}
+                        />
+                    </td>
+                )}
                 <td>{moment(createdAt).format('L')}</td>
                 <td>{typeName}</td>
                 <td>{noteSummary}</td>

@@ -14,6 +14,7 @@ use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Task\TaskPeek;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -26,9 +27,19 @@ class TaskController extends Controller
     public function gridTask(TaskRequestQuery $requestQuery)
     {
         $tasks = $requestQuery->get();
+
+        $selectedTasks = new Collection();
+        foreach ($requestQuery->totalIds() as $taskId) {
+            $task = Task::find($taskId);
+            $selectedTasks->push($task);
+        }
+
+        $totalIds = $selectedTasks->pluck("id");
+
         return GridTask::collection($tasks)
             ->additional(['meta' => [
                 'total' => $requestQuery->total(),
+                'taskIdsTotal' => $totalIds,
             ]
         ]);
     }

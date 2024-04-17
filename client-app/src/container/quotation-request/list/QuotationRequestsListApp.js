@@ -27,10 +27,7 @@ function QuotationRequestsListApp() {
 
     useEffect(() => {
         fetchQuotationRequestsData();
-        return () => {
-            dispatch(clearQuotationRequests());
-        };
-    }, []);
+    }, [quotationRequestsPagination]);
 
     const getCSV = () => {
         dispatch(blockUI());
@@ -80,10 +77,6 @@ function QuotationRequestsListApp() {
         let offset = Math.ceil(page * 20);
 
         dispatch(setQuotationRequestsPagination({ page, offset }));
-
-        setTimeout(() => {
-            fetchQuotationRequestsData();
-        }, 100);
     };
 
     return (

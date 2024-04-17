@@ -7,86 +7,79 @@ import IntakesListHead from './IntakesListHead';
 import IntakesListFilter from './IntakesListFilter';
 import IntakesListItem from './IntakesListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
-class IntakesList extends Component {
-    constructor(props) {
-        super(props);
-    }
+function IntakesList({
+    intakes,
+    showCheckboxList,
+    onSubmitFilter,
+    checkedAllCheckboxes,
+    handlePageClick,
+    intakesPagination,
+}) {
+    const isLoading = useSelector(state => state.loadingData.isLoading);
+    const hasError = useSelector(state => state.loadingData.hasError);
 
-    // On key Enter filter form will submit
-    handleKeyUp = e => {
+    const handleKeyUp = e => {
         if (e.keyCode === 13) {
-            this.props.onSubmitFilter();
+            props.onSubmitFilter();
         }
     };
 
-    render() {
-        const { data = [], meta = {} } = this.props.intakes;
+    const { data = [], meta = {} } = intakes;
 
-        let loadingText = '';
-        let loading = true;
+    let loadingText = '';
+    let loading = true;
 
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van intakes.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (data.length === 0) {
-            loadingText = 'Geen intakes gevonden!';
-        } else {
-            loading = false;
-        }
-
-        return (
-            <form onKeyUp={this.handleKeyUp}>
-                <DataTable>
-                    <DataTableHead>
-                        <IntakesListHead
-                            showCheckbox={this.props.showCheckboxList}
-                            refreshIntakesData={() => this.props.refreshIntakesData()}
-                        />
-                        <IntakesListFilter
-                            showCheckbox={this.props.showCheckboxList}
-                            selectAllCheckboxes={() => this.props.selectAllCheckboxes()}
-                            onSubmitFilter={this.props.onSubmitFilter}
-                        />
-                    </DataTableHead>
-                    <DataTableBody>
-                        {loading ? (
-                            <tr>
-                                <td colSpan={6}>{loadingText}</td>
-                            </tr>
-                        ) : (
-                            data.map(intake => {
-                                return (
-                                    <IntakesListItem
-                                        key={intake.id}
-                                        {...intake}
-                                        showCheckbox={this.props.showCheckboxList}
-                                        checkedAllCheckboxes={this.props.checkedAllCheckboxes}
-                                    />
-                                );
-                            })
-                        )}
-                    </DataTableBody>
-                </DataTable>
-                <div className="col-md-4 col-md-offset-4">
-                    <DataTablePagination
-                        onPageChangeAction={this.props.handlePageClick}
-                        totalRecords={meta.total}
-                        initialPage={this.props.intakesPagination.page}
-                    />
-                </div>
-            </form>
-        );
+    if (hasError) {
+        loadingText = 'Fout bij het ophalen van intakes.';
+    } else if (isLoading) {
+        loadingText = 'Gegevens aan het laden.';
+    } else if (data.length === 0) {
+        loadingText = 'Geen intakes gevonden!';
+    } else {
+        loading = false;
     }
+
+    return (
+        <form onKeyUp={handleKeyUp}>
+            <DataTable>
+                <DataTableHead>
+                    <IntakesListHead showCheckbox={showCheckboxList} refreshIntakesData={() => refreshIntakesData()} />
+                    <IntakesListFilter
+                        showCheckbox={showCheckboxList}
+                        selectAllCheckboxes={() => selectAllCheckboxes()}
+                        onSubmitFilter={onSubmitFilter}
+                    />
+                </DataTableHead>
+                <DataTableBody>
+                    {loading ? (
+                        <tr>
+                            <td colSpan={6}>{loadingText}</td>
+                        </tr>
+                    ) : (
+                        data.map(intake => {
+                            return (
+                                <IntakesListItem
+                                    key={intake.id}
+                                    {...intake}
+                                    showCheckbox={showCheckboxList}
+                                    checkedAllCheckboxes={checkedAllCheckboxes}
+                                />
+                            );
+                        })
+                    )}
+                </DataTableBody>
+            </DataTable>
+            <div className="col-md-4 col-md-offset-4">
+                <DataTablePagination
+                    onPageChangeAction={handlePageClick}
+                    totalRecords={meta.total}
+                    initialPage={intakesPagination.page}
+                />
+            </div>
+        </form>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps)(IntakesList);
+export default IntakesList;

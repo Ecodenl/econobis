@@ -1755,7 +1755,7 @@ class ExternalWebformController extends Controller
                     $this->log("Mask check ok, opslaan freeFieldsFieldRecord");
                     $freeFieldsFieldRecord->save();
                 } else {
-                    $this->log('De waarde \'' . $data[$freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
+                    $this->error('De waarde \'' . $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
                 }
             } else {
                 $this->log("Geen Mask, opslaan freeFieldsFieldRecord");
@@ -1778,17 +1778,17 @@ class ExternalWebformController extends Controller
         foreach($explodedMask as $key => $char) {
             switch ($char) {
                 case '9':
-                    if (empty($explodedValue[$key]) || !preg_match('/^[0-9]$/', $explodedValue[$key])) {
+                    if (strlen($explodedValue[$key]) === 0 || !preg_match('/^[0-9]$/', $explodedValue[$key])) {
                         return false;
                     }
                     break;
                 case 'a':
-                    if (empty($explodedValue[$key]) || !preg_match('/^[a-zA-Z]$/', $explodedValue[$key])) {
+                    if (strlen($explodedValue[$key]) === 0 || !preg_match('/^[a-zA-Z]$/', $explodedValue[$key])) {
                         return false;
                     }
                     break;
                 case 'x':
-                    if (empty($explodedValue[$key]) || !preg_match('/^[a-zA-Z0-9]$/', $explodedValue[$key])) {
+                    if (strlen($explodedValue[$key]) === 0 || !preg_match('/^[a-zA-Z0-9]$/', $explodedValue[$key])) {
                         return false;
                     }
                     break;

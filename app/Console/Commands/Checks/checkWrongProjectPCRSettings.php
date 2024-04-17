@@ -66,10 +66,27 @@ class checkWrongProjectPCRSettings extends Command
                 if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                    $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg of niet geldig';
+                    $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg.';
 
                     if($doRecover && $project->postalcode_link == ""){
                         // Hier verzamelen van alle deelnemer postcodes.
+                        $postalCodesParticipations = [];
+                        foreach ($project->participantsProject as $participantsProject){
+                            if(!$participantsProject->address || $participantsProject->address->postal_code == ''){
+                                //Dit is een PCR participantsProject zonder adres
+                                $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Deelname ' . $participantsProject->id . ' ' . $participantsProject->contact->full_name . ' heeft geen adres of postcode is leeg.';
+                            } else {
+                                $postalCodesParticipations[] = substr($participantsProject->address->postal_code, 0, 4);
+                            }
+                        }
+                        if(count($postalCodesParticipations) > 0 ){
+                            $newPostalcodeLink = implode(',', array_unique($postalCodesParticipations) );
+                            $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Bepaald postcoderoosgebied: ' . $newPostalcodeLink . '.';
+                            $project->postalcode_link = $newPostalcodeLink;
+                            $project->save();
+                        } else {
+                            $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Geen postcodes gevonden om toe te voegen aan postcoderoosgebied.';
+                        }
                     }
 
                 }

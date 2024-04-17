@@ -28,10 +28,7 @@ function TasksListApp(props) {
             dispatch(clearFilterTask());
         }
         fetchTasksData();
-        return () => {
-            dispatch(clearTasks());
-        };
-    }, [props.params]);
+    }, [props.params, tasksPagination]);
 
     const fetchTasksData = () => {
         setTimeout(() => {
@@ -57,7 +54,6 @@ function TasksListApp(props) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
         dispatch(setTasksPagination({ page, offset }));
-        fetchTasksData();
     };
 
     let me = false;

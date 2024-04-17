@@ -12,6 +12,11 @@ const QuotationRequestsListToolbar = props => {
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetQuotationRequestFilters} />
                     <ButtonIcon iconName={'download'} onClickAction={props.getCSV} />
+                    <ButtonIcon
+                        iconName={'check'}
+                        onClickAction={props.setMultiSelectEnabled}
+                        title="Taakselectie maken"
+                    />
                 </div>
             </div>
             <div className="col-md-4">

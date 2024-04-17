@@ -96,6 +96,11 @@ const QuotationRequestsListFilter = props => {
 
     return (
         <tr className="thead-filter">
+            {props.showSelectQuotationRequests && (
+                <th>
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
+                </th>
+            )}
             <th>
                 <input
                     type="text"

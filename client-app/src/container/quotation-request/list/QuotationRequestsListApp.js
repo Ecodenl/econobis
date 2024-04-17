@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
@@ -18,6 +18,7 @@ import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequest
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 function QuotationRequestsListApp() {
+    const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
     const quotationRequests = useSelector(state => state.quotationRequests.list);
     const quotationRequestsFilters = useSelector(state => state.quotationRequests.filters);
     const quotationRequestsSorts = useSelector(state => state.quotationRequests.sorts);
@@ -92,12 +93,14 @@ function QuotationRequestsListApp() {
                     <QuotationRequestsListToolbar
                         resetQuotationRequestFilters={resetQuotationRequestFilters}
                         getCSV={getCSV}
+                        setMultiSelectEnabled={() => setMultiSelectEnabled(!multiSelectEnabled)}
                     />
                 </div>
 
                 <div className="col-md-12 margin-10-top">
                     <QuotationRequestsList
                         quotationRequests={quotationRequests}
+                        multiSelectEnabled={multiSelectEnabled}
                         quotationRequestsPagination={quotationRequestsPagination}
                         onSubmitFilter={onSubmitFilter}
                         refreshQuotationRequestsData={fetchQuotationRequestsData}

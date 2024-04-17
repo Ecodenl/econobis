@@ -14,6 +14,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Options;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -106,6 +107,12 @@ class FinancialOverviewHelper
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
 
+            // Preview op scherm levert een fout op servers: file_exists(): open_basedir restriction in effect. File(/.ufm) is not within the allowed path(s)
+            // Setten van option "isPphpEnabled" is nodig voor toevoegen pagina nummers in PDF zelf.
+            // Op scherm zelf staat ook al een paginator, dus doen we het maar even zonder die in PDF zelf.
+            // Bij het daadwerkelijk maken van de PDF werkt dit wel op de server, dus dan kunnen paginanummers wel toevoegen in echte PDF zelf.
+            //
+            //  return $pdf->setOption('isPhpEnabled', true)->output();
             return $pdf->output();
         }
 
@@ -132,7 +139,6 @@ class FinancialOverviewHelper
             'logo' => $img,
             'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
-
         $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
@@ -140,7 +146,7 @@ class FinancialOverviewHelper
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $financialOverviewContact->filename = $path;
         $financialOverviewContact->name = $name;

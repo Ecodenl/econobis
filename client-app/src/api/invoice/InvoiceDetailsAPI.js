@@ -144,8 +144,8 @@ export default {
         return response;
     },
 
-    sendAllPost: (invoiceIds, dateCollection) => {
-        const requestUrl = `${URL_INVOICE}/send-all-post`;
+    sendAllPost: (administrationId, invoiceIds, dateCollection) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all-post`;
 
         document.body.style.cursor = 'wait';
         let response = axiosInstance.post(

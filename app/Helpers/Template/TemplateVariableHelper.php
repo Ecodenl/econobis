@@ -2276,7 +2276,7 @@ class TemplateVariableHelper
             case 'projectmanager_plaats':
                 return optional(optional($model->projectManager)->primaryAddress)->city;
                 break;
-            case 'projectmanagerh_email':
+            case 'projectmanager_email':
                 return optional(optional($model->projectManager)->primaryEmailAddress)->email;
                 break;
             case 'projectmanager_telefoonnummer':
@@ -2395,9 +2395,10 @@ class TemplateVariableHelper
             case 'datum_afspraak':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : null;
                 break;
-            case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
-                break;
+//            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
+//            case 'datum_opname':
+//                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
+//                break;
             case 'datum_uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y H:i') : null;
                 break;

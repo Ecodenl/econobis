@@ -596,7 +596,7 @@ Route::namespace('Api')
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
-        Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::post('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
         Route::get('invoice/from-twinfield', 'Invoice\InvoiceController@showFromTwinfield');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
@@ -614,12 +614,16 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+//        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
+
+        Route::get('invoice-post/grid', 'Invoice\InvoicePostController@grid');
+        Route::get('invoice-post/{invoicePost}/download', 'Invoice\InvoicePostController@downloadInvoicePost');
+        Route::post('invoice-post/{invoicePost}/delete', 'Invoice\InvoicePostController@deleteInvoicePost');
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');

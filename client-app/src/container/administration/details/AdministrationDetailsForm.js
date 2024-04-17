@@ -9,6 +9,7 @@ import AdministrationDetailsFormConclusion from './conclusion/AdministrationDeta
 import AdministrationDetailsSepas from './sepas/AdministrationDetailsSepas';
 import Panel from '../../../components/panel/Panel';
 import PanelHeader from '../../../components/panel/PanelHeader';
+import InvoicePostApp from './invoices-post/InvoicePostApp';
 moment.locale('nl');
 
 class AdministrationDetailsForm extends Component {
@@ -47,6 +48,7 @@ class AdministrationDetailsForm extends Component {
                 <AdministrationDetailsFormGeneral />
                 <AdministrationDetailsUsers />
                 <AdministrationDetailsSepas />
+                <InvoicePostApp administrationId={this.props.administrationDetails.id} />
                 <AdministrationDetailsFormConclusion />
             </div>
         );

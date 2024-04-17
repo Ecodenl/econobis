@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, Component } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -16,6 +16,7 @@ function IntakesList({
     checkedAllCheckboxes,
     handlePageClick,
     intakesPagination,
+    selectAllCheckboxes,
 }) {
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);

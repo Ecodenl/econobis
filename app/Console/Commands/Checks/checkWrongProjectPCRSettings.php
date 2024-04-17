@@ -16,7 +16,7 @@ class checkWrongProjectPCRSettings extends Command
      *
      * @var string
      */
-    protected $signature = 'project:checkWrongProjectPCRSettings';
+    protected $signature = 'project:checkWrongProjectPCRSettings {--recover=false}';
     protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
@@ -43,7 +43,10 @@ class checkWrongProjectPCRSettings extends Command
      */
     public function handle()
     {
-        Log::info('Procedure check op ongeldige projectgegevens inzake PCR instellingen gestart');
+        // met of zonder herstel?
+        $doRecover = $this->option('recover') == 'true';
+
+        Log::info('Procedure check op ongeldige projectgegevens inzake PCR instellingen gestart' . ($doRecover ? ' MET HERSTEL!' : ''));
 
         $projectsWithWrongPCRSettings = [];
 
@@ -64,6 +67,11 @@ class checkWrongProjectPCRSettings extends Command
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
                     $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg of niet geldig';
+
+                    if($doRecover && $project->postalcode_link == ""){
+                        // Hier verzamelen van alle deelnemer postcodes.
+                    }
+
                 }
             } else if ($project->is_sce_project){
                 if ($project->check_postalcode_link) {
@@ -93,7 +101,7 @@ class checkWrongProjectPCRSettings extends Command
         }
 
         if(!empty($projectsWithWrongPCRSettings)) {
-            $this->sendMail($projectsWithWrongPCRSettings);
+            $this->sendMail($projectsWithWrongPCRSettings, $doRecover);
             Log::info('Ongeldige projectgegevens inzake PCR instellingen, mail gestuurd');
         } else {
             Log::info('Geen ongeldige projectgegevens inzake PCR instellingen gevonden');
@@ -103,11 +111,14 @@ class checkWrongProjectPCRSettings extends Command
 
     }
 
-    private function sendMail($projectsWithWrongPCRSettings)
+    private function sendMail($projectsWithWrongPCRSettings, $doRecover)
     {
         $subject = 'Ongeldige projectgegevens inzake PCR instellingen! (' . count($projectsWithWrongPCRSettings) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $projectsWithWrongPCRSettingsHtml = "<p>De volgende project id's hebben ongeldige projectgegevens inzake PCR instellingen:</p>";
+        if($doRecover){
+            $projectsWithWrongPCRSettingsHtml .= "<p>MET HERSTEL!</p>";
+        }
         foreach ($projectsWithWrongPCRSettings as $projectWithWrongPCRSettings) {
             $projectsWithWrongPCRSettingsHtml .=
                 "Project Id: " . $projectWithWrongPCRSettings['id'] . "</br>" .

@@ -66,27 +66,32 @@ class checkWrongProjectPCRSettings extends Command
                 if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                    $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg.';
+                    if (!preg_match($patternPostalcodes, $project->postalcode_link)) {
+                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is niet geldig.';
+                    } elseif ($project->postalcode_link == "") {
+                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een PCR project en de postalcode_link is leeg.';
 
-                    if($doRecover && $project->postalcode_link == ""){
-                        // Hier verzamelen van alle deelnemer postcodes.
-                        $postalCodesParticipations = [];
-                        foreach ($project->participantsProject as $participantsProject){
-                            if(!$participantsProject->address || $participantsProject->address->postal_code == ''){
-                                //Dit is een PCR participantsProject zonder adres
-                                $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Deelname ' . $participantsProject->id . ' ' . $participantsProject->contact->full_name . ' heeft geen adres of postcode is leeg.';
+                        if($doRecover && $project->postalcode_link == ""){
+                            // Hier verzamelen van alle deelnemer postcodes.
+                            $postalCodesParticipations = [];
+                            foreach ($project->participantsProject as $participantsProject){
+                                if(!$participantsProject->address || $participantsProject->address->postal_code == ''){
+                                    //Dit is een PCR participantsProject zonder adres
+                                    $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Deelname ' . $participantsProject->id . ' ' . $participantsProject->contact->full_name . ' heeft geen adres of postcode is leeg.';
+                                } else {
+                                    $postalCodesParticipations[] = substr($participantsProject->address->postal_code, 0, 4);
+                                }
+                            }
+                            if(count($postalCodesParticipations) > 0 ){
+                                $newPostalcodeLink = implode(',', array_unique($postalCodesParticipations) );
+                                $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Bepaald postcoderoosgebied: ' . $newPostalcodeLink . '.';
+                                $project->postalcode_link = $newPostalcodeLink;
+                                $project->save();
                             } else {
-                                $postalCodesParticipations[] = substr($participantsProject->address->postal_code, 0, 4);
+                                $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Geen postcodes gevonden om toe te voegen aan postcoderoosgebied.';
                             }
                         }
-                        if(count($postalCodesParticipations) > 0 ){
-                            $newPostalcodeLink = implode(',', array_unique($postalCodesParticipations) );
-                            $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Bepaald postcoderoosgebied: ' . $newPostalcodeLink . '.';
-                            $project->postalcode_link = $newPostalcodeLink;
-                            $project->save();
-                        } else {
-                            $projectsWithWrongPCRSettings[$counter]['reason'] .= ' | Geen postcodes gevonden om toe te voegen aan postcoderoosgebied.';
-                        }
+
                     }
 
                 }
@@ -96,35 +101,35 @@ class checkWrongProjectPCRSettings extends Command
                     if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
                         //De postalcode_link is leeg of niet geldig
                         $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is leeg of niet geldig';
+                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is leeg of niet geldig.';
                     } else if (preg_match($patternPostalcode, $project->postalcode_link)) {
                         //De postalcode_link is een enkele postcode
                         if ($project->address_number_series == "" || !preg_match($patternAddressNumberSeries, $project->address_number_series)) {
                             //De address_number_series is leeg of niet geldig
                             $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                            $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is een enkele postcode, maar address_number_series is leeg of niet geldig';
+                            $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is een enkele postcode, maar address_number_series is leeg of niet geldig.';
                         }
                     } else if ($project->address_number_series != "") {
                         //De postalcode_link is gevuld met meerdere postcodes en de address_number_series is niet leeg
                         $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is gevuld met meerdere postcodes, maar de address_number_series is niet leeg';
+                        $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is een SCE project en de postalcode_link is gevuld met meerdere postcodes, maar de address_number_series is niet leeg.';
                     }
                 }
             } else if (($project->postalcode_link != "" || $project->address_number_series != "")) {
                 $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
-                $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is geen PCR of SCE project maar postalcode_link of address_number_series is/zijn ingevuld';
+                $projectsWithWrongPCRSettings[$counter]['reason'] = 'Dit is geen PCR of SCE project maar postalcode_link of address_number_series is/zijn ingevuld.';
             }
             $counter++;
         }
 
         if(!empty($projectsWithWrongPCRSettings)) {
             $this->sendMail($projectsWithWrongPCRSettings, $doRecover);
-            Log::info('Ongeldige projectgegevens inzake PCR instellingen, mail gestuurd');
+            Log::info('Ongeldige projectgegevens inzake PCR instellingen, mail gestuurd.');
         } else {
-            Log::info('Geen ongeldige projectgegevens inzake PCR instellingen gevonden');
+            Log::info('Geen ongeldige projectgegevens inzake PCR instellingen gevonden.');
         }
 
-        Log::info('Procedure check op ongeldige projectgegevens inzake PCR instellingen klaar');
+        Log::info('Procedure check op ongeldige projectgegevens inzake PCR instellingen klaar.');
 
     }
 

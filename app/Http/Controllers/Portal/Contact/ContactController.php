@@ -897,7 +897,11 @@ class ContactController extends ApiController
             }
 
             // if check postalcode link and project is sce or pcr project and register to project was still allowed at this moment
-            if($project->check_postalcode_link && $project->isSceOrPcrProject && $project->allowRegisterToProject) {
+//            if($project->check_postalcode_link && $project->isSceOrPcrProject && $project->allowRegisterToProject) {
+
+            // if register to project was still allowed at this moment and check postalcode_link or PCR project (always check_portalcode_link)
+            if ($project->allowRegisterToProject && ($project->check_postalcode_link || $project->projectType->code_ref === 'postalcode_link_capital') ) {
+
                 // if sce project and no addresses found, than register to project not allowed
                 if($contact->noAddressesFound) {
                     $project->allowRegisterToProject = false;

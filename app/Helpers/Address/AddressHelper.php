@@ -112,7 +112,8 @@ class AddressHelper
         $validAddressNumberAdditions = [];
         $checkAddressNumberAdditions = false;
 
-        if ($project->check_postalcode_link && !empty($project->postalcode_link)) {
+        if (($project->projectType->code_ref === 'postalcode_link_capital'  && !empty($project->postalcode_link) )
+            || ( $project->is_sce_project && $project->check_postalcode_link && !empty($project->postalcode_link)) ) {
 
             $oneFullPostalCode = preg_match($this->regexPostalCode, $project->postalcode_link, $matches);
             if ($oneFullPostalCode && (!empty($project->address_number_series))) {

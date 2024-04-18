@@ -455,11 +455,10 @@ const ProjectFormEditGeneral = ({
                         onChangeAction={handleContactGroupIds}
                         error={errors.contactGroupIds}
                         errorMessage={errorMessages.contactGroupIds}
-                            required={'required'}
+                        required={'required'}
                         />
                     </div>
                 )}
-
             {isMembershipRequired ? (
                 <>
                     <div className="row">

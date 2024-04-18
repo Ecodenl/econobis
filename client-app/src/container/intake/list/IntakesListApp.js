@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import { fetchIntakes, clearIntakes, setCheckedIntakeAll } from '../../../actions/intake/IntakesActions';
+import { fetchIntakes, clearIntakes } from '../../../actions/intake/IntakesActions';
 import { clearFilterIntakes } from '../../../actions/intake/IntakesFiltersActions';
 import { setIntakesPagination } from '../../../actions/intake/IntakesPaginationActions';
 import IntakesList from './IntakesList';
@@ -21,7 +21,6 @@ class IntakesListApp extends Component {
 
         this.state = {
             showCheckboxList: false,
-            // checkedAllCheckboxes: false,
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -118,14 +117,6 @@ class IntakesListApp extends Component {
         });
     };
 
-    // selectAllCheckboxes = () => {
-    //     this.setState({
-    //         checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-    //     });
-    //
-    //     this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
-    // };
-
     render() {
         return (
             <Panel>
@@ -147,8 +138,6 @@ class IntakesListApp extends Component {
                             refreshIntakesData={() => this.fetchIntakesData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
-                            // selectAllCheckboxes={() => this.selectAllCheckboxes()}
-                            // checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                         />
                     </div>
                 </PanelBody>
@@ -173,7 +162,6 @@ const mapDispatchToProps = dispatch => {
             clearIntakes,
             setIntakesPagination,
             clearFilterIntakes,
-            setCheckedIntakeAll,
             blockUI,
             unblockUI,
         },

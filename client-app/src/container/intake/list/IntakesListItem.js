@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
-// import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
-
-// import { setCheckedIntake } from '../../../actions/intake/IntakesActions';
 
 class IntakesListItem extends Component {
     constructor(props) {
@@ -31,10 +28,6 @@ class IntakesListItem extends Component {
             highlightRow: '',
         });
     }
-    //
-    // setCheckedIntake(id) {
-    //     this.props.setCheckedIntake(id);
-    // }
 
     openItem(id) {
         if (!this.props.showCheckbox) {
@@ -96,11 +89,4 @@ class IntakesListItem extends Component {
     }
 }
 
-// const mapDispatchToProps = dispatch => ({
-//     setCheckedIntake: id => {
-//         dispatch(setCheckedIntake(id));
-//     },
-// });
-
-// export default connect(null, mapDispatchToProps)(IntakesListItem);
 export default IntakesListItem;

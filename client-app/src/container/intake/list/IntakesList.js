@@ -7,27 +7,20 @@ import IntakesListHead from './IntakesListHead';
 import IntakesListFilter from './IntakesListFilter';
 import IntakesListItem from './IntakesListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import Icon from 'react-icons-kit';
 import { hashHistory } from 'react-router';
 import { share } from 'react-icons-kit/fa/share';
-import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
+// import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
 
-function IntakesList({
-    intakes,
-    showCheckboxList,
-    onSubmitFilter,
-    // checkedAllCheckboxes,
-    handlePageClick,
-    intakesPagination,
-    // selectAllCheckboxes,
-}) {
+function IntakesList({ intakes, showCheckboxList, onSubmitFilter, handlePageClick, intakesPagination }) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [intakeIds, setIntakeIds] = useState([]);
     const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
+    const dispatch = useDispatch();
 
     const handleKeyUp = e => {
         if (e.keyCode === 13) {
@@ -99,9 +92,10 @@ function IntakesList({
 
     function bulkEmailContacts() {
         let contactIds = [];
-        intakes.data.map(intake => intake.checked === true && contactIds.push(intake.contactId));
-
-        setBulkEmailToContactIds(contactIds);
+        // intakeIds.forEach(intakeId => {
+        //     contactIds.push(intakes.data.find(intake => intake.id === intakeId).contactId);
+        // });
+        // dispatch(setBulkEmailToContactIds(contactIds));
 
         hashHistory.push('/email/nieuw/bulk');
     }
@@ -147,7 +141,6 @@ function IntakesList({
                     <IntakesListFilter
                         onSubmitFilter={onSubmitFilter}
                         showCheckbox={showCheckboxList}
-                        // selectAllCheckboxes={() => selectAllCheckboxes()}
                         toggleCheckedAll={toggleCheckedAll}
                     />
                 </DataTableHead>
@@ -163,7 +156,6 @@ function IntakesList({
                                     key={intake.id}
                                     {...intake}
                                     showCheckbox={showCheckboxList}
-                                    // checkedAllCheckboxes={checkedAllCheckboxes}
                                     toggleIntakeCheck={toggleIntakeCheck}
                                     intakeIds={intakeIds}
                                 />

@@ -454,7 +454,8 @@ const ProjectFormEditGeneral = ({
                         value={contactGroupIdsSelected}
                         onChangeAction={handleContactGroupIds}
                         error={errors.contactGroupIds}
-                        errorMessage={errorMessages.contactGroupIds}required={'required'}
+                        errorMessage={errorMessages.contactGroupIds}
+                        required={'required'}
                     />
                 </div>
             )}

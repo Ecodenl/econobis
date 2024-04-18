@@ -1,32 +1,14 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+
 import { browserHistory } from 'react-router';
 
-import Icon from 'react-icons-kit';
-import { share } from 'react-icons-kit/fa/share';
-
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
 
 class OpportunitiesListToolbar extends Component {
     constructor(props) {
         super(props);
     }
-
-    bulkEmailContacts = () => {
-        let contactIds = [];
-        this.props.opportunities.data.map(
-            opportunity => opportunity.checked === true && contactIds.push(opportunity.contactId)
-        );
-
-        //filter out duplicates
-        let uniqueContactIds = [...new Set(contactIds)];
-
-        this.props.setBulkEmailToContactIds(uniqueContactIds);
-
-        hashHistory.push('/email/nieuw/bulk');
-    };
 
     render() {
         const { permissions = {} } = this.props;
@@ -37,20 +19,7 @@ class OpportunitiesListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                        <ButtonIcon
-                            iconName={'refresh'}
-                            onClickAction={this.props.resetOpportunitiesFilters}
-                        />
-                        <div className="nav navbar-nav btn-group" role="group">
-                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <Icon size={14} icon={share} />
-                            </button>
-                            <ul className="dropdown-menu">
-                                <li>
-                                    <a onClick={this.bulkEmailContacts}>Contacten emailen</a>
-                                </li>
-                            </ul>
-                        </div>
+                        <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetOpportunitiesFilters} />
                         <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.getCSV} />
                     </div>
@@ -73,10 +42,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setBulkEmailToContactIds: contactIds => {
-        dispatch(setBulkEmailToContactIds(contactIds));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListToolbar);
+export default connect(mapStateToProps)(OpportunitiesListToolbar);

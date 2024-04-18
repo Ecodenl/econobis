@@ -93,7 +93,8 @@ const OpportunitiesListFilter = props => {
         <tr className="thead-filter">
             {props.showCheckboxList ? (
                 <th width="3%">
-                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
+                    {/*<input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />*/}
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </th>
             ) : (
                 <th>

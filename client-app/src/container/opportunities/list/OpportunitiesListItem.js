@@ -37,7 +37,9 @@ class OpportunitiesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`kans/${id}`);
+        if (!this.props.showCheckbox) {
+            hashHistory.push(`kans/${id}`);
+        }
     }
 
     render() {
@@ -49,6 +51,9 @@ class OpportunitiesListItem extends Component {
             desiredDate,
             contactName,
             measureCategoryName,
+            showCheckbox,
+            toggleOpportunityCheck,
+            opportunityIds,
             measures,
             campaignName,
             areaName,
@@ -62,9 +67,14 @@ class OpportunitiesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedOpportunity(id)} />
+                        <input
+                            type="checkbox"
+                            name={id}
+                            checked={opportunityIds && opportunityIds.length > 0 ? opportunityIds.includes(id) : false}
+                            onChange={toggleOpportunityCheck}
+                        />
                     </td>
                 )}
                 <td>{number}</td>

@@ -376,8 +376,8 @@ const ProjectFormNewGeneral = ({
                         errorMessage={errorMessages.contactGroupIds}
                         required={'required'}
                     />
-                    </div>
-                )}
+                </div>
+            )}
             {isMembershipRequired ? (
                 <>
                     <div className="row">

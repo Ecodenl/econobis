@@ -11,7 +11,6 @@ class OpportunitiesListToolbar extends Component {
     }
 
     render() {
-        const { permissions = {} } = this.props;
         const { meta = {} } = this.props.opportunities;
 
         return (

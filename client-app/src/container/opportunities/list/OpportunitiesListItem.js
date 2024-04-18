@@ -44,7 +44,6 @@ class OpportunitiesListItem extends Component {
 
     render() {
         const {
-            checked,
             id,
             number,
             createdAt,

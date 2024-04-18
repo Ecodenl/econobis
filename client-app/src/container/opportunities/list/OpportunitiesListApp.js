@@ -23,7 +23,6 @@ class OpportunitiesListApp extends Component {
 
         this.state = {
             showCheckboxList: false,
-            // checkedAllCheckboxes: false,
         };
 
         this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
@@ -96,14 +95,6 @@ class OpportunitiesListApp extends Component {
         });
     };
 
-    // selectAllCheckboxes = () => {
-    //     this.setState({
-    //         checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-    //     });
-    //
-    //     this.props.setCheckedOpportunityAll(!this.state.checkedAllCheckboxes);
-    // };
-
     render() {
         return (
             <div>
@@ -121,8 +112,6 @@ class OpportunitiesListApp extends Component {
                                 handlePageClick={this.handlePageClick}
                                 fetchOpportunitiesData={this.fetchOpportunitiesData}
                                 showCheckboxList={this.state.showCheckboxList}
-                                // selectAllCheckboxes={() => this.selectAllCheckboxes()}
-                                // checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 onSubmitFilter={() => this.onSubmitFilter()}
                                 opportunitiesPagination={this.props.opportunitiesPagination}
                                 opportunities={this.props.opportunities}

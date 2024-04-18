@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -21,8 +21,6 @@ function OpportunitiesList({
     opportunities,
     fetchOpportunitiesData,
     showCheckboxList,
-    // checkedAllCheckboxes,
-    // selectAllCheckboxes,
     handlePageClick,
     opportunitiesPagination,
 }) {
@@ -35,9 +33,7 @@ function OpportunitiesList({
         },
     });
 
-    const [checkedAll, setCheckedAll] = useState(false);
     const [opportunityIds, setOpportunityIds] = useState([]);
-    const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
 
@@ -186,8 +182,6 @@ function OpportunitiesList({
                         <OpportunitiesListFilter
                             onSubmitFilter={onSubmitFilter}
                             showCheckboxList={showCheckboxList}
-                            // checkedAllCheckboxes={checkedAllCheckboxes}
-                            // selectAllCheckboxes={selectAllCheckboxes}
                             toggleCheckedAll={toggleCheckedAll}
                         />
                     </DataTableHead>
@@ -203,7 +197,6 @@ function OpportunitiesList({
                                     {...opportunities}
                                     showDeleteItemModal={showDeleteItemModal}
                                     showCheckbox={showCheckboxList}
-                                    // checkedAllCheckboxes={checkedAllCheckboxes}
                                     toggleOpportunityCheck={toggleOpportunityCheck}
                                     opportunityIds={opportunityIds}
                                 />

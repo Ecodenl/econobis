@@ -91,20 +91,21 @@ const OpportunitiesListFilter = props => {
 
     return (
         <tr className="thead-filter">
-            {props.showCheckboxList ? (
+            {props.showCheckbox && (
                 <th width="3%">
                     <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </th>
-            ) : (
-                <th>
-                    <input
-                        type="text"
-                        className="form-control input-sm"
-                        value={props.filters.number.data}
-                        onChange={onNumberChange}
-                    />
-                </th>
             )}
+
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
+
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}

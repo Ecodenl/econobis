@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
 import { browserHistory } from 'react-router';
-
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 class OpportunitiesListToolbar extends Component {

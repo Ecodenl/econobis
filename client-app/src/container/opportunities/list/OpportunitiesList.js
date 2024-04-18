@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
-
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-
 import OpportunitiesListItem from './OpportunitiesListItem';
 import OpportunityDeleteItem from './OpportunityDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
@@ -11,10 +9,6 @@ import OpportunitiesListHead from './OpportunitiesListHead';
 import OpportunitiesListFilter from './OpportunitiesListFilter';
 import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import Icon from 'react-icons-kit';
-import { hashHistory } from 'react-router';
-import { share } from 'react-icons-kit/fa/share';
-import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
 
 function OpportunitiesList({
     onSubmitFilter,
@@ -33,6 +27,7 @@ function OpportunitiesList({
         },
     });
 
+    const [checkedAll, setCheckedAll] = useState(false);
     const [opportunityIds, setOpportunityIds] = useState([]);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
@@ -130,14 +125,6 @@ function OpportunitiesList({
             numberSelectedNumberTotal = opportunityIds.length;
         }
     }
-    function bulkEmailContacts() {
-        let contactIds = [];
-        opportunities.data.map(opportunity => opportunity.checked === true && contactIds.push(opportunity.contactId));
-
-        setBulkEmailToContactIds(contactIds);
-
-        hashHistory.push('/email/nieuw/bulk');
-    }
 
     return (
         <div>
@@ -149,16 +136,6 @@ function OpportunitiesList({
                         </div>
 
                         <div className="col-md-12 margin-10-bottom">
-                            <div className="nav navbar-nav btn-group" role="group">
-                                <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                    <Icon size={12} icon={share} />
-                                </button>
-                                <ul className="dropdown-menu">
-                                    <li>
-                                        <a onClick={bulkEmailContacts}>Contacten emailen</a>
-                                    </li>
-                                </ul>
-                            </div>
                             <div className="btn-group" role="group">
                                 <ButtonIcon
                                     iconName={'pencil'}
@@ -177,11 +154,14 @@ function OpportunitiesList({
 
                 <DataTable>
                     <DataTableHead>
-                        <OpportunitiesListHead fetchOpportunitiesData={() => fetchOpportunitiesData()} />
+                        <OpportunitiesListHead
+                            showCheckbox={showCheckboxList}
+                            fetchOpportunitiesData={() => fetchOpportunitiesData()}
+                        />
 
                         <OpportunitiesListFilter
                             onSubmitFilter={onSubmitFilter}
-                            showCheckboxList={showCheckboxList}
+                            showCheckbox={showCheckboxList}
                             toggleCheckedAll={toggleCheckedAll}
                         />
                     </DataTableHead>

@@ -3,7 +3,6 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import { setCheckedOpportunity } from '../../../actions/opportunity/OpportunitiesActions';
-
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';

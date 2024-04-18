@@ -18,20 +18,50 @@ function IntakesList({
     intakes,
     showCheckboxList,
     onSubmitFilter,
-    checkedAllCheckboxes,
+    // checkedAllCheckboxes,
     handlePageClick,
     intakesPagination,
-    selectAllCheckboxes,
+    // selectAllCheckboxes,
 }) {
+    const [checkedAll, setCheckedAll] = useState(false);
     const [intakeIds, setIntakeIds] = useState([]);
+    const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
 
     const handleKeyUp = e => {
         if (e.keyCode === 13) {
-            props.onSubmitFilter();
+            onSubmitFilter();
         }
     };
+
+    function toggleCheckedAll() {
+        const isChecked = event.target.checked;
+        let intakeIds = [];
+
+        if (isChecked) {
+            intakeIds = meta.intakeIdsTotal;
+        }
+        setIntakeIds(intakeIds);
+        setCheckedAll(isChecked);
+    }
+
+    function toggleIntakeCheck(event) {
+        const isChecked = event.target.checked;
+        const intakeId = Number(event.target.name);
+
+        if (isChecked) {
+            setIntakeIds([...intakeIds, intakeId]);
+            checkAllIntakesAreChecked();
+        } else {
+            setIntakeIds([...intakeIds.filter(item => item !== intakeId)]);
+            setCheckedAll(false);
+        }
+    }
+
+    function checkAllIntakesAreChecked() {
+        setCheckedAll(intakeIds.length === meta.intakeIdsTotal.length);
+    }
 
     function updateSelection() {
         // todo WM: nog doen
@@ -115,9 +145,10 @@ function IntakesList({
                 <DataTableHead>
                     <IntakesListHead showCheckbox={showCheckboxList} refreshIntakesData={() => refreshIntakesData()} />
                     <IntakesListFilter
-                        showCheckbox={showCheckboxList}
-                        selectAllCheckboxes={() => selectAllCheckboxes()}
                         onSubmitFilter={onSubmitFilter}
+                        showCheckbox={showCheckboxList}
+                        // selectAllCheckboxes={() => selectAllCheckboxes()}
+                        toggleCheckedAll={toggleCheckedAll}
                     />
                 </DataTableHead>
                 <DataTableBody>
@@ -133,6 +164,8 @@ function IntakesList({
                                     {...intake}
                                     showCheckbox={showCheckboxList}
                                     // checkedAllCheckboxes={checkedAllCheckboxes}
+                                    toggleIntakeCheck={toggleIntakeCheck}
+                                    intakeIds={intakeIds}
                                 />
                             );
                         })

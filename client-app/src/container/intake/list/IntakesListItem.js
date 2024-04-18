@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import moment from 'moment';
-import { setCheckedIntake } from '../../../actions/intake/IntakesActions';
-import { connect } from 'react-redux';
+// import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// import { setCheckedIntake } from '../../../actions/intake/IntakesActions';
 
 class IntakesListItem extends Component {
     constructor(props) {
@@ -31,12 +32,14 @@ class IntakesListItem extends Component {
         });
     }
 
-    setCheckedIntake(id) {
-        this.props.setCheckedIntake(id);
-    }
+    // setCheckedIntake(id) {
+    //     this.props.setCheckedIntake(id);
+    // }
 
     openItem(id) {
-        hashHistory.push(`/intake/${id}`);
+        if (!this.props.showCheckbox) {
+            hashHistory.push(`/intake/${id}`);
+        }
     }
 
     render() {
@@ -50,6 +53,9 @@ class IntakesListItem extends Component {
             status,
             campaign,
             measuresRequestedNames = [],
+            showCheckbox,
+            toggleIntakeCheck,
+            intakeIds,
         } = this.props;
 
         return (
@@ -59,9 +65,14 @@ class IntakesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedIntake(id)} />
+                        <input
+                            type="checkbox"
+                            // onChange={() => toggleIntakeCheck}
+                            onChange={toggleIntakeCheck}
+                            checked={intakeIds && intakeIds.length > 0 ? intakeIds.includes(id) : false}
+                        />
                     </td>
                 )}
                 <td>{moment(createdAt).format('DD-MM-Y')}</td>
@@ -85,10 +96,11 @@ class IntakesListItem extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedIntake: id => {
-        dispatch(setCheckedIntake(id));
-    },
-});
+// const mapDispatchToProps = dispatch => ({
+//     setCheckedIntake: id => {
+//         dispatch(setCheckedIntake(id));
+//     },
+// });
 
-export default connect(null, mapDispatchToProps)(IntakesListItem);
+// export default connect(null, mapDispatchToProps)(IntakesListItem);
+export default IntakesListItem;

@@ -21,7 +21,7 @@ class IntakesListApp extends Component {
 
         this.state = {
             showCheckboxList: false,
-            checkedAllCheckboxes: false,
+            // checkedAllCheckboxes: false,
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -62,7 +62,10 @@ class IntakesListApp extends Component {
 
             IntakesAPI.getExcelWithOpportunities({ filters, sorts })
                 .then(payload => {
-                    fileDownload(payload.data, 'Intakes-met-kansen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                    fileDownload(
+                        payload.data,
+                        'Intakes-met-kansen-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -115,13 +118,13 @@ class IntakesListApp extends Component {
         });
     };
 
-    selectAllCheckboxes = () => {
-        this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-        });
-
-        this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
-    };
+    // selectAllCheckboxes = () => {
+    //     this.setState({
+    //         checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
+    //     });
+    //
+    //     this.props.setCheckedIntakeAll(!this.state.checkedAllCheckboxes);
+    // };
 
     render() {
         return (
@@ -144,8 +147,8 @@ class IntakesListApp extends Component {
                             refreshIntakesData={() => this.fetchIntakesData()}
                             handlePageClick={this.handlePageClick}
                             showCheckboxList={this.state.showCheckboxList}
-                            selectAllCheckboxes={() => this.selectAllCheckboxes()}
-                            checkedAllCheckboxes={this.state.checkedAllCheckboxes}
+                            // selectAllCheckboxes={() => this.selectAllCheckboxes()}
+                            // checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                         />
                     </div>
                 </PanelBody>

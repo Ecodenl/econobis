@@ -31,7 +31,7 @@ class IntakesListItem extends Component {
             highlightRow: '',
         });
     }
-
+    //
     // setCheckedIntake(id) {
     //     this.props.setCheckedIntake(id);
     // }
@@ -69,8 +69,8 @@ class IntakesListItem extends Component {
                     <td>
                         <input
                             type="checkbox"
-                            // onChange={() => toggleIntakeCheck}
                             onChange={toggleIntakeCheck}
+                            name={id}
                             checked={intakeIds && intakeIds.length > 0 ? intakeIds.includes(id) : false}
                         />
                     </td>

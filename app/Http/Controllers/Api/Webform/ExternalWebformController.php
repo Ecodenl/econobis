@@ -613,6 +613,7 @@ class ExternalWebformController extends Controller
 
         $data = [];
         foreach ($mapping as $groupname => $fields) {
+
             foreach ($fields as $inputName => $outputName) {
                 // Alle input standaard waarde '' meegeven.
                 // Op deze manier hoeven we later alleen op lege string te checken...
@@ -1665,12 +1666,62 @@ class ExternalWebformController extends Controller
     }
 
     protected function setFreeFieldsFieldRecords ($parent, $data, $tableId) {
+        $this->log('data:');
+        $this->log(json_encode($data));
         foreach(FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $tableId)->get() as $freeFieldsField) {
             $this->log("Vrij velden aanmaken/bijwerken voor tableId: " . $tableId . " en fieldId: " . $freeFieldsField->id . " (" .$freeFieldsField->field_name_webform. ")");
 
             $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $parent->id)->where('field_id', $freeFieldsField->id)->whereHas('freeFieldsField', function ($query) use ($tableId) {
                 $query->where('table_id', $tableId);
             })->first();
+
+            $skipForeachIteration = false;
+
+            //when the freefield is not in the webform
+            if(!isset($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform])) {
+                $this->log('--- niet meegestuurd');
+                $this->log(isset($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform]));
+                $skipForeachIteration = true;
+            } else {
+                $this->log('--- meegestuurd');
+                //if the webform field is not filled
+                if($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] == "") {
+                    $this->log('--- leeg meegestuurd');
+                    //if mandatory
+                    if ($freeFieldsField->mandatory) {
+                        $this->log('--- verplicht');
+                        //if allready available in the database
+                        if ($freeFieldsFieldRecord->field_value_text != "" || $freeFieldsFieldRecord->field_value_boolean != "" || $freeFieldsFieldRecord->field_value_int != "" || $freeFieldsFieldRecord->field_value_double != "" || $freeFieldsFieldRecord->field_value_datetime != "") {
+                            $this->log('--- al in de database bekend');
+                            $skipForeachIteration = true;
+                        }
+                    }
+                }
+            }
+
+            //old code, cant make a good set of if's like this
+//            //if the field is not supplied, or if its empty: do nothing
+//            if (!$data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] || $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] === "") {
+//                $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' is leeg of niet meegegeven, geen actie nodig');
+//                $skipForeachIteration = true;
+//            }
+//
+//            //if the field is supplied but empty: do nothing if its not mandatory
+//            if ($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] === "" && !$freeFieldsField->mandatory) {
+//                $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' is leeg maar niet verplicht, geen actie nodig');
+//                $skipForeachIteration = true;
+//            }
+//
+//
+//            //if the field is supplied but empty: do nothing if its mandatory but already filled before
+//            if ($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] === "" && $freeFieldsField->mandatory && $freeFieldsFieldRecord && ($freeFieldsFieldRecord->field_value_text != "" || $freeFieldsFieldRecord->field_value_boolean != "" || $freeFieldsFieldRecord->field_value_int != "" || $freeFieldsFieldRecord->field_value_double != "" || $freeFieldsFieldRecord->field_value_datetime != "")) {
+//                $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' is leeg, verplicht, maar al eerder opgegeven, geen actie nodig');
+//                $skipForeachIteration = true;
+//            }
+
+            if($skipForeachIteration) {
+                continue;
+            }
 
             if(!$freeFieldsFieldRecord) {
                 $this->log("Nieuw vrije veld aanmaken voor parent id: " . $parent->id);

@@ -275,11 +275,17 @@ Route::namespace('Api')
         Route::get('campaign/grid', 'Campaign\CampaignController@grid');
         Route::get('campaign/peek', 'Campaign\CampaignController@peek');
         Route::get('campaign/peeknotfinished', 'Campaign\CampaignController@peekNotFinished');
+        Route::post('campaign/campaignworkflow/add', 'Campaign\CampaignWorkflowController@add');
+        Route::post('campaign/campaignworkflow/{campaignworkflow}/delete', 'Campaign\CampaignWorkflowController@delete');
+        Route::post('campaign/campaignworkflow/{campaignWorkflow}/edit', 'Campaign\CampaignWorkflowController@edit');
         Route::get('campaign/{campaign}', 'Campaign\CampaignController@show');
         Route::get('campaign/{campaign}/intakes', 'Campaign\CampaignController@intakes');
         Route::get('campaign/{campaign}/opportunities', 'Campaign\CampaignController@opportunities');
+        Route::get('campaign/{campaign}/workflow-statuses/{workflowForType?}', 'Campaign\CampaignController@workflowStatuses');
         Route::post('campaign/', 'Campaign\CampaignController@store');
         Route::post('campaign/{campaign}', 'Campaign\CampaignController@update');
+        Route::post('campaign/inspection/{campaign}', 'Campaign\CampaignController@updateInspection');
+        Route::post('campaign/workflow-setting/{campaign}', 'Campaign\CampaignController@updateWorkflowSetting');
         Route::post('campaign/{campaign}/delete', 'Campaign\CampaignController@destroy');
         Route::post('campaign/{campaign}/owner/{user}/associate', 'Campaign\CampaignController@associateOwner');
         Route::post('campaign/{campaign}/response/{contact}/attach', 'Campaign\CampaignController@attachResponse');
@@ -473,6 +479,7 @@ Route::namespace('Api')
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
+        Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');
         Route::get('project/revenues-kwh/{revenuesKwh}/csv', 'Project\RevenuesKwhController@csv');
         Route::post('project/revenues-kwh/{revenuesKwh}/distribution-kwh', 'Project\RevenuesKwhController@getRevenueDistribution');
         Route::post('project/revenues-kwh/create-energy-supplier-report/{revenuesKwh}/{documentTemplate}', 'Project\RevenuesKwhController@createEnergySupplierReport');
@@ -513,6 +520,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
+        Route::post('project/participant/{participantProject}/terminate-obligation', 'ParticipationProject\ParticipationProjectController@terminateObligation');
         Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
@@ -587,7 +595,7 @@ Route::namespace('Api')
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
-        Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::post('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
         Route::get('invoice/from-twinfield', 'Invoice\InvoiceController@showFromTwinfield');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
@@ -605,12 +613,16 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+//        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
+
+        Route::get('invoice-post/grid', 'Invoice\InvoicePostController@grid');
+        Route::get('invoice-post/{invoicePost}/download', 'Invoice\InvoicePostController@downloadInvoicePost');
+        Route::post('invoice-post/{invoicePost}/delete', 'Invoice\InvoicePostController@deleteInvoicePost');
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');

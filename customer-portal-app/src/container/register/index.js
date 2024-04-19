@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProjectAPI from '../../api/project/ProjectAPI';
@@ -197,110 +196,112 @@ function RegisterProject({ match, currentSelectedContact }) {
     }
 
     return (
-        <Container className={'content-section'}>
-            {isLoading ? (
-                <LoadingView />
-            ) : !contactProjectData.projectRegisterIndicators.hasParticipation &&
-              !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
-                <>
-                    <Row>
-                        <Col>
-                            <h1 className="content-heading">
-                                Inschrijving voor project <strong>{project.name}</strong>
-                            </h1>
-                            <Row className={'mb-4'}>
-                                <Col>
-                                    <div className="alert-wrapper">
-                                        <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                            {contactProjectData.projectRegisterIndicators.textNotAllowedRegisterToProject
-                                                .split('<br />')
-                                                .map((item, key) => {
-                                                    return (
-                                                        <span key={key}>
-                                                            {item}
-                                                            <br />
-                                                        </span>
-                                                    );
-                                                })}
-                                        </Alert>
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <ButtonGroup className="float-right">
-                                <Link to={`/inschrijvingen-projecten`}>
-                                    <Button className={'w-button'} size="sm">
-                                        Naar huidige deelnames
-                                    </Button>
-                                </Link>
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
-                </>
-            ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
-              !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
-                <>
-                    <Row>
-                        <Col>
-                            <h1 className="content-heading">
-                                <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
-                                <strong>{project.name}</strong>
-                            </h1>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col xs={12} md={10}>
-                            <ButtonGroup className="float-right">
-                                <Link to={`/inschrijvingen-projecten`}>
-                                    <Button className={'w-button'} size="sm">
-                                        Naar huidige deelnames
-                                    </Button>
-                                </Link>
-                            </ButtonGroup>
-                        </Col>
-                    </Row>
-                </>
-            ) : (
-                <Row>
-                    <Col>
-                        {isSucces ? (
-                            <h1 className="content-heading">
-                                Ingeschreven voor project <strong>{project.name}</strong>
-                            </h1>
-                        ) : (
-                            <>
-                                <Row>
-                                    <ButtonGroup aria-label="register" className="w-button-group-left">
-                                        <Link to={`/inschrijven-projecten`}>
-                                            <Button className={'w-button'} size="sm">
-                                                Inschrijven projecten
-                                            </Button>
-                                        </Link>
-                                    </ButtonGroup>
-                                </Row>
+        <div className={'content-section'}>
+            <div className="content-container w-container">
+                {isLoading ? (
+                    <LoadingView />
+                ) : !contactProjectData.projectRegisterIndicators.hasParticipation &&
+                  !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
+                    <>
+                        <Row>
+                            <Col>
                                 <h1 className="content-heading">
-                                    Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                    Inschrijving voor project <strong>{project.name}</strong>
+                                </h1>
+                                <Row className={'mb-4'}>
+                                    <Col>
+                                        <div className="alert-wrapper">
+                                            <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                                {contactProjectData.projectRegisterIndicators.textNotAllowedRegisterToProject
+                                                    .split('<br />')
+                                                    .map((item, key) => {
+                                                        return (
+                                                            <span key={key}>
+                                                                {item}
+                                                                <br />
+                                                            </span>
+                                                        );
+                                                    })}
+                                            </Alert>
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={10}>
+                                <ButtonGroup className="float-right">
+                                    <Link to={`/inschrijvingen-projecten`}>
+                                        <Button className={'w-button'} size="sm">
+                                            Naar huidige deelnames
+                                        </Button>
+                                    </Link>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </>
+                ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
+                  !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
+                    <>
+                        <Row>
+                            <Col>
+                                <h1 className="content-heading">
+                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
-                            </>
-                        )}
-                        <MasterForm
-                            portalSettings={portalSettings}
-                            project={project}
-                            contactProjectData={contactProjectData}
-                            initialRegisterValues={registerValues}
-                            handleSubmitRegisterValues={handleSubmitRegisterValues}
-                            initialContact={contact}
-                            handleSubmitContactValues={handleSubmitContactValues}
-                            setSucces={setSucces}
-                        />
-                    </Col>
-                </Row>
-            )}
-        </Container>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col xs={12} md={10}>
+                                <ButtonGroup className="float-right">
+                                    <Link to={`/inschrijvingen-projecten`}>
+                                        <Button className={'w-button'} size="sm">
+                                            Naar huidige deelnames
+                                        </Button>
+                                    </Link>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </>
+                ) : (
+                    <Row>
+                        <Col>
+                            {isSucces ? (
+                                <h1 className="content-heading">
+                                    Ingeschreven voor project <strong>{project.name}</strong>
+                                </h1>
+                            ) : (
+                                <>
+                                    <Row>
+                                        <ButtonGroup aria-label="register" className="w-button-group-left">
+                                            <Link to={`/inschrijven-projecten`}>
+                                                <Button className={'w-button'} size="sm">
+                                                    Inschrijven projecten
+                                                </Button>
+                                            </Link>
+                                        </ButtonGroup>
+                                    </Row>
+                                    <h1 className="content-heading">
+                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                        <strong>{project.name}</strong>
+                                    </h1>
+                                </>
+                            )}
+                            <MasterForm
+                                portalSettings={portalSettings}
+                                project={project}
+                                contactProjectData={contactProjectData}
+                                initialRegisterValues={registerValues}
+                                handleSubmitRegisterValues={handleSubmitRegisterValues}
+                                initialContact={contact}
+                                handleSubmitContactValues={handleSubmitContactValues}
+                                setSucces={setSucces}
+                            />
+                        </Col>
+                    </Row>
+                )}
+            </div>
+        </div>
     );
 }
 

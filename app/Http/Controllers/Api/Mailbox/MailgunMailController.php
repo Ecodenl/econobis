@@ -16,6 +16,8 @@ class MailgunMailController
 
     public function store(MailgunStoreMailRequest $request)
     {
+        set_time_limit(60);
+
         $mailbox = $request->getMailbox();
 
         if(!$mailbox) {
@@ -29,6 +31,14 @@ class MailgunMailController
             Log::error("Email zonder from (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ").");
             $from = '';
 //            return;
+        }
+
+        // indien email al bestaat, dan melding en overslaan
+        if (Email::whereMailboxId($mailbox->id)
+            ->whereMessageId($request->input('Message-Id'))
+            ->exists()) {
+            Log::error("Email bestaat al (mailbox: " . $mailbox->id . ", message_id: " . ($request->input('Message-Id') ?? 'geen') . ", from: " . $from . ").");
+            return;
         }
 
         $textHtml = $request->getHtmlBody() ?? '';

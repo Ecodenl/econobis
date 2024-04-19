@@ -169,6 +169,9 @@ class TemplateVariableHelper
             case 'Administration':
                 return TemplateVariableHelper::getAdministrationVar($model, $varname);
                 break;
+            case 'FinancialOverviewContact':
+                return TemplateVariableHelper::getFinancialOverviewContactVar($model, $varname);
+                break;
             default:
                 return '';
                 break;
@@ -2258,7 +2261,7 @@ class TemplateVariableHelper
                 break;
 
             case 'projectmanager_naam':
-                return optional($model->projectManager)->full_name;
+                return optional($model->projectManager)->full_name_fnf;
                 break;
             case 'projectmanager_voornaam':
                 return optional($model->projectManager)->first_name;
@@ -2273,7 +2276,7 @@ class TemplateVariableHelper
             case 'projectmanager_plaats':
                 return optional(optional($model->projectManager)->primaryAddress)->city;
                 break;
-            case 'projectmanagerh_email':
+            case 'projectmanager_email':
                 return optional(optional($model->projectManager)->primaryEmailAddress)->email;
                 break;
             case 'projectmanager_telefoonnummer':
@@ -2281,7 +2284,7 @@ class TemplateVariableHelper
                 break;
 
             case 'externe_partij_naam':
-                return optional($model->externalParty)->full_name;
+                return optional($model->externalParty)->full_name_fnf;
                 break;
             case 'externe_partij_voornaam':
                 return optional($model->externalParty)->first_name;
@@ -2305,7 +2308,7 @@ class TemplateVariableHelper
 
             case 'contact_naam':
             case 'verzoek_voor_naam':
-                return optional(optional($model->opportunity)->intake)->contact->full_name;
+                return optional(optional($model->opportunity)->intake)->contact->full_name_fnf;
                 break;
             case 'verzoek_voor_titel':
                 return optional(optional(optional($model->opportunity->intake->contact)->person)->title)->name;
@@ -2392,9 +2395,10 @@ class TemplateVariableHelper
             case 'datum_afspraak':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : null;
                 break;
-            case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
-                break;
+//            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
+//            case 'datum_opname':
+//                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
+//                break;
             case 'datum_uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y H:i') : null;
                 break;
@@ -2616,6 +2620,16 @@ class TemplateVariableHelper
                     $img = '<img src="' . $src . '" style="width:auto; height:156px;" alt="logo"/>';
                 }
                 return $img;
+                break;
+            default:
+                return '';
+                break;
+        }
+    }
+    public static function getFinancialOverviewContactVar ($model, $varname){
+        switch ($varname) {
+            case 'belastingjaar':
+                return $model->financialOverview->year;
                 break;
             default:
                 return '';

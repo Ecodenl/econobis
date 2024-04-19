@@ -14,6 +14,17 @@ export default {
             });
     },
 
+    fetchRevenuesKwhForReport: (id, reportType) => {
+        const requestUrl = `${URL_REVENUES_KWH}/${id}/report/${reportType}`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(response => response.data.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
+
     updateRevenuesKwh: (id, data) => {
         const requestUrl = `${URL_REVENUES_KWH}/${id}`;
 

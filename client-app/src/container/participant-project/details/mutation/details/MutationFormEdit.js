@@ -98,7 +98,7 @@ const MutationFormEdit = ({
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
                         />
                     ) : null}
-                    {type.codeRef === 'withDrawal' || type.codeRef === 'sell' ? (
+                    {type.codeRef === 'withDrawal' ? (
                         <MutationFormEditWithDrawal
                             readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}
@@ -141,13 +141,13 @@ const MutationFormEdit = ({
 
 const mapStateToProps = state => {
     return {
-        projectTypeCodeRef: state.participantProjectDetails.project?.projectType?.codeRef,
+        projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
         projectTransactionCostsCodeRef: state.participantProjectDetails.project?.transactionCostsCodeRef,
-        projectCurrentBookWorth: state.participantProjectDetails.project.currentBookWorth,
+        projectCurrentBookWorth: state.participantProjectDetails.project?.currentBookWorth,
         participantProjectDateRegister: state.participantProjectDetails.dateRegister,
         participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
         participantChoiceMembership: state.participantProjectDetails.participantChoiceMembership,
-        projectDateInterestBearingKwh: state.participantProjectDetails.project.dateInterestBearingKwh,
+        projectDateInterestBearingKwh: state.participantProjectDetails.project?.dateInterestBearingKwh,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
     };
 };

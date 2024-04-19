@@ -14,6 +14,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Options;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -85,17 +86,20 @@ class FinancialOverviewHelper
         if ($preview) {
             $pdf = PDF::loadView('financial.overview.generic', [
                 'financialOverviewContact' => $financialOverviewContact,
-                'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-                'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-                'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
+                'financialOverviewContactTotalLoanProjects' => $financialOverviewContactData['financialOverviewContactTotalLoanProjects'],
+                'financialOverviewContactTotalObligationProjects' => $financialOverviewContactData['financialOverviewContactTotalObligationProjects'],
+                'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactData['financialOverviewContactTotalCapitalProjects'],
+                'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalStart'],
+                'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalEnd'],
                 'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+                'financialOverviewContactLoanTotalStart' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_start_value'),
                 'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
                 'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+                'financialOverviewContactObligationTotalStart' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_start_value'),
                 'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
                 'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+                'financialOverviewContactCapitalTotalStart' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_start_value'),
                 'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-                'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-                'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
                 'contactPerson' => $contactPerson,
                 'contactName' => $contactName,
                 'financialOverviewContactReference' => $financialOverviewContactReference,
@@ -103,30 +107,38 @@ class FinancialOverviewHelper
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
 
+            // Preview op scherm levert een fout op servers: file_exists(): open_basedir restriction in effect. File(/.ufm) is not within the allowed path(s)
+            // Setten van option "isPphpEnabled" is nodig voor toevoegen pagina nummers in PDF zelf.
+            // Op scherm zelf staat ook al een paginator, dus doen we het maar even zonder die in PDF zelf.
+            // Bij het daadwerkelijk maken van de PDF werkt dit wel op de server, dus dan kunnen paginanummers wel toevoegen in echte PDF zelf.
+            //
+            //  return $pdf->setOption('isPhpEnabled', true)->output();
             return $pdf->output();
         }
 
         // PDF maken
         $pdf = PDF::loadView('financial.overview.generic', [
             'financialOverviewContact' => $financialOverviewContact,
-            'financialOverviewContactTotalProjects' => $financialOverviewContactData['financialOverviewContactTotalProjects'],
-            'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_start_value'),
-            'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalProjects']->sum('total_amount_end_value'),
+            'financialOverviewContactTotalLoanProjects' => $financialOverviewContactData['financialOverviewContactTotalLoanProjects'],
+            'financialOverviewContactTotalObligationProjects' => $financialOverviewContactData['financialOverviewContactTotalObligationProjects'],
+            'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactData['financialOverviewContactTotalCapitalProjects'],
+            'financialOverviewContactTotalStart' => $financialOverviewContactData['financialOverviewContactTotalStart'],
+            'financialOverviewContactTotalEnd' => $financialOverviewContactData['financialOverviewContactTotalEnd'],
             'financialOverviewContactLoanProjects' => $financialOverviewContactData['financialOverviewContactLoanProjects'],
+            'financialOverviewContactLoanTotalStart' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_start_value'),
             'financialOverviewContactLoanTotalEnd' => $financialOverviewContactData['financialOverviewContactLoanProjects']->sum('amount_end_value'),
             'financialOverviewContactObligationProjects' => $financialOverviewContactData['financialOverviewContactObligationProjects'],
+            'financialOverviewContactObligationTotalStart' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_start_value'),
             'financialOverviewContactObligationTotalEnd' => $financialOverviewContactData['financialOverviewContactObligationProjects']->sum('amount_end_value'),
             'financialOverviewContactCapitalProjects' => $financialOverviewContactData['financialOverviewContactCapitalProjects'],
+            'financialOverviewContactCapitalTotalStart' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_start_value'),
             'financialOverviewContactCapitalTotalEnd' => $financialOverviewContactData['financialOverviewContactCapitalProjects']->sum('amount_end_value'),
-            'financialOverviewContactPcrProjects' => $financialOverviewContactData['financialOverviewContactPcrProjects'],
-            'financialOverviewContactPcrTotalEnd' => $financialOverviewContactData['financialOverviewContactPcrProjects']->sum('amount_end_value'),
             'contactPerson' => $contactPerson,
             'contactName' => $contactName,
             'financialOverviewContactReference' => $financialOverviewContactReference,
             'logo' => $img,
             'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
-
         $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
@@ -134,7 +146,7 @@ class FinancialOverviewHelper
 
         $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $financialOverviewContact->filename = $path;
         $financialOverviewContact->name = $name;
@@ -216,10 +228,12 @@ class FinancialOverviewHelper
 
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject,'ik', $user);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'contact', $financialOverviewContact->contact);
+        $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'waardestaat', $financialOverviewContact);
         $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'administratie', $financialOverviewContact->financialOverview->administration);
 
         $htmlBody = TemplateTableHelper::replaceTemplateTables($htmlBody, $financialOverviewContact->contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $financialOverviewContact->contact);
+        $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'waardestaat', $financialOverviewContact);
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'portal');
         $htmlBody = TemplateVariableHelper::replaceTemplatePortalVariables($htmlBody, 'contacten_portal');
         $htmlBody = TemplateVariableHelper::replaceTemplateCooperativeVariables($htmlBody, 'cooperatie');
@@ -402,6 +416,7 @@ class FinancialOverviewHelper
 
             $wsAdditionalInfo = TemplateTableHelper::replaceTemplateTables($wsAdditionalInfo, $contact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'contact', $contact);
+            $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateVariables($wsAdditionalInfo, 'waardestaat', $financialOverviewContact);
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplatePortalVariables($wsAdditionalInfo, 'contacten_portal');
             $wsAdditionalInfo = TemplateVariableHelper::replaceTemplateCooperativeVariables($wsAdditionalInfo, 'cooperatie');

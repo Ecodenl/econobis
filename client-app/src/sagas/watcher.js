@@ -29,11 +29,7 @@ import {
     deleteContactGroupSaga,
     fetchContactGroupsSaga,
 } from './contact-group/ContactGroupsSaga';
-import {
-    deleteContactInGroupSaga,
-    fetchContactsInGroupSaga,
-    updateContactInGroupSaga,
-} from './contact-group/ContactsInGroupSaga';
+import { deleteContactInGroupSaga, updateContactInGroupSaga } from './contact-group/ContactsInGroupSaga';
 import {
     deleteContactSaga,
     deleteSelectedContactsSaga,
@@ -85,7 +81,6 @@ import { fetchParticipantsProjectSaga } from './participant-project/Participants
 import {
     deleteObligationNumberSaga,
     deleteParticipantProjectSaga,
-    // deleteRevenueSplitSaga,
     fetchParticipantProjectDetailsSaga,
 } from './participant-project/ParticipantProjectDetailsSaga';
 import { deleteIntakeMeasureRequestedSaga, deleteIntakeSaga, fetchIntakeDetailsSaga } from './intake/IntakeDetailsSaga';
@@ -171,7 +166,6 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
     yield takeLatest('ADD_CONTACT_TO_GROUP', addContactToGroupSaga);
     yield takeLatest('FETCH_CONTACT_GROUP_DETAILS', fetchContactGroupDetailsSaga);
-    yield takeLatest('FETCH_CONTACTS_IN_GROUP', fetchContactsInGroupSaga);
     yield takeLatest('DELETE_CONTACT_IN_GROUP', deleteContactInGroupSaga);
     yield takeLatest('UPDATE_CONTACT_IN_GROUP', updateContactInGroupSaga);
     yield takeLatest('DELETE_COMPOSED_GROUP', deleteComposedGroupSaga);
@@ -231,7 +225,6 @@ export default function* watchSagas() {
     yield takeLatest('FETCH_PARTICIPANT_PROJECT_DETAILS', fetchParticipantProjectDetailsSaga);
     yield takeLatest('DELETE_PARTICIPANT_PROJECT', deleteParticipantProjectSaga);
     yield takeLatest('DELETE_OBLIGATION_NUMBER', deleteObligationNumberSaga);
-    // yield takeLatest('DELETE_REVENUE_SPLIT', deleteRevenueSplitSaga);
     // Project
     yield takeLatest('FETCH_PROJECTS', fetchProjectsSaga);
     yield takeLatest('FETCH_PROJECT', fetchProjectSaga);

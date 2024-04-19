@@ -18,33 +18,18 @@ const ParticipantDetailsTerminate = ({
     closeDeleteItemModal,
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
-    projectRevenueCategories,
 }) => {
     const [dateTerminated, setDateTerminated] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedFrom).format('Y-MM-DD')
     );
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState(
-        participantProject.participationsDefinitive == 0 && participantProject.amountDefinitive == 0
-            ? moment(participantProject.dateEntryLastMutation)
-                  .subtract(1, 'days')
-                  .format('Y-MM-DD')
-            : moment()
-                  .add(1, 'years')
-                  .format('Y-MM-DD')
+        moment(participantProject.dateTerminatedAllowedTo).format('Y-MM-DD')
     );
 
-    const [payoutPercentageTerminated, setPayoutPercentageTerminated] = useState(0);
+    const [payPercentage, setPayPercentage] = useState(0);
     const [redirectRevenueSplit, setRedirectRevenueSplit] = useState(true);
     const [errors, setErrors] = useState({
         dateTerminated: false,
@@ -57,19 +42,15 @@ const ParticipantDetailsTerminate = ({
         setDateTerminated(value);
     };
 
-    const onChangePayoutPercentageTerminated = event => {
+    const onChangePayPercentage = event => {
         const value = event.target.value;
-        setPayoutPercentageTerminated(value);
+        setPayPercentage(value);
     };
 
     const onChangeRedirectRevenueSplit = event => {
         const value = event.target.checked;
         setRedirectRevenueSplit(value);
     };
-
-    const revenueKwhSplitCategoryId = projectRevenueCategories.find(
-        projectRevenueCategory => projectRevenueCategory.codeRef === 'revenueKwhSplit'
-    ).id;
 
     const confirmAction = () => {
         let errors = {
@@ -92,7 +73,7 @@ const ParticipantDetailsTerminate = ({
         if (!hasErrors) {
             ParticipantProjectDetailsAPI.terminateParticipantProject(participantProject.id, {
                 dateTerminated,
-                payoutPercentageTerminated,
+                payPercentage,
             })
                 .then(payload => {
                     fetchParticipantProjectDetails(participantProject.id);
@@ -152,15 +133,15 @@ const ParticipantDetailsTerminate = ({
                         disabledAfter={dateTerminatedAllowedTo}
                         error={errors.dateTerminated}
                         errorMessage={errorMessages.dateTerminated}
-                        // readOnly={participantProject.participationsDefinitive == 0  && participantProject.amountDefinitive == 0}
+                        readOnly={dateTerminatedAllowedFrom == dateTerminatedAllowedTo}
                     />
                     {projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
                         <InputText
                             type={'number'}
                             label={'Uitkeringspercentage'}
-                            name="payoutPercentageTerminated"
-                            value={payoutPercentageTerminated}
-                            onChangeAction={onChangePayoutPercentageTerminated}
+                            name="payPercentage"
+                            value={payPercentage}
+                            onChangeAction={onChangePayPercentage}
                         />
                     ) : null}
                 </div>
@@ -189,10 +170,5 @@ const mapDispatchToProps = dispatch => ({
         dispatch(fetchParticipantProjectDetails(participantProjectId));
     },
 });
-const mapStateToProps = state => {
-    return {
-        projectRevenueCategories: state.systemData.projectRevenueCategories,
-    };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantDetailsTerminate);
+export default connect(null, mapDispatchToProps)(ParticipantDetailsTerminate);

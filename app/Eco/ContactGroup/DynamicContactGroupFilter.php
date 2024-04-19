@@ -210,8 +210,14 @@ class DynamicContactGroupFilter extends Model
 
             // participantMutationStatusId omzetten
             if ($this->field == 'participantMutationStatusId'){
+
                 if($this->data){
-                    return ParticipantMutationStatus::find($this->data)->name;
+                    switch ($this->data) {
+                        case 'isTerminated':
+                            return "Beëindigd";
+                        default:
+                            return ParticipantMutationStatus::find($this->data)->name;
+                    }
                 }
                 return '';
             }

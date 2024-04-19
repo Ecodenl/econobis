@@ -1744,9 +1744,7 @@ class ExternalWebformController extends Controller
 
             $this->log("Mapping veld: " . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform);
             $fieldValue = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
-            $this->log("Waarde: |" . $fieldValue . "|");
-
-            $fieldValue = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
+            $this->log("Waarde: " . $fieldValue);
 
             // als veld verplicht, maar waarde is leeg dan vullen met default waarde (alleen bij nieuwe)
             if($freeFieldsField->mandatory === 1 && $fieldValue == "") {

@@ -62,8 +62,8 @@ class checkWrongProjectPCRSettings extends Command
         $patternAddressNumberSeries = '/^[0-9a-zA-Z,:-]*$/';
 
         foreach($projects as $project) {
-            if ($project->project_type_id === $projectTypePcr && $project->postalcode_link != '0000'){
-                if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
+            if ($project->project_type_id === $projectTypePcr){
+                if ($project->postalcode_link == "" || (!preg_match($patternPostalcodes, $project->postalcode_link && $project->postalcode_link != '0000' ))) {
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
                     if (!preg_match($patternPostalcodes, $project->postalcode_link)) {
@@ -95,8 +95,8 @@ class checkWrongProjectPCRSettings extends Command
                     }
 
                 }
-            } else if ($project->is_sce_project && $project->postalcode_link != '0000'){
-                if ($project->check_postalcode_link) {
+            } else if ($project->is_sce_project){
+                if ($project->check_postalcode_link && $project->postalcode_link != '0000') {
                     //Dit is een SCE project met check postalcodegebied
                     if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
                         //De postalcode_link is leeg of niet geldig

@@ -55,14 +55,14 @@ class checkWrongProjectPCRSettings extends Command
         $counter = 1;
 
 
-        $projectType = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
+        $projectTypePcr = ProjectType::where('code_ref', 'postalcode_link_capital')->first()->id;
         // Regular expression to match Dutch postal codes in the format "1234AB" or "1234"
         $patternPostalcodes =  '/^[1-9][0-9]{3}[a-zA-Z]{0,2}(,[1-9][0-9]{3}[a-zA-Z]{0,2})*$/';
         $patternPostalcode = '/^[1-9][0-9]{3}[a-zA-Z]{2}$/';
         $patternAddressNumberSeries = '/^[0-9a-zA-Z,:-]*$/';
 
         foreach($projects as $project) {
-            if ($project->project_type_id === $projectType){
+            if ($project->project_type_id === $projectTypePcr && $project->postalcode_link != '0000'){
                 if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
@@ -95,7 +95,7 @@ class checkWrongProjectPCRSettings extends Command
                     }
 
                 }
-            } else if ($project->is_sce_project){
+            } else if ($project->is_sce_project && $project->postalcode_link != '0000'){
                 if ($project->check_postalcode_link) {
                     //Dit is een SCE project met check postalcodegebied
                     if ($project->postalcode_link == "" || !preg_match($patternPostalcodes, $project->postalcode_link)) {

@@ -63,7 +63,7 @@ class checkWrongProjectPCRSettings extends Command
 
         foreach($projects as $project) {
             if ($project->project_type_id === $projectTypePcr){
-                if ($project->postalcode_link == "" || (!preg_match($patternPostalcodes, $project->postalcode_link && $project->postalcode_link != '0000' ))) {
+                if ($project->postalcode_link == "" || (!preg_match($patternPostalcodes, $project->postalcode_link) && $project->postalcode_link != '0000') ) {
                     //Dit is een PCR project, en de postalcode_link is leeg of niet geldig
                     $projectsWithWrongPCRSettings[$counter]['id'] = $project->id;
                     if (!preg_match($patternPostalcodes, $project->postalcode_link)) {

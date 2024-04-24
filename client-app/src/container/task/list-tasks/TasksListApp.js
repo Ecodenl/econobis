@@ -31,6 +31,7 @@ function TasksListApp(props) {
     }, [props.params, tasksPagination]);
 
     const fetchTasksData = () => {
+        setMultiSelectEnabled(false);
         setTimeout(() => {
             const filters = filterHelper(tasksFilters);
             const sorts = tasksSorts;

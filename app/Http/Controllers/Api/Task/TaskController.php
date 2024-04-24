@@ -14,9 +14,9 @@ use App\Http\Resources\Task\CalendarTask;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\Task\TaskPeek;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -27,14 +27,6 @@ class TaskController extends Controller
     public function gridTask(TaskRequestQuery $requestQuery)
     {
         $tasks = $requestQuery->get();
-
-//        $selectedTasks = new Collection();
-//        foreach ($requestQuery->totalIds() as $taskId) {
-//            $task = Task::find($taskId);
-//            $selectedTasks->push($task);
-//        }
-//
-//        $totalIds = $selectedTasks->pluck("id");
 
         return GridTask::collection($tasks)
             ->additional(['meta' => [
@@ -238,6 +230,47 @@ class TaskController extends Controller
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', Task::class);
+
+        if($request->input('ids')){
+            $tasksToDelete = Task::whereIn('id', $request->input('ids'))->get();
+            foreach ($tasksToDelete as $task) {
+                $deleteTask = new DeleteTask($task);
+                $deleteTask->delete();
+            }
+        }
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', Task::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:tasks,id'],
+        ]);
+
+        $tasks = Task::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($tasks as $task) {
+//            $this->authorize('manage', $task);
+//        }
+
+        $data = $request->validate([
+            'finished' => ['boolean'],
+            'responsibleUserId' => ['nullable', 'exists:users,id'],
+            'responsibleTeamId' => ['nullable', 'exists:teams,id'],
+        ]);
+
+        foreach ($tasks as $task) {
+            $task->update(Arr::keysToSnakeCase($data));
+        }
+
     }
 
     public function finish(Task $task)

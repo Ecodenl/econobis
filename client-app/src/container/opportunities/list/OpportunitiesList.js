@@ -1,68 +1,54 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
+import OpportunitiesListHead from './OpportunitiesListHead';
+import OpportunitiesListFilter from './OpportunitiesListFilter';
 import OpportunitiesListItem from './OpportunitiesListItem';
 import OpportunityDeleteItem from './OpportunityDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import OpportunitiesListHead from './OpportunitiesListHead';
-import OpportunitiesListFilter from './OpportunitiesListFilter';
 import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import OpportunitiesBulkDelete from '../../opportunities/list/OpportunitiesBulkDelete';
+import OpportunitiesBulkUpdate from '../../opportunities/list/OpportunitiesBulkUpdate';
 
 function OpportunitiesList({
-    onSubmitFilter,
     opportunities,
-    fetchOpportunitiesData,
-    showCheckboxList,
-    handlePageClick,
+    multiSelectEnabled,
+    setMultiSelectDisabled,
     opportunitiesPagination,
+    onSubmitFilter,
+    fetchOpportunitiesData,
+    handlePageClick,
 }) {
-    const [state, setState] = useState({
-        showDeleteItem: false,
-        deleteItem: {
-            id: '',
-            contactName: '',
-            measureCategoryName: '',
-        },
-    });
-
     const [checkedAll, setCheckedAll] = useState(false);
     const [opportunityIds, setOpportunityIds] = useState([]);
+    const [showDeleteItem, setShowDeleteItem] = useState(false);
+    const [deleteItem, setDeleteItem] = useState({
+        id: '',
+        contactName: '',
+        measureCategoryName: '',
+    });
+    const [showBulkDelete, setShowBulkDelete] = useState(false);
+    const [showBulkUpdate, setShowBulkUpdate] = useState(false);
+    const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
 
-    const handleKeyUp = e => {
+    useEffect(() => {
+        if (!multiSelectEnabled) {
+            setCheckedAll(false);
+            setOpportunityIds([]);
+        }
+    }, [multiSelectEnabled]);
+
+    // On key Enter filter form will submit
+    function handleKeyUp(e) {
         if (e.keyCode === 13) {
             onSubmitFilter();
         }
-    };
-
-    const showDeleteItemModal = (id, contactName, measureCategoryName) => {
-        setState({
-            ...state,
-            showDeleteItem: true,
-            deleteItem: {
-                ...state.deleteItem,
-                id: id,
-                contactName: contactName,
-                measureCategoryName: measureCategoryName,
-            },
-        });
-    };
-
-    const closeDeleteItemModal = () => {
-        setState({
-            ...state,
-            showDeleteItem: false,
-            deleteItem: {
-                ...state.deleteItem,
-                id: '',
-                contactName: '',
-                measureCategoryName: '',
-            },
-        });
-    };
+    }
 
     function toggleCheckedAll() {
         const isChecked = event.target.checked;
@@ -92,13 +78,44 @@ function OpportunitiesList({
         setCheckedAll(opportunityIds.length === meta.opportunityIdsTotal.length);
     }
 
-    function updateSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function showDeleteItemModal(id, contactName, measureCategoryName) {
+        setShowDeleteItem(true);
+        setDeleteItem({
+            id: id,
+            contactName: contactName,
+            measureCategoryName: measureCategoryName,
+        });
     }
-    function deleteSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+
+    function closeDeleteItemModal() {
+        setShowDeleteItem(false);
+        setDeleteItem({
+            id: '',
+            contactName: '',
+            measureCategoryName: '',
+        });
+    }
+    function showBulkDeleteModal(id, name) {
+        setShowBulkDelete(true);
+    }
+    function closeBulkDeleteModal(id, name) {
+        setShowBulkDelete(false);
+    }
+    function confirmActionsBulkDelete(id, name) {
+        setShowBulkDelete(false);
+        setMultiSelectDisabled();
+        fetchOpportunitiesData();
+    }
+    function showBulkUpdateModal(id, name) {
+        setShowBulkUpdate(true);
+    }
+    function closeBulkUpdateModal(id, name) {
+        setShowBulkUpdate(false);
+    }
+    function confirmActionsBulkUpdate(id, name) {
+        setShowBulkUpdate(false);
+        setMultiSelectDisabled();
+        fetchOpportunitiesData();
     }
 
     const { data = [], meta = {} } = opportunities;
@@ -129,46 +146,47 @@ function OpportunitiesList({
     return (
         <div>
             <form onKeyUp={handleKeyUp}>
-                {showCheckboxList && (
+                {multiSelectEnabled && (
                     <>
                         <div className="col-md-12">
                             <div className="alert alert-success">Geselecteerde kansen: {numberSelectedNumberTotal}</div>
                         </div>
-
-                        <div className="col-md-12 margin-10-bottom">
-                            <div className="btn-group" role="group">
-                                <ButtonIcon
-                                    iconName={'pencil'}
-                                    onClickAction={updateSelection}
-                                    title="Bijwerken geselecteerde kansen"
-                                />
-                                <ButtonIcon
-                                    iconName={'trash'}
-                                    onClickAction={deleteSelection}
-                                    title="Verwijderen geselecteerde kansen"
-                                />
+                        {permissions.manageOpportunity && (
+                            <div className="col-md-12 margin-10-bottom">
+                                <div className="btn-group" role="group">
+                                    <ButtonIcon
+                                        iconName={'pencil'}
+                                        onClickAction={showBulkUpdateModal}
+                                        title="Bijwerken geselecteerde kansen"
+                                    />
+                                    <ButtonIcon
+                                        iconName={'trash'}
+                                        onClickAction={showBulkDeleteModal}
+                                        title="Verwijderen geselecteerde kansen"
+                                    />
+                                </div>
                             </div>
-                        </div>
+                        )}
                     </>
                 )}
 
                 <DataTable>
                     <DataTableHead>
                         <OpportunitiesListHead
-                            showCheckbox={showCheckboxList}
+                            showCheckbox={multiSelectEnabled}
                             fetchOpportunitiesData={() => fetchOpportunitiesData()}
                         />
 
                         <OpportunitiesListFilter
                             onSubmitFilter={onSubmitFilter}
-                            showCheckbox={showCheckboxList}
+                            showCheckbox={multiSelectEnabled}
                             toggleCheckedAll={toggleCheckedAll}
                         />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={8}>{loadingText}</td>
+                                <td colSpan={multiSelectEnabled ? 9 : 8}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(opportunities => (
@@ -176,7 +194,7 @@ function OpportunitiesList({
                                     key={opportunities.id}
                                     {...opportunities}
                                     showDeleteItemModal={showDeleteItemModal}
-                                    showCheckbox={showCheckboxList}
+                                    showCheckbox={multiSelectEnabled}
                                     toggleOpportunityCheck={toggleOpportunityCheck}
                                     opportunityIds={opportunityIds}
                                 />
@@ -191,11 +209,21 @@ function OpportunitiesList({
                         initialPage={opportunitiesPagination.page}
                     />
                 </div>
-                {state.showDeleteItem && (
-                    <OpportunityDeleteItem
-                        closeDeleteItemModal={closeDeleteItemModal}
-                        fetchOpportunitiesData={fetchOpportunitiesData}
-                        {...state.deleteItem}
+                {showDeleteItem && (
+                    <OpportunityDeleteItem closeDeleteItemModal={closeDeleteItemModal} {...deleteItem} />
+                )}
+                {showBulkDelete && (
+                    <OpportunitiesBulkDelete
+                        confirmActionsBulkDelete={confirmActionsBulkDelete}
+                        closeBulkDeleteModal={closeBulkDeleteModal}
+                        opportunityIds={opportunityIds}
+                    />
+                )}
+                {showBulkUpdate && (
+                    <OpportunitiesBulkUpdate
+                        confirmActionsBulkUpdate={confirmActionsBulkUpdate}
+                        closeBulkUpdateModal={closeBulkUpdateModal}
+                        opportunityIds={opportunityIds}
                     />
                 )}
             </form>

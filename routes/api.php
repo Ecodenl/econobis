@@ -252,6 +252,8 @@ Route::namespace('Api')
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');
+        Route::post('opportunity/bulk-delete', 'Opportunity\OpportunityController@bulkDelete');
+        Route::post('opportunity/bulk-update', 'Opportunity\OpportunityController@bulkUpdate');
         Route::post('opportunity/evaluation/{opportunity}', 'Opportunity\OpportunityController@updateEvaluation');
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
@@ -467,6 +469,8 @@ Route::namespace('Api')
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::post('/quotation-request/bulk-delete', 'QuotationRequest\QuotationRequestController@bulkDelete');
+        Route::post('/quotation-request/bulk-update', 'QuotationRequest\QuotationRequestController@bulkUpdate');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
         Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');

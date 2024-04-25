@@ -76,7 +76,7 @@ function TasksListApp(props) {
                     <TasksList
                         tasks={tasks}
                         multiSelectEnabled={multiSelectEnabled}
-                        setMultiSelectEnabled={setMultiSelectEnabled}
+                        setMultiSelectDisabled={setMultiSelectDisabled}
                         tasksPagination={tasksPagination}
                         onSubmitFilter={onSubmitFilter}
                         fetchTasksData={fetchTasksData}

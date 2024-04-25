@@ -20,6 +20,7 @@ use App\Http\RequestQueries\Opportunity\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
 use App\Http\Resources\Opportunity\GridOpportunity;
 use App\Http\Resources\Opportunity\OpportunityPeek;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -171,6 +172,68 @@ class OpportunityController extends ApiController
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', Opportunity::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $opportunitiesToDelete = Opportunity::whereIn('id', $request->input('ids'))->get();
+            foreach ($opportunitiesToDelete as $opportunity) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteOpportunity = new DeleteOpportunity($opportunity);
+                    $result = $deleteOpportunity->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', Opportunity::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:opportunities,id'],
+        ]);
+
+        $opportunities = Opportunity::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($opportunities as $opportunity) {
+//            $this->authorize('manage', $opportunity);
+//        }
+
+        $data = $request->validate([
+            'statusId' => ['nullable', 'exists:opportunity_status,id'],
+            'amount' => ['nullable', 'integer'],
+            'desiredDate' => ['nullable', 'date'],
+            'evaluationAgreedDate' => ['nullable', 'date'],
+        ]);
+Log::info($data);
+        foreach ($opportunities as $opportunity) {
+            $opportunity->update(Arr::keysToSnakeCase($data));
+        }
+
     }
 
     public function getAmountOfActiveOpportunities(){

@@ -16,11 +16,11 @@ import TasksBulkUpdate from './TasksBulkUpdate';
 function TasksList({
     tasks,
     multiSelectEnabled,
-    setMultiSelectEnabled,
-    onSubmitFilter,
+    setMultiSelectDisabled,
     tasksPagination,
-    handlePageClick,
+    onSubmitFilter,
     fetchTasksData,
+    handlePageClick,
 }) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [taskIds, setTaskIds] = useState([]);
@@ -100,7 +100,7 @@ function TasksList({
     }
     function confirmActionsBulkDelete(id, name) {
         setShowBulkDelete(false);
-        setMultiSelectEnabled(false);
+        setMultiSelectDisabled();
         fetchTasksData();
     }
     function showBulkUpdateModal(id, name) {
@@ -111,6 +111,7 @@ function TasksList({
     }
     function confirmActionsBulkUpdate(id, name) {
         setShowBulkUpdate(false);
+        setMultiSelectDisabled();
         fetchTasksData();
     }
 

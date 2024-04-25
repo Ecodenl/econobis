@@ -26,6 +26,7 @@ use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -475,6 +476,64 @@ class QuotationRequestController extends ApiController
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', QuotationRequest::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $quotationRequestsToDelete = QuotationRequest::whereIn('id', $request->input('ids'))->get();
+            foreach ($quotationRequestsToDelete as $quotationRequest) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+                    $result = $deleteQuotationRequest->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', QuotationRequest::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:quotation_requests,id'],
+        ]);
+
+        $quotationRequests = QuotationRequest::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($quotationRequests as $quotationRequest) {
+//            $this->authorize('manage', $quotationRequest);
+//        }
+
+        $data = $request->validate([
+        ]);
+
+        foreach ($quotationRequests as $quotationRequest) {
+            $quotationRequest->update(Arr::keysToSnakeCase($data));
+        }
+
     }
 
     public function peek(Request $request)

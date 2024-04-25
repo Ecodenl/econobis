@@ -2,33 +2,29 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-import {
-    clearOpportunities,
-    fetchOpportunities,
-    setCheckedOpportunityAll,
-} from '../../../actions/opportunity/OpportunitiesActions';
-import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
+import { fetchOpportunities, clearOpportunities } from '../../../actions/opportunity/OpportunitiesActions';
 import { clearFilterOpportunity } from '../../../actions/opportunity/OpportunitiesFiltersActions';
-import OpportunitiesListToolbar from './OpportunitiesListToolbar';
+import { setOpportunitiesPagination } from '../../../actions/opportunity/OpportunitiesPaginationActions';
 import OpportunitiesList from './OpportunitiesList';
+import OpportunitiesListToolbar from './OpportunitiesListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
-import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
-import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
+import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import moment from 'moment/moment';
 
 class OpportunitiesListApp extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            showCheckboxList: false,
+            multiSelectEnabled: false,
         };
 
-        this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
-        this.resetOpportunitiesFilters = this.resetOpportunitiesFilters.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
         this.getCSV = this.getCSV.bind(this);
+        this.fetchOpportunitiesData = this.fetchOpportunitiesData.bind(this);
+        this.resetOpportunitiesFilters = this.resetOpportunitiesFilters.bind(this);
     }
 
     componentDidMount() {
@@ -77,7 +73,9 @@ class OpportunitiesListApp extends Component {
 
         this.props.setOpportunitiesPagination({ page: 0, offset: 0 });
 
-        this.fetchOpportunitiesData();
+        setTimeout(() => {
+            this.fetchOpportunitiesData();
+        }, 100);
     }
 
     handlePageClick(data) {
@@ -86,12 +84,19 @@ class OpportunitiesListApp extends Component {
 
         this.props.setOpportunitiesPagination({ page, offset });
 
-        this.fetchOpportunitiesData();
+        setTimeout(() => {
+            this.fetchOpportunitiesData();
+        }, 100);
     }
 
-    toggleShowCheckboxList = () => {
+    toggleMultiSelectEnabled = () => {
         this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
+            multiSelectEnabled: !this.state.multiSelectEnabled,
+        });
+    };
+    setMultiSelectDisabled = () => {
+        this.setState({
+            multiSelectEnabled: false,
         });
     };
 
@@ -102,19 +107,20 @@ class OpportunitiesListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <OpportunitiesListToolbar
-                                toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                                toggleMultiSelectEnabled={() => this.toggleMultiSelectEnabled()}
                                 resetOpportunitiesFilters={() => this.resetOpportunitiesFilters()}
                                 getCSV={this.getCSV}
                             />
                         </div>
                         <div className="col-md-12 margin-10-top">
                             <OpportunitiesList
-                                handlePageClick={this.handlePageClick}
-                                fetchOpportunitiesData={this.fetchOpportunitiesData}
-                                showCheckboxList={this.state.showCheckboxList}
-                                onSubmitFilter={() => this.onSubmitFilter()}
-                                opportunitiesPagination={this.props.opportunitiesPagination}
                                 opportunities={this.props.opportunities}
+                                multiSelectEnabled={this.state.multiSelectEnabled}
+                                setMultiSelectDisabled={this.setMultiSelectDisabled}
+                                opportunitiesPagination={this.props.opportunitiesPagination}
+                                onSubmitFilter={() => this.onSubmitFilter()}
+                                fetchOpportunitiesData={this.fetchOpportunitiesData}
+                                handlePageClick={this.handlePageClick}
                             />
                         </div>
                     </div>
@@ -139,7 +145,6 @@ const mapDispatchToProps = dispatch => {
             fetchOpportunities,
             clearOpportunities,
             setOpportunitiesPagination,
-            setCheckedOpportunityAll,
             clearFilterOpportunity,
             blockUI,
             unblockUI,

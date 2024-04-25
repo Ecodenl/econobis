@@ -81,7 +81,6 @@ function IntakesList({
         setShowBulkDelete(false);
         setMultiSelectDisabled();
         refreshIntakesData();
-        // () => refreshIntakesData;
     }
     function showBulkUpdateModal(id, name) {
         setShowBulkUpdate(true);

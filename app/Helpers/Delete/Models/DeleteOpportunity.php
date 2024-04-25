@@ -62,6 +62,10 @@ class DeleteOpportunity implements DeleteInterface
 //        if(!($this->opportunity->status->code_ref == 'inactive' || $this->opportunity->status->code_ref == 'executed' || $this->opportunity->status->code_ref == 'executed-do-it-yourself' || $this->opportunity->status->code_ref == 'no_execution' )){
 //            array_push($this->errorMessage, "Er is nog een openstaande kans.");
 //        }
+        // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
+        if($this->opportunity->quotationRequests()->count() > 0){
+            array_push($this->errorMessage, "Onder kans bij contact " . $this->opportunity->intake->contact->full_name . " met maatregel " . $this->opportunity->measureCategory->name . " hangen nog kansacties, verwijderen kans niet mogelijk.");
+        }
     }
 
     /** Deletes models recursive
@@ -78,10 +82,11 @@ class DeleteOpportunity implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
 
-        foreach ($this->opportunity->quotationRequests as $quotationRequest) {
-            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
-        }
+        // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
+//        foreach ($this->opportunity->quotationRequests as $quotationRequest) {
+//            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+//            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+//        }
     }
 
     /** The relations which should be dissociated

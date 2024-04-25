@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { setCheckedOpportunity } from '../../../actions/opportunity/OpportunitiesActions';
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -29,10 +28,6 @@ class OpportunitiesListItem extends Component {
             showActionButtons: false,
             highlightRow: '',
         });
-    }
-
-    setCheckedOpportunity(id) {
-        this.props.setCheckedOpportunity(id);
     }
 
     openItem(id) {
@@ -124,10 +119,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedOpportunity: id => {
-        dispatch(setCheckedOpportunity(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListItem);
+export default connect(mapStateToProps, null)(OpportunitiesListItem);

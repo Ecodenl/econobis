@@ -22,7 +22,7 @@ const TasksListToolbar = props => {
                         <ButtonIcon
                             iconName={'check'}
                             onClickAction={props.setMultiSelectEnabled}
-                            title="Taakselectie maken"
+                            title="Taak selectie maken"
                         />
                     )}
                 </div>

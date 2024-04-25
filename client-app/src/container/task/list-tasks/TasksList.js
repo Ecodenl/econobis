@@ -13,7 +13,15 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import TasksBulkDelete from './TasksBulkDelete';
 import TasksBulkUpdate from './TasksBulkUpdate';
 
-function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination, handlePageClick, fetchTasksData }) {
+function TasksList({
+    tasks,
+    multiSelectEnabled,
+    setMultiSelectEnabled,
+    onSubmitFilter,
+    tasksPagination,
+    handlePageClick,
+    fetchTasksData,
+}) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [taskIds, setTaskIds] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -92,7 +100,8 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
     }
     function confirmActionsBulkDelete(id, name) {
         setShowBulkDelete(false);
-        fetchTasksData;
+        setMultiSelectEnabled(false);
+        fetchTasksData();
     }
     function showBulkUpdateModal(id, name) {
         setShowBulkUpdate(true);
@@ -102,7 +111,7 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
     }
     function confirmActionsBulkUpdate(id, name) {
         setShowBulkUpdate(false);
-        fetchTasksData;
+        fetchTasksData();
     }
 
     const { data = [], meta = {} } = tasks;

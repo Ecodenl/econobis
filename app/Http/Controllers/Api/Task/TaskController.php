@@ -236,13 +236,33 @@ class TaskController extends Controller
     {
         $this->authorize('manage', Task::class);
 
+        $allResult = [];
+
         if($request->input('ids')){
             $tasksToDelete = Task::whereIn('id', $request->input('ids'))->get();
             foreach ($tasksToDelete as $task) {
-                $deleteTask = new DeleteTask($task);
-                $deleteTask->delete();
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteTask = new DeleteTask($task);
+                    $result = $deleteTask->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
             }
         }
+
+        return $allResult;
     }
 
     public function bulkUpdate(Request $request)

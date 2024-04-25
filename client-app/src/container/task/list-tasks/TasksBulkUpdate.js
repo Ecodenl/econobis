@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 
 import Modal from '../../../components/modal/Modal';
 import TaskDetailsAPI from '../../../api/task/TaskDetailsAPI';
-import { hashHistory } from 'react-router';
 import InputToggle from '../../../components/form/InputToggle';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import { useSelector } from 'react-redux';
@@ -67,7 +66,6 @@ function TasksBulkUpdate({ confirmActionsBulkUpdate, closeBulkUpdateModal, taskI
 
             TaskDetailsAPI.updateBulkTasks(taskIds, values).then(() => {
                 confirmActionsBulkUpdate();
-                hashHistory.push(`/taken`);
             });
         }
     };
@@ -119,8 +117,7 @@ function TasksBulkUpdate({ confirmActionsBulkUpdate, closeBulkUpdateModal, taskI
             </div>
             <div className="row">
                 <div className="col-md-12">
-                    Bijwerken alle <strong>{taskIds.length} geselecteerde taken.</strong>
-                    Weet je het zeker?
+                    Bijwerken alle <strong>{taskIds.length} geselecteerde taken.</strong> Weet je het zeker?
                 </div>
             </div>
         </Modal>

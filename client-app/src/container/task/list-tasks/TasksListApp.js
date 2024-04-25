@@ -30,15 +30,14 @@ function TasksListApp(props) {
         fetchTasksData();
     }, [props.params, tasksPagination]);
 
-    const fetchTasksData = () => {
-        setMultiSelectEnabled(false);
+    function fetchTasksData() {
         setTimeout(() => {
             const filters = filterHelper(tasksFilters);
             const sorts = tasksSorts;
             const pagination = { limit: 20, offset: tasksPagination.offset };
             dispatch(fetchTasks(filters, sorts, pagination));
         }, 100);
-    };
+    }
 
     const resetTaskFilters = () => {
         dispatch(clearFilterTask());
@@ -77,6 +76,7 @@ function TasksListApp(props) {
                     <TasksList
                         tasks={tasks}
                         multiSelectEnabled={multiSelectEnabled}
+                        setMultiSelectEnabled={setMultiSelectEnabled}
                         tasksPagination={tasksPagination}
                         onSubmitFilter={onSubmitFilter}
                         fetchTasksData={fetchTasksData}

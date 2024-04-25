@@ -263,6 +263,8 @@ Route::namespace('Api')
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
+        Route::post('task/bulk-delete', 'Task\TaskController@bulkDelete');
+        Route::post('task/bulk-update', 'Task\TaskController@bulkUpdate');
         Route::post('task/{task}', 'Task\TaskController@update');
         Route::post('task/{task}/duplicate', 'Task\TaskController@duplicate');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');

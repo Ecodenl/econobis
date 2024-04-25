@@ -28,12 +28,10 @@ function TasksListApp(props) {
             dispatch(clearFilterTask());
         }
         fetchTasksData();
-        return () => {
-            dispatch(clearTasks());
-        };
-    }, [props.params]);
+    }, [props.params, tasksPagination]);
 
     const fetchTasksData = () => {
+        setMultiSelectEnabled(false);
         setTimeout(() => {
             const filters = filterHelper(tasksFilters);
             const sorts = tasksSorts;
@@ -57,7 +55,6 @@ function TasksListApp(props) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
         dispatch(setTasksPagination({ page, offset }));
-        fetchTasksData();
     };
 
     let me = false;

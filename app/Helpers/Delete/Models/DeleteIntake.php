@@ -58,9 +58,15 @@ class DeleteIntake implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
-            array_push($this->errorMessage, "Er is nog een intake die niet gesloten is.");
+        // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de intake
+//        if(!($this->intake->intake_status_id === 2 || $this->intake->intake_status_id === 3)){
+//            array_push($this->errorMessage, "Er is nog een intake die niet gesloten is.");
+//        }
+        // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
+        if($this->intake->opportunities()->count() > 0){
+            array_push($this->errorMessage, "Onder intake " . $this->intake->address->fullAddress . " hangen nog kansen, verwijderen intake niet mogelijk.");
         }
+
     }
 
     /** Deletes models recursive
@@ -77,10 +83,11 @@ class DeleteIntake implements DeleteInterface
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
         }
 
-        foreach ($this->intake->opportunities as $opportunity){
-            $deleteOpportunity = new DeleteOpportunity($opportunity);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOpportunity->delete());
-        }
+        // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
+//        foreach ($this->intake->opportunities as $opportunity){
+//            $deleteOpportunity = new DeleteOpportunity($opportunity);
+//            $this->errorMessage = array_merge($this->errorMessage, $deleteOpportunity->delete());
+//        }
     }
 
     /** The relations which should be dissociated

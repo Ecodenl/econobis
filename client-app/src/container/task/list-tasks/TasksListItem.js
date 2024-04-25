@@ -98,7 +98,7 @@ class TasksListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons && this.props.permissions.manageTask ? (
-                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name)}>
+                        <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, noteSummary)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
                     ) : (

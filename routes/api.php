@@ -85,6 +85,8 @@ Route::namespace('Api')
         Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::post('/intake/bulk-delete', 'Intake\IntakeController@bulkDelete');
+        Route::post('/intake/bulk-update', 'Intake\IntakeController@bulkUpdate');
         Route::get('/intake/{intake}', 'Intake\IntakeController@showWithCustomCampaigns');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
@@ -263,6 +265,8 @@ Route::namespace('Api')
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
+        Route::post('task/bulk-delete', 'Task\TaskController@bulkDelete');
+        Route::post('task/bulk-update', 'Task\TaskController@bulkUpdate');
         Route::post('task/{task}', 'Task\TaskController@update');
         Route::post('task/{task}/duplicate', 'Task\TaskController@duplicate');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');

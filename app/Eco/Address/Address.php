@@ -126,7 +126,7 @@ class Address extends Model
     }
 
     public function getfullAddressAttribute(){
-        $fullAddress = $this->street . ' ' . $this->number;
+        $fullAddress = $this->street . ' ' . $this->number . ($this->addition ? '-' . $this->addition : '');
         return $fullAddress;
     }
 

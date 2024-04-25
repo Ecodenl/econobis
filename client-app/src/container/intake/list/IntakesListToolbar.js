@@ -16,7 +16,11 @@ class IntakesListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetIntakeFilters} />
-                        <ButtonIcon iconName={'check'} onClickAction={this.props.toggleShowCheckboxList} />
+                        <ButtonIcon
+                            iconName={'check'}
+                            onClickAction={this.props.toggleMultiSelectEnabled}
+                            title="Intake selectie maken"
+                        />
                         <ButtonIcon
                             iconName={'download'}
                             title="Download unieke intakes"

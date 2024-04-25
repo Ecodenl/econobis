@@ -20,7 +20,7 @@ class IntakesListApp extends Component {
         super(props);
 
         this.state = {
-            showCheckboxList: false,
+            multiSelectEnabled: false,
         };
 
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -111,9 +111,14 @@ class IntakesListApp extends Component {
         }, 100);
     }
 
-    toggleShowCheckboxList = () => {
+    toggleMultiSelectEnabled = () => {
         this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
+            multiSelectEnabled: !this.state.multiSelectEnabled,
+        });
+    };
+    setMultiSelectDisabled = () => {
+        this.setState({
+            multiSelectEnabled: false,
         });
     };
 
@@ -123,7 +128,7 @@ class IntakesListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <IntakesListToolbar
-                            toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                            toggleMultiSelectEnabled={() => this.toggleMultiSelectEnabled()}
                             resetIntakeFilters={() => this.resetIntakeFilters()}
                             getExcel={this.getExcel}
                             getExcelWithOpportunities={this.getExcelWithOpportunities}
@@ -133,11 +138,12 @@ class IntakesListApp extends Component {
                     <div className="col-md-12 margin-10-top">
                         <IntakesList
                             intakes={this.props.intakes}
+                            multiSelectEnabled={this.state.multiSelectEnabled}
+                            setMultiSelectDisabled={this.setMultiSelectDisabled}
                             intakesPagination={this.props.intakesPagination}
                             onSubmitFilter={() => this.onSubmitFilter()}
                             refreshIntakesData={() => this.fetchIntakesData()}
                             handlePageClick={this.handlePageClick}
-                            showCheckboxList={this.state.showCheckboxList}
                         />
                     </div>
                 </PanelBody>

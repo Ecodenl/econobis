@@ -1,4 +1,4 @@
-import React, { Component, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -7,26 +7,41 @@ import IntakesListHead from './IntakesListHead';
 import IntakesListFilter from './IntakesListFilter';
 import IntakesListItem from './IntakesListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import Icon from 'react-icons-kit';
-import { hashHistory } from 'react-router';
-import { share } from 'react-icons-kit/fa/share';
-// import { setBulkEmailToContactIds } from '../../../actions/email/BulkMailActions';
+import IntakesBulkDelete from '../../intake/list/IntakesBulkDelete';
+import IntakesBulkUpdate from '../../intake/list/IntakesBulkUpdate';
 
-function IntakesList({ intakes, showCheckboxList, onSubmitFilter, handlePageClick, intakesPagination }) {
+function IntakesList({
+    intakes,
+    multiSelectEnabled,
+    setMultiSelectDisabled,
+    intakesPagination,
+    onSubmitFilter,
+    refreshIntakesData,
+    handlePageClick,
+}) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [intakeIds, setIntakeIds] = useState([]);
+    const [showBulkDelete, setShowBulkDelete] = useState(false);
+    const [showBulkUpdate, setShowBulkUpdate] = useState(false);
     const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
-    const dispatch = useDispatch();
 
-    const handleKeyUp = e => {
+    useEffect(() => {
+        if (!multiSelectEnabled) {
+            setCheckedAll(false);
+            setIntakeIds([]);
+        }
+    }, [multiSelectEnabled]);
+
+    // On key Enter filter form will submit
+    function handleKeyUp(e) {
         if (e.keyCode === 13) {
             onSubmitFilter();
         }
-    };
+    }
 
     function toggleCheckedAll() {
         const isChecked = event.target.checked;
@@ -56,13 +71,28 @@ function IntakesList({ intakes, showCheckboxList, onSubmitFilter, handlePageClic
         setCheckedAll(intakeIds.length === meta.intakeIdsTotal.length);
     }
 
-    function updateSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function showBulkDeleteModal(id, name) {
+        setShowBulkDelete(true);
     }
-    function deleteSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function closeBulkDeleteModal(id, name) {
+        setShowBulkDelete(false);
+    }
+    function confirmActionsBulkDelete(id, name) {
+        setShowBulkDelete(false);
+        setMultiSelectDisabled();
+        refreshIntakesData();
+        // () => refreshIntakesData;
+    }
+    function showBulkUpdateModal(id, name) {
+        setShowBulkUpdate(true);
+    }
+    function closeBulkUpdateModal(id, name) {
+        setShowBulkUpdate(false);
+    }
+    function confirmActionsBulkUpdate(id, name) {
+        setShowBulkUpdate(false);
+        setMultiSelectDisabled();
+        refreshIntakesData();
     }
 
     const { data = [], meta = {} } = intakes;
@@ -90,88 +120,90 @@ function IntakesList({ intakes, showCheckboxList, onSubmitFilter, handlePageClic
         }
     }
 
-    function bulkEmailContacts() {
-        let contactIds = [];
-        // intakeIds.forEach(intakeId => {
-        //     contactIds.push(intakes.data.find(intake => intake.id === intakeId).contactId);
-        // });
-        // dispatch(setBulkEmailToContactIds(contactIds));
-
-        hashHistory.push('/email/nieuw/bulk');
-    }
-
     return (
-        <form onKeyUp={handleKeyUp}>
-            {showCheckboxList && (
-                <>
-                    <div className="col-md-12">
-                        <div className="alert alert-success">Geselecteerde intakes: {numberSelectedNumberTotal}</div>
-                    </div>
-
-                    <div className="col-md-12 margin-10-bottom">
-                        <div className="nav navbar-nav btn-group" role="group">
-                            <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                                <Icon size={12} icon={share} />
-                            </button>
-                            <ul className="dropdown-menu">
-                                <li>
-                                    <a onClick={bulkEmailContacts}>Contacten emailen</a>
-                                </li>
-                            </ul>
+        <div>
+            <form onKeyUp={handleKeyUp}>
+                {multiSelectEnabled && (
+                    <>
+                        <div className="col-md-12">
+                            <div className="alert alert-success">
+                                Geselecteerde intakes: {numberSelectedNumberTotal}
+                            </div>
                         </div>
-                        <div className="btn-group" role="group">
-                            <ButtonIcon
-                                iconName={'pencil'}
-                                onClickAction={updateSelection}
-                                title="Bijwerken geselecteerde intakes"
-                            />
-                            <ButtonIcon
-                                iconName={'trash'}
-                                onClickAction={deleteSelection}
-                                title="Verwijderen geselecteerde intakes"
-                            />
-                        </div>
-                    </div>
-                </>
-            )}
+                        {permissions.manageIntake && (
+                            <div className="col-md-12 margin-10-bottom">
+                                <div className="btn-group" role="group">
+                                    <ButtonIcon
+                                        iconName={'pencil'}
+                                        onClickAction={showBulkUpdateModal}
+                                        title="Bijwerken geselecteerde intakes"
+                                    />
+                                    <ButtonIcon
+                                        iconName={'trash'}
+                                        onClickAction={showBulkDeleteModal}
+                                        title="Verwijderen geselecteerde intakes"
+                                    />
+                                </div>
+                            </div>
+                        )}
+                    </>
+                )}
 
-            <DataTable>
-                <DataTableHead>
-                    <IntakesListHead showCheckbox={showCheckboxList} refreshIntakesData={() => refreshIntakesData()} />
-                    <IntakesListFilter
-                        onSubmitFilter={onSubmitFilter}
-                        showCheckbox={showCheckboxList}
-                        toggleCheckedAll={toggleCheckedAll}
+                <DataTable>
+                    <DataTableHead>
+                        <IntakesListHead
+                            showCheckbox={multiSelectEnabled}
+                            refreshIntakesData={() => refreshIntakesData()}
+                        />
+                        <IntakesListFilter
+                            onSubmitFilter={onSubmitFilter}
+                            showCheckbox={multiSelectEnabled}
+                            toggleCheckedAll={toggleCheckedAll}
+                        />
+                    </DataTableHead>
+                    <DataTableBody>
+                        {loading ? (
+                            <tr>
+                                <td colSpan={multiSelectEnabled ? 7 : 6}>{loadingText}</td>
+                            </tr>
+                        ) : (
+                            data.map(intake => {
+                                return (
+                                    <IntakesListItem
+                                        key={intake.id}
+                                        {...intake}
+                                        showCheckbox={multiSelectEnabled}
+                                        toggleIntakeCheck={toggleIntakeCheck}
+                                        intakeIds={intakeIds}
+                                    />
+                                );
+                            })
+                        )}
+                    </DataTableBody>
+                </DataTable>
+                <div className="col-md-4 col-md-offset-4">
+                    <DataTablePagination
+                        onPageChangeAction={handlePageClick}
+                        totalRecords={meta.total}
+                        initialPage={intakesPagination.page}
                     />
-                </DataTableHead>
-                <DataTableBody>
-                    {loading ? (
-                        <tr>
-                            <td colSpan={6}>{loadingText}</td>
-                        </tr>
-                    ) : (
-                        data.map(intake => {
-                            return (
-                                <IntakesListItem
-                                    key={intake.id}
-                                    {...intake}
-                                    showCheckbox={showCheckboxList}
-                                    toggleIntakeCheck={toggleIntakeCheck}
-                                    intakeIds={intakeIds}
-                                />
-                            );
-                        })
-                    )}
-                </DataTableBody>
-            </DataTable>
-            <div className="col-md-4 col-md-offset-4">
-                <DataTablePagination
-                    onPageChangeAction={handlePageClick}
-                    totalRecords={meta.total}
-                    initialPage={intakesPagination.page}
+                </div>
+            </form>
+            {showBulkDelete && (
+                <IntakesBulkDelete
+                    confirmActionsBulkDelete={confirmActionsBulkDelete}
+                    closeBulkDeleteModal={closeBulkDeleteModal}
+                    intakeIds={intakeIds}
                 />
-            </div>
-        </form>
+            )}
+            {showBulkUpdate && (
+                <IntakesBulkUpdate
+                    confirmActionsBulkUpdate={confirmActionsBulkUpdate}
+                    closeBulkUpdateModal={closeBulkUpdateModal}
+                    intakeIds={intakeIds}
+                />
+            )}
+        </div>
     );
 }
 

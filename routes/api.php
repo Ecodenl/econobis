@@ -85,6 +85,8 @@ Route::namespace('Api')
         Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::post('/intake/bulk-delete', 'Intake\IntakeController@bulkDelete');
+        Route::post('/intake/bulk-update', 'Intake\IntakeController@bulkUpdate');
         Route::get('/intake/{intake}', 'Intake\IntakeController@showWithCustomCampaigns');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');

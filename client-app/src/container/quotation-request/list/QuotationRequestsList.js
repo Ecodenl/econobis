@@ -15,7 +15,6 @@ import QuotationRequestsBulkUpdate from '../../quotation-request/list/QuotationR
 function QuotationRequestsList({
     quotationRequests,
     multiSelectEnabled,
-    setMultiSelectDisabled,
     setOpportunityActionTypeAll,
     quotationRequestsPagination,
     onSubmitFilter,
@@ -84,7 +83,6 @@ function QuotationRequestsList({
     function confirmActionsBulkDelete(id, name) {
         setShowBulkDelete(false);
         setOpportunityActionTypeAll();
-        setMultiSelectDisabled();
         refreshQuotationRequestsData();
     }
     function showBulkUpdateModal(id, name) {
@@ -96,7 +94,6 @@ function QuotationRequestsList({
     function confirmActionsBulkUpdate(id, name) {
         setShowBulkUpdate(false);
         setOpportunityActionTypeAll();
-        setMultiSelectDisabled();
         refreshQuotationRequestsData();
     }
 

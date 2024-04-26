@@ -20,9 +20,9 @@ const OpportunitiesBulkDelete = props => {
                 .catch(error => {
                     console.log('hier de error:');
                     console.log(error);
+                    props.confirmActionsBulkDelete();
                 });
         }
-        props.confirmActionsBulkDelete();
     };
 
     return (

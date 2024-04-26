@@ -123,7 +123,6 @@ function QuotationRequestsListApp() {
                         quotationRequests={quotationRequests}
                         multiSelectEnabled={multiSelectEnabled}
                         setOpportunityActionTypeAll={() => setOpportunityActionType('all')}
-                        setMultiSelectDisabled={() => setMultiSelectEnabled(false)}
                         quotationRequestsPagination={quotationRequestsPagination}
                         onSubmitFilter={onSubmitFilter}
                         refreshQuotationRequestsData={fetchQuotationRequestsData}

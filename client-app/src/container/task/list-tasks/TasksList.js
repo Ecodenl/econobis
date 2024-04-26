@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -10,8 +10,18 @@ import TasksDeleteItem from './TasksDeleteItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import TasksBulkDelete from './TasksBulkDelete';
+import TasksBulkUpdate from './TasksBulkUpdate';
 
-function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination, handlePageClick, fetchTasksData }) {
+function TasksList({
+    tasks,
+    multiSelectEnabled,
+    setMultiSelectDisabled,
+    tasksPagination,
+    onSubmitFilter,
+    fetchTasksData,
+    handlePageClick,
+}) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [taskIds, setTaskIds] = useState([]);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -19,9 +29,18 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
         id: '',
         name: '',
     });
+    const [showBulkDelete, setShowBulkDelete] = useState(false);
+    const [showBulkUpdate, setShowBulkUpdate] = useState(false);
     const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
+
+    useEffect(() => {
+        if (!multiSelectEnabled) {
+            setCheckedAll(false);
+            setTaskIds([]);
+        }
+    }, [multiSelectEnabled]);
 
     // On key Enter filter form will submit
     function handleKeyUp(e) {
@@ -59,7 +78,7 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
     }
 
     function showDeleteItemModal(id, name) {
-        setDeleteItem(true);
+        setShowDeleteItem(true);
         setDeleteItem({
             id: id,
             name: name,
@@ -67,19 +86,33 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
     }
 
     function closeDeleteItemModal() {
-        setDeleteItem(false);
+        setShowDeleteItem(false);
         setDeleteItem({
             id: '',
             name: '',
         });
     }
-    function updateSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function showBulkDeleteModal(id, name) {
+        setShowBulkDelete(true);
     }
-    function deleteSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function closeBulkDeleteModal(id, name) {
+        setShowBulkDelete(false);
+    }
+    function confirmActionsBulkDelete(id, name) {
+        setShowBulkDelete(false);
+        setMultiSelectDisabled();
+        fetchTasksData();
+    }
+    function showBulkUpdateModal(id, name) {
+        setShowBulkUpdate(true);
+    }
+    function closeBulkUpdateModal(id, name) {
+        setShowBulkUpdate(false);
+    }
+    function confirmActionsBulkUpdate(id, name) {
+        setShowBulkUpdate(false);
+        setMultiSelectDisabled();
+        fetchTasksData();
     }
 
     const { data = [], meta = {} } = tasks;
@@ -120,12 +153,12 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
                                 <div className="btn-group" role="group">
                                     <ButtonIcon
                                         iconName={'pencil'}
-                                        onClickAction={updateSelection}
+                                        onClickAction={showBulkUpdateModal}
                                         title="Bijwerken geselecteerde taken"
                                     />
                                     <ButtonIcon
                                         iconName={'trash'}
-                                        onClickAction={deleteSelection}
+                                        onClickAction={showBulkDeleteModal}
                                         title="Verwijderen geselecteerde taken"
                                     />
                                 </div>
@@ -173,6 +206,20 @@ function TasksList({ tasks, multiSelectEnabled, onSubmitFilter, tasksPagination,
                 </div>
             </form>
             {showDeleteItem && <TasksDeleteItem closeDeleteItemModal={closeDeleteItemModal} {...deleteItem} />}
+            {showBulkDelete && (
+                <TasksBulkDelete
+                    confirmActionsBulkDelete={confirmActionsBulkDelete}
+                    closeBulkDeleteModal={closeBulkDeleteModal}
+                    taskIds={taskIds}
+                />
+            )}
+            {showBulkUpdate && (
+                <TasksBulkUpdate
+                    confirmActionsBulkUpdate={confirmActionsBulkUpdate}
+                    closeBulkUpdateModal={closeBulkUpdateModal}
+                    taskIds={taskIds}
+                />
+            )}
         </div>
     );
 }

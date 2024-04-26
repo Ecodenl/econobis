@@ -68,7 +68,8 @@ const IntakesListFilter = props => {
         <tr className="thead-filter">
             {props.showCheckbox && (
                 <td>
-                    <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
+                    {/*<input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.toggleCheckedAll} />*/}
+                    <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </td>
             )}
             <DataTableFilterDateStartEnd

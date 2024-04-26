@@ -528,6 +528,7 @@ class QuotationRequestController extends ApiController
 //        }
 
         $data = $request->validate([
+            'statusId' => ['nullable', 'exists:quotation_request_status,id'],
         ]);
 
         foreach ($quotationRequests as $quotationRequest) {

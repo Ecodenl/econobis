@@ -27,11 +27,11 @@ const TasksBulkDelete = props => {
 
     return (
         <Modal
-            buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijderen taken"
             buttonClassName={'btn-danger'}
             closeModal={props.closeBulkDeleteModal}
             confirmAction={() => confirmAction()}
-            title="Verwijderen"
+            title="Verwijderen taken"
         >
             Verwijder alle <strong>{props.taskIds.length} geselecteerde taken.</strong> Weet je het zeker?
         </Modal>

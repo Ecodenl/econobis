@@ -1,16 +1,16 @@
 import React from 'react';
 
 import Modal from '../../../components/modal/Modal';
-import IntakeDetailsAPI from '../../../api/intake/IntakeDetailsAPI';
+import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { useDispatch } from 'react-redux';
 
-const IntakesBulkDelete = props => {
+const QuotationRequestsBulkDelete = props => {
     const dispatch = useDispatch();
 
     const confirmAction = () => {
-        if (props.intakeIds && props.intakeIds.length > 0) {
-            IntakeDetailsAPI.deleteBulkIntakes(props.intakeIds)
+        if (props.quotationRequestIds && props.quotationRequestIds.length > 0) {
+            QuotationRequestDetailsAPI.deleteBulkQuotationRequests(props.quotationRequestIds)
                 .then(payload => {
                     if (payload.data.length > 0) {
                         dispatch(setError(200, payload.data));
@@ -27,15 +27,16 @@ const IntakesBulkDelete = props => {
 
     return (
         <Modal
-            buttonConfirmText="Verwijderen intakes"
+            buttonConfirmText="Verwijderen kansacties"
             buttonClassName={'btn-danger'}
             closeModal={props.closeBulkDeleteModal}
             confirmAction={() => confirmAction()}
-            title="Verwijderen intakes"
+            title="Verwijderen kansacties"
         >
-            Verwijder alle <strong>{props.intakeIds.length} geselecteerde intakes.</strong> Weet je het zeker?
+            Verwijder alle <strong>{props.quotationRequestIds.length} geselecteerde kansacties.</strong> Weet je het
+            zeker?
         </Modal>
     );
 };
 
-export default IntakesBulkDelete;
+export default QuotationRequestsBulkDelete;

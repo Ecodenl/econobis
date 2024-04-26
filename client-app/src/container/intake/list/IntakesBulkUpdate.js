@@ -39,12 +39,12 @@ function IntakesBulkUpdate({ confirmActionsBulkUpdate, closeBulkUpdateModal, int
 
     return (
         <Modal
-            buttonConfirmText="Bijwerken"
+            buttonConfirmText="Bijwerken intakes"
             buttonClassName={'btn-danger'}
             modalClassName="modal-lg"
             closeModal={closeBulkUpdateModal}
             confirmAction={() => confirmAction()}
-            title="Bijwerken"
+            title="Bijwerken intakes"
         >
             <div className="row">
                 <div className="col-md-12">

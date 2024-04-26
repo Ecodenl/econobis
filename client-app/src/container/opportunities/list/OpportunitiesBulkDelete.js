@@ -27,11 +27,11 @@ const OpportunitiesBulkDelete = props => {
 
     return (
         <Modal
-            buttonConfirmText="Verwijder"
+            buttonConfirmText="Verwijderen kansen"
             buttonClassName={'btn-danger'}
             closeModal={props.closeBulkDeleteModal}
             confirmAction={() => confirmAction()}
-            title="Verwijderen"
+            title="Verwijderen kansen"
         >
             Verwijder alle <strong>{props.opportunityIds.length} geselecteerde kansen.</strong> Weet je het zeker?
         </Modal>

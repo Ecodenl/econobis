@@ -229,7 +229,7 @@ class OpportunityController extends ApiController
             'desiredDate' => ['nullable', 'date'],
             'evaluationAgreedDate' => ['nullable', 'date'],
         ]);
-Log::info($data);
+
         foreach ($opportunities as $opportunity) {
             $opportunity->update(Arr::keysToSnakeCase($data));
         }

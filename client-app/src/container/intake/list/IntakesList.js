@@ -122,29 +122,27 @@ function IntakesList({
     return (
         <div>
             <form onKeyUp={handleKeyUp}>
-                {multiSelectEnabled && (
+                {multiSelectEnabled && permissions.manageIntake && (
                     <>
                         <div className="col-md-12">
                             <div className="alert alert-success">
                                 Geselecteerde intakes: {numberSelectedNumberTotal}
                             </div>
                         </div>
-                        {permissions.manageIntake && (
-                            <div className="col-md-12 margin-10-bottom">
-                                <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'pencil'}
-                                        onClickAction={showBulkUpdateModal}
-                                        title="Bijwerken geselecteerde intakes"
-                                    />
-                                    <ButtonIcon
-                                        iconName={'trash'}
-                                        onClickAction={showBulkDeleteModal}
-                                        title="Verwijderen geselecteerde intakes"
-                                    />
-                                </div>
+                        <div className="col-md-12 margin-10-bottom">
+                            <div className="btn-group" role="group">
+                                <ButtonIcon
+                                    iconName={'pencil'}
+                                    onClickAction={showBulkUpdateModal}
+                                    title="Bijwerken geselecteerde intakes"
+                                />
+                                <ButtonIcon
+                                    iconName={'trash'}
+                                    onClickAction={showBulkDeleteModal}
+                                    title="Verwijderen geselecteerde intakes"
+                                />
                             </div>
-                        )}
+                        </div>
                     </>
                 )}
 

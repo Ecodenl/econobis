@@ -19,17 +19,39 @@ import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 function QuotationRequestsListApp() {
     const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
+    const [opportunityActionType, setOpportunityActionType] = useState('all');
+    const [opportunityActionId, setOpportunityActionId] = useState(0);
+    const [opportunityActionName, setOpportunityActionName] = useState('');
     const quotationRequests = useSelector(state => state.quotationRequests.list);
     const quotationRequestsFilters = useSelector(state => state.quotationRequests.filters);
     const quotationRequestsSorts = useSelector(state => state.quotationRequests.sorts);
     const quotationRequestsPagination = useSelector(state => state.quotationRequests.pagination);
+    const opportunityActions = useSelector(state => state.systemData.opportunityActions);
     const dispatch = useDispatch();
 
     useEffect(() => {
         fetchQuotationRequestsData();
-    }, [quotationRequestsPagination]);
+    }, [quotationRequestsPagination, opportunityActionId]);
 
-    const getCSV = () => {
+    useEffect(() => {
+        if (opportunityActionType === 'all') {
+            setOpportunityActionId(0);
+            setOpportunityActionName('');
+            setMultiSelectEnabled(false);
+        } else {
+            const opportunityAction = opportunityActions.find(
+                opportunityAction => opportunityAction.codeRef === opportunityActionType
+            );
+            if (opportunityAction) {
+                setOpportunityActionId(opportunityAction.id);
+                setOpportunityActionName(opportunityAction.name);
+            }
+
+            setMultiSelectEnabled(true);
+        }
+    }, [opportunityActionType]);
+
+    function getCSV() {
         dispatch(blockUI());
         setTimeout(() => {
             const filters = filterHelper(quotationRequestsFilters);
@@ -44,40 +66,45 @@ function QuotationRequestsListApp() {
                     dispatch(unblockUI());
                 });
         }, 100);
-    };
+    }
 
-    const fetchQuotationRequestsData = () => {
+    function fetchQuotationRequestsData() {
         setTimeout(() => {
-            const filters = filterHelper(quotationRequestsFilters);
+            let filters = filterHelper(quotationRequestsFilters);
+            if (opportunityActionId > 0) {
+                filters = [...filters, { field: 'opportunityActionId', data: opportunityActionId }];
+            }
+
             const sorts = quotationRequestsSorts;
             const pagination = { limit: 20, offset: quotationRequestsPagination.offset };
 
             dispatch(fetchQuotationRequests(filters, sorts, pagination));
         }, 100);
-    };
+    }
 
-    const resetQuotationRequestFilters = () => {
+    function resetQuotationRequestFilters() {
         dispatch(clearFilterQuotationRequests());
         fetchQuotationRequestsData();
-    };
+    }
 
-    const onSubmitFilter = () => {
-        const filters = filterHelper(quotationRequestsFilters);
-        const sorts = quotationRequestsSorts;
+    function onSubmitFilter() {
+        // const filters = filterHelper(quotationRequestsFilters);
+        // const sorts = quotationRequestsSorts;
 
+        dispatch(clearQuotationRequests());
         dispatch(setQuotationRequestsPagination({ page: 0, offset: 0 }));
 
         setTimeout(() => {
             fetchQuotationRequestsData();
         }, 100);
-    };
+    }
 
-    const handlePageClick = data => {
+    function handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
         dispatch(setQuotationRequestsPagination({ page, offset }));
-    };
+    }
 
     return (
         <Panel>
@@ -86,7 +113,8 @@ function QuotationRequestsListApp() {
                     <QuotationRequestsListToolbar
                         resetQuotationRequestFilters={resetQuotationRequestFilters}
                         getCSV={getCSV}
-                        setMultiSelectEnabled={() => setMultiSelectEnabled(!multiSelectEnabled)}
+                        opportunityActionType={opportunityActionType}
+                        setOpportunityActionType={setOpportunityActionType}
                     />
                 </div>
 
@@ -94,10 +122,15 @@ function QuotationRequestsListApp() {
                     <QuotationRequestsList
                         quotationRequests={quotationRequests}
                         multiSelectEnabled={multiSelectEnabled}
+                        setOpportunityActionTypeAll={() => setOpportunityActionType('all')}
+                        setMultiSelectDisabled={() => setMultiSelectEnabled(false)}
                         quotationRequestsPagination={quotationRequestsPagination}
                         onSubmitFilter={onSubmitFilter}
                         refreshQuotationRequestsData={fetchQuotationRequestsData}
                         handlePageClick={handlePageClick}
+                        opportunityActionType={opportunityActionType}
+                        opportunityActionId={opportunityActionId}
+                        opportunityActionName={opportunityActionName}
                     />
                 </div>
             </PanelBody>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
@@ -9,19 +9,36 @@ import QuotationRequestsListItem from './QuotationRequestsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import { useSelector } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import QuotationRequestsBulkDelete from '../../quotation-request/list/QuotationRequestsBulkDelete';
+import QuotationRequestsBulkUpdate from '../../quotation-request/list/QuotationRequestsBulkUpdate';
 
 function QuotationRequestsList({
     quotationRequests,
     multiSelectEnabled,
+    setMultiSelectDisabled,
+    setOpportunityActionTypeAll,
+    quotationRequestsPagination,
     onSubmitFilter,
     refreshQuotationRequestsData,
-    quotationRequestsPagination,
     handlePageClick,
+    opportunityActionType,
+    opportunityActionId,
+    opportunityActionName,
 }) {
     const [checkedAll, setCheckedAll] = useState(false);
     const [quotationRequestIds, setQuotationRequestIds] = useState([]);
+    const [showBulkDelete, setShowBulkDelete] = useState(false);
+    const [showBulkUpdate, setShowBulkUpdate] = useState(false);
+    const permissions = useSelector(state => state.meDetails.permissions);
     const isLoading = useSelector(state => state.loadingData.isLoading);
     const hasError = useSelector(state => state.loadingData.hasError);
+
+    useEffect(() => {
+        if (!multiSelectEnabled) {
+            setCheckedAll(false);
+            setQuotationRequestIds([]);
+        }
+    }, [multiSelectEnabled]);
 
     // On key Enter filter form will submit
     function handleKeyUp(e) {
@@ -58,13 +75,29 @@ function QuotationRequestsList({
         setCheckedAll(quotationRequestIds.length === meta.quotationRequestIdsTotal.length);
     }
 
-    function updateSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function showBulkDeleteModal(id, name) {
+        setShowBulkDelete(true);
     }
-    function deleteSelection() {
-        // todo WM: nog doen
-        console.log('updateSelection goes here');
+    function closeBulkDeleteModal(id, name) {
+        setShowBulkDelete(false);
+    }
+    function confirmActionsBulkDelete(id, name) {
+        setShowBulkDelete(false);
+        setOpportunityActionTypeAll();
+        setMultiSelectDisabled();
+        refreshQuotationRequestsData();
+    }
+    function showBulkUpdateModal(id, name) {
+        setShowBulkUpdate(true);
+    }
+    function closeBulkUpdateModal(id, name) {
+        setShowBulkUpdate(false);
+    }
+    function confirmActionsBulkUpdate(id, name) {
+        setShowBulkUpdate(false);
+        setOpportunityActionTypeAll();
+        setMultiSelectDisabled();
+        refreshQuotationRequestsData();
     }
 
     const { data = [], meta = {} } = quotationRequests;
@@ -95,24 +128,26 @@ function QuotationRequestsList({
     return (
         <div>
             <form onKeyUp={handleKeyUp}>
-                {multiSelectEnabled && (
+                {multiSelectEnabled && permissions.manageQuotationRequest && (
                     <>
                         <div className="col-md-12">
                             <div className="alert alert-success">
-                                Geselecteerde kansacties: {numberSelectedNumberTotal}
+                                Geselecteerde kansacties {opportunityActionName} : {numberSelectedNumberTotal}
                             </div>
                         </div>
 
                         <div className="col-md-12 margin-10-bottom">
                             <div className="btn-group" role="group">
-                                <ButtonIcon
-                                    iconName={'pencil'}
-                                    onClickAction={updateSelection}
-                                    title="Bijwerken geselecteerde kansacties"
-                                />
+                                {opportunityActionType !== 'visit' ? (
+                                    <ButtonIcon
+                                        iconName={'pencil'}
+                                        onClickAction={showBulkUpdateModal}
+                                        title="Bijwerken geselecteerde kansacties"
+                                    />
+                                ) : null}
                                 <ButtonIcon
                                     iconName={'trash'}
-                                    onClickAction={deleteSelection}
+                                    onClickAction={showBulkDeleteModal}
                                     title="Verwijderen geselecteerde kansacties"
                                 />
                             </div>
@@ -124,17 +159,18 @@ function QuotationRequestsList({
                     <DataTableHead>
                         <QuotationRequestsListHead
                             refreshQuotationRequestsData={() => refreshQuotationRequestsData()}
+                            multiSelectEnabled={multiSelectEnabled}
                         />
                         <QuotationRequestsListFilter
                             onSubmitFilter={onSubmitFilter}
-                            showSelectQuotationRequests={multiSelectEnabled}
+                            multiSelectEnabled={multiSelectEnabled}
                             toggleCheckedAll={toggleCheckedAll}
                         />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={11}>{loadingText}</td>
+                                <td colSpan={multiSelectEnabled ? 13 : 12}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(quotationRequest => {
@@ -159,6 +195,21 @@ function QuotationRequestsList({
                     />
                 </div>
             </form>
+            {showBulkDelete && (
+                <QuotationRequestsBulkDelete
+                    confirmActionsBulkDelete={confirmActionsBulkDelete}
+                    closeBulkDeleteModal={closeBulkDeleteModal}
+                    quotationRequestIds={quotationRequestIds}
+                />
+            )}
+            {showBulkUpdate && (
+                <QuotationRequestsBulkUpdate
+                    confirmActionsBulkUpdate={confirmActionsBulkUpdate}
+                    closeBulkUpdateModal={closeBulkUpdateModal}
+                    quotationRequestIds={quotationRequestIds}
+                    opportunityActionId={opportunityActionId}
+                />
+            )}
         </div>
     );
 }

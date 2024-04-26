@@ -72,11 +72,11 @@ function TasksBulkUpdate({ confirmActionsBulkUpdate, closeBulkUpdateModal, taskI
 
     return (
         <Modal
-            buttonConfirmText="Bijwerken"
+            buttonConfirmText="Bijwerken taken"
             buttonClassName={'btn-danger'}
             closeModal={closeBulkUpdateModal}
             confirmAction={() => confirmAction()}
-            title="Bijwerken"
+            title="Bijwerken taken"
         >
             <div className="row">
                 <div className="col-md-12">

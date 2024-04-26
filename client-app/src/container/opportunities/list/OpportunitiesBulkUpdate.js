@@ -40,12 +40,12 @@ function OpportunitiesBulkUpdate({ confirmActionsBulkUpdate, closeBulkUpdateModa
 
     return (
         <Modal
-            buttonConfirmText="Bijwerken"
+            buttonConfirmText="Bijwerken kansen"
             buttonClassName={'btn-danger'}
             modalClassName="modal-lg"
             closeModal={closeBulkUpdateModal}
             confirmAction={() => confirmAction()}
-            title="Bijwerken"
+            title="Bijwerken kansen"
         >
             <div className="row">
                 <div className="col-md-12">

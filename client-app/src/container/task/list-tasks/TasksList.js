@@ -143,27 +143,25 @@ function TasksList({
     return (
         <div>
             <form onKeyUp={handleKeyUp}>
-                {multiSelectEnabled && (
+                {multiSelectEnabled && permissions.manageTask && (
                     <>
                         <div className="col-md-12">
                             <div className="alert alert-success">Geselecteerde taken: {numberSelectedNumberTotal}</div>
                         </div>
-                        {permissions.manageTask && (
-                            <div className="col-md-12 margin-10-bottom">
-                                <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'pencil'}
-                                        onClickAction={showBulkUpdateModal}
-                                        title="Bijwerken geselecteerde taken"
-                                    />
-                                    <ButtonIcon
-                                        iconName={'trash'}
-                                        onClickAction={showBulkDeleteModal}
-                                        title="Verwijderen geselecteerde taken"
-                                    />
-                                </div>
+                        <div className="col-md-12 margin-10-bottom">
+                            <div className="btn-group" role="group">
+                                <ButtonIcon
+                                    iconName={'pencil'}
+                                    onClickAction={showBulkUpdateModal}
+                                    title="Bijwerken geselecteerde taken"
+                                />
+                                <ButtonIcon
+                                    iconName={'trash'}
+                                    onClickAction={showBulkDeleteModal}
+                                    title="Verwijderen geselecteerde taken"
+                                />
                             </div>
-                        )}
+                        </div>
                     </>
                 )}
 

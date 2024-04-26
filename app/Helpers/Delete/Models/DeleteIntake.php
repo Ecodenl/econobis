@@ -64,7 +64,7 @@ class DeleteIntake implements DeleteInterface
 //        }
         // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
         if($this->intake->opportunities()->count() > 0){
-            array_push($this->errorMessage, "Onder intake " . $this->intake->address->fullAddress . " hangen nog kansen, verwijderen intake niet mogelijk.");
+            array_push($this->errorMessage, "Onder intake " . ($this->intake->address ? $this->intake->address->fullAddress : '*adres onbekend*') . " hangen nog kansen, verwijderen intake niet mogelijk.");
         }
 
     }

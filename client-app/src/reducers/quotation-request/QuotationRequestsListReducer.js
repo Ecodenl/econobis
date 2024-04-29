@@ -10,6 +10,7 @@ export default function(state = { isLoading: false }, action) {
                 data: action.quotationRequests.data.data,
                 meta: {
                     total: action.quotationRequests.data.meta.total,
+                    quotationRequestIdsTotal: action.quotationRequests.data.meta.quotationRequestIdsTotal,
                 },
                 isLoading: false,
             };

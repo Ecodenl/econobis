@@ -16,6 +16,7 @@ const QuotationRequestsListHead = props => {
 
     return (
         <tr className="thead-title">
+            {props.multiSelectEnabled && <th width="5%" />}
             <DataTableHeadTitleAndSort
                 sortColumn={'organisationOrCoach'}
                 title={'Organisatie/Coach'}
@@ -23,7 +24,13 @@ const QuotationRequestsListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'contact'} title={'Contact'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'14%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'address'}
+                title={'Adres'}
+                width={'14%'}
+                setSorts={setSorts}
+                width={props.multiSelectEnabled ? '9%' : '14%'}
+            />
             <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'measure'} title={'Maatregel'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'7%'} setSorts={setSorts} />

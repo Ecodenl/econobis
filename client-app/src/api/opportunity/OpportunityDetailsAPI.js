@@ -42,6 +42,18 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    deleteBulkOpportunities: ids => {
+        const requestUrl = `${URL_OPPORTUNITY}/bulk-delete`;
+
+        return axiosInstance.post(requestUrl, { ids: ids });
+    },
+
+    updateBulkOpportunities: (ids, values) => {
+        const requestUrl = `${URL_OPPORTUNITY}/bulk-update`;
+
+        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+    },
+
     updateOpportunityEvaluation: (id, data) => {
         const requestUrl = `${URL_OPPORTUNITY}/evaluation/${id}`;
 

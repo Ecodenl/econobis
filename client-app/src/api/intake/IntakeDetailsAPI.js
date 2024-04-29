@@ -48,6 +48,18 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    deleteBulkIntakes: ids => {
+        const requestUrl = `${URL_INTAKE}/bulk-delete`;
+
+        return axiosInstance.post(requestUrl, { ids: ids });
+    },
+
+    updateBulkIntakes: (ids, values) => {
+        const requestUrl = `${URL_INTAKE}/bulk-update`;
+
+        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+    },
+
     attachMeasureRequested: (intakeId, measureId) => {
         const requestUrl = `${URL_INTAKE}/${intakeId}/${measureId}/attach`;
 

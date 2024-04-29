@@ -120,7 +120,7 @@ const Dashboard = function(props) {
                         </Col>
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact }) => {
-                                if (user.occupations && user.occupations.length > 0) {
+                                if (user.occupationsActive && user.occupationsActive.length > 0) {
                                     return (
                                         <Col md={6}>
                                             <SwitchContactDashboardWidget

@@ -88,7 +88,7 @@ class InvoiceSendConfirm extends Component {
             <Modal
                 closeModal={this.props.closeModal}
                 confirmAction={this.confirmAction}
-                title="Nota verzenden"
+                title="Nota's verzenden"
                 buttonConfirmText={'Verzenden'}
                 loading={this.state.loading}
             >
@@ -122,7 +122,7 @@ class InvoiceSendConfirm extends Component {
                 )}
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
-                        <span>Wilt u alle nota's definitief maken en verzenden?</span>
+                        <span>Wilt u geselecteerde nota's definitief maken en verzenden?</span>
                     </div>
                 </div>
             </Modal>

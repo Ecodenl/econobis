@@ -65,9 +65,10 @@ class DeleteQuotationRequest implements DeleteInterface
 //            }
 //        }
         //
-        if($this->quotationRequest->status->is_pending_status){
-            array_push($this->errorMessage, "Er is nog een " . ($this->quotationRequest->opportunityAction ? $this->quotationRequest->opportunityAction->name : "onbekend") . " met een onderhanden status " . ($this->quotationRequest->status ? $this->quotationRequest->status->name : "onbekend" ) );
-        }
+        // 25-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de kansactie
+//        if($this->quotationRequest->status->is_pending_status){
+//            array_push($this->errorMessage, "Er is nog een " . ($this->quotationRequest->opportunityAction ? $this->quotationRequest->opportunityAction->name : "onbekend") . " met een onderhanden status " . ($this->quotationRequest->status ? $this->quotationRequest->status->name : "onbekend" ) );
+//        }
     }
 
     /** Deletes models recursive

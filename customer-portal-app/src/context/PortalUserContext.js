@@ -22,7 +22,7 @@ const PortalUserProvider = function(props) {
             if (user.id == selectedContactId) {
                 setCurrentContact(user);
             } else {
-                const occupationUser = user.occupations.find(
+                const occupationUser = user.occupationsActive.find(
                     occupation => occupation.primaryContact.id == selectedContactId
                 );
 
@@ -31,7 +31,7 @@ const PortalUserProvider = function(props) {
         } else {
             // If there is no selected contact then set default the login user as selected contact.
             // Except if the user has an organisation as occupation that is primary
-            const organisationUser = user.occupations.find(
+            const organisationUser = user.occupationsActive.find(
                 occupation => occupation.primaryContact.typeId === 'organisation' && occupation.primary
             );
 
@@ -66,7 +66,7 @@ const PortalUserProvider = function(props) {
             user.lastName = lastName;
         }
 
-        const updatedOccupations = user.occupations.map(occupationContact => {
+        const updatedOccupations = user.occupationsActive.map(occupationContact => {
             if (occupationContact.primaryContact.id === currentSelectedContact.id) {
                 occupationContact.primaryContact.fullNameFnf = fullNameFnf;
                 occupationContact.primaryContact.typeId = typeId;

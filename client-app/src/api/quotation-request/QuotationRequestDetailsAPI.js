@@ -58,4 +58,16 @@ export default {
 
         return axiosInstance.post(requestUrl);
     },
+
+    deleteBulkQuotationRequests: ids => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-delete`;
+
+        return axiosInstance.post(requestUrl, { ids: ids });
+    },
+
+    updateBulkQuotationRequests: (ids, values) => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-update`;
+
+        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+    },
 };

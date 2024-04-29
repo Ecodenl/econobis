@@ -11,7 +11,6 @@ namespace App\Http\RequestQueries\Opportunity\Grid;
 use App\Eco\Opportunity\Opportunity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
 {
@@ -37,6 +36,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         $query = parent::getQuery();
 
-        return $query->orderByDesc('created_at');
+        return $query->orderByDesc('opportunities.created_at');
     }
 }

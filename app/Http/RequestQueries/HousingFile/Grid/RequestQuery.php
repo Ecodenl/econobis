@@ -33,6 +33,6 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     {
         $query = parent::getQuery();
 
-        return $query->orderByDesc('created_at');
+        return $query->orderByDesc('housing_files.created_at');
     }
 }

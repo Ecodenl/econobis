@@ -28,7 +28,7 @@ export default {
                         'isOccupant',
                     ],
                     rlt: {
-                        occupations: {
+                        occupationsActive: {
                             fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
                             rlt: {
                                 occupation: {

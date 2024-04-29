@@ -14,7 +14,6 @@ use App\Http\Resources\Project\GridRevenuesKwh;
 use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
 
 class FullParticipantProject extends JsonResource
 {

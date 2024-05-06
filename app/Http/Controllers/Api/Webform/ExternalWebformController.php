@@ -378,17 +378,22 @@ class ExternalWebformController extends Controller
             $intake = null;
             $housingFile = null;
 
-            $address = $contact->addresses()
-                ->where('postal_code', $data['address_postal_code'])
-                ->where('number', $data['address_number'])
-                ->where('addition', $data['address_addition'])
-                ->first();
-            if($address){
-                //freeFieldsFieldRecords updaten
-                $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
-                $this->setFreeFieldsFieldRecords($address, (isset($data['free_field_address']) ? $data['free_field_address'] : null), $tableId);
+
+            if($data['contact']['address_postal_code'] && $data['contact']['address_number'] && $data['contact']['address_addition']){
+                $address = $contact->addresses()
+                    ->where('postal_code', $data['contact']['address_postal_code'])
+                    ->where('number', $data['contact']['address_number'])
+                    ->where('addition', $data['contact']['address_addition'])
+                    ->first();
+                if($address){
+                    //freeFieldsFieldRecords updaten
+                    $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+                    $this->setFreeFieldsFieldRecords($address, (isset($data['free_field_address']) ? $data['free_field_address'] : null), $tableId);
+                } else {
+                    $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
+                }
             } else {
-                $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
+                $this->log("Er is geen adres meegegeven, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
             }
         }
 

@@ -58,6 +58,10 @@ table th, table td {
   font-weight: bold !important;
 }
 
+.success-row {
+  background-color: $brand-secundairy !important;
+}
+
 .error-row {
   background-color: #fc554e !important;
 }

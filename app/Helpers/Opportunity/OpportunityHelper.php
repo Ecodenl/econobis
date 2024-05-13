@@ -101,6 +101,31 @@ class InvoiceHelper
                                 $opportunity->save();
                             }
                         }
+                    case 'cancelled':
+                        //zijn er binnen deze kans andere bezoekacties waar de status niet "Afspraak afgezegd" / "cancelled" is
+                        $otherVisitsHaveOtherStatusThenCancelled = $opportunity->whereHas('quotationRequests', function ($query) {
+                            $query->whereHas('opportunityAction', function ($query2) {
+                                $query2->where('code_ref', 'visit');
+                            });
+                            $query->whereHas('status', function ($query3) {
+                                $query3->where('code_ref', '!=', 'cancelled');
+                            });
+                        })->count();
+
+                        //zijn er binnen deze kans ook offerteverzoeken
+                        $quotationRequests = $opportunity->whereHas('quotationRequests', function ($query) {
+                            $query->whereHas('opportunityAction', function ($query2) {
+                                $query2->where('code_ref', 'quotation-request');
+                            });
+                        })->count();
+
+                        if($otherVisitsHaveOtherStatusThenCancelled === 0 && $quotationRequests === 0) {
+                            //regel 10 Excel
+                            $status = $this->OpportunityStatusId('no_execution');
+                            $opportunity->status_id = $status;
+                            $opportunity->save();
+                        }
+
                 }
                 break;
             case 'quotation-request':

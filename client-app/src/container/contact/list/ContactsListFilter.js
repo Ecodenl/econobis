@@ -77,6 +77,7 @@ const ContactsListFilter = props => {
                     <input type="checkbox" value={props.checkedAllCheckboxes} onChange={props.selectAllCheckboxes} />
                 </td>
             )}
+            {props.showCheckboxMerge && <td />}
             <th className="hidden-xs">
                 <input
                     type="text"

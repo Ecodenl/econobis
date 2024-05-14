@@ -9,8 +9,6 @@ use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
-use App\Http\Resources\Project\GridProjectRevenue;
-use App\Http\Resources\Project\GridRevenuesKwh;
 use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -55,7 +53,7 @@ class FullParticipantProjectShow extends JsonResource
                 'updatedAt' => $this->updated_at,
                 'updatedWith' => $this->updated_with,
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
-                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')),
+                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')->sortByDesc('date_sort')),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),

@@ -310,7 +310,7 @@ class RevenuesKwhController extends ApiController
     {
         $project = $revenuesKwh->project;
 
-        $documentName = $request->input('documentName');
+        $documentName =  $this->translateToValidCharacterSet( $request->input('documentName') );
 
         //get current logged in user
         $user = Auth::user();

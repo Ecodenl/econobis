@@ -179,7 +179,7 @@ class RevenuePartsKwhController extends ApiController
         Request $request,
         RevenuePartsKwh $revenuePartsKwh
     ){
-        $documentName = $request->input('documentName');
+        $documentName = $this->translateToValidCharacterSet( $request->input('documentName') );
         ReportEnergySupplierExcel::dispatch($documentName, $revenuePartsKwh, Auth::id());
 
     }

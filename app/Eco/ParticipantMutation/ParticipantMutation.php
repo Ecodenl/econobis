@@ -80,11 +80,11 @@ class ParticipantMutation extends Model
     public function getDateSortAttribute()
     {
         if($this->date_entry !== null) {
-            $dateSort = strtotime($this->date_entry);
-        } else if ($this->date_payment) {
-            $dateSort = strtotime($this->date_payment);
+            $dateSort = Carbon::parse($this->date_entry)->timestamp;
+        } else if ($this->date_payment !== null) {
+            $dateSort = Carbon::parse($this->date_payment)->timestamp;
         } else {
-            $dateSort = strtotime($this->created_at);
+            $dateSort = Carbon::parse($this->created_at)->timestamp;;
         }
 
         return $dateSort;

@@ -84,7 +84,7 @@ export default {
                                 },
                             },
                         },
-                        occupations: {
+                        occupationsActive: {
                             fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
                             rlt: {
                                 occupation: {

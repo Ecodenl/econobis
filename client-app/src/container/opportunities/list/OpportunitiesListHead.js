@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setOpportunitiesSortsFilter } from '../../../actions/opportunity/OpportunitiesSortsActions';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 const OpportunitiesListHead = props => {
     const setSorts = (field, order) => {
@@ -16,6 +14,7 @@ const OpportunitiesListHead = props => {
 
     return (
         <tr className="thead-title">
+            {props.showCheckbox ? <th width="3%" /> : null}
             <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort

@@ -10,7 +10,7 @@ import InputTextDate from '../../../../components/form/InputTextDate';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function SubsidyRequestCoach({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (
@@ -286,13 +286,7 @@ function SubsidyRequestCoach({ history, initialQuotationRequest, handleSubmit })
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

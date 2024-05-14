@@ -17,6 +17,7 @@ class PeekFreeFieldsFieldFormat extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->format_name,
+            'formatType' => $this->format_type,
         ];
     }
 }

@@ -6,6 +6,7 @@ namespace App\Helpers\Laposta;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
@@ -69,8 +70,20 @@ class LapostaHelper
                             $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_state' => $lapostaMemberState, 'laposta_last_error_message' => null]);
                         }
                     } else {
-                        $lapostaMemberEmail = $member['member']['email'];
-                        Log::info("Member niet in (meer) in Econobis: " . $lapostaMemberId . " voor email: " . $lapostaMemberEmail . " status: " . $lapostaMemberState);
+                        // als member niet te vinden is op lapostamemberId, dan proberen we nog een keer op emailadres:
+                        $contactGroupContactids = $contactGroup->contacts->pluck('id')->toArray();
+                        $contactMemberEmails = EmailAddress::whereIn('contact_id', $contactGroupContactids)
+                            ->where('email', $member['member']['email'])
+                            ->where('primary', true);
+                        if($contactMemberEmails->exists()){
+                            $contactGroupsPivot= $contactGroup->contacts()->where('contact_id', $contactMemberEmails->first()->contact_id)->whereNull('laposta_member_id')->first()->pivot;
+                            if($contactGroupsPivot != null) {
+                                $contactGroup->contacts()->updateExistingPivot($contactGroupsPivot->contact_id, ['laposta_member_id' => $member['member']['member_id'], 'laposta_member_state' => $lapostaMemberState, 'laposta_last_error_message' => null]);
+                            }
+                        } else {
+                            $lapostaMemberEmail = $member['member']['email'];
+                            Log::info("Member niet in (meer) in Econobis: " . $lapostaMemberId . " voor email: " . $lapostaMemberEmail . " status: " . $lapostaMemberState);
+                        }
                     }
                 }
             }

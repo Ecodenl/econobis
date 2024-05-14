@@ -123,7 +123,7 @@ export const SwitchContactDashboardWidget = function({
                     className="card-text"
                     style={{ display: 'flex', justifyContent: 'space-between', overflowX: 'auto' }}
                 >
-                    {user.occupations && user.occupations.length > 0 ? (
+                    {user.occupationsActive && user.occupationsActive.length > 0 ? (
                         <>
                             <Button
                                 className="w-button btn btn-primary btn-sm"
@@ -137,7 +137,7 @@ export const SwitchContactDashboardWidget = function({
                             >
                                 {user.fullNameFnf}
                             </Button>
-                            {user.occupations.map(occupationContact =>
+                            {user.occupationsActive.map(occupationContact =>
                                 (occupationContact.primaryContact.typeId === 'organisation' &&
                                     occupationContact.primary) ||
                                 (occupationContact.primaryContact.typeId === 'person' &&

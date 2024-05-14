@@ -93,96 +93,123 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         ) : null}
-                        {permissions.updatePerson && permissions.updateOrganisation && permissions.manageGroup && (
-                            <div className="nav navbar-nav btn-group" role="group">
-                                <button
-                                    className="btn btn-success btn-sm"
-                                    data-toggle="dropdown"
-                                    title="Contactselectie toevoegen aan groep"
-                                >
-                                    <Icon size={14} icon={share} />
-                                </button>
-                                <ul className="dropdown-menu">
-                                    <li>
-                                        <a role="button" onClick={this.toggleAddContactsToGroup}>
-                                            Voeg toe aan groep
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                        {(permissions.deletePerson || permissions.deleteOrganisation) && (
+                        {!this.props.showCheckboxListMerge &&
+                            (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
+                                <ButtonIcon
+                                    iconName={'check'}
+                                    onClickAction={this.props.toggleShowCheckboxList}
+                                    title="Contactselectie maken"
+                                />
+                            )}
+                        {this.props.showCheckboxList &&
+                            permissions.updatePerson &&
+                            permissions.updateOrganisation &&
+                            permissions.manageGroup && (
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        data-toggle="dropdown"
+                                        title="Contactselectie toevoegen aan groep"
+                                    >
+                                        <Icon size={14} icon={share} />
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <a role="button" onClick={this.toggleAddContactsToGroup}>
+                                                Voeg toe aan groep
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        {this.props.showCheckboxList &&
+                            (permissions.deletePerson || permissions.deleteOrganisation) && (
+                                <ButtonIcon
+                                    iconName={'trash'}
+                                    onClickAction={this.toggleShowDeleteSelectedItems}
+                                    title="Verwijderen geselecteerde contacten"
+                                />
+                            )}
+                        {!this.props.showCheckboxList && !this.props.showCheckboxListMerge && (
                             <ButtonIcon
-                                iconName={'trash'}
-                                onClickAction={this.toggleShowDeleteSelectedItems}
-                                title="Verwijderen geselecteerde contacten"
+                                iconName={'filter'}
+                                onClickAction={this.props.toggleShowExtraFilters}
+                                title="Contactfilters"
                             />
                         )}
-                        {(permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
-                            <ButtonIcon
-                                iconName={'check'}
-                                onClickAction={this.props.toggleShowCheckboxList}
-                                title="Contactselectie maken"
-                            />
-                        )}
-                        <ButtonIcon
-                            iconName={'filter'}
-                            onClickAction={this.props.toggleShowExtraFilters}
-                            title="Contactfilters"
-                        />
-                        {permissions.downloadContact && (
-                            <ButtonIcon
-                                iconName={'download'}
-                                onClickAction={this.props.getCSV}
-                                title="Downloaden contacten naar CSV"
-                            />
-                        )}
-                        {permissions.downloadContact && (
-                            <ButtonIcon
-                                iconName={'download'}
-                                onClickAction={this.props.getFreeFieldsCSV}
-                                title="Downloaden vrije velden van contacten naar CSV"
-                            />
-                        )}
-                        {permissions.downloadContact && (
-                            <ButtonIcon
-                                iconName={'download'}
-                                onClickAction={this.props.getEnergySuppliersCSV}
-                                title="Downloaden contacten energieleveranciers gegevens naar CSV"
-                            />
-                        )}
-                        {permissions.import && (
+                        {!this.props.showCheckboxList &&
+                            !this.props.showCheckboxListMerge &&
+                            permissions.downloadContact && (
+                                <ButtonIcon
+                                    iconName={'download'}
+                                    onClickAction={this.props.getCSV}
+                                    title="Downloaden contacten naar CSV"
+                                />
+                            )}
+                        {!this.props.showCheckboxList &&
+                            !this.props.showCheckboxListMerge &&
+                            permissions.downloadContact && (
+                                <ButtonIcon
+                                    iconName={'download'}
+                                    onClickAction={this.props.getFreeFieldsCSV}
+                                    title="Downloaden vrije velden van contacten naar CSV"
+                                />
+                            )}
+                        {!this.props.showCheckboxList &&
+                            !this.props.showCheckboxListMerge &&
+                            permissions.downloadContact && (
+                                <ButtonIcon
+                                    iconName={'download'}
+                                    onClickAction={this.props.getEnergySuppliersCSV}
+                                    title="Downloaden contacten energieleveranciers gegevens naar CSV"
+                                />
+                            )}
+                        {!this.props.showCheckboxList && !this.props.showCheckboxListMerge && permissions.import && (
                             <ButtonIcon
                                 iconName={'upload'}
                                 onClickAction={this.importContacts}
                                 title="Importeren contacten"
                             />
                         )}
-                        {permissions.downloadContactConsumption && meta.useExportAddressConsumption && (
-                            <>
-                                <a
-                                    role="button"
-                                    className={'btn btn-success btn-sm'}
-                                    onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
-                                    title="Downloaden elektriciteit verbruik"
-                                >
-                                    <FaRegLightbulb width={'13px'} height={'12px'} />
-                                </a>
-                                <a
-                                    role="button"
-                                    className={'btn btn-success btn-sm'}
-                                    onClick={this.props.getExcelAddressEnergyConsumptionGas}
-                                    title="Downloaden gas verbruik"
-                                >
-                                    <FaFire width={'13px'} height={'12px'} />
-                                </a>
-                            </>
-                        )}
-                        <ButtonIcon
-                            iconName={'compress'}
-                            onClickAction={this.toggleShowMergeSelectedItems}
-                            title="Contacten samenvoegen"
-                        />
+                        {!this.props.showCheckboxList &&
+                            !this.props.showCheckboxListMerge &&
+                            permissions.downloadContactConsumption &&
+                            meta.useExportAddressConsumption && (
+                                <>
+                                    <a
+                                        role="button"
+                                        className={'btn btn-success btn-sm'}
+                                        onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
+                                        title="Downloaden elektriciteit verbruik"
+                                    >
+                                        <FaRegLightbulb width={'13px'} height={'12px'} />
+                                    </a>
+                                    <a
+                                        role="button"
+                                        className={'btn btn-success btn-sm'}
+                                        onClick={this.props.getExcelAddressEnergyConsumptionGas}
+                                        title="Downloaden gas verbruik"
+                                    >
+                                        <FaFire width={'13px'} height={'12px'} />
+                                    </a>
+                                </>
+                            )}
+                        {!this.props.showCheckboxList &&
+                            (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
+                                <ButtonIcon
+                                    iconName={'check'}
+                                    onClickAction={this.props.toggleShowCheckboxListMerge}
+                                    title="Contacten samenvoegen selectie"
+                                />
+                            )}
+                        {this.props.showCheckboxListMerge &&
+                            (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
+                                <ButtonIcon
+                                    iconName={'compress'}
+                                    onClickAction={this.toggleShowMergeSelectedItems}
+                                    title="Contacten samenvoegen"
+                                />
+                            )}
                     </div>
                 </div>
                 <div className="col-md-4">

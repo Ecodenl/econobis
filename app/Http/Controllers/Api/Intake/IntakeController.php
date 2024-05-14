@@ -26,6 +26,7 @@ use App\Http\Resources\Intake\FullIntakeWithCustomCampaigns;
 use App\Http\Resources\Intake\IntakePeek;
 use App\Http\Resources\Task\SidebarTask;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -42,6 +43,7 @@ class IntakeController extends ApiController
         return GridIntake::collection($intakes)
             ->additional(['meta' => [
             'total' => $requestQuery->total(),
+            'intakeIdsTotal' => $requestQuery->totalIds(),
             ]
         ]);
     }
@@ -298,6 +300,66 @@ class IntakeController extends ApiController
             abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', Intake::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $intakesToDelete = Intake::whereIn('id', $request->input('ids'))->get();
+            foreach ($intakesToDelete as $intake) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteIntake = new DeleteIntake($intake);
+                    $result = $deleteIntake->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', Intake::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:intakes,id'],
+        ]);
+
+        $intakes = Intake::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($intakes as $intake) {
+//            $this->authorize('manage', $intake);
+//        }
+        $data = $request->validate([
+            'intakeStatusId' => ['nullable', 'exists:intake_status,id'],
+            'campaignId' => ['nullable', 'exists:campaigns,id'],
+        ]);
+
+        foreach ($intakes as $intake) {
+            $intake->update(Arr::keysToSnakeCase($data));
+        }
+
+    }
+
 
     public function tasks(Intake $intake)
     {

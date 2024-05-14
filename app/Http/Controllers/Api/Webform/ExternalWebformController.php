@@ -26,6 +26,9 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierStatus;
 use App\Eco\EnergySupplier\EnergySupplierType;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsFieldRecord;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
@@ -287,7 +290,7 @@ class ExternalWebformController extends Controller
         }
         $this->checkMaxRequests($webform);
 
-        $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], $webform);
+        $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], (isset($data['free_field_contact']) ? $data['free_field_contact'] : null), $webform);
 
         // Indien contact gevonden en niet new aangemaakt.
         if($contact && !$this->newContactCreated){
@@ -359,16 +362,39 @@ class ExternalWebformController extends Controller
         }
 
         if ($this->address) {
+            // hier verwerken van vrije velden adressen
+
             $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
+
+            //freeFieldsFieldRecords address updaten
+            $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+            $this->setFreeFieldsFieldRecords($this->address, (isset($data['free_field_address']) ? $data['free_field_address'] : null), $tableId);
         } else {
             $intake = null;
             $housingFile = null;
-            $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, intake en/of woondossier konden niet worden aangemaakt.");
+
+
+            if($data['contact']['address_postal_code'] && $data['contact']['address_number'] && $data['contact']['address_addition']){
+                $address = $contact->addresses()
+                    ->where('postal_code', $data['contact']['address_postal_code'])
+                    ->where('number', $data['contact']['address_number'])
+                    ->where('addition', $data['contact']['address_addition'])
+                    ->first();
+                if($address){
+                    //freeFieldsFieldRecords updaten
+                    $tableId = FreeFieldsTable::where('table', 'addresses')->first()->id;
+                    $this->setFreeFieldsFieldRecords($address, (isset($data['free_field_address']) ? $data['free_field_address'] : null), $tableId);
+                } else {
+                    $this->log("Er is geen adres gevonden en kon ook niet aangemaakt worden met huidige gegevens, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
+                }
+            } else {
+                $this->log("Er is geen adres meegegeven, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
+            }
         }
 
         // Bewaar intake en housingfile voor verdere acties later hiermee
@@ -553,6 +579,21 @@ class ExternalWebformController extends Controller
             ]
         ];
 
+        // Vrije velden contacten
+        $freeFieldsTable = FreeFieldsTable::where('table', 'contacts')->first();
+        if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
+                $mapping['free_field_contact'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform;
+            }
+        }
+        // Vrije velden adressen
+        $freeFieldsTable = FreeFieldsTable::where('table', 'addresses')->first();
+        if($freeFieldsTable && $freeFieldsTable->prefix_field_name_webform != null) {
+            foreach (FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $freeFieldsTable->id)->get() as $freeFieldsField) {
+                $mapping['free_field_address'][$freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] = $freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform;
+            }
+        }
+
         // Task properties toevoegen met prefix 'taak_'
         foreach (TaskProperty::all() as $taskProperty) {
             $mapping['task']['taak_' . $taskProperty->code] = $taskProperty->code;
@@ -577,11 +618,17 @@ class ExternalWebformController extends Controller
 
         $data = [];
         foreach ($mapping as $groupname => $fields) {
+
             foreach ($fields as $inputName => $outputName) {
                 // Alle input standaard waarde '' meegeven.
                 // Op deze manier hoeven we later alleen op lege string te checken...
                 // ... ipv bijv. if(!isset() || is_null($var) || $var = '')
-                $data[$groupname][$outputName] = trim($request->get($inputName, ''));
+                // Niet voor vrije velden, daar willen we wel op lege string kunnen checken.
+                if($groupname === 'free_field_contact' || $groupname === 'free_field_address'){
+                    $data[$groupname][$outputName] = $request->get($inputName);
+                } else {
+                    $data[$groupname][$outputName] = trim($request->get($inputName, ''));
+                }
             }
         }
 
@@ -633,7 +680,7 @@ class ExternalWebformController extends Controller
         return $data;
     }
 
-    protected function updateOrCreateContact(array $responsibleIds, array $data, Webform $webform)
+    protected function updateOrCreateContact(array $responsibleIds, array $data, ?array $dataFreeFieldContacts, Webform $webform)
     {
         $ownerAndResponsibleUser = null;
         if($responsibleIds['responsible_user_id']) {
@@ -691,7 +738,7 @@ class ExternalWebformController extends Controller
             // contactActie = "CCT" -> Controle contact taak
             switch($this->contactActie){
                 case 'UPC' :
-                    $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
+                    $contact = $this->updateContact($contact, $data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
@@ -744,7 +791,7 @@ class ExternalWebformController extends Controller
                     $this->addTaskCheckContact($responsibleIds, $contact, $webform, $note);
                     break;
                 case 'BCB' :
-                    $contact = $this->updateContact($contact, $data, $ownerAndResponsibleUser);
+                    $contact = $this->updateContact($contact, $data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
@@ -789,7 +836,7 @@ class ExternalWebformController extends Controller
                 $this->log('Geen enkel contact kunnen vinden op basis van meegegeven data, nieuw contact aanmaken.');
             }
 
-            $contact = $this->addContact($data, $ownerAndResponsibleUser);
+            $contact = $this->addContact($data, $dataFreeFieldContacts, $ownerAndResponsibleUser);
             switch($this->contactActie){
                 case 'NCG' :
                     $note = "Webformulier " . $webform->name . ".\n\n";
@@ -1279,7 +1326,7 @@ class ExternalWebformController extends Controller
         $this->logs[] = $text;
     }
 
-    protected function addContact(array $data, User $ownerAndResponsibleUser)
+    protected function addContact(array $data, ?array $dataFreeFieldContacts, User $ownerAndResponsibleUser)
     {
         $this->newContactCreated = false;
 
@@ -1448,10 +1495,14 @@ class ExternalWebformController extends Controller
             $this->addContactAttachment($contact, $data['contact_attachment_3']);
         }
 
+        //freeFieldsFieldRecords aanmaken
+        $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $this->setFreeFieldsFieldRecords($contact, $dataFreeFieldContacts, $tableId);
+
         return $contact;
     }
 
-    protected function updateContact(Contact $contact, array $data, User $ownerAndResponsibleUser)
+    protected function updateContact(Contact $contact, array $data, ?array $dataFreeFieldContacts, User $ownerAndResponsibleUser)
     {
         $ownerAndResponsibleUser->occupation = '@webform-update@';
         Auth::setUser($ownerAndResponsibleUser);
@@ -1617,7 +1668,233 @@ class ExternalWebformController extends Controller
             $this->addContactAttachment($contact, $data['contact_attachment_3']);
         }
 
+        //freeFieldsFieldRecords updaten
+        $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        $this->setFreeFieldsFieldRecords($contact, $dataFreeFieldContacts, $tableId);
+
         return $contact;
+    }
+
+    protected function setFreeFieldsFieldRecords($parent, ?array $data, $tableId): void
+    {
+//    todo WM: opschonen
+//        $this->log('data:');
+//        $this->log(json_encode($data));
+        // Helemaal geen freefields voor webformulieren in gebruik, dan doen we niets
+        if($data == null) {
+            $this->log("Geen vrij velden gebruik voor webformulier in applicatie.");
+            return;
+        }
+
+//    todo WM: opschonen
+//        Wellicht niet nodig om alles te loggen hieronder wat ie doet ?!
+
+        // doorlopen van alle vrije velden die gebruikt worden voor webformulieren (afh. van tableId (contacts of addresses)
+        foreach(FreeFieldsField::whereNotNull('field_name_webform')->where('table_id', $tableId)->get() as $freeFieldsField) {
+            $this->log("Vrij velden aanmaken/bijwerken voor tableId: " . $tableId . " en fieldId: " . $freeFieldsField->id . " (" .$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform. ")");
+
+            // Ophalen evt. van bestaand record (in parent staat of contact of adres gegevens waar deze vrije velden bijhoren)
+            $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $parent->id)->where('field_id', $freeFieldsField->id)->whereHas('freeFieldsField', function ($query) use ($tableId) {
+                $query->where('table_id', $tableId);
+            })->first();
+
+            $notSendOrEmpty = false;
+
+            //when the freefield is not in the webform
+            if(!isset($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform])) {
+                $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' niet meegestuurd');
+                $notSendOrEmpty = true;
+            } else {
+                //when the freefield is in the webform
+                $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' meegestuurd');
+                //if the webform field is not filled
+                if($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] == "") {
+                    $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' leeg meegestuurd');
+                    $notSendOrEmpty = true;
+                }
+            }
+
+            $mandatoryAndNotExists = false;
+
+            //if mandatory
+            if ($freeFieldsField->mandatory) {
+                //if record not exists in the database
+                if (!$freeFieldsFieldRecord) {
+                    $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' verplicht en nog niet bekend in de database');
+                    $mandatoryAndNotExists = true;
+                } else {
+                    //if record exists in the database
+                    $this->log('--- ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' verplicht en al bekend in de database');
+                }
+            }
+
+            // (niet meegestuurd of leeg) en Niet (verplicht en nog niet in database)
+            if($notSendOrEmpty == true && $mandatoryAndNotExists == false){
+                $this->log("Vrij velden niet meegestuurd en bestaat reeds of is niet verplicht.");
+
+                // Skip naar volgend record
+                continue;
+            }
+
+            // Indien record nog niet bestaat maak nieuw record aan.
+            if(!$freeFieldsFieldRecord) {
+                $this->log("Nieuw vrije veld aanmaken voor parent id: " . $parent->id);
+                $freeFieldsFieldRecord = new FreeFieldsFieldRecord();
+                $freeFieldsFieldRecord->table_record_id = $parent->id;
+                $freeFieldsFieldRecord->field_id = $freeFieldsField->id;
+            } else {
+                // Indien record wel bestaat dan alleen bijwerken
+                $this->log("Bestaande vrije veld wijzen voor parent id: " . $parent->id);
+            }
+
+            $this->log("Mapping veld: " . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform);
+            $fieldValue = $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform];
+            $this->log("Waarde: " . $fieldValue);
+
+            // als veld verplicht, maar waarde is leeg dan vullen met default waarde (alleen bij nieuwe)
+            if($freeFieldsField->mandatory === 1 && $fieldValue == "") {
+                $fieldValue = $freeFieldsField->default_value;
+            }
+
+            // als waarde niet leeg, check opgegeven in juiste format type verwerk veld in juiste format veld.
+            if($fieldValue != "") {
+
+                switch ($freeFieldsField->freeFieldsFieldFormat->format_type) {
+                    case 'boolean':
+                        if($fieldValue != 1 && $fieldValue != 0) {
+                            $this->error("Opgegeven waarde moet een 1 of een 0 zijn");
+                            $fieldValue = "";
+                        }
+                        // Check max lengte
+                        if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0 && (strlen($fieldValue) > $freeFieldsField->freeFieldsFieldFormat->format_length)) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $freeFieldsField->freeFieldsFieldFormat->format_length . " karakter(s)  toegestaan");
+                        }
+                        $freeFieldsFieldRecord->field_value_boolean = $fieldValue;
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        // Check max lengte
+                        if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0 && (strlen($fieldValue) > $freeFieldsField->freeFieldsFieldFormat->format_length)) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $freeFieldsField->freeFieldsFieldFormat->format_length . " karakter(s)  toegestaan");
+                        }
+                        $freeFieldsFieldRecord->field_value_text = $fieldValue;
+                        break;
+                    case 'int':
+                        if(!is_numeric($fieldValue)) {
+                            $this->error("Opgegeven waarde moet een cijfer zijn");
+                            $fieldValue = "";
+                        }
+                        // Check max lengte
+                        if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0 && (strlen($fieldValue) > $freeFieldsField->freeFieldsFieldFormat->format_length)) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $freeFieldsField->freeFieldsFieldFormat->format_length . " karakter(s)  toegestaan");
+                        }
+                        $freeFieldsFieldRecord->field_value_int = $fieldValue;
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $formattedField = str_replace(',', '.', $fieldValue);
+                        $formattedFieldArray = explode(".", $formattedField);
+
+//                        if(!is_numeric($formattedField) || (isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) != $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
+//                            $this->error("Opgegeven waarde moet een cijfer zijn met twee getallen achter de comma of punt");
+//                            $formattedField = "";
+//                        }
+                        if(!is_numeric($formattedField)) {
+                            $this->error("Opgegeven waarde moet een cijfer zijn.");
+                            $formattedField = "";
+                        }
+
+                        // Check max lengte voor de decimaal verdeler (is format_lengte - 1 - format_decimals)
+                        $maxLengteBeforeDecimalSeperator = $freeFieldsField->freeFieldsFieldFormat->format_length - 1 - $freeFieldsField->freeFieldsFieldFormat->format_decimals;
+                        if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0
+                            && strlen($formattedFieldArray[0]) > $maxLengteBeforeDecimalSeperator ) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $maxLengteBeforeDecimalSeperator . " cijfers voor decimaal verdeler  toegestaan");
+                        }
+                        // Check max lengte na de decimaal verdeler (format_decimals)
+                        if ((isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) > $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $freeFieldsField->freeFieldsFieldFormat->format_decimals . " decimalen  toegestaan");
+                        }
+
+                        $freeFieldsFieldRecord->field_value_double = $formattedField;
+
+                        break;
+                    case 'date':
+                        try {
+                            $dateTime = Carbon::createFromFormat('Y-m-d', $fieldValue);
+                            $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
+                        } catch (\InvalidArgumentException $e) {
+                            $this->error("Opgegeven waarde moet een datum zijn van het formaat: Y-m-d");
+                            $freeFieldsFieldRecord->field_value_datetime = "";
+                        }
+                        break;
+                    case 'datetime':
+                        try {
+                            $dateTime = Carbon::createFromFormat('Y-m-d H:i', $fieldValue);
+                            $freeFieldsFieldRecord->field_value_datetime = $dateTime->toDateTime();
+                        } catch (\InvalidArgumentException $e) {
+                            $this->error("Opgegeven waarde moet een datum en tijd zijn van het formaat: Y-m-d H:i ");
+                            $freeFieldsFieldRecord->field_value_datetime = "";
+
+                        }
+                        break;
+                }
+
+            }
+
+            // indien er een masker van toepassing is, check dit masker
+            if($freeFieldsField->mask != '') {
+                $this->log("free field heeft een mask: " . $freeFieldsField->mask);
+                if($this->checkMask($data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform], $freeFieldsField->mask)) {
+                    $this->log("Mask check ok, opslaan freeFieldsFieldRecord");
+                    $freeFieldsFieldRecord->save();
+                } else {
+                    $this->error('De waarde \'' . $data[$freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform] . '\' voor ' . $freeFieldsField->freeFieldsTable->prefix_field_name_webform . $freeFieldsField->field_name_webform . ' voldoet niet aan het masker \'' . $freeFieldsField->mask . '\' voor dit veld');
+                }
+            } else {
+                $this->log("Geen Mask, opslaan freeFieldsFieldRecord");
+                $freeFieldsFieldRecord->save();
+            }
+        }
+    }
+
+    protected function checkMask($value, $mask)
+    {
+        //explode the mask
+        $explodedMask = str_split($mask);
+        $explodedValue = str_split($value);
+
+        //if mask contains no ? and value and mask are not the same length we can skip all this and return false
+        if (!strpos($mask, '?') && count($explodedMask) != count($explodedValue)) {
+            return false;
+        }
+
+        // check of masker klopt voor meegegeven waarde
+        foreach($explodedMask as $key => $char) {
+            switch ($char) {
+                case '9':
+                    if (!preg_match('/^[0-9]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                case 'a':
+                    if (!preg_match('/^[a-zA-Z]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                case 'x':
+                    if (!preg_match('/^[a-zA-Z0-9]$/', $explodedValue[$key])) {
+                        return false;
+                    }
+                    break;
+                default:
+                    if ($explodedValue[$key] != $char) {
+                        return false;
+                    }
+                    break;
+            }
+        }
+
+        return true;
     }
 
     protected function addEnergySupplierToAddress(Address $address, $data)
@@ -2540,10 +2817,10 @@ class ExternalWebformController extends Controller
 
                 foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
-                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
-                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                            $this->log('Groep ' . $contactGroup->name . ' al gekoppeld aan: ' . $contact->id);
                         } else {
                             $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');
@@ -2588,10 +2865,10 @@ class ExternalWebformController extends Controller
 
                 foreach ($contactGroups as $contactGroup) {
                     if ($contactGroup->type_id != 'static') {
-                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->group_name . ' niet gekoppeld aan contact ' . $contact->id . '.');
+                        $this->log('Een contact kan alleen aan een statische groep worden gekoppeld, groep ' . $contactGroup->name . ' niet gekoppeld aan contact ' . $contact->id . '.');
                     } else {
                         if ($contactGroup->contacts()->where('contact_id', $contact->id)->exists()) {
-                            $this->log('Groep ' . $data['group_name'] . ' al gekoppeld aan: ' . $contact->id);
+                            $this->log('Groep ' . $contactGroup->name . ' al gekoppeld aan: ' . $contact->id);
                         } else {
                             $contactGroup->contacts()->syncWithoutDetaching([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
                             $this->log('Contact ' . $contact->id . ' aan groep ' . $contactGroup->name . ' gekoppeld.');

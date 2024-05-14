@@ -18,9 +18,11 @@ class FullFreeFieldsField extends JsonResource
         return [
             'id' => $this->id,
             'tableId' => $this->table_id,
+            'tablePrefixFieldNameWebform' => $this->freeFieldsTable->prefix_field_name_webform,
             'table' => GenericResource::make($this->whenLoaded('freeFieldsTable')),
             'fieldFormatId' => $this->field_format_id,
             'fieldName' => $this->field_name,
+            'fieldNameWebform' => $this->field_name_webform,
             'fieldFormat' => GenericResource::make($this->whenLoaded('freeFieldsFieldFormat')),
             'visiblePortal' => $this->visible_portal,
             'changePortal' => $this->change_portal,

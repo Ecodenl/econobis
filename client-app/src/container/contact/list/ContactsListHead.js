@@ -16,7 +16,7 @@ const ContactsListHead = props => {
 
     return (
         <tr className="thead-title">
-            {props.showCheckbox ? <th width="3%" /> : null}
+            {props.showCheckbox || props.showCheckboxMerge ? <th width="3%" /> : null}
             <DataTableHeadTitleAndSort
                 RowClassName={'hidden-xs'}
                 sortColumn={'number'}

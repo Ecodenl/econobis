@@ -25,16 +25,12 @@ class InvoiceHelper
                     //afspraak gemaakt
                     case 'made':
                         //regel 2 en 3 Excel
-                        $status = $this->OpportunityStatusId('in_progress');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'in_progress');
                         break;
                     //Geen afspraak kunnen maken
                     case 'not-made':
                         //regel 5 en 6 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Afspraak gedaan?
                     case 'done':
@@ -87,20 +83,14 @@ class InvoiceHelper
 
                         if($otherVisitsWithStatusMade === 0 && $quotationRequests === 0) {
                             //regel 7 Excel
-                            $status = $this->OpportunityStatusId('executed');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'executed');
                         } else {
                             if ($otherVisitsWithStatusMade === 0 && $otherVisitsHaveOtherStatusThenDone === 0 && $quotationRequestsWithStatusDone > 0 && $quotationRequestsWithStatusMandate === 0) {
                                 //regel 8 Excel
-                                $status = $this->OpportunityStatusId('executed');
-                                $opportunity->status_id = $status;
-                                $opportunity->save();
+                                $this->SetOpportunityStatus($opportunity, 'executed');
                             } else {
                                 //regel 9 Excel
-                                $status = $this->OpportunityStatusId('pending');
-                                $opportunity->status_id = $status;
-                                $opportunity->save();
+                                $this->SetOpportunityStatus($opportunity, 'pending');
                             }
                         }
                         break;
@@ -124,9 +114,7 @@ class InvoiceHelper
 
                         if($otherVisitsHaveOtherStatusThenCancelled === 0 && $quotationRequests === 0) {
                             //regel 10 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                         break;
                 }
@@ -136,23 +124,17 @@ class InvoiceHelper
                     //Offerte aangevraagd
                     case 'default':
                         //regel 14 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Offerte aanvraag in behandeling
                     case 'under-review':
                         //regel 15 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //In overweging bij bewoner
                     case 'under-review-occupant':
                         //regel 16 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Bewoner is akkoord
                     case 'approved':
@@ -178,9 +160,7 @@ class InvoiceHelper
 
                         if($otherQuotationRequestsHaveStatusMandate > 0 && $otherQuotationRequestsHaveStatusOtherThenMandateNotApprovedNotPossiblePmNotPossible === 0) {
                             //regel 17 Excel
-                            $status = $this->OpportunityStatusId('pending');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'pending');
                         }
                         break;
                     //Bewoner heeft afgewezen
@@ -207,9 +187,7 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherVisitsHaveStatusOtherThenNotApprovedNotPossiblePmNotApproved === 0) {
                             //regel 18 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                         break;
                     //Offerte niet mogelijk
@@ -236,17 +214,13 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusOtherThenNotApprovedNotPossible === 0) {
                             //regel 19 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                         break;
                     //Geen reactie ontvangen
                     case 'no-response':
                         //regel 20 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Uitgevoerd
                     case 'executed':
@@ -272,17 +246,13 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusOtherThenNotPossibleNotApprovedPmNotApproved === 0) {
                             //regel 21 Excel
-                            $status = $this->OpportunityStatusId('executed');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'executed');
                         }
                         break;
                     //Offerteverzoek akkoord
                     case 'pm-approved':
                         //regel 22 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Offerteverzoek niet akkoord
                     case 'pm-not-approved':
@@ -308,9 +278,7 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusOtherThenNotPossibleNotApprovedPmNotApproved === 0) {
                             //regel 23 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                         break;
                 }
@@ -320,23 +288,17 @@ class InvoiceHelper
                     //Budgetaanvraag open
                     case 'default':
                         //regel 26 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Budgetaanvraag gemaakt
                     case 'made':
                         //regel 27 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Budgetaanvraag akkoord
                     case 'pm-approved':
                         //regel 28 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Budgetaanvraag niet akkoord
                     case 'pm-not-approved':
@@ -372,38 +334,28 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusExecuted > 0 && $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved === 0) {
                             //regel 29 Excel
-                            $status = $this->OpportunityStatusId('executed');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'executed');
                         }
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && ($otherQuotationRequestsHaveStatusExecuted === 0 || $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved > 0)) {
                             //regel 30 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                         break;
                     //Budgetaanvraag verstuurd naar bewoner
                     case 'under-review-occupant':
                         //regel 31 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Subsidieaanvraag in behandeling
                     case 'under-review':
                         //regel 32 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Subsidie aanvraag beschikt
                     case 'approved':
                         //regel 33 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Subsidie aanvraag niet beschikt
                     case 'not-approved':
@@ -439,30 +391,22 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusExecuted > 0 && $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved === 0) {
                             //regel 34 Excel
-                            $status = $this->OpportunityStatusId('executed');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'executed');
                         }
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && ($otherQuotationRequestsHaveStatusExecuted === 0 || $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved > 0)) {
                             //regel 35 Excel
-                            $status = $this->OpportunityStatusId('no_execution');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'no_execution');
                         }
                     //Subsidievaststelling in behandeling
                     case 'under-review-det':
                         //regel 36 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                     //Subsidie vastgesteld
                     case 'approved-det':
                         //regel 37 Excel
-                        $status = $this->OpportunityStatusId('in_progress');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'in_progress');
                         break;
                     //Subsidie niet vastgesteld
                     case 'not-approved-det':
@@ -498,28 +442,28 @@ class InvoiceHelper
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && $otherQuotationRequestsHaveStatusExecuted > 0 && $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved === 0) {
                             //regel 38 Excel
-                            $status = $this->OpportunityStatusId('executed');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'executed');
                         }
 
                         if($otherVisitsHaveStatusOtherThenDoneCancelled === 0 && ($otherQuotationRequestsHaveStatusExecuted === 0 || $otherQuotationRequestsHaveStatusOtherThenExecutedNotPossibleNotApproved > 0)) {
                             //regel 39 Excel
-                            $status = $this->OpportunityStatusId('pending');
-                            $opportunity->status_id = $status;
-                            $opportunity->save();
+                            $this->SetOpportunityStatus($opportunity, 'pending');
                         }
                         break;
                     //Aanvraag gekoppeld
                     case 'linked':
                         //regel 40 Excel
-                        $status = $this->OpportunityStatusId('pending');
-                        $opportunity->status_id = $status;
-                        $opportunity->save();
+                        $this->SetOpportunityStatus($opportunity, 'pending');
                         break;
                 }
                 break;
         }
+    }
+
+    private function SetOpportunityStatus($opportunity, $status) {
+        $statusId = $this->OpportunityStatusId($status);
+        $opportunity->status_id = $statusId;
+        $opportunity->save();
     }
 
     private function OpportunityStatusId($codeRef) {

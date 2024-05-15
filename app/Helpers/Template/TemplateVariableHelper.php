@@ -2547,9 +2547,9 @@ class TemplateVariableHelper
             break;
             case 'deelname_bedrag_toegekend':
                 if ($projectTypeCodeRef == 'loan') {
-                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '' );
+                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '.' );
                 } else {
-                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional($model->order)->participation)->project->currentBookWorth() ), 2, ',', '');
+                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional(optional($model->order)->participation)->project)->currentBookWorth() ), 2, ',', '.');
                 }
                 return $amount;
             break;
@@ -2562,7 +2562,7 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->order->contact->iban_attn;
             case 'totaal_incl_btw':
-                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
+                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '.');
             case 'datum':
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";

@@ -409,7 +409,7 @@ class FreeFieldDetailsFormGeneralEdit extends Component {
                                     error={this.state.errors.fieldNameWebform}
                                     errorMessage={this.state.errorsMessage.fieldNameWebform}
                                     textToolTip={
-                                        'Te gebruiken veldnaam voor webformulier in camel_case notatie. Alleen kleine letters, cijfers en liggend streepje (undescore) toegestaan.' +
+                                        'Te gebruiken veldnaam voor webformulier in snake_case notatie. Alleen kleine letters, cijfers en liggend streepje (undescore) toegestaan.' +
                                         'Veldnamen voor webformulieren hebben altijd een vaste prefix, afhankelijk van onderdeel.'
                                     }
                                 />

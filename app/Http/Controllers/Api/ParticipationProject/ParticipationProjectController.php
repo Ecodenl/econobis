@@ -45,7 +45,7 @@ use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProjectShow;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
@@ -248,7 +248,7 @@ class ParticipationProjectController extends ApiController
             'updatedBy',
         ]);
 
-        return FullParticipantProject::make($participantProject);
+        return FullParticipantProjectShow::make($participantProject);
     }
 
     public function store(RequestInput $requestInput)

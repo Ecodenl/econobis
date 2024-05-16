@@ -26,12 +26,11 @@ class FullParticipantProjectShow extends JsonResource
      */
     public function toArray($request)
     {
-        // hier niet meer nodig, nu alleen in FullParticipantProjectShow
-//        $participantMutations =  $this->mutations;
-//        if($participantMutations)
-//        {
-//            $participantMutations = $participantMutations->sortByDesc('date_sort');
-//        }
+        $participantMutations = null;
+        if($this->mutations)
+        {
+            $participantMutations = $this->mutations->sortByDesc('date_sort');
+        }
 
         return
             [

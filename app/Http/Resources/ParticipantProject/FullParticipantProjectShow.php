@@ -24,6 +24,12 @@ class FullParticipantProjectShow extends JsonResource
      */
     public function toArray($request)
     {
+        $participantMutations = null;
+        if($this->mutations)
+        {
+            $participantMutations = $this->mutations->sortByDesc('date_sort');
+        }
+
         return
             [
                 'id' => $this->id,
@@ -53,7 +59,7 @@ class FullParticipantProjectShow extends JsonResource
                 'updatedAt' => $this->updated_at,
                 'updatedWith' => $this->updated_with,
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
-                'participantMutations' => FullParticipantMutation::collection($this->whenLoaded('mutations')->sortByDesc('date_sort')),
+                'participantMutations' => FullParticipantMutation::collection($participantMutations),
                 'obligationNumbers' => GenericResource::collection($this->whenLoaded('obligationNumbers')),
                 //todo WM: nog wijzigen (zie bijv. FullIntake
                 'documentCountNotOnPortal' => $this->documentsNotOnPortal()->count(),

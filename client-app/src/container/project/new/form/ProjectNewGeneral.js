@@ -374,11 +374,10 @@ const ProjectFormNewGeneral = ({
                         onChangeAction={handleContactGroupIds}
                         error={errors.contactGroupIds}
                         errorMessage={errorMessages.contactGroupIds}
-                            required={'required'}
-                        />
-                    </div>
-                )}
-
+                        required={'required'}
+                    />
+                </div>
+            )}
             {isMembershipRequired ? (
                 <>
                     <div className="row">

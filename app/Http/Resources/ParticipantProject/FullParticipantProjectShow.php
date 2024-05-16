@@ -8,9 +8,7 @@ use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Order\FullOrder;
-//use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
-use App\Http\Resources\Project\GridProjectRevenue;
-use App\Http\Resources\Project\GridRevenuesKwh;
+use App\Http\Resources\ParticipantMutation\FullParticipantMutation;
 use App\Http\Resources\Project\ProjectResourceForParticipation;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -41,8 +39,8 @@ class FullParticipantProjectShow extends JsonResource
                 'address' => FullAddress::make($this->whenLoaded('address')),
                 'projectId' => $this->project_id,
                 'project' => ProjectResourceForParticipation::make($this->whenLoaded('project')),
-                'relatedRevenues' => GridProjectRevenue::collection($this->whenLoaded('projectRevenues')),
-                'relatedRevenuesKwh' => GridRevenuesKwh::collection($this->whenLoaded('revenuesKwh')),
+                'relatedRevenues' => $this->participantProjectRevenues ? GridParticipantProjectRevenue::collection($this->participantProjectRevenues) : null,
+                'relatedRevenuesKwh' => $this->participantProjectRevenuesKwh ? GridParticipantProjectRevenueKwh::collection($this->participantProjectRevenuesKwh) : null,
                 'relatedOrders' => FullOrder::collection(Order::where('participation_id', $this->id)->get()),
                 'didAcceptAgreement' => $this->did_accept_agreement,
                 'dateDidAcceptAgreement' => $this->date_did_accept_agreement,
@@ -84,15 +82,10 @@ class FullParticipantProjectShow extends JsonResource
                 'participationsIndicationOfRestitutionEnergyTaxTotal' => $this->participationsIndicationOfRestitutionEnergyTaxTotal,
                 'dateTerminated' => $this->date_terminated,
                 'dateRegister' => $this->date_register,
-                'dateEntryFirstDeposit' => $this->dateEntryFirstDeposit,
-                'dateEntryLastMutation' => $this->dateEntryLastMutation,
                 'terminatedAllowed' => $this->terminatedAllowed,
                 'undoTerminatedAllowed' => $this->undoTerminatedAllowed,
-                'dateTerminatedAllowedFrom' => $this->dateTerminatedAllowedFrom,
-                'dateTerminatedAllowedTo' => $this->dateTerminatedAllowedTo,
-                'participantBelongsToMembershipGroup' => $this->participant_belongs_to_membership_group,
+                'participantBelongsToMembershipGroup' => $this->participantBelongsToMembershipGroup,
                 'participantChoiceMembership' => $this->choice_membership,
-                'hasNotConfirmedRevenuesKwh' => $this->getHasNotConfirmedRevenuesKwh(),
             ];
     }
 }

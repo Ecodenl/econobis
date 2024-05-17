@@ -15,6 +15,7 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
+import ProjectDetailsAPI from '../../../../api/project/ProjectDetailsAPI';
 
 class OrderNewForm extends Component {
     constructor(props) {
@@ -34,7 +35,7 @@ class OrderNewForm extends Component {
                 administrationId: '',
                 statusId: 'concept',
                 subject: '',
-                participationId: '',
+                participationId: props.participationId || '',
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -93,6 +94,11 @@ class OrderNewForm extends Component {
                     this.checkContactCollectMandate
                 );
             });
+
+        // this.state.order.participationId &&
+        //     ProjectDetailsAPI.fetchProject(this.state.order.participationId).then(payload => {
+        //         this.setState({ order: { administrationId: payload.administrationId } });
+        //     });
 
         EmailTemplateAPI.fetchEmailTemplatesPeek().then(payload => {
             this.setState({

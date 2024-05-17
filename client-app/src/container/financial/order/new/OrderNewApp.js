@@ -22,7 +22,10 @@ class OrderNewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <OrderNewForm contactId={this.props.params.contactId} />
+                        <OrderNewForm
+                            contactId={this.props.params.contactId}
+                            participationId={this.props.params.participationId}
+                        />
                     </div>
                 </div>
                 <div className="col-md-3" />

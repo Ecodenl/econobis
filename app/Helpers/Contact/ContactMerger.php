@@ -51,7 +51,7 @@ class ContactMerger
         $toHoomAccountId = $this->toContact->hoom_account_id;
         $fromHoomAccountId = $this->fromContact->hoom_account_id;
         if ($toHoomAccountId && $fromHoomAccountId && $toHoomAccountId !== $fromHoomAccountId) {
-            throw new ContactMergeException('Contacten hebben een verschillende Hoom account id, verwijder eerst één van de twee Hoom account id\'s handmatig. Vervolgens moet het contact_id ook in het Hoomdossier worden aangepast');
+            throw new ContactMergeException('Contacten hebben een verschillende Hoom account id\'s, wijzig eerst één van de twee Hoom account id\'s handmatig. Vervolgens moet het contact id ook in het Hoomdossier worden aangepast');
         }
 
         if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {
@@ -69,8 +69,6 @@ class ContactMerger
         if ($toGroupInspectionPersontype && $fromGroupInspectionPersontype && $toGroupInspectionPersontype->inspection_person_type_id !== $fromGroupInspectionPersontype->inspection_person_type_id) {
             throw new ContactMergeException('Contacten hebben beide een verschillende rol in "rol in buurtaanpak", een contact mag maar één unieke rol hebben.');
         }
-
-
     }
 
     private function doMerge()

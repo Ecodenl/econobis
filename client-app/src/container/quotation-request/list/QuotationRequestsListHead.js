@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import { setQuotationRequestsSortsFilter } from '../../../actions/quotation-request/QuotationRequestsSortsActions';
 
 const QuotationRequestsListHead = props => {

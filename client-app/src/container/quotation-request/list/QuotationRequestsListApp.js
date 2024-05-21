@@ -31,7 +31,7 @@ function QuotationRequestsListApp() {
 
     useEffect(() => {
         fetchQuotationRequestsData();
-    }, [quotationRequestsPagination, opportunityActionId]);
+    }, [quotationRequestsFilters, quotationRequestsSorts, quotationRequestsPagination, opportunityActionId]);
 
     useEffect(() => {
         if (opportunityActionType === 'all') {
@@ -53,50 +53,38 @@ function QuotationRequestsListApp() {
 
     function getCSV() {
         dispatch(blockUI());
-        setTimeout(() => {
-            const filters = filterHelper(quotationRequestsFilters);
-            const sorts = quotationRequestsSorts;
+        const filters = filterHelper(quotationRequestsFilters);
+        const sorts = quotationRequestsSorts;
 
-            QuotationRequestAPI.getCSV({ filters, sorts })
-                .then(payload => {
-                    fileDownload(payload.data, 'kansacties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
-                    dispatch(unblockUI());
-                })
-                .catch(error => {
-                    dispatch(unblockUI());
-                });
-        }, 100);
+        QuotationRequestAPI.getCSV({ filters, sorts })
+            .then(payload => {
+                fileDownload(payload.data, 'kansacties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                dispatch(unblockUI());
+            })
+            .catch(error => {
+                dispatch(unblockUI());
+            });
     }
 
     function fetchQuotationRequestsData() {
-        setTimeout(() => {
-            let filters = filterHelper(quotationRequestsFilters);
-            if (opportunityActionId > 0) {
-                filters = [...filters, { field: 'opportunityActionId', data: opportunityActionId }];
-            }
+        let filters = filterHelper(quotationRequestsFilters);
+        if (opportunityActionId > 0) {
+            filters = [...filters, { field: 'opportunityActionId', data: opportunityActionId }];
+        }
 
-            const sorts = quotationRequestsSorts;
-            const pagination = { limit: 20, offset: quotationRequestsPagination.offset };
+        const sorts = quotationRequestsSorts;
+        const pagination = { limit: 20, offset: quotationRequestsPagination.offset };
 
-            dispatch(fetchQuotationRequests(filters, sorts, pagination));
-        }, 100);
+        dispatch(fetchQuotationRequests(filters, sorts, pagination));
     }
 
     function resetQuotationRequestFilters() {
         dispatch(clearFilterQuotationRequests());
-        fetchQuotationRequestsData();
     }
 
     function onSubmitFilter() {
-        // const filters = filterHelper(quotationRequestsFilters);
-        // const sorts = quotationRequestsSorts;
-
         dispatch(clearQuotationRequests());
         dispatch(setQuotationRequestsPagination({ page: 0, offset: 0 }));
-
-        setTimeout(() => {
-            fetchQuotationRequestsData();
-        }, 100);
     }
 
     function handlePageClick(data) {
@@ -125,7 +113,7 @@ function QuotationRequestsListApp() {
                         setOpportunityActionTypeAll={() => setOpportunityActionType('all')}
                         quotationRequestsPagination={quotationRequestsPagination}
                         onSubmitFilter={onSubmitFilter}
-                        refreshQuotationRequestsData={fetchQuotationRequestsData}
+                        refreshQuotationRequestsData={() => fetchQuotationRequestsData()}
                         handlePageClick={handlePageClick}
                         opportunityActionType={opportunityActionType}
                         opportunityActionId={opportunityActionId}

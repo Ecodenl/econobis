@@ -155,7 +155,7 @@ function QuotationRequestsList({
                 <DataTable>
                     <DataTableHead>
                         <QuotationRequestsListHead
-                            refreshQuotationRequestsData={() => refreshQuotationRequestsData()}
+                            refreshQuotationRequestsData={refreshQuotationRequestsData}
                             multiSelectEnabled={multiSelectEnabled}
                         />
                         <QuotationRequestsListFilter

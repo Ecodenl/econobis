@@ -72,7 +72,7 @@ class InvoiceViewApp extends Component {
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <InvoiceViewForm invoiceDetails={this.props.invoiceDetails} scale={this.state.scale} />
+                        <InvoiceViewForm scale={this.state.scale} />
                     </div>
                 </div>
             </div>

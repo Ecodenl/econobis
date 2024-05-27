@@ -213,53 +213,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
             )}
 
             {permissions.menuEmail && (
-                <Nav id="email">
+                <Nav id="mailclient">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_email} />
                     </NavIcon>
                     <NavText>
-                        <Link className="sidebar-link-header" to="emails/inbox">
-                            E-mail
-                        </Link>
-                    </NavText>
-                    <Nav id="inbox">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/inbox">
-                                Ontvangen
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="sent">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/sent">
-                                Verzonden
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="concepts">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/concept">
-                                Concepten
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    <Nav id="removed">
-                        <NavText>
-                            <Link className="sidebar-link" to="emails/removed">
-                                Verwijderd
-                            </Link>
-                        </NavText>
-                    </Nav>
-                </Nav>
-            )}
-            {permissions.menuEmail && (
-                <Nav id="mailclient">
-                    <NavIcon>
-                        <SvgIcon size={20} icon={ic_fiber_new} />
-                    </NavIcon>
-                    <NavText>
                         <Link className="sidebar-link-header" to="mailclient/inbox">
-                            Mailclient (beta)
+                            Mailclient
                         </Link>
                     </NavText>
                     <Nav id="inbox">
@@ -286,6 +246,47 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <Nav id="removed">
                         <NavText>
                             <Link className="sidebar-link" to="mailclient/removed">
+                                Verwijderd
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
+
+            {permissions.menuEmail && (
+                <Nav id="email">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_email} />
+                    </NavIcon>
+                    <NavText>
+                        <Link className="sidebar-link-header" to="emails/inbox">
+                            E-mail (oud)
+                        </Link>
+                    </NavText>
+                    <Nav id="inbox">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/inbox">
+                                Ontvangen
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="sent">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/sent">
+                                Verzonden
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="concepts">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/concept">
+                                Concepten
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="removed">
+                        <NavText>
+                            <Link className="sidebar-link" to="emails/removed">
                                 Verwijderd
                             </Link>
                         </NavText>

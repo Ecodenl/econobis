@@ -219,7 +219,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     </NavIcon>
                     <NavText>
                         <Link className="sidebar-link-header" to="mailclient/inbox">
-                            Mailclient
+                            E-mail
                         </Link>
                     </NavText>
                     <Nav id="inbox">

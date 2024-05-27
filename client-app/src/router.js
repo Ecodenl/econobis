@@ -390,7 +390,10 @@ const Routes = () => {
                     />
                     /* Orders */
                     <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
-                    <Route path="order/nieuw/contact/:contactId/deelnemer/:participationId" component={OrderNewApp} />
+                    <Route
+                        path="order/nieuw/contact/:contactId/deelnemer/:participationId/administratie/:administrationId"
+                        component={OrderNewApp}
+                    />
                     <Route path="order/:id" component={OrderDetailsApp} />
                     <Route path="order/inzien/:id" component={InvoicePreviewApp} />
                     /* Nota's */

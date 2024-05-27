@@ -43,7 +43,7 @@ class ParticipantDetailsHarmonica extends Component {
 
     newOrder = () => {
         hashHistory.push(
-            `/order/nieuw/contact/${this.props.participant.contact.id}/deelnemer/${this.props.participant.id}`
+            `/order/nieuw/contact/${this.props.participant.contact.id}/deelnemer/${this.props.participant.id}/administratie/${this.props.participant.project.administrationId}`
         );
     };
 

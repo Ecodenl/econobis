@@ -25,6 +25,7 @@ class OrderNewApp extends Component {
                         <OrderNewForm
                             contactId={this.props.params.contactId}
                             participationId={this.props.params.participationId}
+                            administrationId={this.props.params.administrationId}
                         />
                     </div>
                 </div>

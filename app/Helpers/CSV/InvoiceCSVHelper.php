@@ -139,7 +139,7 @@ class InvoiceCSVHelper
                 'payment_type' => 'Betaalwijze',
                 'date_collection_formatted' => 'Incassodatum',
                 'iban' => 'Ibannr',
-                'iban_attn' => 'Iban t.n.v.',
+                'iban_attn' => 'Iban tnv',
                 'date_paid' => 'Datum betaald',
                 'amount_paid' => 'Bedrag betaald',
                 'payment_reference' => 'Betalingskenmerk',

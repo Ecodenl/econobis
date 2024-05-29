@@ -39,7 +39,7 @@ class InvoiceCSVHelper
                 'order.contact.organisation',
                 'order.contact.primaryEmailAddress',
                 'order.contact.primaryphoneNumber',
-                'order.contact.primaryAddress.country'
+                'order.contact.primaryAddress.country',
             ]);
 
             $this->csvExporter->beforeEach(function ($invoice) {

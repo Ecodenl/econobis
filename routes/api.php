@@ -599,6 +599,7 @@ Route::namespace('Api')
 
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
+        Route::get('invoice/csvwithproducts', 'Invoice\InvoiceController@csvWithProducts');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');

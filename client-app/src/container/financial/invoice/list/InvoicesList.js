@@ -161,6 +161,7 @@ class InvoicesList extends Component {
             // Pagination op 50
             const pagination = { limit: 50, offset: this.props.invoicesPagination.offset };
             const administrationId = this.props.administrationId;
+
             const onlyEmailInvoices = this.state.onlyEmailInvoices;
             const onlyPostInvoices = this.state.onlyPostInvoices;
             const setInvoicesPaid = this.state.setInvoicesPaid;
@@ -188,6 +189,28 @@ class InvoicesList extends Component {
             InvoicesAPI.getCSV({ filters, sorts, administrationId })
                 .then(payload => {
                     fileDownload(payload.data, 'Notas-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    this.props.unblockUI();
+                })
+                .catch(error => {
+                    this.props.unblockUI();
+                });
+        }, 100);
+    };
+
+    getCSVWithProducts = () => {
+        this.props.blockUI();
+        setTimeout(() => {
+            const filters = filterHelper(this.props.invoicesFilters);
+            const sorts = this.props.invoicesSorts;
+            const administrationId = this.props.administrationId;
+            const administrationCode = this.props.administrationCode;
+
+            InvoicesAPI.getCSVWithProducts({ filters, sorts, administrationId })
+                .then(payload => {
+                    fileDownload(
+                        payload.data,
+                        'Notas-' + administrationCode + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {
@@ -526,7 +549,12 @@ class InvoicesList extends Component {
                     <div className="col-md-4">
                         <div className="btn-group btn-group-flex" role="group">
                             <ButtonIcon iconName={'refresh'} onClickAction={this.resetInvoiceFilters} />
-                            <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
+                            <ButtonIcon iconName={'download'} onClickAction={this.getCSV} title="Exporteer nota's" />
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.getCSVWithProducts}
+                                title="Exporteer nota's met notaregels"
+                            />
                             {(this.props.invoicesFilters.statusId.data == 'to-send' ||
                                 this.props.invoicesFilters.statusId.data == 'error-sending') &&
                                 this.props.invoicesFilters.paymentTypeId.data == 'collection' &&

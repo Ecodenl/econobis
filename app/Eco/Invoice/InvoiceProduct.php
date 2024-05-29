@@ -143,6 +143,11 @@ class InvoiceProduct extends Model
         return floatval( number_format( ($amountExclVat + $amountReductionAmountExclVat + $amountReductionPercentageExclVat), 2, '.', ''));
     }
 
+    public function getAmountInclReductionExclVatAttribute()
+    {
+        return $this->getAmountInclReductionExclVat();
+    }
+
     public function getAmountInclReductionVat()
     {
         $inputInclVat = false;
@@ -158,6 +163,11 @@ class InvoiceProduct extends Model
             $amountInclReductionVat = $this->getAmountInclReductionExclVat() * $vatFactor;
         }
         return floatval( number_format( $amountInclReductionVat, 2, '.', ''));
+    }
+
+    public function getAmountInclReductionInclVatAttribute()
+    {
+        return $this->getAmountInclReductionInclVat();
     }
 
     public function getAmountInclReductionInclVat()

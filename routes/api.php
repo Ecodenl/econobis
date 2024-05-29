@@ -580,6 +580,7 @@ Route::namespace('Api')
 
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/csv', 'Order\OrderController@csv');
+        Route::get('order/csvwithproducts', 'Order\OrderController@csvWithProducts');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/amount-collection', 'Order\OrderController@getAmountCollection');
         Route::get('order/{order}', 'Order\OrderController@show');

@@ -220,7 +220,7 @@ class InvoiceCSVHelper
                 $invoicesProduct->invoice->total_vat_incl_reduction_formatted = $this->formatFinancial($invoicesProduct->invoice->total_vat_incl_reduction);
                 $invoicesProduct->invoice->amount_paid = $this->formatFinancial($invoicesProduct->invoice->amount_paid);
 
-                $invoicesProduct->amount_incl_reduction_excl_vat = $invoicesProduct->amount_incl_reduction_incl_vat;
+                $invoicesProduct->amount_incl_reduction_incl_vat = $invoicesProduct->amount_incl_reduction_incl_vat;
                 $invoicesProduct->amount_incl_reduction_excl_vat = $invoicesProduct->amount_incl_reduction_excl_vat;
             });
 

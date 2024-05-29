@@ -274,9 +274,6 @@ class OrderCSVHelper
                 $ordersProduct->order->payment_type = $ordersProduct->order->getPaymentType()->name;
                 $ordersProduct->order->status = $ordersProduct->order->getStatus()->name;
                 $ordersProduct->order->btw = $ordersProduct->order->getTotalInclVatInclReductionAttribute() - $ordersProduct->order->getTotalExclVatInclReductionAttribute();
-
-                $ordersProduct->amount_incl_reduction_incl_vat = $ordersProduct->amount_incl_reduction_incl_vat;
-                $ordersProduct->amount_incl_reduction_excl_vat = $ordersProduct->amount_incl_reduction_excl_vat;
             });
 
 

@@ -188,6 +188,25 @@ class PersonController extends ApiController
 
                     return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al:' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
                 }
+
+                //now we just check for the email
+                $exists = DB::table('contacts')
+                    ->join('email_addresses', 'contacts.id', '=',
+                        'email_addresses.contact_id')
+                    ->where('email_addresses.email', $emailAddress->email)
+                    ->whereNull('contacts.deleted_at');
+                if ($exists->count() == 1) {
+                    $duplicateContact = $exists->first();
+                    $duplicateContactData = "<br><br>" . $duplicateContact->number . "<br>" . $duplicateContact->full_name;
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met e-mail ' . $emailAddress->email . ' bestaat al.' . $duplicateContactData, 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+                } else if ($exists->count() > 1) {
+                    $duplicateContactsList = "";
+                    foreach($exists->get() as $contact) {
+                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                    }
+
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met e-mail ' . $emailAddress->email . ' bestaat al:' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
+                }
             }
         }
 

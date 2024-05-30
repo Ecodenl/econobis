@@ -26,6 +26,7 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -152,7 +153,7 @@ class PersonController extends ApiController
         if($request->input('checkDuplicates')) {
             //check for duplicates lastname + postal_code + house number + house number addition
             if ($address) {
-                $exists = DB::table('contacts')
+                $exists = DB::table('contacts')->select('*', 'contacts.number as contact_number')
                     ->join('people', 'contacts.id', '=', 'people.contact_id')
                     ->join('addresses', 'contacts.id', '=',
                         'addresses.contact_id')
@@ -161,21 +162,30 @@ class PersonController extends ApiController
                     ->where('addresses.addition', $address->addition)
                     ->where('addresses.postal_code', str_replace(' ','',$address->postal_code))
                     ->whereNull('contacts.deleted_at');
+
+                if($address->addition != '') {
+                    $addition = ' en huisnummertoevoeging ' . $address->addition;
+                } else {
+                    $addition = '';
+                }
+
                 if ($exists->count() == 1) {
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . $addition . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
                     $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
+                        Log::info(json_encode($contact));
+                        $duplicateContactsList .= "<br>" . $contact->contact_number . " : " . $contact->full_name;
                     }
 
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . $addition . ' bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
                 }
             }
 
             //check for duplicates postal_code + house number + house number addition
             if ($address) {
-                $exists = DB::table('contacts')
+                $exists = DB::table('contacts')->select('*', 'contacts.number as contact_number')
                     ->join('people', 'contacts.id', '=', 'people.contact_id')
                     ->join('addresses', 'contacts.id', '=',
                         'addresses.contact_id')
@@ -183,15 +193,23 @@ class PersonController extends ApiController
                     ->where('addresses.addition', $address->addition)
                     ->where('addresses.postal_code', str_replace(' ','',$address->postal_code))
                     ->whereNull('contacts.deleted_at');
+
+                if($address->addition != '') {
+                    $addition = ' en huisnummertoevoeging ' . $address->addition;
+                } else {
+                    $addition = '';
+                }
+
                 if ($exists->count() == 1) {
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . $addition . ' maar andere achternaam bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
                     $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
+                        Log::info(json_encode($contact));
+                        $duplicateContactsList .= "<br>" . $contact->contact_number . " : " . $contact->full_name;
                     }
 
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . $addition . ' maar andere achternaam bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
                 }
             }
 

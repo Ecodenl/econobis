@@ -179,9 +179,14 @@ class PersonController extends ApiController
                     ->where('email_addresses.email', $emailAddress->email)
                     ->whereNull('contacts.deleted_at');
                 if ($exists->count() == 1) {
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id], 409);
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al meerdere keren.', 'contactId' =>  $exists->first()->contact_id], 409);
+                    $duplicateContactsList = "";
+                    foreach($exists->get() as $contact) {
+                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                    }
+
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al:' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
                 }
             }
         }

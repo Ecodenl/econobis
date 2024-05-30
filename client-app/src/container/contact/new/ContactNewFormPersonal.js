@@ -37,6 +37,7 @@ class ContactNewFormPersonal extends Component {
             showPhone: true,
             showConfirmDuplicate: false,
             duplicateText: '',
+            duplicateContactId: '',
             person: {
                 id: '',
                 number: '',
@@ -108,11 +109,15 @@ class ContactNewFormPersonal extends Component {
         this.setState({ showPhone: !this.state.showPhone });
     };
 
-    toggleShowConfirmDuplicate = () => {
+    showConfirmDuplicate = () => {
         this.setState({
             showConfirmDuplicate: !this.state.showConfirmDuplicate,
             buttonLoading: false,
         });
+    };
+
+    hideConfirmDuplicate = contactId => {
+        hashHistory.push('/contact/' + this.state.duplicateContactId);
     };
 
     addressHandleInputLvbagChange = event => {
@@ -346,8 +351,9 @@ class ContactNewFormPersonal extends Component {
                         this.setState({
                             ...this.state,
                             duplicateText: error.response.data.message,
+                            duplicateContactId: error.response.data.contactId,
                         });
-                        this.toggleShowConfirmDuplicate();
+                        this.showConfirmDuplicate();
                     }
                 });
         }
@@ -538,9 +544,10 @@ class ContactNewFormPersonal extends Component {
 
                 {this.state.showConfirmDuplicate && (
                     <ContactNewFormPersonalDuplicateModal
-                        closeModal={this.toggleShowConfirmDuplicate}
+                        closeModal={this.hideConfirmDuplicate}
                         confirmAction={this.confirmDuplicate}
                         duplicateText={this.state.duplicateText}
+                        duplicateContactId={this.state.duplicateContactId}
                     />
                 )}
             </form>

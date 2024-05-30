@@ -13,7 +13,6 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactStatus;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
@@ -178,12 +177,11 @@ class PersonController extends ApiController
                         'email_addresses.contact_id')
                     ->where('people.last_name', $person->last_name)
                     ->where('email_addresses.email', $emailAddress->email)
-                    ->whereNull('contacts.deleted_at')
-                    ->exists();
-                if ($exists) {
-                    abort(409, 'Contact met achternaam ' . $person->last_name
-                        . ' en e-mail ' . $emailAddress->email
-                        . ' bestaat al.');
+                    ->whereNull('contacts.deleted_at');
+                if ($exists->count() == 1) {
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id], 409);
+                } else if ($exists->count() > 1) {
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al meerdere keren.', 'contactId' =>  $exists->first()->contact_id], 409);
                 }
             }
         }

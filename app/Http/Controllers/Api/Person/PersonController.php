@@ -164,9 +164,9 @@ class PersonController extends ApiController
                 if ($exists->count() == 1) {
                     return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
-                    $duplicateContactsList = "";
+                    $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
                     }
 
                     return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
@@ -186,9 +186,9 @@ class PersonController extends ApiController
                 if ($exists->count() == 1) {
                     return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
-                    $duplicateContactsList = "";
+                    $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
                     }
 
                     return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
@@ -207,9 +207,9 @@ class PersonController extends ApiController
                 if ($exists->count() == 1) {
                     return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
-                    $duplicateContactsList = "";
+                    $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
                     }
 
                     return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en e-mail ' . $emailAddress->email . ' bestaat al:' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
@@ -225,9 +225,9 @@ class PersonController extends ApiController
                     $duplicateContact = $exists->first();
                     return response()->json([ 'error' => 409, 'message' => 'Er is al een contact met e-mail ' . $emailAddress->email . '. De naam van dit contact is ' . $duplicateContact->full_name, 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
-                    $duplicateContactsList = "";
+                    $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                        $duplicateContactsList .= "<br>" . $contact->number . " : " . $contact->full_name;
                     }
 
                     return response()->json([ 'error' => 409, 'message' => 'Contact met e-mail ' . $emailAddress->email . ' bestaat al:' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);

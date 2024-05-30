@@ -17,7 +17,7 @@ class ContactNewFormPersonalDuplicateModal extends Component {
                 confirmAction={this.props.confirmAction}
                 title="Duplicaat gevonden"
             >
-                <span>{this.props.duplicateText}</span>
+                <div dangerouslySetInnerHTML={{ __html: this.props.duplicateText }} />
             </Modal>
         );
     }

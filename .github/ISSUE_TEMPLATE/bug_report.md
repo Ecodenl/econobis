@@ -2,14 +2,14 @@
 name: Bug report
 about: Maak een bug rapportage om Econobis te verbeterem
 title: ''
-labels: bug
+labels: bug, Nieuwe Wens
 assignees: ''
 
 ---
 
-**Econobis link:** [bijv test.econobis.nl]
+**Url van Econobis:** [bijv test.econobis.nl]
 
-**Beschrijving: **
+**Beschrijving:**
 Een duidelijke en beknopte beschrijving van wat de bug is.
 
 **Stappen om te reproduceren**

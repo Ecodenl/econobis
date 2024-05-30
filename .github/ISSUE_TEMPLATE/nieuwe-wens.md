@@ -1,14 +1,16 @@
 ---
-name: Feature request
-about: Suggest an idea for this project
+name: Nieuwe wens
+about: Geef hier je nieuwe wens aan
 title: ''
 labels: Nieuwe Wens
 assignees: ''
 
 ---
 
+**Url van Econobis:** [bijv test.econobis.nl]
+
 **Is je functieverzoek gerelateerd aan een probleem? Beschrijf dit alstublieft.**
-Een duidelijke en beknopte beschrijving van wat het probleem is. Bijv. Ik ben altijd gefrustreerd wanneer [...]
+Een duidelijke en beknopte beschrijving van wat het probleem is. Bijv. het is vervelend dat ik meerdere keren moet klikken [...]
 
 **Beschrijf de gewenste oplossing**
 Een duidelijke en beknopte beschrijving van wat je wilt dat er gebeurt.

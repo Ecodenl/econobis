@@ -150,7 +150,7 @@ class PersonController extends ApiController
         }
 
         if($request->input('checkDuplicates')) {
-            //check for duplicates lastname + postal_code + house number
+            //check for duplicates lastname + postal_code + house number + house number addition
             if ($address) {
                 $exists = DB::table('contacts')
                     ->join('people', 'contacts.id', '=', 'people.contact_id')
@@ -158,14 +158,40 @@ class PersonController extends ApiController
                         'addresses.contact_id')
                     ->where('people.last_name', $person->last_name)
                     ->where('addresses.number', $address->number)
-                    ->where('addresses.postal_code', $address->postal_code)
-                    ->whereNull('contacts.deleted_at')
-                    ->exists();
-                if ($exists) {
-                    abort(409, 'Contact met achternaam ' . $person->last_name
-                        . ' en postcode ' . $address->postal_code
-                        . ' en huisnummer ' . $address->number
-                        . ' bestaat al.');
+                    ->where('addresses.addition', $address->addition)
+                    ->where('addresses.postal_code', str_replace(' ','',$address->postal_code))
+                    ->whereNull('contacts.deleted_at');
+                if ($exists->count() == 1) {
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+                } else if ($exists->count() > 1) {
+                    $duplicateContactsList = "";
+                    foreach($exists->get() as $contact) {
+                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                    }
+
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met achternaam ' . $person->last_name . ' en postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
+                }
+            }
+
+            //check for duplicates postal_code + house number + house number addition
+            if ($address) {
+                $exists = DB::table('contacts')
+                    ->join('people', 'contacts.id', '=', 'people.contact_id')
+                    ->join('addresses', 'contacts.id', '=',
+                        'addresses.contact_id')
+                    ->where('addresses.number', $address->number)
+                    ->where('addresses.addition', $address->addition)
+                    ->where('addresses.postal_code', str_replace(' ','',$address->postal_code))
+                    ->whereNull('contacts.deleted_at');
+                if ($exists->count() == 1) {
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al.', 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+                } else if ($exists->count() > 1) {
+                    $duplicateContactsList = "";
+                    foreach($exists->get() as $contact) {
+                        $duplicateContactsList .= "<br><br>" . $contact->number . " : " . $contact->full_name;
+                    }
+
+                    return response()->json([ 'error' => 409, 'message' => 'Contact met postcode ' . $address->postal_code . ' en huisnummer ' . $address->number . ' en huisnummertoevoeging ' . $address->addition . ' maar andere achternaam bestaat al: ' . $duplicateContactsList, 'contactId' =>  '', 'cancelButtonText' => 'Annuleer'], 409);
                 }
             }
 
@@ -197,8 +223,7 @@ class PersonController extends ApiController
                     ->whereNull('contacts.deleted_at');
                 if ($exists->count() == 1) {
                     $duplicateContact = $exists->first();
-                    $duplicateContactData = "<br><br>" . $duplicateContact->number . "<br>" . $duplicateContact->full_name;
-                    return response()->json([ 'error' => 409, 'message' => 'Contact met e-mail ' . $emailAddress->email . ' bestaat al.' . $duplicateContactData, 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
+                    return response()->json([ 'error' => 409, 'message' => 'Er is al een contact met e-mail ' . $emailAddress->email . '. De naam van dit contact is ' . $duplicateContact->full_name, 'contactId' =>  $exists->first()->contact_id, 'cancelButtonText' => 'Annuleer en ga naar bestaand contact'], 409);
                 } else if ($exists->count() > 1) {
                     $duplicateContactsList = "";
                     foreach($exists->get() as $contact) {

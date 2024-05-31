@@ -23,16 +23,6 @@ import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
 class ContactsListApp extends Component {
     constructor(props) {
         super(props);
-        if (!isEmpty(props.params)) {
-            switch (props.params.filter) {
-                case 'type':
-                    this.props.clearFilterContacts();
-                    this.props.setTypeFilter(props.params.value);
-                    break;
-                default:
-                    break;
-            }
-        }
 
         this.state = {
             campaigns: '',
@@ -42,6 +32,7 @@ class ContactsListApp extends Component {
             showSaveAsGroup: false,
             showExtraFilters: false,
             filterType: 'and',
+            dataControleType: '',
             amountOfFilters: 0,
             extraFilters: [],
         };
@@ -52,28 +43,59 @@ class ContactsListApp extends Component {
         this.getFreeFieldsCSV = this.getFreeFieldsCSV.bind(this);
         this.getEnergySuppliersCSV = this.getEnergySuppliersCSV.bind(this);
         this.toggleShowExtraFilters = this.toggleShowExtraFilters.bind(this);
+        this.getDataControleType = this.getDataControleType.bind(this);
+    }
+
+    getDataControleType(params) {
+        return params && params.filter === 'data-controle' ? params.value : '';
     }
 
     componentDidMount() {
+        if (!isEmpty(this.props.params)) {
+            switch (this.props.params.filter) {
+                case 'type':
+                    this.props.clearFilterContacts();
+                    this.props.setTypeFilter(this.props.params.value);
+                    break;
+                case 'data-controle':
+                    this.setState({ dataControleType: this.getDataControleType(this.props.params) });
+                    break;
+                default:
+                    break;
+            }
+        } else {
+            this.props.clearFilterContacts();
+            this.setState({
+                filterType: 'and',
+                dataControleType: '',
+            });
+        }
+
         this.fetchContactsData();
+
         CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
             this.setState({ campaigns: payload });
         });
     }
 
-    componentWillReceiveProps(nextProps) {
-        if (this.props.params.value !== nextProps.params.value) {
-            if (!isEmpty(nextProps.params)) {
-                switch (nextProps.params.filter) {
+    componentDidUpdate(prevProps) {
+        if (this.props.params.value !== prevProps.params.value) {
+            this.props.clearFilterContacts();
+            this.setState({
+                filterType: 'and',
+                dataControleType: '',
+            });
+            if (!isEmpty(this.props.params)) {
+                switch (this.props.params.filter) {
                     case 'type':
-                        this.props.clearFilterContacts();
-                        this.props.setTypeFilter(nextProps.params.value);
+                        this.props.setTypeFilter(this.props.params.value);
+                        break;
+                    case 'data-controle':
+                        this.setState({ dataControleType: this.getDataControleType(this.props.params) });
                         break;
                     default:
                         break;
                 }
-            } else {
-                this.props.clearFilterContacts();
             }
 
             setTimeout(() => {
@@ -88,20 +110,18 @@ class ContactsListApp extends Component {
 
     fetchContactsData = () => {
         setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
+            const { extraFilters, filterType, dataControleType } = this.state;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
             const pagination = { limit: 20, offset: this.props.contactsPagination.offset };
-            const filterType = this.state.filterType;
 
-            this.props.fetchContacts(filters, extraFilters, sorts, pagination, filterType);
+            this.props.fetchContacts(filters, extraFilters, sorts, pagination, filterType, dataControleType);
         }, 100);
     };
 
     saveAsGroup = () => {
-        const extraFilters = this.state.extraFilters;
+        const { extraFilters, filterType } = this.state;
         const filters = filterHelper(this.props.contactsFilters);
-        const filterType = this.state.filterType;
 
         ContactsAPI.saveAsGroup({ filters, extraFilters, filterType }).then(payload => {
             hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
@@ -109,25 +129,24 @@ class ContactsListApp extends Component {
     };
 
     toggleSaveAsGroup = () => {
-        this.setState({
-            showSaveAsGroup: !this.state.showSaveAsGroup,
-        });
+        this.setState(prevState => ({
+            showSaveAsGroup: !prevState.showSaveAsGroup,
+        }));
     };
 
     getCSV = () => {
         this.props.blockUI();
         setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
+            const { extraFilters, filterType, dataControleType } = this.state;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
-            const filterType = this.state.filterType;
 
-            ContactsAPI.getCSV({ filters, extraFilters, sorts, filterType })
+            ContactsAPI.getCSV({ filters, extraFilters, sorts, filterType, dataControleType })
                 .then(payload => {
-                    fileDownload(payload.data, 'Contacten-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(payload.data, `Contacten-${moment().format('YYYY-MM-DD HH:mm:ss')}.csv`);
                     this.props.unblockUI();
                 })
-                .catch(error => {
+                .catch(() => {
                     this.props.unblockUI();
                 });
         }, 100);
@@ -136,20 +155,16 @@ class ContactsListApp extends Component {
     getFreeFieldsCSV = () => {
         this.props.blockUI();
         setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
+            const { extraFilters, filterType } = this.state;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
-            const filterType = this.state.filterType;
 
             ContactsAPI.getFreeFieldsCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
-                    fileDownload(
-                        payload.data,
-                        'Contacten-Vrije-Velden-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
-                    );
+                    fileDownload(payload.data, `Contacten-Vrije-Velden-${moment().format('YYYY-MM-DD HH:mm:ss')}.csv`);
                     this.props.unblockUI();
                 })
-                .catch(error => {
+                .catch(() => {
                     this.props.unblockUI();
                 });
         }, 100);
@@ -158,20 +173,19 @@ class ContactsListApp extends Component {
     getEnergySuppliersCSV = () => {
         this.props.blockUI();
         setTimeout(() => {
-            const extraFilters = this.state.extraFilters;
+            const { extraFilters, filterType } = this.state;
             const filters = filterHelper(this.props.contactsFilters);
             const sorts = this.props.contactsSorts;
-            const filterType = this.state.filterType;
 
             ContactsAPI.getEnergySuppliersCSV({ filters, extraFilters, sorts, filterType })
                 .then(payload => {
                     fileDownload(
                         payload.data,
-                        'Contacten-energieleveranciers-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                        `Contacten-energieleveranciers-${moment().format('YYYY-MM-DD HH:mm:ss')}.csv`
                     );
                     this.props.unblockUI();
                 })
-                .catch(error => {
+                .catch(() => {
                     this.props.unblockUI();
                 });
         }, 100);
@@ -181,32 +195,30 @@ class ContactsListApp extends Component {
         this.props.blockUI();
         setTimeout(() => {
             const maxContacts = 10000;
-            // todo WM: opschonen
-            //
-            // const amountFiles = Math.ceil(this.props.contacts.meta.totalWithConsumptionGas / maxContacts);
-            // const splitsExcel = this.props.contacts.meta.totalWithConsumptionGas > maxContacts;
             const amountFiles = Math.ceil(this.props.contacts.meta.total / maxContacts);
             const splitsExcel = this.props.contacts.meta.total > maxContacts;
-            var counter = 1;
-            for (var i = 1; i <= amountFiles; i++) {
-                var offset = i * maxContacts - maxContacts;
-                var pagination = { limit: maxContacts, offset: offset };
+            let counter = 1;
+
+            for (let i = 1; i <= amountFiles; i++) {
+                const offset = i * maxContacts - maxContacts;
+                const pagination = { limit: maxContacts, offset };
+                const { extraFilters } = this.state;
                 const filters = filterHelper(this.props.contactsFilters);
-                const extraFilters = this.state.extraFilters;
                 const sorts = this.props.contactsSorts;
+
                 ContactsAPI.getExcelAddressEnergyConsumptionGas({ filters, extraFilters, sorts, pagination })
                     .then(payload => {
-                        var excelFileName = `Contacten-verbruik-gas-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
-                        if (splitsExcel) {
-                            var excelFileName = `Contacten-verbruik-gas-${moment().format(
-                                'YYYY-MM-DD HH:mm:ss'
-                            )} (${counter} van ${amountFiles}).xlsx`;
-                        }
+                        const excelFileName = splitsExcel
+                            ? `Contacten-verbruik-gas-${moment().format(
+                                  'YYYY-MM-DD HH:mm:ss'
+                              )} (${counter} van ${amountFiles}).xlsx`
+                            : `Contacten-verbruik-gas-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+
                         fileDownload(payload.data, excelFileName);
-                        counter = counter + 1;
+                        counter++;
                         this.props.unblockUI();
                     })
-                    .catch(error => {
+                    .catch(() => {
                         this.props.unblockUI();
                     });
             }
@@ -217,35 +229,30 @@ class ContactsListApp extends Component {
         this.props.blockUI();
         setTimeout(() => {
             const maxContacts = 10000;
-            // todo WM: opschonen
-            //
-            // const amountFiles = Math.ceil(this.props.contacts.meta.totalWithConsumptionGas / maxContacts);
-            // const splitsExcel = this.props.contacts.meta.totalWithConsumptionGas > maxContacts;
             const amountFiles = Math.ceil(this.props.contacts.meta.total / maxContacts);
             const splitsExcel = this.props.contacts.meta.total > maxContacts;
-            var counter = 1;
-            for (var i = 1; i <= amountFiles; i++) {
-                var offset = i * maxContacts - maxContacts;
-                var pagination = { limit: maxContacts, offset: offset };
+            let counter = 1;
+
+            for (let i = 1; i <= amountFiles; i++) {
+                const offset = i * maxContacts - maxContacts;
+                const pagination = { limit: maxContacts, offset };
+                const { extraFilters } = this.state;
                 const filters = filterHelper(this.props.contactsFilters);
-                const extraFilters = this.state.extraFilters;
                 const sorts = this.props.contactsSorts;
 
                 ContactsAPI.getExcelAddressEnergyConsumptionElectricity({ filters, extraFilters, sorts, pagination })
                     .then(payload => {
-                        var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
-                            'YYYY-MM-DD HH:mm:ss'
-                        )}.xlsx`;
-                        if (splitsExcel) {
-                            var excelFileName = `Contacten-verbruik-elektriciteit-${moment().format(
-                                'YYYY-MM-DD HH:mm:ss'
-                            )} (${counter} van ${amountFiles}).xlsx`;
-                        }
+                        const excelFileName = splitsExcel
+                            ? `Contacten-verbruik-elektriciteit-${moment().format(
+                                  'YYYY-MM-DD HH:mm:ss'
+                              )} (${counter} van ${amountFiles}).xlsx`
+                            : `Contacten-verbruik-elektriciteit-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+
                         fileDownload(payload.data, excelFileName);
-                        counter = counter + 1;
+                        counter++;
                         this.props.unblockUI();
                     })
-                    .catch(error => {
+                    .catch(() => {
                         this.props.unblockUI();
                     });
             }
@@ -264,47 +271,45 @@ class ContactsListApp extends Component {
         this.fetchContactsData();
     };
 
-    onSubmitFilter() {
+    onSubmitFilter = () => {
         this.props.clearContacts();
-
         this.props.setContactsPagination({ page: 0, offset: 0 });
-
         this.fetchContactsData();
-    }
+    };
 
     handlePageClick(data) {
-        let page = data.selected;
-        let offset = Math.ceil(page * 20);
+        const page = data.selected;
+        const offset = Math.ceil(page * 20);
 
         this.props.setContactsPagination({ page, offset });
-
         this.fetchContactsData();
     }
 
     toggleShowCheckboxList = () => {
-        this.setState({
-            showCheckboxList: !this.state.showCheckboxList,
-        });
+        this.setState(prevState => ({
+            showCheckboxList: !prevState.showCheckboxList,
+        }));
     };
+
     toggleShowCheckboxListMerge = () => {
-        this.setState({
-            showCheckboxListMerge: !this.state.showCheckboxListMerge,
-        });
+        this.setState(prevState => ({
+            showCheckboxListMerge: !prevState.showCheckboxListMerge,
+        }));
     };
 
     selectAllCheckboxes = () => {
-        this.setState({
-            checkedAllCheckboxes: !this.state.checkedAllCheckboxes,
-        });
+        this.setState(prevState => ({
+            checkedAllCheckboxes: !prevState.checkedAllCheckboxes,
+        }));
 
         this.props.setCheckedContactAll(!this.state.checkedAllCheckboxes);
     };
 
     handleExtraFiltersChange(extraFilters, amountOfFilters, filterType) {
         this.setState({
-            filterType: filterType,
-            amountOfFilters: amountOfFilters,
-            extraFilters: extraFilters,
+            filterType,
+            amountOfFilters,
+            extraFilters,
         });
 
         this.props.setContactsPagination({ page: 0, offset: 0 });
@@ -314,27 +319,23 @@ class ContactsListApp extends Component {
         }, 100);
     }
 
-    prefillExtraFilter() {
+    prefillExtraFilter = () => {
         this.setState({
             filterType: 'and',
             amountOfFilters: 1,
-            extraFilters: [
-                {
-                    field: 'name',
-                    type: 'eq',
-                    data: '',
-                },
-            ],
+            extraFilters: [{ field: 'name', type: 'eq', data: '' }],
         });
-    }
+    };
 
-    toggleShowExtraFilters() {
-        this.state.extraFilters.length === 0 && !this.state.showExtraFilters && this.prefillExtraFilter();
+    toggleShowExtraFilters = () => {
+        if (this.state.extraFilters.length === 0 && !this.state.showExtraFilters) {
+            this.prefillExtraFilter();
+        }
 
-        this.setState({
-            showExtraFilters: !this.state.showExtraFilters,
-        });
-    }
+        this.setState(prevState => ({
+            showExtraFilters: !prevState.showExtraFilters,
+        }));
+    };
 
     render() {
         return (
@@ -343,12 +344,13 @@ class ContactsListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <ContactsListToolbar
+                                dataControleType={this.state.dataControleType}
                                 showCheckboxList={this.state.showCheckboxList}
                                 showCheckboxListMerge={this.state.showCheckboxListMerge}
-                                toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
-                                toggleShowCheckboxListMerge={() => this.toggleShowCheckboxListMerge()}
-                                resetContactFilters={() => this.resetContactFilters()}
-                                selectAllCheckboxes={() => this.selectAllCheckboxes()}
+                                toggleShowCheckboxList={this.toggleShowCheckboxList}
+                                toggleShowCheckboxListMerge={this.toggleShowCheckboxListMerge}
+                                resetContactFilters={this.resetContactFilters}
+                                selectAllCheckboxes={this.selectAllCheckboxes}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 getCSV={this.getCSV}
                                 getFreeFieldsCSV={this.getFreeFieldsCSV}
@@ -370,10 +372,10 @@ class ContactsListApp extends Component {
                                 contactsPagination={this.props.contactsPagination}
                                 showCheckboxList={this.state.showCheckboxList}
                                 showCheckboxListMerge={this.state.showCheckboxListMerge}
-                                selectAllCheckboxes={() => this.selectAllCheckboxes()}
+                                selectAllCheckboxes={this.selectAllCheckboxes}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
-                                onSubmitFilter={() => this.onSubmitFilter()}
-                                fetchContactsData={() => this.fetchContactsData()}
+                                onSubmitFilter={this.onSubmitFilter}
+                                fetchContactsData={this.fetchContactsData}
                                 handlePageClick={this.handlePageClick}
                             />
                         </div>
@@ -402,17 +404,15 @@ class ContactsListApp extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        contacts: state.contacts.list,
-        contactsFilters: state.contacts.filters,
-        contactsSorts: state.contacts.sorts,
-        contactsPagination: state.contacts.pagination,
-    };
-};
+const mapStateToProps = state => ({
+    contacts: state.contacts.list,
+    contactsFilters: state.contacts.filters,
+    contactsSorts: state.contacts.sorts,
+    contactsPagination: state.contacts.pagination,
+});
 
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
         {
             fetchContacts,
             clearContacts,
@@ -425,6 +425,5 @@ const mapDispatchToProps = dispatch => {
         },
         dispatch
     );
-};
 
 export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);

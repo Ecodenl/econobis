@@ -53,7 +53,7 @@ const ParticipantFormView = props => {
                     value={contact ? contact.fullName : ''}
                     link={contact ? 'contact/' + contact.id : ''}
                 />
-                <ViewText label={'Administratie'} value={project.administration ? project.administration.name : ''} />
+                <ViewText label={'Administratie'} value={project ? project.administrationName : ''} />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

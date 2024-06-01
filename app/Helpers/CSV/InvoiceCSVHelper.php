@@ -16,16 +16,12 @@ class InvoiceCSVHelper
 {
     private $csvExporter;
     private $invoices;
-    private $invoicesProducts;
 
     public function __construct($invoices)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->invoices = $invoices;
-
-        $invoicesIdsList = $invoices->pluck('id');
-        $this->invoicesProducts = invoiceProduct::whereIn('invoice_id', $invoicesIdsList)->orderBy('invoice_id', 'DESC')->get();
     }
 
     public function downloadCSV(){
@@ -158,7 +154,14 @@ class InvoiceCSVHelper
         $csv = '';
         $headers = true;
 
-        foreach ($this->invoicesProducts->chunk(500) as $chunk) {
+        $invoicesIdsList = $this->invoices->pluck('id')->toArray();
+        $invoicesProducts = InvoiceProduct::query();
+        foreach(array_chunk($invoicesIdsList, 900) as $chunk){
+            $invoicesProducts->orWhereIn('invoice_id', $chunk);
+        }
+        $invoicesProducts->orderBy('invoice_id', 'DESC');
+
+        foreach ($invoicesProducts->get()->chunk(500) as $chunk) {
             $chunk->load([
                 'invoice.order.contact.person',
                 'invoice.order.contact.organisation',

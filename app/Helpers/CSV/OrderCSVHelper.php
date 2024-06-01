@@ -16,16 +16,12 @@ class OrderCSVHelper
 {
     private $csvExporter;
     private $orders;
-    private $ordersProducts;
 
     public function __construct($orders)
     {
         $this->csvExporter = new Export();
         $this->csvExporter->getCsv()->setDelimiter(';');
         $this->orders = $orders;
-
-        $ordersProducts = $orders->pluck('id');
-        $this->ordersProducts = orderProduct::whereIn('order_id', $ordersProducts)->orderBy('order_id', 'DESC')->get();
     }
 
     public function downloadCSV(){
@@ -216,7 +212,14 @@ class OrderCSVHelper
             }
         }
 
-        foreach ($this->ordersProducts->chunk(500) as $chunk) {
+        $ordersProductsIds = $this->orders->pluck('id')->toArray();
+        $ordersProducts = new OrderProduct();
+        foreach(array_chunk($ordersProductsIds, 900) as $chunk){
+            $ordersProducts = $ordersProducts->orWhereIn('order_id', $chunk);
+        }
+        $ordersProducts = $ordersProducts->orderBy('order_id', 'DESC')->get();
+
+        foreach ($ordersProducts->chunk(500) as $chunk) {
             $chunk->load([
                 'order.contact.person.title',
                 'order.contact.organisation',

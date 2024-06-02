@@ -4,13 +4,12 @@ namespace App\Http\Resources\Order;
 
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Http\Resources\Administration\FullAdministration;
-use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Contact\FullOrderContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\Invoice\FullInvoice;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
 use App\Http\Resources\Project\FullProject;
 use App\Http\Resources\Task\FullTask;
 use App\Http\Resources\User\FullUser;
@@ -43,7 +42,7 @@ class FullOrder extends JsonResource
                 'project' => FullProject::make($project),
 
                 'contactId' => $this->contact_id,
-                'contact' => FullContact::make($this->whenLoaded('contact')),
+                'contact' => FullOrderContact::make($this->whenLoaded('contact')),
 
                 'participationId' => $this->participation_id,
 

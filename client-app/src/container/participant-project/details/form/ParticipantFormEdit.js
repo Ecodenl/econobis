@@ -201,7 +201,7 @@ class ParticipantFormEdit extends Component {
                     />
                     <ViewText
                         label={'Administratie'}
-                        value={project.administration ? project.administration.name : ''}
+                        value={project ? project.administrationName : ''}
                         className={'col-sm-6 form-group'}
                     />
                 </div>

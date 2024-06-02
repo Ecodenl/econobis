@@ -43,6 +43,9 @@ class QuotationRequestsListItem extends Component {
             status,
             datePlanned,
             dateReleased,
+            showSelectQuotationRequests,
+            toggleQuotationRequestCheck,
+            quotationRequestIds,
         } = this.props;
 
         return (
@@ -52,6 +55,20 @@ class QuotationRequestsListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
+                {showSelectQuotationRequests && (
+                    <td>
+                        <input
+                            type="checkbox"
+                            name={id}
+                            onChange={toggleQuotationRequestCheck}
+                            checked={
+                                quotationRequestIds && quotationRequestIds.length > 0
+                                    ? quotationRequestIds.includes(id)
+                                    : false
+                            }
+                        />
+                    </td>
+                )}
                 <td>{organisationOrCoach && organisationOrCoach.fullName}</td>
                 <td>{opportunity && opportunity.intake.contact.fullName}</td>
                 <td>{opportunity && opportunity.intake.fullAddress}</td>

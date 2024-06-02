@@ -12,7 +12,7 @@ import moment from 'moment/moment';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [underReview, setUnderReview] = useState(initialQuotationRequest.status?.codeRef === 'under-review');
     const [approved, setApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'approved'
@@ -370,13 +370,7 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

@@ -20,7 +20,6 @@ function DefaultContactOrganisationView({ portalSettings, initialContact }) {
         didAgreeAvg,
         dateDidAgreeAvg,
         number,
-        primaryOccupations,
         isParticipantPcrProject,
     } = initialContact;
 

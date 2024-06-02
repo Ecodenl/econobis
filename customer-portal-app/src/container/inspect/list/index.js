@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Table from 'react-bootstrap/Table';
@@ -32,18 +31,15 @@ function Inspectlist(props) {
     const [sortOn, setSortOn] = useState({ col: 'contactFullName', desc: false });
 
     useEffect(() => {
-        const campaignId = props.match.params.campaignId;
-
-        QuotationRequestAPI.fetchAll(campaignId).then(response => {
-            setQuotationRequestsArray(response.data);
-
-            setIsLoading(false);
-        });
-
         QuotationRequestAPI.fetchAllQuotationRequestStatus().then(payload => {
             setStatuses(payload.data.data);
         });
-    }, [props.user]);
+
+        QuotationRequestAPI.fetchAll(props.match.params.campaignId).then(response => {
+            setQuotationRequestsArray(response.data);
+            setIsLoading(false);
+        });
+    }, []);
 
     const getFilteredQuotationRequests = () => {
         let varQuotationRequestsArray = quotationRequestsArray;
@@ -174,299 +170,325 @@ function Inspectlist(props) {
     };
 
     return (
-        <Container className={'content-section'}>
-            <Row>
-                <Col>
-                    <h1 className="content-heading">Overzicht buurtaanpak</h1>
-                </Col>
-            </Row>
-            <Row>
-                <Col>
-                    {isLoading ? (
-                        <LoadingView />
-                    ) : quotationRequestsArray.length === 0 ? (
-                        'Geen gegevens beschikbaar.'
-                    ) : (
-                        <Table responsive>
-                            <thead>
-                                <tr>
-                                    <th>
-                                        Naam
-                                        <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'contactFullName', desc: false })} />
-                                        <FiArrowDown
-                                            onClick={() => setSortOn({ col: 'contactFullName', desc: true })}
-                                        />
-                                    </th>
-                                    <th>
-                                        Adres
-                                        <br />
-                                        <FiArrowUp
-                                            onClick={() =>
-                                                setSortOn({
-                                                    col: 'streetPostalCodeCity',
-                                                    desc: false,
-                                                })
-                                            }
-                                        />
-                                        <FiArrowDown
-                                            onClick={() =>
-                                                setSortOn({
-                                                    col: 'streetPostalCodeCity',
-                                                    desc: true,
-                                                })
-                                            }
-                                        />
-                                    </th>
-                                    <th>
-                                        Status
-                                        <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'statusOrder', desc: false })} />
-                                        <FiArrowDown onClick={() => setSortOn({ col: 'statusOrder', desc: true })} />
-                                    </th>
-                                    <th>
-                                        Datum afspraak
-                                        <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'datePlanned', desc: false })} />
-                                        <FiArrowDown onClick={() => setSortOn({ col: 'datePlanned', desc: true })} />
-                                    </th>
-                                    <th>
-                                        Datum opname
-                                        <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'dateRecorded', desc: false })} />
-                                        <FiArrowDown onClick={() => setSortOn({ col: 'dateRecorded', desc: true })} />
-                                    </th>
-                                    <th>
-                                        Datum akkoord projectleider
-                                        <br />
-                                        <FiArrowUp
-                                            onClick={() =>
-                                                setSortOn({ col: 'dateApprovedProjectManager', desc: false })
-                                            }
-                                        />
-                                        <FiArrowDown
-                                            onClick={() => setSortOn({ col: 'dateApprovedProjectManager', desc: true })}
-                                        />
-                                    </th>
-                                    <th>
-                                        Datum uitgebracht
-                                        <br />
-                                        <FiArrowUp onClick={() => setSortOn({ col: 'dateReleased', desc: false })} />
-                                        <FiArrowDown onClick={() => setSortOn({ col: 'dateReleased', desc: true })} />
-                                    </th>
-                                    <th>
-                                        Datum akkoord bewoner
-                                        <br />
-                                        <FiArrowUp
-                                            onClick={() => setSortOn({ col: 'dateApprovedClient', desc: false })}
-                                        />
-                                        <FiArrowDown
-                                            onClick={() => setSortOn({ col: 'dateApprovedClient', desc: true })}
-                                        />
-                                    </th>
-                                    <th>
-                                        Datum akkoord toekenning
-                                        <br />
-                                        <FiArrowUp
-                                            onClick={() => setSortOn({ col: 'dateApprovedExternal', desc: false })}
-                                        />
-                                        <FiArrowDown
-                                            onClick={() => setSortOn({ col: 'dateApprovedExternal', desc: true })}
-                                        />
-                                    </th>
-                                </tr>
-                                <tr>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type="text"
-                                            className={`text-input w-input content`}
-                                            value={contactFullNameFilter}
-                                            onChange={e => setContactFullNameFilter(e.target.value)}
-                                            style={{ width: '100px' }}
-                                            title={'Filter op naam'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type="text"
-                                            className={`text-input w-input content`}
-                                            value={streetPostalCodeCityFilter}
-                                            onChange={e => setStreetPostalCodeCityFilter(e.target.value)}
-                                            style={{ width: '100px' }}
-                                            title={'Filter op adres'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <select
-                                            className="select-field w-select content"
-                                            value={statusFilter}
-                                            onChange={e => setStatusFilter(e.target.value)}
-                                            style={{ width: '100px' }}
-                                            title={'Filter op status'}
-                                        >
-                                            <option />
-                                            {statuses.map(option => {
-                                                return (
-                                                    <option key={option.id} value={option.id}>
-                                                        {option.opportunityActionName} - {option.name}
-                                                    </option>
-                                                );
-                                            })}
-                                        </select>
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={datePlannedFromFilter}
-                                            onChange={e => setDatePlannedFromFilter(e.target.value)}
-                                            title={'Filter op datum afspraak vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={datePlannedToFilter}
-                                            onChange={e => setDatePlannedToFilter(e.target.value)}
-                                            title={'Filter op datum afspraak t/m'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateRecordedFromFilter}
-                                            onChange={e => setDateRecordedFromFilter(e.target.value)}
-                                            title={'Filter op datum opname vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateRecordedToFilter}
-                                            onChange={e => setDateRecordedToFilter(e.target.value)}
-                                            title={'Filter op datum opname t/m'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedProjectManagerFromFilter}
-                                            onChange={e => setDateApprovedProjectManagerFromFilter(e.target.value)}
-                                            title={'Filter op datum akkoord projectleider vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedProjectManagerToFilter}
-                                            onChange={e => setDateApprovedProjectManagerToFilter(e.target.value)}
-                                            title={'Filter op datum akkoord projectleider t/m'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateReleasedFromFilter}
-                                            onChange={e => setDateReleasedFromFilter(e.target.value)}
-                                            title={'Filter op datum uitgebracht vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateReleasedToFilter}
-                                            onChange={e => setDateReleasedToFilter(e.target.value)}
-                                            title={'Filter op datum uitgebracht t/m'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedClientFromFilter}
-                                            onChange={e => setDateApprovedClientFromFilter(e.target.value)}
-                                            title={'Filter op datum akkoord bewoner vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedClientToFilter}
-                                            onChange={e => setDateApprovedClientToFilter(e.target.value)}
-                                            title={'Filter op datum akkoord bewoner t/m'}
-                                        />
-                                    </th>
-                                    <th style={{ verticalAlign: ' top' }}>
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedExternalFromFilter}
-                                            onChange={e => setDateApprovedExternalFromFilter(e.target.value)}
-                                            title={'Filter op datum akkoord toekenning vanaf'}
-                                        />
-                                        <input
-                                            type={'date'}
-                                            className={`text-input w-input content`}
-                                            value={dateApprovedExternalToFilter}
-                                            onChange={e => setDateApprovedExternalToFilter(e.target.value)}
-                                            title={'Filter op datum akkoord toekenning t/m'}
-                                        />
-                                    </th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {getFilteredQuotationRequests().map(quotationRequest => (
-                                    <tr key={quotationRequest.id}>
-                                        <td>{quotationRequest.contactFullName}</td>
-                                        <td>
-                                            <Link to={`/schouwen/${quotationRequest.id}`}>
-                                                {quotationRequest.streetPostalCodeCity}
-                                            </Link>
-                                        </td>
-                                        <td>
-                                            {quotationRequest.opportunityAction.name +
-                                                ' - ' +
-                                                quotationRequest.status.name}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.datePlanned && quotationRequest.datePlanned != ''
-                                                ? moment(quotationRequest.datePlanned).format('L HH:mm')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.dateRecorded && quotationRequest.dateRecorded != ''
-                                                ? moment(quotationRequest.dateRecorded).format('L HH:mm')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.dateApprovedProjectManager &&
-                                            quotationRequest.dateApprovedProjectManager != ''
-                                                ? moment(quotationRequest.dateApprovedProjectManager).format('L')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.dateReleased && quotationRequest.dateReleased != ''
-                                                ? moment(quotationRequest.dateReleased).format('L HH:mm')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.dateApprovedClient &&
-                                            quotationRequest.dateApprovedClient != ''
-                                                ? moment(quotationRequest.dateApprovedClient).format('L')
-                                                : ''}
-                                        </td>
-                                        <td>
-                                            {quotationRequest.dateApprovedExternal &&
-                                            quotationRequest.dateApprovedExternal != ''
-                                                ? moment(quotationRequest.dateApprovedExternal).format('L')
-                                                : ''}
-                                        </td>
+        <div className={'content-section'}>
+            <div className="content-container w-container">
+                <Row>
+                    <Col>
+                        <h1 className="content-heading">Overzicht buurtaanpak</h1>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col>
+                        {isLoading ? (
+                            <LoadingView />
+                        ) : quotationRequestsArray.length === 0 ? (
+                            'Geen gegevens beschikbaar.'
+                        ) : (
+                            <Table responsive>
+                                <thead>
+                                    <tr>
+                                        <th>
+                                            Naam
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'contactFullName', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'contactFullName', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Adres
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() =>
+                                                    setSortOn({
+                                                        col: 'streetPostalCodeCity',
+                                                        desc: false,
+                                                    })
+                                                }
+                                            />
+                                            <FiArrowDown
+                                                onClick={() =>
+                                                    setSortOn({
+                                                        col: 'streetPostalCodeCity',
+                                                        desc: true,
+                                                    })
+                                                }
+                                            />
+                                        </th>
+                                        <th>
+                                            Status
+                                            <br />
+                                            <FiArrowUp onClick={() => setSortOn({ col: 'statusOrder', desc: false })} />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'statusOrder', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum afspraak
+                                            <br />
+                                            <FiArrowUp onClick={() => setSortOn({ col: 'datePlanned', desc: false })} />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'datePlanned', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum opname
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'dateRecorded', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'dateRecorded', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum akkoord projectleider
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() =>
+                                                    setSortOn({ col: 'dateApprovedProjectManager', desc: false })
+                                                }
+                                            />
+                                            <FiArrowDown
+                                                onClick={() =>
+                                                    setSortOn({ col: 'dateApprovedProjectManager', desc: true })
+                                                }
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum uitgebracht
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'dateReleased', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'dateReleased', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum akkoord bewoner
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'dateApprovedClient', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'dateApprovedClient', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
+                                            Datum akkoord toekenning
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'dateApprovedExternal', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'dateApprovedExternal', desc: true })}
+                                            />
+                                        </th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </Table>
-                    )}
-                </Col>
-            </Row>
-        </Container>
+                                    <tr>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type="text"
+                                                className={`text-input w-input content`}
+                                                value={contactFullNameFilter}
+                                                onChange={e => setContactFullNameFilter(e.target.value)}
+                                                style={{ width: '100px' }}
+                                                title={'Filter op naam'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type="text"
+                                                className={`text-input w-input content`}
+                                                value={streetPostalCodeCityFilter}
+                                                onChange={e => setStreetPostalCodeCityFilter(e.target.value)}
+                                                style={{ width: '100px' }}
+                                                title={'Filter op adres'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <select
+                                                className="select-field w-select content"
+                                                value={statusFilter}
+                                                onChange={e => setStatusFilter(e.target.value)}
+                                                style={{ width: '100px' }}
+                                                title={'Filter op status'}
+                                            >
+                                                <option />
+                                                {statuses.map(option => {
+                                                    return (
+                                                        <option key={option.id} value={option.id}>
+                                                            {option.opportunityActionName} - {option.name}
+                                                        </option>
+                                                    );
+                                                })}
+                                            </select>
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={datePlannedFromFilter}
+                                                onChange={e => setDatePlannedFromFilter(e.target.value)}
+                                                title={'Filter op datum afspraak vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={datePlannedToFilter}
+                                                onChange={e => setDatePlannedToFilter(e.target.value)}
+                                                title={'Filter op datum afspraak t/m'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateRecordedFromFilter}
+                                                onChange={e => setDateRecordedFromFilter(e.target.value)}
+                                                title={'Filter op datum opname vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateRecordedToFilter}
+                                                onChange={e => setDateRecordedToFilter(e.target.value)}
+                                                title={'Filter op datum opname t/m'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedProjectManagerFromFilter}
+                                                onChange={e => setDateApprovedProjectManagerFromFilter(e.target.value)}
+                                                title={'Filter op datum akkoord projectleider vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedProjectManagerToFilter}
+                                                onChange={e => setDateApprovedProjectManagerToFilter(e.target.value)}
+                                                title={'Filter op datum akkoord projectleider t/m'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateReleasedFromFilter}
+                                                onChange={e => setDateReleasedFromFilter(e.target.value)}
+                                                title={'Filter op datum uitgebracht vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateReleasedToFilter}
+                                                onChange={e => setDateReleasedToFilter(e.target.value)}
+                                                title={'Filter op datum uitgebracht t/m'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedClientFromFilter}
+                                                onChange={e => setDateApprovedClientFromFilter(e.target.value)}
+                                                title={'Filter op datum akkoord bewoner vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedClientToFilter}
+                                                onChange={e => setDateApprovedClientToFilter(e.target.value)}
+                                                title={'Filter op datum akkoord bewoner t/m'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedExternalFromFilter}
+                                                onChange={e => setDateApprovedExternalFromFilter(e.target.value)}
+                                                title={'Filter op datum akkoord toekenning vanaf'}
+                                            />
+                                            <input
+                                                type={'date'}
+                                                className={`text-input w-input content`}
+                                                value={dateApprovedExternalToFilter}
+                                                onChange={e => setDateApprovedExternalToFilter(e.target.value)}
+                                                title={'Filter op datum akkoord toekenning t/m'}
+                                            />
+                                        </th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {getFilteredQuotationRequests().map(quotationRequest => (
+                                        <tr key={quotationRequest.id}>
+                                            <td>{quotationRequest.contactFullName}</td>
+                                            <td>
+                                                {props.match.params.campaignId ? (
+                                                    <Link
+                                                        to={`/schouwen/campagne/${props.match.params.campaignId}/${quotationRequest.id}`}
+                                                    >
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                ) : (
+                                                    <Link to={`/schouwen/${quotationRequest.id}`}>
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                )}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.opportunityAction.name +
+                                                    ' - ' +
+                                                    quotationRequest.status.name}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.datePlanned && quotationRequest.datePlanned != ''
+                                                    ? moment(quotationRequest.datePlanned).format('L HH:mm')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.dateRecorded && quotationRequest.dateRecorded != ''
+                                                    ? moment(quotationRequest.dateRecorded).format('L HH:mm')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.dateApprovedProjectManager &&
+                                                quotationRequest.dateApprovedProjectManager != ''
+                                                    ? moment(quotationRequest.dateApprovedProjectManager).format('L')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.dateReleased && quotationRequest.dateReleased != ''
+                                                    ? moment(quotationRequest.dateReleased).format('L HH:mm')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.dateApprovedClient &&
+                                                quotationRequest.dateApprovedClient != ''
+                                                    ? moment(quotationRequest.dateApprovedClient).format('L')
+                                                    : ''}
+                                            </td>
+                                            <td>
+                                                {quotationRequest.dateApprovedExternal &&
+                                                quotationRequest.dateApprovedExternal != ''
+                                                    ? moment(quotationRequest.dateApprovedExternal).format('L')
+                                                    : ''}
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </Table>
+                        )}
+                    </Col>
+                </Row>
+            </div>
+        </div>
     );
 }
 

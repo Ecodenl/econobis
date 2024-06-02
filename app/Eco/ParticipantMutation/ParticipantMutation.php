@@ -77,6 +77,19 @@ class ParticipantMutation extends Model
         ]);
     }
 
+    public function getDateSortAttribute()
+    {
+        if($this->date_entry !== null) {
+            $dateSort = Carbon::parse($this->date_entry)->timestamp;
+        } else if ($this->date_payment !== null) {
+            $dateSort = Carbon::parse($this->date_payment)->timestamp;
+        } else {
+            $dateSort = Carbon::parse($this->created_at)->timestamp;;
+        }
+
+        return $dateSort;
+    }
+
     public function getMollieAmount()
     {
         switch ($this->participation->project->projectType->code_ref){

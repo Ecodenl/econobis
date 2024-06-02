@@ -89,6 +89,7 @@ function ParticipantNewForm(props) {
                     onChangeAction={handleInputChangeProjectId}
                     required={'required'}
                     error={errors.projectId}
+                    errorMessage={errors.projectId ? 'Verplicht' : ''}
                     disabled={disableProjectSelection}
                 />
             </div>
@@ -104,6 +105,7 @@ function ParticipantNewForm(props) {
                     onChangeAction={handleInputChangeContactId}
                     required={'required'}
                     error={errors.contactId}
+                    errorMessage={errors.contactId ? 'Verplicht' : ''}
                     disabled={disableClientSelection}
                     isLoading={isLoadingContact}
                     handleInputChange={handleInputSearchChange}
@@ -122,6 +124,11 @@ function ParticipantNewForm(props) {
                     required={'required'}
                     disabled={projectTypeCodeRef !== 'postalcode_link_capital' && !isSceProject}
                     error={errors.addressId}
+                    errorMessage={
+                        errors.addressId
+                            ? 'Verplicht (indien geen adres beschikbaar, controleer adresgegevens bij contact)'
+                            : ''
+                    }
                 />
             </div>
             <div className="row">
@@ -134,6 +141,7 @@ function ParticipantNewForm(props) {
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.statusId}
+                    errorMessage={errors.statusId ? 'Verplicht' : ''}
                 />
             </div>
             {statusCodeRef === 'interest' ? (

@@ -20,6 +20,7 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
+        // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
         this.state = {
             emailTemplates: [],
             quotationRequestStatus: {
@@ -83,14 +84,15 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
         let hasErrors = false;
 
         if (quotationRequestStatus.usesWf == true) {
-            if (!quotationRequestStatus.emailTemplateIdWf) {
-                errors.emailTemplateIdWf = true;
-                hasErrors = true;
-            }
-            if (validator.isEmpty(quotationRequestStatus.numberOfDaysToSendEmail.toString())) {
-                errors.numberOfDaysToSendEmail = true;
-                hasErrors = true;
-            }
+            // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
+            // if (!quotationRequestStatus.emailTemplateIdWf) {
+            //     errors.emailTemplateIdWf = true;
+            //     hasErrors = true;
+            // }
+            // if (validator.isEmpty(quotationRequestStatus.numberOfDaysToSendEmail.toString())) {
+            //     errors.numberOfDaysToSendEmail = true;
+            //     hasErrors = true;
+            // }
         }
 
         this.setState({ ...this.state, errors: errors });
@@ -109,7 +111,14 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, usesWf, emailTemplateIdWf, numberOfDaysToSendEmail, mailCcToCoachWf } = this.state.quotationRequestStatus;
+        // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
+        const {
+            name,
+            usesWf,
+            emailTemplateIdWf,
+            numberOfDaysToSendEmail,
+            mailCcToCoachWf,
+        } = this.state.quotationRequestStatus;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -143,41 +152,42 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                         className={'col-sm-10 form-group'}
                                     />
                                 </div>
-                                <div className="row">
-                                    <InputReactSelect
-                                        label={'Template e-mail bij deze status'}
-                                        divSize={'col-sm-10'}
-                                        name={'emailTemplateIdWf'}
-                                        options={this.state.emailTemplates}
-                                        value={emailTemplateIdWf}
-                                        onChangeAction={this.handleReactSelectChange}
-                                        isLoading={this.state.peekLoading.emailTemplates}
-                                        required={'required'}
-                                        error={this.state.errors.emailTemplateIdWf}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        label={'Aantal dagen e-mail na deze status'}
-                                        divSize={'col-sm-10'}
-                                        type={'number'}
-                                        id={'numberOfDaysToSendEmail'}
-                                        name={'numberOfDaysToSendEmail'}
-                                        value={numberOfDaysToSendEmail}
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        error={this.state.errors.numberOfDaysToSendEmail}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputToggle
-                                        label={'Email cc naar coach'}
-                                        divSize={'col-sm-10'}
-                                        name={'mailCcToCoachWf'}
-                                        value={mailCcToCoachWf}
-                                        onChangeAction={this.handleInputChange}
-                                    />
-                                </div>
+                                {/*todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail*/}
+                                {/*<div className="row">*/}
+                                {/*    <InputReactSelect*/}
+                                {/*        label={'Template e-mail bij deze status'}*/}
+                                {/*        divSize={'col-sm-10'}*/}
+                                {/*        name={'emailTemplateIdWf'}*/}
+                                {/*        options={this.state.emailTemplates}*/}
+                                {/*        value={emailTemplateIdWf}*/}
+                                {/*        onChangeAction={this.handleReactSelectChange}*/}
+                                {/*        isLoading={this.state.peekLoading.emailTemplates}*/}
+                                {/*        required={'required'}*/}
+                                {/*        error={this.state.errors.emailTemplateIdWf}*/}
+                                {/*    />*/}
+                                {/*</div>*/}
+                                {/*<div className="row">*/}
+                                {/*    <InputText*/}
+                                {/*        label={'Aantal dagen e-mail na deze status'}*/}
+                                {/*        divSize={'col-sm-10'}*/}
+                                {/*        type={'number'}*/}
+                                {/*        id={'numberOfDaysToSendEmail'}*/}
+                                {/*        name={'numberOfDaysToSendEmail'}*/}
+                                {/*        value={numberOfDaysToSendEmail}*/}
+                                {/*        onChangeAction={this.handleInputChange}*/}
+                                {/*        required={'required'}*/}
+                                {/*        error={this.state.errors.numberOfDaysToSendEmail}*/}
+                                {/*    />*/}
+                                {/*</div>*/}
+                                {/*<div className="row">*/}
+                                {/*    <InputToggle*/}
+                                {/*        label={'Email cc naar coach'}*/}
+                                {/*        divSize={'col-sm-10'}*/}
+                                {/*        name={'mailCcToCoachWf'}*/}
+                                {/*        value={mailCcToCoachWf}*/}
+                                {/*        onChangeAction={this.handleInputChange}*/}
+                                {/*    />*/}
+                                {/*</div>*/}
                             </React.Fragment>
                         )}
                     </PanelBody>

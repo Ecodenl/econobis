@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ButtonIcon from "../../../components/button/ButtonIcon";
-import DataTable from "../../../components/dataTable/DataTable";
-import DataTableHead from "../../../components/dataTable/DataTableHead";
-import DataTableHeadTitle from "../../../components/dataTable/DataTableHeadTitle";
-import DataTableBody from "../../../components/dataTable/DataTableBody";
-import MailgunEventListItem from "./MailgunEventListItem";
-import axiosInstance from "../../../api/default-setup/AxiosInstance";
-import DataTablePagination from "../../../components/dataTable/DataTablePagination";
-import {FaInfoCircle, FaQuestionCircle} from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import DataTable from '../../../components/dataTable/DataTable';
+import DataTableHead from '../../../components/dataTable/DataTableHead';
+import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
+import DataTableBody from '../../../components/dataTable/DataTableBody';
+import MailgunEventListItem from './MailgunEventListItem';
+import axiosInstance from '../../../api/default-setup/AxiosInstance';
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import { FaInfoCircle, FaQuestionCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 export default function MailgunEventListApp() {
     const perPage = 100;
@@ -37,43 +37,51 @@ export default function MailgunEventListApp() {
     const fetch = () => {
         setLoading(true);
 
-        return axiosInstance.get('jory/mailgun-event', {
-            params: {
-                jory: getFetchJory(),
-                meta: ['total'],
-            }
-        }).then(response => {
-            setMailgunEvents(response.data.data);
-            setTotalRecords(response.data.meta.total);
-            setLoading(false);
-        }).catch(() => {
-            setErrorText('Er is iets misgegaan met ophalen van de mailgun logs.');
-            setLoading(false);
-        });
+        return axiosInstance
+            .get('jory/mailgun-event', {
+                params: {
+                    jory: getFetchJory(),
+                    meta: ['total'],
+                },
+            })
+            .then(response => {
+                setMailgunEvents(response.data.data);
+                setTotalRecords(response.data.meta.total);
+                setLoading(false);
+            })
+            .catch(() => {
+                setErrorText('Er is iets misgegaan met ophalen van de mailgun logs.');
+                setLoading(false);
+            });
     };
 
     const fetchFromMailgun = () => {
         setLoading(true);
 
-        return axiosInstance.post('mailgun-event/fetch-from-mailgun').then(() => {
-            fetch();
-        }).catch(() => {
-            setErrorText('Er is iets misgegaan met ophalen van de mailgun logs bij mailgun.');
-            setLoading(false);
-        });
+        return axiosInstance
+            .post('mailgun-event/fetch-from-mailgun')
+            .then(() => {
+                fetch();
+            })
+            .catch(() => {
+                setErrorText('Er is iets misgegaan met ophalen van de mailgun logs bij mailgun.');
+                setLoading(false);
+            });
     };
 
     const fetchMeta = () => {
-        return axiosInstance.get('jory/mailgun-domain', {
-            params: {
-                jory: {
-                    fld: ['id', 'domain'],
-                    srt: ['domain'],
+        return axiosInstance
+            .get('jory/mailgun-domain', {
+                params: {
+                    jory: {
+                        fld: ['id', 'domain'],
+                        srt: ['domain'],
+                    },
                 },
-            }
-        }).then(response => {
-            setDomains(response.data.data);
-        });
+            })
+            .then(response => {
+                setDomains(response.data.data);
+            });
     };
 
     const loadingText = () => {
@@ -90,7 +98,7 @@ export default function MailgunEventListApp() {
         }
 
         return '';
-    }
+    };
 
     const getFetchJory = () => {
         return {
@@ -98,19 +106,19 @@ export default function MailgunEventListApp() {
             rlt: {
                 domain: {
                     fld: ['domain'],
-                }
+                },
             },
             srt: ['-eventDate'],
             flt: getFetchJoryFilter(),
             lmt: perPage,
             ofs: page * perPage,
-        }
-    }
+        };
+    };
 
     const getFetchJoryFilter = () => {
         let filter = {
             and: [],
-        }
+        };
 
         if (domainFilter) {
             filter.and.push({
@@ -135,7 +143,7 @@ export default function MailgunEventListApp() {
         }
 
         return filter;
-    }
+    };
 
     return (
         <Panel className="col-md-12">
@@ -144,7 +152,7 @@ export default function MailgunEventListApp() {
                     <div className="row">
                         <div className="col-md-4">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'refresh'} onClickAction={fetchFromMailgun}/>
+                                <ButtonIcon iconName={'refresh'} onClickAction={fetchFromMailgun} />
                             </div>
                         </div>
                         <div className="col-md-4">
@@ -153,7 +161,9 @@ export default function MailgunEventListApp() {
                                 <FaInfoCircle
                                     color={'blue'}
                                     size={'15px'}
-                                    data-tip={"De mailgun logs worden elke nacht opgehaald,<br>je kan op het ververs icoontje klikken om direct de meest recente logs op te halen"}
+                                    data-tip={
+                                        'De mailgun logs worden elke nacht opgehaald,<br>je kan op het ververs icoontje klikken om direct de meest recente logs op te halen'
+                                    }
                                     data-for={`tooltip-note`}
                                 />
                                 <ReactTooltip
@@ -162,20 +172,23 @@ export default function MailgunEventListApp() {
                                     place="right"
                                     multiline={true}
                                     aria-haspopup="true"
-                                />&nbsp;
+                                />
+                                &nbsp;
                                 <FaQuestionCircle
                                     color={'blue'}
                                     size={'15px'}
-                                    style={{cursor: 'pointer'}}
-                                    onClick={() => window.open('https://documentation.mailgun.com/en/latest/api-events.html#event-types', '_blank')}
+                                    style={{ cursor: 'pointer' }}
+                                    onClick={() =>
+                                        window.open(
+                                            'https://help.mailgun.com/hc/en-us/articles/203661564-What-do-each-of-the-event-filter-types-mean',
+                                            '_blank'
+                                        )
+                                    }
                                 />
                             </h3>
-
                         </div>
                         <div className="col-md-4">
-                            <div className="pull-right">
-                                Resultaten: {totalRecords}
-                            </div>
+                            <div className="pull-right">Resultaten: {totalRecords}</div>
                         </div>
                     </div>
                 </div>
@@ -184,31 +197,41 @@ export default function MailgunEventListApp() {
                     <DataTable>
                         <DataTableHead>
                             <tr className="thead-title">
-                                <DataTableHeadTitle title={'Datum'} width={'10%'}/>
-                                <DataTableHeadTitle title={'Domein'} width={'20%'}/>
-                                <DataTableHeadTitle title={'Type'} width={'10%'}/>
-                                <DataTableHeadTitle title={'Status'} width={'20%'}/>
-                                <DataTableHeadTitle title={'Aan'} width={'20%'}/>
-                                <DataTableHeadTitle title={'Onderwerp'} width={'20%'}/>
+                                <DataTableHeadTitle title={'Datum'} width={'10%'} />
+                                <DataTableHeadTitle title={'Domein'} width={'20%'} />
+                                <DataTableHeadTitle title={'Type'} width={'10%'} />
+                                <DataTableHeadTitle title={'Status'} width={'20%'} />
+                                <DataTableHeadTitle title={'Aan'} width={'20%'} />
+                                <DataTableHeadTitle title={'Onderwerp'} width={'20%'} />
                             </tr>
                         </DataTableHead>
                         <DataTableBody>
                             <tr className="thead-filter">
-                                <th/>
+                                <th />
                                 <th>
-                                    <select className="form-control input-sm" value={domainFilter}
-                                            onChange={(e) => setDomainFilter(e.target.value)}>
-                                        <option/>
+                                    <select
+                                        className="form-control input-sm"
+                                        value={domainFilter}
+                                        onChange={e => setDomainFilter(e.target.value)}
+                                    >
+                                        <option />
                                         {domains.map(domain => (
-                                            <option key={domain.id} value={domain.id}>{domain.domain}</option>
+                                            <option key={domain.id} value={domain.id}>
+                                                {domain.domain}
+                                            </option>
                                         ))}
                                     </select>
                                 </th>
                                 <th>
-                                    <select className="form-control input-sm" value={eventFilter}
-                                            onChange={(e) => setEventFilter(e.target.value)}>
-                                        <option/>
-                                        <option key={'all-error'} value={'all-error'}>- alle fouten -</option>
+                                    <select
+                                        className="form-control input-sm"
+                                        value={eventFilter}
+                                        onChange={e => setEventFilter(e.target.value)}
+                                    >
+                                        <option />
+                                        <option key={'all-error'} value={'all-error'}>
+                                            - alle fouten -
+                                        </option>
                                         {[
                                             'accepted',
                                             'rejected',
@@ -221,13 +244,15 @@ export default function MailgunEventListApp() {
                                             'complained',
                                             'stored',
                                         ].map(event => (
-                                            <option key={event} value={event}>{event}</option>
+                                            <option key={event} value={event}>
+                                                {event}
+                                            </option>
                                         ))}
                                     </select>
                                 </th>
-                                <th/>
-                                <th/>
-                                <th/>
+                                <th />
+                                <th />
+                                <th />
                             </tr>
 
                             {loadingText() ? (
@@ -236,7 +261,13 @@ export default function MailgunEventListApp() {
                                 </tr>
                             ) : (
                                 mailgunEvents.map(mailgunLog => {
-                                    return <MailgunEventListItem key={mailgunLog.id} mailgunLog={mailgunLog} hasError={errorEvents.includes(mailgunLog.event)}/>;
+                                    return (
+                                        <MailgunEventListItem
+                                            key={mailgunLog.id}
+                                            mailgunLog={mailgunLog}
+                                            hasError={errorEvents.includes(mailgunLog.event)}
+                                        />
+                                    );
                                 })
                             )}
                         </DataTableBody>
@@ -244,7 +275,7 @@ export default function MailgunEventListApp() {
                 </div>
                 <div className="col-md-6 col-md-offset-3">
                     <DataTablePagination
-                        onPageChangeAction={(p) => setPage(p.selected)}
+                        onPageChangeAction={p => setPage(p.selected)}
                         totalRecords={totalRecords}
                         initialPage={0}
                         recordsPerPage={perPage}

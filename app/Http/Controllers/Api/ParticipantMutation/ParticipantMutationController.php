@@ -18,7 +18,7 @@ use Illuminate\Support\Facades\DB;
 
 class ParticipantMutationController extends ApiController
 {
-    public function store(RequestInput $requestInput)
+    public function store(RequestInput $requestInput, Request $request)
     {
         $this->authorize('manage', ParticipantMutation::class);
 
@@ -75,7 +75,15 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
+        if($differentTransactionCostsAmount == ''){
+            $differentTransactionCostsAmount = null;
+        }
+        if($differentTransactionCostsAmount === null ){
+            $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
+        } else {
+            $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
+        }
 
         $result = $this->checkMutationAllowed($participantMutation);
 
@@ -134,13 +142,17 @@ class ParticipantMutationController extends ApiController
 
         $participantMutation->fill($data);
 
-        if($request->get('differentTransactionCostsAmount')){
-            $participantMutation->transaction_costs_amount = $request->get('differentTransactionCostsAmount');
-        } else {
+        $differentTransactionCostsAmount = $request->get('differentTransactionCostsAmount');
+        if($differentTransactionCostsAmount == ''){
+            $differentTransactionCostsAmount = null;
+        }
+        if($differentTransactionCostsAmount === null ){
             if (($participantMutation->participation->project->projectType->code_ref === 'loan' && $participantMutation->getOriginal('amount') != $participantMutation->amount)
                 || ($participantMutation->participation->project->projectType->code_ref !== 'loan' && $participantMutation->getOriginal('quantity') != $participantMutation->quantity)) {
                 $participantMutation->transaction_costs_amount = $this->calculationTransactionCosts($participantMutation);
             }
+        } else {
+            $participantMutation->transaction_costs_amount = $differentTransactionCostsAmount;
         }
 
         $result = $this->checkMutationAllowed($participantMutation);

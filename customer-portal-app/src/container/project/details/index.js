@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import ProjectAPI from '../../../api/project/ProjectAPI';
@@ -69,89 +68,94 @@ function ProjectDetails({ match }) {
     }
     if (isEmpty(project)) {
         return (
-            <Container className={'content-section'}>
-                {isLoading ? (
-                    <LoadingView />
-                ) : (
-                    <Row>
-                        <Col>
-                            <p>Geen projectdetails bekend</p>
-                        </Col>
-                    </Row>
-                )}
-            </Container>
+            <div className={'content-section'}>
+                <div className="content-container w-container">
+                    {isLoading ? (
+                        <LoadingView />
+                    ) : (
+                        <Row>
+                            <Col>
+                                <p>Geen projectdetails bekend</p>
+                            </Col>
+                        </Row>
+                    )}
+                </div>
+            </div>
         );
     }
 
     return (
-        <Container className={'content-section'}>
+        <div className={'content-section'}>
             {isLoading ? (
                 <LoadingView />
             ) : (
                 <>
-                    <Row>
-                        <ButtonGroup aria-label="project-details" className="w-button-group-left">
-                            <Link to={`/inschrijven-projecten`}>
-                                <Button className={'w-button'} size="sm">
-                                    Inschrijven projecten
-                                </Button>
-                            </Link>
-                        </ButtonGroup>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <h1 className="content-heading">Inschrijven project</h1>
-                            <div className="content-subheading">Organisatie {project.administration.name}</div>
-                        </Col>
-                    </Row>
-
-                    {renderDetails()}
-
-                    <Row className={'mt-5'}>
-                        <Col>
-                            <p>
-                                {project.documentProjectInfo ? (
-                                    <>
-                                        {'Meer informatie over dit project kan je hier '}
-                                        <a
-                                            href="#"
-                                            onClick={e =>
-                                                downloadFile(
-                                                    e,
-                                                    project.documentProjectInfo.id,
-                                                    project.documentProjectInfo.filename
-                                                )
-                                            }
-                                        >
-                                            <FaFileDownload /> downloaden
-                                        </a>
-                                    </>
-                                ) : project.linkProjectInfo != null ? (
-                                    <>
-                                        {'Meer informatie over dit project vind je '}
-                                        <a href={`${project.linkProjectInfo}`} target="_blank">
-                                            hier
-                                        </a>
-                                    </>
-                                ) : null}
-                            </p>
-                            <p>Wil je inschrijven op dit project. Klik dan op "Ga naar inschrijven".</p>
-                        </Col>
-                    </Row>
-                    <Row>
-                        <Col>
-                            <ButtonGroup className="float-right">
-                                <Link to={`/inschrijven/${project.id}`}>
+                    <div className="content-container w-container">
+                        <Row>
+                            <ButtonGroup aria-label="project-details" className="w-button-group-left">
+                                <Link to={`/inschrijven-projecten`}>
                                     <Button className={'w-button'} size="sm">
-                                        Ga naar inschrijven
+                                        Inschrijven projecten
                                     </Button>
                                 </Link>
                             </ButtonGroup>
-                        </Col>
-                    </Row>
+                        </Row>
+
+                        <Row>
+                            <Col>
+                                <h1 className="content-heading">Inschrijven project</h1>
+                                <div className="content-subheading">Organisatie {project.administration.name}</div>
+                            </Col>
+                        </Row>
+
+                        {renderDetails()}
+
+                        <Row className={'mt-5'}>
+                            <Col>
+                                <p>
+                                    {project.documentProjectInfo ? (
+                                        <>
+                                            {'Meer informatie over dit project kan je hier '}
+                                            <a
+                                                href="#"
+                                                onClick={e =>
+                                                    downloadFile(
+                                                        e,
+                                                        project.documentProjectInfo.id,
+                                                        project.documentProjectInfo.filename
+                                                    )
+                                                }
+                                            >
+                                                <FaFileDownload /> downloaden
+                                            </a>
+                                        </>
+                                    ) : project.linkProjectInfo != null ? (
+                                        <>
+                                            {'Meer informatie over dit project vind je '}
+                                            <a href={`${project.linkProjectInfo}`} target="_blank">
+                                                hier
+                                            </a>
+                                        </>
+                                    ) : null}
+                                </p>
+                                <p>Wil je inschrijven op dit project. Klik dan op "Ga naar inschrijven".</p>
+                            </Col>
+                        </Row>
+                        <Row>
+                            <Col>
+                                <ButtonGroup className="float-right">
+                                    <Link to={`/inschrijven/${project.id}`}>
+                                        <Button className={'w-button'} size="sm">
+                                            Ga naar inschrijven
+                                        </Button>
+                                    </Link>
+                                </ButtonGroup>
+                            </Col>
+                        </Row>
+                    </div>
                 </>
             )}
-        </Container>
+        </div>
     );
 }
 

@@ -1,5 +1,4 @@
 import React, { useEffect, useReducer, useContext } from 'react';
-import Container from 'react-bootstrap/Container';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 import RegistrationDetailsTitle from './Title';
@@ -69,40 +68,43 @@ function RegistrationDetails({ match: { params } }) {
     }
 
     return (
-        <Container className={'content-section'}>
+        <div className={'content-section'}>
             {state.isLoading ? (
                 <LoadingView />
             ) : (
                 <>
-                    <Row>
-                        <ButtonGroup aria-label="current-participations" className="w-button-group-left">
-                            <Link to={`/inschrijvingen-projecten`}>
-                                <Button className={'w-button'} size="sm">
-                                    Huidige deelnames
-                                </Button>
-                            </Link>
-                        </ButtonGroup>
-                    </Row>
-                    <RegistrationDetailsTitle {...state.result.basicInformation} />
-                    {state.result.length === 0 ? (
+                    <div className="content-container w-container">
                         <Row>
-                            <Col>Geen huidige deelname aanwezig.</Col>
+                            <ButtonGroup aria-label="current-participations" className="w-button-group-left">
+                                <Link to={`/inschrijvingen-projecten`}>
+                                    <Button className={'w-button'} size="sm">
+                                        Huidige deelnames
+                                    </Button>
+                                </Link>
+                            </ButtonGroup>
                         </Row>
-                    ) : (
-                        <>
-                            <RegistrationDetailsProjectTable fields={state.result.fields} />
-                            <RegistrationDetailsMutationTable
-                                participantMutations={state.result.participantMutations}
-                            />
-                            <RegistrationDetailsDocumentTable
-                                participantId={params.id}
-                                documents={state.result.documents}
-                            />
-                        </>
-                    )}
+
+                        <RegistrationDetailsTitle {...state.result.basicInformation} />
+                        {state.result.length === 0 ? (
+                            <Row>
+                                <Col>Geen huidige deelname aanwezig.</Col>
+                            </Row>
+                        ) : (
+                            <>
+                                <RegistrationDetailsProjectTable fields={state.result.fields} />
+                                <RegistrationDetailsMutationTable
+                                    participantMutations={state.result.participantMutations}
+                                />
+                                <RegistrationDetailsDocumentTable
+                                    participantId={params.id}
+                                    documents={state.result.documents}
+                                />
+                            </>
+                        )}
+                    </div>
                 </>
             )}
-        </Container>
+        </div>
     );
 }
 

@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import { slide as Menu } from 'react-burger-menu';
 import { AuthConsumer } from '../../context/AuthContext';
 import { Link, withRouter } from 'react-router-dom';
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
 import { ThemeSettingsConsumer } from '../../context/ThemeSettingsContext';
@@ -92,7 +91,7 @@ function Header({ location, history }) {
                     <div className="profile-pic">
                         <PortalUserConsumer>
                             {({ user, currentSelectedContact, switchCurrentContact, resetCurrentUserToDefault }) => {
-                                if (!user.occupations || user.occupations.length < 1) {
+                                if (!user.occupationsActive || user.occupationsActive.length < 1) {
                                     return <>{ReactHtmlParser(formatProfilePicName(currentSelectedContact))}</>;
                                 }
 
@@ -112,8 +111,8 @@ function Header({ location, history }) {
                                             >
                                                 {user.fullNameFnf}
                                             </Dropdown.Item>
-                                            {user.occupations && user.occupations.length > 0
-                                                ? user.occupations.map(occupationContact =>
+                                            {user.occupationsActive && user.occupationsActive.length > 0
+                                                ? user.occupationsActive.map(occupationContact =>
                                                       (occupationContact.primaryContact.typeId === 'organisation' &&
                                                           occupationContact.primary) ||
                                                       (occupationContact.primaryContact.typeId === 'person' &&
@@ -143,7 +142,7 @@ function Header({ location, history }) {
                         </PortalUserConsumer>
                     </div>
 
-                    <Container>
+                    <div className={'content-container w-container'}>
                         <Row>
                             <Col xs={6}>
                                 <ThemeSettingsConsumer>
@@ -245,7 +244,7 @@ function Header({ location, history }) {
                                 </Button>
                             </div>
                         ) : null}
-                    </Container>
+                    </div>
                 </div>
                 {/* Sidebar menu */}
                 <Menu

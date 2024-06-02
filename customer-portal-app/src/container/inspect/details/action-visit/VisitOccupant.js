@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
-function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
+function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -171,18 +171,14 @@ function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
                                         <Button
                                             variant={'outline-dark'}
                                             size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
+                                            onClick={() => redirectBack()}
                                         >
                                             Terug naar overzicht
                                         </Button>
                                         {/*<Button*/}
                                         {/*    variant={'outline-dark'}*/}
                                         {/*    size="sm"*/}
-                                        {/*    onClick={function() {*/}
-                                        {/*        history.push(`/schouwen`);*/}
-                                        {/*    }}*/}
+                                        {/*    onClick={() => redirectBack()}*/}
                                         {/*>*/}
                                         {/*    Annuleren*/}
                                         {/*</Button>*/}

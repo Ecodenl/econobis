@@ -28,4 +28,11 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
         return HousingFile::query()
             ->select('housing_files.*');
     }
+
+    public function getQuery()
+    {
+        $query = parent::getQuery();
+
+        return $query->orderByDesc('housing_files.created_at');
+    }
 }

@@ -6,14 +6,16 @@ function ContactsMergeSelectedItems({ contacts, fetchContactsData, toggleShowMer
     const [message, setMessage] = useState('');
     const [errors, setErrors] = useState([]);
 
-    const confirmAction = () => {
-        let contactIds = contacts.data
-            .filter(contact => contact.checked)
-            .sort((a, b) => {
-                return a.checkedAt - b.checkedAt;
-            })
-            .map(contact => contact.id);
+    const contactIds = contacts.data
+        .filter(contact => contact.checked)
+        .sort((a, b) => {
+            return a.checkedAt - b.checkedAt;
+        })
+        .map(contact => contact.id);
+    const contactKeep = contacts.data.find(contact => contact.id === Number(contactIds[0]));
+    const contactRemove = contacts.data.find(contact => contact.id === Number(contactIds[1]));
 
+    const confirmAction = () => {
         ContactsAPI.mergeContacts(contactIds[0], contactIds[1])
             .then(function() {
                 setMessage('Contacten zijn succesvol samengevoegd');
@@ -87,7 +89,9 @@ function ContactsMergeSelectedItems({ contacts, fetchContactsData, toggleShowMer
                     {countCheckedContact() === 2 ? (
                         <div>
                             Weet je zeker dat je deze 2 contacten wilt samenvoegen? <br />
-                            Gegevens worden overgenomen naar het eerste contact, het tweede contact wordt verwijderd.
+                            Gegevens worden overgenomen naar het eerst geselecteerde contact{' '}
+                            <strong>{contactKeep.number}</strong>, het tweede geselecteerde contact{' '}
+                            <strong>{contactRemove.number}</strong> wordt verwijderd.
                         </div>
                     ) : (
                         <div>Selecteer exact 2 contacten om te kunnen samenvoegen.</div>

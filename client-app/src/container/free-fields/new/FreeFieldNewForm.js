@@ -11,6 +11,9 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import axios from 'axios';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import { checkFieldRecord } from '../../../helpers/FreeFieldsHelpers';
+import ViewText from '../../../components/form/ViewText';
+import FreeFieldsDefaultValueEdit from '../defaultValue/FreeFieldsDefaultValueEdit';
+import moment from 'moment';
 
 class FreeFieldNewForm extends Component {
     constructor(props) {
@@ -21,6 +24,7 @@ class FreeFieldNewForm extends Component {
                 tableId: '',
                 fieldFormatId: '',
                 fieldName: '',
+                fieldNameWebform: '',
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -35,6 +39,7 @@ class FreeFieldNewForm extends Component {
                 tableId: false,
                 fieldFormatId: false,
                 fieldName: false,
+                fieldNameWebform: false,
                 visiblePortal: false,
                 changePortal: false,
                 mandatory: false,
@@ -44,16 +49,17 @@ class FreeFieldNewForm extends Component {
                 mask: false,
             },
             errorsMessage: {
-                tableId: false,
-                fieldFormatId: false,
-                fieldName: false,
-                visiblePortal: false,
-                changePortal: false,
-                mandatory: false,
-                defaultValue: false,
-                exportable: false,
-                sortOrder: false,
-                mask: false,
+                tableId: '',
+                fieldFormatId: '',
+                fieldName: '',
+                fieldNameWebform: '',
+                visiblePortal: '',
+                changePortal: '',
+                mandatory: '',
+                defaultValue: '',
+                exportable: '',
+                sortOrder: '',
+                mask: '',
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -74,6 +80,58 @@ class FreeFieldNewForm extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
         const name = target.name;
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeDate = (date, name) => {
+        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: formattedDate,
+            },
+        });
+    };
+
+    handleInputChangeDatetimeDate = (dateOrTime, name) => {
+        let date = dateOrTime ? dateOrTime : '';
+        let time = '08:00';
+        if (this.state.freeField.defaultValue) {
+            time = moment(this.state.freeField.defaultValue).format('HH:mm');
+        }
+
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
+
+        this.setState({
+            ...this.state,
+            freeField: {
+                ...this.state.freeField,
+                [name]: value,
+            },
+        });
+    };
+    handleInputChangeDatetimeTime = (dateOrTime, name) => {
+        let date = '';
+        let time = dateOrTime ? dateOrTime : '08:00';
+        if (this.state.freeField.defaultValue) {
+            date = moment(this.state.freeField.defaultValue).format('Y-MM-DD');
+        }
+        let value = '';
+        if (!validator.isEmpty(date)) {
+            value = moment(date + ' ' + time + ':00').format('YYYY-MM-DD HH:mm:ss');
+        }
 
         this.setState({
             ...this.state,
@@ -134,6 +192,16 @@ class FreeFieldNewForm extends Component {
             hasErrors = true;
         }
 
+        if (
+            freeField.fieldNameWebform != null &&
+            !validator.isEmpty(freeField.fieldNameWebform) &&
+            !freeField.fieldNameWebform.match(/^[a-z0-9_]+$/)
+        ) {
+            errors.fieldNameWebform = true;
+            errorsMessage.fieldNameWebform = 'Waarde ongeldig';
+            hasErrors = true;
+        }
+
         // if (validator.isEmpty(freeField.mandatory + '')) {
         //     errors.mandatory = true;
         //     errorsMessage.mandatory = 'verplicht';
@@ -152,7 +220,7 @@ class FreeFieldNewForm extends Component {
         //     hasErrors = true;
         // }
 
-        if (freeField.mandatory && validator.isEmpty(freeField.defaultValue)) {
+        if (freeField.mandatory && validator.isEmpty('' + freeField.defaultValue)) {
             errors.defaultValue = true;
             errorsMessage.defaultValue = 'verplicht';
             hasErrors = true;
@@ -172,8 +240,8 @@ class FreeFieldNewForm extends Component {
 
         this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
-        // If no errors send form
-        !hasErrors &&
+        if (!hasErrors) {
+            // If no errors send form
             FreeFieldsAPI.newFreeFieldsField(freeField)
                 .then(payload => {
                     hashHistory.push(`/vrije-velden/${payload.data.id}`);
@@ -182,13 +250,28 @@ class FreeFieldNewForm extends Component {
                     console.log(error);
                     alert('Er is iets mis gegaan met opslaan!');
                 });
+        }
     };
+
+    getTablePrefixFieldNameWebform(tableId) {
+        let tablePrefixFieldNameWebform = null;
+        if (tableId) {
+            const selectedFreeFieldsTabel = this.state.freeFieldsTables.find(
+                freeFieldsTable => freeFieldsTable.id == tableId
+            );
+            tablePrefixFieldNameWebform = selectedFreeFieldsTabel
+                ? selectedFreeFieldsTabel.prefixFieldNameWebform
+                : null;
+        }
+        return tablePrefixFieldNameWebform;
+    }
 
     render() {
         const {
             tableId,
             fieldFormatId,
             fieldName,
+            fieldNameWebform,
             visiblePortal,
             changePortal,
             mandatory,
@@ -197,6 +280,12 @@ class FreeFieldNewForm extends Component {
             sortOrder,
             mask,
         } = this.state.freeField;
+        let tablePrefixFieldNameWebform = this.getTablePrefixFieldNameWebform(tableId);
+
+        const fieldFormat = this.state.freeFieldsFieldFormats.find(
+            freeFieldsFieldFormat => freeFieldsFieldFormat.id == fieldFormatId
+        );
+        const fieldFormatType = fieldFormat ? fieldFormat.formatType : null;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -228,7 +317,7 @@ class FreeFieldNewForm extends Component {
                         </div>
                         <div className="row">
                             <InputText
-                                label="Veld naam"
+                                label="Veldnaam"
                                 name={'fieldName'}
                                 value={fieldName}
                                 onChangeAction={this.handleInputChange}
@@ -267,15 +356,16 @@ class FreeFieldNewForm extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
-                                label="Standaard waarde"
-                                name={'defaultValue'}
-                                value={defaultValue}
-                                onChangeAction={this.handleInputChange}
-                                required={mandatory ? 'required' : ''}
-                                error={this.state.errors.defaultValue}
-                                errorMessage={this.state.errorsMessage.defaultValue}
-                            />
+                            {/*<InputText*/}
+                            {/*    label="Standaard waarde"*/}
+                            {/*    name={'defaultValue'}*/}
+                            {/*    value={defaultValue}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*    required={mandatory ? 'required' : ''}*/}
+                            {/*    error={this.state.errors.defaultValue}*/}
+                            {/*    errorMessage={this.state.errorsMessage.defaultValue}*/}
+                            {/*/>*/}
+                            <div className="form-group col-sm-6">&nbsp;</div>
                             <InputToggle
                                 label={'Exporteerbaar'}
                                 name={'exportable'}
@@ -285,6 +375,21 @@ class FreeFieldNewForm extends Component {
                                 error={this.state.errors.exportable}
                                 errorMessage={this.state.errorsMessage.exportable}
                             />
+                        </div>
+                        <div className="row">
+                            {fieldFormatType && (
+                                <FreeFieldsDefaultValueEdit
+                                    fieldFormatType={fieldFormatType}
+                                    defaultValue={defaultValue}
+                                    mandatory={mandatory}
+                                    errors={this.state.errors}
+                                    errorsMessage={this.state.errorsMessage}
+                                    handleInputChange={this.handleInputChange}
+                                    handleInputChangeDate={this.handleInputChangeDate}
+                                    handleInputChangeDatetimeDate={this.handleInputChangeDatetimeDate}
+                                    handleInputChangeDatetimeTime={this.handleInputChangeDatetimeTime}
+                                />
+                            )}
                         </div>
                         <div className="row">
                             <InputText
@@ -298,6 +403,30 @@ class FreeFieldNewForm extends Component {
                                 type={'number'}
                             />
                         </div>
+
+                        {tablePrefixFieldNameWebform != null ? (
+                            <div className="row">
+                                <ViewText
+                                    className={'form-group col-sm-6 '}
+                                    label={'Veldnaam webformulier'}
+                                    value={fieldNameWebform ? tablePrefixFieldNameWebform + fieldNameWebform : ''}
+                                />
+                                <InputText
+                                    label="Wijzig veldnaam webformulier"
+                                    name={'fieldNameWebform'}
+                                    value={fieldNameWebform}
+                                    size={'col-sm-5'}
+                                    onChangeAction={this.handleInputChange}
+                                    error={this.state.errors.fieldNameWebform}
+                                    errorMessage={this.state.errorsMessage.fieldNameWebform}
+                                    textToolTip={
+                                        'Te gebruiken veldnaam voor webformulier in snake_case notatie. Alleen kleine letters, cijfers en liggend streepje (undescore) toegestaan.' +
+                                        'Veldnamen voor webformulieren hebben altijd een vaste prefix, afhankelijk van onderdeel.'
+                                    }
+                                />
+                            </div>
+                        ) : null}
+
                         <hr />
                         <div className="row">
                             <InputText

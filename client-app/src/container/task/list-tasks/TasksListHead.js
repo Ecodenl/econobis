@@ -16,9 +16,15 @@ const TasksListHead = props => {
 
     return (
         <tr className="thead-title">
+            {props.showSelectTasks && <th width="5%" />}
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'8%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'typeName'} title={'Type taak'} width={'10%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'note'} title={'Taak / notitie'} width={'20%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'note'}
+                title={'Taak / notitie'}
+                width={props.showSelectTasks ? '15%' : '20%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort
                 sortColumn={'contactFullName'}
                 title={'Contact'}

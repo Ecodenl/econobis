@@ -55,6 +55,7 @@ function App() {
                             <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />
                             <ProtectedRoute path="/over-ons" component={AboutUs} />
                             <ProtectedRoute path="/over-ons-organisatie/:id" component={AboutUsAdministration} />
+                            <ProtectedRoute path="/schouwen/campagne/:campaignId/:id" component={CoachInspectDetails} />
                             <ProtectedRoute path="/schouwen/campagne/:campaignId" component={CoachInspectList} />
                             <ProtectedRoute
                                 path="/schouwen/:quotationRequestId/document/:id"

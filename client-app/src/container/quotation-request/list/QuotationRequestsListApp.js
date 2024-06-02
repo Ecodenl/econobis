@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { bindActionCreators } from 'redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import moment from 'moment/moment';
+import fileDownload from 'js-file-download';
 
 import {
     clearQuotationRequests,
@@ -13,129 +14,115 @@ import QuotationRequestsListToolbar from './QuotationRequestsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import moment from 'moment/moment';
-import fileDownload from 'js-file-download';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestsAPI';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
-class QuotationRequestsListApp extends Component {
-    constructor(props) {
-        super(props);
+function QuotationRequestsListApp() {
+    const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
+    const [opportunityActionType, setOpportunityActionType] = useState('all');
+    const [opportunityActionId, setOpportunityActionId] = useState(0);
+    const [opportunityActionName, setOpportunityActionName] = useState('');
+    const quotationRequests = useSelector(state => state.quotationRequests.list);
+    const quotationRequestsFilters = useSelector(state => state.quotationRequests.filters);
+    const quotationRequestsSorts = useSelector(state => state.quotationRequests.sorts);
+    const quotationRequestsPagination = useSelector(state => state.quotationRequests.pagination);
+    const opportunityActions = useSelector(state => state.systemData.opportunityActions);
+    const dispatch = useDispatch();
 
-        this.handlePageClick = this.handlePageClick.bind(this);
-        this.getCSV = this.getCSV.bind(this);
+    useEffect(() => {
+        fetchQuotationRequestsData();
+    }, [quotationRequestsFilters, quotationRequestsSorts, quotationRequestsPagination, opportunityActionId]);
+
+    useEffect(() => {
+        if (opportunityActionType === 'all') {
+            setOpportunityActionId(0);
+            setOpportunityActionName('');
+            setMultiSelectEnabled(false);
+        } else {
+            const opportunityAction = opportunityActions.find(
+                opportunityAction => opportunityAction.codeRef === opportunityActionType
+            );
+            if (opportunityAction) {
+                setOpportunityActionId(opportunityAction.id);
+                setOpportunityActionName(opportunityAction.name);
+            }
+
+            setMultiSelectEnabled(true);
+        }
+    }, [opportunityActionType]);
+
+    function getCSV() {
+        dispatch(blockUI());
+        const filters = filterHelper(quotationRequestsFilters);
+        const sorts = quotationRequestsSorts;
+
+        QuotationRequestAPI.getCSV({ filters, sorts })
+            .then(payload => {
+                fileDownload(payload.data, 'kansacties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                dispatch(unblockUI());
+            })
+            .catch(error => {
+                dispatch(unblockUI());
+            });
     }
 
-    componentDidMount() {
-        this.fetchQuotationRequestsData();
+    function fetchQuotationRequestsData() {
+        let filters = filterHelper(quotationRequestsFilters);
+        if (opportunityActionId > 0) {
+            filters = [...filters, { field: 'opportunityActionId', data: opportunityActionId }];
+        }
+
+        const sorts = quotationRequestsSorts;
+        const pagination = { limit: 20, offset: quotationRequestsPagination.offset };
+
+        dispatch(fetchQuotationRequests(filters, sorts, pagination));
     }
 
-    componentWillUnmount() {
-        this.props.clearQuotationRequests();
+    function resetQuotationRequestFilters() {
+        dispatch(clearFilterQuotationRequests());
     }
 
-    getCSV = () => {
-        this.props.blockUI();
-        setTimeout(() => {
-            const filters = filterHelper(this.props.quotationRequestsFilters);
-            const sorts = this.props.quotationRequestsSorts;
-
-            QuotationRequestAPI.getCSV({ filters, sorts })
-                .then(payload => {
-                    fileDownload(payload.data, 'kansacties-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
-        }, 100);
-    };
-
-    fetchQuotationRequestsData = () => {
-        setTimeout(() => {
-            const filters = filterHelper(this.props.quotationRequestsFilters);
-            const sorts = this.props.quotationRequestsSorts;
-            const pagination = { limit: 20, offset: this.props.quotationRequestsPagination.offset };
-
-            this.props.fetchQuotationRequests(filters, sorts, pagination);
-        }, 100);
-    };
-
-    resetQuotationRequestFilters = () => {
-        this.props.clearFilterQuotationRequests();
-
-        this.fetchQuotationRequestsData();
-    };
-
-    onSubmitFilter() {
-        const filters = filterHelper(this.props.quotationRequestsFilters);
-        const sorts = this.props.quotationRequestsSorts;
-
-        this.props.setQuotationRequestsPagination({ page: 0, offset: 0 });
-
-        setTimeout(() => {
-            this.fetchQuotationRequestsData();
-        }, 100);
+    function onSubmitFilter() {
+        dispatch(clearQuotationRequests());
+        dispatch(setQuotationRequestsPagination({ page: 0, offset: 0 }));
     }
 
-    handlePageClick(data) {
+    function handlePageClick(data) {
         let page = data.selected;
         let offset = Math.ceil(page * 20);
 
-        this.props.setQuotationRequestsPagination({ page, offset });
-
-        setTimeout(() => {
-            this.fetchQuotationRequestsData();
-        }, 100);
+        dispatch(setQuotationRequestsPagination({ page, offset }));
     }
 
-    render() {
-        return (
-            <Panel>
-                <PanelBody>
-                    <div className="col-md-12 margin-10-top">
-                        <QuotationRequestsListToolbar
-                            resetQuotationRequestFilters={() => this.resetQuotationRequestFilters()}
-                            getCSV={this.getCSV}
-                        />
-                    </div>
+    return (
+        <Panel>
+            <PanelBody>
+                <div className="col-md-12 margin-10-top">
+                    <QuotationRequestsListToolbar
+                        resetQuotationRequestFilters={resetQuotationRequestFilters}
+                        getCSV={getCSV}
+                        opportunityActionType={opportunityActionType}
+                        setOpportunityActionType={setOpportunityActionType}
+                    />
+                </div>
 
-                    <div className="col-md-12 margin-10-top">
-                        <QuotationRequestsList
-                            quotationRequests={this.props.quotationRequests}
-                            quotationRequestsPagination={this.props.quotationRequestsPagination}
-                            onSubmitFilter={() => this.onSubmitFilter()}
-                            refreshQuotationRequestsData={() => this.fetchQuotationRequestsData()}
-                            handlePageClick={this.handlePageClick}
-                        />
-                    </div>
-                </PanelBody>
-            </Panel>
-        );
-    }
+                <div className="col-md-12 margin-10-top">
+                    <QuotationRequestsList
+                        quotationRequests={quotationRequests}
+                        multiSelectEnabled={multiSelectEnabled}
+                        setOpportunityActionTypeAll={() => setOpportunityActionType('all')}
+                        quotationRequestsPagination={quotationRequestsPagination}
+                        onSubmitFilter={onSubmitFilter}
+                        refreshQuotationRequestsData={() => fetchQuotationRequestsData()}
+                        handlePageClick={handlePageClick}
+                        opportunityActionType={opportunityActionType}
+                        opportunityActionId={opportunityActionId}
+                        opportunityActionName={opportunityActionName}
+                    />
+                </div>
+            </PanelBody>
+        </Panel>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        quotationRequests: state.quotationRequests.list,
-        quotationRequestsFilters: state.quotationRequests.filters,
-        quotationRequestsSorts: state.quotationRequests.sorts,
-        quotationRequestsPagination: state.quotationRequests.pagination,
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        {
-            fetchQuotationRequests,
-            clearQuotationRequests,
-            setQuotationRequestsPagination,
-            clearFilterQuotationRequests,
-            blockUI,
-            unblockUI,
-        },
-        dispatch
-    );
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(QuotationRequestsListApp);
+export default QuotationRequestsListApp;

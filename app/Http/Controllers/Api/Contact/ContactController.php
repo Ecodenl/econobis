@@ -347,14 +347,15 @@ class ContactController extends Controller
         $toContact = Contact::find($request->input('toId'));
         $fromContact = Contact::find($request->input('fromId'));
 
-        if($toContact->id > $fromContact->id) {
-            /**
-             * Update 20221108; we always want to merge into the contact with the lowest id.
-             */
-            $temp = $toContact;
-            $toContact = $fromContact;
-            $fromContact = $temp;
-        }
+        /**
+         * Update 20221108; we always want to merge into the contact with the lowest id.
+         * Update 20240507; to and from are selected by user.
+         */
+//        if($toContact->id > $fromContact->id) {
+//            $temp = $toContact;
+//            $toContact = $fromContact;
+//            $fromContact = $temp;
+//        }
 
         //we store the Hoom account id in a separate variable because later it will be updated and we cantr compair anymore
         $toContactHoomAccountId = $toContact->hoom_account_id;

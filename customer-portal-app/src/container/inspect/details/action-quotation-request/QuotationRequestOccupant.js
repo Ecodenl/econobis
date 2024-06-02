@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
-function QuotationRequestOccupant({ history, initialQuotationRequest, handleSubmit }) {
+function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [pmApproved, setPmApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'pm-approved'
             ? true
@@ -192,9 +192,7 @@ function QuotationRequestOccupant({ history, initialQuotationRequest, handleSubm
                                         <Button
                                             variant={'outline-dark'}
                                             size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
+                                            onClick={() => redirectBack()}
                                         >
                                             Annuleren
                                         </Button>

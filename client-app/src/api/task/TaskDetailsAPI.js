@@ -33,6 +33,18 @@ export default {
         return axiosInstance.post(requestUrl);
     },
 
+    deleteBulkTasks: ids => {
+        const requestUrl = `${URL_TASK}/bulk-delete`;
+
+        return axiosInstance.post(requestUrl, { ids: ids });
+    },
+
+    updateBulkTasks: (ids, values) => {
+        const requestUrl = `${URL_TASK}/bulk-update`;
+
+        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+    },
+
     storeTaskProperty: (id, data) => {
         const requestUrl = `${URL_API}/api/task/${id}/properties`;
 

@@ -45,7 +45,7 @@ use App\Http\Controllers\Api\Project\ProjectRevenueController;
 use App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery;
 use App\Http\Resources\Contact\ContactPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
-use App\Http\Resources\ParticipantProject\FullParticipantProject;
+use App\Http\Resources\ParticipantProject\FullParticipantProjectShow;
 use App\Http\Resources\ParticipantProject\GridParticipantProject;
 use App\Http\Resources\ParticipantProject\ParticipantProjectPeek;
 use App\Http\Resources\ParticipantProject\Templates\ParticipantReportMail;
@@ -248,7 +248,7 @@ class ParticipationProjectController extends ApiController
             'updatedBy',
         ]);
 
-        return FullParticipantProject::make($participantProject);
+        return FullParticipantProjectShow::make($participantProject);
     }
 
     public function store(RequestInput $requestInput)
@@ -1373,9 +1373,7 @@ class ParticipationProjectController extends ApiController
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
-//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
-
-        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

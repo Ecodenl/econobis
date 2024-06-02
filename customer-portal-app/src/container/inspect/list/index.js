@@ -31,18 +31,15 @@ function Inspectlist(props) {
     const [sortOn, setSortOn] = useState({ col: 'contactFullName', desc: false });
 
     useEffect(() => {
-        const campaignId = props.match.params.campaignId;
-
-        QuotationRequestAPI.fetchAll(campaignId).then(response => {
-            setQuotationRequestsArray(response.data);
-
-            setIsLoading(false);
-        });
-
         QuotationRequestAPI.fetchAllQuotationRequestStatus().then(payload => {
             setStatuses(payload.data.data);
         });
-    }, [props.user]);
+
+        QuotationRequestAPI.fetchAll(props.match.params.campaignId).then(response => {
+            setQuotationRequestsArray(response.data);
+            setIsLoading(false);
+        });
+    }, []);
 
     const getFilteredQuotationRequests = () => {
         let varQuotationRequestsArray = quotationRequestsArray;
@@ -433,9 +430,17 @@ function Inspectlist(props) {
                                         <tr key={quotationRequest.id}>
                                             <td>{quotationRequest.contactFullName}</td>
                                             <td>
-                                                <Link to={`/schouwen/${quotationRequest.id}`}>
-                                                    {quotationRequest.streetPostalCodeCity}
-                                                </Link>
+                                                {props.match.params.campaignId ? (
+                                                    <Link
+                                                        to={`/schouwen/campagne/${props.match.params.campaignId}/${quotationRequest.id}`}
+                                                    >
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                ) : (
+                                                    <Link to={`/schouwen/${quotationRequest.id}`}>
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                )}
                                             </td>
                                             <td>
                                                 {quotationRequest.opportunityAction.name +

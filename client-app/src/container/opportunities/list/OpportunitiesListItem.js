@@ -2,8 +2,6 @@ import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { setCheckedOpportunity } from '../../../actions/opportunity/OpportunitiesActions';
-
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -32,23 +30,23 @@ class OpportunitiesListItem extends Component {
         });
     }
 
-    setCheckedOpportunity(id) {
-        this.props.setCheckedOpportunity(id);
-    }
-
     openItem(id) {
-        hashHistory.push(`kans/${id}`);
+        if (!this.props.showCheckbox) {
+            hashHistory.push(`kans/${id}`);
+        }
     }
 
     render() {
         const {
-            checked,
             id,
             number,
             createdAt,
             desiredDate,
             contactName,
             measureCategoryName,
+            showCheckbox,
+            toggleOpportunityCheck,
+            opportunityIds,
             measures,
             campaignName,
             areaName,
@@ -62,9 +60,14 @@ class OpportunitiesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
-                        <input type="checkbox" checked={checked} onChange={() => this.setCheckedOpportunity(id)} />
+                        <input
+                            type="checkbox"
+                            name={id}
+                            checked={opportunityIds && opportunityIds.length > 0 ? opportunityIds.includes(id) : false}
+                            onChange={toggleOpportunityCheck}
+                        />
                     </td>
                 )}
                 <td>{number}</td>
@@ -116,10 +119,4 @@ const mapStateToProps = state => {
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    setCheckedOpportunity: id => {
-        dispatch(setCheckedOpportunity(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(OpportunitiesListItem);
+export default connect(mapStateToProps, null)(OpportunitiesListItem);

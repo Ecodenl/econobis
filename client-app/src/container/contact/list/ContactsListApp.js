@@ -37,6 +37,7 @@ class ContactsListApp extends Component {
         this.state = {
             campaigns: '',
             showCheckboxList: false,
+            showCheckboxListMerge: false,
             checkedAllCheckboxes: false,
             showSaveAsGroup: false,
             showExtraFilters: false,
@@ -285,6 +286,11 @@ class ContactsListApp extends Component {
             showCheckboxList: !this.state.showCheckboxList,
         });
     };
+    toggleShowCheckboxListMerge = () => {
+        this.setState({
+            showCheckboxListMerge: !this.state.showCheckboxListMerge,
+        });
+    };
 
     selectAllCheckboxes = () => {
         this.setState({
@@ -337,7 +343,10 @@ class ContactsListApp extends Component {
                     <div className="panel-body">
                         <div className="col-md-12 margin-10-top">
                             <ContactsListToolbar
+                                showCheckboxList={this.state.showCheckboxList}
+                                showCheckboxListMerge={this.state.showCheckboxListMerge}
                                 toggleShowCheckboxList={() => this.toggleShowCheckboxList()}
+                                toggleShowCheckboxListMerge={() => this.toggleShowCheckboxListMerge()}
                                 resetContactFilters={() => this.resetContactFilters()}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
@@ -360,6 +369,7 @@ class ContactsListApp extends Component {
                                 contacts={this.props.contacts}
                                 contactsPagination={this.props.contactsPagination}
                                 showCheckboxList={this.state.showCheckboxList}
+                                showCheckboxListMerge={this.state.showCheckboxListMerge}
                                 selectAllCheckboxes={() => this.selectAllCheckboxes()}
                                 checkedAllCheckboxes={this.state.checkedAllCheckboxes}
                                 onSubmitFilter={() => this.onSubmitFilter()}

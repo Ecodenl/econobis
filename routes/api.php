@@ -85,6 +85,8 @@ Route::namespace('Api')
         Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::post('/intake/bulk-delete', 'Intake\IntakeController@bulkDelete');
+        Route::post('/intake/bulk-update', 'Intake\IntakeController@bulkUpdate');
         Route::get('/intake/{intake}', 'Intake\IntakeController@showWithCustomCampaigns');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
@@ -250,6 +252,8 @@ Route::namespace('Api')
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');
+        Route::post('opportunity/bulk-delete', 'Opportunity\OpportunityController@bulkDelete');
+        Route::post('opportunity/bulk-update', 'Opportunity\OpportunityController@bulkUpdate');
         Route::post('opportunity/evaluation/{opportunity}', 'Opportunity\OpportunityController@updateEvaluation');
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
@@ -263,6 +267,8 @@ Route::namespace('Api')
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
+        Route::post('task/bulk-delete', 'Task\TaskController@bulkDelete');
+        Route::post('task/bulk-update', 'Task\TaskController@bulkUpdate');
         Route::post('task/{task}', 'Task\TaskController@update');
         Route::post('task/{task}/duplicate', 'Task\TaskController@duplicate');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');
@@ -463,6 +469,8 @@ Route::namespace('Api')
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::post('/quotation-request/bulk-delete', 'QuotationRequest\QuotationRequestController@bulkDelete');
+        Route::post('/quotation-request/bulk-update', 'QuotationRequest\QuotationRequestController@bulkUpdate');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
         Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
@@ -595,7 +603,7 @@ Route::namespace('Api')
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
-        Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::post('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
         Route::get('invoice/from-twinfield', 'Invoice\InvoiceController@showFromTwinfield');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
@@ -613,12 +621,16 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+//        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
+
+        Route::get('invoice-post/grid', 'Invoice\InvoicePostController@grid');
+        Route::get('invoice-post/{invoicePost}/download', 'Invoice\InvoicePostController@downloadInvoicePost');
+        Route::post('invoice-post/{invoicePost}/delete', 'Invoice\InvoicePostController@deleteInvoicePost');
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');

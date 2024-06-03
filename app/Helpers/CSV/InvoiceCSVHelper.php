@@ -93,6 +93,7 @@ class InvoiceCSVHelper
             });
 
             $csv = $this->csvExporter->build($chunk, [
+                'administration.name' => 'Administratie naam',
                 'sent_to_contact_number' => 'Contactnummer',
                 'organisation' => 'Organisatie',
                 'initials' => 'Initialen',

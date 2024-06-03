@@ -141,6 +141,7 @@ class OrderCSVHelper
 
 
             $mapping = [
+                'administration.name' => 'Administratie naam',
                 'contact.id' => 'Contact id',
                 'contact.number' => 'Contactnummer',
                 'organisation' => 'Organisation',
@@ -281,6 +282,7 @@ class OrderCSVHelper
 
 
             $mapping = [
+                'order.administration.name' => 'Administratie naam',
                 'order.contact.id' => 'Contact id',
                 'order.contact.number' => 'Contactnummer',
                 'order.organisation' => 'Organisation',

@@ -126,10 +126,14 @@ class OrdersList extends Component {
             const filters = filterHelper(this.props.ordersFilters);
             const sorts = this.props.ordersSorts;
             const administrationId = this.props.administrationId;
+            const administrationCode = this.props.administrationCode;
 
             OrdersAPI.getCSV({ filters, sorts, administrationId })
                 .then(payload => {
-                    fileDownload(payload.data, 'Orders-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(
+                        payload.data,
+                        'Orders-' + administrationCode + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {

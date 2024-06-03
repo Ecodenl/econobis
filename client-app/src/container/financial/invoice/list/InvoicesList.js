@@ -185,10 +185,14 @@ class InvoicesList extends Component {
             const filters = filterHelper(this.props.invoicesFilters);
             const sorts = this.props.invoicesSorts;
             const administrationId = this.props.administrationId;
+            const administrationCode = this.props.administrationCode;
 
             InvoicesAPI.getCSV({ filters, sorts, administrationId })
                 .then(payload => {
-                    fileDownload(payload.data, 'Notas-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv');
+                    fileDownload(
+                        payload.data,
+                        'Notas-' + administrationCode + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
+                    );
                     this.props.unblockUI();
                 })
                 .catch(error => {

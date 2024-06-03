@@ -98,52 +98,50 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_contacts_outline} />
                     </NavIcon>
-                    <NavText>
-                        <Link className="sidebar-link-header">Data controle</Link>
-                    </NavText>
-                    <Nav id="data-controle">
+                    <NavText>Data controle</NavText>
+                    <Nav id="data-controle-same-email-name">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-naam">
                                 Zelfde E-mail en naam
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-email-address">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-adres">
                                 Zelfde E-mail en adres
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-email">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-email">
                                 Zelfde E-mail
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-address">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-adres">
                                 Zelfde adres
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-kvk">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-kvknummer">
                                 Zelfde KvK nummer
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-btw">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-btwnummer">
                                 Zelfde BTW nummer
                             </Link>
                         </NavText>
                     </Nav>
-                    <Nav id="data-controle">
+                    <Nav id="data-controle-same-iban">
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-iban">
                                 Zelfde IBAN

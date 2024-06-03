@@ -164,6 +164,20 @@ class InvoiceController extends ApiController
         return $csv;
     }
 
+    public function csvWithProducts(RequestQuery $requestQuery)
+    {
+        $this->authorize('view', Invoice::class);
+
+        set_time_limit(0);
+        $invoices = $requestQuery->getQueryNoPagination()->get();
+
+        $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
+
+        $csv = $invoiceCSVHelper->downloadCSVWithProducts();
+
+        return $csv;
+    }
+
     public function showFromTwinfield(Request $request)
     {
         $this->authorize('view', Invoice::class);

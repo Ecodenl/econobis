@@ -46,6 +46,12 @@ export const setPhoneNumberFilter = phoneNumber => ({
     phoneNumber,
 });
 
+// SET_IBAN_FILTER
+export const setIbanFilter = iban => ({
+    type: 'SET_IBAN_FILTER',
+    iban,
+});
+
 // SET_STATUS_FILTER
 export const setStatusFilter = statusId => ({
     type: 'SET_STATUS_FILTER',

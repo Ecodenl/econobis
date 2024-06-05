@@ -12,6 +12,7 @@ import {
     setCityFilter,
     setEmailAddressFilter,
     setPhoneNumberFilter,
+    setIbanFilter,
     setStatusFilter,
     setCreatedAtFilter,
 } from '../../../actions/contact/ContactsFiltersActions';
@@ -52,6 +53,10 @@ const ContactsListFilter = props => {
 
     const onPhoneNumberChange = e => {
         props.setPhoneNumberFilter(e.target.value);
+    };
+
+    const onIbanChange = e => {
+        props.setIbanFilter(e.target.value);
     };
 
     const onStatusChange = e => {
@@ -147,9 +152,21 @@ const ContactsListFilter = props => {
                     onChange={onPhoneNumberChange}
                 />
             </th>
+            {props.dataControleType === 'zelfde-iban' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.iban.data}
+                        onChange={onIbanChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
             <DataTableFilterDate
                 value={props.filters.createdAt.data && props.filters.createdAt.data}
-                onChangeAction={onCreatedAtChange}
+                onChangeAction={onIbanChange}
             />
             <th />
         </tr>
@@ -173,6 +190,7 @@ const mapDispatchToProps = dispatch => {
             setCityFilter,
             setEmailAddressFilter,
             setPhoneNumberFilter,
+            setIbanFilter,
             setStatusFilter,
             setCreatedAtFilter,
         },

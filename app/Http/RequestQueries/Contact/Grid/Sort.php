@@ -26,6 +26,7 @@ class Sort extends RequestSort
         'phoneNumber',
         'statusName',
         'createdAt',
+        'iban',
     ];
 
     protected $mapping = [
@@ -40,6 +41,7 @@ class Sort extends RequestSort
         'phoneNumber' => 'phone_numbers.number',
         'statusName' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
+        'iban' => 'contacts.iban',
     ];
 
     protected $joins = [

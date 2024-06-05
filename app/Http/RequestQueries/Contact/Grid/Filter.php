@@ -25,6 +25,7 @@ class Filter extends RequestFilter
         'emailAddress',
         'phoneNumber',
         'createdAt',
+        'iban',
     ];
 
     protected $mapping = [
@@ -37,6 +38,7 @@ class Filter extends RequestFilter
         'emailAddress' => 'email_addresses.email',
         'phoneNumber' => 'phone_numbers.number',
         'createdAt' => 'contacts.created_at',
+        'iban' => 'contacts.iban',
     ];
 
     protected $joins = [

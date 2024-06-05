@@ -368,6 +368,7 @@ class ContactsListApp extends Component {
 
                         <div className="col-md-12 margin-10-top">
                             <ContactsList
+                                dataControleType={this.state.dataControleType}
                                 contacts={this.props.contacts}
                                 contactsPagination={this.props.contactsPagination}
                                 showCheckboxList={this.state.showCheckboxList}

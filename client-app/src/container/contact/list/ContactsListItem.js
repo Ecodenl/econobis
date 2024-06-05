@@ -62,8 +62,8 @@ class ContactsListItem extends Component {
             statusName,
             createdAt,
             permissions,
+            iban,
         } = this.props;
-
         return (
             <tr
                 className={keepSelected ? 'success-row' : removeSelected ? 'error-row' : this.state.highlightRow}
@@ -93,7 +93,8 @@ class ContactsListItem extends Component {
                 </td>
                 {/*<td className="hidden-xs">{areaName}</td>*/}
                 <td className="hidden-xs">{emailAddress}</td>
-                <td>{phoneNumber}</td>
+                <td> {phoneNumber}</td>
+                {this.props.dataControleType === 'zelfde-iban' ? <td className="hidden-xs">{iban}</td> : ''}
                 <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (

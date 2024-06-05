@@ -21,6 +21,7 @@ class GridContact extends JsonResource
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'iban' => $this->iban,
             'typeId' => $this->type_id,
             'typeName' => $this->present()->type,
             'fullName' => $this->full_name,

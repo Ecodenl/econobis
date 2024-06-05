@@ -31,6 +31,10 @@ const filtersReducerDefaultState = {
         field: 'phoneNumber',
         data: '',
     },
+    iban: {
+        field: 'iban',
+        data: '',
+    },
     statusId: {
         field: 'statusId',
         data: '',
@@ -105,6 +109,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 phoneNumber: {
                     ...state.phoneNumber,
                     data: action.phoneNumber,
+                },
+            };
+        case 'SET_IBAN_FILTER':
+            return {
+                ...state,
+                iban: {
+                    ...state.iban,
+                    data: action.iban,
                 },
             };
         case 'SET_STATUS_FILTER':

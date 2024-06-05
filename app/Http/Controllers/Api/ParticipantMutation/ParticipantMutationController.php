@@ -349,9 +349,13 @@ class ParticipantMutationController extends ApiController
         // Indien Transactie kosten ook bij lidmaatschap (use_transaction_costs_with_membership) = false
         if (!$project->use_transaction_costs_with_membership) {
 
-//            $belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
-            $questionAboutMembershipGroupContactsIds = ContactGroup::find($project->question_about_membership_group_id)->getAllContacts(true);
-            $belongsToMembershipGroup = in_array( $participation->contact_id, $questionAboutMembershipGroupContactsIds );
+            //$belongsToMembershipGroup = in_array( $project->question_about_membership_group_id, $participation->contact->getAllGroups() );
+            if(!$project->question_about_membership_group_id) {
+                $belongsToMembershipGroup = false;
+            } else {
+                $questionAboutMembershipGroupContactsIds = ContactGroup::find($project->question_about_membership_group_id)->getAllContacts(true);
+                $belongsToMembershipGroup = in_array($participation->contact_id, $questionAboutMembershipGroupContactsIds);
+            }
 
             // Indien Vragen over lid worden aan of uit (show_question_about_membership) = true en deelnemer zit al in leden groep, dan Transactioncosts = 0
             if ($project->show_question_about_membership && $belongsToMembershipGroup) {

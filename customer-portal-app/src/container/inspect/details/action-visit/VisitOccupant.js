@@ -168,11 +168,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={() => redirectBack()}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Terug naar overzicht
                                         </Button>
                                         {/*<Button*/}

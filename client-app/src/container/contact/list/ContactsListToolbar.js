@@ -5,13 +5,14 @@ import { hashHistory, Link } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
 import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
-import { FaRegLightbulb } from 'react-icons/fa';
+import { FaInfoCircle, FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
 import { share } from 'react-icons-kit/fa/share';
 
 import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
 import Icon from 'react-icons-kit';
+import ReactTooltip from 'react-tooltip';
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -241,7 +242,29 @@ class ContactsListToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h3 className="text-center table-title">Contacten {dataControleTypeText()}</h3>
+                    <h3 className="text-center table-title">
+                        Contacten {dataControleTypeText()}
+                        {dataControleType && (
+                            <>
+                                &nbsp;
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Hier staan de contacten die op basis van het geselecteerde criterium als dubbel zijn gevonden.  Je kan deze ontdubbelen door op het de blauwe knop met het vinkje te klikken. (Contacten samenvoegen selectie) Als je twee contacten hebt geselecteerd kan je die samenvoegen door op de blauwe knop met twee pijltjes te klikken (Contacten samenvoegen) Hiermee worden de gegevens van het contact wat groen gemarkeerd is aangevuld. Het rood gemarkeerde contact wordt verwijderd.'
+                                    }
+                                    data-for={`tooltip-note`}
+                                />
+                                <ReactTooltip
+                                    id={`tooltip-note`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        )}
+                    </h3>
                 </div>
                 <div className="col-md-4">
                     <div className="pull-right">Resultaten: {meta.total || 0}</div>

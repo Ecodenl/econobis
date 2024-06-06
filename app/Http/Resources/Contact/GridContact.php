@@ -17,6 +17,7 @@ class GridContact extends JsonResource
         $address = $this->primaryAddress;
         $emailAddress = $this->primaryEmailAddress;
         $phoneNumber = $this->primaryPhoneNumber;
+        $organisation = $this->organisation;
 
         return [
             'id' => $this->id,
@@ -33,6 +34,7 @@ class GridContact extends JsonResource
             'phoneNumber' => optional($phoneNumber)->number,
             'statusName' => $this->present()->status,
             'createdAt' => $this->created_at,
+            'vatNumber' => optional($organisation)->vat_number,
         ];
     }
 }

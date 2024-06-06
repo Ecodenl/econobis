@@ -13,6 +13,7 @@ import {
     setEmailAddressFilter,
     setPhoneNumberFilter,
     setIbanFilter,
+    setVatNumberFilter,
     setStatusFilter,
     setCreatedAtFilter,
 } from '../../../actions/contact/ContactsFiltersActions';
@@ -57,6 +58,10 @@ const ContactsListFilter = props => {
 
     const onIbanChange = e => {
         props.setIbanFilter(e.target.value);
+    };
+
+    const onVatNumberChange = e => {
+        props.setVatNumberFilter(e.target.value);
     };
 
     const onStatusChange = e => {
@@ -152,6 +157,18 @@ const ContactsListFilter = props => {
                     onChange={onPhoneNumberChange}
                 />
             </th>
+            {props.dataControleType === 'zelfde-btwnummer' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.vatNumber.data}
+                        onChange={onVatNumberChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
             {props.dataControleType === 'zelfde-iban' ? (
                 <th>
                     <input
@@ -193,6 +210,7 @@ const mapDispatchToProps = dispatch => {
             setIbanFilter,
             setStatusFilter,
             setCreatedAtFilter,
+            setVatNumberFilter,
         },
         dispatch
     );

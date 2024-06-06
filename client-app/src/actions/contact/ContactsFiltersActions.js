@@ -52,6 +52,12 @@ export const setIbanFilter = iban => ({
     iban,
 });
 
+// SET_IBAN_FILTER
+export const setVatNumberFilter = vatNumber => ({
+    type: 'SET_VAT_NUMBER_FILTER',
+    vatNumber,
+});
+
 // SET_STATUS_FILTER
 export const setStatusFilter = statusId => ({
     type: 'SET_STATUS_FILTER',

@@ -26,6 +26,7 @@ class Filter extends RequestFilter
         'phoneNumber',
         'createdAt',
         'iban',
+        'vatNumber',
     ];
 
     protected $mapping = [
@@ -39,6 +40,7 @@ class Filter extends RequestFilter
         'phoneNumber' => 'phone_numbers.number',
         'createdAt' => 'contacts.created_at',
         'iban' => 'contacts.iban',
+        'vatNumber' => 'organisations.vat_number',
     ];
 
     protected $joins = [
@@ -47,6 +49,7 @@ class Filter extends RequestFilter
         'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'vatNumber' => 'organisation',
     ];
 
     protected $defaultTypes = [

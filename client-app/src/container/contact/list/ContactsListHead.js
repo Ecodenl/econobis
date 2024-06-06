@@ -72,6 +72,16 @@ const ContactsListHead = props => {
             ) : (
                 ''
             )}
+            {props.dataControleType === 'zelfde-btwnummer' ? (
+                <DataTableHeadTitleAndSort
+                    sortColumn={'vatNumber'}
+                    title={'BTW Nummer'}
+                    width={'7%'}
+                    setSorts={setSorts}
+                />
+            ) : (
+                ''
+            )}
             <DataTableHeadTitleAndSort
                 RowClassName={'hidden-xs hidden-sm'}
                 sortColumn={'createdAt'}

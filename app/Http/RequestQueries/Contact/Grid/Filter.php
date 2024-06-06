@@ -27,6 +27,7 @@ class Filter extends RequestFilter
         'createdAt',
         'iban',
         'vatNumber',
+        'chamberOfCommerceNumber',
     ];
 
     protected $mapping = [
@@ -41,6 +42,7 @@ class Filter extends RequestFilter
         'createdAt' => 'contacts.created_at',
         'iban' => 'contacts.iban',
         'vatNumber' => 'organisations.vat_number',
+        'chamberOfCommerceNumber' => 'organisations.chamber_of_commerce_number',
     ];
 
     protected $joins = [
@@ -50,6 +52,7 @@ class Filter extends RequestFilter
         'postalCode' => 'address',
         'city' => 'address',
         'vatNumber' => 'organisation',
+        'chamberOfCommerceNumber' => 'organisation'
     ];
 
     protected $defaultTypes = [

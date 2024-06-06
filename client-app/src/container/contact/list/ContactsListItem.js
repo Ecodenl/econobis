@@ -64,6 +64,7 @@ class ContactsListItem extends Component {
             permissions,
             iban,
             vatNumber,
+            chamberOfCommerceNumber,
         } = this.props;
         return (
             <tr
@@ -97,6 +98,11 @@ class ContactsListItem extends Component {
                 <td> {phoneNumber}</td>
                 {this.props.dataControleType === 'zelfde-iban' ? <td className="hidden-xs">{iban}</td> : ''}
                 {this.props.dataControleType === 'zelfde-btwnummer' ? <td className="hidden-xs">{vatNumber}</td> : ''}
+                {this.props.dataControleType === 'zelfde-kvknummer' ? (
+                    <td className="hidden-xs">{chamberOfCommerceNumber}</td>
+                ) : (
+                    ''
+                )}
                 <td className="hidden-xs hidden-sm">{moment(createdAt).format('DD-MM-Y')}</td>
                 <td>
                     {this.state.showActionButtons ? (

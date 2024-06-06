@@ -35,6 +35,7 @@ class GridContact extends JsonResource
             'statusName' => $this->present()->status,
             'createdAt' => $this->created_at,
             'vatNumber' => optional($organisation)->vat_number,
+            'chamberOfCommerceNumber' => optional($organisation)->chamber_of_commerce_number,
         ];
     }
 }

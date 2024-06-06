@@ -39,6 +39,10 @@ const filtersReducerDefaultState = {
         field: 'vatNumber',
         data: '',
     },
+    chamberOfCommerceNumber: {
+        field: 'chamberOfCommerceNumber',
+        data: '',
+    },
     statusId: {
         field: 'statusId',
         data: '',
@@ -129,6 +133,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 vatNumber: {
                     ...state.vatNumber,
                     data: action.vatNumber,
+                },
+            };
+        case 'SET_CHAMBER_OF_COMMERCE_NUMBER':
+            return {
+                ...state,
+                chamberOfCommerceNumber: {
+                    ...state.chamberOfCommerceNumber,
+                    data: action.chamberOfCommerceNumber,
                 },
             };
         case 'SET_STATUS_FILTER':

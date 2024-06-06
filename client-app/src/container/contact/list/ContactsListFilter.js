@@ -16,6 +16,7 @@ import {
     setVatNumberFilter,
     setStatusFilter,
     setCreatedAtFilter,
+    setChamberOfCommerceNumberFilter,
 } from '../../../actions/contact/ContactsFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
@@ -62,6 +63,10 @@ const ContactsListFilter = props => {
 
     const onVatNumberChange = e => {
         props.setVatNumberFilter(e.target.value);
+    };
+
+    const onChamberOfCommerceNumberChange = e => {
+        props.setChamberOfCommerceNumberFilter(e.target.value);
     };
 
     const onStatusChange = e => {
@@ -181,6 +186,18 @@ const ContactsListFilter = props => {
             ) : (
                 ''
             )}
+            {props.dataControleType === 'zelfde-kvknummer' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.chamberOfCommerceNumber.data}
+                        onChange={onChamberOfCommerceNumberChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
             <DataTableFilterDate
                 value={props.filters.createdAt.data && props.filters.createdAt.data}
                 onChangeAction={onIbanChange}
@@ -211,6 +228,7 @@ const mapDispatchToProps = dispatch => {
             setStatusFilter,
             setCreatedAtFilter,
             setVatNumberFilter,
+            setChamberOfCommerceNumberFilter,
         },
         dispatch
     );

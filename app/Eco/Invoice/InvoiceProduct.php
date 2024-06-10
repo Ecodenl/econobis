@@ -145,7 +145,7 @@ class InvoiceProduct extends Model
 
     public function getAmountInclReductionExclVatAttribute()
     {
-        return $this->getAmountInclReductionExclVat();
+        return number_format($this->getAmountInclReductionExclVat(), 2, ',', '');
     }
 
     public function getAmountInclReductionVat()
@@ -167,7 +167,7 @@ class InvoiceProduct extends Model
 
     public function getAmountInclReductionInclVatAttribute()
     {
-        return $this->getAmountInclReductionInclVat();
+        return number_format($this->getAmountInclReductionInclVat(), 2, ',', '');
     }
 
     public function getAmountInclReductionInclVat()

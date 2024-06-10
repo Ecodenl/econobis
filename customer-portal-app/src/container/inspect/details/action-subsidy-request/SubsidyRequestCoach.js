@@ -111,7 +111,7 @@ function SubsidyRequestCoach({ redirectBack, initialQuotationRequest, handleSubm
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -123,7 +123,7 @@ function SubsidyRequestCoach({ redirectBack, initialQuotationRequest, handleSubm
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 step="900"
                                             />
                                         )}

@@ -30,4 +30,5 @@ export default [
     { id: 28, name: 'di' },
     { id: 29, name: 'voor den' },
     { id: 30, name: 'op der' },
+    { id: 31, name: 'in den' },
 ];

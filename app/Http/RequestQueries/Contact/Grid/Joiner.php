@@ -42,6 +42,13 @@ class Joiner extends RequestJoiner
         });
     }
 
+    protected function applyOrganisationJoin($query)
+    {
+        $query->leftJoin('organisations', function ($join) {
+            $join->on('organisations.contact_id', '=', 'contacts.id');
+        });
+    }
+
     protected function applyParticipationsJoin($query)
     {
         $query->leftJoin('participation_project', function ($join) {

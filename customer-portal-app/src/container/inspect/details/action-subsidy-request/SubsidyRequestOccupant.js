@@ -112,7 +112,7 @@ function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleS
                                     {initialQuotationRequest.hasExternalParty ? (
                                         <>
                                             <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                                Datum opname
+                                                Afspraak gedaan op
                                             </FormLabel>
                                             <Field name="dateRecorded">
                                                 {({ field }) => (
@@ -120,7 +120,7 @@ function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleS
                                                         field={field}
                                                         type="datetime-local"
                                                         id="date_recorded"
-                                                        placeholder={'Datum opname'}
+                                                        placeholder={'Afspraak gedaan op'}
                                                         readOnly={true}
                                                     />
                                                 )}
@@ -295,11 +295,7 @@ function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleS
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={() => redirectBack()}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

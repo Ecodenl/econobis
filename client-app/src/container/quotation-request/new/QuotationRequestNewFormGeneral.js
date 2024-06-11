@@ -459,7 +459,7 @@ class QuotationRequestNewFormGeneral extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Datum opname"
+                        label="Afspraak gedaan op"
                         size={'col-sm-6'}
                         name="dateRecorded"
                         value={dateRecorded}

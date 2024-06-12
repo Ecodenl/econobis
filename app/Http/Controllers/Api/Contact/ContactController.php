@@ -10,6 +10,7 @@ use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
+use App\Helpers\Import\ContactImportfromenergiesupplierHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
@@ -66,6 +67,20 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->import($request->file('attachment'));
+    }
+
+    public function validateImportfromenergiesupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
+        return $contactImportfromenergiesupplierHelper->validateImport($request->file('attachment'));
+    }
+
+    public function importfromenergiesupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
+        return $contactImportfromenergiesupplierHelper->import($request->file('attachment'));
     }
 
     public function destroy(Contact $contact)

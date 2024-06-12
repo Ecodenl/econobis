@@ -1,0 +1,45 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+class CreateContactsToImportTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::create('contacts_to_import', function (Blueprint $table) {
+            $table->increments('id');
+            $table->string('first_name');
+            $table->string('last_name')->nullable();
+            $table->string('street');
+            $table->unsignedInteger('housenumber')->nullable();
+            $table->string('addition')->nullable();
+            $table->string('postal_code');
+            $table->string('city');
+            $table->string('email_contact');
+            $table->string('email_invoices');
+            $table->string('phone_number');
+            $table->string('ean');
+            $table->string('es_number');
+            $table->date('member_since');
+            $table->date('end_date')->nullable();
+            $table->timestamps();
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::dropIfExists('contacts_to_import');
+    }
+}

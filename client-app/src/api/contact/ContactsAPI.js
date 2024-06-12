@@ -192,6 +192,18 @@ export default {
         return axiosInstance.post(requestUrl, csv);
     },
 
+    validateImportfromenergiesupplier: csv => {
+        const requestUrl = `${URL_API}/api/contact/validate-importfromenergiesupplier`;
+
+        return axiosInstance.post(requestUrl, csv);
+    },
+
+    importfromenergiesupplier: csv => {
+        const requestUrl = `${URL_API}/api/contact/importfromenergiesupplier`;
+
+        return axiosInstance.post(requestUrl, csv);
+    },
+
     getChartData: () => {
         const requestUrl = `${URL_API}/api/contact/chart-data`;
 

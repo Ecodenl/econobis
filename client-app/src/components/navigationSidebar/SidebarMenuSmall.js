@@ -64,7 +64,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
         {/* Email */}
         {permissions.menuEmail && (
             <div className="sidebar-menu-small-item">
-                <SvgIcon size={20} icon={ic_fiber_new} />
+                <SvgIcon size={20} icon={ic_email} />
             </div>
         )}
         {/* Taken */}

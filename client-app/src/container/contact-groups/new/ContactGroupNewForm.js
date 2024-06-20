@@ -64,7 +64,7 @@ class ContactGroupNewForm extends Component {
             }
         );
 
-        ContactGroupAPI.peekContactGroups().then(payload => {
+        ContactGroupAPI.peekActiveContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
 

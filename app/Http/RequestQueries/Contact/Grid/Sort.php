@@ -33,7 +33,6 @@ class Sort extends RequestSort
         'number' => 'contacts.number',
         'typeName' => 'contacts.type_id',
         'fullName' => 'contacts.full_name',
-        'streetAndNumber' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'emailAddress' => 'email_addresses.email',
@@ -49,4 +48,11 @@ class Sort extends RequestSort
         'postalCode' => 'address',
         'city' => 'address',
     ];
+
+    protected function applyStreetAndNumberSort($query, $data)
+    {
+        $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
 }

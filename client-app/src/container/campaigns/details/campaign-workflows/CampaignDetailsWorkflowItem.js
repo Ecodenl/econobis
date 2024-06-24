@@ -34,7 +34,8 @@ function CampaignDetailsWorkflowItem({ campaignWorkflow, campaignId, fetchCampai
         setState({ showEdit: false });
     }
 
-    function toggleDelete() {
+    function toggleDelete(e) {
+        e.stopPropagation();
         setState({ showDelete: !state.showDelete });
     }
 

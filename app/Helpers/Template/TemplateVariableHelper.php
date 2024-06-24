@@ -2276,7 +2276,7 @@ class TemplateVariableHelper
             case 'projectmanager_plaats':
                 return optional(optional($model->projectManager)->primaryAddress)->city;
                 break;
-            case 'projectmanagerh_email':
+            case 'projectmanager_email':
                 return optional(optional($model->projectManager)->primaryEmailAddress)->email;
                 break;
             case 'projectmanager_telefoonnummer':
@@ -2395,9 +2395,10 @@ class TemplateVariableHelper
             case 'datum_afspraak':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : null;
                 break;
-            case 'datum_opname':
-                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
-                break;
+//            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
+//            case 'datum_opname':
+//                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
+//                break;
             case 'datum_uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y H:i') : null;
                 break;
@@ -2546,9 +2547,9 @@ class TemplateVariableHelper
             break;
             case 'deelname_bedrag_toegekend':
                 if ($projectTypeCodeRef == 'loan') {
-                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '' );
+                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '.' );
                 } else {
-                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional($model->order)->participation)->project->currentBookWorth() ), 2, ',', '');
+                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional(optional($model->order)->participation)->project)->currentBookWorth() ), 2, ',', '.');
                 }
                 return $amount;
             break;
@@ -2561,7 +2562,7 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->order->contact->iban_attn;
             case 'totaal_incl_btw':
-                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
+                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '.');
             case 'datum':
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";

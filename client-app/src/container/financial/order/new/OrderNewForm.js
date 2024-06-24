@@ -31,10 +31,10 @@ class OrderNewForm extends Component {
             collectMandateActive: false,
             order: {
                 contactId: props.contactId || '',
-                administrationId: '',
+                administrationId: props.administrationId || '',
                 statusId: 'concept',
                 subject: '',
-                participationId: '',
+                participationId: props.participationId || '',
                 emailTemplateIdCollection: '',
                 emailTemplateIdTransfer: '',
                 emailTemplateReminderId: '',
@@ -103,6 +103,8 @@ class OrderNewForm extends Component {
                 },
             });
         });
+
+        this.handleAdministrationChange(this.state.order.administrationId);
     }
 
     handleInputChange = event => {
@@ -122,29 +124,40 @@ class OrderNewForm extends Component {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
 
-        let administration;
+        this.handleAdministrationChange(value);
+    };
 
-        administration = this.props.administrations.filter(administration => administration.id == value);
-        administration = administration[0];
+    handleAdministrationChange(administrationId) {
+        let administration = null;
+        if (administrationId) {
+            administration = this.props.administrations.filter(administration => administration.id == administrationId);
+            if (administration != null) {
+                administration = administration[0];
+            }
+        }
         this.setState({
             order: {
                 ...this.state.order,
-                administrationId: administration.id,
-                emailTemplateIdCollection: administration.emailTemplateIdCollection
-                    ? administration.emailTemplateIdCollection
-                    : '',
-                emailTemplateIdTransfer: administration.emailTemplateIdTransfer
-                    ? administration.emailTemplateIdTransfer
-                    : '',
-                emailTemplateReminderId: administration.emailTemplateReminderId
-                    ? administration.emailTemplateReminderId
-                    : '',
-                emailTemplateExhortationId: administration.emailTemplateExhortationId
-                    ? administration.emailTemplateExhortationId
-                    : '',
+                administrationId: administration != null ? administration.id : '',
+                emailTemplateIdCollection:
+                    administration && administration.emailTemplateIdCollection
+                        ? administration.emailTemplateIdCollection
+                        : '',
+                emailTemplateIdTransfer:
+                    administration && administration.emailTemplateIdTransfer
+                        ? administration.emailTemplateIdTransfer
+                        : '',
+                emailTemplateReminderId:
+                    administration && administration.emailTemplateReminderId
+                        ? administration.emailTemplateReminderId
+                        : '',
+                emailTemplateExhortationId:
+                    administration && administration.emailTemplateExhortationId
+                        ? administration.emailTemplateExhortationId
+                        : '',
             },
         });
-    };
+    }
 
     handleInputChangeParticipation = event => {
         const target = event.target;

@@ -4,7 +4,7 @@ namespace App\Http\Resources\Order;
 
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Http\Resources\Administration\FullAdministration;
-use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\Contact\FullOrderContact;
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Email\FullEmail;
 use App\Http\Resources\EmailTemplate\FullEmailTemplate;
@@ -42,7 +42,7 @@ class FullOrder extends JsonResource
                 'project' => FullProject::make($project),
 
                 'contactId' => $this->contact_id,
-                'contact' => FullContact::make($this->whenLoaded('contact')),
+                'contact' => FullOrderContact::make($this->whenLoaded('contact')),
 
                 'participationId' => $this->participation_id,
 

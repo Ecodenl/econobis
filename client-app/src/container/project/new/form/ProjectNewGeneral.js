@@ -6,6 +6,8 @@ import InputDate from '../../../../components/form/InputDate';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import ViewText from '../../../../components/form/ViewText';
+import validator from 'validator';
+import InputTextArea from '../../../../components/form/InputTextArea';
 
 const ProjectFormNewGeneral = ({
     name,
@@ -13,6 +15,7 @@ const ProjectFormNewGeneral = ({
     description,
     projectStatusId,
     projectTypeId,
+    projectTypeCodeRef,
     useSceProject,
     isSceProject,
     postalcodeLink,
@@ -33,11 +36,9 @@ const ProjectFormNewGeneral = ({
     ownedById,
     administrationId,
     usesMollie,
-    administration,
     dateStart,
     dateEnd,
     dateEntry,
-    contactGroupIds,
     contactGroupIdsSelected,
     dateProduction,
     isMembershipRequired,
@@ -51,21 +52,43 @@ const ProjectFormNewGeneral = ({
     projectTypesActive,
     projectStatus,
     administrations,
-    hasPaymentInvoices,
     users,
     contactGroups,
     disableBeforeEntryDate,
     errors,
+    errorMessages,
 }) => {
     let addressNumberSeriesFieldEnabled = postalcodeLink
         ? postalcodeLink.replace(/\D/g, '').length === 4 && postalcodeLink.replace(/[0-9]/g, '').trim().length === 2
         : false;
 
-    let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
-    errors.postalcodeLink = postalcodeLink ? !regExpPostalcodeLink.exec(postalcodeLink) : false;
-
-    let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
-    errors.addressNumberSeries = addressNumberSeries ? !regExpAddressNumberSeries.exec(addressNumberSeries) : false;
+    // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectNewApp
+    errors.postalcodeLink = false;
+    errorMessages.postalcodeLink = '';
+    if (null !== projectTypeCodeRef) {
+        if (
+            (checkPostalcodeLink || projectTypeCodeRef === 'postalcode_link_capital') &&
+            (!postalcodeLink || validator.isEmpty('' + postalcodeLink))
+        ) {
+            errors.postalcodeLink = true;
+            errorMessages.postalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+        } else if (postalcodeLink) {
+            let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+            if (!regExpPostalcodeLink.exec(postalcodeLink)) {
+                errors.postalcodeLink = true;
+                errorMessages.postalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+            }
+        }
+    }
+    errors.addressNumberSeries = false;
+    errorMessages.addressNumberSeries = '';
+    if (addressNumberSeries) {
+        let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+        if (!regExpAddressNumberSeries.exec(addressNumberSeries)) {
+            errors.addressNumberSeries = true;
+            errorMessages.addressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+        }
+    }
 
     return (
         <React.Fragment>
@@ -78,6 +101,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.name}
+                    errorMessage={errorMessages.name}
                 />
                 <InputText
                     label={'Projectcode'}
@@ -86,6 +110,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.code}
+                    errorMessage={errorMessages.code}
                 />
             </div>
 
@@ -98,6 +123,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChangeProjectType}
                     required={'required'}
                     error={errors.projectTypeId}
+                    errorMessage={errorMessages.projectTypeId}
                 />
                 <InputSelect
                     label={'Status'}
@@ -107,6 +133,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.projectStatusId}
+                    errorMessage={errorMessages.projectStatusId}
                 />
             </div>
 
@@ -127,6 +154,7 @@ const ProjectFormNewGeneral = ({
                         onChangeAction={handleInputChange}
                         required={isSceProject ? 'required' : ''}
                         error={errors.baseProjectCodeRef}
+                        errorMessage={errorMessages.baseProjectCodeRef}
                     />
                 ) : null}
             </div>
@@ -182,7 +210,7 @@ const ProjectFormNewGeneral = ({
                             size={'col-sm-5'}
                             textToolTip={`Voor postcoderoosgebied geef de postcodes op gescheiden door een comma(,). Gebruik geen spaties. Voorbeeld: 1001,1002,1003AA,1003AB`}
                             error={errors.postalcodeLink}
-                            errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                            errorMessage={errorMessages.postalcodeLink}
                         />
                         {addressNumberSeriesFieldEnabled ? (
                             <InputText
@@ -194,7 +222,7 @@ const ProjectFormNewGeneral = ({
                                 textToolTip={`Voor huisnummergebied geef de huisnummers op gescheiden door een comma(,). Gebruik een koppelteken (-) voor huisnummer toevoegingen.
                                       Voor huisnummer reeksen gebruik dubbelpunt (:). Gebruik geen spaties. Voorbeeld: 1,2,4-10,11-a,11-b`}
                                 error={errors.addressNumberSeries}
-                                errorMessage={'Ongeldige invoer, klik (i) voor uitleg.'}
+                                errorMessage={errorMessages.postalcodeLink}
                             />
                         ) : (
                             <div className="form-group col-sm-6" />
@@ -213,23 +241,34 @@ const ProjectFormNewGeneral = ({
             ) : null}
 
             <div className="row">
-                <div className="form-group col-sm-12">
-                    <div className="row">
-                        <div className="col-sm-3">
-                            <label htmlFor="description" className="col-sm-12">
-                                Omschrijving
-                            </label>
-                        </div>
-                        <div className="col-sm-8">
-                            <textarea
-                                name="description"
-                                value={description}
-                                onChange={handleInputChange}
-                                className="form-control input-sm"
-                            />
-                        </div>
-                    </div>
-                </div>
+                {/*<div className="form-group col-sm-12">*/}
+                {/*    <div className="row">*/}
+                {/*        <div className="col-sm-3">*/}
+                {/*            <label htmlFor="description" className="col-sm-12">*/}
+                {/*                Omschrijving*/}
+                {/*            </label>*/}
+                {/*        </div>*/}
+                {/*        <div className="col-sm-8">*/}
+                {/*            <textarea*/}
+                {/*                name="description"*/}
+                {/*                value={description}*/}
+                {/*                onChange={handleInputChange}*/}
+                {/*                className="form-control input-sm"*/}
+                {/*            />*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
+                <InputTextArea
+                    label="Omschrijving"
+                    name={'description'}
+                    sizeInput={'col-sm-8'}
+                    rows={2}
+                    value={description}
+                    onChangeAction={handleInputChange}
+                    // required={'required'}
+                    // error={errors.description}
+                    // errorMessage={errorMessages.description}
+                />
             </div>
 
             <div className="row">
@@ -239,6 +278,7 @@ const ProjectFormNewGeneral = ({
                     value={postalCode}
                     onChangeAction={handleInputChange}
                     error={errors.postalCode}
+                    errorMessage={errorMessages.postalCode}
                 />
                 <InputText label={'Adres'} name={'address'} value={address} onChangeAction={handleInputChange} />
             </div>
@@ -263,6 +303,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChange}
                     required={'required'}
                     error={errors.ownedById}
+                    errorMessage={errorMessages.ownedById}
                 />
             </div>
 
@@ -282,6 +323,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChangeAdministration}
                     required={'required'}
                     error={errors.administrationId}
+                    errorMessage={errorMessages.administrationId}
                 />
             </div>
 
@@ -331,6 +373,7 @@ const ProjectFormNewGeneral = ({
                         value={contactGroupIdsSelected}
                         onChangeAction={handleContactGroupIds}
                         error={errors.contactGroupIds}
+                        errorMessage={errorMessages.contactGroupIds}
                         required={'required'}
                     />
                 </div>
@@ -374,6 +417,7 @@ const ProjectFormNewGeneral = ({
                     onChangeAction={handleInputChangeDate}
                     disabledBefore={disableBeforeEntryDate}
                     error={errors.dateEntry}
+                    errorMessage={errorMessages.dateEntry}
                 />
             </div>
         </React.Fragment>

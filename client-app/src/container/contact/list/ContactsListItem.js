@@ -42,7 +42,12 @@ class ContactsListItem extends Component {
 
     render() {
         const {
+            showCheckbox,
+            showCheckboxMerge,
             checked,
+            keepSelected,
+            removeSelected,
+            blockSelecting,
             id,
             number,
             typeId,
@@ -61,14 +66,21 @@ class ContactsListItem extends Component {
 
         return (
             <tr
-                className={this.state.highlightRow}
-                onDoubleClick={() => this.openItem(id)}
+                className={keepSelected ? 'success-row' : removeSelected ? 'error-row' : this.state.highlightRow}
+                onDoubleClick={() => (!showCheckbox && !showCheckboxMerge ? this.openItem(id) : void 0)}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                {this.props.showCheckbox && (
+                {showCheckbox && (
                     <td>
                         <input type="checkbox" checked={checked} onChange={() => this.setCheckedContact(id)} />
+                    </td>
+                )}
+                {showCheckboxMerge && (
+                    <td>
+                        {!blockSelecting && (
+                            <input type="checkbox" checked={checked} onChange={() => this.setCheckedContact(id)} />
+                        )}
                     </td>
                 )}
                 <td className="hidden-xs">{number}</td>

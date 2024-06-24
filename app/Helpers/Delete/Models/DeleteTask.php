@@ -59,9 +59,10 @@ class DeleteTask implements DeleteInterface
      */
     public function canDelete()
     {
-        if(!$this->task->finished){
-            array_push($this->errorMessage, "Er is nog een taak die niet is afgerond. Zet de taak op afgehandeld en verwijder dan opnieuw.");
-        }
+        // 22-04-2024: Verwijderen 1 voor 1 mag ook ongeacht de status van de taak
+//        if(!$this->task->finished){
+//            array_push($this->errorMessage, "Er is nog een taak die niet is afgerond. Zet de taak op afgehandeld en verwijder dan opnieuw.");
+//        }
     }
 
     /** Deletes models recursive

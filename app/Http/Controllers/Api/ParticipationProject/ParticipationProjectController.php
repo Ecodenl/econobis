@@ -268,16 +268,17 @@ class ParticipationProjectController extends ApiController
 
         $this->authorize('view', ParticipantProject::class);
 
-        $lastRevenueWithNotProcessedDistributions = $this->getLastRevenueWithNotProcessedDistributions($participantProject);
-        $lastRevenueBeginDate = $lastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->date_begin : null;
+        $lastRevenueConceptOrDefinitiveDistribution = $this->getLastRevenueConceptOrDefinitiveDistribution($participantProject);
+        $lastRevenueBeginDate = $lastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->date_begin : null;
+        $lastRevenueEndDate = $lastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->date_end : null;
 
         $participantProject->dateBeginRevenueTerminated = $this->getDateBeginRevenueTerminated($participantProject, $lastRevenueBeginDate);
-        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated);
+        $participantProject->dateEndRevenueTerminated = $this->getDateEndRevenueTerminated($participantProject->dateBeginRevenueTerminated, $lastRevenueEndDate);
 
-        $hasLastRevenueWithNotProcessedDistributions = (bool)$lastRevenueWithNotProcessedDistributions;
+        $hasLastRevenueConceptOrDefinitiveDistribution = (bool)$lastRevenueConceptOrDefinitiveDistribution;
 
-        if($hasLastRevenueWithNotProcessedDistributions) {
-            $participantProject->dateReference = $lastRevenueWithNotProcessedDistributions->date_reference;
+        if($hasLastRevenueConceptOrDefinitiveDistribution) {
+            $participantProject->dateReference = $lastRevenueConceptOrDefinitiveDistribution->date_reference;
         } else {
             if($participantProject->project->projectType->code_ref == 'loan' ){
                 $participantProject->dateReference = Carbon::now()->format('Y-m-d');
@@ -288,11 +289,11 @@ class ParticipationProjectController extends ApiController
             }
         }
 
-        $participantProject->hasLastRevenueWithNotProcessedDistributions = $hasLastRevenueWithNotProcessedDistributions;
-        $participantProject->lastRevenuePayPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_percentage : null;
-        $participantProject->lastRevenuePayAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_amount : null;
-        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->key_amount_first_percentage : null;
-        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueWithNotProcessedDistributions ? $lastRevenueWithNotProcessedDistributions->pay_Percentage_valid_from_key_amount : null;
+        $participantProject->hasLastRevenueConceptOrDefinitiveDistribution = $hasLastRevenueConceptOrDefinitiveDistribution;
+        $participantProject->lastRevenuePayPercentage = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_percentage : null;
+        $participantProject->lastRevenuePayAmount = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_amount : null;
+        $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->key_amount_first_percentage : null;
+        $participantProject->lastRevenuePayPercentageValidFromKeyAmount = $hasLastRevenueConceptOrDefinitiveDistribution ? $lastRevenueConceptOrDefinitiveDistribution->pay_Percentage_valid_from_key_amount : null;
 
         return ResourceForTerminatingParticipantProject::make($participantProject);
     }
@@ -310,19 +311,34 @@ class ParticipationProjectController extends ApiController
         }
         return $dateBegin;
     }
-    private function getDateEndRevenueTerminated($dateBegin)
+    private function getDateEndRevenueTerminated($dateBegin, $lastRevenueEndDate)
     {
-        $dateEnd = $dateBegin
-            ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
-            : null;
+        // Indien participant in concept of definitieve verdeling dan laatste einddatum daarvan.
+        //  anders Einde jaar van beginatum.
+        if( $lastRevenueEndDate != null){
+            $dateEnd = Carbon::parse($lastRevenueEndDate)->format('Y-m-d');
+        } else {
+            $dateEnd = $dateBegin
+                ? Carbon::parse($dateBegin)->endOfYear()->format('Y-m-d')
+                : null;
+        }
         return $dateEnd;
     }
 
-    private function getLastRevenueWithNotProcessedDistributions(ParticipantProject $participantProject)
+    private function getLastRevenueConceptOrDefinitiveDistribution(ParticipantProject $participantProject)
     {
-        $revenueIdsWithNotProcessedDistributions = $participantProject->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
-        $lastRevenueWithNotProcessedDistributions = ProjectRevenue::whereIn('id', $revenueIdsWithNotProcessedDistributions)->orderByDesc('date_end')->first();
-        return $lastRevenueWithNotProcessedDistributions;
+//        $revenueIdsWithNotProcessedDistributions = $participantProject->projectRevenueDistributions()->whereIn('status', ['concept', 'confirmed'])->get()->pluck('revenue_id')->toArray();
+        $revenueIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('revenue_id')->toArray();
+        $distributionIdsForThisParticipant = $participantProject->projectRevenueDistributions()->get()->pluck('id')->toArray();
+
+        $lastRevenueConceptOrDefinitiveDistribution = ProjectRevenue::whereIn('id', $revenueIdsForThisParticipant)->orderByDesc('date_end')->first();
+
+        $hasLastRevenueNotConceptOrDefinitiveDistribution = false;
+        if($lastRevenueConceptOrDefinitiveDistribution){
+            $hasLastRevenueNotConceptOrDefinitiveDistribution = $participantProject->projectRevenueDistributions()->where('revenue_id', $lastRevenueConceptOrDefinitiveDistribution->id)->whereIn('id', $distributionIdsForThisParticipant)->whereNotIn('status', ['concept', 'confirmed'])->exists();
+        }
+
+        return $hasLastRevenueNotConceptOrDefinitiveDistribution ? null : $lastRevenueConceptOrDefinitiveDistribution;
     }
 
 
@@ -533,41 +549,18 @@ class ParticipationProjectController extends ApiController
 
         $data = $requestInput
             ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->double('payPercentage')->validate('nullable')->onEmpty(null)->alias('pay_percentage')->next()
             ->get();
 
         // Set terminated date
-        $participantProject->date_terminated = $data['date_terminated'];
+        $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
         $projectType = $participantProject->project->projectType;
-        // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
-//        $payPercentage = $data['pay_percentage'];
-//        DB::transaction(function () use ($participantProject, $payPercentage, $projectType) {
+
         DB::transaction(function () use ($participantProject, $projectType) {
             $participantProject->save();
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
-            // If Payout percentage is filled then make a result mutation (not when capital or postalcode_link_capital)
-            // Here in function terminate projecttype can only by capital or postalcode_link_capital !
-//            if ($payPercentage && $projectType->code_ref !== 'capital' && $projectType->code_ref !== 'postalcode_link_capital') {
-//                // Calculate result from last revenue distribution till date terminate
-//                $this->createMutationResult($participantProject, $payPercentage, $projectType);
-//            }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
-
-            // Here in function terminate projecttype can only by capital or postalcode_link_capital and then payPercentage is not set.
-//            if($payPercentage) {
-//                // Remove distributions on active concept Euro and Redemption revenue(s)
-//                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
-//                $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
-//
-//                $participantProject->projectRevenueDistributions()
-//                    ->where('status', 'concept')
-//                    ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro) {
-//                        $query->where('confirmed', false)->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro]);
-//                    })
-//                ->forceDelete();
-//            }
         });
 
         if($projectType->code_ref === 'postalcode_link_capital') {
@@ -700,6 +693,10 @@ class ParticipationProjectController extends ApiController
                     // Recalculate dependent data in project
                     $participantProject->project->calculator()->run()->save();
                 }
+            }
+            if($projectTypeCodeRef == 'postalcode_link_capital'){
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhHelper->updateIndicatorFieldEndParticipation($participantProject, $originalDateTerminated);
             }
 
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
@@ -1508,9 +1505,7 @@ class ParticipationProjectController extends ApiController
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
-//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
-
-        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;
@@ -1608,9 +1603,9 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
-        // Deelname beeindigd bij leningen en obligaties voorlopig alleen terugdraaien indien deelname niet al in een verdeling zit die niet concept is.
-        $dateTerminated = $participantProject->date_terminated;
-        if ( $dateTerminated != null && ($participantProject->project->projectType->code_ref == 'loan' || $participantProject->project->projectType->code_ref == 'obligation') ) {
+        // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
+        $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+        if ( $dateTerminated != null) {
             $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
                 ->whereNotIn('status', ['concept'])
                 ->whereHas('revenue', function ($query) use($dateTerminated) {
@@ -1619,7 +1614,28 @@ class ParticipationProjectController extends ApiController
                 })
                 ->exists();
 
-            return !$projectRevenueDistributionsNotConcept;
+            if($projectRevenueDistributionsNotConcept){
+                return false;
+            }
+
+            // Deelname beeindigd bij PCR dan ook alleen terugdraaien indien beeindigingsdatum deelname nog niet in een deel kwh verdeling zit die niet concept of new is is
+            if ( $participantProject->project->projectType->code_ref == 'postalcode_link_capital' ) {
+                $revenueDistributionKwh = $participantProject->revenueDistributionKwh()
+                    ->whereHas('revenuesKwh', function ($query) use ($dateTerminated) {
+                        $query->where('date_begin', '<=', $dateTerminated)
+                            ->where('date_end', '>=', $dateTerminated);
+                    })
+                    ->whereHas('distributionPartsKwh', function ($query) use ($dateTerminated) {
+                        $query->whereHas('partsKwh', function ($query) use ($dateTerminated) {
+                            $query->whereNotIn('status', ['concept', 'concept-to-update']);
+                        });
+                    })
+                    ->exists();
+
+                if($revenueDistributionKwh){
+                    return false;
+                }
+            }
         }
 
         return $dateTerminated != null;

@@ -125,6 +125,10 @@ class Address extends Model
         return $typeAndPrimary;
     }
 
+    public function getfullAddressAttribute(){
+        $fullAddress = $this->street . ' ' . $this->number . ($this->addition ? '-' . $this->addition : '');
+        return $fullAddress;
+    }
 
     public function getPostalCodeAttribute($postalCode){
         if(preg_match('/^\d{4}[A-Za-z]{2}$/', $postalCode)){

@@ -63,36 +63,37 @@ class ContactsListToolbar extends Component {
                             onClickAction={this.props.resetContactFilters}
                             title="Vernieuwen scherm"
                         />
-                        {permissions.createPerson || permissions.createOrganisation || permissions.manageGroup ? (
-                            <div className="nav navbar-nav btn-group" role="group">
-                                <button
-                                    className="btn btn-success btn-sm"
-                                    data-toggle="dropdown"
-                                    title="Toevoegen contact of groep"
-                                >
-                                    <Icon size={14} icon={plus} />
-                                </button>
-                                <ul className="dropdown-menu">
-                                    {permissions.createPerson && (
-                                        <li>
-                                            <Link to="contact/nieuw/persoon">Persoon</Link>
-                                        </li>
-                                    )}
-                                    {permissions.createOrganisation && (
-                                        <li>
-                                            <Link to="contact/nieuw/organisatie">Organisatie</Link>
-                                        </li>
-                                    )}
-                                    {permissions.manageGroup && (
-                                        <li>
-                                            <Link role="button" onClick={this.props.toggleSaveAsGroup}>
-                                                Groep
-                                            </Link>
-                                        </li>
-                                    )}
-                                </ul>
-                            </div>
-                        ) : null}
+                        {!this.props.showCheckboxListMerge &&
+                            (permissions.createPerson || permissions.createOrganisation || permissions.manageGroup) && (
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        data-toggle="dropdown"
+                                        title="Toevoegen contact of groep"
+                                    >
+                                        <Icon size={14} icon={plus} />
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        {permissions.createPerson && (
+                                            <li>
+                                                <Link to="contact/nieuw/persoon">Persoon</Link>
+                                            </li>
+                                        )}
+                                        {permissions.createOrganisation && (
+                                            <li>
+                                                <Link to="contact/nieuw/organisatie">Organisatie</Link>
+                                            </li>
+                                        )}
+                                        {permissions.manageGroup && (
+                                            <li>
+                                                <Link role="button" onClick={this.props.toggleSaveAsGroup}>
+                                                    Groep
+                                                </Link>
+                                            </li>
+                                        )}
+                                    </ul>
+                                </div>
+                            )}
                         {!this.props.showCheckboxListMerge &&
                             (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
                                 <ButtonIcon

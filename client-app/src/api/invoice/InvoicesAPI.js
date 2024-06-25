@@ -53,6 +53,18 @@ export default {
         });
     },
 
+    getCSVWithProducts: ({ filters, sorts, administrationId }) => {
+        const requestUrl = `${URL_INVOICE}/csvwithproducts`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                administrationId: JSON.stringify(administrationId),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
+
     getUnpaidInvoices: () => {
         const requestUrl = `${URL_INVOICE}/amount-unpaid`;
 

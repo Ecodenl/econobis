@@ -145,7 +145,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -153,7 +153,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 readOnly={true}
                                             />
                                         )}
@@ -168,11 +168,7 @@ function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) 
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={() => redirectBack()}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Terug naar overzicht
                                         </Button>
                                         {/*<Button*/}

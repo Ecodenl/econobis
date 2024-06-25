@@ -8,6 +8,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
+import { ic_contacts_outline } from 'react-icons-kit/md/ic_contacts_outline';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
 import { cog } from 'react-icons-kit/icomoon/cog';
@@ -89,6 +90,64 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                </Nav>
+            )}
+
+            {permissions.menuContacts && (
+                <Nav id="data-controle">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_contacts_outline} />
+                    </NavIcon>
+                    <NavText>Data controle</NavText>
+                    <Nav id="data-controle-same-email-name">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-naam">
+                                Zelfde E-mail en naam
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-email-address">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email-adres">
+                                Zelfde E-mail en adres
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-email">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-email">
+                                Zelfde E-mail
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-address">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-adres">
+                                Zelfde adres
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-kvk">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-kvknummer">
+                                Zelfde KvK nummer
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-btw">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-btwnummer">
+                                Zelfde BTW nummer
+                            </Link>
+                        </NavText>
+                    </Nav>
+                    <Nav id="data-controle-same-iban">
+                        <NavText>
+                            <Link className="sidebar-link" to="contacten/data-controle/zelfde-iban">
+                                Zelfde IBAN
+                            </Link>
+                        </NavText>
+                    </Nav>
                 </Nav>
             )}
 

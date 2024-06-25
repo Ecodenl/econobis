@@ -7,7 +7,7 @@ axiosInstance.isCancel = axios.isCancel;
 let cancelToken;
 
 export default {
-    fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType }) => {
+    fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType, dataControleType }) => {
         const requestUrl = `${URL_API}/api/contact/grid`;
 
         return axiosInstance.get(requestUrl, {
@@ -18,6 +18,7 @@ export default {
                 limit: pagination.limit,
                 offset: pagination.offset,
                 filterType: filterType,
+                dataControleType: dataControleType,
             },
         });
     },
@@ -99,7 +100,7 @@ export default {
         });
     },
 
-    getCSV: ({ filters, extraFilters, sorts, filterType }) => {
+    getCSV: ({ filters, extraFilters, sorts, filterType, dataControleType }) => {
         const requestUrl = `${URL_API}/api/contact/csv`;
 
         return axiosInstance.get(requestUrl, {
@@ -108,6 +109,7 @@ export default {
                 extraFilters: JSON.stringify(extraFilters),
                 sorts: JSON.stringify(sorts),
                 filterType: filterType,
+                dataControleType: dataControleType,
             },
         });
     },

@@ -31,6 +31,18 @@ const filtersReducerDefaultState = {
         field: 'phoneNumber',
         data: '',
     },
+    iban: {
+        field: 'iban',
+        data: '',
+    },
+    vatNumber: {
+        field: 'vatNumber',
+        data: '',
+    },
+    chamberOfCommerceNumber: {
+        field: 'chamberOfCommerceNumber',
+        data: '',
+    },
     statusId: {
         field: 'statusId',
         data: '',
@@ -105,6 +117,30 @@ export default (state = filtersReducerDefaultState, action) => {
                 phoneNumber: {
                     ...state.phoneNumber,
                     data: action.phoneNumber,
+                },
+            };
+        case 'SET_IBAN_FILTER':
+            return {
+                ...state,
+                iban: {
+                    ...state.iban,
+                    data: action.iban,
+                },
+            };
+        case 'SET_VAT_NUMBER_FILTER':
+            return {
+                ...state,
+                vatNumber: {
+                    ...state.vatNumber,
+                    data: action.vatNumber,
+                },
+            };
+        case 'SET_CHAMBER_OF_COMMERCE_NUMBER':
+            return {
+                ...state,
+                chamberOfCommerceNumber: {
+                    ...state.chamberOfCommerceNumber,
+                    data: action.chamberOfCommerceNumber,
                 },
             };
         case 'SET_STATUS_FILTER':

@@ -110,7 +110,7 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -118,7 +118,7 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 readOnly={true}
                                             />
                                         )}
@@ -189,11 +189,7 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={() => redirectBack()}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

@@ -26,6 +26,9 @@ class Sort extends RequestSort
         'phoneNumber',
         'statusName',
         'createdAt',
+        'iban',
+        'vatNumber',
+        'chamberOfCommerceNumber'
     ];
 
     protected $mapping = [
@@ -40,6 +43,9 @@ class Sort extends RequestSort
         'phoneNumber' => 'phone_numbers.number',
         'statusName' => 'contacts.status_id',
         'createdAt' => 'contacts.created_at',
+        'iban' => 'contacts.iban',
+        'vatNumber' => 'organisations.vat_number',
+        'chamberOfCommerceNumber' => 'organisations.chamber_of_commerce_number',
     ];
 
     protected $joins = [
@@ -48,5 +54,7 @@ class Sort extends RequestSort
         'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'vatNumber' => 'organisation',
+        'chamberOfCommerceNumber' => 'organisation',
     ];
 }

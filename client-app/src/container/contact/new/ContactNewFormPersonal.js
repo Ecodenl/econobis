@@ -37,6 +37,8 @@ class ContactNewFormPersonal extends Component {
             showPhone: true,
             showConfirmDuplicate: false,
             duplicateText: '',
+            duplicateContactId: '',
+            cancelButtonText: '',
             person: {
                 id: '',
                 number: '',
@@ -108,11 +110,22 @@ class ContactNewFormPersonal extends Component {
         this.setState({ showPhone: !this.state.showPhone });
     };
 
-    toggleShowConfirmDuplicate = () => {
+    showConfirmDuplicate = () => {
         this.setState({
             showConfirmDuplicate: !this.state.showConfirmDuplicate,
             buttonLoading: false,
         });
+    };
+
+    hideConfirmDuplicate = contactId => {
+        if (this.state.duplicateContactId != '') {
+            hashHistory.push('/contact/' + this.state.duplicateContactId);
+        } else {
+            this.setState({
+                showConfirmDuplicate: false,
+                buttonLoading: false,
+            });
+        }
     };
 
     addressHandleInputLvbagChange = event => {
@@ -346,8 +359,10 @@ class ContactNewFormPersonal extends Component {
                         this.setState({
                             ...this.state,
                             duplicateText: error.response.data.message,
+                            duplicateContactId: error.response.data.contactId,
+                            cancelButtonText: error.response.data.cancelButtonText,
                         });
-                        this.toggleShowConfirmDuplicate();
+                        this.showConfirmDuplicate();
                     }
                 });
         }
@@ -538,9 +553,11 @@ class ContactNewFormPersonal extends Component {
 
                 {this.state.showConfirmDuplicate && (
                     <ContactNewFormPersonalDuplicateModal
-                        closeModal={this.toggleShowConfirmDuplicate}
+                        closeModal={this.hideConfirmDuplicate}
                         confirmAction={this.confirmDuplicate}
                         duplicateText={this.state.duplicateText}
+                        duplicateContactId={this.state.duplicateContactId}
+                        cancelButtonText={this.state.cancelButtonText}
                     />
                 )}
             </form>

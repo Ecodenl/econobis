@@ -205,6 +205,7 @@ Route::namespace('Api')
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
+        Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/static/{active?}', 'ContactGroup\ContactGroupController@peekStatic');
         Route::get('contact-group/excel/group-report', 'ContactGroup\ContactGroupController@excelGroupReport');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');

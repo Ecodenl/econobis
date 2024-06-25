@@ -52,12 +52,14 @@ class ContactGroupController extends Controller
             ]);
     }
 
-    public function peek()
+    public function peek($active = null)
     {
         $contactGroups = ContactGroup::whereTeamContactGroupIds(Auth::user())
-        ->whereNotIn('type_id', ['simulated'])->orderBy('name')->get();
-
-        return ContactGroupPeek::collection($contactGroups);
+        ->whereNotIn('type_id', ['simulated'])->orderBy('name');
+        if($active == "active") {
+            $contactGroups->where('closed', '!=', 1);
+        }
+        return ContactGroupPeek::collection($contactGroups->get());
     }
 
     public function peekStatic($active = null)

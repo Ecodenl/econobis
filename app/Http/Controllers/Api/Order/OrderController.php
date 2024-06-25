@@ -72,6 +72,20 @@ class OrderController extends ApiController
         return $csv;
     }
 
+    public function csvWithProducts(RequestQuery $requestQuery)
+    {
+        $this->authorize('view', Order::class);
+
+        set_time_limit(0);
+        $orders = $requestQuery->getQueryNoPagination()->get();
+
+        $orderCSVHelper = new OrderCSVHelper($orders);
+
+        $csv = $orderCSVHelper->downloadCSVWithProducts();
+
+        return $csv;
+    }
+
     public function show(Order $order)
     {
         $this->authorize('view', Order::class);

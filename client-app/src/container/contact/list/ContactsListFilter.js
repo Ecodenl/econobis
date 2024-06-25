@@ -12,8 +12,11 @@ import {
     setCityFilter,
     setEmailAddressFilter,
     setPhoneNumberFilter,
+    setIbanFilter,
+    setVatNumberFilter,
     setStatusFilter,
     setCreatedAtFilter,
+    setChamberOfCommerceNumberFilter,
 } from '../../../actions/contact/ContactsFiltersActions';
 import DataTableFilterDate from '../../../components/dataTable/DataTableFilterDate';
 
@@ -52,6 +55,18 @@ const ContactsListFilter = props => {
 
     const onPhoneNumberChange = e => {
         props.setPhoneNumberFilter(e.target.value);
+    };
+
+    const onIbanChange = e => {
+        props.setIbanFilter(e.target.value);
+    };
+
+    const onVatNumberChange = e => {
+        props.setVatNumberFilter(e.target.value);
+    };
+
+    const onChamberOfCommerceNumberChange = e => {
+        props.setChamberOfCommerceNumberFilter(e.target.value);
     };
 
     const onStatusChange = e => {
@@ -147,9 +162,45 @@ const ContactsListFilter = props => {
                     onChange={onPhoneNumberChange}
                 />
             </th>
+            {props.dataControleType === 'zelfde-btwnummer' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.vatNumber.data}
+                        onChange={onVatNumberChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
+            {props.dataControleType === 'zelfde-iban' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.iban.data}
+                        onChange={onIbanChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
+            {props.dataControleType === 'zelfde-kvknummer' ? (
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={props.filters.chamberOfCommerceNumber.data}
+                        onChange={onChamberOfCommerceNumberChange}
+                    />
+                </th>
+            ) : (
+                ''
+            )}
             <DataTableFilterDate
                 value={props.filters.createdAt.data && props.filters.createdAt.data}
-                onChangeAction={onCreatedAtChange}
+                onChangeAction={onIbanChange}
             />
             <th />
         </tr>
@@ -173,8 +224,11 @@ const mapDispatchToProps = dispatch => {
             setCityFilter,
             setEmailAddressFilter,
             setPhoneNumberFilter,
+            setIbanFilter,
             setStatusFilter,
             setCreatedAtFilter,
+            setVatNumberFilter,
+            setChamberOfCommerceNumberFilter,
         },
         dispatch
     );

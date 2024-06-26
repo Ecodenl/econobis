@@ -16,7 +16,7 @@ class ContactImportToolbar extends Component {
                             <div className="col-md-4" />
                             <div className="col-md-4">
                                 <h4 className="text-center text-success margin-small">
-                                    <strong>{'Contacten importeren'}</strong>
+                                    <strong>{'Importeer energieklanten'}</strong>
                                 </h4>
                             </div>
                             <div className="col-md-4" />

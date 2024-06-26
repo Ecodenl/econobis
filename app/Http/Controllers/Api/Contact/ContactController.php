@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\ContactToImportSupplier;
 use App\Eco\User\User;
 use App\Helpers\Contact\ContactMergeException;
 use App\Helpers\Contact\ContactMerger;
@@ -72,8 +73,9 @@ class ContactController extends Controller
     public function validateImportfromenergiesupplier(Request $request){
         $this->authorize('import', Contact::class);
         set_time_limit(180);
+
         $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
-        return $contactImportfromenergiesupplierHelper->validateImport($request->file('attachment'));
+        return $contactImportfromenergiesupplierHelper->validateImport($request->file('attachment'), $request->input('supplier'));
     }
 
     public function importfromenergiesupplier(Request $request){
@@ -81,6 +83,12 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
         return $contactImportfromenergiesupplierHelper->import($request->file('attachment'));
+    }
+
+    public function contactstoimportsuppliers (){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        return ContactToImportSupplier::get();
     }
 
     public function destroy(Contact $contact)

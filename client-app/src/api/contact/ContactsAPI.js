@@ -204,6 +204,19 @@ export default {
         return axiosInstance.post(requestUrl, csv);
     },
 
+    getContactsToImportSuppliers: () => {
+        const requestUrl = `${URL_API}/api/contact/contactstoimportsuppliers`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     getChartData: () => {
         const requestUrl = `${URL_API}/api/contact/chart-data`;
 

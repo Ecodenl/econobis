@@ -26,55 +26,10 @@ use Particle\Validator\Validator;
 
 class ContactImportfromenergiesupplierHelper
 {
-//When changed also change validateLine()
-    const HEADERS
-        = [
-            'Coöperatie',
-            'Aanhef',
-            'Klant_Voornaam',
-            'Klant_Achternaam',
-            'Klant_Type',
-            'WebID',
-            'Klantnummer',
-            'EAN',
-            'EAN_Status',
-            'EAN_Type',
-            'EAN_Start',
-            'EAN_Eind',
-            'EAN_Adres',
-            'EAN_Postcode',
-            'EAN_Plaats',
-            'Verblijfsfunctie',
-            'Contract',
-            'Contract_Start',
-            'Contract_Eind',
-            'Termijnbedrag',
-            'SJV_LVR',
-            'SJV_TLV',
-            'NB_SJV_LVR',
-            'NB_SJV_TLV',
-            'Meterstatus',
-            'FacturenVia',
-            'Rekeningnummer',
-            'Betaalwijze',
-            'Email_Contact',
-            'Email_Facturen',
-            'Telefoonnummer',
-            'Geboortedatum',
-            'KvK',
-            'Nieuwsbrief_coöp',
-            'Nieuwsbrief_om',
-            'Herkomst',
-            'Bron',
-            'Jaarafrekenmoment',
-            'Actiecode',
-            'Marge_Factor',
-            'Marge_Factor_Reden',
-            'Ambassadeurscode'
-        ];
-
-    public function validateImport($file)
+    public function validateImport($file, $file_headers)
     {
+        $file_headers = explode(';', $file_headers);
+
         if (!$file) {
             return [
                 [
@@ -108,13 +63,13 @@ class ContactImportfromenergiesupplierHelper
             if ($lineNumber === 1) {
                 //bom weg
                 $line[0] = $str = str_replace("\xEF\xBB\xBF",'',$line[0]);
-                $errorValidationHeader = $this->validateHeaders($line);
+                $errorValidationHeader = $this->validateHeaders($line, $file_headers);
                 if ($errorValidationHeader) {
                     return [$errorValidationHeader];
                 }
             } else {
                 array_push($validationLines,
-                    $this->validateLine($line, $lineNumber));
+                    $this->validateLine($line, $lineNumber, $file_headers));
             }
 
         }
@@ -126,7 +81,7 @@ class ContactImportfromenergiesupplierHelper
         return $validationLines;
     }
 
-    public function validateHeaders($line)
+    public function validateHeaders($line, $file_headers)
     {
         foreach ($line as $k => $lineField){
             // when encoding isn't UTF-8 encode lineField to utf8.
@@ -146,35 +101,35 @@ class ContactImportfromenergiesupplierHelper
             }
         }
 
-        if (sizeof($line) > sizeof(self::HEADERS)) {
+        if (sizeof($line) > sizeof($file_headers)) {
             return [
                 'field' => 'Header',
                 'value' => 'Te lang',
                 'line' => 0,
-                'message' => 'Er zijn meer dan .... ' . sizeof(self::HEADERS)
+                'message' => 'Er zijn meer dan .... ' . sizeof($file_headers)
                     . ' headers gevonden',
                 'prio' => 1
             ];
         }
-        if (sizeof($line) < sizeof(self::HEADERS)) {
+        if (sizeof($line) < sizeof($file_headers)) {
             return [
                 'field' => 'Header',
                 'value' => 'Te kort',
                 'line' => 0,
-                'message' => 'Er zijn minder dan ' . sizeof(self::HEADERS)
+                'message' => 'Er zijn minder dan ' . sizeof($file_headers)
                     . ' headers gevonden',
                 'prio' => 1
             ];
         }
 
         foreach ($line as $k => $v) {
-            if (self::HEADERS[$k] !== $v) {
+            if ($file_headers[$k] !== $v) {
                 return [
                     'field' => 'Header',
                     'value' => $v,
                     'line' => 0,
                     'message' => 'Header klopt niet. Verwacht: '
-                        . self::HEADERS[$k] . ' Gevonden: ' . $v,
+                        . $file_headers[$k] . ' Gevonden: ' . $v,
                     'prio' => 1
                 ];
             }
@@ -183,7 +138,7 @@ class ContactImportfromenergiesupplierHelper
         return false;
     }
 
-    public function validateLine($line, $lineNumber)
+    public function validateLine($line, $lineNumber, $file_headers)
     {
         $field = [];
         $value = [];
@@ -199,7 +154,7 @@ class ContactImportfromenergiesupplierHelper
                 $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if (mb_detect_encoding($line[$k]) === false) {
-                array_push($field, self::HEADERS[$k]);
+                array_push($field, $file_headers[$k]);
                 array_push($value, 'Waarde kan niet gelezen worden.');
                 array_push($message, 'Veld is niet juist gecodeerd.');
                 $prio = 1;

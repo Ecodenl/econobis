@@ -15,7 +15,7 @@ const ContactsToImportListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'firstName'}
                 title={'Voornaam'}
-                width={'10%'}
+                width={'5%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitleAndSort
@@ -60,6 +60,7 @@ const ContactsToImportListHead = props => {
             <DataTableHeadTitle title={'Ean'} width={'5%'} />
             <DataTableHeadTitle title={'Huidige energielevereancier'} width={'5%'} />
             <DataTableHeadTitle title={'Huidige klantnummer'} width={'5%'} />
+            <DataTableHeadTitle title={'Match'} width={'5%'} />
             <th width={'5%'} />
         </tr>
     );

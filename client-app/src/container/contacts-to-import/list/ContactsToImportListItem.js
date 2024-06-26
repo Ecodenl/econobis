@@ -20,6 +20,7 @@ function ContactsToImportListItem({
     emailInvoices,
     phoneNumber,
     permissions,
+    match,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
@@ -59,6 +60,7 @@ function ContactsToImportListItem({
             <td>ean</td>
             <td>leverancier</td>
             <td>klantnummer</td>
+            <td>{match}</td>
             <td>
                 {showActionButtons && permissions.manageContactsToImport ? (
                     <a role="button" onClick={() => openItem(id)}>

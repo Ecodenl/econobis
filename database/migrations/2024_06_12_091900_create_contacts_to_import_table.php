@@ -29,6 +29,7 @@ class CreateContactsToImportTable extends Migration
             $table->string('es_number');
             $table->date('member_since');
             $table->date('end_date')->nullable();
+            $table->string('match')->nullable();
             $table->timestamps();
         });
     }

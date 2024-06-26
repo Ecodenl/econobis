@@ -180,6 +180,12 @@ class ContactsListToolbar extends Component {
                                     <li>
                                         <Link to="contact/importfromenergiesupplier">Importeer energieklanten</Link>
                                     </li>
+
+                                    <li>
+                                        <Link to="contacten-importeren-energieleverancier">
+                                            Verwerk geïmporteerde energieklanten
+                                        </Link>
+                                    </li>
                                 </ul>
                             </div>
                         )}

@@ -41,6 +41,13 @@ function TasksListApp(props) {
 
     const resetTaskFilters = () => {
         dispatch(clearFilterTask());
+
+        if (!isEmpty(props.params)) {
+            if (props.params.type === 'eigen') {
+                dispatch(setFilterTaskMe(true));
+            }
+        }
+
         fetchTasksData();
     };
 

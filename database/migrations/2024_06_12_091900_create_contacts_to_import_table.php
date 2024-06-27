@@ -13,10 +13,11 @@ class CreateContactsToImportTable extends Migration
      */
     public function up()
     {
-        Schema::create('contacts_to_import', function (Blueprint $table) {
+        Schema::create('contact_to_imports', function (Blueprint $table) {
             $table->increments('id');
             $table->string('first_name');
             $table->string('last_name')->nullable();
+            $table->string('address');
             $table->string('street');
             $table->unsignedInteger('housenumber')->nullable();
             $table->string('addition')->nullable();
@@ -42,5 +43,6 @@ class CreateContactsToImportTable extends Migration
     public function down()
     {
         Schema::dropIfExists('contacts_to_import');
+        Schema::dropIfExists('contact_to_imports');
     }
 }

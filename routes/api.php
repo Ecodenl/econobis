@@ -67,9 +67,9 @@ Route::namespace('Api')
         Route::post('/contacts/merge', 'Contact\ContactController@mergeContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
-        Route::post('/contact/validate-importfromenergiesupplier', 'Contact\ContactController@validateImportfromenergiesupplier');
-        Route::post('/contact/importfromenergiesupplier', 'Contact\ContactController@importfromenergiesupplier');
-        Route::get('/contact/contactstoimportsuppliers', 'Contact\ContactController@contactstoimportsuppliers');
+        Route::post('/contact/validate-import-from-energy-supplier', 'Contact\ContactController@validateImportFromEnergySupplier');
+        Route::post('/contact/import-from-energy-supplier', 'Contact\ContactController@importFromEnergySupplier');
+        Route::get('/contact/contacts-to-import-suppliers', 'Contact\ContactController@contactsToImportSuppliers');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/addresses', 'Contact\ContactController@getContactWithAddresses');

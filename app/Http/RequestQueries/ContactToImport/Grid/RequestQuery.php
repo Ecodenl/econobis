@@ -25,7 +25,7 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
     protected function baseQuery()
     {
         return ContactToImport::query()
-            ->select('contacts_to_import.*');
+            ->select('contact_to_imports.*');
     }
 
 }

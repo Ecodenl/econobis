@@ -53,7 +53,7 @@ class ContactImportFormGeneral extends Component {
 
         data.append('attachment', this.state.attachment);
 
-        ContactsAPI.importfromenergiesupplier(data).then(payload => {
+        ContactsAPI.importFromEnergySupplier(data).then(payload => {
             hashHistory.push(`/contacten`);
         });
     };
@@ -81,7 +81,7 @@ class ContactImportFormGeneral extends Component {
         data.append('attachment', this.state.attachment);
         data.append('supplier', this.state.supplier.file_header);
 
-        ContactsAPI.validateImportfromenergiesupplier(data).then(payload => {
+        ContactsAPI.validateImportFromEnergySupplier(data).then(payload => {
             const hasError = payload.data.find(item => {
                 return item.prio === 1;
             });

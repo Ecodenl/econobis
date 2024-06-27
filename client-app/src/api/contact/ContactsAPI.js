@@ -194,20 +194,20 @@ export default {
         return axiosInstance.post(requestUrl, csv);
     },
 
-    validateImportfromenergiesupplier: csv => {
-        const requestUrl = `${URL_API}/api/contact/validate-importfromenergiesupplier`;
+    validateImportFromEnergySupplier: csv => {
+        const requestUrl = `${URL_API}/api/contact/validate-import-from-energy-supplier`;
 
         return axiosInstance.post(requestUrl, csv);
     },
 
-    importfromenergiesupplier: csv => {
-        const requestUrl = `${URL_API}/api/contact/importfromenergiesupplier`;
+    importFromEnergySupplier: csv => {
+        const requestUrl = `${URL_API}/api/contact/import-from-energy-supplier`;
 
         return axiosInstance.post(requestUrl, csv);
     },
 
     getContactsToImportSuppliers: () => {
-        const requestUrl = `${URL_API}/api/contact/contactstoimportsuppliers`;
+        const requestUrl = `${URL_API}/api/contact/contacts-to-import-suppliers`;
 
         return axiosInstance
             .get(requestUrl)

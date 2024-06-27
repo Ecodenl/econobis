@@ -206,11 +206,11 @@ class ContactsListToolbar extends Component {
                                     </li>
 
                                     <li>
-                                        <Link to="contact/importfromenergiesupplier">Importeer energieklanten</Link>
+                                        <Link to="contact/importeren-energie-klanten">Importeer energieklanten</Link>
                                     </li>
 
                                     <li>
-                                        <Link to="contacten-importeren-energieleverancier">
+                                        <Link to="contact/signaleringslijst-energie-klanten">
                                             Verwerk geïmporteerde energieklanten
                                         </Link>
                                     </li>

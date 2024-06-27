@@ -11,7 +11,7 @@ use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
-use App\Helpers\Import\ContactImportfromenergiesupplierHelper;
+use App\Helpers\Import\ContactImportFromEnergySupplierHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
@@ -70,22 +70,22 @@ class ContactController extends Controller
         return $contactImportHelper->import($request->file('attachment'));
     }
 
-    public function validateImportfromenergiesupplier(Request $request){
+    public function validateImportFromEnergySupplier(Request $request){
         $this->authorize('import', Contact::class);
         set_time_limit(180);
 
-        $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
-        return $contactImportfromenergiesupplierHelper->validateImport($request->file('attachment'), $request->input('supplier'));
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplier'));
     }
 
-    public function importfromenergiesupplier(Request $request){
+    public function importFromEnergySupplier(Request $request){
         $this->authorize('import', Contact::class);
         set_time_limit(180);
-        $contactImportfromenergiesupplierHelper = new ContactImportfromenergiesupplierHelper();
-        return $contactImportfromenergiesupplierHelper->import($request->file('attachment'));
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->import($request->file('attachment'));
     }
 
-    public function contactstoimportsuppliers (){
+    public function contactsToImportSuppliers (){
         $this->authorize('import', Contact::class);
         set_time_limit(180);
         return ContactToImportSupplier::get();

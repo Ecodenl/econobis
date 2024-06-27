@@ -25,13 +25,13 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
-        'firstName' => 'contacts_to_import.first_name',
-        'lastName' => 'contacts_to_import.last_name',
-        'street' => 'contacts_to_import.street',
-        'postalCode' => 'contacts_to_import.postal_code',
-        'city' => 'contacts_to_import.city',
-        'emailContact' => 'contacts_to_import.email_contact',
-        'emailInvoices' => 'contacts_to_import.email_invoices',
+        'firstName' => 'contact_to_imports.first_name',
+        'lastName' => 'contact_to_imports.last_name',
+        'street' => 'contact_to_imports.street',
+        'postalCode' => 'contact_to_imports.postal_code',
+        'city' => 'contact_to_imports.city',
+        'emailContact' => 'contact_to_imports.email_contact',
+        'emailInvoices' => 'contact_to_imports.email_invoices',
     ];
 
     protected $joins = [];

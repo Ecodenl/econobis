@@ -10,21 +10,16 @@
 namespace App\Helpers\Import;
 
 
-use App\Eco\Address\Address;
-use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactToImport;
 use App\Eco\EmailAddress\EmailAddress;
-use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
-use CMPayments\IBAN;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use InvalidArgumentException;
 use Particle\Validator\Validator;
 
-class ContactImportfromenergiesupplierHelper
+class ContactImportFromEnergySupplierHelper
 {
     public function validateImport($file, $file_headers)
     {
@@ -172,6 +167,8 @@ class ContactImportfromenergiesupplierHelper
 
         $houseNumberValidator = new Validator;
         $houseNumberValidator->optional('house_number', 'house_number', true)->integer();
+
+//        todo WM: hieronder nog diverse cleanup
 
 //        $houseNumberAdditionValidator = new Validator;
 //        $houseNumberAdditionValidator->optional('house_number_addition', 'house_number_addition', true)->alpha();

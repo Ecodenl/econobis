@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class ContactToImport extends Model
 {
-    protected $table = 'contacts_to_import';
-
     protected $guarded = ['id'];
 
     protected $dates = [

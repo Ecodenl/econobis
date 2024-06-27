@@ -5,7 +5,7 @@ import { hashHistory, Link } from 'react-router';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
 import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
-import { FaRegLightbulb } from 'react-icons/fa';
+import { FaInfoCircle, FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
 import { upload } from 'react-icons-kit/fa/upload';
@@ -13,6 +13,7 @@ import { share } from 'react-icons-kit/fa/share';
 
 import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
 import Icon from 'react-icons-kit';
+import ReactTooltip from 'react-tooltip';
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -50,6 +51,29 @@ class ContactsListToolbar extends Component {
     render() {
         const { permissions = {} } = this.props.meDetails;
         const { meta = {} } = this.props.contacts;
+        const { dataControleType = false, showCheckboxList = false, showCheckboxListMerge = false } = this.props;
+
+        const dataControleTypeText = () => {
+            if (dataControleType) {
+                switch (dataControleType) {
+                    case 'zelfde-email-naam':
+                        return '(met zelfde email en naam)';
+                    case 'zelfde-email-adres':
+                        return '(met zelfde email en adres)';
+                    case 'zelfde-email':
+                        return '(met zelfde email)';
+                    case 'zelfde-adres':
+                        return '(met zelfde adres)';
+                    case 'zelfde-kvknummer':
+                        return '(met zelfde kvk nummer)';
+                    case 'zelfde-btwnummer':
+                        return '(met zelfde btw nummer)';
+                    case 'zelfde-iban':
+                        return '(met zelfde iban)';
+                }
+            }
+            return '';
+        };
 
         return (
             <div className="row">
@@ -60,7 +84,8 @@ class ContactsListToolbar extends Component {
                             onClickAction={this.props.resetContactFilters}
                             title="Vernieuwen scherm"
                         />
-                        {permissions.createPerson || permissions.createOrganisation || permissions.manageGroup ? (
+                        {!dataControleType &&
+                        (permissions.createPerson || permissions.createOrganisation || permissions.manageGroup) ? (
                             <div className="nav navbar-nav btn-group" role="group">
                                 <button
                                     className="btn btn-success btn-sm"
@@ -90,7 +115,8 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         ) : null}
-                        {!this.props.showCheckboxListMerge &&
+                        {!dataControleType &&
+                            !showCheckboxListMerge &&
                             (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
                                 <ButtonIcon
                                     iconName={'check'}
@@ -98,7 +124,8 @@ class ContactsListToolbar extends Component {
                                     title="Contactselectie maken"
                                 />
                             )}
-                        {this.props.showCheckboxList &&
+                        {!dataControleType &&
+                            showCheckboxList &&
                             permissions.updatePerson &&
                             permissions.updateOrganisation &&
                             permissions.manageGroup && (
@@ -119,7 +146,8 @@ class ContactsListToolbar extends Component {
                                     </ul>
                                 </div>
                             )}
-                        {this.props.showCheckboxList &&
+                        {!dataControleType &&
+                            showCheckboxList &&
                             (permissions.deletePerson || permissions.deleteOrganisation) && (
                                 <ButtonIcon
                                     iconName={'trash'}
@@ -127,24 +155,23 @@ class ContactsListToolbar extends Component {
                                     title="Verwijderen geselecteerde contacten"
                                 />
                             )}
-                        {!this.props.showCheckboxList && !this.props.showCheckboxListMerge && (
+                        {!dataControleType && !showCheckboxList && !showCheckboxListMerge && (
                             <ButtonIcon
                                 iconName={'filter'}
                                 onClickAction={this.props.toggleShowExtraFilters}
                                 title="Contactfilters"
                             />
                         )}
-                        {!this.props.showCheckboxList &&
-                            !this.props.showCheckboxListMerge &&
-                            permissions.downloadContact && (
-                                <ButtonIcon
-                                    iconName={'download'}
-                                    onClickAction={this.props.getCSV}
-                                    title="Downloaden contacten naar CSV"
-                                />
-                            )}
-                        {!this.props.showCheckboxList &&
-                            !this.props.showCheckboxListMerge &&
+                        {!showCheckboxList && !showCheckboxListMerge && permissions.downloadContact && (
+                            <ButtonIcon
+                                iconName={'download'}
+                                onClickAction={this.props.getCSV}
+                                title="Downloaden contacten naar CSV"
+                            />
+                        )}
+                        {!dataControleType &&
+                            !showCheckboxList &&
+                            !showCheckboxListMerge &&
                             permissions.downloadContact && (
                                 <ButtonIcon
                                     iconName={'download'}
@@ -152,8 +179,9 @@ class ContactsListToolbar extends Component {
                                     title="Downloaden vrije velden van contacten naar CSV"
                                 />
                             )}
-                        {!this.props.showCheckboxList &&
-                            !this.props.showCheckboxListMerge &&
+                        {!dataControleType &&
+                            !showCheckboxList &&
+                            !showCheckboxListMerge &&
                             permissions.downloadContact && (
                                 <ButtonIcon
                                     iconName={'download'}
@@ -161,7 +189,7 @@ class ContactsListToolbar extends Component {
                                     title="Downloaden contacten energieleveranciers gegevens naar CSV"
                                 />
                             )}
-                        {!this.props.showCheckboxList && !this.props.showCheckboxListMerge && permissions.import && (
+                        {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
                             // <ButtonIcon
                             //     iconName={'upload'}
                             //     onClickAction={this.importContacts}
@@ -189,8 +217,9 @@ class ContactsListToolbar extends Component {
                                 </ul>
                             </div>
                         )}
-                        {!this.props.showCheckboxList &&
-                            !this.props.showCheckboxListMerge &&
+                        {!dataControleType &&
+                            !showCheckboxList &&
+                            !showCheckboxListMerge &&
                             permissions.downloadContactConsumption &&
                             meta.useExportAddressConsumption && (
                                 <>
@@ -212,7 +241,7 @@ class ContactsListToolbar extends Component {
                                     </a>
                                 </>
                             )}
-                        {!this.props.showCheckboxList &&
+                        {!showCheckboxList &&
                             (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
                                 <ButtonIcon
                                     iconName={'check'}
@@ -220,7 +249,7 @@ class ContactsListToolbar extends Component {
                                     title="Contacten samenvoegen selectie"
                                 />
                             )}
-                        {this.props.showCheckboxListMerge &&
+                        {showCheckboxListMerge &&
                             (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
                                 <ButtonIcon
                                     iconName={'compress'}
@@ -231,7 +260,29 @@ class ContactsListToolbar extends Component {
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h3 className="text-center table-title">Contacten</h3>
+                    <h3 className="text-center table-title">
+                        Contacten {dataControleTypeText()}
+                        {dataControleType && (
+                            <>
+                                &nbsp;
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={
+                                        'Hier staan de contacten die op basis van het geselecteerde criterium als dubbel zijn gevonden.  Je kan deze ontdubbelen door op het de blauwe knop met het vinkje te klikken. (Contacten samenvoegen selectie) Als je twee contacten hebt geselecteerd kan je die samenvoegen door op de blauwe knop met twee pijltjes te klikken (Contacten samenvoegen) Hiermee worden de gegevens van het contact wat groen gemarkeerd is aangevuld. Het rood gemarkeerde contact wordt verwijderd.'
+                                    }
+                                    data-for={`tooltip-note`}
+                                />
+                                <ReactTooltip
+                                    id={`tooltip-note`}
+                                    effect="float"
+                                    place="right"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        )}
+                    </h3>
                 </div>
                 <div className="col-md-4">
                     <div className="pull-right">Resultaten: {meta.total || 0}</div>

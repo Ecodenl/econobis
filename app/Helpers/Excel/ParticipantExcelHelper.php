@@ -3,7 +3,6 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\Address\AddressType;
-use App\Eco\Project\Project;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -172,6 +171,9 @@ class ParticipantExcelHelper
         $headerData[] = 'Opbrengst kWh';
         $headerData[] = 'kWh';
         $headerData[] = 'Indicatie teruggave EB';
+
+        $headerData[] = 'Mollie ID';
+        $headerData[] = 'Mollie betaaldatum';
 
         $completeData[] = $headerData;
 
@@ -436,35 +438,6 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->lrcPrimaryEmailAddress;
                 $rowData[] = $participant->lrcPrimaryPhonenumber;
                 $rowData[] =implode(', ', collect($participant->getUniqueMutationStatusesAttribute())->pluck('name')->toArray());
-//// [100]
-//                $rowData[100] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_interessed;
-//                $rowData[] = $participant->amount_interessed;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_optioned;
-//                $rowData[] = $participant->amount_optioned;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//// [110]
-//                $rowData[] = $participant->participations_granted;
-//                $rowData[] = $participant->amount_granted;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = $participant->participations_definitive;
-//                $rowData[] = $participant->amount_definitive;
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//// [120]
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
-//                $rowData[] = "";
 
                 foreach ($participant->mutations as $mutation) {
                     $rowData[1] = $mutation->id;
@@ -483,6 +456,19 @@ class ParticipantExcelHelper
 // [100]
                     $rowData[100] = $mutationType ? $mutationType->name : '';
                     $rowData[101] = $mutationStatus ? $mutationStatus->name : '';
+
+                    if($mutation->molliePayments) {
+                        $mollieIds = implode(', ', $mutation->molliePayments->pluck('mollie_id')->toArray());
+                        $mollieDatePaidsRaw = $mutation->molliePayments->pluck('date_paid');
+                        $mollieDatePaidsArray = [];
+                        foreach ($mollieDatePaidsRaw as $mollieDatePaid){
+                            $mollieDatePaidsArray[] = $mollieDatePaid != '' ? Carbon::parse($mollieDatePaid)->format('d-m-Y') : '00-00-0000';
+                        }
+                        $mollieDatePaids = implode(', ', $mollieDatePaidsArray);
+                    } else {
+                        $mollieIds = "";
+                        $mollieDatePaids = "";
+                    }
 
                     if($mutationType->code_ref === 'first_deposit' || $mutationType->code_ref === 'deposit' || $mutationType->code_ref === 'withDrawal' )
                     {
@@ -511,6 +497,8 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125]= "";
+                        $rowData[126] = $mollieIds;
+                        $rowData[127] = $mollieDatePaids;
                     }
 
                     else if($mutationType->code_ref === 'redemption')
@@ -540,6 +528,8 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
                     else if($mutationType->code_ref === 'result' || $mutationType->code_ref === 'result_deposit')
                     {
@@ -568,6 +558,8 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
                     else if($mutationType->code_ref === 'energyTaxRefund')
                     {
@@ -596,6 +588,8 @@ class ParticipantExcelHelper
                         $rowData[123] = $mutation->payout_kwh_price;
                         $rowData[124] = $mutation->payout_kwh;
                         $rowData[125] = $mutation->indication_of_restitution_energy_tax;
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
                     else
                     {
@@ -624,6 +618,8 @@ class ParticipantExcelHelper
                         $rowData[123] = "";
                         $rowData[124] = "";
                         $rowData[125] = "";
+                        $rowData[126] = "";
+                        $rowData[127] = "";
                     }
 
                     $completeData[] = $rowData;

@@ -300,7 +300,6 @@ const Routes = () => {
                     <Route path="contact/import" component={ContactImportApp} />
                     <Route path="contact/importfromenergiesupplier" component={ContactImportFromEneregiesupplierApp} />
                     <Route path="contact/:id" component={ContactDetailsApp} />
-                    <Route path="contacten" component={ContactsListApp} />
                     <Route path="contacten-importeren-energieleverancier" component={ContactsToImportListApp} />
                     /* Contacts in group */
                     <Route path="contact-groep/:id/:mode" component={ContactGroupDetailsApp} />
@@ -312,6 +311,7 @@ const Routes = () => {
                     <Route path="campagne/:id" component={CampaignDetailsApp} />
                     <Route path="campagnes" component={CampaignsListApp} />
                     <Route path="contacten/:filter/:value" component={ContactsListApp} />
+                    <Route path="contacten" component={ContactsListApp} />
                     /* Cooperation */
                     <Route path="cooperatie" component={CooperationDetailsApp} />
                     /* Documents */

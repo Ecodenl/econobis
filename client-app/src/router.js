@@ -299,8 +299,8 @@ const Routes = () => {
                     <Route path="contact/nieuw/:type" component={ContactNewApp} />
                     <Route path="contact/import" component={ContactImportApp} />
                     <Route path="contact/importeren-energie-klanten" component={ContactImportFromEnergySupplierApp} />
-                    <Route path="contact/:id" component={ContactDetailsApp} />
                     <Route path="contact/signaleringslijst-energie-klanten" component={ContactsToImportListApp} />
+                    <Route path="contact/:id" component={ContactDetailsApp} />
                     /* Contacts in group */
                     <Route path="contact-groep/:id/:mode" component={ContactGroupDetailsApp} />
                     <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />

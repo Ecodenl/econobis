@@ -309,6 +309,9 @@ Log::info('import start');
                 if ($line[3]) {
                     $contact->last_name = $line[3];
                 }
+                if ($line[12]) {
+                    $contact->address = $line[12];
+                }
                 if ($address['street']) {
                     $contact->street = $address['street'];
                 }

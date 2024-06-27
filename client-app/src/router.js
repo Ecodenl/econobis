@@ -25,7 +25,7 @@ const ContactsInGroupListApp = React.lazy(() =>
     import('./container/contact-groups/list-contacts-in-group/ContactsInGroupListApp')
 );
 const ContactImportApp = React.lazy(() => import('./container/contact/import/ContactImportApp'));
-const ContactImportFromEneregySupplierApp = React.lazy(() =>
+const ContactImportFromEnergySupplierApp = React.lazy(() =>
     import('./container/contact/import-from-energy-supplier/ContactImportApp')
 );
 const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));

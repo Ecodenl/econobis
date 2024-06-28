@@ -24,7 +24,7 @@ class GridContactForImport extends JsonResource
             'addition' => $this->addition,
             'postalCode' => $this->postal_code,
             'city' => $this->city,
-            'emailContact' => $this->primaryEmailAddress->email,
+            'emailContact' => $this->primaryEmailAddress->email ?? '',
             'emailInvoices' => $this->email_invoices,
             'phoneNumber' => $this->phone_number,
             'ean' => $this->ean,

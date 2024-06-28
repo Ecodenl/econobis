@@ -4,7 +4,7 @@ namespace App\Http\Resources\Contact;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class GridContactToImport extends JsonResource
+class GridContactForImport extends JsonResource
 {
     /**
      * Transform the resource collection into an array.
@@ -16,6 +16,7 @@ class GridContactToImport extends JsonResource
     {
         return [
             'id' => $this->id,
+            'number' => $this->number,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
             'street' => $this->street,
@@ -23,7 +24,7 @@ class GridContactToImport extends JsonResource
             'addition' => $this->addition,
             'postalCode' => $this->postal_code,
             'city' => $this->city,
-            'emailContact' => $this->email_contact,
+            'emailContact' => $this->primaryEmailAddress->email,
             'emailInvoices' => $this->email_invoices,
             'phoneNumber' => $this->phone_number,
             'ean' => $this->ean,

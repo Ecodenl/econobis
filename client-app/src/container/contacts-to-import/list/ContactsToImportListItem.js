@@ -21,6 +21,7 @@ function ContactsToImportListItem({
     phoneNumber,
     permissions,
     match,
+    contactForImports,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
@@ -40,37 +41,78 @@ function ContactsToImportListItem({
     }
 
     return (
-        <tr
-            className={`${highlightLine}`}
-            onMouseEnter={() => onLineEnter()}
-            onMouseLeave={() => onLineLeave()}
-            onDoubleClick={() => openItem(id)}
-        >
-            <td>{number}</td>
-            <td>{firstName}</td>
-            <td>{lastName}</td>
-            <td>{street}</td>
-            <td>{housenumber}</td>
-            <td>{addition}</td>
-            <td>{postalCode}</td>
-            <td>{city}</td>
-            <td>{emailContact}</td>
-            <td>{emailInvoices}</td>
-            <td>{phoneNumber}</td>
-            <td>ean</td>
-            <td>leverancier</td>
-            <td>klantnummer</td>
-            <td>{match}</td>
-            <td>
-                {showActionButtons && permissions.manageContactsToImport ? (
-                    <a role="button" onClick={() => openItem(id)}>
-                        <Icon className="mybtn-success" size={14} icon={pencil} />
-                    </a>
-                ) : (
-                    ''
-                )}
-            </td>
-        </tr>
+        <>
+            <tr
+                className={`${highlightLine}`}
+                onMouseEnter={() => onLineEnter()}
+                onMouseLeave={() => onLineLeave()}
+                onDoubleClick={() => openItem(id)}
+            >
+                <td>{number}</td>
+                <td>{firstName}</td>
+                <td>{lastName}</td>
+                <td>{street}</td>
+                <td>{housenumber}</td>
+                <td>{addition}</td>
+                <td>{postalCode}</td>
+                <td>{city}</td>
+                <td>{emailContact}</td>
+                <td>{emailInvoices}</td>
+                <td>{phoneNumber}</td>
+                <td>ean</td>
+                <td>leverancier</td>
+                <td>klantnummer</td>
+                <td>{match}</td>
+                <td>
+                    {showActionButtons && permissions.manageContactsToImport ? (
+                        <a role="button" onClick={() => openItem(id)}>
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                        </a>
+                    ) : (
+                        ''
+                    )}
+                </td>
+            </tr>
+
+            {contactForImports.map(contactForImport => {
+                return (
+                    <tr
+                        className={`${highlightLine}`}
+                        onMouseEnter={() => onLineEnter()}
+                        onMouseLeave={() => onLineLeave()}
+                        onDoubleClick={() => openItem(id)}
+                    >
+                        <td>{contactForImport.number}</td>
+                        <td>{contactForImport.firstName}</td>
+                        <td>{contactForImport.lastName}</td>
+                        <td>{contactForImport.street}</td>
+                        <td>{contactForImport.housenumber}</td>
+                        <td>{contactForImport.addition}</td>
+                        <td>{contactForImport.postalCode}</td>
+                        <td>{contactForImport.city}</td>
+                        <td>{contactForImport.emailContact}</td>
+                        <td>{contactForImport.emailInvoices}</td>
+                        <td>{contactForImport.phoneNumber}</td>
+                        <td>ean</td>
+                        <td>leverancier</td>
+                        <td>klantnummer</td>
+                        <td>{contactForImport.match}</td>
+                        <td>
+                            {showActionButtons && permissions.manageContactsToImport ? (
+                                <a role="button" onClick={() => openItem(id)}>
+                                    <Icon className="mybtn-success" size={14} icon={pencil} />
+                                </a>
+                            ) : (
+                                ''
+                            )}
+                        </td>
+                    </tr>
+                );
+            })}
+            <tr>
+                <td colspan={16}>----</td>
+            </tr>
+        </>
     );
 }
 

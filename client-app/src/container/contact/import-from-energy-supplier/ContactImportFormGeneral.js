@@ -52,6 +52,7 @@ class ContactImportFormGeneral extends Component {
         const data = new FormData();
 
         data.append('attachment', this.state.attachment);
+        data.append('suppliercodeRef', this.state.supplier.code_ref);
 
         ContactsAPI.importFromEnergySupplier(data).then(payload => {
             hashHistory.push(`/contact/signaleringslijst-energie-klanten`);

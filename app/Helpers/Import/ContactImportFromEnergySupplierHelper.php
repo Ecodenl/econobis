@@ -279,7 +279,7 @@ class ContactImportFromEnergySupplierHelper
 
     }
 
-    public function import($file)
+    public function import($file, $suppliercodeRef)
     {
         $csv = fopen($file, 'r');
 Log::info('import start');
@@ -350,6 +350,8 @@ Log::info('import start');
                 if ($line[18]) {
                     $contact->end_date = $line[18];
                 }
+
+                $contact->supplier_code_ref = $suppliercodeRef;
 
                 Log::info('test', $contact->toArray());
                 $contact->save();

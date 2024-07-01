@@ -89,6 +89,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                       }).id
                     : null,
             opportunity: {
+                opportunityNumber: opportunity.number ? opportunity.number : '',
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureNames: opportunity.measures && opportunity.measures.map(measure => measure.name).join(', '),
@@ -351,6 +352,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const {
+            opportunityNumber,
             fullName,
             fullAddress,
             measureNames,
@@ -408,6 +410,12 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         options={externalParties}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.externalParty}
+                    />
+                    <ViewText
+                        label={'Kansnummer'}
+                        id={'opportunityNumber'}
+                        className={'col-sm-6 form-group'}
+                        value={opportunityNumber}
                     />
                 </div>
 

@@ -171,17 +171,21 @@ class Email extends Model
 
     public function getToRecipients(): EmailRecipientCollection
     {
-        return EmailRecipientCollection::createFromValues($this->to);
+        /**
+         * In case "to" contains invalid JSON, we want to return an empty collection.
+         * This should not be possible, but happened in the past (manual database edit?)
+         */
+        return EmailRecipientCollection::createFromValues($this->to ?? []);
     }
 
     public function getCcRecipients(): EmailRecipientCollection
     {
-        return EmailRecipientCollection::createFromValues($this->cc);
+        return EmailRecipientCollection::createFromValues($this->cc ?? []);
     }
 
     public function getBccRecipients(): EmailRecipientCollection
     {
-        return EmailRecipientCollection::createFromValues($this->bcc);
+        return EmailRecipientCollection::createFromValues($this->bcc ?? []);
     }
 
     public function getResponsibleName()

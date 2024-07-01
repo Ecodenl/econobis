@@ -57,6 +57,18 @@ export default {
         });
     },
 
+    getCSVWithProducts: ({ filters, sorts, administrationId }) => {
+        const requestUrl = `${URL_ORDER}/csvwithproducts`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                administrationId: JSON.stringify(administrationId),
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+        });
+    },
+
     getCollectionOrders: () => {
         const requestUrl = `${URL_ORDER}/amount-collection`;
 

@@ -67,6 +67,31 @@ const ContactsListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'phoneNumber'} title={'Telefoon'} width={'7%'} setSorts={setSorts} />
+            {props.dataControleType === 'zelfde-iban' ? (
+                <DataTableHeadTitleAndSort sortColumn={'iban'} title={'IBAN'} width={'7%'} setSorts={setSorts} />
+            ) : (
+                ''
+            )}
+            {props.dataControleType === 'zelfde-btwnummer' ? (
+                <DataTableHeadTitleAndSort
+                    sortColumn={'vatNumber'}
+                    title={'BTW Nummer'}
+                    width={'7%'}
+                    setSorts={setSorts}
+                />
+            ) : (
+                ''
+            )}
+            {props.dataControleType === 'zelfde-kvknummer' ? (
+                <DataTableHeadTitleAndSort
+                    sortColumn={'chamberOfCommerceNumber'}
+                    title={'KVK Nummer'}
+                    width={'7%'}
+                    setSorts={setSorts}
+                />
+            ) : (
+                ''
+            )}
             <DataTableHeadTitleAndSort
                 RowClassName={'hidden-xs hidden-sm'}
                 sortColumn={'createdAt'}

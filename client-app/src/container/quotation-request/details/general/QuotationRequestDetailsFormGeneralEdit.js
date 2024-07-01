@@ -542,7 +542,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
 
                 <div className="row">
                     <InputDate
-                        label="Datum opname"
+                        label="Afspraak gedaan op"
                         size={'col-sm-6'}
                         name="dateRecorded"
                         value={dateRecorded}

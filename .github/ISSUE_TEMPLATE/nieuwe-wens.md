@@ -7,6 +7,7 @@ assignees: ''
 
 ---
 
+BELANGRIJK: Deze verzoeken zijn publiek toegankelijk, Als je dus een screenshot toevoegt, zorg er voor dat er **geen** persoonsgegevens zichtbaar zijn.
 **Url van Econobis:** [bijv test.econobis.nl]
 
 **Is je functieverzoek gerelateerd aan een probleem? Beschrijf dit alstublieft.**

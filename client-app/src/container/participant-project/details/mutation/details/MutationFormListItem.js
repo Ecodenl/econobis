@@ -248,11 +248,12 @@ class MutationFormListItem extends Component {
             errors,
             errorMessage,
             hasErrors,
-            this.props.projectTypeCodeRef
+            this.props.projectTypeCodeRef,
+            this.props.participationsDefinitive,
+            this.props.amountDefinitive
         );
 
         this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });
-
         if (!validatedForm.hasErrors) {
             const values = MutationSubmitHelper(participantMutation, this.props.projectTypeCodeRef);
 
@@ -396,6 +397,8 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         id: state.participantProjectDetails.id,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
+        participationsDefinitive: state.participantProjectDetails?.participationsDefinitive,
+        amountDefinitive: state.participantProjectDetails?.amountDefinitive,
         projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
         projectDateEntry: state.participantProjectDetails.project?.dateEntry,
         projectDateInterestBearingKwh: state.participantProjectDetails.project?.dateInterestBearingKwh,

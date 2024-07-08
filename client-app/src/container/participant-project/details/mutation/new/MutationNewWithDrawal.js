@@ -1,10 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import InputText from '../../../../../components/form/InputText';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment';
+import ParticipantProjectDetailsAPI from '../../../../../api/participant-project/ParticipantProjectDetailsAPI';
 
 const MutationNewWithDrawal = ({
     statusCodeRef,
+    participationId,
     quantityInterest,
     amountInterest,
     dateInterest,
@@ -16,7 +18,6 @@ const MutationNewWithDrawal = ({
     dateGranted,
     quantityFinal,
     amountFinal,
-    dateContractRetour,
     datePayment,
     paymentReference,
     dateEntry,
@@ -25,14 +26,26 @@ const MutationNewWithDrawal = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
-    projectDateInterestBearingKwh,
 }) => {
-    let disableBeforeEntryDate = '';
-    if (projectTypeCodeRef === 'postalcode_link_capital') {
-        if (projectDateInterestBearingKwh) {
-            disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-        }
+    useEffect(() => {
+        getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
+    }, [participationId]);
+
+    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
+            payload => {
+                setDisableBeforeEntryLastMutationDate(
+                    payload.dateEntryLastMutation
+                        ? moment(payload.dateEntryLastMutation)
+                              .add(1, 'day')
+                              .format('YYYY-MM-DD')
+                        : ''
+                );
+            }
+        );
     }
+
+    const [disableBeforeEntryLastMutationDate, setDisableBeforeEntryLastMutationDate] = useState('');
 
     return (
         <React.Fragment>
@@ -51,6 +64,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal interesse'}
                             name={'quantityInterest'}
                             id={'quantityInterest'}
@@ -87,6 +101,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal inschrijving'}
                             name={'quantityOption'}
                             id={'quantityOption'}
@@ -126,6 +141,7 @@ const MutationNewWithDrawal = ({
                         />
                     ) : (
                         <InputText
+                            type={'number'}
                             label={'Aantal toegekend'}
                             name={'quantityGranted'}
                             id={'quantityGranted'}
@@ -192,7 +208,7 @@ const MutationNewWithDrawal = ({
                             id={'dateEntry'}
                             value={dateEntry}
                             onChangeAction={handleInputChangeDate}
-                            disabledBefore={disableBeforeEntryDate}
+                            disabledBefore={disableBeforeEntryLastMutationDate}
                             required={'required'}
                             error={errors.dateEntry}
                         />

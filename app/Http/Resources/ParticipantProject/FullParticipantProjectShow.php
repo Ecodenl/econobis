@@ -86,6 +86,7 @@ class FullParticipantProjectShow extends JsonResource
                 'undoTerminatedAllowed' => $this->undoTerminatedAllowed,
                 'participantBelongsToMembershipGroup' => $this->participantBelongsToMembershipGroup,
                 'participantChoiceMembership' => $this->choice_membership,
+                'hasLoanFirstDeposit' =>$this->has_loan_first_deposit,
             ];
     }
 }

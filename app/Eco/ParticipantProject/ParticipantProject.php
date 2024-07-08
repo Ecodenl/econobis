@@ -358,6 +358,13 @@ class ParticipantProject extends Model
 
         return floatval( number_format( $total, 2, '.', ''));
     }
+    public function getHasLoanFirstDepositAttribute()
+    {
+        $loanProjectTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
+        $loanMutationFirstDepositId = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $loanProjectTypeId)->first()->id;
+
+        return $this->mutations()->where('type_id', $loanMutationFirstDepositId)->exists();
+    }
 
     private function getDateEndLastConfirmedPartsKwh()
     {

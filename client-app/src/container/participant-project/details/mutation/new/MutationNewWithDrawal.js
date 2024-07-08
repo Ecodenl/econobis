@@ -34,9 +34,9 @@ const MutationNewWithDrawal = ({
     function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
             payload => {
-                setDisableBeforeEntryLastMutationDate(
-                    payload.dateEntryLastMutation
-                        ? moment(payload.dateEntryLastMutation)
+                setDisableBeforeEntryDate(
+                    payload.dateTerminatedAllowedFrom
+                        ? moment(payload.dateTerminatedAllowedFrom)
                               .add(1, 'day')
                               .format('YYYY-MM-DD')
                         : ''
@@ -45,7 +45,7 @@ const MutationNewWithDrawal = ({
         );
     }
 
-    const [disableBeforeEntryLastMutationDate, setDisableBeforeEntryLastMutationDate] = useState('');
+    const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
 
     return (
         <React.Fragment>
@@ -208,7 +208,7 @@ const MutationNewWithDrawal = ({
                             id={'dateEntry'}
                             value={dateEntry}
                             onChangeAction={handleInputChangeDate}
-                            disabledBefore={disableBeforeEntryLastMutationDate}
+                            disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
                         />

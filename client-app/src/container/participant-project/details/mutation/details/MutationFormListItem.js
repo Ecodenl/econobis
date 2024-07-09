@@ -249,8 +249,11 @@ class MutationFormListItem extends Component {
             errorMessage,
             hasErrors,
             this.props.projectTypeCodeRef,
-            this.props.participationsDefinitive,
-            this.props.amountDefinitive
+            // huidig saldo / aantal obligaties/participaties min oorspronkelijk bedrag/aantal.
+            this.props.participationsDefinitive -
+                (this.props.participantMutation.quantity ? this.props.participantMutation.quantity : 0),
+            this.props.amountDefinitive -
+                (this.props.participantMutation.amount ? this.props.participantMutation.amount : 0)
         );
 
         this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });

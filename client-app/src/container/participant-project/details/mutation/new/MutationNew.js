@@ -227,11 +227,19 @@ class MutationFormNew extends Component {
         // );
 
         const participantMutationTypesOptions = participantMutationTypes.filter(participantMutationType => {
-            if (hasLoanFirstDeposit === false) {
-                return participantMutationType.codeRef === 'first_deposit';
+            if (projectTypeCodeRef === 'loan') {
+                if (projectTypeCodeRef === 'loan' || hasLoanFirstDeposit === false) {
+                    return participantMutationType.codeRef === 'first_deposit';
+                } else {
+                    return (
+                        participantMutationType.codeRef === 'deposit' ||
+                        participantMutationType.codeRef === 'withDrawal'
+                    );
+                }
             } else {
                 return (
-                    participantMutationType.codeRef === 'deposit' || participantMutationType.codeRef === 'withDrawal'
+                    participantMutationType.codeRef === 'first_deposit' ||
+                    participantMutationType.codeRef === 'withDrawal'
                 );
             }
         });

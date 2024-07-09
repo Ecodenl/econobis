@@ -262,7 +262,7 @@ class ParticipationProjectController extends ApiController
 
         return FullParticipantProjectShow::make($participantProject);
     }
-    public function getAdditionalInfoForTerminating(ParticipantProject $participantProject)
+    public function getAdditionalInfoForTerminatingOrChangeEntryDate(ParticipantProject $participantProject)
     {
         set_time_limit(120);
 

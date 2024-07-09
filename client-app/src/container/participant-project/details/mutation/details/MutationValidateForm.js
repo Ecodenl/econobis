@@ -1,4 +1,12 @@
-export default function(participantMutation, errors, errorMessage, hasErrors, projectTypeCodeRef) {
+export default function(
+    participantMutation,
+    errors,
+    errorMessage,
+    hasErrors,
+    projectTypeCodeRef,
+    participationsDefinitive,
+    amountDefinitive
+) {
     if (!participantMutation.statusId) {
         errors.statusId = true;
         hasErrors = true;
@@ -157,6 +165,12 @@ export default function(participantMutation, errors, errorMessage, hasErrors, pr
                             errorMessage.amountFinal = 'Voer een negatief bedrag in.';
                             hasErrors = true;
                         }
+                        if (participantMutation.amountFinal < amountDefinitive * -1) {
+                            errors.amountFinal = true;
+                            errorMessage.amountFinal =
+                                'Negatief bedrag mag niet lager dan Huidig saldo lening rekening zijn.';
+                            hasErrors = true;
+                        }
                     } else {
                         if (!participantMutation.amountFinal || participantMutation.amountFinal <= 0) {
                             errors.amountFinal = true;
@@ -169,6 +183,14 @@ export default function(participantMutation, errors, errorMessage, hasErrors, pr
                         if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                             errors.quantityFinal = true;
                             errorMessage.quantityFinal = 'Voer een negatief aantal in.';
+                            hasErrors = true;
+                        }
+                        if (participantMutation.quantityFinal < participationsDefinitive * -1) {
+                            errors.quantityFinal = true;
+                            errorMessage.quantityFinal =
+                                'Negatief aantal mag niet lager dan Huidige aantal ' +
+                                (projectTypeCodeRef === 'obligation' ? 'obligaties' : 'participaties') +
+                                '.';
                             hasErrors = true;
                         }
                     } else {
@@ -228,6 +250,12 @@ export default function(participantMutation, errors, errorMessage, hasErrors, pr
                         errorMessage.amountFinal = 'Voer een negatief bedrag in.';
                         hasErrors = true;
                     }
+                    if (participantMutation.amountFinal < amountDefinitive * -1) {
+                        errors.amountFinal = true;
+                        errorMessage.amountFinal =
+                            'Negatief bedrag mag niet lager dan Huidig saldo lening rekening zijn.';
+                        hasErrors = true;
+                    }
                 } else {
                     if (!participantMutation.amountFinal || participantMutation.amountFinal <= 0) {
                         errors.amountFinal = true;
@@ -240,6 +268,14 @@ export default function(participantMutation, errors, errorMessage, hasErrors, pr
                     if (!participantMutation.quantityFinal || participantMutation.quantityFinal >= 0) {
                         errors.quantityFinal = true;
                         errorMessage.quantityFinal = 'Voer een negatief aantal in.';
+                        hasErrors = true;
+                    }
+                    if (participantMutation.quantityFinal < participationsDefinitive * -1) {
+                        errors.quantityFinal = true;
+                        errorMessage.quantityFinal =
+                            'Negatief aantal mag niet lager dan Huidige aantal ' +
+                            (projectTypeCodeRef === 'obligation' ? 'obligaties' : 'participaties') +
+                            '.';
                         hasErrors = true;
                     }
                 } else {

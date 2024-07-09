@@ -63,8 +63,8 @@ export default {
             });
     },
 
-    getAdditionalInfoForTerminating: participantId => {
-        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${participantId}/additional-info-for-terminating`;
+    getAdditionalInfoForTerminatingOrChangeEntryDate: participantId => {
+        const requestUrl = `${URL_PARTICIPANT_PROJECT}/${participantId}/additional-info-for-terminating-or-change-entry-date`;
 
         return axiosInstance
             .get(requestUrl)

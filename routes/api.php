@@ -512,7 +512,7 @@ Route::namespace('Api')
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
-        Route::get('project/participant/{participantProject}/additional-info-for-terminating', 'ParticipationProject\ParticipationProjectController@getAdditionalInfoForTerminating');
+        Route::get('project/participant/{participantProject}/additional-info-for-terminating-or-change-entry-date', 'ParticipationProject\ParticipationProjectController@getAdditionalInfoForTerminatingOrChangeEntryDate');
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('project/participant', 'ParticipationProject\ParticipationProjectController@store');
         Route::post('project/participant/transfer', 'ParticipationProject\ParticipationProjectController@transfer');

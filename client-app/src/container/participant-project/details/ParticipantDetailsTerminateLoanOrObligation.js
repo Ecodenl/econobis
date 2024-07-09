@@ -25,36 +25,40 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     projectRevenueDistributionTypes,
 }) => {
     useEffect(() => {
-        getAdditionalInfoForTerminating(participantProject.id);
+        getAdditionalInfoForTerminatingOrChangeEntryDate(participantProject.id);
     }, [participantProject.id]);
 
-    function getAdditionalInfoForTerminating(participantProjectId) {
-        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminating(participantProjectId).then(payload => {
-            setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
-            setDateReference(payload.dateReference ? payload.dateReference : '');
-            setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
-            setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
-            setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
-            setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
-            setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-            setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
-            setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-            setHasLastRevenueConceptOrDefinitiveDistribution(
-                payload.hasLastRevenueConceptOrDefinitiveDistribution
-                    ? payload.hasLastRevenueConceptOrDefinitiveDistribution
-                    : false
-            );
-            setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
-            setPayAmount(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
-            setKeyAmountFirstPercentage(
-                payload.lastRevenueKeyAmountFirstPercentage ? payload.lastRevenueKeyAmountFirstPercentage : null
-            );
-            setPayPercentageValidFromKeyAmount(
-                payload.lastRevenuePayPercentageValidFromKeyAmount
-                    ? payload.lastRevenuePayPercentageValidFromKeyAmount
-                    : null
-            );
-        });
+    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
+            payload => {
+                setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+                setDateReference(payload.dateReference ? payload.dateReference : '');
+                setDateTerminatedAllowedFrom(
+                    payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : ''
+                );
+                setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
+                setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
+                setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+                setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+                setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+                setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+                setHasLastRevenueConceptOrDefinitiveDistribution(
+                    payload.hasLastRevenueConceptOrDefinitiveDistribution
+                        ? payload.hasLastRevenueConceptOrDefinitiveDistribution
+                        : false
+                );
+                setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
+                setPayAmount(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
+                setKeyAmountFirstPercentage(
+                    payload.lastRevenueKeyAmountFirstPercentage ? payload.lastRevenueKeyAmountFirstPercentage : null
+                );
+                setPayPercentageValidFromKeyAmount(
+                    payload.lastRevenuePayPercentageValidFromKeyAmount
+                        ? payload.lastRevenuePayPercentageValidFromKeyAmount
+                        : null
+                );
+            }
+        );
     }
 
     const [dateTerminated, setDateTerminated] = useState(null);

@@ -19,16 +19,20 @@ const ParticipantDetailsTerminate = ({
     fetchParticipantProjectDetails,
 }) => {
     useEffect(() => {
-        getAdditionalInfoForTerminating(participantProject.id);
+        getAdditionalInfoForTerminatingOrChangeEntryDate(participantProject.id);
     }, [participantProject.id]);
 
-    function getAdditionalInfoForTerminating(participantProjectId) {
-        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminating(participantProjectId).then(payload => {
-            setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
-            setDateTerminatedAllowedFrom(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
-            setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
-            setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
-        });
+    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
+        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
+            payload => {
+                setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
+                setDateTerminatedAllowedFrom(
+                    payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : ''
+                );
+                setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
+                setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
+            }
+        );
     }
 
     const [dateTerminated, setDateTerminated] = useState(null);

@@ -206,6 +206,20 @@ export default {
         return axiosInstance.post(requestUrl, csv);
     },
 
+    getCSVFromEnergySupplier: ({ filters, extraFilters, sorts, filterType, dataControleType }) => {
+        const requestUrl = `${URL_API}/api/contact/csv-from-energy-supplier`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                extraFilters: JSON.stringify(extraFilters),
+                sorts: JSON.stringify(sorts),
+                filterType: filterType,
+                dataControleType: dataControleType,
+            },
+        });
+    },
+
     getContactsToImportSuppliers: () => {
         const requestUrl = `${URL_API}/api/contact/contacts-to-import-suppliers`;
 

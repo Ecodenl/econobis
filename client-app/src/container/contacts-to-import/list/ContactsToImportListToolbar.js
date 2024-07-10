@@ -4,12 +4,13 @@ import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-function ContactsToImportListToolbar({ ContactsToImportTotal, refreshContactsToImport, permissions }) {
+function ContactsToImportListToolbar({ ContactsToImportTotal, refreshContactsToImport, permissions, getCSV }) {
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={refreshContactsToImport} />
+                    <ButtonIcon iconName={'download'} onClickAction={getCSV} title="Downloaden contacten naar CSV" />
                 </div>
             </div>
             <div className="col-md-4">

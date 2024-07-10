@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Helpers\CSV\ContactToImportCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactForImport;
@@ -298,5 +299,13 @@ class ContactToImportController extends Controller
             ]);
     }
 
+    public function csvFromEnergySupplier(RequestQuery $requestQuery)
+    {
+        set_time_limit(0);
+        $contacts = $requestQuery->getQueryNoPagination()->get();
 
+        $contactCSVHelper = new ContactToImportCSVHelper($contacts);
+
+        return $contactCSVHelper->downloadCSV();
+    }
 }

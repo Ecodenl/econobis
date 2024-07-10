@@ -7,6 +7,10 @@ import ContactsToImportListToolbar from './ContactsToImportListToolbar';
 import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
 import ContactsToImportAPI from '../../../api/contacts-to-import/ContactsToImportAPI';
+import filterHelper from '../../../helpers/FilterHelper';
+import ContactsAPI from '../../../api/contact/ContactsAPI';
+import fileDownload from 'js-file-download';
+import moment from 'moment/moment';
 
 const recordsPerPage = 50;
 
@@ -105,6 +109,31 @@ function ContactsToImportListApp() {
         }
     }
 
+    function getCSV() {
+        setLoading(true);
+        // const { extraFilters, filterType, dataControleType } = this.state;
+        // const filters = filterHelper(this.props.contactsFilters);
+        // const sorts = this.props.contactsSorts;
+        let filters = [];
+        let extraFilters = [];
+        let sorts = '';
+        let filterType = '';
+        let dataControleType = '';
+
+        ContactsAPI.getCSVFromEnergySupplier({ filters, extraFilters, sorts, filterType, dataControleType })
+            .then(payload => {
+                fileDownload(
+                    payload.data,
+                    `signaleringslijst-importeren-energieklanten-${moment().format('YYYY-MM-DD HH:mm:ss')}.csv`
+                );
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+                alert('Er is iets misgegaan met ophalen van de gegevens.');
+            });
+    }
+
     return (
         <Panel>
             <PanelBody>
@@ -112,6 +141,7 @@ function ContactsToImportListApp() {
                     <ContactsToImportListToolbar
                         ContactsToImportTotal={meta.total}
                         refreshContactsToImport={fetchContactsToImport}
+                        getCSV={getCSV}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">

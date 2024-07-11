@@ -12,6 +12,7 @@ namespace App\Helpers\Import;
 
 use App\Eco\Contact\ContactToImport;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Title\Title;
 use Illuminate\Support\Facades\DB;
@@ -303,12 +304,21 @@ Log::info('import start');
 
                 $address = $this->splitAddress($line[12]);
                     Log::info('address', $address);
+                $lastName = $this->splitName($line[3]);
+                    Log::info('lastName', $lastName);
+
                 if ($line[2]) {
                     $contact->first_name = $line[2];
                 }
-                if ($line[3]) {
-                    $contact->last_name = $line[3];
+
+                if ($lastName['last_name']) {
+                    $contact->last_name = $lastName['last_name'];
                 }
+
+                if ($lastName['last_name_prefix']) {
+                    $contact->last_name_prefix = $lastName['last_name_prefix'];
+                }
+
                 if ($line[12]) {
                     $contact->address = $line[12];
                 }
@@ -421,5 +431,40 @@ Log::info('import start');
 
         return ['street' => $straatNaam, 'housenumber' => $huisnummer, 'addition' => $toevoegingTemp];
     }
+
+    //todo: deze code komt van Marco, nog nakijken of alles goed gaat
+    private function splitName($klantNaam)
+    {
+        $naamGesplitst = explode(' ', $klantNaam);
+        $prefixTotaal = '';
+        $indexAchternaam = 0;
+
+        $last_name_prefixes = LastNamePrefix::pluck('name');
+
+        for ($index = 0; $index < count($naamGesplitst) - 1; $index++) {
+            foreach ($last_name_prefixes as $prefix) {
+                if ($naamGesplitst[$index] == $prefix->name) {
+                    $prefixTotaal .= ' ' . $naamGesplitst[$index];
+                    $indexAchternaam = $index;
+                }
+            }
+        }
+
+        $achterNaam = '';
+        if ($prefixTotaal == '') { //if ($indexAchternaam == "0") {
+            $achterNaam = $naamGesplitst[0];
+        } else {
+            for ($index = ($indexAchternaam + 1); $index < count($naamGesplitst); $index++) {
+                if ($achterNaam == '') {
+                    $achterNaam .= $naamGesplitst[$index];
+                } else {
+                    $achterNaam .= " " . $naamGesplitst[$index];
+                }
+            }
+        }
+
+        return ['last_name' => $achterNaam, 'last_name_prefix' => $prefixTotaal];
+    }
+
 }
 

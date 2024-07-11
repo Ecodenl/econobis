@@ -42,9 +42,7 @@ class ContactToImportController extends Controller
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix === null) {
-                                $query->where('last_name_prefix', '');
-                            } else {
+                            if($contactToImport->last_name_prefix !== null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
                         })
@@ -89,9 +87,7 @@ class ContactToImportController extends Controller
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix === null) {
-                                $query->where('last_name_prefix', '');
-                            } else {
+                            if($contactToImport->last_name_prefix !== null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
                         })
@@ -136,9 +132,7 @@ class ContactToImportController extends Controller
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix === null) {
-                                $query->where('last_name_prefix', '');
-                            } else {
+                            if($contactToImport->last_name_prefix !== null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
                         })
@@ -269,18 +263,14 @@ class ContactToImportController extends Controller
                     ->whereHas('person', function ($query) use ($contactToImport) {
                         $query->where('first_name', $contactToImport->first_name);
                         $query->where('last_name', $contactToImport->last_name);
-                        if($contactToImport->last_name_prefix === null) {
-                            $query->where('last_name_prefix', '');
-                        } else {
+                        if($contactToImport->last_name_prefix !== null) {
                             $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                         }
                     })
                     ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport) {
                         $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
                         $query->where('number', $contactToImport->housenumber);
-                        if($contactToImport->addition === null) {
-                            $query->where('addition', '');
-                        } else {
+                        if($contactToImport->addition !== null) {
                             $query->where('addition', $contactToImport->addition);
                         }
                     })
@@ -311,9 +301,7 @@ class ContactToImportController extends Controller
                     ->whereHas('person', function ($query) use ($contactToImport) {
                         $query->where('first_name', $contactToImport->first_name);
                         $query->where('last_name', $contactToImport->last_name);
-                        if($contactToImport->last_name_prefix === null) {
-                            $query->where('last_name_prefix', '');
-                        } else {
+                        if($contactToImport->last_name_prefix !== null) {
                             $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                         }
                     })

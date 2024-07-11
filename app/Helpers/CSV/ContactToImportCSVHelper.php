@@ -50,6 +50,7 @@ class ContactToImportCSVHelper
                 'es_number' => 'Huidige klantnummer',
                 'member_since' => 'Klant sinds',
                 'end_date' => 'Klant tot',
+                'status' => 'Status',
             ];
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);

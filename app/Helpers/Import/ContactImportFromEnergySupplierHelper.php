@@ -445,7 +445,7 @@ Log::info('import start');
 
         for ($index = 0; $index < count($naamGesplitst) - 1; $index++) {
             foreach ($last_name_prefixes as $prefix) {
-                if ($naamGesplitst[$index] == $prefix->name) {
+                if ($naamGesplitst[$index] == $prefix) {
                     $prefixTotaal .= ' ' . $naamGesplitst[$index];
                     $indexAchternaam = $index;
                 }

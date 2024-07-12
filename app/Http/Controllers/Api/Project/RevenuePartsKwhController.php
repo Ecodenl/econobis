@@ -956,7 +956,8 @@ class RevenuePartsKwhController extends ApiController
                         $distributionPartsKwh->save();
                         // Indien part visible en nog niet gerapporteerd (zou ook nog niet gedaan moeten zijn bij definitief maken, want deelnemer rapportage kan je niet maken van concepten)
                         // en) not_reported_delivered_kwh is 0, dan gaan we t/m deze deelperiode uitsluiten van deelnemer rapportage. We willen niet delivered_kwh 0 rapporteren nl.
-                        if( $distributionPartsKwh->is_visible == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
+                        $isVisibleNotEndOfYear = $distributionPartsKwh->is_end_participation || $distributionPartsKwh->is_energy_supplier_switch || $distributionPartsKwh->is_end_total_period;
+                        if( $isVisibleNotEndOfYear == true && $distributionPartsKwh->date_participant_report == null && $distributionPartsKwh->not_reported_delivered_kwh == 0 ){
                             $upToPartsKwhExcludeForReportIds = RevenuePartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('date_begin', '<=', $distributionPartsKwh->partsKwh->date_begin)->orderBy('date_begin')->pluck('id')->toArray();
                             $upToDistributionPartsKwh = RevenueDistributionPartsKwh::where('revenue_id', $distributionPartsKwh->revenue_id)->where('distribution_id', $distributionPartsKwh->distribution_id)->whereIn('parts_id', $upToPartsKwhExcludeForReportIds)->whereIn('status', ['confirmed', 'processed'])->whereNull('date_participant_report')->get();
                             $beginDateParticipantReport = $distributionPartsKwh->not_reported_date_begin;;

@@ -17,9 +17,9 @@ class ContactToImportController extends Controller
 {
     public function index(Request $request, RequestQuery $requestQuery)
     {
-        $contactsToImport = $requestQuery->get();
+        $contactToImports = $requestQuery->get();
 
-        foreach($contactsToImport as $contactToImport) {
+        foreach($contactToImports as $contactToImport) {
             $matchKlant = collect();
             $matchKlantMinusKlantnummer = collect();
             $matchKlantMinusAddress = collect();
@@ -342,7 +342,7 @@ class ContactToImportController extends Controller
             }
         }
 
-        return GridContactToImport::collection($contactsToImport)
+        return GridContactToImport::collection($contactToImports)
             ->additional(
                 ['meta' => [
                     'total' => $requestQuery->total(),

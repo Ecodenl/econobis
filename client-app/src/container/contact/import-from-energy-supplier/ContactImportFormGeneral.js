@@ -30,7 +30,7 @@ class ContactImportFormGeneral extends Component {
     }
 
     componentDidMount() {
-        ContactsAPI.getContactsToImportSuppliers().then(payload => {
+        ContactsAPI.getContactToImportsSuppliers().then(payload => {
             this.setState({
                 suppliers: payload,
             });

@@ -6,7 +6,7 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
-function ContactsToImportListItem({
+function ContactToImportsListItem({
     id,
     number,
     firstName,
@@ -37,7 +37,11 @@ function ContactsToImportListItem({
     }
 
     function openItem(id) {
-        hashHistory.push(`/contacts-to-import/${id}`);
+        hashHistory.push(`/contact-to-imports/${id}`);
+    }
+
+    function importItem(id) {
+        hashHistory.push(`/contact-to-imports/${id}/ncg`);
     }
 
     return (
@@ -64,9 +68,17 @@ function ContactsToImportListItem({
                 <td>klantnummer</td>
                 <td>{match}</td>
                 <td>
-                    {showActionButtons && permissions.manageContactsToImport ? (
+                    {showActionButtons && permissions.manageContactToImports ? (
                         <a role="button" onClick={() => openItem(id)}>
                             <Icon className="mybtn-success" size={14} icon={pencil} />
+                        </a>
+                    ) : (
+                        ''
+                    )}
+
+                    {showActionButtons ? (
+                        <a role="button" className="btn btn-primary" onClick={() => importContactToImports(id)}>
+                            <small>import nieuw</small>
                         </a>
                     ) : (
                         ''
@@ -98,7 +110,7 @@ function ContactsToImportListItem({
                         <td>klantnummer</td>
                         <td>{contactForImport.match}</td>
                         <td>
-                            {showActionButtons && permissions.manageContactsToImport ? (
+                            {showActionButtons && permissions.manageContactToImports ? (
                                 <a role="button" onClick={() => openItem(id)}>
                                     <Icon className="mybtn-success" size={14} icon={pencil} />
                                 </a>
@@ -122,4 +134,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactsToImportListItem);
+export default connect(mapStateToProps)(ContactToImportsListItem);

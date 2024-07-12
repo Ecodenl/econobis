@@ -70,7 +70,7 @@ Route::namespace('Api')
         Route::post('/contact/validate-import-from-energy-supplier', 'Contact\ContactController@validateImportFromEnergySupplier');
         Route::post('/contact/import-from-energy-supplier', 'Contact\ContactController@importFromEnergySupplier');
         Route::get('/contact/csv-from-energy-supplier', 'Contact\ContactToImportController@csvFromEnergySupplier');
-        Route::get('/contact/contacts-to-import-suppliers', 'Contact\ContactController@contactsToImportSuppliers');
+        Route::get('/contact/contact-to-imports-suppliers', 'Contact\ContactController@contactToImportsSuppliers');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/addresses', 'Contact\ContactController@getContactWithAddresses');
@@ -83,7 +83,8 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/coach-attributes', 'Contact\ContactController@getCoachAttributes');
         Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
 
-        Route::get('/contacts-to-import/grid', 'Contact\ContactToImportController@index');
+        Route::get('/contact-to-imports/grid', 'Contact\ContactToImportController@index');
+
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');

@@ -4,12 +4,12 @@ import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-function ContactsToImportListToolbar({ ContactsToImportTotal, refreshContactsToImport, permissions, getCSV }) {
+function ContactToImportsListToolbar({ ContactToImportsTotal, refreshContactToImports, permissions, getCSV }) {
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
-                    <ButtonIcon iconName={'refresh'} onClickAction={refreshContactsToImport} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={refreshContactToImports} />
                     <ButtonIcon iconName={'download'} onClickAction={getCSV} title="Downloaden contacten naar CSV" />
                 </div>
             </div>
@@ -19,7 +19,7 @@ function ContactsToImportListToolbar({ ContactsToImportTotal, refreshContactsToI
             <div className="col-md-4">
                 <div className="row">
                     <div className="col-sm-12">
-                        <div className="pull-right">Resultaten: {ContactsToImportTotal}</div>
+                        <div className="pull-right">Resultaten: {ContactToImportsTotal}</div>
                     </div>
                 </div>
             </div>
@@ -33,4 +33,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactsToImportListToolbar);
+export default connect(mapStateToProps, null)(ContactToImportsListToolbar);

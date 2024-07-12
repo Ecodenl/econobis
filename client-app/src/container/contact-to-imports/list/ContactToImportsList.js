@@ -1,16 +1,16 @@
 import React, { useState } from 'react';
 
-import ContactsToImportListItem from './ContactsToImportListItem';
+import ContactToImportsListItem from './ContactToImportsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import ContactsToImportListHead from './ContactsToImportListHead';
-import ContactsToImportListFilter from './ContactsToImportListFilter';
+import ContactToImportsListHead from './ContactToImportsListHead';
+import ContactToImportsListFilter from './ContactToImportsListFilter';
 
-function ContactsToImportList({
-    ContactsToImport,
-    ContactsToImportTotal,
+function ContactToImportsList({
+    ContactToImports,
+    ContactToImportsTotal,
     recordsPerPage,
     isLoading,
     filter,
@@ -24,17 +24,17 @@ function ContactsToImportList({
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
                 <DataTable>
                     <DataTableHead>
-                        <ContactsToImportListHead handleChangeSort={handleChangeSort} />
-                        {/*<ContactsToImportListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}
+                        <ContactToImportsListHead handleChangeSort={handleChangeSort} />
+                        {/*<ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}
                     </DataTableHead>
                     <DataTableBody>
                         {isLoading ? (
                             <tr>
                                 <td colSpan={15}>Bezig met gegevens laden</td>
                             </tr>
-                        ) : ContactsToImport.length > 0 ? (
-                            ContactsToImport.map(ContactToImport => {
-                                return <ContactsToImportListItem key={ContactToImport.id} {...ContactToImport} />;
+                        ) : ContactToImports.length > 0 ? (
+                            ContactToImports.map(ContactToImport => {
+                                return <ContactToImportsListItem key={ContactToImport.id} {...ContactToImport} />;
                             })
                         ) : (
                             <tr>
@@ -47,7 +47,7 @@ function ContactsToImportList({
                 <div className="col-md-6 col-md-offset-3">
                     <DataTablePagination
                         onPageChangeAction={handlePageClick}
-                        totalRecords={ContactsToImportTotal}
+                        totalRecords={ContactToImportsTotal}
                         initialPage={0}
                         recordsPerPage={recordsPerPage}
                     />
@@ -57,4 +57,4 @@ function ContactsToImportList({
     );
 }
 
-export default ContactsToImportList;
+export default ContactToImportsList;

@@ -220,8 +220,8 @@ export default {
         });
     },
 
-    getContactsToImportSuppliers: () => {
-        const requestUrl = `${URL_API}/api/contact/contacts-to-import-suppliers`;
+    getContactToImportsSuppliers: () => {
+        const requestUrl = `${URL_API}/api/contact/contact-to-imports-suppliers`;
 
         return axiosInstance
             .get(requestUrl)

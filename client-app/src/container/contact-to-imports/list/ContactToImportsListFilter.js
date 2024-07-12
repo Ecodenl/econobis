@@ -1,7 +1,7 @@
 import React from 'react';
-import ContactsToImportAPI from '../../../api/contacts-to-import/ContactsToImportAPI';
+import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
 
-function ContactsToImportListFilter({ filter, handleChangeFilter }) {
+function ContactToImportsListFilter({ filter, handleChangeFilter }) {
     let tr = (
         <>
             {/*<tr className="thead-filter">*/}
@@ -38,4 +38,4 @@ function ContactsToImportListFilter({ filter, handleChangeFilter }) {
     return tr;
 }
 
-export default ContactsToImportListFilter;
+export default ContactToImportsListFilter;

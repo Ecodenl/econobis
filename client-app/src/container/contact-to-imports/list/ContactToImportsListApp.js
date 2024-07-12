@@ -2,11 +2,11 @@ import React, { useEffect, useState } from 'react';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ContactsToImportList from './ContactsToImportList';
-import ContactsToImportListToolbar from './ContactsToImportListToolbar';
+import ContactToImportsList from './ContactToImportsList';
+import ContactToImportsListToolbar from './ContactToImportsListToolbar';
 import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
-import ContactsToImportAPI from '../../../api/contacts-to-import/ContactsToImportAPI';
+import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
 import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from 'js-file-download';
@@ -14,8 +14,8 @@ import moment from 'moment/moment';
 
 const recordsPerPage = 50;
 
-function ContactsToImportListApp() {
-    const [ContactsToImport, setContactsToImport] = useState([]);
+function ContactToImportsListApp() {
+    const [ContactToImports, setContactToImports] = useState([]);
     const [isLoading, setLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState([]);
@@ -26,7 +26,7 @@ function ContactsToImportListApp() {
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
-            fetchContactsToImport();
+            fetchContactToImports();
         },
         [pagination.offset, sort]
     );
@@ -35,19 +35,19 @@ function ContactsToImportListApp() {
     useEffect(
         function() {
             if (pressedEnter) {
-                fetchContactsToImport();
+                fetchContactToImports();
             }
         },
         [pressedEnter]
     );
 
-    function fetchContactsToImport() {
+    function fetchContactToImports() {
         axios
-            .all([ContactsToImportAPI.fetchContactsToImport(formatFilterHelper(), sort, pagination)])
+            .all([ContactToImportsAPI.fetchContactToImports(formatFilterHelper(), sort, pagination)])
             .then(
-                axios.spread(payloadContactsToImport => {
-                    setContactsToImport(payloadContactsToImport.data.data);
-                    setMetaData(payloadContactsToImport.data.meta);
+                axios.spread(payloadContactToImports => {
+                    setContactToImports(payloadContactToImports.data.data);
+                    setMetaData(payloadContactToImports.data.meta);
 
                     setLoading(false);
                 })
@@ -59,7 +59,7 @@ function ContactsToImportListApp() {
     }
 
     function onSubmitFilter() {
-        setContactsToImport([]);
+        setContactToImports([]);
 
         let page = 0;
         let offset = 0;
@@ -138,16 +138,16 @@ function ContactsToImportListApp() {
         <Panel>
             <PanelBody>
                 <div className="col-md-12 margin-10-top">
-                    <ContactsToImportListToolbar
-                        ContactsToImportTotal={meta.total}
-                        refreshContactsToImport={fetchContactsToImport}
+                    <ContactToImportsListToolbar
+                        ContactToImportsTotal={meta.total}
+                        refreshContactToImports={fetchContactToImports}
                         getCSV={getCSV}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">
-                    <ContactsToImportList
-                        ContactsToImport={ContactsToImport}
-                        ContactsToImportTotal={meta.total}
+                    <ContactToImportsList
+                        ContactToImports={ContactToImports}
+                        ContactToImportsTotal={meta.total}
                         recordsPerPage={recordsPerPage}
                         isLoading={isLoading}
                         filter={filter}
@@ -162,4 +162,4 @@ function ContactsToImportListApp() {
     );
 }
 
-export default ContactsToImportListApp;
+export default ContactToImportsListApp;

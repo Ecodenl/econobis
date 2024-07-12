@@ -3,7 +3,7 @@ import React from 'react';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 
-const ContactsToImportListHead = props => {
+const ContactToImportsListHead = props => {
     return (
         <tr className="thead-title">
             <DataTableHeadTitleAndSort
@@ -66,4 +66,4 @@ const ContactsToImportListHead = props => {
     );
 };
 
-export default ContactsToImportListHead;
+export default ContactToImportsListHead;

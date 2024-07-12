@@ -34,7 +34,8 @@ class RevenueDistributionKwhCSVHelper
 //                $distributionPartsKwh->created_at_date = $distributionPartsKwh->distributionKwh->created_at->format('d-m-Y');
 //                $distributionPartsKwh->updated_at_date = $distributionPartsKwh->distributionKwh->updated_at->format('d-m-Y');
 
-                $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
+//                $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
+                $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->partsKwh->date_begin);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
 
                 $distributionPartsKwh->type = $distributionPartsKwh->distributionKwh->contact->getType()->name;
@@ -58,8 +59,8 @@ class RevenueDistributionKwhCSVHelper
                 }
 
                 $distributionPartsKwh->date_payout = $distributionPartsKwh->partsKwh->date_payout ? $this->formatDate($distributionPartsKwh->partsKwh->date_payout) : $this->formatDate($distributionPartsKwh->partsKwh->date_confirmed);
-                $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh_from_till_visible, 2);
-                $distributionPartsKwh->kwh_return_formatted = $this->formatFinancial($distributionPartsKwh->kwh_return, 2);
+                $distributionPartsKwh->delivered_kwh_formatted = $this->formatFinancial($distributionPartsKwh->delivered_kwh, 2);
+                $distributionPartsKwh->kwh_return_formatted = $this->formatFinancial($distributionPartsKwh->kwh_return_this_part, 2);
             });
 
 

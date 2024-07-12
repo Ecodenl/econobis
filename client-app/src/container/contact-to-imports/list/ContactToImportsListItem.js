@@ -5,6 +5,8 @@ import { hashHistory } from 'react-router';
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
+import axiosInstance from '../../../api/default-setup/AxiosInstance';
 
 function ContactToImportsListItem({
     id,
@@ -22,6 +24,7 @@ function ContactToImportsListItem({
     permissions,
     match,
     contactForImports,
+    refreshContactToImports,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
@@ -40,8 +43,17 @@ function ContactToImportsListItem({
         hashHistory.push(`/contact-to-imports/${id}`);
     }
 
-    function importItem(id) {
-        hashHistory.push(`/contact-to-imports/${id}/ncg`);
+    function createNewContactFromContactToImport(contactToImport) {
+        ContactToImportsAPI.getContactFromContactToImport(contactToImport)
+            .then(payload => {
+                return axiosInstance.post('/person', payload.data);
+            })
+            .then(payload => {
+                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported');
+            })
+            .then(() => {
+                refreshContactToImports();
+            });
     }
 
     return (
@@ -77,7 +89,11 @@ function ContactToImportsListItem({
                     )}
 
                     {showActionButtons ? (
-                        <a role="button" className="btn btn-primary" onClick={() => importContactToImports(id)}>
+                        <a
+                            role="button"
+                            className="btn btn-primary"
+                            onClick={() => createNewContactFromContactToImport(id)}
+                        >
                             <small>import nieuw</small>
                         </a>
                     ) : (

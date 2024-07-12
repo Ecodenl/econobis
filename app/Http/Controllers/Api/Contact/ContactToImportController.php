@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactToImport;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Helpers\CSV\ContactToImportCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
@@ -359,4 +361,57 @@ class ContactToImportController extends Controller
 
         return $contactCSVHelper->downloadCSV();
     }
+
+    public function createNewContactFromContactToImport(Request $request)
+    {
+        $contactToImport = contactToImport::find($request->contactToImport);
+
+        if($contactToImport->last_name_prefix) {
+            $lastNamePrefix = LastNamePrefix::where('name', $contactToImport->last_name_prefix)->first();
+            $lastNamePrefixId = $lastNamePrefix ?  $lastNamePrefix->id : null;
+        } else {
+            $lastNamePrefixId = null;
+        }
+
+        $return = [];
+
+        $return['person']['contactToImport'] = $contactToImport->id;
+
+        $return['person']['owner_id'] = 1;
+        $return['person']['did_agree_avg'] = 0;
+        $return['person']['inspection_person_type_id'] = null;
+        $return['person']['hoom_account_id'] = null;
+
+        $return['person']['initials'] = '';
+        $return['person']['first_name'] = $contactToImport->first_name;
+        $return['person']['last_name'] =  $contactToImport->last_name;
+        $return['person']['last_name_prefix'] = $lastNamePrefixId;
+        $return['person']['title_id'] = 3;
+        $return['person']['date_of_birth'] = '1970-12-31';
+
+        $return['emailAddress'] = [];
+        $return['emailAddress']['primary'] = true;
+        $return['emailAddress']['email'] = $contactToImport->email_contact;
+
+        $return['address'] = [];
+        $return['address']['primary'] = true;
+        $return['address']['street'] = $contactToImport->street;
+        $return['address']['number'] = $contactToImport->housenumber;
+        $return['address']['addition'] = $contactToImport->addition;
+        $return['address']['city'] = $contactToImport->city;
+        $return['address']['postalCode'] = $contactToImport->postal_code;
+
+        $return['phoneNumber'] = [];
+        $return['phoneNumber']['primary'] = true;
+        $return['phoneNumber']['number'] = $contactToImport->phone_number;
+
+        return $return;
+    }
+
+    public function setContactToImportStatus(contactToImport $contactToImport, $status)
+    {
+        $contactToImport->status = $status;
+        $contactToImport->save();
+    }
+
 }

@@ -13,7 +13,7 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = [];
+    protected $fields = ['status'];
 
     protected $mapping = [];
 

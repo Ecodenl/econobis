@@ -18,6 +18,7 @@ function ContactToImportsList({
     handleChangeSort,
     handleChangeFilter,
     handleKeyUp,
+    refreshContactToImports,
 }) {
     return (
         <div>
@@ -34,7 +35,13 @@ function ContactToImportsList({
                             </tr>
                         ) : ContactToImports.length > 0 ? (
                             ContactToImports.map(ContactToImport => {
-                                return <ContactToImportsListItem key={ContactToImport.id} {...ContactToImport} />;
+                                return (
+                                    <ContactToImportsListItem
+                                        key={ContactToImport.id}
+                                        refreshContactToImports={refreshContactToImports}
+                                        {...ContactToImport}
+                                    />
+                                );
                             })
                         ) : (
                             <tr>

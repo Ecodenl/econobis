@@ -32,6 +32,7 @@ class GridContactToImport extends JsonResource
             'endDate' => $this->end_date,
             'match' => $this->match,
             'contactForImports' => $this->contactForImports,
+            'status' => $this->status,
         ];
     }
 }

@@ -13,4 +13,16 @@ export default {
             },
         });
     },
+
+    getContactFromContactToImport: contactToImport => {
+        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/getContactToImport`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    setContactToImportStatus: (contactToImport, status) => {
+        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/setContactToImportStatus/${status}`;
+
+        return axiosInstance.get(requestUrl);
+    },
 };

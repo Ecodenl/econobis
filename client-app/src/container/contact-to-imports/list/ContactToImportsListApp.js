@@ -11,6 +11,7 @@ import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
+import { hashHistory } from 'react-router';
 
 const recordsPerPage = 50;
 
@@ -87,6 +88,9 @@ function ContactToImportsListApp() {
 
     function formatFilterHelper() {
         let filters = [];
+
+        filters.push({ field: 'status', data: 'new' });
+
         // if (filter.tableName) {
         //     filters.push({ field: 'tableName', data: filter.tableName });
         // }
@@ -155,6 +159,7 @@ function ContactToImportsListApp() {
                         handleChangeSort={handleChangeSort}
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
+                        refreshContactToImports={fetchContactToImports}
                     />
                 </div>
             </PanelBody>

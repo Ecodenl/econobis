@@ -143,6 +143,7 @@ class ContactNewFormPersonal extends Component {
         setTimeout(() => {
             const { address } = this.state;
             if (
+                address &&
                 !validator.isEmpty(address.postalCode) &&
                 validator.isPostalCode(address.postalCode, 'NL') &&
                 !validator.isEmpty(address.number) &&

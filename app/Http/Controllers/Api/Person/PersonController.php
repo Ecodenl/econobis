@@ -11,10 +11,13 @@ namespace App\Http\Controllers\Api\Person;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
+use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -133,6 +136,22 @@ class PersonController extends ApiController
 
             $address = new Address($this->arrayKeysToSnakeCase($data));
 
+        }
+
+        if ($request['addressEnergySupplier']) {
+            Validator::make($request['addressEnergySupplier'], [
+                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
+                'energySupplierId' => new EnumExists(EnergySupplier::class),
+            ]);
+
+            $data = $this->sanitizeData($request['addressEnergySupplier'], [
+                //nog aanvullen
+                'memberSince' => 'date',
+                'endDate' => 'date|nullable',
+                'primary' => 'boolean',
+            ]);
+
+            $addressEnergySupplier = new AddressEnergySupplier($this->arrayKeysToSnakeCase($data));
         }
 
         if ($request['phoneNumber']['number']) {
@@ -254,7 +273,7 @@ class PersonController extends ApiController
         }
 
 
-        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber) {
+        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber, $addressEnergySupplier) {
             $contact->save();
             $person->contact_id = $contact->id;
             $person->save();
@@ -267,6 +286,11 @@ class PersonController extends ApiController
                 $address->contact_id = $contact->id;
                 $this->authorize('create', $address);
                 $address->save();
+            }
+            if(isset($addressEnergySupplier)) {
+                $addressEnergySupplier->address_id = $address->id;
+                $this->authorize('create', $addressEnergySupplier);
+                $addressEnergySupplier->save();
             }
             if($phoneNumber) {
                 $phoneNumber->contact_id = $contact->id;

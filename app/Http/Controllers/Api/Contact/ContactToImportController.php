@@ -13,8 +13,6 @@ use App\Http\Resources\Contact\GridContactForImport;
 use App\Http\Resources\Contact\GridContactToImport;
 use Illuminate\Http\Request;
 
-/* The matches must be from important to less important because we also save the id's of contacts that already have a match */
-
 class ContactToImportController extends Controller
 {
     public function index(Request $request, RequestQuery $requestQuery)
@@ -36,20 +34,18 @@ class ContactToImportController extends Controller
             $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
             $energySupplierId = $energySupplier->id;
 
+            /* The matches must be from important to less important because we also save the id's of contacts that already have a match */
+
             /* Match klant */
             if (count($contactForImports =
                     Contact::
                         whereNotIn('id', $matchedContactIds)
-//                        ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix !== null) {
+                            if($contactToImport->last_name_prefix != null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
-                        })
-                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
-                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
                             $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
@@ -61,8 +57,11 @@ class ContactToImportController extends Controller
                             }
                             $query->whereHas('currentAddressEnergySupplierElectricityAndGas', function ($query2) use ($contactToImport, $energySupplierId) {
                                 $query2->where('energy_supplier_id', $energySupplierId);
-                                $query2->where('es_number', $contactToImport->es_number);
+                                $query2->where('es_number', $contactToImport->es_number)->orWhere('es_number', '');
                             });
+                        })
+                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->get()) > 0) {
 
@@ -85,16 +84,12 @@ class ContactToImportController extends Controller
             if (count($contactForImports =
                     Contact::
                         whereNotIn('id', $matchedContactIds)
-//                        ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix !== null) {
+                            if($contactToImport->last_name_prefix != null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
-                        })
-                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
-                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
                             $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
@@ -106,8 +101,11 @@ class ContactToImportController extends Controller
                             }
                             $query->whereHas('currentAddressEnergySupplierElectricityAndGas', function ($query2) use ($contactToImport, $energySupplierId) {
                                 $query2->where('energy_supplier_id', $energySupplierId);
-                                $query2->where('es_number', '!=', $contactToImport->es_number);
+                                $query2->where('es_number', '!=', $contactToImport->es_number)->where('es_number', '!=', '');
                             });
+                        })
+                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->get()) > 0) {
 
@@ -130,22 +128,21 @@ class ContactToImportController extends Controller
             if (count($contactForImports =
                     Contact::
                         whereNotIn('id', $matchedContactIds)
-//                        ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix !== null) {
+                            if($contactToImport->last_name_prefix != null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
-                        })
-                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
-                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
                             $query->whereHas('currentAddressEnergySupplierElectricityAndGas', function ($query2) use ($contactToImport, $energySupplierId) {
                                 $query2->where('energy_supplier_id', $energySupplierId);
-                                $query2->where('es_number', $contactToImport->es_number);
+                                $query2->where('es_number', $contactToImport->es_number)->orWhere('es_number', null);
                             });
+                        })
+                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
                         })
                         ->get()) > 0) {
 
@@ -155,7 +152,7 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant';
+                    $contactForImport->match = 'Match klant minus adres';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -165,17 +162,13 @@ class ContactToImportController extends Controller
             /* End match klant minus adres */
 
             /* Match klant minus email */
-            /* Match klant */
             if (count($contactForImports =
                     Contact::
                     whereNotIn('id', $matchedContactIds)
-//                        ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
                             $query->where('last_name', $contactToImport->last_name);
-                            if($contactToImport->last_name_prefix === null) {
-                                $query->where('last_name_prefix', '');
-                            } else {
+                            if($contactToImport->last_name_prefix != null) {
                                 $query->where('last_name_prefix', $contactToImport->last_name_prefix);
                             }
                         })
@@ -189,7 +182,7 @@ class ContactToImportController extends Controller
                             }
                             $query->whereHas('currentAddressEnergySupplierElectricityAndGas', function ($query2) use ($contactToImport, $energySupplierId) {
                                 $query2->where('energy_supplier_id', $energySupplierId);
-                                $query2->where('es_number', $contactToImport->es_number);
+                                $query2->where('es_number', $contactToImport->es_number)->orWhere('es_number', null);
                             });
                         })
                         ->get()) > 0) {
@@ -200,15 +193,54 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant';
+                    $contactForImport->match = 'Match klant minus e-mail';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
 
                 $matchKlant = GridContactForImport::collection($contactForImports);
             }
-            /* End match klant */
             /* End match klant minus email */
+
+            /* Match klant minus last_name */
+            if (count($contactForImports =
+                    Contact::
+                    whereNotIn('id', $matchedContactIds)
+                        ->whereHas('person', function ($query) use ($contactToImport) {
+                            $query->where('first_name', $contactToImport->first_name);
+                        })
+                        ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                            $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                            $query->where('number', $contactToImport->housenumber);
+                            if($contactToImport->addition === null) {
+                                $query->where('addition', '');
+                            } else {
+                                $query->where('addition', $contactToImport->addition);
+                            }
+                            $query->whereHas('currentAddressEnergySupplierElectricityAndGas', function ($query2) use ($contactToImport, $energySupplierId) {
+                                $query2->where('energy_supplier_id', $energySupplierId);
+                                $query2->where('es_number', $contactToImport->es_number)->orWhere('es_number', null);
+                            });
+                        })
+                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
+                        })
+                        ->get()) > 0) {
+
+                foreach($contactForImports as $contactForImport) {
+                    $contactForImport->street = $contactToImport->street;
+                    $contactForImport->housenumber = $contactToImport->housenumber;
+                    $contactForImport->addition = $contactToImport->addition;
+                    $contactForImport->postal_code = $contactToImport->postal_code;
+                    $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
+                    $contactForImport->match = 'Match klant minus achternaam';
+
+                    array_push($matchedContactIds, $contactForImport->id);
+                }
+
+                $matchKlant = GridContactForImport::collection($contactForImports);
+            }
+            /* End match klant minus last_name */
 
             /* Match contact */
             if (count($contactForImports =
@@ -257,44 +289,6 @@ class ContactToImportController extends Controller
             }
             /* End match contact */
 
-            /* Match contact minus e-mail */
-            if (count($contactForImports =
-                Contact::
-                    whereNotIn('id', $matchedContactIds)
-//                    ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
-                    ->whereHas('person', function ($query) use ($contactToImport) {
-                        $query->where('first_name', $contactToImport->first_name);
-                        $query->where('last_name', $contactToImport->last_name);
-                        if($contactToImport->last_name_prefix !== null) {
-                            $query->where('last_name_prefix', $contactToImport->last_name_prefix);
-                        }
-                    })
-                    ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport) {
-                        $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
-                        $query->where('number', $contactToImport->housenumber);
-                        if($contactToImport->addition !== null) {
-                            $query->where('addition', $contactToImport->addition);
-                        }
-                    })
-                    ->wheredoesntHave('emailAddresses', function ($query) use ($contactToImport) {
-                        $query->where('email', $contactToImport->email_contact);
-                    })
-                    ->get()) > 0) {
-
-                foreach($contactForImports as $contactForImport) {
-                    $contactForImport->street = $contactToImport->street;
-                    $contactForImport->housenumber = $contactToImport->housenumber;
-                    $contactForImport->addition = $contactToImport->addition;
-                    $contactForImport->postal_code = $contactToImport->postal_code;
-                    $contactForImport->match = 'Match contact minus e-mail';
-
-                    array_push($matchedContactIds, $contactForImport->id);
-                }
-
-                $matchContactMinusEmail = GridContactForImport::collection($contactForImports);
-            }
-            /* End match contact minus e-mail */
-
             /* Match contact minus adres */
             if (count($contactForImports =
                 Contact::
@@ -331,6 +325,82 @@ class ContactToImportController extends Controller
             }
             /* End match contact minus adres */
 
+            /* Match contact minus e-mail */
+            if (count($contactForImports =
+                    Contact::
+                    whereNotIn('id', $matchedContactIds)
+//                    ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
+                        ->whereHas('person', function ($query) use ($contactToImport) {
+                            $query->where('first_name', $contactToImport->first_name);
+                            $query->where('last_name', $contactToImport->last_name);
+                            if($contactToImport->last_name_prefix !== null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        })
+                        ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport) {
+                            $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                            $query->where('number', $contactToImport->housenumber);
+                            if($contactToImport->addition === null) {
+                                $query->where('addition', '');
+                            } else {
+                                $query->where('addition', $contactToImport->addition);
+                            }
+                        })
+                        ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
+                        })
+                        ->get()) > 0) {
+
+                foreach($contactForImports as $contactForImport) {
+                    $contactForImport->street = $contactToImport->street;
+                    $contactForImport->housenumber = $contactToImport->housenumber;
+                    $contactForImport->addition = $contactToImport->addition;
+                    $contactForImport->postal_code = $contactToImport->postal_code;
+                    $contactForImport->match = 'Match contact minus e-mail';
+
+                    array_push($matchedContactIds, $contactForImport->id);
+                }
+
+                $matchContactMinusEmail = GridContactForImport::collection($contactForImports);
+            }
+            /* End match contact minus e-mail */
+
+            /* Match contact minus last_name */
+            if (count($contactForImports =
+                    Contact::
+                    whereNotIn('id', $matchedContactIds)
+//                    ->where('full_name', $contactToImport->last_name . ', ' . $contactToImport->first_name)
+                        ->whereHas('person', function ($query) use ($contactToImport) {
+                            $query->where('first_name', $contactToImport->first_name);
+                        })
+                        ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport) {
+                            $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                            $query->where('number', $contactToImport->housenumber);
+                            if($contactToImport->addition === null) {
+                                $query->where('addition', '');
+                            } else {
+                                $query->where('addition', $contactToImport->addition);
+                            }
+                        })
+                        ->wheredoesntHave('emailAddresses', function ($query) use ($contactToImport) {
+                            $query->where('email', $contactToImport->email_contact);
+                        })
+                        ->get()) > 0) {
+
+                foreach($contactForImports as $contactForImport) {
+                    $contactForImport->street = $contactToImport->street;
+                    $contactForImport->housenumber = $contactToImport->housenumber;
+                    $contactForImport->addition = $contactToImport->addition;
+                    $contactForImport->postal_code = $contactToImport->postal_code;
+                    $contactForImport->match = 'Match contact minus achternaam';
+
+                    array_push($matchedContactIds, $contactForImport->id);
+                }
+
+                $matchContactMinusEmail = GridContactForImport::collection($contactForImports);
+            }
+            /* End match contact minus last_name */
+
             /* Combine alle collections */
             $contactForImports = $matchKlant->concat($matchKlantMinusKlantnummer)->concat($matchKlantMinusAddress)->concat($matchKlantMinusEmail)->concat($matchContact)->concat($matchContactMinusEmail)->concat($matchContactMinusAddress);
 
@@ -366,6 +436,8 @@ class ContactToImportController extends Controller
     {
         $contactToImport = contactToImport::find($request->contactToImport);
 
+        $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
+
         if($contactToImport->last_name_prefix) {
             $lastNamePrefix = LastNamePrefix::where('name', $contactToImport->last_name_prefix)->first();
             $lastNamePrefixId = $lastNamePrefix ?  $lastNamePrefix->id : null;
@@ -397,9 +469,18 @@ class ContactToImportController extends Controller
         $return['address']['primary'] = true;
         $return['address']['street'] = $contactToImport->street;
         $return['address']['number'] = $contactToImport->housenumber;
-        $return['address']['addition'] = $contactToImport->addition;
+        $return['address']['addition'] = $contactToImport->addition ?? '';
         $return['address']['city'] = $contactToImport->city;
         $return['address']['postalCode'] = $contactToImport->postal_code;
+
+        $return['addressEnergySupplier'] = [];
+        $return['addressEnergySupplier']['energySupplyTypeId'] = 3; //todo Patrick welke moet hier?
+        $return['addressEnergySupplier']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
+        $return['addressEnergySupplier']['energy_supplier_id'] = $energySupplier->id;
+        $return['addressEnergySupplier']['isCurrentSupplier'] = 1;
+        $return['addressEnergySupplier']['memberSince'] = $contactToImport->member_since->format('Y-m-d');
+        $return['addressEnergySupplier']['esNumber'] = $contactToImport->es_number;
+        if ($contactToImport->end_date != null) { $return['addressEnergySupplier']['endDate'] = $contactToImport->end_date->format('Y-m-d'); }
 
         $return['phoneNumber'] = [];
         $return['phoneNumber']['primary'] = true;
@@ -410,8 +491,8 @@ class ContactToImportController extends Controller
 
     public function setContactToImportStatus(contactToImport $contactToImport, $status)
     {
-        $contactToImport->status = $status;
-        $contactToImport->save();
+//        $contactToImport->status = $status;
+//        $contactToImport->save();
     }
 
 }

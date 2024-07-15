@@ -137,9 +137,6 @@ function ContactToImportsListItem({
                     </tr>
                 );
             })}
-            <tr>
-                <td colspan={16}>----</td>
-            </tr>
         </>
     );
 }

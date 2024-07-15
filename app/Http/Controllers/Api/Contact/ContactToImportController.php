@@ -491,8 +491,8 @@ class ContactToImportController extends Controller
 
     public function setContactToImportStatus(contactToImport $contactToImport, $status)
     {
-//        $contactToImport->status = $status;
-//        $contactToImport->save();
+        $contactToImport->status = $status;
+        $contactToImport->save();
     }
 
 }

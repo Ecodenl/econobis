@@ -46,11 +46,7 @@ const ContactsInGroupListToolbar = ({ contactGroupDetails, blockUI, unblockUI, r
             .then(payload => {
                 fileDownload(
                     payload.data,
-                    'Groep-' +
-                        contactGroupDetails.name.substring(0, 20) +
-                        '-' +
-                        moment().format('YYYY-MM-DD HH:mm:ss') +
-                        '.csv'
+                    'Groep-' + contactGroupDetails.name + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.csv'
                 );
                 unblockUI();
             })

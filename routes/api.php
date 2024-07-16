@@ -205,6 +205,7 @@ Route::namespace('Api')
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
+        Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/static/{active?}', 'ContactGroup\ContactGroupController@peekStatic');
         Route::get('contact-group/excel/group-report', 'ContactGroup\ContactGroupController@excelGroupReport');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
@@ -580,6 +581,7 @@ Route::namespace('Api')
 
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/csv', 'Order\OrderController@csv');
+        Route::get('order/csvwithproducts', 'Order\OrderController@csvWithProducts');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/amount-collection', 'Order\OrderController@getAmountCollection');
         Route::get('order/{order}', 'Order\OrderController@show');
@@ -599,6 +601,7 @@ Route::namespace('Api')
 
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
+        Route::get('invoice/csvwithproducts', 'Invoice\InvoiceController@csvWithProducts');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');

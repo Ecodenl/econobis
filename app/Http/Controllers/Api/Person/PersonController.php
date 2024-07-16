@@ -29,7 +29,6 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -194,7 +193,6 @@ class PersonController extends ApiController
                 } else if ($exists->count() > 1) {
                     $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        Log::info(json_encode($contact));
                         $duplicateContactsList .= "<br>" . $contact->contact_number . " : " . $contact->full_name;
                     }
 
@@ -224,7 +222,6 @@ class PersonController extends ApiController
                 } else if ($exists->count() > 1) {
                     $duplicateContactsList = "<br>";
                     foreach($exists->get() as $contact) {
-                        Log::info(json_encode($contact));
                         $duplicateContactsList .= "<br>" . $contact->contact_number . " : " . $contact->full_name;
                     }
 
@@ -393,6 +390,12 @@ class PersonController extends ApiController
 
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
+
+        if ($request['emailAddress']['email']) {
+            $emailAddress = $contact->primaryEmailAddress;
+            $emailAddress->email = $request['emailAddress']['email'];
+            $emailAddress->save();
+        }
 
         // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
         // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren notas

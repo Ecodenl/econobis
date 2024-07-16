@@ -43,16 +43,33 @@ function ContactToImportsListItem({
         hashHistory.push(`/contact-to-imports/${id}`);
     }
 
+    function updateContactFromContactToImport(contactToImport, contactForImport) {
+        ContactToImportsAPI.getContactFromContactToImport(contactToImport)
+            .then(payload => {
+                return axiosInstance.post(`/person/${contactForImport}`, payload.data);
+            })
+            .then(payload => {
+                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update');
+            })
+            .then(() => {
+                setTimeout(() => {
+                    refreshContactToImports();
+                }, 200);
+            });
+    }
+
     function createNewContactFromContactToImport(contactToImport) {
         ContactToImportsAPI.getContactFromContactToImport(contactToImport)
             .then(payload => {
                 return axiosInstance.post('/person', payload.data);
             })
             .then(payload => {
-                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported');
+                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-new');
             })
             .then(() => {
-                refreshContactToImports();
+                setTimeout(() => {
+                    refreshContactToImports();
+                }, 200);
             });
     }
 
@@ -133,6 +150,11 @@ function ContactToImportsListItem({
                             ) : (
                                 ''
                             )}
+
+                            <input
+                                type="checkbox"
+                                onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
+                            />
                         </td>
                     </tr>
                 );

@@ -148,10 +148,6 @@ class ContactToImportController extends Controller
                         ->get()) > 0) {
 
                 foreach($contactForImports as $contactForImport) {
-                    $contactForImport->street = $contactToImport->street;
-                    $contactForImport->housenumber = $contactToImport->housenumber;
-                    $contactForImport->addition = $contactToImport->addition;
-                    $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->match = 'Match klant minus adres';
 
@@ -193,7 +189,6 @@ class ContactToImportController extends Controller
                     $contactForImport->housenumber = $contactToImport->housenumber;
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
-                    $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->match = 'Match klant minus e-mail';
 
                     array_push($matchedContactIds, $contactForImport->id);
@@ -209,6 +204,7 @@ class ContactToImportController extends Controller
                     whereNotIn('id', $matchedContactIds)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
+                            $query->where('last_name', '!=', $contactToImport->last_name);
                         })
                         ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
                             $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
@@ -308,10 +304,6 @@ class ContactToImportController extends Controller
                         ->get()) > 0) {
 
                 foreach($contactForImports as $contactForImport) {
-                    $contactForImport->street = $contactToImport->street;
-                    $contactForImport->housenumber = $contactToImport->housenumber;
-                    $contactForImport->addition = $contactToImport->addition;
-                    $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->match = 'Match contact minus adres';
 
@@ -352,7 +344,6 @@ class ContactToImportController extends Controller
                     $contactForImport->housenumber = $contactToImport->housenumber;
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
-                    $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->match = 'Match contact minus e-mail';
 
                     array_push($matchedContactIds, $contactForImport->id);
@@ -368,6 +359,7 @@ class ContactToImportController extends Controller
                     whereNotIn('id', $matchedContactIds)
                         ->whereHas('person', function ($query) use ($contactToImport) {
                             $query->where('first_name', $contactToImport->first_name);
+                            $query->where('last_name', '!=', $contactToImport->last_name);
                         })
                         ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
                             $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));

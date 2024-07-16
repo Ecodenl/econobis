@@ -20,15 +20,15 @@ function TasksListApp(props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (!isEmpty(props.params)) {
-            if (props.params.type === 'eigen') {
-                dispatch(setFilterTaskMe(true));
-            }
+        if (props.params && props.params.type === 'eigen') {
+            dispatch(setFilterTaskMe(true));
         } else {
-            dispatch(clearFilterTask());
+            dispatch(setFilterTaskMe(false));
         }
+    }, [props.params.type]);
+    useEffect(() => {
         fetchTasksData();
-    }, [props.params, tasksPagination]);
+    }, [tasksFilters, tasksSorts, tasksPagination]);
 
     function fetchTasksData() {
         setTimeout(() => {
@@ -42,19 +42,21 @@ function TasksListApp(props) {
     const resetTaskFilters = () => {
         dispatch(clearFilterTask());
 
+        // Filter eigen komt vanuit URL (params) en die willen we graag behouden.
         if (!isEmpty(props.params)) {
             if (props.params.type === 'eigen') {
                 dispatch(setFilterTaskMe(true));
             }
         }
-
-        fetchTasksData();
+        // fetchTasksData doet ie obv eventueel gewijzigde filter, sortering of pagina. Hier overbodig dus.
+        // fetchTasksData();
     };
 
     const onSubmitFilter = () => {
         dispatch(clearTasks());
         dispatch(setTasksPagination({ page: 0, offset: 0 }));
-        fetchTasksData();
+        // fetchTasksData doet ie obv eventueel gewijzigde filter, sortering of pagina. Hier overbodig dus.
+        // fetchTasksData();
     };
 
     const handlePageClick = data => {

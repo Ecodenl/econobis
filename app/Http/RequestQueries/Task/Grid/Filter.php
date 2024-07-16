@@ -64,6 +64,8 @@ class Filter extends RequestFilter
 
     protected function applyMeFilter($query, $type, $data)
     {
+        if(!$data) return false;
+
         $userId = Auth::id();
 
         $user = User::find($userId);

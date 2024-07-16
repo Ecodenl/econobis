@@ -88,6 +88,7 @@ class ContactsListToolbar extends Component {
                             title="Vernieuwen scherm"
                         />
                         {!dataControleType &&
+                        !showCheckboxListMerge &&
                         (permissions.createPerson || permissions.createOrganisation || permissions.manageGroup) ? (
                             <div className="nav navbar-nav btn-group" role="group">
                                 <button

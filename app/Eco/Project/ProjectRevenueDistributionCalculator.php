@@ -311,8 +311,17 @@ class ProjectRevenueDistributionCalculator
     }
     protected function calculateLoanAmountForRedemption()
     {
-        $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
-        $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes);
+        $loanType = 'lineair';
+        if($loanType === 'annuitair' ){
+            // Annuïtair
+            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
+            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes)->whereDate('date_entry', '<=', $this->projectRevenueDistribution->revenue->date_end);
+        } else {
+            // Lineair
+            $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
+            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes);
+        }
+
 
 //        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
 //            $dateReference = $this->projectRevenueDistribution->revenue->date_reference;

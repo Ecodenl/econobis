@@ -472,10 +472,11 @@ class ContactToImportController extends Controller
         $return['address']['addition'] = $contactToImport->addition ?? '';
         $return['address']['city'] = $contactToImport->city;
         $return['address']['postalCode'] = $contactToImport->postal_code;
+        $return['address']['ean_electricity'] = $contactToImport->ean; //todo Patrick alleen ean_electricity?
         $return['address']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
 
         $return['addressEnergySupplier'] = [];
-        $return['addressEnergySupplier']['energySupplyTypeId'] = 3; //todo Patrick welke moet hier?
+        $return['addressEnergySupplier']['energySupplyTypeId'] = 2; //todo Patrick welke moet hier?
         $return['addressEnergySupplier']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
         $return['addressEnergySupplier']['energy_supplier_id'] = $energySupplier->id;
         $return['addressEnergySupplier']['isCurrentSupplier'] = 1;

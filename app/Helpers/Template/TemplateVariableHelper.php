@@ -2113,7 +2113,6 @@ class TemplateVariableHelper
                 return $model->energy_supplier_number;
                 break;
             case 'begindatum':
-//                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
                 return $model->not_reported_date_begin ? Carbon::parse($model->not_reported_date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':

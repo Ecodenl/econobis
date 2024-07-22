@@ -29,6 +29,7 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -304,7 +305,8 @@ class PersonController extends ApiController
     public function update(Request $request, Person $person)
     {
         $this->authorize('update', $person);
-
+Log::info('request');
+Log::info(json_encode($request));
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
@@ -339,6 +341,8 @@ class PersonController extends ApiController
             'occupationId' => 'exists:occupations,id',
         ]);
 
+        Log::info('personData');
+        Log::info($personData);
         $contact = $person->contact;
 
         $contactData = $this->sanitizeData($contactData, [
@@ -391,7 +395,7 @@ class PersonController extends ApiController
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
 
-        if ($request['emailAddress']['email']) {
+        if ($request['emailAddress'] && $request['emailAddress']['email']) {
             $emailAddress = $contact->primaryEmailAddress;
             $emailAddress->email = $request['emailAddress']['email'];
             $emailAddress->save();

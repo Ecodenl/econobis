@@ -12,6 +12,7 @@ use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactForImport;
 use App\Http\Resources\Contact\GridContactToImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class ContactToImportController extends Controller
 {
@@ -19,8 +20,10 @@ class ContactToImportController extends Controller
     {
         $contactToImports = $requestQuery->get();
 
+
         foreach($contactToImports as $contactToImport) {
             $matchKlant = collect();
+            $matchKlantMinusLastName = collect();
             $matchKlantMinusKlantnummer = collect();
             $matchKlantMinusAddress = collect();
             $matchKlantMinusEmail = collect();
@@ -78,6 +81,8 @@ class ContactToImportController extends Controller
                 }
 
                 $matchKlant = GridContactForImport::collection($contactForImports);
+
+                Log::info(json_encode($matchKlant));
             }
             /* End match klant */
 
@@ -235,7 +240,7 @@ class ContactToImportController extends Controller
                     array_push($matchedContactIds, $contactForImport->id);
                 }
 
-                $matchKlant = GridContactForImport::collection($contactForImports);
+                $matchKlantMinusLastName = GridContactForImport::collection($contactForImports);
             }
             /* End match klant minus last_name */
 
@@ -394,7 +399,8 @@ class ContactToImportController extends Controller
             /* End match contact minus last_name */
 
             /* Combine alle collections */
-            $contactForImports = $matchKlant->concat($matchKlantMinusKlantnummer)->concat($matchKlantMinusAddress)->concat($matchKlantMinusEmail)->concat($matchContact)->concat($matchContactMinusEmail)->concat($matchContactMinusAddress)->concat($matchContactMinusLastName);
+
+            $contactForImports = $matchKlant->merge($matchKlantMinusLastName)->merge($matchKlantMinusKlantnummer)->merge($matchKlantMinusAddress)->merge($matchKlantMinusEmail)->merge($matchContact)->merge($matchContactMinusEmail)->merge($matchContactMinusAddress)->merge($matchContactMinusLastName);
 
             /* add the contacts sollection to the contactToImport collections, if empty then set the match code */
             if(count($contactForImports) > 0) {
@@ -441,17 +447,16 @@ class ContactToImportController extends Controller
 
         $return['person']['contactToImport'] = $contactToImport->id;
 
-        $return['person']['owner_id'] = 1;
-        $return['person']['did_agree_avg'] = 0;
-        $return['person']['inspection_person_type_id'] = null;
-        $return['person']['hoom_account_id'] = null;
+        $return['person']['ownerId'] = 1;
+        $return['person']['didAgreeAvg'] = 0;
+        $return['person']['inspectionPersonTypeId'] = '';
+        $return['person']['hoomAccountId'] = null;
 
         $return['person']['initials'] = '';
-        $return['person']['first_name'] = $contactToImport->first_name;
-        $return['person']['last_name'] =  $contactToImport->last_name;
-        $return['person']['last_name_prefix'] = $lastNamePrefixId;
-        $return['person']['title_id'] = 3;
-        $return['person']['date_of_birth'] = null;
+        $return['person']['firstName'] = $contactToImport->first_name;
+        $return['person']['lastName'] =  $contactToImport->last_name;
+        $return['person']['lastNamePrefix'] = $lastNamePrefixId;
+        $return['person']['titleId'] = 3;
 
         $return['emailAddress'] = [];
         $return['emailAddress']['primary'] = true;
@@ -464,13 +469,13 @@ class ContactToImportController extends Controller
         $return['address']['addition'] = $contactToImport->addition ?? '';
         $return['address']['city'] = $contactToImport->city;
         $return['address']['postalCode'] = $contactToImport->postal_code;
-        $return['address']['ean_electricity'] = $contactToImport->ean; //todo Patrick alleen ean_electricity?
+        $return['address']['eanElectricity'] = $contactToImport->ean; //todo Patrick alleen ean_electricity?
         $return['address']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
 
         $return['addressEnergySupplier'] = [];
         $return['addressEnergySupplier']['energySupplyTypeId'] = 2; //todo Patrick welke moet hier?
         $return['addressEnergySupplier']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
-        $return['addressEnergySupplier']['energy_supplier_id'] = $energySupplier->id;
+        $return['addressEnergySupplier']['energySupplierId'] = $energySupplier->id;
         $return['addressEnergySupplier']['isCurrentSupplier'] = 1;
         $return['addressEnergySupplier']['memberSince'] = $contactToImport->member_since->format('Y-m-d');
         $return['addressEnergySupplier']['esNumber'] = $contactToImport->es_number;

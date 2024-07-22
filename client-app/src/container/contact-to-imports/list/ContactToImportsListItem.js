@@ -46,11 +46,12 @@ function ContactToImportsListItem({
     function updateContactFromContactToImport(contactToImport, contactForImport) {
         ContactToImportsAPI.getContactFromContactToImport(contactToImport)
             .then(payload => {
-                return axiosInstance.post(`/person/${contactForImport}`, payload.data);
+                console.log(payload.data.person);
+                return axiosInstance.post(`/person/${contactForImport}`, payload.data.person);
             })
-            .then(payload => {
-                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update');
-            })
+            // .then(payload => {
+            //     ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update');
+            // })
             .then(() => {
                 setTimeout(() => {
                     refreshContactToImports();
@@ -150,7 +151,6 @@ function ContactToImportsListItem({
                             ) : (
                                 ''
                             )}
-
                             <input
                                 type="checkbox"
                                 onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}

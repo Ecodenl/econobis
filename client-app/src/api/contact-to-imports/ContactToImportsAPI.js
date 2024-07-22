@@ -20,8 +20,8 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    setContactToImportStatus: (contactToImport, status) => {
-        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/setContactToImportStatus/${status}`;
+    setContactToImportStatus: (contactToImport, status, contactForImport) => {
+        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/setContactToImportStatus/${status}/contactForImport/${contactForImport}`;
 
         return axiosInstance.get(requestUrl);
     },

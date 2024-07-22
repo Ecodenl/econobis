@@ -46,12 +46,11 @@ function ContactToImportsListItem({
     function updateContactFromContactToImport(contactToImport, contactForImport) {
         ContactToImportsAPI.getContactFromContactToImport(contactToImport)
             .then(payload => {
-                console.log(payload.data.person);
                 return axiosInstance.post(`/person/${contactForImport}`, payload.data.person);
             })
-            // .then(payload => {
-            //     ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update');
-            // })
+            .then(payload => {
+                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update', payload.data.data.id);
+            })
             .then(() => {
                 setTimeout(() => {
                     refreshContactToImports();
@@ -65,7 +64,7 @@ function ContactToImportsListItem({
                 return axiosInstance.post('/person', payload.data);
             })
             .then(payload => {
-                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-new');
+                ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-new', payload.data.data.id);
             })
             .then(() => {
                 setTimeout(() => {

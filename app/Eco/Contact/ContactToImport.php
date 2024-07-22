@@ -12,4 +12,9 @@ class ContactToImport extends Model
         'member_since',
         'end_date',
     ];
+
+    public function contact()
+    {
+        return $this->belongsTo(Contact::class);
+    }
 }

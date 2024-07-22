@@ -34,6 +34,16 @@ class ContactToImportCSVHelper
         $headers = true;
 
         foreach ($this->contacts->chunk(500) as $chunk) {
+
+            foreach ($chunk as $contact) {
+                // Addresses
+                if ($contact->contact_id) {
+                    $contact->contact_number = $contact->contact->number;
+                } else {
+                    $contact->contact_number = "";
+                }
+            }
+
             $mapping = [
                 'first_name' => 'Voornaam',
                 'last_name' => 'Achternaam',
@@ -51,6 +61,7 @@ class ContactToImportCSVHelper
                 'member_since' => 'Klant sinds',
                 'end_date' => 'Klant tot',
                 'status' => 'Status',
+                'contact_number' => 'Contact nummer van actie',
             ];
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);

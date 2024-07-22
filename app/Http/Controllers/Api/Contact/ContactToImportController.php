@@ -457,6 +457,7 @@ class ContactToImportController extends Controller
         $return['person']['lastName'] =  $contactToImport->last_name;
         $return['person']['lastNamePrefix'] = $lastNamePrefixId;
         $return['person']['titleId'] = 3;
+        $return['person']['dateOfBirth'] = null;
 
         $return['emailAddress'] = [];
         $return['emailAddress']['primary'] = true;
@@ -488,9 +489,10 @@ class ContactToImportController extends Controller
         return $return;
     }
 
-    public function setContactToImportStatus(contactToImport $contactToImport, $status)
+    public function setContactToImportStatus(contactToImport $contactToImport, $status, $contactForImport)
     {
         $contactToImport->status = $status;
+        $contactToImport->contact_id = $contactForImport;
         $contactToImport->save();
     }
 

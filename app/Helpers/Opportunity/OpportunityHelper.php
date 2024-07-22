@@ -25,16 +25,13 @@ class OpportunityHelper
     }
 
 
-    //TODO:
-    // Nog niet getest, alleen code opgezet
-
     public function showUpdateOpportunityStatus() {
         $newOpportunityStatusCodeRef = $this->getNewOpportunityStatus();
         if($newOpportunityStatusCodeRef) {
             $response = $this->getOpportunityStatus($newOpportunityStatusCodeRef);
             return $response;
         }
-        return 'geen wijziging';
+        return 'blijft ongewijzigd';
     }
 
     public function updateOpportunityStatus() {
@@ -43,79 +40,161 @@ class OpportunityHelper
             $response = $this->setOpportunityStatus($newOpportunityStatusCodeRef);
             return $response;
         }
-        return 'geen wijziging';
+        return 'blijft ongewijzigd';
     }
     private function getNewOpportunityStatus() {
 
-        $visitStatusDefaultId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'default')->first()->id;
-        $visitStatusNotMadeId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'not-made')->first()->id;
-        $visitStatusMadeId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'made')->first()->id;
-        $visitStatusDoneId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'done')->first()->id;
-        $visitStatusCancelledId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'cancelled')->first()->id;
-        switch ($this->quotationRequest->opportunityAction->code_ref) {
+// Offerteverzoek statussen:
+// Offerte nog niet aangevraagd	    not-made
+// Offerte aangevraagd	            default
+// Offerte aanvraag in behandeling	under-review
+// In overweging bij bewoner	    under-review-occupant
+// Bewoner is akkoord	            approved
+// Bewoner heeft afgewezen	        not-approved
+// Offerte niet mogelijk	        not-possible
+// Geen reactie ontvangen	        no-response
+// Uitgevoerd	                    executed
+// Offerteverzoek akkoord	        pm-approved
+// Offerteverzoek niet akkoord	    pm-not-approved
+
+        $quotationRequestStatusNotMadeId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'not-made')->first()->id;
+        $quotationRequestStatusDefaultId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'default')->first()->id;
+        $quotationRequestStatusUnderReviewId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'under-review')->first()->id;
+        $quotationRequestStatusUnderReviewOccupantId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'under-review-occupant')->first()->id;
+        $quotationRequestStatusApprovedId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'approved')->first()->id;
+//        $quotationRequestStatusNotApprovedId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'not-approved')->first()->id;
+//        $quotationRequestStatusNotPossibleId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'not-possible')->first()->id;
+//        $quotationRequestStatusNoResponseId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'no-response')->first()->id;
+        $quotationRequestStatusExecutedId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'executed')->first()->id;
+        $quotationRequestStatusPmApprovedId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'pm-approved')->first()->id;
+        $quotationRequestStatusPmNotApprovedId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionQuotationRequestId)->where('code_ref', 'pm-not-approved')->first()->id;
+
+
+// Bezoek statussen:
 // Geen afspraak gemaakt	    default
 // Geen afspraak kunnen maken	not-made
 // Afspraak gemaakt	            made
 // Afspraak uitgevoerd	        done
 // Afspraak afgezegd	        cancelled
 
+        $visitStatusDefaultId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'default')->first()->id;
+        $visitStatusNotMadeId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'not-made')->first()->id;
+        $visitStatusMadeId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'made')->first()->id;
+        $visitStatusDoneId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'done')->first()->id;
+//        $visitStatusCancelledId = QuotationRequestStatus::where('opportunity_action_id', $this->opportunityActionVisitId)->where('code_ref', 'cancelled')->first()->id;
+
+// Budgetaanvraag statussen:
+// Budgetaanvraag open	                    default
+// Budgetaanvraag gemaakt	                made
+// Budgetaanvraag akkoord	                pm-approved
+// Budgetaanvraag niet akkoord	            pm-not-approved
+// Aanvraag gekoppeld	                    linked
+// Budgetaanvraag verstuurd naar bewoner	under-review-occupant
+// Subsidieaanvraag in behandeling      	under-review
+// Subsidie aanvraag beschikt	            approved
+// Subsidie aanvraag niet beschikt	        not-approved
+// Subsidievaststelling in behandeling	    under-review-det
+// Subsidie vastgesteld	                    approved-det
+// Subsidie niet vastgesteld	            not-approved-det
+
+        switch ($this->quotationRequest->opportunityAction->code_ref) {
             case 'visit':
                 switch ($this->quotationRequest->status->code_ref) {
                     //afspraak gemaakt
                     case 'made':
-                        //regel 2 en 3 Excel
                         return 'in_progress';
                     //Geen afspraak kunnen maken
                     case 'not-made':
-                        //regel 5 en 6 Excel
                         return 'pending';
                     //Afspraak uitgevoerd
                     case 'done':
                         //zijn er binnen deze kans ook offerteverzoeken
                         $otherQuotationRequestsCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, null);
 
-                        //zijn er binnen deze kans ook offerteverzoeken met status "Geen afspraak gemaakt""
+                        //zijn er binnen deze kans ook bezoeken met status "Geen afspraak gemaakt""
                         $otherVisitsWithStatusDefaultCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusDefaultId);
 
-                        //zijn er binnen deze kans ook offerteverzoeken met status "Afspraak gemaakt"
+                        //zijn er binnen deze kans ook bezoeken met status "Afspraak gemaakt"
                         $otherVisitsWithStatusMadeCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusMadeId);
 
-//                        //zijn er binnen deze kans andere bezoekacties waar de status niet "Afspraak gemaakt" / "made" is
-//                        $otherVisitsWithStatusMadeCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, 'made', 'no');
-//
-//                        //zijn er binnen deze kans andere bezoekacties waar de status niet "Afspraak Uitgevoerd" / "done" is
-//                        $otherVisitsHaveOtherStatusThenDoneCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, 'done', 'no');
-//
-//                        //zijn er binnen deze kans ook offerteverzoeken met status "Uitgevoerd" / "executed"
-//                        $otherQuotationRequestsWithStatusExecutedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, 'executed');
-//
-//                        //zijn er binnen deze kans ook offerteverzoeken met status "Opdracht" / "mandate"
-//                        $otherQuotationRequestsWithStatusMandateCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, 'mandate');
-
+                        // zijn er binnen deze kans geen offerteverzoeken en andere bezoeken niet status "Geen afspraak gemaakt" of "Afspraak gemaakt"
+                        // Nieuwe Kansstatus wordt: Uitgevoerd.
                         if($otherQuotationRequestsCount === 0 && $otherVisitsWithStatusDefaultCount === 0 && $otherVisitsWithStatusMadeCount === 0 ) {
-                            //regel 7 Excel
                             return 'executed';
-//                        } else {
-//                            if ($otherVisitsWithStatusMadeCount === 0 && $otherVisitsHaveOtherStatusThenDoneCount === 0 && $otherQuotationRequestsWithStatusExecutedCount > 0 && $otherQuotationRequestsWithStatusMandateCount === 0) {
-//                                //regel 8 Excel
-//                                return 'executed';
-//                            } else {
-//                                //regel 9 Excel
-//                                return 'pending';
-//                            }
                         }
-//                    case 'cancelled':
-//                        //zijn er binnen deze kans andere bezoekacties waar de status niet "Afspraak afgezegd" / "cancelled" is
-//                        $otherVisitsHaveOtherStatusThenCancelledCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, 'cancelled', 'no');
-//
-//                        //zijn er binnen deze kans ook offerteverzoeken
-//                        $quotationRequestsCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId);
-//
-//                        if($otherVisitsHaveOtherStatusThenCancelledCount === 0 && $quotationRequestsCount === 0) {
-//                            //regel 10 Excel
-//                            return 'no_execution';
-//                        }
-//                        return false;
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Uitgevoerd"
+                        $otherQuotationRequestsExecutedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusExecutedId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Offerte nog niet aangevraagd"
+                        $otherQuotationRequestsNotMadeCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusNotMadeId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Offerte aangevraagd"
+                        $otherQuotationRequestsDefaultCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusDefaultId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Offerte aanvraag in behandeling"
+                        $otherQuotationRequestsUnderReviewCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusUnderReviewId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "In overweging bij bewoner"
+                        $otherQuotationRequestsUnderReviewOccupantCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusUnderReviewOccupantId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Bewoner is akkoord"
+                        $otherQuotationRequestsApprovedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusApprovedId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Offerteverzoek akkoord"
+                        $otherQuotationRequestsPmApprovedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusPmApprovedId);
+
+                        //zijn er binnen deze kans ook offerteverzoeken met status "Offerteverzoek niet akkoord"
+                        $otherQuotationRequestsPmNotApprovedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusPmNotApprovedId);
+
+                        // zijn er binnen deze kans wel offerteverzoeken
+                        if($otherQuotationRequestsCount !== 0){
+                            // is er minstens 1 offertverzoeke met status "Uitgevoerd" en andere niet de status "Offerte nog niet aangevraagd", "Offerte aangevraagd",
+                            // "Offerte aanvraag in behandeling", "In overweging bij bewoner" of "Bewoner is akkoord", "Offerteverzoek akkoord" of "Offerteverzoek niet akkoord" hebben.
+                            // Nieuwe Kansstatus wordt: Uitgevoerd anders In afwachting.
+                            if($otherQuotationRequestsExecutedCount !== 0
+                                && $otherQuotationRequestsNotMadeCount === 0
+                                && $otherQuotationRequestsDefaultCount === 0
+                                && $otherQuotationRequestsUnderReviewCount === 0
+                                && $otherQuotationRequestsUnderReviewOccupantCount === 0
+                                && $otherQuotationRequestsApprovedCount === 0
+                                && $otherQuotationRequestsPmApprovedCount === 0
+                                && $otherQuotationRequestsPmNotApprovedCount === 0)  {
+                                return 'executed';
+                            } else {
+                                return 'pending';
+
+                            }
+                        }
+
+                    case 'cancelled':
+                        //zijn er binnen deze kans ook offerteverzoeken
+                        $otherQuotationRequestsCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, null);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Geen afspraak gemaakt"
+                        $otherVisitsWithStatusDefaultCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusDefaultId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Geen afspraak kunnen maken"
+                        $otherVisitsWithStatusNotMadeCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusNotMadeId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Afspraak gemaakt"
+                        $otherVisitsWithStatusMadeCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusMadeId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Afspraak uitgevoerd"
+                        $otherVisitsWithStatusDoneCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusDoneId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Afspraak afgezegd"
+//                        $otherVisitsWithStatusCancelledCount = $this->otherOpportunityActionCount($this->opportunityActionVisitId, $visitStatusCancelledId);
+
+                        // zijn er binnen deze kans geen offerteverzoeken en andere bezoeken allemaal status "Afspraak afgezegd"
+                        // Nieuwe Kansstatus wordt: Geen uitvoering
+                        if($otherQuotationRequestsCount === 0
+                            && $otherVisitsWithStatusDefaultCount === 0
+                            && $otherVisitsWithStatusNotMadeCount === 0
+                            && $otherVisitsWithStatusMadeCount === 0
+                            && $otherVisitsWithStatusDoneCount === 0 ) {
+                            return 'no_execution';
+                        }
                 }
                 break;
 //            case 'quotation-request':

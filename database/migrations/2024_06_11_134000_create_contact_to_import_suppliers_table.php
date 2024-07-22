@@ -6,7 +6,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class CreateContactToImportsSuppliersTable extends Migration
+class CreateContactToImportSuppliersTable extends Migration
 {
     /**
      * Run the migrations.

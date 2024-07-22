@@ -35,6 +35,9 @@ class CreateContactToImportsTable extends Migration
             $table->string('status')->default('new');
             $table->timestamps();
 
+            $table->unsignedInteger('contact_id')->nullable();
+            $table->foreign('contact_id')->references('id')->on('contacts');
+
             $table->string('supplier_code_ref');
             $table->foreign('supplier_code_ref')->references('code_ref')->on('contact_to_import_suppliers');
         });

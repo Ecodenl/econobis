@@ -59,7 +59,6 @@ class ProjectController extends ApiController
             'updatedBy',
             'projectValueCourses.project',
             'projectValueCourses.createdBy',
-            'projectRevenues.type',
             'projectRevenues.category',
             'projectRevenues.createdBy',
             'revenuesKwh.createdBy',

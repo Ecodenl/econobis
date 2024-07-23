@@ -19,7 +19,7 @@ const RevenuesListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
-    const { id, confirmed, category, dateBegin, dateEnd, datePayed, type, amountRevenue } = revenueDetails;
+    const { id, confirmed, category, dateBegin, dateEnd, datePayed, amountRevenue } = revenueDetails;
 
     return (
         <div
@@ -27,16 +27,11 @@ const RevenuesListFormView = ({
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
-            <div className="col-sm-2">{category ? category.name : ''}</div>
-            <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>
-                {dateBegin ? moment(dateBegin).format('L') : ''}
-            </div>
-            <div className={projectTypeCodeRef !== 'loan' ? 'col-sm-1' : 'col-sm-2'}>
-                {dateEnd ? moment(dateEnd).format('L') : ''}
-            </div>
-            <div className="col-sm-1">{datePayed ? moment(datePayed).format('L') : ''}</div>
-            {projectTypeCodeRef !== 'loan' ? <div className="col-sm-2">{type ? type.name : ''}</div> : null}
-            <div className="col-sm-2">{confirmed ? 'Definitief' : 'Concept'}</div>
+            <div className="col-sm-1 custom-col-width-12-5">{category ? category.name : ''}</div>
+            <div className="col-sm-2">{dateBegin ? moment(dateBegin).format('L') : ''}</div>
+            <div className="col-sm-2">{dateEnd ? moment(dateEnd).format('L') : ''}</div>
+            <div className="col-sm-2">{datePayed ? moment(datePayed).format('L') : ''}</div>
+            <div className="col-sm-1 custom-col-width-12-5">{confirmed ? 'Definitief' : 'Concept'}</div>
             <div className="col-sm-2">{amountRevenue ? MoneyPresenter(amountRevenue) : ''}</div>
             <div className="col-sm-1">
                 {showActionButtons ? (

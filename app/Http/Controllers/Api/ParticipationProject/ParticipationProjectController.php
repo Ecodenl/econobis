@@ -233,7 +233,6 @@ class ParticipationProjectController extends ApiController
             'contact.primaryAddress',
             'address.currentAddressEnergySupplierElectricity',
             'project.administration',
-            'projectRevenues.type',
             'projectRevenues.category',
             'projectRevenues.createdBy',
             'revenuesKwh.createdBy',

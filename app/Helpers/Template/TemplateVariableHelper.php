@@ -2542,11 +2542,40 @@ class TemplateVariableHelper
 
                 return $model->econobis_payment_link;
             case 'deelname_schenker_voorletters':
-                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->initials;
+                if($model->type_id == 'person') {
+                    $initials = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->initials;
+                } else {
+                    $initials = '';
+                }
+
+                return $initials;
             case 'deelname_schenker_voornaam':
-                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->first_name;
+                if($model->type_id == 'person') {
+                    $firstName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->first_name;
+                } elseif($model->type_id == 'organisation') {
+                    $firstName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->organisation)->name;
+                } else {
+                    $firstName = 'onbekend';
+                }
+
+                return $firstName;
             case 'deelname_schenker_achternaam':
-                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name;
+                if($model->type_id == 'person') {
+                    $lastNamePrefix = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name_prefix;
+                    $lastName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name;
+
+                    if(!empty($lastNamePrefix)) {
+                        $fullLastName = $lastNamePrefix . ' ' . $lastName;
+                    } else {
+                        $fullLastName = $lastName;
+                    }
+                } elseif($model->type_id == 'organisation') {
+                    $fullLastName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->organisation)->name;
+                } else {
+                    $fullLastName = 'onbekend';
+                }
+
+                return $fullLastName;
             case 'deelname_aantal_toegekend':
                 return optional(optional($model->order)->participation)->participations_granted;
             break;

@@ -5,7 +5,7 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '4',
     'version_minor' => '6',
-    'version_fix' => '3.19',
+    'version_fix' => '3.20',
 
     //Alfresco envs
     'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),

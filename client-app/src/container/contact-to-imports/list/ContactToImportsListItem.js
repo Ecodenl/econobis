@@ -19,7 +19,6 @@ function ContactToImportsListItem({
     postalCode,
     city,
     emailContact,
-    emailInvoices,
     phoneNumber,
     permissions,
     match,
@@ -90,7 +89,6 @@ function ContactToImportsListItem({
                 <td>{postalCode}</td>
                 <td>{city}</td>
                 <td>{emailContact}</td>
-                <td>{emailInvoices}</td>
                 <td>{phoneNumber}</td>
                 <td>ean</td>
                 <td>leverancier</td>
@@ -136,7 +134,6 @@ function ContactToImportsListItem({
                         <td>{contactForImport.postalCode}</td>
                         <td>{contactForImport.city}</td>
                         <td>{contactForImport.emailContact}</td>
-                        <td>{contactForImport.emailInvoices}</td>
                         <td>{contactForImport.phoneNumber}</td>
                         <td>ean</td>
                         <td>leverancier</td>

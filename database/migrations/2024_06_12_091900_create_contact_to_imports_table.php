@@ -25,7 +25,6 @@ class CreateContactToImportsTable extends Migration
             $table->string('postal_code');
             $table->string('city');
             $table->string('email_contact');
-            $table->string('email_invoices');
             $table->string('phone_number');
             $table->string('ean');
             $table->string('es_number');

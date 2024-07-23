@@ -21,7 +21,6 @@ class Sort extends RequestSort
         'postalCode',
         'city',
         'emailContact',
-        'emailInvoices',
     ];
 
     protected $mapping = [
@@ -31,7 +30,6 @@ class Sort extends RequestSort
         'postalCode' => 'contact_to_imports.postal_code',
         'city' => 'contact_to_imports.city',
         'emailContact' => 'contact_to_imports.email_contact',
-        'emailInvoices' => 'contact_to_imports.email_invoices',
     ];
 
     protected $joins = [];

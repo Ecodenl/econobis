@@ -283,7 +283,7 @@ class ContactImportFromEnergySupplierHelper
     public function import($file, $suppliercodeRef)
     {
         $csv = fopen($file, 'r');
-Log::info('import start');
+
         $header = true;
         while ($line = fgetcsv($csv, 1024, ";")) {
             Log::info('line');
@@ -291,7 +291,6 @@ Log::info('import start');
                 // when encoding isn't UTF-8 encode lineField to utf8.
                 $encodingLineField= mb_detect_encoding( $field, 'UTF-8', true);
                 if(false === $encodingLineField){
-//                    $line[$k] = utf8_encode($field);
                     $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
                 }
             };
@@ -299,74 +298,70 @@ Log::info('import start');
                 $header = false;
             } else {
                 try {
-                DB::beginTransaction();
-                $contact = new ContactToImport();
+                    DB::beginTransaction();
+                    $contact = new ContactToImport();
 
-                $address = $this->splitAddress($line[12]);
-                    Log::info('address', $address);
-                $lastName = $this->splitName($line[3]);
-                    Log::info('lastName', $lastName);
+                    $address = $this->splitAddress($line[12]);
+                        Log::info('address', $address);
+                    $lastName = $this->splitName($line[3]);
+                        Log::info('lastName', $lastName);
 
-                if ($line[2]) {
-                    $contact->first_name = $line[2];
-                }
+                    if ($line[2]) {
+                        $contact->first_name = $line[2];
+                    }
 
-                if ($lastName['last_name']) {
-                    $contact->last_name = $lastName['last_name'];
-                }
+                    if ($lastName['last_name']) {
+                        $contact->last_name = $lastName['last_name'];
+                    }
 
-                if ($lastName['last_name_prefix']) {
-                    $contact->last_name_prefix = $lastName['last_name_prefix'];
-                }
+                    if ($lastName['last_name_prefix']) {
+                        $contact->last_name_prefix = $lastName['last_name_prefix'];
+                    }
 
-                if ($line[12]) {
-                    $contact->address = $line[12];
-                }
-                if ($address['street']) {
-                    $contact->street = $address['street'];
-                }
-                if ($address['housenumber']) {
-                    $contact->housenumber = $address['housenumber'];
-                }
-                if ($address['addition']) {
-                    $contact->addition = $address['addition'];
-                }
-                if ($line[13]) {
-                    $contact->postal_code = $line[13];
-                }
-                if ($line[14]) {
-                    $contact->city = $line[14];
-                }
-                if ($line[28]) {
-                    $contact->email_contact = $line[28];
-                }
-                if ($line[29]) {
-                    $contact->email_invoices = $line[29];
-                }
-                if ($line[30]) {
-                    $contact->phone_number = $line[30];
-                }
-                if ($line[7]) {
-                    $contact->ean = $line[7];
-                }
-                if ($line[6]) {
-                    $contact->es_number = $line[6];
-                }
+                    if ($line[12]) {
+                        $contact->address = $line[12];
+                    }
+                    if ($address['street']) {
+                        $contact->street = $address['street'];
+                    }
+                    if ($address['housenumber']) {
+                        $contact->housenumber = $address['housenumber'];
+                    }
+                    if ($address['addition']) {
+                        $contact->addition = $address['addition'];
+                    }
+                    if ($line[13]) {
+                        $contact->postal_code = $line[13];
+                    }
+                    if ($line[14]) {
+                        $contact->city = $line[14];
+                    }
+                    if ($line[28]) {
+                        $contact->email_contact = $line[28];
+                    }
+                    if ($line[30]) {
+                        $contact->phone_number = $line[30];
+                    }
+                    if ($line[7]) {
+                        $contact->ean = $line[7];
+                    }
+                    if ($line[6]) {
+                        $contact->es_number = $line[6];
+                    }
 
-                if ($line[14]) {
-                    $contact->member_since = $line[17];
-                }
+                    if ($line[14]) {
+                        $contact->member_since = $line[17];
+                    }
 
-                if ($line[18]) {
-                    $contact->end_date = $line[18];
-                }
+                    if ($line[18]) {
+                        $contact->end_date = $line[18];
+                    }
 
-                $contact->supplier_code_ref = $suppliercodeRef;
+                    $contact->supplier_code_ref = $suppliercodeRef;
 
-                Log::info('test', $contact->toArray());
-                $contact->save();
+                    $contact->save();
 
-                DB::commit();
+                    DB::commit();
                 } catch (\PDOException $e) {
                     DB::rollBack();
                     Log::error('Error contactToImport import: ' . $e->getMessage());

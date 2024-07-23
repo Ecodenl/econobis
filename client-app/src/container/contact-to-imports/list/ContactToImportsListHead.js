@@ -50,12 +50,6 @@ const ContactToImportsListHead = props => {
                 width={'5%'}
                 setSorts={props.handleChangeSort}
             />
-            <DataTableHeadTitleAndSort
-                sortColumn={'emailInvoices'}
-                title={'Email nota'}
-                width={'5%'}
-                setSorts={props.handleChangeSort}
-            />
             <DataTableHeadTitle title={'Telefoon'} width={'5%'} />
             <DataTableHeadTitle title={'Ean'} width={'5%'} />
             <DataTableHeadTitle title={'Huidige energielevereancier'} width={'5%'} />

@@ -305,8 +305,7 @@ class PersonController extends ApiController
     public function update(Request $request, Person $person)
     {
         $this->authorize('update', $person);
-Log::info('request');
-Log::info(json_encode($request));
+
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
@@ -325,6 +324,8 @@ Log::info(json_encode($request));
             'hoomAccountId' => '',
         ]);
 
+        if($request['dateOfBirth'] == null) { unset($request['dateOfBirth']); }
+
         $personData = $request->validate([
             'initials' => '',
             'firstName' => '',
@@ -341,8 +342,6 @@ Log::info(json_encode($request));
             'occupationId' => 'exists:occupations,id',
         ]);
 
-        Log::info('personData');
-        Log::info($personData);
         $contact = $person->contact;
 
         $contactData = $this->sanitizeData($contactData, [
@@ -399,6 +398,52 @@ Log::info(json_encode($request));
             $emailAddress = $contact->primaryEmailAddress;
             $emailAddress->email = $request['emailAddress']['email'];
             $emailAddress->save();
+        }
+
+        if ($request['address'] && $request['address']['postalCode']) {
+            Validator::make($request['address'], [
+                'countryId' => 'nullable|exists:countries,id',
+                'typeId' => new EnumExists(AddressType::class),
+                'street' => '',
+                'number' => 'integer',
+                'addition' => 'string',
+                'city' => '',
+                'postalCode' => '',
+                'primary' => 'boolean',
+            ]);
+
+            $newAddressData = $this->sanitizeData($request['address'], [
+                'typeId' => 'nullable',
+                'countryId' => 'nullable',
+                'primary' => 'boolean',
+            ]);
+
+            if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $newAddressData['postalCode'])){
+                $newAddressData['postalCode'] = preg_replace('/\s+/', '', $newAddressData['postalCode']);
+            }
+
+            unset($newAddressData['energySupplyTypeId']);
+            $currentAddressData = $contact->primaryAddress;
+            $currentAddressData->fill($this->arrayKeysToSnakeCase($newAddressData));
+            $currentAddressData->save();
+        }
+
+        if ($request['addressEnergySupplier']) {
+            Validator::make($request['addressEnergySupplier'], [
+                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
+                'energySupplierId' => new EnumExists(EnergySupplier::class),
+            ]);
+
+            $data = $this->sanitizeData($request['addressEnergySupplier'], [
+                //nog aanvullen
+                'memberSince' => 'date',
+                'endDate' => 'date|nullable',
+                'primary' => 'boolean',
+            ]);
+
+            $addressEnergySupplier = $currentAddressData->addressEnergySuppliers()->where('is_current_supplier', true)->first();
+            $addressEnergySupplier->fill($this->arrayKeysToSnakeCase($data));
+            $addressEnergySupplier->save();
         }
 
         // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.

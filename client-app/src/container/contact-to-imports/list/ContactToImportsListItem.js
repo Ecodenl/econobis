@@ -45,7 +45,7 @@ function ContactToImportsListItem({
     function updateContactFromContactToImport(contactToImport, contactForImport) {
         ContactToImportsAPI.getContactFromContactToImport(contactToImport)
             .then(payload => {
-                return axiosInstance.post(`/person/${contactForImport}`, payload.data.person);
+                return axiosInstance.post(`/person/${contactForImport}`, payload.data);
             })
             .then(payload => {
                 ContactToImportsAPI.setContactToImportStatus(contactToImport, 'imported-update', payload.data.data.id);

@@ -2541,6 +2541,12 @@ class TemplateVariableHelper
                 }
 
                 return $model->econobis_payment_link;
+            case 'deelname_schenker_voorletters':
+                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->initials;
+            case 'deelname_schenker_voornaam':
+                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->first_name;
+            case 'deelname_schenker_achternaam':
+                return optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name;
             case 'deelname_aantal_toegekend':
                 return optional(optional($model->order)->participation)->participations_granted;
             break;

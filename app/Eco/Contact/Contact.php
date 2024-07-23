@@ -543,7 +543,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -555,7 +555,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -576,7 +576,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -591,7 +591,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }

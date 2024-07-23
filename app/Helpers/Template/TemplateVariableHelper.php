@@ -994,6 +994,45 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'schenker_voorletters':
+                if($model->giftedByContact) {
+                    if ($model->giftedByContact->type_id == 'person') {
+                        return $model->giftedByContact->person->initials;
+                    } else {
+                        return '';
+                    }
+                }
+                else {
+                    return '';
+                }
+                break;
+            case 'schenker_voornaam':
+                if($model->giftedByContact) {
+                    if($model->giftedByContact->type_id == 'person'){
+                        return $model->giftedByContact->person->first_name;
+                    }
+                    elseif($model->giftedByContact->type_id == 'organisation'){
+                        return '';
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
+            case 'schenker_achternaam':
+                if($model->giftedByContact) {
+                    if($model->giftedByContact->type_id == 'person'){
+                        $prefix = $model->giftedByContact->person->last_name_prefix;
+                        return $prefix ? $prefix . ' ' . $model->giftedByContact->person->last_name : $model->giftedByContact->person->last_name;
+                    }
+                    elseif($model->giftedByContact->type_id == 'organisation'){
+                        return $model->giftedByContact->full_name;
+                    }
+                }
+                else{
+                    return '';
+                }
+                break;
             case 'wettelijke_vertegenwoordiger':
                 if($model->contact->legalRepContact && $model->contact->legalRepContact->contact) {
                     if ($model->contact->legalRepContact->contact->type_id == 'person') {
@@ -2541,41 +2580,6 @@ class TemplateVariableHelper
                 }
 
                 return $model->econobis_payment_link;
-            case 'deelname_schenker_voorletters':
-                if($model->type_id == 'person') {
-                    $initials = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->initials;
-                } else {
-                    $initials = '';
-                }
-
-                return $initials;
-            case 'deelname_schenker_voornaam':
-                if($model->type_id == 'person') {
-                    $firstName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->first_name;
-                } elseif($model->type_id == 'organisation') {
-                    $firstName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->organisation)->name;
-                } else {
-                    $firstName = 'onbekend';
-                }
-
-                return $firstName;
-            case 'deelname_schenker_achternaam':
-                if($model->type_id == 'person') {
-                    $lastNamePrefix = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name_prefix;
-                    $lastName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->person)->last_name;
-
-                    if(!empty($lastNamePrefix)) {
-                        $fullLastName = $lastNamePrefix . ' ' . $lastName;
-                    } else {
-                        $fullLastName = $lastName;
-                    }
-                } elseif($model->type_id == 'organisation') {
-                    $fullLastName = optional(optional(optional(optional($model->order)->participation)->giftedByContact)->organisation)->name;
-                } else {
-                    $fullLastName = 'onbekend';
-                }
-
-                return $fullLastName;
             case 'deelname_aantal_toegekend':
                 return optional(optional($model->order)->participation)->participations_granted;
             break;

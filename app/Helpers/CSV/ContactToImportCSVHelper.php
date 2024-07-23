@@ -46,6 +46,7 @@ class ContactToImportCSVHelper
 
             $mapping = [
                 'first_name' => 'Voornaam',
+                'last_name_prefix' => 'Tussenvoegsel',
                 'last_name' => 'Achternaam',
                 'address' => 'Adres',
                 'street' => 'Straat',
@@ -54,7 +55,6 @@ class ContactToImportCSVHelper
                 'postal_code' => 'Postcode',
                 'city' => 'Woonplaats',
                 'email_contact' => 'Email primair',
-                'email_invoices' => 'Email nota',
                 'phone_number' => 'Telefoon',
                 'ean' => 'Ean',
                 'es_number' => 'Huidige klantnummer',

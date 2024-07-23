@@ -4,17 +4,20 @@ namespace App\Eco\Project;
 
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class ProjectRevenueDistributionCalculator
 {
     protected $projectRevenueDistribution;
     protected $projectTypeId;
+    protected $projectLoanTypeCodeRef;
     protected $projectTypeCodeRef;
 
     public function __construct(ProjectRevenueDistribution $projectRevenueDistribution)
     {
         $this->projectRevenueDistribution = $projectRevenueDistribution;
         $this->projectTypeId = $this->projectRevenueDistribution->revenue->project->project_type_id;
+        $this->projectLoanTypeCodeRef = $this->projectRevenueDistribution->revenue->project->projectLoanType ? $this->projectRevenueDistribution->revenue->project->projectLoanType->code_ref : '';
         $this->projectTypeCodeRef = (ProjectType::where('id', $this->projectRevenueDistribution->revenue->project->project_type_id)->first())->code_ref;
     }
 
@@ -37,7 +40,13 @@ class ProjectRevenueDistributionCalculator
     {
         if($this->projectTypeCodeRef === 'loan') {
             $this->projectRevenueDistribution->participations_loan_amount = $this->calculateLoanAmountForRedemption();
-            $this->projectRevenueDistribution->payout = $this->calculatePayout();
+            $projectRevenueDistributionPayout = $this->calculatePayout();
+            if( $projectRevenueDistributionPayout > $this->projectRevenueDistribution->participation->amount_definitive) {
+                $this->projectRevenueDistribution->payout = $this->projectRevenueDistribution->participation->amount_definitive;
+            } else {
+                $this->projectRevenueDistribution->payout = $projectRevenueDistributionPayout;
+            }
+
         }elseif($this->projectTypeCodeRef === 'obligation'){
             $this->projectRevenueDistribution->participations_amount = $this->calculateParticipationsCount();
             $this->projectRevenueDistribution->payout = $this->calculatePayout();
@@ -311,32 +320,22 @@ class ProjectRevenueDistributionCalculator
     }
     protected function calculateLoanAmountForRedemption()
     {
-        $loanType = 'lineair';
-        if($loanType === 'annuitair' ){
+        if($this->projectLoanTypeCodeRef && $this->projectLoanTypeCodeRef === 'annuitair'){
             // Annuïtair
             $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal', 'redemption'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
-            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes)->whereDate('date_entry', '<=', $this->projectRevenueDistribution->revenue->date_end);
+            $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes)->whereDate('date_entry', '<=', $this->projectRevenueDistribution->revenue->date_reference);
         } else {
             // Lineair
             $mutationTypes = ParticipantMutationType::whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->where('project_type_id', $this->projectTypeId)->pluck('id')->toArray();
             $mutations = $this->projectRevenueDistribution->participation->mutationsDefinitive()->whereIn('type_id', $mutationTypes);
         }
 
-
-//        if ($this->projectRevenueDistribution->revenue->distribution_type_id == 'inPossessionOf') {
-//            $dateReference = $this->projectRevenueDistribution->revenue->date_reference;
-//            $mutations->whereDate('date_entry', '<=', $dateReference);
-//        } else {
-//            $dateEnd = Carbon::parse($this->projectRevenueDistribution->revenue->date_end)->addDay();
-//
-//            $mutations->whereDate('date_entry', '<=', $dateEnd);
-//        }
-
         $loanCount = 0;
         $measureType = 'amount';
         foreach ($mutations->get() as $mutation) {
             $loanCount += $mutation[$measureType];
         }
+
         return $loanCount;
     }
 

@@ -23,7 +23,7 @@ function ContactToImportsList({
     return (
         <div>
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
-                <table className="table table-condensed table-hover col-xs-12">
+                <table className="table table-condensed col-xs-12">
                     <DataTableHead>
                         <ContactToImportsListHead handleChangeSort={handleChangeSort} />
                         {/*<ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}

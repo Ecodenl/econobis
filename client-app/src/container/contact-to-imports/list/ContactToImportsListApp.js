@@ -89,7 +89,7 @@ function ContactToImportsListApp() {
     function formatFilterHelper() {
         let filters = [];
 
-        filters.push({ field: 'status', data: 'new' });
+        filters.push({ field: 'status', data: 'nog niet verwerkt' });
 
         // if (filter.tableName) {
         //     filters.push({ field: 'tableName', data: filter.tableName });

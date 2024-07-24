@@ -31,7 +31,7 @@ class CreateContactToImportsTable extends Migration
             $table->date('member_since');
             $table->date('end_date')->nullable();
             $table->string('match')->nullable();
-            $table->string('status')->default('new');
+            $table->string('status')->default('nog niet verwerkt');
             $table->timestamps();
 
             $table->unsignedInteger('contact_id')->nullable();

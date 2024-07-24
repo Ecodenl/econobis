@@ -4,7 +4,6 @@ import { hashHistory } from 'react-router';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
-import { trash } from 'react-icons-kit/fa/trash';
 import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
 
@@ -26,21 +25,6 @@ function ContactToImportsListItem({
     refreshContactToImports,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
-    const [highlightLine, setHighlightLine] = useState('');
-
-    function onLineEnter() {
-        setShowActionButtons(true);
-        setHighlightLine('highlight-row');
-    }
-
-    function onLineLeave() {
-        setShowActionButtons(false);
-        setHighlightLine('');
-    }
-
-    function openItem(id) {
-        hashHistory.push(`/contact-to-imports/${id}`);
-    }
 
     function updateContactFromContactToImport(contactToImport, contactForImport) {
         ContactToImportsAPI.getContactFromContactToImport(contactToImport)
@@ -74,12 +58,7 @@ function ContactToImportsListItem({
 
     return (
         <>
-            <tr
-                className={`${highlightLine}`}
-                onMouseEnter={() => onLineEnter()}
-                onMouseLeave={() => onLineLeave()}
-                onDoubleClick={() => openItem(id)}
-            >
+            <tr style={{ backgroundColor: '#ececec' }}>
                 <td>{number}</td>
                 <td>{firstName}</td>
                 <td>{lastName}</td>
@@ -102,29 +81,13 @@ function ContactToImportsListItem({
                     ) : (
                         ''
                     )}
-
-                    {showActionButtons ? (
-                        <a
-                            role="button"
-                            className="btn btn-primary"
-                            onClick={() => createNewContactFromContactToImport(id)}
-                        >
-                            <small>import nieuw</small>
-                        </a>
-                    ) : (
-                        ''
-                    )}
+                    <input type="checkbox" onChange={() => createNewContactFromContactToImport(id)} /> nieuw
                 </td>
             </tr>
 
             {contactForImports.map(contactForImport => {
                 return (
-                    <tr
-                        className={`${highlightLine}`}
-                        onMouseEnter={() => onLineEnter()}
-                        onMouseLeave={() => onLineLeave()}
-                        onDoubleClick={() => openItem(id)}
-                    >
+                    <tr>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
                         <td>{contactForImport.lastName}</td>

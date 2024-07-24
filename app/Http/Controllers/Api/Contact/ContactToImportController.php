@@ -75,7 +75,8 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant';
+                    $contactForImport->matchCode = 'Klant';
+                    $contactForImport->matchColor = '#00FF00';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -121,7 +122,8 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant minus klantnummer';
+                    $contactForImport->matchCode = 'Klant minus klantnummer';
+                    $contactForImport->matchColor = '#80FF00';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -154,7 +156,7 @@ class ContactToImportController extends Controller
 
                 foreach($contactForImports as $contactForImport) {
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant minus adres';
+                    $contactForImport->matchCode = 'Klant minus adres';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -194,7 +196,8 @@ class ContactToImportController extends Controller
                     $contactForImport->housenumber = $contactToImport->housenumber;
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
-                    $contactForImport->match = 'Match klant minus e-mail';
+                    $contactForImport->matchCode = 'Klant minus e-mail';
+                    $contactForImport->matchColor = '#FFFF00';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -235,7 +238,8 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match klant minus achternaam';
+                    $contactForImport->matchCode = 'Klant minus achternaam';
+                    $contactForImport->matchColor = '#FF8000';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -278,7 +282,8 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match contact';
+                    $contactForImport->matchCode = 'Contact';
+                    $contactForImport->matchColor = 'repeating-linear-gradient(45deg,#00FF00,#ECECEC 2px,#00FF00 4px)';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -310,7 +315,8 @@ class ContactToImportController extends Controller
 
                 foreach($contactForImports as $contactForImport) {
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match contact minus adres';
+                    $contactForImport->matchCode = 'Contact minus adres';
+                    $contactForImport->matchColor = 'repeating-linear-gradient(45deg,#80FF00,#ECECEC 2px,#80FF00 4px)';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -349,7 +355,8 @@ class ContactToImportController extends Controller
                     $contactForImport->housenumber = $contactToImport->housenumber;
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
-                    $contactForImport->match = 'Match contact minus e-mail';
+                    $contactForImport->matchCode = 'Contact minus e-mail';
+                    $contactForImport->matchColor = 'repeating-linear-gradient(45deg,#FFFF00,#ECECEC 2px,#FFFF00 4px)';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -389,7 +396,8 @@ class ContactToImportController extends Controller
                     $contactForImport->addition = $contactToImport->addition;
                     $contactForImport->postal_code = $contactToImport->postal_code;
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
-                    $contactForImport->match = 'Match contact minus achternaam';
+                    $contactForImport->matchCode = 'Contact minus achternaam';
+                    $contactForImport->matchColor = 'repeating-linear-gradient(45deg,#FF8000,#ECECEC 2px,#FF8000 4px)';
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -402,12 +410,12 @@ class ContactToImportController extends Controller
 
             $contactForImports = $matchKlant->merge($matchKlantMinusLastName)->merge($matchKlantMinusKlantnummer)->merge($matchKlantMinusAddress)->merge($matchKlantMinusEmail)->merge($matchContact)->merge($matchContactMinusEmail)->merge($matchContactMinusAddress)->merge($matchContactMinusLastName);
 
-            /* add the contacts sollection to the contactToImport collections, if empty then set the match code */
+            /* add the contacts collection to the contactToImport collections, if empty then set the match code */
             if(count($contactForImports) > 0) {
-                $contactToImport->match = "";
+                $contactToImport->matchCode = "";
                 $contactToImport->contactForImports = $contactForImports;
             } else {
-                $contactToImport->match = "Geen match";
+                $contactToImport->matchCode = "Geen match";
                 $contactToImport->contactForImports = [];
             }
         }

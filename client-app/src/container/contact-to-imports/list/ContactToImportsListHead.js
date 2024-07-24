@@ -8,7 +8,7 @@ const ContactToImportsListHead = props => {
         <tr className="thead-title">
             <DataTableHeadTitleAndSort
                 sortColumn={'number'}
-                title={'Contactnummer'}
+                title={'Contactnr'}
                 width={'5%'}
                 setSorts={props.handleChangeSort}
             />
@@ -30,12 +30,12 @@ const ContactToImportsListHead = props => {
                 width={'10%'}
                 setSorts={props.handleChangeSort}
             />
-            <DataTableHeadTitle title={'Huisnummer'} width={'5%'} />
-            <DataTableHeadTitle title={'Toevoeging'} width={'5%'} />
+            <DataTableHeadTitle title={'Huisnr'} width={'4%'} />
+            <DataTableHeadTitle title={'Toevoeging'} width={'3%'} />
             <DataTableHeadTitleAndSort
                 sortColumn={'postalCode'}
                 title={'Postcode'}
-                width={'5%'}
+                width={'4%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitleAndSort
@@ -47,15 +47,15 @@ const ContactToImportsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'emailContact'}
                 title={'Email primair'}
-                width={'5%'}
+                width={'10%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitle title={'Telefoon'} width={'5%'} />
             <DataTableHeadTitle title={'Ean'} width={'5%'} />
-            <DataTableHeadTitle title={'Huidige energielevereancier'} width={'5%'} />
-            <DataTableHeadTitle title={'Huidige klantnummer'} width={'5%'} />
-            <DataTableHeadTitle title={'Match'} width={'5%'} />
-            <th width={'5%'} />
+            <DataTableHeadTitle title={'Energielevereancier'} width={'10%'} />
+            <DataTableHeadTitle title={'Klantnr'} width={'10%'} />
+            <DataTableHeadTitle title={'Match'} width={'10%'} />
+            <th width={'4%'} />
         </tr>
     );
 };

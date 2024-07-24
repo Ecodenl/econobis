@@ -20,7 +20,7 @@ function ContactToImportsListItem({
     emailContact,
     phoneNumber,
     permissions,
-    match,
+    matchCode,
     contactForImports,
     refreshContactToImports,
 }) {
@@ -72,7 +72,7 @@ function ContactToImportsListItem({
                 <td>ean</td>
                 <td>leverancier</td>
                 <td>klantnummer</td>
-                <td>{match}</td>
+                <td>{matchCode}</td>
                 <td>
                     {showActionButtons && permissions.manageContactToImports ? (
                         <a role="button" onClick={() => openItem(id)}>
@@ -101,7 +101,7 @@ function ContactToImportsListItem({
                         <td>ean</td>
                         <td>leverancier</td>
                         <td>klantnummer</td>
-                        <td>{contactForImport.match}</td>
+                        <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>
                         <td>
                             {showActionButtons && permissions.manageContactToImports ? (
                                 <a role="button" onClick={() => openItem(id)}>
@@ -110,7 +110,7 @@ function ContactToImportsListItem({
                             ) : (
                                 ''
                             )}
-                            {contactForImport.match != 'Match klant' ? (
+                            {contactForImport.matchCode != 'Match klant' ? (
                                 <input
                                     type="checkbox"
                                     onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}

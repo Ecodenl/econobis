@@ -30,7 +30,8 @@ class GridContactForImport extends JsonResource
             'esNumber' => $this->es_number,
             'memberSince' => $this->member_since,
             'endDate' => $this->end_date,
-            'match' => $this->match,
+            'matchCode' => $this->matchCode,
+            'matchColor' => $this->matchColor,
             'contactForImports' => $this->contactForImports,
             'personId' => $this->person->id,
         ];

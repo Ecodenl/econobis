@@ -892,6 +892,7 @@ class ProjectFormEdit extends Component {
             contactGroupIdsSelected,
             visibleForAllContacts,
             textInfoProjectOnlyMembers,
+            loanTypeId,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -953,6 +954,7 @@ class ProjectFormEdit extends Component {
             amountInteressed,
             administration,
             hasPaymentInvoices,
+            hasConfirmedLoanRedemptionRevenue,
             valueCourses,
             amountOfParticipants,
             relatedDocumentsOnPortal,
@@ -1075,6 +1077,9 @@ class ProjectFormEdit extends Component {
 
                 {projectType && projectType.codeRef === 'loan' ? (
                     <ProjectFormDefaultLoan
+                        loanTypeId={loanTypeId}
+                        projectLoanTypes={this.props.projectLoanTypes}
+                        hasConfirmedLoanRedemptionRevenue={hasConfirmedLoanRedemptionRevenue}
                         amountOfLoanNeeded={amountOfLoanNeeded}
                         minAmountLoan={minAmountLoan}
                         maxAmountLoan={maxAmountLoan}
@@ -1167,6 +1172,7 @@ const mapStateToProps = state => {
         project: state.projectDetails,
         projectTypes: state.systemData.projectTypes,
         administrations: state.meDetails.administrations,
+        projectLoanTypes: state.systemData.projectLoanTypes,
     };
 };
 

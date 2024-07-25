@@ -33,7 +33,7 @@ return new class extends Migration
                 ->onDelete('restrict');
         });
 
-        DB::table('projects')->where('project_type_id', ProjectType::where('code_ref', 'loan')->first()->id)->update(["loan_type_id" => 1]);
+        DB::table('projects')->where('project_type_id', ProjectType::where('code_ref', 'loan')->first()->id)->update(["loan_type_id" => 2]);
     }
 
     /**

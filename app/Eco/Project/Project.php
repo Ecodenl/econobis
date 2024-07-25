@@ -54,6 +54,9 @@ class Project extends Model
     public function projectType(){
         return $this->belongsTo(ProjectType::class)->withTrashed();
     }
+    public function projectLoanType(){
+        return $this->belongsTo(ProjectLoanType::class, 'loan_type_id');
+    }
 
     public function tasks()
     {
@@ -196,6 +199,15 @@ class Project extends Model
               if ($this->revenuesKwh()->count() > 0) {
                   return true;
               }
+        }
+        return false;
+    }
+
+    public function getHasConfirmedLoanRedemptionRevenue(){
+
+        if($this->projectType->code_ref == 'loan') {
+            $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro' )->first()->id;
+            return $this->projectRevenues()->where('category_id', $projectRevenueCategoryRedemptionEuro)->where('confirmed', 1)->exists();
         }
         return false;
     }

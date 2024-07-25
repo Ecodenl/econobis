@@ -476,6 +476,7 @@ class ContactToImportController extends Controller
 
         $return['emailAddress'] = [];
         $return['emailAddress']['primary'] = true;
+        $return['emailAddress']['typeId'] = 'home';
         $return['emailAddress']['email'] = $contactToImport->email_contact;
 
         $return['address'] = [];
@@ -486,11 +487,10 @@ class ContactToImportController extends Controller
         $return['address']['city'] = $contactToImport->city;
         $return['address']['postalCode'] = $contactToImport->postal_code;
         $return['address']['eanElectricity'] = $contactToImport->ean; //todo Patrick alleen ean_electricity?
-        $return['address']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
+        $return['address']['typeId'] = 'visit';
 
         $return['addressEnergySupplier'] = [];
         $return['addressEnergySupplier']['energySupplyTypeId'] = 2; //todo Patrick welke moet hier?
-        $return['addressEnergySupplier']['typeId'] = 'visit'; //todo Patrick welke type moet hier?
         $return['addressEnergySupplier']['energySupplierId'] = $energySupplier->id;
         $return['addressEnergySupplier']['isCurrentSupplier'] = 1;
         $return['addressEnergySupplier']['memberSince'] = $contactToImport->member_since->format('Y-m-d');
@@ -499,6 +499,7 @@ class ContactToImportController extends Controller
 
         $return['phoneNumber'] = [];
         $return['phoneNumber']['primary'] = true;
+        $return['phoneNumber']['typeId'] = 'home';
         $return['phoneNumber']['number'] = $contactToImport->phone_number;
 
         return $return;

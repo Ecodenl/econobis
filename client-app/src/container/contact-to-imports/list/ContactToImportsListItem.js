@@ -89,7 +89,11 @@ function ContactToImportsListItem({
                     ) : (
                         ''
                     )}
-                    <input type="checkbox" onChange={() => createNewContactFromContactToImport(id)} /> nieuw
+                    <input
+                        type="checkbox"
+                        // onChange={() => createNewContactFromContactToImport(id)}
+                    />{' '}
+                    nieuw
                 </td>
             </tr>
 
@@ -121,7 +125,7 @@ function ContactToImportsListItem({
                             {contactForImport.matchCode != 'Match klant' ? (
                                 <input
                                     type="checkbox"
-                                    onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
+                                    // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
                                 />
                             ) : (
                                 ''

@@ -86,6 +86,12 @@ function ContactToImportsListApp() {
         onSubmitFilter();
     }
 
+    function selectAllCheckboxesNew() {}
+
+    function selectAllCheckboxesUpdate() {
+        console.log('test a');
+    }
+
     function formatFilterHelper() {
         let filters = [];
 
@@ -160,6 +166,8 @@ function ContactToImportsListApp() {
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
                         refreshContactToImports={fetchContactToImports}
+                        selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                        selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
                     />
                 </div>
             </PanelBody>

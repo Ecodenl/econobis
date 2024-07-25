@@ -19,13 +19,19 @@ function ContactToImportsList({
     handleChangeFilter,
     handleKeyUp,
     refreshContactToImports,
+    selectAllCheckboxesNew,
+    selectAllCheckboxesUpdate,
 }) {
     return (
         <div>
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
                 <table className="table table-condensed col-xs-12">
                     <DataTableHead>
-                        <ContactToImportsListHead handleChangeSort={handleChangeSort} />
+                        <ContactToImportsListHead
+                            handleChangeSort={handleChangeSort}
+                            selectAllCheckboxesNew={selectAllCheckboxesNew}
+                            selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                        />
                         {/*<ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}
                     </DataTableHead>
                     <DataTableBody>

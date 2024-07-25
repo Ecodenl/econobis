@@ -55,7 +55,13 @@ const ContactToImportsListHead = props => {
             <DataTableHeadTitle title={'Energielevereancier'} width={'10%'} />
             <DataTableHeadTitle title={'Klantnr'} width={'10%'} />
             <DataTableHeadTitle title={'Match'} width={'10%'} />
-            <th width={'4%'} />
+            <th width={'4%'}>
+                <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
+                nieuw
+                <br />
+                <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
+                update
+            </th>
         </tr>
     );
 };

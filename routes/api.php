@@ -84,6 +84,7 @@ Route::namespace('Api')
         Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
 
         Route::get('/contact-to-imports/grid', 'Contact\ContactToImportController@index');
+        Route::get('/contact-to-imports/peek-with-status', 'Contact\ContactToImportController@peekWithStatus');
         Route::get('/contact-to-imports/{contactToImport}/getContactToImport', 'Contact\ContactToImportController@createNewContactFromContactToImport');
         Route::get('/contact-to-imports/{contactToImport}/setContactToImportStatus/{status}/contactForImport/{contactForImport}', 'Contact\ContactToImportController@setContactToImportStatus');
 

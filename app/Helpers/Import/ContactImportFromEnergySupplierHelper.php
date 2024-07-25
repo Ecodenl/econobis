@@ -284,6 +284,8 @@ class ContactImportFromEnergySupplierHelper
     {
         $csv = fopen($file, 'r');
 
+        ContactToImport::truncate();
+
         $header = true;
         while ($line = fgetcsv($csv, 1024, ";")) {
             Log::info('line');

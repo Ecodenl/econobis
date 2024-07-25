@@ -20,7 +20,6 @@ class ContactToImportController extends Controller
     {
         $contactToImports = $requestQuery->get();
 
-
         foreach($contactToImports as $contactToImport) {
             $matchKlant = collect();
             $matchKlantMinusLastName = collect();
@@ -426,6 +425,14 @@ class ContactToImportController extends Controller
                     'total' => $requestQuery->total(),
                 ]
             ]);
+    }
+
+    public function peekWithStatus(Request $request)
+    {
+        $status = $request->input('status');
+        $contactToImports = ContactToImport::whereRaw("status = $status")->count();
+
+        return $contactToImports;
     }
 
     public function csvFromEnergySupplier(RequestQuery $requestQuery)

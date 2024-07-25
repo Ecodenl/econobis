@@ -12,6 +12,7 @@ import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactImportValidationRow from './ContactImportValidationRow';
 import InputSelect from '../../../components/form/InputSelect';
 import { hashHistory } from 'react-router';
+import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
 
 class ContactImportFormGeneral extends Component {
     constructor(props) {
@@ -26,6 +27,7 @@ class ContactImportFormGeneral extends Component {
             importing: false,
             suppliers: [],
             supplier: false,
+            warning: 'aaa',
         };
     }
 
@@ -34,6 +36,17 @@ class ContactImportFormGeneral extends Component {
             this.setState({
                 suppliers: payload,
             });
+        });
+
+        ContactToImportsAPI.peekContactToImportsWithStatus('nog niet verwerkt').then(payload => {
+            if (payload.data > 0) {
+                this.setState({
+                    warning:
+                        'Er zijn nog ' +
+                        payload.data +
+                        ' onverwerkte energieklanten, deze worden bij een nieuwe import verwijderd.',
+                });
+            }
         });
     }
 
@@ -113,6 +126,16 @@ class ContactImportFormGeneral extends Component {
             <Panel className={'panel-grey'}>
                 {(!this.state.supplier && (
                     <PanelBody>
+                        <div className="row">
+                            <div class="col-sm-12">
+                                <small
+                                    class="col-sm-12"
+                                    style={{ color: 'red', fontWeight: 'normal', marginBottom: '10px' }}
+                                >
+                                    {this.state.warning && this.state.warning}
+                                </small>
+                            </div>
+                        </div>
                         <div className="row">
                             <InputSelect
                                 label={'Energie leverancier'}

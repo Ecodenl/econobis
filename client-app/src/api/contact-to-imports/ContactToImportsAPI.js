@@ -14,6 +14,16 @@ export default {
         });
     },
 
+    peekContactToImportsWithStatus: status => {
+        const requestUrl = `${URL_API}/api/contact-to-imports/peek-with-status`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                status: JSON.stringify(status),
+            },
+        });
+    },
+
     getContactFromContactToImport: contactToImport => {
         const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/getContactToImport`;
 

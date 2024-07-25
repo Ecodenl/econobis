@@ -3,6 +3,12 @@
 namespace App\Eco\Contact;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+
+/**
+ *
+ * * @mixin Builder
+ * */
 
 class ContactToImport extends Model
 {

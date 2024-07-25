@@ -61,7 +61,9 @@ const RevenueFormView = props => {
                             value={distributionType ? distributionType.name : ''}
                         />
                     ) : null}
-                    {distributionType && distributionType.id === 'inPossessionOf' ? (
+                    {distributionType &&
+                    distributionType.id === 'inPossessionOf' &&
+                    (!project.projectLoanType || project.projectLoanType.codeRef === 'annuitair') ? (
                         <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference).format('L') : ''} />
                     ) : null}
                 </div>
@@ -102,6 +104,13 @@ const RevenueFormView = props => {
                     <ViewText
                         label={'Uitkeren op'}
                         value={participantProjectPayoutType ? participantProjectPayoutType.name : ''}
+                    />
+                ) : null}
+                {category.codeRef === 'redemptionEuro' && project.projectType.codeRef === 'loan' ? (
+                    <ViewText
+                        label={'Type Lening'}
+                        value={project.projectLoanType ? project.projectLoanType.name : ''}
+                        className={'form-group col-sm-6'}
                     />
                 ) : null}
             </div>

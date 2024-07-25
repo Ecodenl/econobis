@@ -89,6 +89,7 @@ class ProjectNewApp extends Component {
                 hideWhenNotMatchingPostalCheck: true,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
+                loanTypeId: null,
                 amountOfLoanNeeded: null,
                 minAmountLoan: null,
                 maxAmountLoan: null,
@@ -491,6 +492,10 @@ class ProjectNewApp extends Component {
         if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
             useSceProject = true;
         }
+        let loanTypeId = this.state.project.loanTypeId;
+        if (projectType && projectType.codeRef === 'loan' && loanTypeId === null) {
+            loanTypeId = 1;
+        }
 
         return (
             <div className="row">
@@ -551,6 +556,8 @@ class ProjectNewApp extends Component {
 
                                     {projectType && projectType.codeRef === 'loan' ? (
                                         <ProjectFormDefaultLoan
+                                            loanTypeId={loanTypeId}
+                                            projectLoanTypes={this.props.projectLoanTypes}
                                             amountOfLoanNeeded={amountOfLoanNeeded}
                                             minAmountLoan={minAmountLoan}
                                             maxAmountLoan={maxAmountLoan}
@@ -656,6 +663,7 @@ const mapStateToProps = state => {
     return {
         administrations: state.meDetails.administrations,
         projectTypesActive: state.systemData.projectTypesActive,
+        projectLoanTypes: state.systemData.projectLoanTypes,
     };
 };
 

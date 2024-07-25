@@ -31,10 +31,20 @@ class EmailDetailsApp extends Component {
 
     restoreEmail() {
         //sent mails dont have an imapId
-        if (this.props.email.imapId === null) {
-            EmailAPI.moveToFolder(this.props.email.id, 'sent').then(() => {
-                this.refreshEmail();
-            });
+        if (
+            this.props.email.imapId === null &&
+            this.props.email.msoauthMessageId === null &&
+            this.props.email.messageId === null
+        ) {
+            if (this.props.email.dateSent === null) {
+                EmailAPI.moveToFolder(this.props.email.id, 'concept').then(() => {
+                    this.refreshEmail();
+                });
+            } else {
+                EmailAPI.moveToFolder(this.props.email.id, 'sent').then(() => {
+                    this.refreshEmail();
+                });
+            }
         } else {
             EmailAPI.moveToFolder(this.props.email.id, 'inbox').then(() => {
                 this.refreshEmail();
@@ -43,7 +53,11 @@ class EmailDetailsApp extends Component {
     }
 
     removeEmail() {
-        if (this.props.email.folder === 'inbox' || this.props.email.folder === 'sent') {
+        if (
+            this.props.email.folder === 'inbox' ||
+            this.props.email.folder === 'concept' ||
+            this.props.email.folder === 'sent'
+        ) {
             EmailAPI.moveToFolder(this.props.email.id, 'removed').then(() => {
                 this.refreshEmail();
             });

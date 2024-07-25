@@ -534,7 +534,8 @@ class RevenueFormEdit extends Component {
 
                 {category.codeRef === 'redemptionEuro' ? (
                     <div className="row">
-                        {distributionTypeId === 'inPossessionOf' ? (
+                        {distributionTypeId === 'inPossessionOf' &&
+                        (!project.projectLoanType || project.projectLoanType.codeRef === 'annuitair') ? (
                             <InputDate
                                 label={'Peildatum'}
                                 name={'dateReference'}
@@ -631,6 +632,13 @@ class RevenueFormEdit extends Component {
                             required={'required'}
                             error={this.state.errors.payoutTypeId}
                             errorMessage={this.state.errorMessage.payoutTypeId}
+                        />
+                    ) : null}
+                    {category.codeRef === 'redemptionEuro' && projectTypeCodeRef === 'loan' ? (
+                        <ViewText
+                            label={'Type Lening'}
+                            value={project.projectLoanType ? project.projectLoanType.name : ''}
+                            className={'form-group col-sm-6'}
                         />
                     ) : null}
                 </div>

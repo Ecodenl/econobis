@@ -400,6 +400,12 @@ class PersonController extends ApiController
             $emailAddress->save();
         }
 
+        if ($request['phoneNumber'] && $request['phoneNumber']['number']) {
+            $phoneNumber = $contact->primaryphoneNumber;
+            $phoneNumber->number = $request['phoneNumber']['number'];
+            $phoneNumber->save();
+        }
+
         if ($request['address'] && $request['address']['postalCode']) {
             Validator::make($request['address'], [
                 'countryId' => 'nullable|exists:countries,id',

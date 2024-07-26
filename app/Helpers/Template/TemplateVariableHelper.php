@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Settings\PortalSettings;
@@ -679,6 +680,12 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
+            case 'type_lening':
+                if($projectTypeCodeRef == 'loan') {
+                    return ProjectLoanType::find($model->loan_type_id)->name;
+                }else{
+                    return "";
+                }
             case 'amount_of_loan_needed':
             case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;
@@ -2113,7 +2120,6 @@ class TemplateVariableHelper
                 return $model->energy_supplier_number;
                 break;
             case 'begindatum':
-//                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
                 return $model->not_reported_date_begin ? Carbon::parse($model->not_reported_date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':

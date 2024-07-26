@@ -54,6 +54,7 @@ class ProjectRevenueController extends ApiController
             'participant',
             'project.administration',
             'project.projectType',
+            'project.projectLoanType',
             'participantProjectPayoutType',
             'createdBy',
         ]);

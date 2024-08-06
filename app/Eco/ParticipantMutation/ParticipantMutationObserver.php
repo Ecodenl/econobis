@@ -8,9 +8,11 @@
 
 namespace App\Eco\ParticipantMutation;
 
+use App\Eco\Project\ProjectRevenueCategory;
 use App\Http\Controllers\Api\Project\RevenuesKwhController;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class ParticipantMutationObserver
@@ -72,6 +74,7 @@ class ParticipantMutationObserver
                 $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
                 $participantProject->save();
 
+                // Check if reveneusKwh have to be updated (only for concept ones)
                 $revenuesKwhController = new RevenuesKwhController();
                 foreach ($participantProject->project->revenuesKwh as $revenuesKwh) {
                     // If project revenue is already confirmed then continue
@@ -88,6 +91,15 @@ class ParticipantMutationObserver
                     }
                 }
             }
+            // If date_entry, amount of quantity is changed
+            if ($dateEntryFormated != $dateEntryOriginalFormated
+                || $participantMutation->amount != $participantMutation->getOriginal('amount')
+                || $participantMutation->quantity != $participantMutation->getOriginal('quantity')
+            ) {
+                // only check mutation of type: 'first_deposit', 'deposit', 'withDrawal'
+                $this->setConceptRevenuesToUpdate($participantMutation);
+            }
+
         }
     }
 
@@ -114,10 +126,35 @@ class ParticipantMutationObserver
 
     public function deleted(ParticipantMutation $participantMutation)
     {
+        // only check mutation of type: 'first_deposit', 'deposit', 'withDrawal'
+        $this->setConceptRevenuesToUpdate($participantMutation);
+
         // If mutation was deleted, than determine date_register (is earliest first deposit date entry) by participant again.
         $participantProject = $participantMutation->participation;
         $participantProject->date_register = $participantProject->dateEntryFirstDeposit;
         $participantProject->save();
+
+    }
+
+    /**
+     * @param ParticipantMutation $participantMutation
+     * @return void
+     */
+    private function setConceptRevenuesToUpdate(ParticipantMutation $participantMutation): void
+    {
+        $mutationTypesToCheck = ParticipantMutationType::where('project_type_id', $participantMutation->participation->project->project_type_id)->whereIn('code_ref', ['first_deposit', 'deposit', 'withDrawal'])->get()->pluck('id')->toArray();
+        if (in_array($participantMutation->type_id, $mutationTypesToCheck)) {
+            $participantProject = $participantMutation->participation;
+
+            // Check if projectReveneus have to be updated (only for concept ones and category revenueEuro of redemptionEuro) to concept-to-update
+            $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro')->first()->id;
+            $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::where('code_ref', 'redemptionEuro')->first()->id;
+            $projectRevenues = $participantProject->project->projectRevenues()->where('confirmed', false)->where('status', 'concept')->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro])->get();
+            foreach ($projectRevenues as $projectRevenue) {
+                $projectRevenue->status = 'concept-to-update';
+                $projectRevenue->save();
+            }
+        }
     }
 
 }

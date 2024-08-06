@@ -107,6 +107,7 @@ class ProjectRevenueController extends ApiController
             ->integer('participationId')->validate('nullable|exists:participation_project,id')->onEmpty(null)->alias('participation_id')->next()
             ->integer('addressEnergySupplierId')->validate('nullable|exists:address_energy_suppliers,id')->onEmpty(null)->alias('address_energy_supplier_id')->next()
             ->boolean('confirmed')->next()
+            ->string('status')->whenMissing('concept')->onEmpty('concept')->next()
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateReference')->validate('required|date')->alias('date_reference')->next()
@@ -136,7 +137,7 @@ class ProjectRevenueController extends ApiController
 
         $projectRevenue->save();
 
-        $this->saveParticipantsOfDistribution($projectRevenue, false);
+        $this->saveParticipantsOfDistribution($projectRevenue);
 
         $projectRevenue->load('createdBy', 'project');
 
@@ -163,6 +164,7 @@ class ProjectRevenueController extends ApiController
             ->integer('participationId')->alias('participation_id')->default($participantProject->id)->next()
             ->integer('addressEnergySupplierId')->validate('nullable|exists:address_energy_suppliers,id')->onEmpty(null)->alias('address_energy_supplier_id')->next()
             ->boolean('confirmed')->default($projectRevenueConfirmed)->next()
+            ->string('status')->whenMissing('concept')->onEmpty('concept')->next()
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateReference')->validate('required|date')->alias('date_reference')->next()
@@ -189,7 +191,7 @@ class ProjectRevenueController extends ApiController
         $projectRevenue = new ProjectRevenue();
         $projectRevenue->fill($data);
         $projectRevenue->save();
-        $this->saveParticipantsOfDistribution($projectRevenue, false);
+        $this->saveParticipantsOfDistribution($projectRevenue);
 
         return;
     }
@@ -250,9 +252,12 @@ class ProjectRevenueController extends ApiController
             $recalculateDistribution = true;
         }
 
+        if($projectRevenue->status == 'concept-to-update'){
+            $projectRevenue->status = 'concept';
+        }
         $projectRevenue->save();
 
-        if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue, false);
+        if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue);
 
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)
@@ -260,51 +265,34 @@ class ProjectRevenueController extends ApiController
             ->orderBy('date_begin')->get());
     }
 
-    public function saveParticipantsOfDistribution(ProjectRevenue $projectRevenue, $closing)
+    public function saveParticipantsOfDistribution(ProjectRevenue $projectRevenue)
     {
+        // Alleen participants distributions bijwerken als project revenue nog concept is.
+        if($projectRevenue->status != 'concept'){
+            return;
+        }
+
         set_time_limit(300);
         $project = $projectRevenue->project;
         $revenueCategory = $projectRevenue->category->code_ref;
 
-        $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
-        $dateEnd = Carbon::parse($projectRevenue->date_end)->format('Y-m-d');
-        $projectType = $project->projectType;
-
-        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')
-            ->where('project_type_id', $projectType->id)
-            ->first()
-            ->id;
-
-        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')
-            ->first())
-            ->id;
+        $projectTypeCodeRef = (ProjectType::where('id', $project->project_type_id)->first())->code_ref;
 
         if($projectRevenue->participant){
-            $this->saveDistribution($projectRevenue, $projectRevenue->participant, $closing);
+            $this->saveDistributions($projectRevenue, $projectRevenue->participant, $projectTypeCodeRef);
         } else {
-            $participants = ParticipantProject::where('project_id', $project->id)
-                ->where(function ($query) use($dateBegin) {
-                    $query->whereNull('date_terminated')
-                        ->orWhere('date_terminated',  '>=', $dateBegin);
-                })
-                ->where('date_register',  '<', $dateEnd)
-                ->whereHas('mutations', function ($query) use($mutationType, $mutationStatusFinal) {
-                    $query->where('type_id', $mutationType)
-                        ->where('status_id', $mutationStatusFinal);
-                })->get();
-
-            foreach ($participants as $participant) {
-                $this->saveDistribution($projectRevenue, $participant, $closing);
+            foreach ($project->participantsProject as $participant) {
+                $this->saveDistributions($projectRevenue, $participant, $projectTypeCodeRef);
             }
-
-            $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)
-                ->first())
-                ->code_ref;
 
             if (in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])) {
                 $this->processCapitalDistribution($projectRevenue, $revenueCategory);
+
             }
             if (in_array($projectTypeCodeRef, ['loan', 'obligation'])) {
+                $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
+                $dateEnd = Carbon::parse($projectRevenue->date_end)->format('Y-m-d');
+
                 $this->processLoanOrDistribution($projectRevenue, $dateBegin, $dateEnd, $revenueCategory);
             }
 
@@ -312,9 +300,18 @@ class ProjectRevenueController extends ApiController
 
     }
 
-    public function saveDistribution(ProjectRevenue $projectRevenue, ParticipantProject $participant, $closing)
+    public function saveDistributions(ProjectRevenue $projectRevenue, ParticipantProject $participant, $projectTypeCodeRef)
     {
-        $projectTypeCodeRef = (ProjectType::where('id', $projectRevenue->project->project_type_id)->first())->code_ref;
+        // binnekomend parm projectTypeCodeRef: 'loan', 'obligation' of 'capital', 'postalcode_link_capital'
+
+//        $mutationType = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $projectRevenue->project->project_type_id)->first()->id;
+//        $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+
+        // projectRevenueCategoryCodeRefs: 'revenueEuro', 'revenueParticipant' of 'redemptionEuro'
+        $projectRevenueCategoryCodeRef = $projectRevenue->category->code_ref;
+
+        // distributionTypen: 'inPossessionOf' of 'howLongInPossession', default instelling bij projectrevenue.
+        $distributionTypeId = $projectRevenue->distribution_type_id;
 
         $contact = Contact::find($participant->contact_id);
         if($participant->address){
@@ -323,11 +320,60 @@ class ProjectRevenueController extends ApiController
             $participantAddress = $participant->contact->primaryAddress;
         }
 
-        // If participant already is added to project revenue distribution then update
-        if(ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->exists()) {
-            $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->first();
-        } else {
+        $dateBegin = Carbon::parse($projectRevenue->date_begin)->format('Y-m-d');
+        $dateEnd = Carbon::parse($projectRevenue->date_end)->format('Y-m-d');
+        $dateReference = Carbon::parse($projectRevenue->date_reference)->format('Y-m-d');
+
+        $particpantInRevenue = false;
+
+        // participant gaat mee in revenue indien:
+        // Category: revenueParticipant (Opbrengst deelnemer)
+        //      participant is beeindigt met beeindiginsdatum in revenue periode!
+        //
+        if($projectRevenueCategoryCodeRef == 'revenueParticipant') {
+            if ($participant->date_terminated != null
+                && $participant->date_terminated >= $dateBegin
+                && $participant->date_terminated < $dateEnd
+            ) {
+                $particpantInRevenue = true;
+            }
+        // Category: revenueEuro (Opbrengst Euro)
+        //      participant is niet beeindigt of beeindigt met beeindiginsdatum buiten in revenue periode!
+        } elseif($projectRevenueCategoryCodeRef == 'revenueEuro' || $projectRevenueCategoryCodeRef == 'redemptionEuro') {
+            if ($participant->date_terminated == null
+                || $participant->date_terminated <= $dateBegin
+                || $participant->date_terminated > $dateEnd
+            ) {
+                //      bij $distributionTypeId 'inPossessionOf': heeft eerste inleg datum voor peildatum en (indien beeindigt) beeindiginsdatum na peildatum.
+                if ($distributionTypeId == 'inPossessionOf'
+                    && $participant->date_register <= $dateReference
+                    && ($participant->date_terminated == null || $participant->date_terminated >= $dateReference)
+                ) {
+                    $particpantInRevenue = true;
+                }
+                //      bij $distributionTypeId 'howLongInPossession': heeft eerste inleg datum voor einddatum revenue en (indien beeindigt) beeindiginsdatum na begindatum.
+                if ($distributionTypeId == 'howLongInPossession'
+                    && $participant->date_register <= $dateEnd
+                    && ($participant->date_terminated == null || $participant->date_terminated >= $dateBegin)
+                ) {
+                    $particpantInRevenue = true;
+                }
+            }
+        }
+
+        // If participant already is added to project revenue distribution en $particpantInRevenue is nu false, dan verwijderen, anders bijwerken huidige distribution.
+        $distribution = ProjectRevenueDistribution::where('revenue_id', $projectRevenue->id)->where('participation_id', $participant->id)->first();
+        if($distribution) {
+            if($particpantInRevenue == false){
+                $distribution->delete();
+                return;
+            }
+        // If participant not added to project revenue distribution yet and $particpantInRevenue is true, dan nieuw toevoegen.
+        } elseif($particpantInRevenue) {
             $distribution = new ProjectRevenueDistribution();
+        // anders doen we niets
+        } else {
+            return;
         }
 
         $distribution->revenue_id
@@ -381,12 +427,12 @@ class ProjectRevenueController extends ApiController
         $distribution->participation_id = $participant->id;
         $distribution->save();
 
-        if($projectRevenue->category->code_ref == 'revenueEuro' || $projectRevenue->category->code_ref == 'revenueParticipant') {
+        if($projectRevenueCategoryCodeRef == 'revenueEuro' || $projectRevenueCategoryCodeRef == 'revenueParticipant') {
             // Recalculate values of distribution after saving
             $distribution->calculator()->runRevenueEuro();
             $distribution->save();
         }
-        if($projectRevenue->category->code_ref == 'redemptionEuro'
+        if($projectRevenueCategoryCodeRef == 'redemptionEuro'
             && ($projectTypeCodeRef === 'loan' || $projectTypeCodeRef === 'obligation')) {
             // Recalculate values of distribution after saving
             $distribution->calculator()->runRedemptionEuro();
@@ -1124,7 +1170,7 @@ class ProjectRevenueController extends ApiController
     {
         if($revenueCategory == 'revenueEuro') {
             $projectRevenue->distribution->each(function ($distribution) use ($dateBegin, $dateEnd) {
-                if( in_array($distribution->status, ['concept', 'confirmed']) ) {
+                if( in_array($distribution->status, ['concept']) ) {
                     if ($distribution->payout == 0) {
 //                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met payout 0 en 1e ingangsdatum: ' . Carbon::parse($distribution->participation->date_register)->format('Y-m-d'));
                         $distribution->forceDelete();

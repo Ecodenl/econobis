@@ -27,52 +27,45 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     useEffect(() => {
         getAdditionalInfoForTerminatingOrChangeEntryDate(participantProject.id);
     }, [participantProject.id]);
-
     function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
             payload => {
-                setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
                 setDateReference(payload.dateReference ? payload.dateReference : '');
                 setDateTerminatedAllowedFrom(
                     payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : ''
                 );
                 setDateTerminatedAllowedTo(payload.dateTerminatedAllowedTo ? payload.dateTerminatedAllowedTo : '');
                 setDateEntryLastMutation(payload.dateEntryLastMutation ? payload.dateEntryLastMutation : '');
-                setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
-                setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-                setDateBeginAllowedFrom(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
-                setDateBeginAllowedTo(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
-                setHasLastRevenueConceptOrDefinitiveDistribution(
-                    payload.hasLastRevenueConceptOrDefinitiveDistribution
-                        ? payload.hasLastRevenueConceptOrDefinitiveDistribution
-                        : false
+                setHasLastRevenueConceptDistribution(
+                    payload.hasLastRevenueConceptDistribution ? payload.hasLastRevenueConceptDistribution : false
                 );
-                setPayPercentage(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
-                setPayAmount(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
-                setKeyAmountFirstPercentage(
+                setDateBeginRevenue(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+                setDateEndRevenue(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+                setPayPercentageRevenue(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
+                setPayAmountRevenue(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
+                setKeyAmountFirstPercentageRevenue(
                     payload.lastRevenueKeyAmountFirstPercentage ? payload.lastRevenueKeyAmountFirstPercentage : null
                 );
-                setPayPercentageValidFromKeyAmount(
+                setPayPercentageValidFromKeyAmountRevenue(
                     payload.lastRevenuePayPercentageValidFromKeyAmount
                         ? payload.lastRevenuePayPercentageValidFromKeyAmount
                         : null
                 );
+
+                // set dateTerminated after settings *Revenue fields because of useEffect actions on dateTerminated
+                setDateTerminated(payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : '');
             }
         );
     }
 
-    const [dateTerminated, setDateTerminated] = useState(null);
     const [dateReference, setDateReference] = useState(moment());
     const [dateEntryLastMutation, setDateEntryLastMutation] = useState(null);
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
-    const [dateBegin, setDateBegin] = useState(null);
-    const [dateEnd, setDateEnd] = useState(null);
     const [dateBeginAllowedFrom, setDateBeginAllowedFrom] = useState('');
     const [dateBeginAllowedTo, setDateBeginAllowedTo] = useState('');
-    const [hasLastRevenueConceptOrDefinitiveDistribution, setHasLastRevenueConceptOrDefinitiveDistribution] = useState(
-        false
-    );
+    const [hasLastRevenueConceptDistribution, setHasLastRevenueConceptDistribution] = useState(false);
+    const [blockRevenueChange, setBlockRevenueChange] = useState(true);
 
     const [distributionTypeId, setDistributionTypeId] = useState(
         projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
@@ -83,10 +76,54 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
             : participantProject.participationsDefinitive
     );
 
+    const [dateBeginRevenue, setDateBeginRevenue] = useState(null);
+    const [dateEndRevenue, setDateEndRevenue] = useState(null);
+    const [payPercentageRevenue, setPayPercentageRevenue] = useState(null);
+    const [payAmountRevenue, setPayAmountRevenue] = useState(null);
+    const [keyAmountFirstPercentageRevenue, setKeyAmountFirstPercentageRevenue] = useState(null);
+    const [payPercentageValidFromKeyAmountRevenue, setPayPercentageValidFromKeyAmountRevenue] = useState(null);
+    // set dateTerminated after settings *Revenue fields because of useEffect actions on dateTerminated
+    const [dateTerminated, setDateTerminated] = useState(null);
+
+    const [dateBegin, setDateBegin] = useState(null);
+    const [dateEnd, setDateEnd] = useState(null);
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
     const [payPercentageValidFromKeyAmount, setPayPercentageValidFromKeyAmount] = useState(null);
+
+    useEffect(() => {
+        setRevenueFields();
+    }, [dateTerminated]);
+
+    function setRevenueFields() {
+        if (dateTerminated > dateEndRevenue) {
+            let newBeginDate = moment(dateEndRevenue)
+                .add(1, 'day')
+                .format('Y-MM-DD');
+            setDateBegin(newBeginDate);
+            let newEndDate = moment(newBeginDate)
+                .add(1, 'year')
+                .subtract(1, 'day')
+                .format('Y-MM-DD');
+            setDateEnd(newEndDate);
+            setDateBeginAllowedFrom(newBeginDate);
+            setDateBeginAllowedTo(newEndDate);
+            setBlockRevenueChange(false);
+        } else {
+            setDateBegin(dateBeginRevenue ? dateBeginRevenue : '');
+            setDateEnd(dateEndRevenue ? dateEndRevenue : '');
+            setDateBeginAllowedFrom(dateBeginRevenue ? dateBeginRevenue : '');
+            setDateBeginAllowedTo(dateEndRevenue ? dateEndRevenue : '');
+            setPayPercentage(payPercentageRevenue ? payPercentageRevenue : null);
+            setPayAmount(payAmountRevenue ? payAmountRevenue : null);
+            setKeyAmountFirstPercentage(keyAmountFirstPercentageRevenue ? keyAmountFirstPercentageRevenue : null);
+            setPayPercentageValidFromKeyAmount(
+                payPercentageValidFromKeyAmountRevenue ? payPercentageValidFromKeyAmountRevenue : null
+            );
+            setBlockRevenueChange(hasLastRevenueConceptDistribution);
+        }
+    }
 
     const [errors, setErrors] = useState({
         dateTerminated: false,
@@ -361,6 +398,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 value={dateBegin}
                                 onChangeAction={onChangeDateBegin}
                                 required={'required'}
+                                readOnly={blockRevenueChange}
                                 error={errors.dateBegin}
                                 errorMessage={errorMessages.dateBegin}
                                 disabledBefore={dateBeginAllowedFrom}
@@ -372,6 +410,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 value={dateEnd}
                                 onChangeAction={onChangeDateEnd}
                                 required={'required'}
+                                readOnly={blockRevenueChange}
                                 error={errors.dateEnd}
                                 errorMessage={errorMessages.dateEnd}
                                 disabledBefore={dateBegin}
@@ -395,7 +434,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 label={'Uitkering (rente) %'}
                                 name={'payPercentage'}
                                 value={payPercentage}
-                                disabled={hasLastRevenueConceptOrDefinitiveDistribution}
+                                disabled={blockRevenueChange}
                                 onChangeAction={onChangePayPercentage}
                                 error={errors.payPercentage}
                                 errorMessage={errorMessages.payPercentage}
@@ -406,7 +445,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={'of uitkeringsbedrag per deelname'}
                                     name={'payAmount'}
                                     value={payAmount}
-                                    disabled={hasLastRevenueConceptOrDefinitiveDistribution}
+                                    disabled={blockRevenueChange}
                                     onChangeAction={onChangePayAmount}
                                     error={errors.payAmount}
                                     errorMessage={errorMessages.payAmount}
@@ -422,7 +461,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                 }
                                 name={'keyAmountFirstPercentage'}
                                 value={keyAmountFirstPercentage}
-                                disabled={hasLastRevenueConceptOrDefinitiveDistribution}
+                                disabled={blockRevenueChange}
                                 onChangeAction={onChangeKeyAmountFirstPercentage}
                                 error={errors.keyAmountFirstPercentage}
                                 errorMessage={errorMessages.keyAmountFirstPercentage}
@@ -435,7 +474,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     label={<>Uitkering (rente) % vanaf bedrag</>}
                                     name={'payPercentageValidFromKeyAmount'}
                                     value={payPercentageValidFromKeyAmount}
-                                    disabled={hasLastRevenueConceptOrDefinitiveDistribution}
+                                    disabled={blockRevenueChange}
                                     onChangeAction={onChangePayPercentageValidFromKeyAmount}
                                     error={errors.payPercentageValidFromKeyAmount}
                                     errorMessage={errorMessages.payPercentageValidFromKeyAmount}

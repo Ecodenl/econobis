@@ -6,8 +6,8 @@ import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { eye } from 'react-icons-kit/fa/eye';
-import { pencil } from 'react-icons-kit/fa/pencil';
-import MoneyPresenter from '../../../../helpers/MoneyPresenter';
+import { FaExclamationCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const RevenuesListFormView = ({
     revenue: revenueDetails,
@@ -35,6 +35,8 @@ const RevenuesListFormView = ({
         switch (statusRevenue) {
             case 'concept':
                 return 'Concept';
+            case 'concept-to-update':
+                return 'Concept';
             case 'confirmed':
                 return 'Definitief';
             case 'processed':
@@ -57,7 +59,26 @@ const RevenuesListFormView = ({
                 {dateEnd ? moment(dateEnd).format('L') : 'onbekend'}
             </div>
             <div className="col-sm-1">{statusName(status)}</div>
-            <div className="col-sm-1">{statusRevenueName(statusRevenue)}</div>
+            <div className="col-sm-1">
+                {statusRevenueName(statusRevenue)}{' '}
+                {statusRevenue == 'concept-to-update' && (
+                    <>
+                        <FaExclamationCircle
+                            color={'red'}
+                            size={'15px'}
+                            data-tip={'Bijwerken noodzakelijk'}
+                            data-for={`tooltip-concept-to-update`}
+                        />
+                        <ReactTooltip
+                            id={`tooltip-concept-to-update`}
+                            effect="float"
+                            place="right"
+                            multiline={true}
+                            aria-haspopup="true"
+                        />
+                    </>
+                )}
+            </div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.menuProjects ? (
                     <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${revenueId}`)}>

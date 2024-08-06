@@ -27,6 +27,7 @@ class FullProjectRevenue extends JsonResource
                 'distributionType' => FullEnumWithIdAndName::make($this->getDistributionType()),
                 'projectId' => $this->project_id,
                 'confirmed' => $this->confirmed,
+                'status' => $this->status,
                 'dateBegin' => $this->date_begin,
                 'dateEnd' => $this->date_end,
                 'dateReference' => $this->date_reference,

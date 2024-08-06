@@ -22,7 +22,10 @@ class ProjectRevenueObserver
 
     public function saving(ProjectRevenue $projectRevenue)
     {
-        if($projectRevenue->confirmed == 1) {
+        if($projectRevenue->isDirty('confirmed') && $projectRevenue->confirmed == 1) {
+            if($projectRevenue->status == 'concept'){
+                $projectRevenue->status = 'confirmed';
+            }
             $project = $projectRevenue->project;
 
             // Skip for revenueParticipant

@@ -22,7 +22,7 @@ class GridParticipantProjectRevenue extends JsonResource
                 'dateEnd' => $this->date_end,
                 'categoryName' => $this->category->name,
                 'status' => $this->project_revenue_distribution_status,
-                'statusRevenue' => $this->confirmed ? 'confirmed' : 'concept',
+                'statusRevenue' => $this->status,
             ];
     }
 }

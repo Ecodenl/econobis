@@ -70,6 +70,8 @@ use App\Eco\Project\Project;
 use App\Eco\Project\ProjectObserver;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueObserver;
+use App\Eco\Project\ProjectRevenueDistribution;
+use App\Eco\Project\ProjectRevenueDistributionObserver;
 use App\Eco\RevenuesKwh\RevenuePartsKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
 use App\Eco\RevenuesKwh\RevenuePartsKwhObserver;
@@ -115,6 +117,7 @@ class ObserverServiceProvider extends ServiceProvider
         Project::observe(ProjectObserver::class);
         ProjectValueCourse::observe(ProjectValueCourseObserver::class);
         ProjectRevenue::observe(ProjectRevenueObserver::class);
+        ProjectRevenueDistribution::observe(ProjectRevenueDistributionObserver::class);
         RevenuesKwh::observe(RevenuesKwhObserver::class);
         RevenuePartsKwh::observe(RevenuePartsKwhObserver::class);
         ParticipantMutation::observe(ParticipantMutationObserver::class);

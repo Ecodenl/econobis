@@ -295,6 +295,10 @@ class ParticipantProject extends Model
     public function getTerminatedAllowedAttribute()
     {
         $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+        // zolang projectparicipant nog in een definitieve maar niet verwerkte verdeling zit, dan mag hij niet beeindigd worden.
+        if($this->projectRevenueDistributions()->whereIn('status', ['confirmed'])->exists()){
+            return false;
+        };
 
         return $this->date_terminated == null && ($this->date_terminated_allowed_to >= $this->date_terminated_allowed_from) && $this->mutations()->where('status_id', $mutationStatusFinal)->exists();
     }

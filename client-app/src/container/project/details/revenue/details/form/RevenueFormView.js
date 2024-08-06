@@ -15,6 +15,7 @@ const StyledEm = styled.em`
 const RevenueFormView = props => {
     const {
         confirmed,
+        status,
         dateBegin,
         dateEnd,
         dateReference,
@@ -41,6 +42,25 @@ const RevenueFormView = props => {
 
     const kwhTotal = kwhEnd - kwhStart;
 
+    let statusText = '';
+    switch (status) {
+        case 'concept':
+            statusText = 'Concept';
+            break;
+        case 'concept-to-update':
+            statusText = 'Concept (bijwerken noodzakelijk)';
+            break;
+        case 'confirmed':
+            statusText = 'Definitief';
+            break;
+        case 'in-progress':
+            statusText = 'Bezig...';
+            break;
+        case 'processed':
+            statusText = 'Verwerkt';
+            break;
+    }
+
     return (
         <div>
             <div className={'panel-heading'} onClick={props.switchToEdit}>
@@ -51,19 +71,41 @@ const RevenueFormView = props => {
                 <ViewText label={'Definitief'} value={confirmed ? 'Ja' : 'Nee'} />
             </div>
 
-            {category.codeRef === 'revenueEuro' ||
-            category.codeRef === 'redemptionEuro' ||
-            category.codeRef === 'revenueParticipant' ? (
+            {category.codeRef === 'revenueEuro' || category.codeRef === 'revenueParticipant' ? (
                 <div className="row" onClick={props.switchToEdit}>
                     {project.projectType.codeRef !== 'loan' ? (
+                        <>
+                            <ViewText
+                                label={'Type opbrengst verdeling'}
+                                value={distributionType ? distributionType.name : ''}
+                            />
+                            {distributionType && distributionType.id === 'inPossessionOf' ? (
+                                <ViewText
+                                    label={'Peildatum'}
+                                    value={dateReference ? moment(dateReference).format('L') : ''}
+                                />
+                            ) : null}
+                        </>
+                    ) : (
                         <ViewText
-                            label={'Type opbrengst verdeling'}
-                            value={distributionType ? distributionType.name : ''}
+                            label={'Type Lening'}
+                            value={project.projectLoanType ? project.projectLoanType.name : ''}
+                        />
+                    )}
+                </div>
+            ) : null}
+
+            {category.codeRef === 'redemptionEuro' ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    {project.projectType.codeRef === 'loan' ? (
+                        <ViewText
+                            label={'Type Lening'}
+                            value={project.projectLoanType ? project.projectLoanType.name : ''}
                         />
                     ) : null}
                     {distributionType &&
                     distributionType.id === 'inPossessionOf' &&
-                    (!project.projectLoanType || project.projectLoanType.codeRef === 'annuitair') ? (
+                    (project.projectType.codeRef !== 'loan' || project.projectLoanType.codeRef === 'annuitair') ? (
                         <ViewText label={'Peildatum'} value={dateReference ? moment(dateReference).format('L') : ''} />
                     ) : null}
                 </div>
@@ -97,20 +139,19 @@ const RevenueFormView = props => {
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Status'} value={statusText} />
                 <ViewText label={'Datum definitief'} value={dateConfirmed ? moment(dateConfirmed).format('L') : ''} />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText className={'col-sm-6'} />
+
                 {category.codeRef === 'revenueEuro' &&
                 (project.projectType.codeRef === 'capital' ||
                     project.projectType.codeRef === 'postalcode_link_capital') ? (
                     <ViewText
                         label={'Uitkeren op'}
                         value={participantProjectPayoutType ? participantProjectPayoutType.name : ''}
-                    />
-                ) : null}
-                {category.codeRef === 'redemptionEuro' && project.projectType.codeRef === 'loan' ? (
-                    <ViewText
-                        label={'Type Lening'}
-                        value={project.projectLoanType ? project.projectLoanType.name : ''}
-                        className={'form-group col-sm-6'}
                     />
                 ) : null}
             </div>

@@ -81,8 +81,10 @@ use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
 use CMPayments\IBAN;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -407,6 +409,12 @@ class ExternalWebformController extends Controller
     protected function getDataFromRequest(Request $request)
     {
         $mapping = [
+//            'encrypted_ids' => [
+//                'contact_id' => 'contact_id',
+//                'intake_id' => 'intake_id',
+//                'kans_id' => 'opportunity_id',
+//                'kansactie_id' => 'quotation_request_id',
+//            ],
             'responsible_ids' => [
                 'verantwoordelijke_gebruiker_id' => 'responsible_user_id',
                 'verantwoordelijke_team_id' => 'responsible_team_id',
@@ -549,6 +557,25 @@ class ExternalWebformController extends Controller
                 'intake_kans_bijlage2' => 'intake_opportunity_attachment_2',
                 'intake_kans_bijlage3' => 'intake_opportunity_attachment_3',
             ],
+            'quotation_request' => [
+//waardes kansactie_aanmaken:
+// quotation-request (offerteverzoek)
+// visit (bezoek)
+// subsidy-request (budgetaanvraag)
+                'kansactie_aanmaken' => 'create_quotation_request',
+//                'kansactie_type' => 'opportunity_action_type',
+                'intake_id' => 'intake_id',
+                'kans_id' => 'opportunity_id',
+                'kansactie_org_of_coach' => 'contact_id',
+                'kansactie_omschrijving' => 'description',
+                'kansactie_status' => 'status',
+                'kansactie_datum_afspraak' => 'date_planned',
+                'kansactie_opmerking_coach' => 'coach_or_organisation_note',
+                'kansactie_opmerking_projectleider' => 'projectmanager_note',
+                'kansactie_opmerking_bewoner' => 'client_note',
+                'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
+                'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
+            ],
             'housing_file' => [
                 // HousingFile
                 'woondossier_woningtype_id' => 'building_type_id',
@@ -633,6 +660,26 @@ class ExternalWebformController extends Controller
         }
 
         // Sanitize
+
+//        $data['decrypted_ids']['contact_id'] = $this->decryptValue($data['encrypted_ids']['contact_id'], 'contact_id');
+//        $data['decrypted_ids']['intake_id'] = $this->decryptValue($data['encrypted_ids']['intake_id'], 'intake_id');
+//        $data['decrypted_ids']['opportunity_id'] = $this->decryptValue($data['encrypted_ids']['opportunity_id'], 'kans_id');
+//        $data['decrypted_ids']['quotation_request_id'] = $this->decryptValue($data['encrypted_ids']['quotation_request_id'], 'kansactie_id');
+//
+//        $this->log('Contact Id (decrypted):' . $data['decrypted_ids']['contact_id'] );
+//        $this->log('Intake Id (decrypted):' . $data['decrypted_ids']['intake_id'] );
+//        $this->log('Kans Id (decrypted):' . $data['decrypted_ids']['opportunity_id'] );
+//        $this->log('Kansactie Id (decrypted):' . $data['decrypted_ids']['quotation_request_id'] );
+
+        $data['quotation_request']['intake_id'] = $this->decryptValue($data['quotation_request']['intake_id'], 'intake_id');
+        $data['quotation_request']['opportunity_id'] = $this->decryptValue($data['quotation_request']['opportunity_id'], 'kans_id');
+        $data['quotation_request']['contact_id'] = $this->decryptValue($data['quotation_request']['contact_id'], 'contact_id');
+
+        $this->log('Intake Id (decrypted):' . $data['quotation_request']['intake_id'] );
+        $this->log('Kans Id (decrypted):' . $data['quotation_request']['opportunity_id'] );
+        $this->log('Contact Id (decrypted):' . $data['quotation_request']['contact_id'] );
+//        $this->log('Kansactie Id (decrypted):' . $data['quotation_request']['quotation_request_id'] );
+
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
@@ -3431,5 +3478,26 @@ class ExternalWebformController extends Controller
         $latestQuotationRequestVisit->save();
 
         $this->log('Kansactie bezoek gevonden voor contact, coach en campagne. Status bijgewerkt van ' . $oldStatus->name . ' naar ' . $latestQuotationRequestVisit->status()->first()->name);
+    }
+
+    /**
+     * @param mixed $value
+     * @param $contact_id
+     * @return int|mixed
+     */
+    private function decryptValue(mixed $value, $fieldName): mixed
+    {
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $this->log('Veld ' . $fieldName . ' bevat geen correcte waarde');
+//            $decryptedValue = $value;
+            $decryptedValue = '';
+        }
+
+        return $decryptedValue;
     }
 }

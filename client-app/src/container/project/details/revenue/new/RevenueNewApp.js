@@ -115,7 +115,6 @@ class RevenueNewApp extends Component {
                           .endOf('year')
                           .format('Y-MM-DD')
                     : '';
-                revenue.dateReference = revenue.dateEnd;
             }
             if (category.codeRef === 'revenueKwh') {
                 revenue.dateBegin = payload.dateInterestBearingKwh;
@@ -232,6 +231,14 @@ class RevenueNewApp extends Component {
         const category = this.props.projectRevenueCategories.find(
             projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
         );
+
+        // Indien lening en type lineair, dan datereference gelijk aan begindatum zetten
+        if (
+            this.state.project.projectType.codeRef === 'loan' &&
+            this.state.project.projectLoanType.codeRef === 'lineair'
+        ) {
+            revenue.dateReference = revenue.dateBegin;
+        }
 
         let errors = {};
         let errorMessage = {};

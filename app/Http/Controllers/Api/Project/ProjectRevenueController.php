@@ -371,6 +371,7 @@ class ProjectRevenueController extends ApiController
         // If participant not added to project revenue distribution yet and $particpantInRevenue is true, dan nieuw toevoegen.
         } elseif($particpantInRevenue) {
             $distribution = new ProjectRevenueDistribution();
+            $distribution->status = 'concept';
         // anders doen we niets
         } else {
             return;
@@ -379,12 +380,6 @@ class ProjectRevenueController extends ApiController
         $distribution->revenue_id
             = $projectRevenue->id;
         $distribution->contact_id = $contact->id;
-
-        if($projectRevenue->confirmed) {
-            $distribution->status = 'confirmed';
-        } else {
-            $distribution->status = 'concept';
-        }
 
         if ($participantAddress) {
             $distribution->street = $participantAddress->street;

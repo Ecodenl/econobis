@@ -1,8 +1,8 @@
 <?php
 
+use App\Eco\Measure\Measure;
+use App\Eco\Measure\MeasureCategory;
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
@@ -43,8 +43,6 @@ return new class extends Migration
                 [ 'name' => $category ]
             );
 
-            DB::table('measures')->where('name', 'Inductiekookplaat')->update(["measure_category_id" =>$catId]);
-
             // Create the measures
             foreach($measures as $measure) {
                 DB::table('measures')->insertGetId(
@@ -54,6 +52,31 @@ return new class extends Migration
                         'visible' => 0 ]
                 );
                 $id++;
+            }
+        }
+
+        // Inductiekookplaat verplaatsen van categorie Overig naar nieuwe categorie Witgoed
+        $measureInductiekookplaat = Measure::where('name', 'Inductiekookplaat')->first();
+        $measureCategoryOverig = MeasureCategory::where('name', 'Overig')->first();
+        $measureCategoryWitgoed = MeasureCategory::where('name', 'Witgoed')->first();
+
+        if($measureInductiekookplaat && $measureCategoryOverig && $measureCategoryWitgoed){
+            if($measureInductiekookplaat->measure_category_id == $measureCategoryOverig->id) {
+
+                // Wijzig koppeling in measures (Overig in Witgoed)
+                $measureInductiekookplaat->measure_category_id = $measureCategoryWitgoed->id;
+                $measureInductiekookplaat->saveQuietly();
+
+                foreach ($measureInductiekookplaat->opportunities as $opportunity) {
+                    if ($opportunity->measure_category_id == $measureCategoryOverig->id) {
+                        // Voeg Witgoed toe in intake_measure_requested.
+                        $opportunity->intake->measuresRequested()->syncWithoutDetaching($measureCategoryWitgoed->id);
+
+                        // Wijzig koppeling in opportunities (Overig in Witgoed)
+                        $opportunity->measure_category_id = $measureCategoryWitgoed->id;
+                        $opportunity->saveQuietly();
+                    }
+                }
             }
         }
 

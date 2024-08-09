@@ -27,11 +27,19 @@ class MutationForm extends Component {
     };
 
     render() {
+        let allowAddMutation = false;
+        if (this.props.permissions.manageFinancial && !this.props.isTerminated) {
+            if (this.props.projectTypeCodeRef !== 'loan') {
+                allowAddMutation = true;
+            } else if (this.props.loanTypeCodeRef != 'lineair' || !this.props.hasLoanFirstDeposit) {
+                allowAddMutation = true;
+            }
+        }
         return (
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Mutaties</span>
-                    {this.props.permissions.manageFinancial && !this.props.isTerminated && (
+                    {allowAddMutation && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <Icon size={14} icon={plus} />
                         </a>
@@ -53,6 +61,9 @@ class MutationForm extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        projectTypeCodeRef: state.participantProjectDetails?.project?.typeCodeRef,
+        hasLoanFirstDeposit: state.participantProjectDetails?.hasLoanFirstDeposit,
+        loanTypeCodeRef: state.participantProjectDetails?.project?.loanTypeCodeRef,
     };
 };
 

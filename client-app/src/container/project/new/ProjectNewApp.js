@@ -381,12 +381,13 @@ class ProjectNewApp extends Component {
         }
 
         // If loan then loanTypeId required.
-        if (projectType && projectType.codeRef === 'loan')
+        if (projectType && projectType.codeRef === 'loan') {
             if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
                 errors.loanTypeId = true;
                 errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
                 hasErrors = true;
             }
+        }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string
         if (!project.isMembershipRequired) {

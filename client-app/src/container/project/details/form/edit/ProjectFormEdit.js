@@ -787,6 +787,15 @@ class ProjectFormEdit extends Component {
             }
         }
 
+        // If loan then loanTypeId required.
+        if (project.projectType.codeRef === 'loan') {
+            if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
+                errors.loanTypeId = true;
+                errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
+                hasErrors = true;
+            }
+        }
+
         // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';

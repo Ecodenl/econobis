@@ -385,15 +385,53 @@ class ProjectRevenueController extends ApiController
 
         }
 
-        if($projectRevenue->participantProjectPayoutType) {
-            $distribution->payout_type_id = $projectRevenue->participantProjectPayoutType->id;
-            $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
-        }elseif($participant->participantProjectPayoutType){
-            $distribution->payout_type_id = $participant->participantProjectPayoutType->id;
-            $distribution->payout_type = $participant->participantProjectPayoutType->name;
-        }else{
-            $distribution->payout_type_id = null;
-            $distribution->payout_type = '';
+        $projectLoanTypeCodeRef = $projectRevenue->project->projectLoanType ? $projectRevenue->project->projectLoanType->code_ref : '';
+//        Log::info('projectRevenueCategoryCodeRef: ' . $projectRevenueCategoryCodeRef);
+//        Log::info('projectTypeCodeRef: ' . $projectTypeCodeRef);
+//        Log::info('projectLoanTypeCodeRef: ' . $projectLoanTypeCodeRef );
+        // bepaling payout type
+        // indien revenueEuro of revenueParticipant
+        if(in_array($projectRevenueCategoryCodeRef, ['revenueEuro', 'revenueParticipant'])){
+            // indien loan type lineair (altijd 1 = account "Uitbetalen (Rekening klant))
+            if(in_array($projectTypeCodeRef, ['loan']) && $projectLoanTypeCodeRef == 'lineair'){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan en linear, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien loan type annuitair (ingesteld per deelnemer)
+            if(in_array($projectTypeCodeRef, ['loan']) && $projectLoanTypeCodeRef != 'lineair'){
+                $distribution->payout_type_id = $participant->participantProjectPayoutType->id;
+                $distribution->payout_type = $participant->participantProjectPayoutType->name;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan en Niet linear, payout ingesteld per deelnemer: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien obligation (altijd 1 = account "Uitbetalen (Rekening klant)")
+            if(in_array($projectTypeCodeRef, ['obligation'])){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - obligation, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien capital of postalcode_link_capital (ingesteld per opbrengstverdeling)
+            if(in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])){
+                $distribution->payout_type_id = $projectRevenue->participantProjectPayoutType->id;
+                $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
+//                Log::info($projectRevenueCategoryCodeRef. ' - capital of postalcode_link_capital, payout ingesteld per opbrengstverdeling: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+        }
+        // indien redemptionEuro
+        if(in_array($projectRevenueCategoryCodeRef, ['redemptionEuro'])){
+            // indien loan of obligatie (altijd 1 = account "Uitbetalen (Rekening klant)")
+            if(in_array($projectTypeCodeRef, ['loan', 'obligation'])){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan of obligation, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien capital of postalcode_link_capital (niet van toepassing)
+            if(in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])){
+                $distribution->payout_type_id = null;
+                $distribution->payout_type = '';
+//                Log::info($projectRevenueCategoryCodeRef. ' - capital of postalcode_link_capital, n.v.t.: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+
         }
 
         $addressEnergySupplier = $participantAddress->currentAddressEnergySupplierElectricity;

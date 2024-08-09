@@ -120,6 +120,7 @@ class ProjectFormEdit extends Component {
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
                 textRegistrationFinished: false,
+                loanTypeId: false,
             },
             errorMessages: {
                 name: '',
@@ -166,6 +167,7 @@ class ProjectFormEdit extends Component {
                 documentTemplateAgreementId: '',
                 emailTemplateAgreementId: '',
                 textRegistrationFinished: '',
+                loanTypeId: '',
             },
             isSaving: false,
         };
@@ -1088,6 +1090,8 @@ class ProjectFormEdit extends Component {
                         amountOptioned={amountOptioned}
                         amountInteressed={amountInteressed}
                         handleInputChange={this.handleInputChange}
+                        errors={this.state.errors}
+                        errorMessages={this.state.errorMessages}
                     />
                 ) : null}
 

@@ -289,6 +289,8 @@ class ParticipationProjectController extends ApiController
         }
 
         $participantProject->hasLastRevenueConceptDistribution = $hasLastRevenueConceptDistribution;
+        $participantProject->lastRevenueDistributionTypeId = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->distribution_type_id : null;
+        $participantProject->lastRevenueDateReference = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->date_reference : null;
         $participantProject->lastRevenuePayPercentage = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->pay_percentage : null;
         $participantProject->lastRevenuePayAmount = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->pay_amount : null;
         $participantProject->lastRevenueKeyAmountFirstPercentage = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->key_amount_first_percentage : null;
@@ -597,7 +599,7 @@ class ParticipationProjectController extends ApiController
                 ->get();
 
             // Set terminated date
-            $participantProject->date_terminated = $data['date_terminated'];
+            $participantProject->date_terminated = Carbon::parse( $data['date_terminated'] )->format('Y-m-d');
             $participantProject->save();
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
@@ -608,10 +610,16 @@ class ParticipationProjectController extends ApiController
                 $amountOrParticipationsDefinitive = $participantProject->participations_definitive;
             }
 
-            if($amountOrParticipationsDefinitive != 0){
+            $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
+
+            if($amountOrParticipationsDefinitive != 0 ||
+                ($lastRevenueConceptDistribution->date_begin && $lastRevenueConceptDistribution->date_end
+                    && $participantProject->date_terminated >= Carbon::parse($lastRevenueConceptDistribution->date_begin)->format('Y-m-d')
+                    && $participantProject->date_terminated <= Carbon::parse($lastRevenueConceptDistribution->date_end)->format('Y-m-d')) ) {
                 // Make new projectRevenue
                 $projectRevenueController = new ProjectRevenueController();
                 $projectRevenueController->storeForParticipant($requestInput, $participantProject);
+            } else {
             }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
@@ -622,7 +630,7 @@ class ParticipationProjectController extends ApiController
             $dateTerminated = $participantProject->date_terminated;
 
             $participantProject->projectRevenueDistributions()
-                ->whereIn('status', ['concept', 'confirmed'])
+                ->whereIn('status', ['concept'])
                 ->whereHas('revenue', function ($query) use($projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro, $dateTerminated) {
                     $query->whereIn('category_id', [$projectRevenueCategoryRevenueEuro, $projectRevenueCategoryRedemptionEuro])
                         ->where('date_begin', '<=', $dateTerminated)

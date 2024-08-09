@@ -36,7 +36,7 @@ class ParticipantProjectObserver
         $contact->calculateParticipationTotals()->save();
 
         // When participations are definitive then add participant to project revenue distribution if available
-        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive')) {
+        if($participantProject->isDirty('participations_definitive') || $participantProject->isDirty('amount_definitive') || $participantProject->isDirty('type_id')) {
 
             $projectTypeCodeRef = (ProjectType::where('id', $participantProject->project->project_type_id)->first())->code_ref;
 

@@ -41,6 +41,10 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                 );
                 setDateBeginRevenue(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
                 setDateEndRevenue(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+                setDistributionTypeIdRevenue(
+                    payload.lastRevenueDistributionTypeId ? payload.lastRevenueDistributionTypeId : null
+                );
+                setDateReferenceRevenue(payload.lastRevenueDateReference ? payload.lastRevenueDateReference : null);
                 setPayPercentageRevenue(payload.lastRevenuePayPercentage ? payload.lastRevenuePayPercentage : null);
                 setPayAmountRevenue(payload.lastRevenuePayAmount ? payload.lastRevenuePayAmount : null);
                 setKeyAmountFirstPercentageRevenue(
@@ -58,7 +62,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
         );
     }
 
-    const [dateReference, setDateReference] = useState(moment());
     const [dateEntryLastMutation, setDateEntryLastMutation] = useState(null);
     const [dateTerminatedAllowedFrom, setDateTerminatedAllowedFrom] = useState('');
     const [dateTerminatedAllowedTo, setDateTerminatedAllowedTo] = useState('');
@@ -67,9 +70,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     const [hasLastRevenueConceptDistribution, setHasLastRevenueConceptDistribution] = useState(false);
     const [blockRevenueChange, setBlockRevenueChange] = useState(true);
 
-    const [distributionTypeId, setDistributionTypeId] = useState(
-        projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
-    );
     const [amountOrParticipationsDefinitive, setAmountOrParticipationsDefinitive] = useState(
         projectTypeCodeRef === 'loan'
             ? participantProject.amountDefinitive
@@ -78,6 +78,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
 
     const [dateBeginRevenue, setDateBeginRevenue] = useState(null);
     const [dateEndRevenue, setDateEndRevenue] = useState(null);
+    const [distributionTypeIdRevenue, setDistributionTypeIdRevenue] = useState(null);
+    const [dateReferenceRevenue, setDateReferenceRevenue] = useState(null);
     const [payPercentageRevenue, setPayPercentageRevenue] = useState(null);
     const [payAmountRevenue, setPayAmountRevenue] = useState(null);
     const [keyAmountFirstPercentageRevenue, setKeyAmountFirstPercentageRevenue] = useState(null);
@@ -87,6 +89,10 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
 
     const [dateBegin, setDateBegin] = useState(null);
     const [dateEnd, setDateEnd] = useState(null);
+    const [distributionTypeId, setDistributionTypeId] = useState(
+        projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
+    );
+    const [dateReference, setDateReference] = useState(moment());
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
@@ -115,6 +121,14 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
             setDateEnd(dateEndRevenue ? dateEndRevenue : '');
             setDateBeginAllowedFrom(dateBeginRevenue ? dateBeginRevenue : '');
             setDateBeginAllowedTo(dateEndRevenue ? dateEndRevenue : '');
+            setDistributionTypeId(
+                distributionTypeIdRevenue
+                    ? distributionTypeIdRevenue
+                    : projectTypeCodeRef === 'loan'
+                    ? 'howLongInPossession'
+                    : 'inPossessionOf'
+            );
+            setDateReference(dateReferenceRevenue ? dateReferenceRevenue : moment());
             setPayPercentage(payPercentageRevenue ? payPercentageRevenue : null);
             setPayAmount(payAmountRevenue ? payAmountRevenue : null);
             setKeyAmountFirstPercentage(keyAmountFirstPercentageRevenue ? keyAmountFirstPercentageRevenue : null);
@@ -363,9 +377,19 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                     )}
                 </div>
 
-                {amountOrParticipationsDefinitive != 0 && dateTerminated >= dateBegin ? (
+                {hasLastRevenueConceptDistribution &&
+                amountOrParticipationsDefinitive == 0 &&
+                (dateTerminated < dateBeginRevenue || dateTerminated > dateEndRevenue) ? (
+                    <p className={'has-error-message'}>
+                        Datum beëindigen valt buiten een concept verdeling waar deelnemer nog in zit. Bij beëindigen zal
+                        er GEEN afsluitende opbrengst verdeling (uitkering) voor deze deelnemer gemaakt worden !
+                    </p>
+                ) : dateTerminated >= dateBegin && dateTerminated <= dateEnd ? (
                     <>
-                        <p>Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken?</p>
+                        <p>
+                            Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken
+                            {blockRevenueChange ? '!' : '?'}
+                        </p>
                         {projectTypeCodeRef === 'obligation' ? (
                             <div className="row">
                                 <InputSelect
@@ -374,6 +398,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                     options={projectRevenueDistributionTypes}
                                     emptyOption={false}
                                     value={distributionTypeId}
+                                    readOnly={blockRevenueChange}
                                     onChangeAction={onChangeDistributionTypeId}
                                     error={errors.distributionTypeId}
                                     errorMessage={errorMessages.distributionTypeId}
@@ -384,6 +409,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                                         name={'dateReference'}
                                         value={dateReference}
                                         required={'required'}
+                                        readOnly={blockRevenueChange}
                                         onChangeAction={onChangeDateReference}
                                         error={errors.dateReference}
                                         errorMessage={errorMessages.dateReference}

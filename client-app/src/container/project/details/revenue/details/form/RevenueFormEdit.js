@@ -679,13 +679,6 @@ class RevenueFormEdit extends Component {
                             errorMessage={this.state.errorMessage.payoutTypeId}
                         />
                     ) : null}
-                    {category.codeRef === 'redemptionEuro' && projectTypeCodeRef === 'loan' ? (
-                        <ViewText
-                            label={'Type Lening'}
-                            value={project.projectLoanType ? project.projectLoanType.name : ''}
-                            className={'form-group col-sm-6'}
-                        />
-                    ) : null}
                 </div>
 
                 {category.codeRef === 'revenueKwh' ? (

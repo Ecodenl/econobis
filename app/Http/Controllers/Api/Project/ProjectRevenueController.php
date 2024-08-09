@@ -150,12 +150,6 @@ class ProjectRevenueController extends ApiController
         $projectRevenueCategoryParticipant = ProjectRevenueCategory::where('code_ref', 'revenueParticipant' )->first()->id;
 
         // confirmed direct op true indien beeindigingsdatum in een opbrengst verdeling zit die ook al definitief is.
-        $projectRevenueConfirmed =  $participantProject->projectRevenues()
-            ->where('date_begin', '<=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))
-            ->where('date_end', '>=', Carbon::parse($participantProject->date_terminated)->format('Y-m-d'))
-            ->whereNull('project_revenues.participation_id')
-            ->where('project_revenues.confirmed', true )
-            ->exists();
 
         $data = $requestInput
             ->integer('categoryId')->alias('category_id')->default($projectRevenueCategoryParticipant)->next()
@@ -163,7 +157,7 @@ class ProjectRevenueController extends ApiController
             ->integer('projectId')->alias('project_id')->default($participantProject->project_id)->next()
             ->integer('participationId')->alias('participation_id')->default($participantProject->id)->next()
             ->integer('addressEnergySupplierId')->validate('nullable|exists:address_energy_suppliers,id')->onEmpty(null)->alias('address_energy_supplier_id')->next()
-            ->boolean('confirmed')->default($projectRevenueConfirmed)->next()
+            ->boolean('confirmed')->default(false)->next()
             ->string('status')->whenMissing('concept')->onEmpty('concept')->next()
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
@@ -331,10 +325,8 @@ class ProjectRevenueController extends ApiController
         //      participant is beeindigt met beeindiginsdatum in revenue periode!
         //
         if($projectRevenueCategoryCodeRef == 'revenueParticipant') {
-            if ($participant->date_terminated != null
-                && $participant->date_terminated >= $dateBegin
-                && $participant->date_terminated < $dateEnd
-            ) {
+            // ToDo check: of gewoon altijd true ?
+            if ($participant->date_terminated != null) {
                 $particpantInRevenue = true;
             }
         // Category: revenueEuro (Opbrengst Euro)
@@ -342,7 +334,7 @@ class ProjectRevenueController extends ApiController
         } elseif($projectRevenueCategoryCodeRef == 'revenueEuro' || $projectRevenueCategoryCodeRef == 'redemptionEuro') {
             if ($participant->date_terminated == null
                 || $participant->date_terminated <= $dateBegin
-                || $participant->date_terminated > $dateEnd
+                || $participant->date_terminated >= $dateEnd
             ) {
                 //      bij $distributionTypeId 'inPossessionOf': heeft eerste inleg datum voor peildatum en (indien beeindigt) beeindiginsdatum na peildatum.
                 if ($distributionTypeId == 'inPossessionOf'
@@ -393,15 +385,53 @@ class ProjectRevenueController extends ApiController
 
         }
 
-        if($projectRevenue->participantProjectPayoutType) {
-            $distribution->payout_type_id = $projectRevenue->participantProjectPayoutType->id;
-            $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
-        }elseif($participant->participantProjectPayoutType){
-            $distribution->payout_type_id = $participant->participantProjectPayoutType->id;
-            $distribution->payout_type = $participant->participantProjectPayoutType->name;
-        }else{
-            $distribution->payout_type_id = null;
-            $distribution->payout_type = '';
+        $projectLoanTypeCodeRef = $projectRevenue->project->projectLoanType ? $projectRevenue->project->projectLoanType->code_ref : '';
+//        Log::info('projectRevenueCategoryCodeRef: ' . $projectRevenueCategoryCodeRef);
+//        Log::info('projectTypeCodeRef: ' . $projectTypeCodeRef);
+//        Log::info('projectLoanTypeCodeRef: ' . $projectLoanTypeCodeRef );
+        // bepaling payout type
+        // indien revenueEuro of revenueParticipant
+        if(in_array($projectRevenueCategoryCodeRef, ['revenueEuro', 'revenueParticipant'])){
+            // indien loan type lineair (altijd 1 = account "Uitbetalen (Rekening klant))
+            if(in_array($projectTypeCodeRef, ['loan']) && $projectLoanTypeCodeRef == 'lineair'){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan en linear, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien loan type annuitair (ingesteld per deelnemer)
+            if(in_array($projectTypeCodeRef, ['loan']) && $projectLoanTypeCodeRef != 'lineair'){
+                $distribution->payout_type_id = $participant->participantProjectPayoutType->id;
+                $distribution->payout_type = $participant->participantProjectPayoutType->name;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan en Niet linear, payout ingesteld per deelnemer: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien obligation (altijd 1 = account "Uitbetalen (Rekening klant)")
+            if(in_array($projectTypeCodeRef, ['obligation'])){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - obligation, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien capital of postalcode_link_capital (ingesteld per opbrengstverdeling)
+            if(in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])){
+                $distribution->payout_type_id = $projectRevenue->participantProjectPayoutType->id;
+                $distribution->payout_type = $projectRevenue->participantProjectPayoutType->name;
+//                Log::info($projectRevenueCategoryCodeRef. ' - capital of postalcode_link_capital, payout ingesteld per opbrengstverdeling: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+        }
+        // indien redemptionEuro
+        if(in_array($projectRevenueCategoryCodeRef, ['redemptionEuro'])){
+            // indien loan of obligatie (altijd 1 = account "Uitbetalen (Rekening klant)")
+            if(in_array($projectTypeCodeRef, ['loan', 'obligation'])){
+                $distribution->payout_type_id = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');;
+                $distribution->payout_type = ParticipantProjectPayoutType::where('code_ref', 'account')->value('name');;
+//                Log::info($projectRevenueCategoryCodeRef. ' - loan of obligation, payout altijd 1: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+            // indien capital of postalcode_link_capital (niet van toepassing)
+            if(in_array($projectTypeCodeRef, ['capital', 'postalcode_link_capital'])){
+                $distribution->payout_type_id = null;
+                $distribution->payout_type = '';
+//                Log::info($projectRevenueCategoryCodeRef. ' - capital of postalcode_link_capital, n.v.t.: ' . $distribution->payout_type_id . ' ' . $distribution->payout_type);
+            }
+
         }
 
         $addressEnergySupplier = $participantAddress->currentAddressEnergySupplierElectricity;
@@ -1171,7 +1201,7 @@ class ProjectRevenueController extends ApiController
                         $distribution->forceDelete();
                     } else if ($distribution->participation->date_terminated != null
                         && $distribution->participation->date_terminated >= $dateBegin
-                        && $distribution->participation->date_terminated <= $dateEnd) {
+                        && $distribution->participation->date_terminated < $dateEnd) {
 //                            Log::info('Delete distribution: ' . $distribution->id . ' participant: ' . $distribution->participation_id . ' (' . $distribution->participation->contact->full_name . ') met datum beeindiging: ' . Carbon::parse($distribution->participation->date_terminated)->format('Y-m-d'));
                         $distribution->forceDelete();
                     }

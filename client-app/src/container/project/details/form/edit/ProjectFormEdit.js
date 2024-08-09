@@ -120,6 +120,7 @@ class ProjectFormEdit extends Component {
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
                 textRegistrationFinished: false,
+                loanTypeId: false,
             },
             errorMessages: {
                 name: '',
@@ -166,6 +167,7 @@ class ProjectFormEdit extends Component {
                 documentTemplateAgreementId: '',
                 emailTemplateAgreementId: '',
                 textRegistrationFinished: '',
+                loanTypeId: '',
             },
             isSaving: false,
         };
@@ -785,6 +787,15 @@ class ProjectFormEdit extends Component {
             }
         }
 
+        // If loan then loanTypeId required.
+        if (project.projectType.codeRef === 'loan') {
+            if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
+                errors.loanTypeId = true;
+                errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
+                hasErrors = true;
+            }
+        }
+
         // If isMemberShipRequired is false, set contactGroupIds to empty string, visibleForAllContacts to false
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
@@ -1088,6 +1099,8 @@ class ProjectFormEdit extends Component {
                         amountOptioned={amountOptioned}
                         amountInteressed={amountInteressed}
                         handleInputChange={this.handleInputChange}
+                        errors={this.state.errors}
+                        errorMessages={this.state.errorMessages}
                     />
                 ) : null}
 

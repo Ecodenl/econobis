@@ -420,7 +420,8 @@ class QuotationRequestNewFormGeneral extends Component {
                     />
                 </div>
 
-                {this.props.opportunityAction.codeRef === 'visit' ? (
+                {this.props.opportunityAction.codeRef === 'visit' ||
+                this.props.opportunityAction.codeRef === 'redirection' ? (
                     <div className="row">
                         <InputDate
                             label={'Datum afspraakpoging 1'}
@@ -432,34 +433,42 @@ class QuotationRequestNewFormGeneral extends Component {
                     </div>
                 ) : null}
 
-                <div className="row">
-                    <InputDate
-                        label="Datum afspraak"
-                        size={'col-sm-6'}
-                        name="datePlanned"
-                        value={datePlanned}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    {datePlanned ? (
-                        <InputTime
-                            label={'Tijd afspraak'}
-                            size={'col-sm-3'}
-                            name="timePlanned"
-                            value={timePlanned}
-                            start={'06:00'}
-                            end={'23:00'}
+                {this.props.opportunityAction.codeRef === 'visit' ||
+                this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum afspraak"
+                            size={'col-sm-6'}
+                            name="datePlanned"
+                            value={datePlanned}
                             onChangeAction={this.handleInputChangeDate}
-                            nullableSize={'col-sm-3'}
-                            nullable={true}
-                            nullableLabel={'Onbekend'}
-                            nullableChecked={true}
                         />
-                    ) : null}
-                </div>
+                        {datePlanned ? (
+                            <InputTime
+                                label={'Tijd afspraak'}
+                                size={'col-sm-3'}
+                                name="timePlanned"
+                                value={timePlanned}
+                                start={'06:00'}
+                                end={'23:00'}
+                                onChangeAction={this.handleInputChangeDate}
+                                nullableSize={'col-sm-3'}
+                                nullable={true}
+                                nullableLabel={'Onbekend'}
+                                nullableChecked={true}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
 
                 <div className="row">
                     <InputDate
-                        label="Afspraak gedaan op"
+                        label={
+                            this.props.opportunityAction.codeRef === 'redirection'
+                                ? 'Datum afgehandeld'
+                                : 'Afspraak gedaan op'
+                        }
                         size={'col-sm-6'}
                         name="dateRecorded"
                         value={dateRecorded}

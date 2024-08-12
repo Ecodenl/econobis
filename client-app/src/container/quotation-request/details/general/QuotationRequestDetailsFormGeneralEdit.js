@@ -410,7 +410,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                {opportunityAction.codeRef === 'visit' ? (
+                {opportunityAction.codeRef === 'visit' || opportunityAction.codeRef === 'redirection' ? (
                     <>
                         <div className="row">
                             <InputDate
@@ -442,36 +442,40 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     </>
                 ) : null}
 
-                <div className="row">
-                    <InputDate
-                        label="Datum afspraak"
-                        size={'col-sm-6'}
-                        name="datePlanned"
-                        value={datePlanned}
-                        onChangeAction={this.handleInputChangeDate}
-                        readOnly={this.props.quotationRequestDetails.usesPlanning}
-                    />
-                    {datePlanned ? (
-                        <InputTime
-                            label={'Tijd afspraak'}
-                            size={'col-sm-3'}
-                            name="timePlanned"
-                            value={timePlanned}
-                            start={'06:00'}
-                            end={'23:00'}
+                {opportunityAction.codeRef === 'visit' ||
+                opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <InputDate
+                            label="Datum afspraak"
+                            size={'col-sm-6'}
+                            name="datePlanned"
+                            value={datePlanned}
                             onChangeAction={this.handleInputChangeDate}
                             readOnly={this.props.quotationRequestDetails.usesPlanning}
-                            nullableSize={'col-sm-3'}
-                            nullable={true}
-                            nullableLabel={'Onbekend'}
-                            nullableChecked={timePlanned == '00:00' ? true : false}
                         />
-                    ) : null}
-                </div>
+                        {datePlanned ? (
+                            <InputTime
+                                label={'Tijd afspraak'}
+                                size={'col-sm-3'}
+                                name="timePlanned"
+                                value={timePlanned}
+                                start={'06:00'}
+                                end={'23:00'}
+                                onChangeAction={this.handleInputChangeDate}
+                                readOnly={this.props.quotationRequestDetails.usesPlanning}
+                                nullableSize={'col-sm-3'}
+                                nullable={true}
+                                nullableLabel={'Onbekend'}
+                                nullableChecked={timePlanned == '00:00' ? true : false}
+                            />
+                        ) : null}
+                    </div>
+                ) : null}
 
                 <div className="row">
                     <InputDate
-                        label="Afspraak gedaan op"
+                        label={opportunityAction.codeRef === 'redirection' ? 'Datum afgehandeld' : 'Afspraak gedaan op'}
                         size={'col-sm-6'}
                         name="dateRecorded"
                         value={dateRecorded}
@@ -644,68 +648,77 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     </>
                 ) : null}
 
-                <div className="row">
-                    {opportunityAction.codeRef === 'subsidy-request' ? (
-                        <InputTextArea
-                            label={'Opmerkingen coach of organisatie'}
-                            name="coachOrOrganisationNote"
-                            value={coachOrOrganisationNote}
-                            onChangeAction={this.handleInputChange}
-                        />
-                    ) : (
-                        <div className="form-group col-sm-12">
-                            <div className="row">
-                                <div className="col-sm-3">
-                                    <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
-                                        Opmerkingen coach of organisatie
-                                    </label>
+                {opportunityAction.codeRef === 'visit' ||
+                opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        {opportunityAction.codeRef === 'subsidy-request' ? (
+                            <InputTextArea
+                                label={'Opmerkingen coach of organisatie'}
+                                name="coachOrOrganisationNote"
+                                value={coachOrOrganisationNote}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        ) : (
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="coachOrOrganisationNote" className="col-sm-12">
+                                            Opmerkingen coach of organisatie
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9">{coachOrOrganisationNote}</div>
                                 </div>
-                                <div className="col-sm-9">{coachOrOrganisationNote}</div>
                             </div>
-                        </div>
-                    )}
-                </div>
+                        )}
+                    </div>
+                ) : null}
 
                 {opportunityAction.codeRef === 'quotation-request' ||
                 opportunityAction.codeRef === 'subsidy-request' ? (
-                    <>
-                        <div className="row">
-                            <div className="form-group col-sm-12">
-                                <div className="row">
-                                    <div className="col-sm-3">
-                                        <label htmlFor="projectmanagerNote" className="col-sm-12">
-                                            Opmerkingen projectleider
-                                        </label>
-                                    </div>
-                                    <div className="col-sm-9">{projectmanagerNote}</div>
+                    <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="projectmanagerNote" className="col-sm-12">
+                                        Opmerkingen projectleider
+                                    </label>
                                 </div>
+                                <div className="col-sm-9">{projectmanagerNote}</div>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="form-group col-sm-12">
-                                <div className="row">
-                                    <div className="col-sm-3">
-                                        <label htmlFor="externalpartyNote" className="col-sm-12">
-                                            Opmerkingen externe partij
-                                        </label>
-                                    </div>
-                                    <div className="col-sm-9">{externalpartyNote}</div>
+                    </div>
+                ) : null}
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ||
+                opportunityAction.codeRef === 'redirection' ? (
+                    <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="externalpartyNote" className="col-sm-12">
+                                        Opmerkingen externe partij
+                                    </label>
                                 </div>
+                                <div className="col-sm-9">{externalpartyNote}</div>
                             </div>
                         </div>
-                        <div className="row">
-                            <div className="form-group col-sm-12">
-                                <div className="row">
-                                    <div className="col-sm-3">
-                                        <label htmlFor="clientNote" className="col-sm-12">
-                                            Opmerkingen bewoner
-                                        </label>
-                                    </div>
-                                    <div className="col-sm-9">{clientNote}</div>
+                    </div>
+                ) : null}
+                {opportunityAction.codeRef === 'quotation-request' ||
+                opportunityAction.codeRef === 'subsidy-request' ? (
+                    <div className="row">
+                        <div className="form-group col-sm-12">
+                            <div className="row">
+                                <div className="col-sm-3">
+                                    <label htmlFor="clientNote" className="col-sm-12">
+                                        Opmerkingen bewoner
+                                    </label>
                                 </div>
+                                <div className="col-sm-9">{clientNote}</div>
                             </div>
                         </div>
-                    </>
+                    </div>
                 ) : null}
 
                 <div className="panel-footer">

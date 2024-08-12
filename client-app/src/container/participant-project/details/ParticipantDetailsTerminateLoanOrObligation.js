@@ -384,7 +384,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                         Datum beëindigen valt buiten een concept verdeling waar deelnemer nog in zit. Bij beëindigen zal
                         er GEEN afsluitende opbrengst verdeling (uitkering) voor deze deelnemer gemaakt worden !
                     </p>
-                ) : dateTerminated >= dateBegin && dateTerminated <= dateEnd ? (
+                ) : (
+                    // ) : dateTerminated >= dateBegin && dateTerminated <= dateEnd ? (
                     <>
                         <p>
                             Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken
@@ -514,7 +515,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                             beëindigen deelnemer kan je aanmaken door bovenstaande gegevens in te vullen.
                         </p>
                     </>
-                ) : null}
+                )}
+                {/*) : null}*/}
             </Modal>
         </>
     );

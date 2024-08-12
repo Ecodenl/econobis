@@ -301,11 +301,12 @@ class ParticipationProjectController extends ApiController
 
     private function getDateBeginRevenueTerminated(ParticipantProject $participantProject, $lastRevenueBeginDate)
     {
-        // Indien participant in concept of definitieve verdeling dan laatste begindatum daarvan.
+        // Indien participant in concept verdeling dan laatste begindatum daarvan.
         //  anders date_interest_bearing
         if( $lastRevenueBeginDate != null){
             $dateBegin = Carbon::parse($lastRevenueBeginDate)->format('Y-m-d');
         } else {
+            // Todo: Wellicht zouden we hier nog wat met DateEntryLastMutation moeten doen ? of in ParitcipantDetailsTerminateLoanOrObligation?
             $dateBegin = $participantProject->project->date_interest_bearing
                 ? Carbon::parse($participantProject->project->date_interest_bearing)->format('Y-m-d')
                 : null;
@@ -613,13 +614,13 @@ class ParticipationProjectController extends ApiController
             $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
 
             if($amountOrParticipationsDefinitive != 0 ||
+                !$lastRevenueConceptDistribution ||
                 ($lastRevenueConceptDistribution->date_begin && $lastRevenueConceptDistribution->date_end
                     && $participantProject->date_terminated >= Carbon::parse($lastRevenueConceptDistribution->date_begin)->format('Y-m-d')
                     && $participantProject->date_terminated <= Carbon::parse($lastRevenueConceptDistribution->date_end)->format('Y-m-d')) ) {
                 // Make new projectRevenue
                 $projectRevenueController = new ProjectRevenueController();
                 $projectRevenueController->storeForParticipant($requestInput, $participantProject);
-            } else {
             }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);

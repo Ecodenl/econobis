@@ -575,8 +575,10 @@ class ExternalWebformController extends Controller
                 'kansactie_omschrijving' => 'quotation_text',
                 'kansactie_status' => 'status_code_ref',
                 'kansactie_datum_afspraak' => 'date_planned',
+                'kansactie_datum_afgehandeld' => 'date_recorded',
                 'kansactie_opmerking_coach' => 'coach_or_organisation_note',
                 'kansactie_opmerking_projectleider' => 'projectmanager_note',
+                'kansactie_opmerking_externe_partij' => 'externalparty_note',
                 'kansactie_opmerking_bewoner' => 'client_note',
                 'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
                 'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
@@ -2348,11 +2350,17 @@ class ExternalWebformController extends Controller
             $datePlanned = null;
             // When date planned filled in
             if($dataQuotationRequest['date_planned']) {
-                // Default date planned
                 $datePlanned = Carbon::make($dataQuotationRequest['date_planned']);
+            }
+            // Default date planned
+            $dateRecorded = null;
+            // When date planned filled in
+            if($dataQuotationRequest['date_recorded']) {
+                $dateRecorded = Carbon::make($dataQuotationRequest['date_recorded']);
             }
 
             $projectmanagerNote = null;
+            $externalpartyNote = null;
             $clientNote = null;
             $quotationAmount = null;
             $costAdjustment = null;
@@ -2362,6 +2370,9 @@ class ExternalWebformController extends Controller
                 $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
                 $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
             }
+            if($opportunityAction->code_ref == 'redirection') {
+                $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
+            }
 
             $quotationRequest = QuotationRequest::create([
                 'contact_id' => $coachOrOrganisation ? $coachOrOrganisation->id : null,
@@ -2370,8 +2381,10 @@ class ExternalWebformController extends Controller
                 'status_id' => $quotationRequestStatus->id,
                 'quotation_text' => $dataQuotationRequest['quotation_text'],
                 'date_planned' => $datePlanned,
+                'date_recorded' => $dateRecorded,
                 'coach_or_organisation_note' => $dataQuotationRequest['coach_or_organisation_note'] ?: null,
                 'projectmanager_note' => $projectmanagerNote,
+                'externalparty_note' => $externalpartyNote,
                 'client_note' => $clientNote,
                 'quotation_amount' => $quotationAmount,
                 'cost_adjustment' => $costAdjustment,

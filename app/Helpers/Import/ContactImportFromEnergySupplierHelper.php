@@ -64,8 +64,7 @@ class ContactImportFromEnergySupplierHelper
                     return [$errorValidationHeader];
                 }
             } else {
-                array_push($validationLines,
-                    $this->validateLine($line, $lineNumber, $file_headers));
+                array_push($validationLines, $this->validateLine($line, $lineNumber, $file_headers));
             }
 
         }
@@ -83,7 +82,6 @@ class ContactImportFromEnergySupplierHelper
             // when encoding isn't UTF-8 encode lineField to utf8.
             $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
             if(false === $encodingLineField){
-//                $line[$k] = utf8_encode($lineField);
                 $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if(mb_detect_encoding($line[$k]) === false){
@@ -142,11 +140,30 @@ class ContactImportFromEnergySupplierHelper
         $message = [];
         $prio = 3;
 
+        if(sizeof($line) < sizeof($file_headers)) {
+            return [
+                'field' => '',
+                'value' => '',
+                'line' => $lineNumber,
+                'message' => 'Rij kan niet geïmporteerd worden, te weinig data.',
+                'prio' => 2
+            ];
+        }
+
+        if(sizeof($line) > sizeof($file_headers)) {
+            return [
+                'field' => '',
+                'value' => '',
+                'line' => $lineNumber,
+                'message' => 'Rij kan niet geïmporteerd worden, te veel data.',
+                'prio' => 2
+            ];
+        }
+
         foreach ($line as $k => $lineField) {
             // when encoding isn't UTF-8 encode lineField to utf8.
             $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
             if(false === $encodingLineField){
-//                $line[$k] = utf8_encode($lineField);
                 $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if (mb_detect_encoding($line[$k]) === false) {
@@ -156,119 +173,6 @@ class ContactImportFromEnergySupplierHelper
                 $prio = 1;
             }
         }
-
-        //IDS ophalen van database;
-        $titleIds = Title::all()->pluck('id')->toArray();
-        $emails = EmailAddress::all()->pluck('email')->toArray();
-        $phoneNumbers = PhoneNumber::all()->pluck('number')->toArray();
-
-        //validators
-        $emailValidator = new Validator;
-        $emailValidator->required('email', 'email', true)->email();
-
-        $houseNumberValidator = new Validator;
-        $houseNumberValidator->optional('house_number', 'house_number', true)->integer();
-
-//        todo WM: hieronder nog diverse cleanup
-
-//        $houseNumberAdditionValidator = new Validator;
-//        $houseNumberAdditionValidator->optional('house_number_addition', 'house_number_addition', true)->alpha();
-
-//        //prio 1 errors
-//        //aanspreektitel_id
-//        if ($line[0] && !in_array($line[0], $titleIds)) {
-//            array_push($field, self::HEADERS[0]);
-//            array_push($value, $line[0]);
-//            array_push($message, 'Geen geldig id.');
-//            $prio = 1;
-//        };
-
-//        //voornaam of achternaam verplicht
-//        if (!$line[2] && !$line[4]) {
-//            array_push($field, self::HEADERS[2]);
-//            array_push($value, $line[2]);
-//            array_push($message, 'Voornaam of achternaam is een verplicht veld.');
-//            $prio = 1;
-//        };
-
-//        if ($line[7] && !$houseNumberValidator->validate(['house_number' => $line[7]])->isValid()) {
-//            array_push($field, self::HEADERS[7]);
-//            array_push($value, $line[7]);
-//            array_push($message, 'Huisnummer moet een getal zijn.');
-//            $prio = 1;
-//        };
-
-//        if ($line[8] && !$houseNumberAdditionValidator->validate(['house_number_addition' => $line[8]])->isValid()) {
-//            array_push($field, self::HEADERS[8]);
-//            array_push($value, $line[8]);
-//            array_push($message, 'Huisnummer toevoeging moet alfabetisch zijn.');
-//            $prio = 1;
-//        };
-
-//        if (($line[5] || $line[6] || $line[7] || $line[9]) && (!$line[5] || !$line[6] || !$line[7] || !$line[9]) ) {
-//            array_push($field, 'Adres');
-//            array_push($value, '');
-//            array_push($message, 'Als er een adres is ingevuld moeten zowel de straat, woonplaats, huisnummer en postcode worden ingevuld.');
-//            $prio = 1;
-//        }
-
-//        if (!$emailValidator->validate(['email' => $line[12]])->isValid()) {
-//            array_push($field, self::HEADERS[12]);
-//            array_push($value, $line[12]);
-//            array_push($message, 'E-mail niet geldig.');
-//            $prio = 1;
-//        }
-
-//        if (!$emailValidator->validate(['email' => $line[13]])->isValid()) {
-//            array_push($field, self::HEADERS[13]);
-//            array_push($value, $line[13]);
-//            array_push($message, 'E-mail niet geldig.');
-//            $prio = 1;
-//        }
-
-//        if ($line[14]) {
-//            //iban
-//            $iban = new IBAN($line[14]);
-//            if (!$iban->validate()) {
-//                array_push($field, self::HEADERS[14]);
-//                array_push($value, $line[14]);
-//                array_push($message, 'Iban is niet geldig.');
-//                $prio = 1;
-//            }
-//        }
-
-//        //prio 2 warnings
-//        //telefoon
-//        if ($line[10] && in_array($line[10], $phoneNumbers)) {
-//            array_push($field, self::HEADERS[10]);
-//            array_push($value, $line[10]);
-//            array_push($message, 'Telefoonnummer bestaat al.');
-//            $prio == 1 ? $prio = 1 : $prio = 2;
-//        };
-
-//        //telefoon2
-//        if ($line[11] && in_array($line[11], $phoneNumbers)) {
-//            array_push($field, self::HEADERS[11]);
-//            array_push($value, $line[11]);
-//            array_push($message, 'Telefoonnummer bestaat al.');
-//            $prio == 1 ? $prio = 1 : $prio = 2;
-//        };
-
-//        //email
-//        if ($line[12] && in_array($line[12], $emails)) {
-//            array_push($field, self::HEADERS[12]);
-//            array_push($value, $line[12]);
-//            array_push($message, 'E-mail bestaat al.');
-//            $prio == 1 ? $prio = 1 : $prio = 2;
-//        };
-
-//        //email2
-//        if ($line[13] && in_array($line[13], $emails)) {
-//            array_push($field, self::HEADERS[13]);
-//            array_push($value, $line[13]);
-//            array_push($message, 'E-mail bestaat al.');
-//            $prio == 1 ? $prio = 1 : $prio = 2;
-//        };
 
         return [
             'field' => implode(', ', $field),
@@ -280,96 +184,103 @@ class ContactImportFromEnergySupplierHelper
 
     }
 
-    public function import($file, $suppliercodeRef)
+    public function import($file, $suppliercodeRef, $warninglines)
     {
         $csv = fopen($file, 'r');
 
         ContactToImport::truncate();
 
+        $warninglinesArray = explode(',',$warninglines);
+
+        $counter = 1;
+
         $header = true;
         while ($line = fgetcsv($csv, 1024, ";")) {
-            Log::info('line');
-            foreach($line as $k => $field){
-                // when encoding isn't UTF-8 encode lineField to utf8.
-                $encodingLineField= mb_detect_encoding( $field, 'UTF-8', true);
-                if(false === $encodingLineField){
-                    $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
-                }
-            };
-            if ($header) {
-                $header = false;
-            } else {
-                try {
-                    DB::beginTransaction();
-                    $contact = new ContactToImport();
+            if (!in_array($counter, $warninglinesArray)) {
+                Log::info('line');
+                foreach ($line as $k => $field) {
+                    // when encoding isn't UTF-8 encode lineField to utf8.
+                    $encodingLineField = mb_detect_encoding($field, 'UTF-8', true);
+                    if (false === $encodingLineField) {
+                        $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
+                    }
+                };
+                if ($header) {
+                    $header = false;
+                } else {
+                    try {
+                        DB::beginTransaction();
+                        $contact = new ContactToImport();
 
-                    $address = $this->splitAddress($line[12]);
+                        $address = $this->splitAddress($line[12]);
                         Log::info('address', $address);
-                    $lastName = $this->splitName($line[3]);
+                        $lastName = $this->splitName($line[3]);
                         Log::info('lastName', $lastName);
 
-                    if ($line[2]) {
-                        $contact->first_name = $line[2];
-                    }
+                        if ($line[2]) {
+                            $contact->first_name = $line[2];
+                        }
 
-                    if ($lastName['last_name']) {
-                        $contact->last_name = $lastName['last_name'];
-                    }
+                        if ($lastName['last_name']) {
+                            $contact->last_name = $lastName['last_name'];
+                        }
 
-                    if ($lastName['last_name_prefix']) {
-                        $contact->last_name_prefix = $lastName['last_name_prefix'];
-                    }
+                        if ($lastName['last_name_prefix']) {
+                            $contact->last_name_prefix = $lastName['last_name_prefix'];
+                        }
 
-                    if ($line[12]) {
-                        $contact->address = $line[12];
-                    }
-                    if ($address['street']) {
-                        $contact->street = $address['street'];
-                    }
-                    if ($address['housenumber']) {
-                        $contact->housenumber = $address['housenumber'];
-                    }
-                    if ($address['addition']) {
-                        $contact->addition = $address['addition'];
-                    }
-                    if ($line[13]) {
-                        $contact->postal_code = $line[13];
-                    }
-                    if ($line[14]) {
-                        $contact->city = $line[14];
-                    }
-                    if ($line[28]) {
-                        $contact->email_contact = $line[28];
-                    }
-                    if ($line[30]) {
-                        $contact->phone_number = $line[30];
-                    }
-                    if ($line[7]) {
-                        $contact->ean = $line[7];
-                    }
-                    if ($line[6]) {
-                        $contact->es_number = $line[6];
-                    }
+                        if ($line[12]) {
+                            $contact->address = $line[12];
+                        }
+                        if ($address['street']) {
+                            $contact->street = $address['street'];
+                        }
+                        if ($address['housenumber']) {
+                            $contact->housenumber = $address['housenumber'];
+                        }
+                        if ($address['addition']) {
+                            $contact->addition = $address['addition'];
+                        }
+                        if ($line[13]) {
+                            $contact->postal_code = $line[13];
+                        }
+                        if ($line[14]) {
+                            $contact->city = $line[14];
+                        }
+                        if ($line[28]) {
+                            $contact->email_contact = $line[28];
+                        }
+                        if ($line[30]) {
+                            $contact->phone_number = $line[30];
+                        }
+                        if ($line[7]) {
+                            $contact->ean = $line[7];
+                        }
+                        if ($line[6]) {
+                            $contact->es_number = $line[6];
+                        }
 
-                    if ($line[14]) {
-                        $contact->member_since = $line[17];
+                        if ($line[14]) {
+                            $contact->member_since = $line[17];
+                        }
+
+                        if ($line[18]) {
+                            $contact->end_date = $line[18];
+                        }
+
+                        $contact->supplier_code_ref = $suppliercodeRef;
+
+                        $contact->save();
+
+                        DB::commit();
+                    } catch (\PDOException $e) {
+                        DB::rollBack();
+                        Log::error('Error contactToImport import: ' . $e->getMessage());
+                        abort(501, 'Er is helaas een fout opgetreden.');
                     }
-
-                    if ($line[18]) {
-                        $contact->end_date = $line[18];
-                    }
-
-                    $contact->supplier_code_ref = $suppliercodeRef;
-
-                    $contact->save();
-
-                    DB::commit();
-                } catch (\PDOException $e) {
-                    DB::rollBack();
-                    Log::error('Error contactToImport import: ' . $e->getMessage());
-                    abort(501, 'Er is helaas een fout opgetreden.');
                 }
             }
+            $counter++;
         }
         return 'succes';
     }

@@ -66,6 +66,10 @@ class ContactImportFormGeneral extends Component {
 
         data.append('attachment', this.state.attachment);
         data.append('suppliercodeRef', this.state.supplier.code_ref);
+        data.append(
+            'warninglines',
+            this.state.validationData.filter(a => a.prio === 2).map(b => b.line)
+        );
 
         ContactsAPI.importFromEnergySupplier(data).then(payload => {
             hashHistory.push(`/contact/signaleringslijst-energie-klanten`);

@@ -138,20 +138,20 @@ function RedirectionExternalParty({ redirectBack, initialQuotationRequest, handl
                                             </Field>
                                         </>
                                     ) : null}
-                                    <FormLabel htmlFor="date_recorded" className={'field-label'}>
+                                    <FormLabel htmlFor="date_executed" className={'field-label'}>
                                         Datum afgehandeld
                                     </FormLabel>
-                                    <Field name="dateRecorded">
+                                    <Field name="dateExecuted">
                                         {({ field }) => (
                                             <InputTextDate
-                                                name="dateRecorded"
+                                                name="dateExecuted"
                                                 field={field}
-                                                type="datetime-local"
+                                                type="date"
                                                 errors={errors}
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
-                                                id="date_recorded"
-                                                placeholder={'atum afgehandeld'}
+                                                id="date_executed"
+                                                placeholder={'Datum afgehandeld'}
                                                 step="900"
                                             />
                                         )}

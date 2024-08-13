@@ -148,29 +148,30 @@ const QuotationRequestDetailsFormGeneralView = props => {
             {opportunityAction.codeRef === 'visit' ||
             opportunityAction.codeRef === 'quotation-request' ||
             opportunityAction.codeRef === 'subsidy-request' ? (
-                <div className="row">
-                    <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
-                    {datePlanned ? (
+                <>
+                    <div className="row">
+                        <ViewText label={'Datum afspraak'} value={datePlanned ? moment(datePlanned).format('L') : ''} />
+                        {datePlanned ? (
+                            <ViewText
+                                label={'Tijd afspraak'}
+                                value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
+                            />
+                        ) : null}
+                    </div>
+                    <div className="row">
                         <ViewText
-                            label={'Tijd afspraak'}
-                            value={timePlannedFormated != '00:00' ? timePlannedFormated : 'Onbekend'}
+                            label={'Afspraak gedaan op'}
+                            value={dateRecorded ? moment(dateRecorded).format('L') : ''}
                         />
-                    ) : null}
-                </div>
+                        {dateRecorded ? (
+                            <ViewText
+                                label={'Tijd opname'}
+                                value={timeRecordedFormated != '00:00' ? timeRecordedFormated : 'Onbekend'}
+                            />
+                        ) : null}
+                    </div>
+                </>
             ) : null}
-
-            <div className="row">
-                <ViewText
-                    label={opportunityAction.codeRef === 'redirection' ? 'Datum afgehandeld' : 'Afspraak gedaan op'}
-                    value={dateRecorded ? moment(dateRecorded).format('L') : ''}
-                />
-                {dateRecorded ? (
-                    <ViewText
-                        label={'Tijd opname'}
-                        value={timeRecordedFormated != '00:00' ? timeRecordedFormated : 'Onbekend'}
-                    />
-                ) : null}
-            </div>
 
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
                 <>
@@ -216,25 +217,25 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     </div>
                 </>
             ) : null}
+            {opportunityAction.codeRef === 'quotation-request' ||
+            opportunityAction.codeRef === 'subsidy-request' ||
+            opportunityAction.codeRef === 'redirection' ? (
+                <div className="row">
+                    <ViewText
+                        label={opportunityAction.codeRef === 'redirection' ? 'Datum afgehandeld' : 'Datum uitgevoerd'}
+                        value={dateExecuted ? moment(dateExecuted).format('L') : ''}
+                    />
+                </div>
+            ) : null}
             {opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request' ? (
-                <>
-                    <div className="row">
-                        <ViewText
-                            label={'Datum uitgevoerd'}
-                            value={dateExecuted ? moment(dateExecuted).format('L') : ''}
-                        />
-                    </div>
-                    <div className="row">
-                        <ViewText
-                            label={
-                                opportunityAction.codeRef === 'subsidy-request'
-                                    ? 'Budgetaanvraagbedrag'
-                                    : 'Offertebedrag'
-                            }
-                            value={quotationAmount ? quotationAmount : ''}
-                        />
-                    </div>
-                </>
+                <div className="row">
+                    <ViewText
+                        label={
+                            opportunityAction.codeRef === 'subsidy-request' ? 'Budgetaanvraagbedrag' : 'Offertebedrag'
+                        }
+                        value={quotationAmount ? quotationAmount : ''}
+                    />
+                </div>
             ) : null}
 
             {opportunityAction.codeRef === 'subsidy-request' ? (

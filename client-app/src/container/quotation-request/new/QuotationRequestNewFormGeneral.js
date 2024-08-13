@@ -436,60 +436,57 @@ class QuotationRequestNewFormGeneral extends Component {
                 {this.props.opportunityAction.codeRef === 'visit' ||
                 this.props.opportunityAction.codeRef === 'quotation-request' ||
                 this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <div className="row">
-                        <InputDate
-                            label="Datum afspraak"
-                            size={'col-sm-6'}
-                            name="datePlanned"
-                            value={datePlanned}
-                            onChangeAction={this.handleInputChangeDate}
-                        />
-                        {datePlanned ? (
-                            <InputTime
-                                label={'Tijd afspraak'}
-                                size={'col-sm-3'}
-                                name="timePlanned"
-                                value={timePlanned}
-                                start={'06:00'}
-                                end={'23:00'}
+                    <>
+                        <div className="row">
+                            <InputDate
+                                label="Datum afspraak"
+                                size={'col-sm-6'}
+                                name="datePlanned"
+                                value={datePlanned}
                                 onChangeAction={this.handleInputChangeDate}
-                                nullableSize={'col-sm-3'}
-                                nullable={true}
-                                nullableLabel={'Onbekend'}
-                                nullableChecked={true}
                             />
-                        ) : null}
-                    </div>
+                            {datePlanned ? (
+                                <InputTime
+                                    label={'Tijd afspraak'}
+                                    size={'col-sm-3'}
+                                    name="timePlanned"
+                                    value={timePlanned}
+                                    start={'06:00'}
+                                    end={'23:00'}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    nullableSize={'col-sm-3'}
+                                    nullable={true}
+                                    nullableLabel={'Onbekend'}
+                                    nullableChecked={true}
+                                />
+                            ) : null}
+                        </div>
+                        <div className="row">
+                            <InputDate
+                                label={'Afspraak gedaan op'}
+                                size={'col-sm-6'}
+                                name="dateRecorded"
+                                value={dateRecorded}
+                                onChangeAction={this.handleInputChangeDate}
+                            />
+                            {dateRecorded ? (
+                                <InputTime
+                                    label={'Tijd opname'}
+                                    size={'col-sm-3'}
+                                    name="timeRecorded"
+                                    value={timeRecorded}
+                                    start={'06:00'}
+                                    end={'23:00'}
+                                    onChangeAction={this.handleInputChangeDate}
+                                    nullableSize={'col-sm-3'}
+                                    nullable={true}
+                                    nullableLabel={'Onbekend'}
+                                    nullableChecked={true}
+                                />
+                            ) : null}
+                        </div>
+                    </>
                 ) : null}
-
-                <div className="row">
-                    <InputDate
-                        label={
-                            this.props.opportunityAction.codeRef === 'redirection'
-                                ? 'Datum afgehandeld'
-                                : 'Afspraak gedaan op'
-                        }
-                        size={'col-sm-6'}
-                        name="dateRecorded"
-                        value={dateRecorded}
-                        onChangeAction={this.handleInputChangeDate}
-                    />
-                    {dateRecorded ? (
-                        <InputTime
-                            label={'Tijd opname'}
-                            size={'col-sm-3'}
-                            name="timeRecorded"
-                            value={timeRecorded}
-                            start={'06:00'}
-                            end={'23:00'}
-                            onChangeAction={this.handleInputChangeDate}
-                            nullableSize={'col-sm-3'}
-                            nullable={true}
-                            nullableLabel={'Onbekend'}
-                            nullableChecked={true}
-                        />
-                    ) : null}
-                </div>
 
                 {this.props.opportunityAction.codeRef === 'quotation-request' ||
                 this.props.opportunityAction.codeRef === 'subsidy-request' ? (
@@ -564,32 +561,39 @@ class QuotationRequestNewFormGeneral extends Component {
                     </>
                 ) : null}
                 {this.props.opportunityAction.codeRef === 'quotation-request' ||
+                this.props.opportunityAction.codeRef === 'subsidy-request' ||
+                this.props.opportunityAction.codeRef === 'redirection' ? (
+                    <div className="row">
+                        <InputDate
+                            label={
+                                this.props.opportunityAction.codeRef === 'redirection'
+                                    ? 'Datum afgehandeld'
+                                    : 'Datum uitgevoerd'
+                            }
+                            size={'col-sm-6'}
+                            name="dateExecuted"
+                            value={dateExecuted}
+                            onChangeAction={this.handleInputChangeDate}
+                        />
+                    </div>
+                ) : null}
+
+                {this.props.opportunityAction.codeRef === 'quotation-request' ||
                 this.props.opportunityAction.codeRef === 'subsidy-request' ? (
-                    <>
-                        <div className="row">
-                            <InputDate
-                                label="Datum uitgevoerd"
-                                size={'col-sm-6'}
-                                name="dateExecuted"
-                                value={dateExecuted}
-                                onChangeAction={this.handleInputChangeDate}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputText
-                                type={'number'}
-                                label={
-                                    this.props.opportunityAction.codeRef === 'subsidy-request'
-                                        ? 'Budgetaanvraagbedrag'
-                                        : 'Offertebedrag'
-                                }
-                                size={'col-sm-6'}
-                                name="quotationAmount"
-                                value={quotationAmount}
-                                onChangeAction={this.handleInputChange}
-                            />
-                        </div>
-                    </>
+                    <div className="row">
+                        <InputText
+                            type={'number'}
+                            label={
+                                this.props.opportunityAction.codeRef === 'subsidy-request'
+                                    ? 'Budgetaanvraagbedrag'
+                                    : 'Offertebedrag'
+                            }
+                            size={'col-sm-6'}
+                            name="quotationAmount"
+                            value={quotationAmount}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
                 ) : null}
 
                 {this.props.opportunityAction.codeRef === 'subsidy-request' ? (

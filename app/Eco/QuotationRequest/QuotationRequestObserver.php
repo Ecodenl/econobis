@@ -36,6 +36,22 @@ class QuotationRequestObserver
 
     public function saving(QuotationRequest $quotationRequest)
     {
+        // bij opportunity action type redirection (doorverwijzing) status naar In behandeling als datum afspraak poging is gezet.
+        $datePlannedAttempt1 = $quotationRequest->date_planned_attempt1;
+        $datePlannedAttempt1Original = $quotationRequest->getOriginal('date_planned_attempt1');
+        if($datePlannedAttempt1 != $datePlannedAttempt1Original)
+        {
+            $rediretionAction = OpportunityAction::where('code_ref', 'redirection')->first();
+            if($quotationRequest->opportunity_action_id == $rediretionAction->id){
+                if($quotationRequest->date_planned_attempt1){
+                    $underReviewStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
+                    if($underReviewStatus){
+                        $quotationRequest->status_id = $underReviewStatus->id;
+                    }
+                }
+            }
+        }
+
         $datePlannedAttempt3 = $quotationRequest->date_planned_attempt3;
         $datePlannedAttempt3Original = $quotationRequest->getOriginal('date_planned_attempt3');
         if($datePlannedAttempt3 != $datePlannedAttempt3Original)
@@ -55,14 +71,6 @@ class QuotationRequestObserver
                 $madeStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'made')->first();
                 if($madeStatus){
                     $quotationRequest->status_id = $madeStatus->id;
-// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
-//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
-//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als er dan nog 1 of meerder zijn met status 'made' of 'under-review' of 'under-review-occupant', dan kans status op pending zetten ???
-//                    $pendingOpportunityStatus = OpportunityStatus::where('code_ref', 'pending')->first();
-//                    if($quotationRequest->opportunity){
-//                        $quotationRequest->opportunity->status_id = $pendingOpportunityStatus->id;
-//                        $quotationRequest->opportunity->save();
-//                    }
                 }
             }
         }
@@ -153,16 +161,8 @@ class QuotationRequestObserver
         {
             if($quotationRequest->date_executed){
                 $executedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'executed')->first();
-                if($executedStatus){
+                if($executedStatus) {
                     $quotationRequest->status_id = $executedStatus->id;
-// todo WM gevolg kans status: nog even niet. Denk niet dat je dit wilt als je meerdere kansacties hebt met verschillende statussen
-//  en dat kunnen ook nog eens kansacties zijn met verschillende opportunity action types (bezoek / offerteverzoek / budgetaanvraag
-//  Wellicht kans status bijwerken als er een kansactie status wijzigt en als alle kansactie statsus op 'executed' staan dan kans status ook op executed zetten ?????
-//                    $executedOpportunityStatus = OpportunityStatus::where('code_ref', 'executed')->first();
-//                    if($quotationRequest->opportunity) {
-//                        $quotationRequest->opportunity->status_id = $executedOpportunityStatus->id;
-//                        $quotationRequest->opportunity->save();
-//                    }
                 }
             }
         }

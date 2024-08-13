@@ -182,12 +182,6 @@ class TemplateVariableHelper
 
     public static function getContactVar($model, $varname){
         switch ($varname) {
-            case 'id':
-                return $model->id;
-                break;
-            case 'id_encrypted':
-                return Crypt::encrypt($model->id);
-                break;
             case 'nummer':
                 return $model->number;
                 break;

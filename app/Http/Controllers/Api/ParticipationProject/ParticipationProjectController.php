@@ -276,18 +276,6 @@ class ParticipationProjectController extends ApiController
 
         $hasLastRevenueConceptDistribution = (bool)$lastRevenueConceptDistribution;
 
-        if($hasLastRevenueConceptDistribution) {
-            $participantProject->dateReference = $lastRevenueConceptDistribution->date_reference;
-        } else {
-            if($participantProject->project->projectType->code_ref == 'loan' ){
-                $participantProject->dateReference = Carbon::now()->format('Y-m-d');
-            } elseif ($participantProject->dateEndRevenueTerminated) {
-                $participantProject->dateReference = $participantProject->dateEndRevenueTerminated;
-            } else {
-                $participantProject->dateReference = $participantProject->dateTerminatedAllowedFrom;
-            }
-        }
-
         $participantProject->hasLastRevenueConceptDistribution = $hasLastRevenueConceptDistribution;
         $participantProject->lastRevenueDistributionTypeId = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->distribution_type_id : null;
         $participantProject->lastRevenueDateReference = $hasLastRevenueConceptDistribution ? $lastRevenueConceptDistribution->date_reference : null;
@@ -301,20 +289,30 @@ class ParticipationProjectController extends ApiController
 
     private function getDateBeginRevenueTerminated(ParticipantProject $participantProject, $lastRevenueBeginDate)
     {
-        // Indien participant in concept of definitieve verdeling dan laatste begindatum daarvan.
+        // Indien participant in concept verdeling dan laatste begindatum daarvan.
         //  anders date_interest_bearing
+        $dateBegin = null;
+
         if( $lastRevenueBeginDate != null){
             $dateBegin = Carbon::parse($lastRevenueBeginDate)->format('Y-m-d');
         } else {
-            $dateBegin = $participantProject->project->date_interest_bearing
-                ? Carbon::parse($participantProject->project->date_interest_bearing)->format('Y-m-d')
-                : null;
+            if($participantProject->project->date_interest_bearing){
+                $dateBegin = Carbon::parse($participantProject->project->date_interest_bearing)->format('Y-m-d');
+            } else {
+                // Alleen revenueEuro
+                $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
+                $confirmedProjectRevenuesEuro = $participantProject->project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
+                if($confirmedProjectRevenuesEuro->exists()){
+                    $dateBegin = Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end)->addDay(1)->format('Y-m-d');
+                }
+            }
+
         }
         return $dateBegin;
     }
     private function getDateEndRevenueTerminated($dateBegin, $lastRevenueEndDate)
     {
-        // Indien participant in concept of definitieve verdeling dan laatste einddatum daarvan.
+        // Indien participant in concept verdeling dan laatste einddatum daarvan.
         //  anders Einde jaar van beginatum.
         if( $lastRevenueEndDate != null){
             $dateEnd = Carbon::parse($lastRevenueEndDate)->format('Y-m-d');
@@ -613,13 +611,13 @@ class ParticipationProjectController extends ApiController
             $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
 
             if($amountOrParticipationsDefinitive != 0 ||
+                !$lastRevenueConceptDistribution ||
                 ($lastRevenueConceptDistribution->date_begin && $lastRevenueConceptDistribution->date_end
                     && $participantProject->date_terminated >= Carbon::parse($lastRevenueConceptDistribution->date_begin)->format('Y-m-d')
                     && $participantProject->date_terminated <= Carbon::parse($lastRevenueConceptDistribution->date_end)->format('Y-m-d')) ) {
                 // Make new projectRevenue
                 $projectRevenueController = new ProjectRevenueController();
                 $projectRevenueController->storeForParticipant($requestInput, $participantProject);
-            } else {
             }
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);

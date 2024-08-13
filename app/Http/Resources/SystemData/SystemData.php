@@ -248,7 +248,7 @@ class SystemData extends JsonResource
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
-            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
+            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('order')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),

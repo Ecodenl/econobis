@@ -30,7 +30,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
         ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
             payload => {
-                setDateReference(payload.dateReference ? payload.dateReference : '');
                 setDateTerminatedAllowedFrom(
                     payload.dateTerminatedAllowedFrom ? payload.dateTerminatedAllowedFrom : ''
                 );
@@ -41,6 +40,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                 );
                 setDateBeginRevenue(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
                 setDateEndRevenue(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
+                setDateBegin(payload.dateBeginRevenueTerminated ? payload.dateBeginRevenueTerminated : '');
+                setDateEnd(payload.dateEndRevenueTerminated ? payload.dateEndRevenueTerminated : '');
                 setDistributionTypeIdRevenue(
                     payload.lastRevenueDistributionTypeId ? payload.lastRevenueDistributionTypeId : null
                 );
@@ -92,7 +93,7 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     const [distributionTypeId, setDistributionTypeId] = useState(
         projectTypeCodeRef === 'loan' ? 'howLongInPossession' : 'inPossessionOf'
     );
-    const [dateReference, setDateReference] = useState(moment());
+    const [dateReference, setDateReference] = useState(dateTerminated);
     const [payPercentage, setPayPercentage] = useState(null);
     const [payAmount, setPayAmount] = useState(null);
     const [keyAmountFirstPercentage, setKeyAmountFirstPercentage] = useState(null);
@@ -103,9 +104,18 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
     }, [dateTerminated]);
 
     function setRevenueFields() {
+        if (!dateTerminated) return;
+
+        setDateReference(dateTerminated);
+
+        if (hasLastRevenueConceptDistribution && dateTerminated <= dateEndRevenue) {
+            setBlockRevenueChange(true);
+        } else {
+            setBlockRevenueChange(false);
+        }
         if (dateTerminated > dateEndRevenue) {
-            let newBeginDate = moment(dateEndRevenue)
-                .add(1, 'day')
+            let newBeginDate = moment(dateTerminated)
+                .startOf('year')
                 .format('Y-MM-DD');
             setDateBegin(newBeginDate);
             let newEndDate = moment(newBeginDate)
@@ -115,7 +125,6 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
             setDateEnd(newEndDate);
             setDateBeginAllowedFrom(newBeginDate);
             setDateBeginAllowedTo(newEndDate);
-            setBlockRevenueChange(false);
         } else {
             setDateBegin(dateBeginRevenue ? dateBeginRevenue : '');
             setDateEnd(dateEndRevenue ? dateEndRevenue : '');
@@ -128,14 +137,12 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                     ? 'howLongInPossession'
                     : 'inPossessionOf'
             );
-            setDateReference(dateReferenceRevenue ? dateReferenceRevenue : moment());
             setPayPercentage(payPercentageRevenue ? payPercentageRevenue : null);
             setPayAmount(payAmountRevenue ? payAmountRevenue : null);
             setKeyAmountFirstPercentage(keyAmountFirstPercentageRevenue ? keyAmountFirstPercentageRevenue : null);
             setPayPercentageValidFromKeyAmount(
                 payPercentageValidFromKeyAmountRevenue ? payPercentageValidFromKeyAmountRevenue : null
             );
-            setBlockRevenueChange(hasLastRevenueConceptDistribution);
         }
     }
 
@@ -384,7 +391,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                         Datum beëindigen valt buiten een concept verdeling waar deelnemer nog in zit. Bij beëindigen zal
                         er GEEN afsluitende opbrengst verdeling (uitkering) voor deze deelnemer gemaakt worden !
                     </p>
-                ) : dateTerminated >= dateBegin && dateTerminated <= dateEnd ? (
+                ) : (
+                    // ) : dateTerminated >= dateBegin && dateTerminated <= dateEnd ? (
                     <>
                         <p>
                             Afsluitende opbrengst verdeling (uitkering) voor deze deelnemer maken
@@ -514,7 +522,8 @@ const ParticipantDetailsTerminateLoanOrObligation = ({
                             beëindigen deelnemer kan je aanmaken door bovenstaande gegevens in te vullen.
                         </p>
                     </>
-                ) : null}
+                )}
+                {/*) : null}*/}
             </Modal>
         </>
     );

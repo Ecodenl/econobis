@@ -63,7 +63,19 @@ class RequestQuery extends \App\Helpers\RequestQuery\RequestQuery
                 case 'zelfde-iban':
                     $sharedContactIds = $this->getContactsSharingIban();
                     $baseQuery->whereIn('contacts.id', $sharedContactIds);
-                    $baseQuery->orderByRaw('FIELD(contacts.id, ' . implode(',', $sharedContactIds->toArray()) . ')');
+
+                    // Check sorts
+                    $sorts = $this->request->get('sorts');
+                    // Decode the JSON string into a PHP array
+                    $sortsArray = json_decode($sorts, true);
+                    // Check if the first entry exists and has the field 'iban'
+                    if (isset($sortsArray[0]['field']) && $sortsArray[0]['field'] === 'iban') {
+                        $baseQuery->orderByRaw('FIELD(contacts.id, ' . implode(',', $sharedContactIds->toArray()) . ')');
+                    } else {
+                        // The first field entry does not have the value 'iban'
+                        // Do nothing
+                    }
+
                     break;
             }
 

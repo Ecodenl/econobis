@@ -954,6 +954,7 @@ class TemplateVariableHelper
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
                 break;
             case 'geschonken_door':
+            case 'schenker_naam':
                 if($model->giftedByContact) {
                     if ($model->giftedByContact->type_id == 'person') {
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -967,33 +968,7 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
-            case 'geschonken_door_voornaam':
-                if($model->giftedByContact) {
-                    if($model->giftedByContact->type_id == 'person'){
-                        return $model->giftedByContact->person->first_name;
-                    }
-                    elseif($model->giftedByContact->type_id == 'organisation'){
-                        return '';
-                    }
-                }
-                else{
-                    return '';
-                }
-                break;
-            case 'geschonken_door_achternaam':
-                if($model->giftedByContact) {
-                    if($model->giftedByContact->type_id == 'person'){
-                        $prefix = $model->giftedByContact->person->last_name_prefix;
-                        return $prefix ? $prefix . ' ' . $model->giftedByContact->person->last_name : $model->giftedByContact->person->last_name;
-                    }
-                    elseif($model->giftedByContact->type_id == 'organisation'){
-                        return $model->giftedByContact->full_name;
-                    }
-                }
-                else{
-                    return '';
-                }
-                break;
+            case 'geschonken_door_voorletters':
             case 'schenker_voorletters':
                 if($model->giftedByContact) {
                     if ($model->giftedByContact->type_id == 'person') {
@@ -1006,6 +981,7 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'geschonken_door_voornaam':
             case 'schenker_voornaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
@@ -1019,6 +995,7 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'geschonken_door_achternaam':
             case 'schenker_achternaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){

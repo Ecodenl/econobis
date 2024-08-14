@@ -390,7 +390,9 @@ class TemplateVariableHelper
                 }
                 return $link;
                 break;
-
+            case 'portal_email':
+                return $model->portalUser ? $model->portalUser->email : '';
+                break;
             default:
                 return '';
                 break;

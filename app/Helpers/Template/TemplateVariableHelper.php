@@ -963,6 +963,7 @@ class TemplateVariableHelper
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
                 break;
             case 'geschonken_door':
+            case 'schenker_naam':
                 if($model->giftedByContact) {
                     if ($model->giftedByContact->type_id == 'person') {
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -976,7 +977,21 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'geschonken_door_voorletters':
+            case 'schenker_voorletters':
+                if($model->giftedByContact) {
+                    if ($model->giftedByContact->type_id == 'person') {
+                        return $model->giftedByContact->person->initials;
+                    } else {
+                        return '';
+                    }
+                }
+                else {
+                    return '';
+                }
+                break;
             case 'geschonken_door_voornaam':
+            case 'schenker_voornaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         return $model->giftedByContact->person->first_name;
@@ -990,6 +1005,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'geschonken_door_achternaam':
+            case 'schenker_achternaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         $prefix = $model->giftedByContact->person->last_name_prefix;

@@ -54,6 +54,7 @@ class ProjectController extends ApiController
         $project->load([
             'projectStatus',
             'projectType',
+            'projectLoanType',
             'ownedBy',
             'createdBy',
             'updatedBy',
@@ -129,6 +130,7 @@ class ProjectController extends ApiController
             ->boolean('visibleForAllContacts')->alias('visible_for_all_contacts')->next()
             ->string('textInfoProjectOnlyMembers')->alias('text_info_project_only_members')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
+            ->integer('loanTypeId')->validate('nullable|exists:project_loan_types,id')->onEmpty(null)->alias('loan_type_id')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
@@ -251,6 +253,7 @@ class ProjectController extends ApiController
             ->boolean('visibleForAllContacts')->alias('visible_for_all_contacts')->next()
             ->string('textInfoProjectOnlyMembers')->alias('text_info_project_only_members')->next()
             ->boolean('isParticipationTransferable')->alias('is_participation_transferable')->next()
+            ->integer('loanTypeId')->validate('nullable|exists:project_loan_types,id')->onEmpty(null)->alias('loan_type_id')->next()
             ->double('amountOfLoanNeeded')->onEmpty(null)->alias('amount_of_loan_needed')->next()
             ->double('minAmountLoan')->onEmpty(null)->alias('min_amount_loan')->next()
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()

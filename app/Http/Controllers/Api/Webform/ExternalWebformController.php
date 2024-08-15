@@ -2389,7 +2389,7 @@ class ExternalWebformController extends Controller
                 'quotation_amount' => $quotationAmount,
                 'cost_adjustment' => $costAdjustment,
             ]);
-            $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . $coachOrOrganisation->full_name . ".");
+            $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
 
         } else {
             $this->log('Er is geen kans_id meegegeven, kansactie bij kans niet aanmaken.');

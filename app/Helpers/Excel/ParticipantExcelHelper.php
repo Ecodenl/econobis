@@ -176,6 +176,10 @@ class ParticipantExcelHelper
         $headerData[] = 'Mollie ID';
         $headerData[] = 'Mollie betaaldatum';
 
+        if($this->isObligationProject) {
+            $headerData[] = 'Obligatienummer(s)';
+        }
+
         $completeData[] = $headerData;
 
         foreach ($this->participants->chunk(500) as $chunk) {
@@ -623,6 +627,10 @@ class ParticipantExcelHelper
                         $rowData[127] = "";
                     }
 
+                    if($this->isObligationProject) {
+                        $rowData[128] = $participant->obligationNumbersList;
+                    }
+
                     $completeData[] = $rowData;
                 }
 
@@ -632,7 +640,7 @@ class ParticipantExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'DL'; $col++) {
+        for ($col = 'A'; $col !== 'DZ'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
@@ -673,7 +681,7 @@ class ParticipantExcelHelper
         $headerData[] = 'Eerste ingangsdatum deelname';
 
         if($this->isObligationProject) {
-            $headerData[] = 'Obligatienummers';
+            $headerData[] = 'Obligatienummer(s)';
         }
 
         $completeData[] = $headerData;

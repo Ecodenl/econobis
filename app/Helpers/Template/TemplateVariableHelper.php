@@ -893,6 +893,12 @@ class TemplateVariableHelper
                 }else{
                     return 0;
                 }
+            case 'obligatienummers':
+                if($projectTypeCodeRef == 'obligation') {
+                    return  $model->obligation_numbers_list;;
+                }else{
+                    return ' ';
+                }
                 break;
             case 'bedrag_interesse':
                 if($projectTypeCodeRef == 'loan') {

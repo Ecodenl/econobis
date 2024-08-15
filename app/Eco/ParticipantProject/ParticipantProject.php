@@ -155,6 +155,15 @@ class ParticipantProject extends Model
         return $this->hasMany(ObligationNumber::class, 'participation_id');
     }
 
+    public function getObligationNumbersListAttribute()
+    {
+        $obligationNumbersList = [];
+        foreach($this->obligationNumbers as $obligationNumber) {
+            $obligationNumbersList[] = $obligationNumber->number;
+        }
+        return implode(',', $obligationNumbersList);;
+    }
+
     public function documents()
     {
         return $this->hasMany(Document::class, 'participation_project_id')->orderBy('documents.id', 'desc');

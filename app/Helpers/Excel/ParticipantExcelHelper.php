@@ -3,6 +3,7 @@
 namespace App\Helpers\Excel;
 
 use App\Eco\Address\AddressType;
+use App\Eco\Project\Project;
 use Carbon\Carbon;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
@@ -10,15 +11,15 @@ use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 class ParticipantExcelHelper
 {
     private $participants;
-//    private $isPcrProject = false;
+    private $isObligationProject = false;
 
     public function __construct($participants, $filterProjectId)
     {
         $this->participants = $participants;
-//        if($filterProjectId && $filterProjectId > 0){
-//            $project = Project::find($filterProjectId);
-//            $this->isPcrProject = $project->projectType->code_ref == 'postalcode_link_capital';
-//        }
+        if($filterProjectId && $filterProjectId > 0){
+            $project = Project::find($filterProjectId);
+            $this->isObligationProject = $project->projectType->code_ref == 'obligation';
+        }
     }
 
     public function downloadExcel()
@@ -671,6 +672,10 @@ class ParticipantExcelHelper
         $headerData[] = 'Lening deelname definitief';
         $headerData[] = 'Eerste ingangsdatum deelname';
 
+        if($this->isObligationProject) {
+            $headerData[] = 'Obligatienummers';
+        }
+
         $completeData[] = $headerData;
 
         foreach ($this->participants->chunk(500) as $chunk) {
@@ -714,6 +719,10 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->amount_definitive ;
                 $rowData[] = $participant->date_register;
 
+                if($this->isObligationProject) {
+                    $rowData[] = $participant->obligationNumbersList;
+                }
+
                 $completeData[] = $rowData;
 
             }
@@ -722,7 +731,7 @@ class ParticipantExcelHelper
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
 
-        for ($col = 'A'; $col !== 'Q'; $col++) {
+        for ($col = 'A'; $col !== 'R'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

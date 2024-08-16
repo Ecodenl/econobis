@@ -1433,6 +1433,11 @@ class ExternalWebformController extends Controller
             $this->addContactNotesToContact($data, $contactOrganisation);
             $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
+            //freeFieldsFieldRecords updaten
+            $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+            $this->setFreeFieldsFieldRecords($contactOrganisation, $dataFreeFieldContacts, $tableId);
+
+
             return $contactOrganisation;
         }
 
@@ -1580,6 +1585,10 @@ class ExternalWebformController extends Controller
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+
+            //freeFieldsFieldRecords updaten
+            $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+            $this->setFreeFieldsFieldRecords($contact, $dataFreeFieldContacts, $tableId);
 
             return $contact;
         }

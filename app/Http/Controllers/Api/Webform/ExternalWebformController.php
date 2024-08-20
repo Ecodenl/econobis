@@ -571,6 +571,8 @@ class ExternalWebformController extends Controller
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
                 'woondossier_opmerking_coach' => 'remark_coach',
+                'woondossier_verbruik_elektriciteit' => 'amount_electricity',
+                'woondossier_verbruik_gas' => 'amount_gas',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -2354,6 +2356,8 @@ class ExternalWebformController extends Controller
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
             && $data['remark_coach'] == ''
+            && $data['amount_electricity'] == ''
+            && $data['amount_gas'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2469,6 +2473,8 @@ class ExternalWebformController extends Controller
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
                 'remark_coach' => $data['remark_coach'],
+                'amount_electricity' => $data['amount_electricity'],
+                'amount_gas' => $data['amount_gas'],
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2531,6 +2537,8 @@ class ExternalWebformController extends Controller
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
             $housingFile->remark_coach = $data['remark_coach'];
+            $housingFile->amount_electricity = $data['amount_electricity'];
+            $housingFile->amount_gas = $data['amount_gas'];
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

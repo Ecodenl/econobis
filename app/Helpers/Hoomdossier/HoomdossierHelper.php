@@ -246,7 +246,18 @@ class HoomdossierHelper
 
     private function sendMail()
     {
-        $mail = Mail::to($this->contact->primaryEmailAddress);
+//        $mail = Mail::to($this->contact->primaryEmailAddress);
+
+        if ($this->cooperation->hoom_mailbox_id) {
+            $mailbox = Mailbox::find($this->cooperation->hoom_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = Mail::fromMailbox($mailbox)->to($this->contact->primaryEmailAddress);
 
         $emailTemplate = EmailTemplate::find($this->cooperation->hoom_email_template_id);
 

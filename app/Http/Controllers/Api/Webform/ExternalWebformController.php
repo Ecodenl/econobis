@@ -33,6 +33,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
@@ -573,6 +574,7 @@ class ExternalWebformController extends Controller
                 'woondossier_opmerking_coach' => 'remark_coach',
                 'woondossier_verbruik_elektriciteit' => 'amount_electricity',
                 'woondossier_verbruik_gas' => 'amount_gas',
+                'woondossier_stooktemperatuur' => 'boiler_setting_comfort_heat',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -2358,6 +2360,7 @@ class ExternalWebformController extends Controller
             && $data['remark_coach'] == ''
             && $data['amount_electricity'] == ''
             && $data['amount_gas'] == ''
+            && $data['boiler_setting_comfort_heat'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2401,6 +2404,12 @@ class ExternalWebformController extends Controller
         if (!$eneryLabelStatus) {
             $this->log('Er is geen bekende waarde voor status energie label meegegeven, default naar "geen"');
             $eneryLabelStatus = null;
+        }
+
+        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
+        if (!$boilerSettingComfortHeat) {
+            $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
+            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('hoom_status_value', 'unsure')->first();
         }
 
         $rofeType = RoofType::find($data['roof_type_id']);
@@ -2475,6 +2484,7 @@ class ExternalWebformController extends Controller
                 'remark_coach' => $data['remark_coach'],
                 'amount_electricity' => $data['amount_electricity'],
                 'amount_gas' => $data['amount_gas'],
+                'boiler_setting_comfort_heat' => $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null,
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2539,6 +2549,7 @@ class ExternalWebformController extends Controller
             $housingFile->remark_coach = $data['remark_coach'];
             $housingFile->amount_electricity = $data['amount_electricity'];
             $housingFile->amount_gas = $data['amount_gas'];
+            $housingFile->boiler_setting_comfort_heat = $data['boiler_setting_comfort_heat'];
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

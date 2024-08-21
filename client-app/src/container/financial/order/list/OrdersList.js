@@ -104,7 +104,7 @@ class OrdersList extends Component {
         }
     };
 
-    fetchOrdersData = (showOrdersWithoutOrderlines = true) => {
+    fetchOrdersData = (showOrdersWithoutOrderlines = 'true') => {
         this.props.clearOrders();
 
         setTimeout(() => {

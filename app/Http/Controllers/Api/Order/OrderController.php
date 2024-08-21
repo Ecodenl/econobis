@@ -39,7 +39,7 @@ class OrderController extends ApiController
     {
         $this->authorize('view', Order::class);
 
-        if($request['showOrdersWithoutOrderlines'] === "true") {
+        if($request['showOrdersWithoutOrderlines'] == true) {
             $orders = $requestQuery->get();
             $orderIdsTotal = $requestQuery->totalIds();
         } else {

@@ -19,6 +19,7 @@ use App\Console\Commands\processWorkflowEmailQuotationRequestStatus;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
 use App\Console\Commands\setIsCurrentSupplier;
+use App\Console\Commands\checkWrongDateEntryParticipation;
 use Config;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
@@ -51,6 +52,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongTwinfieldInvoices::class,
         contactGroupsContactsForReport::class,
+        checkWrongDateEntryParticipation::class,
     ];
 
     /**

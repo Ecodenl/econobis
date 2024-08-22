@@ -76,6 +76,9 @@ class ContactToImportController extends Controller
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->matchCode = 'Klant';
                     $contactForImport->matchColor = '#00FF00';
+// todo WM: FF snel voor test
+//                    $contactForImport->showCheckboxUpdate = true;
+//                    $contactForImport->checkedUpdate = false;
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }
@@ -239,6 +242,9 @@ class ContactToImportController extends Controller
                     $contactForImport->primaryEmailAddress->email = $contactToImport->email_contact;
                     $contactForImport->matchCode = 'Klant minus achternaam';
                     $contactForImport->matchColor = '#FF8000';
+//                    todo WM: FF snel voor test
+//                    $contactForImport->showCheckboxUpdate = true;
+//                    $contactForImport->checkedUpdate = false;
 
                     array_push($matchedContactIds, $contactForImport->id);
                 }

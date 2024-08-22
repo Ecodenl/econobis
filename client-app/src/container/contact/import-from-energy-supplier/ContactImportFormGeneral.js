@@ -27,7 +27,7 @@ class ContactImportFormGeneral extends Component {
             importing: false,
             suppliers: [],
             supplier: false,
-            warning: 'aaa',
+            warning: '',
         };
     }
 

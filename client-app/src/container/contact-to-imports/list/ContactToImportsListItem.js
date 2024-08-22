@@ -8,6 +8,12 @@ import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImport
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
 
 function ContactToImportsListItem({
+    showCheckboxNew,
+    checkedNew,
+    setCheckedContactNew,
+    // showCheckboxUpdate,
+    // checkedUpdate,
+    setCheckedContactUpdate,
     id,
     number,
     firstName,
@@ -67,6 +73,27 @@ function ContactToImportsListItem({
     return (
         <>
             <tr style={{ backgroundColor: '#ececec' }}>
+                <td>
+                    {/*{showActionButtons && permissions.manageContactToImports ? (*/}
+                    {/*    <a role="button" onClick={() => openItem(id)}>*/}
+                    {/*        <Icon className="mybtn-success" size={14} icon={pencil} />*/}
+                    {/*    </a>*/}
+                    {/*) : (*/}
+                    {/*    ''*/}
+                    {/*)}*/}
+                    {showCheckboxNew ? (
+                        <>
+                            <input
+                                type="checkbox"
+                                checked={checkedNew}
+                                onChange={() => setCheckedContactNew(id)}
+                                // onChange={() => createNewContactFromContactToImport(id)}
+                            />
+                            {' Nieuw'}
+                        </>
+                    ) : null}
+                </td>
+                <td>{matchCode}</td>
                 <td>{number}</td>
                 <td>{firstName}</td>
                 <td>{lastName}</td>
@@ -80,26 +107,54 @@ function ContactToImportsListItem({
                 <td>ean</td>
                 <td>leverancier</td>
                 <td>klantnummer</td>
-                <td>{matchCode}</td>
-                <td>
-                    {showActionButtons && permissions.manageContactToImports ? (
-                        <a role="button" onClick={() => openItem(id)}>
-                            <Icon className="mybtn-success" size={14} icon={pencil} />
-                        </a>
-                    ) : (
-                        ''
-                    )}
-                    <input
-                        type="checkbox"
-                        // onChange={() => createNewContactFromContactToImport(id)}
-                    />{' '}
-                    nieuw
-                </td>
+                {/*<td>{matchCode}</td>*/}
+                {/*<td>*/}
+                {/*    {showActionButtons && permissions.manageContactToImports ? (*/}
+                {/*        <a role="button" onClick={() => openItem(id)}>*/}
+                {/*            <Icon className="mybtn-success" size={14} icon={pencil} />*/}
+                {/*        </a>*/}
+                {/*    ) : (*/}
+                {/*        ''*/}
+                {/*    )}*/}
+                {/*    <input*/}
+                {/*        type="checkbox"*/}
+                {/*        // onChange={() => createNewContactFromContactToImport(id)}*/}
+                {/*    />{' '}*/}
+                {/*    nieuw*/}
+                {/*</td>*/}
             </tr>
 
             {contactForImports.map(contactForImport => {
                 return (
                     <tr>
+                        <td>
+                            {/*{showActionButtons && permissions.manageContactToImports ? (*/}
+                            {showActionButtons ? (
+                                <a role="button" onClick={() => openItem(id)}>
+                                    <Icon className="mybtn-success" size={14} icon={pencil} />
+                                </a>
+                            ) : (
+                                ''
+                            )}
+                            {contactForImport.matchCode != 'Match klant' ? (
+                                <>
+                                    {contactForImport.showCheckboxUpdate ? (
+                                        <>
+                                            <input
+                                                type="checkbox"
+                                                checked={contactForImport.checkedUpdate}
+                                                // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
+                                                onChange={() => setCheckedContactUpdate(id, contactForImport.personId)}
+                                            />
+                                            {' Bijwerken'}
+                                        </>
+                                    ) : null}
+                                </>
+                            ) : (
+                                ''
+                            )}
+                        </td>
+                        <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
                         <td>{contactForImport.lastName}</td>
@@ -113,24 +168,24 @@ function ContactToImportsListItem({
                         <td>ean</td>
                         <td>leverancier</td>
                         <td>klantnummer</td>
-                        <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>
-                        <td>
-                            {showActionButtons && permissions.manageContactToImports ? (
-                                <a role="button" onClick={() => openItem(id)}>
-                                    <Icon className="mybtn-success" size={14} icon={pencil} />
-                                </a>
-                            ) : (
-                                ''
-                            )}
-                            {contactForImport.matchCode != 'Match klant' ? (
-                                <input
-                                    type="checkbox"
-                                    // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
-                                />
-                            ) : (
-                                ''
-                            )}
-                        </td>
+                        {/*<td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>*/}
+                        {/*<td>*/}
+                        {/*    {showActionButtons && permissions.manageContactToImports ? (*/}
+                        {/*        <a role="button" onClick={() => openItem(id)}>*/}
+                        {/*            <Icon className="mybtn-success" size={14} icon={pencil} />*/}
+                        {/*        </a>*/}
+                        {/*    ) : (*/}
+                        {/*        ''*/}
+                        {/*    )}*/}
+                        {/*    {contactForImport.matchCode != 'Match klant' ? (*/}
+                        {/*        <input*/}
+                        {/*            type="checkbox"*/}
+                        {/*            // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}*/}
+                        {/*        />*/}
+                        {/*    ) : (*/}
+                        {/*        ''*/}
+                        {/*    )}*/}
+                        {/*</td>*/}
                     </tr>
                 );
             })}

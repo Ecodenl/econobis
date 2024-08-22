@@ -6,6 +6,14 @@ import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHe
 const ContactToImportsListHead = props => {
     return (
         <tr className="thead-title">
+            <th width={'6%'}>
+                <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
+                Nieuw
+                <br />
+                <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
+                Bijwerken
+            </th>
+            <DataTableHeadTitle title={'Match'} width={'8%'} />
             <DataTableHeadTitleAndSort
                 sortColumn={'number'}
                 title={'Contactnr'}
@@ -54,14 +62,14 @@ const ContactToImportsListHead = props => {
             <DataTableHeadTitle title={'Ean'} width={'5%'} />
             <DataTableHeadTitle title={'Energielevereancier'} width={'10%'} />
             <DataTableHeadTitle title={'Klantnr'} width={'10%'} />
-            <DataTableHeadTitle title={'Match'} width={'10%'} />
-            <th width={'4%'}>
-                <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
-                nieuw
-                <br />
-                <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
-                update
-            </th>
+            {/*<DataTableHeadTitle title={'Match'} width={'10%'} />*/}
+            {/*<th width={'4%'}>*/}
+            {/*    <input type="checkbox" onChange={props.selectAllCheckboxesNew} />*/}
+            {/*    nieuw*/}
+            {/*    <br />*/}
+            {/*    <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />*/}
+            {/*    update*/}
+            {/*</th>*/}
         </tr>
     );
 };

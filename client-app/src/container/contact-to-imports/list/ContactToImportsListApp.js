@@ -86,10 +86,18 @@ function ContactToImportsListApp() {
         onSubmitFilter();
     }
 
-    function selectAllCheckboxesNew() {}
+    function selectAllCheckboxesNew() {
+        console.log('selectAllCheckboxesNew');
+    }
+    function setCheckedContactNew(importId) {
+        console.log('setCheckedContactNew voor import Id: ' + importId);
+    }
 
     function selectAllCheckboxesUpdate() {
-        console.log('test a');
+        console.log('selectAllCheckboxesUpdate');
+    }
+    function setCheckedContactUpdate(importId, personId) {
+        console.log('setCheckedContactNew voor import Id: ' + importId + ' en personId ' + personId);
     }
 
     function formatFilterHelper() {
@@ -166,7 +174,10 @@ function ContactToImportsListApp() {
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
                         refreshContactToImports={fetchContactToImports}
-                        selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                        // todo WM: FF snel voor test
+                        // setCheckedContactNew={setCheckedContactNew}
+                        // setCheckedContactUpdate={setCheckedContactUpdate}
+                        selectAllCheckboxesNew={selectAllCheckboxesNew}
                         selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
                     />
                 </div>

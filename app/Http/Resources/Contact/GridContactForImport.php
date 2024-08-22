@@ -32,8 +32,11 @@ class GridContactForImport extends JsonResource
             'endDate' => $this->end_date,
             'matchCode' => $this->matchCode,
             'matchColor' => $this->matchColor,
-            'contactForImports' => $this->contactForImports,
+//            'contactForImports' => $this->contactForImports,
             'personId' => $this->person->id,
+// todo WM: FF snel voor test
+//            'showCheckboxUpdate' => $this->showCheckboxUpdate,
+//            'checkedUpdate' => $this->checkedUpdate,
         ];
     }
 }

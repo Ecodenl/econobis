@@ -19,6 +19,9 @@ function ContactToImportsList({
     handleChangeFilter,
     handleKeyUp,
     refreshContactToImports,
+    //                               todo WM: FF snel voor test
+    //                               setCheckedContactNew,
+    // setCheckedContactUpdate,
     selectAllCheckboxesNew,
     selectAllCheckboxesUpdate,
 }) {
@@ -43,6 +46,11 @@ function ContactToImportsList({
                             ContactToImports.map(ContactToImport => {
                                 return (
                                     <ContactToImportsListItem
+                                        // todo WM: FF snel voor test
+                                        // showCheckboxNew={true}
+                                        // checkedNew={false}
+                                        // setCheckedContactNew={setCheckedContactNew}
+                                        // setCheckedContactUpdate={setCheckedContactUpdate}
                                         key={ContactToImport.id}
                                         refreshContactToImports={refreshContactToImports}
                                         {...ContactToImport}

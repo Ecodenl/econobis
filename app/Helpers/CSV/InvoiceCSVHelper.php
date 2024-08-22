@@ -276,6 +276,7 @@ class InvoiceCSVHelper
                 'invoice.online_reference' => '(online) betalingskenmerk',
                 'invoice.online_date_paid' => '(online) datum betaald',
                 'product_name' => 'Product naam',
+                'product.invoice_text' => 'Product omschrijving',
                 'amount' => 'Aantal',
                 'amount_incl_reduction_excl_vat' => 'Bedrag ex btw',
                 'amount_incl_reduction_incl_vat' => 'Bedrag incl btw'

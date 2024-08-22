@@ -417,8 +417,8 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 
-        if ($data['dateExecuted']) {
-            $quotationRequest->date_executed = $data['dateExecuted'];
+        if (isset($data['dateExecuted'])) {
+            $quotationRequest->date_executed = !empty($data['dateExecuted']) ? $data['dateExecuted'] : null;
         }
 
         if ($data['dateUnderReviewDetermination']) {

@@ -19,6 +19,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class TemplateVariableHelper
 {
@@ -436,6 +437,12 @@ class TemplateVariableHelper
 
     public static function getOpportunityVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return optional($model->intake)->contact->full_name;
                 break;
@@ -508,6 +515,12 @@ class TemplateVariableHelper
 
     public static function getIntakeVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return $model->contact->full_name;
                 break;
@@ -2212,6 +2225,12 @@ class TemplateVariableHelper
 
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'organisatie_naam':
                 return optional(optional($model->organisationOrCoach)->organisation)->name;
                 break;

@@ -2292,7 +2292,6 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen intake_id meegegeven, kans(en) bij intake niet aanmaken.');
         }
     }
-// addQuotationRequestToOpportunity
     protected function addQuotationRequestToExistingOpportunity(array $dataOpportunity, array $dataQuotationRequest, Webform $webform)
     {
         if ($dataOpportunity['opportunity_id']) {
@@ -3580,101 +3579,107 @@ class ExternalWebformController extends Controller
      */
     private function addQuotationRequestToOpportunity(array $dataQuotationRequest, $opportunity, Webform $webform): void
     {
-// geen coach of organisatie
-        $coachOrOrganisation = null;
-        if (!$dataQuotationRequest['coach_or_organisation_id']) {
-            $this->log("Geen Coach of Organisatie meegegeven.");
-            // wel coach of organisatie meegegeven, dan moet hij bestaan als betrokken coach of organisatie bij campagne (via kans->intake->campagne)
+        if(!$dataQuotationRequest['opportunity_action_type_code_ref']){
+            $this->log("Geen kansactie_aanmaken meegegeven.");
         } else {
-            $coachOrOrganisation = Contact::find($dataQuotationRequest['coach_or_organisation_id']);
-            if (!$coachOrOrganisation) {
-                $this->error('Meegegeven kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') niet gevonden als contact.');
+
+            // geen coach of organisatie
+            $coachOrOrganisation = null;
+            if (!$dataQuotationRequest['coach_or_organisation_id']) {
+                $this->log("Geen Coach of Organisatie meegegeven.");
+                // wel coach of organisatie meegegeven, dan moet hij bestaan als betrokken coach of organisatie bij campagne (via kans->intake->campagne)
             } else {
-                $this->log("Coach of Organisatie met id " . $coachOrOrganisation->id . " gevonden.");
+                $coachOrOrganisation = Contact::find($dataQuotationRequest['coach_or_organisation_id']);
+                if (!$coachOrOrganisation) {
+                    $this->error('Meegegeven kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') niet gevonden als contact.');
+                } else {
+                    $this->log("Coach of Organisatie met id " . $coachOrOrganisation->id . " gevonden.");
+                }
+                //check of coach of organisatie gebruikt mag worden voor deze kans(actie)
+                if ($coachOrOrganisation->isCoach()) {
+                    if (!$coachOrOrganisation->coachCampaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
+                        $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen betrokken coach bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
+                    };
+                } elseif ($coachOrOrganisation->isOrganisation()) {
+                    if (!$coachOrOrganisation->organisation->campaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
+                        $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen betrokken organisatie bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
+                    };
+                } else {
+                    $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen coach of organisatie.');
+                }
             }
-            //check of coach of organisatie gebruikt mag worden voor deze kans(actie)
-            if ($coachOrOrganisation->isCoach()) {
-                if (!$coachOrOrganisation->coachCampaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
-                    $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen betrokken coach bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
-                };
-            } elseif ($coachOrOrganisation->isOrganisation()) {
-                if (!$coachOrOrganisation->organisation->campaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
-                    $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen betrokken organisatie bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
-                };
+
+            $opportunityAction = OpportunityAction::where('code_ref', $dataQuotationRequest['opportunity_action_type_code_ref'])->first();
+            if (!$opportunityAction) $this->error('Er is een ongeldige waarde voor kansactie_aanmaken (' . $dataQuotationRequest['opportunity_action_type_code_ref'] . ') meegegeven.');
+
+            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $opportunityAction->id)->first();
+            if (!$quotationRequestStatus) {
+                $quotationRequestStatus = QuotationRequestStatus::where('code_ref', 'default')->where('opportunity_action_id', $opportunityAction->id)->first();
+                $this->log('Er is geen bekende waarde voor kansactie_aanmaken status meegegeven bij kansactie_type ' . $opportunityAction->name . ', default naar: ' . $quotationRequestStatus->name);
+            }
+
+            // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if ($responsibleUser) {
+                Auth::setUser($responsibleUser);
+                $this->log('Kans verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
             } else {
-                $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $dataQuotationRequest['coach_or_organisation_id'] . ') is geen coach of organisatie.');
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if ($responsibleTeam && $responsibleTeam->users) {
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Kans verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                } else {
+                    $this->log('Kans verantwoordelijke gebruiker : onbekend');
+                }
             }
-        }
 
-        $opportunityAction = OpportunityAction::where('code_ref', $dataQuotationRequest['opportunity_action_type_code_ref'])->first();
-        if (!$opportunityAction) $this->error('Er is een ongeldige waarde voor kansactie_aanmaken (' . $dataQuotationRequest['opportunity_action_type_code_ref'] . ') meegegeven.');
-
-        $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $opportunityAction->id)->first();
-        if (!$quotationRequestStatus) {
-            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', 'default')->where('opportunity_action_id', $opportunityAction->id)->first();
-            $this->log('Er is geen bekende waarde voor kansactie_aanmaken status meegegeven bij kansactie_type ' . $opportunityAction->name . ', default naar: ' . $quotationRequestStatus->name);
-        }
-
-        // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
-        // Die moeten we eerst even setten als we dus hier vanuit webform komen.
-        $responsibleUser = User::find($webform->responsible_user_id);
-        if ($responsibleUser) {
-            Auth::setUser($responsibleUser);
-            $this->log('Kans verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
-        } else {
-            $responsibleTeam = Team::find($webform->responsible_team_id);
-            if ($responsibleTeam && $responsibleTeam->users) {
-                $teamFirstUser = $responsibleTeam->users->first();
-                Auth::setUser($teamFirstUser);
-                $this->log('Kans verantwoordelijke gebruiker : ' . $teamFirstUser->id);
-            } else {
-                $this->log('Kans verantwoordelijke gebruiker : onbekend');
+            // Default date planned
+            $datePlanned = null;
+            // When date planned filled in
+            if ($dataQuotationRequest['date_planned']) {
+                $datePlanned = Carbon::make($dataQuotationRequest['date_planned']);
             }
-        }
+            // Default date planned
+            $dateRecorded = null;
+            // When date planned filled in
+            if ($dataQuotationRequest['date_recorded']) {
+                $dateRecorded = Carbon::make($dataQuotationRequest['date_recorded']);
+            }
 
-        // Default date planned
-        $datePlanned = null;
-        // When date planned filled in
-        if ($dataQuotationRequest['date_planned']) {
-            $datePlanned = Carbon::make($dataQuotationRequest['date_planned']);
-        }
-        // Default date planned
-        $dateRecorded = null;
-        // When date planned filled in
-        if ($dataQuotationRequest['date_recorded']) {
-            $dateRecorded = Carbon::make($dataQuotationRequest['date_recorded']);
-        }
+            $projectmanagerNote = null;
+            $externalpartyNote = null;
+            $clientNote = null;
+            $quotationAmount = null;
+            $costAdjustment = null;
+            if ($opportunityAction->code_ref == 'subsidy-request') {
+                $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;
+                $clientNote = $dataQuotationRequest['client_note'] ?: null;
+                $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
+                $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
+            }
+            if ($opportunityAction->code_ref == 'redirection') {
+                $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
+            }
 
-        $projectmanagerNote = null;
-        $externalpartyNote = null;
-        $clientNote = null;
-        $quotationAmount = null;
-        $costAdjustment = null;
-        if ($opportunityAction->code_ref == 'subsidy-request') {
-            $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;
-            $clientNote = $dataQuotationRequest['client_note'] ?: null;
-            $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
-            $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
-        }
-        if ($opportunityAction->code_ref == 'redirection') {
-            $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
-        }
+            $quotationRequest = QuotationRequest::create([
+                'contact_id' => $coachOrOrganisation ? $coachOrOrganisation->id : null,
+                'opportunity_id' => $opportunity->id,
+                'opportunity_action_id' => $opportunityAction->id,
+                'status_id' => $quotationRequestStatus->id,
+                'quotation_text' => $dataQuotationRequest['quotation_text'],
+                'date_planned' => $datePlanned,
+                'date_recorded' => $dateRecorded,
+                'coach_or_organisation_note' => $dataQuotationRequest['coach_or_organisation_note'] ?: null,
+                'projectmanager_note' => $projectmanagerNote,
+                'externalparty_note' => $externalpartyNote,
+                'client_note' => $clientNote,
+                'quotation_amount' => $quotationAmount,
+                'cost_adjustment' => $costAdjustment,
+            ]);
+            $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
 
-        $quotationRequest = QuotationRequest::create([
-            'contact_id' => $coachOrOrganisation ? $coachOrOrganisation->id : null,
-            'opportunity_id' => $opportunity->id,
-            'opportunity_action_id' => $opportunityAction->id,
-            'status_id' => $quotationRequestStatus->id,
-            'quotation_text' => $dataQuotationRequest['quotation_text'],
-            'date_planned' => $datePlanned,
-            'date_recorded' => $dateRecorded,
-            'coach_or_organisation_note' => $dataQuotationRequest['coach_or_organisation_note'] ?: null,
-            'projectmanager_note' => $projectmanagerNote,
-            'externalparty_note' => $externalpartyNote,
-            'client_note' => $clientNote,
-            'quotation_amount' => $quotationAmount,
-            'cost_adjustment' => $costAdjustment,
-        ]);
-        $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
+        }
     }
 }

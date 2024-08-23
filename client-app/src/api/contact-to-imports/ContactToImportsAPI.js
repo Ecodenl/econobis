@@ -1,7 +1,7 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    fetchContactToImports: (filters, sorts, pagination) => {
+    fetchContactToImports: (filters, sorts, pagination, selectAllNew, selectAllUpdate) => {
         const requestUrl = `${URL_API}/api/contact-to-imports/grid`;
 
         return axiosInstance.get(requestUrl, {
@@ -10,6 +10,8 @@ export default {
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
+                selectAllNew,
+                selectAllUpdate,
             },
         });
     },

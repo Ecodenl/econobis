@@ -3,14 +3,32 @@ import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
+import ButtonText from '../../../components/button/ButtonText';
 
-function ContactToImportsListToolbar({ ContactToImportsTotal, refreshContactToImports, permissions, getCSV }) {
+function ContactToImportsListToolbar({
+    ContactToImportsTotal,
+    refreshContactToImports,
+    permissions,
+    getCSV,
+    selectAllNew,
+    selectAllUpdate,
+    actionSelectAllNew,
+    actionSelectAllUpdate,
+}) {
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={refreshContactToImports} />
                     <ButtonIcon iconName={'download'} onClickAction={getCSV} title="Downloaden contacten naar CSV" />
+                    <ButtonText
+                        buttonText={selectAllNew ? 'Alles' : 'Alleen nieuw selectie'}
+                        onClickAction={actionSelectAllNew}
+                    />{' '}
+                    <ButtonText
+                        buttonText={selectAllUpdate ? 'Alles' : 'Alleen bijwerken selectie'}
+                        onClickAction={actionSelectAllUpdate}
+                    />
                 </div>
             </div>
             <div className="col-md-4">

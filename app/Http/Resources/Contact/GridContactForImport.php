@@ -16,27 +16,24 @@ class GridContactForImport extends JsonResource
     {
         return [
             'id' => $this->id,
+            'matchCode' => $this->matchCode,
+            'matchDescription' => $this->matchDescription,
+            'matchColor' => $this->matchColor,
             'number' => $this->number,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
-            'street' => $this->street,
-            'housenumber' => $this->housenumber,
-            'addition' => $this->addition,
-            'postalCode' => $this->postal_code,
-            'city' => $this->city,
-            'emailContact' => $this->primaryEmailAddress->email ?? '',
+            'street' => $this->primaryAddress?->street ?? '',
+            'housenumber' => $this->primaryAddress?->housenumber ?? '',
+            'addition' => $this->primaryAddress?->addition ?? '',
+            'postalCode' => $this->primaryAddress?->postal_code ?? '',
+            'city' => $this->primaryAddress?->city ?? '',
+            'emailContact' => $this->primaryEmailAddress?->email ?? '',
             'phoneNumber' => $this->phone_number,
             'ean' => $this->ean,
             'esNumber' => $this->es_number,
             'memberSince' => $this->member_since,
             'endDate' => $this->end_date,
-            'matchCode' => $this->matchCode,
-            'matchColor' => $this->matchColor,
-//            'contactForImports' => $this->contactForImports,
-            'personId' => $this->person->id,
-// todo WM: FF snel voor test
-//            'showCheckboxUpdate' => $this->showCheckboxUpdate,
-//            'checkedUpdate' => $this->checkedUpdate,
+            'personId' => $this->person?->id ?? '' ,
         ];
     }
 }

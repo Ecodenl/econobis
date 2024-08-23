@@ -16,6 +16,8 @@ class GridContactToImport extends JsonResource
     {
         return [
             'id' => $this->id,
+            'importMatchCode' => $this->importMatchCode,
+            'status' => $this->status,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,
             'street' => $this->street,
@@ -29,9 +31,7 @@ class GridContactToImport extends JsonResource
             'esNumber' => $this->es_number,
             'memberSince' => $this->member_since,
             'endDate' => $this->end_date,
-            'match' => $this->match,
             'contactForImports' => $this->contactForImports,
-            'status' => $this->status,
         ];
     }
 }

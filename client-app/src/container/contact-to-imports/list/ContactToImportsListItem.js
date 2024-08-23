@@ -70,6 +70,32 @@ function ContactToImportsListItem({
             });
     }
 
+    const matchCodeText = matchCode => {
+        switch (matchCode) {
+            case 'new':
+                return 'Nog verwerken';
+            case 'supplierFullMatch':
+                return 'Match klant';
+            case 'supplierIgnoreEsNumber':
+                return 'Match klant min klantnummer';
+            case 'supplierIgnoreAddress':
+                return 'Match klant minus adres';
+            case 'supplierIgnoreEmail':
+                return 'Match klant minus E-mail';
+            case 'supplierIgnoreLastName':
+                return 'Match klant minus achternaam';
+            case 'contactMatch':
+                return 'Match contact';
+            case 'contactIgnoreAddress':
+                return 'Match contact minus adres';
+            case 'contactIgnoreEmail':
+                return 'Match contact minus e-mail';
+            case 'contactIgnoreLastName':
+                return 'Match contact minus achternaam';
+        }
+        return matchCode;
+    };
+
     return (
         <>
             <tr style={{ backgroundColor: '#ececec' }}>
@@ -136,25 +162,27 @@ function ContactToImportsListItem({
                             ) : (
                                 ''
                             )}
-                            {contactForImport.matchCode != 'Match klant' ? (
+                            {contactForImport.matchCode != 'supplierFullMatch' ? (
                                 <>
-                                    {contactForImport.showCheckboxUpdate ? (
-                                        <>
-                                            <input
-                                                type="checkbox"
-                                                checked={contactForImport.checkedUpdate}
-                                                // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
-                                                onChange={() => setCheckedContactUpdate(id, contactForImport.personId)}
-                                            />
-                                            {' Bijwerken'}
-                                        </>
-                                    ) : null}
+                                    {/*{contactForImport.showCheckboxUpdate ? (*/}
+                                    <>
+                                        <input
+                                            type="checkbox"
+                                            checked={contactForImport.checkedUpdate}
+                                            // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
+                                            onChange={() => setCheckedContactUpdate(id, contactForImport.personId)}
+                                        />
+                                        {' Bijwerken'}
+                                    </>
+                                    {/*) : null}*/}
                                 </>
                             ) : (
                                 ''
                             )}
                         </td>
-                        <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>
+                        <td style={{ background: contactForImport.matchColor }}>
+                            {matchCodeText(contactForImport.matchCode)}
+                        </td>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
                         <td>{contactForImport.lastName}</td>
@@ -177,7 +205,7 @@ function ContactToImportsListItem({
                         {/*    ) : (*/}
                         {/*        ''*/}
                         {/*    )}*/}
-                        {/*    {contactForImport.matchCode != 'Match klant' ? (*/}
+                        {/*    {contactForImport.matchCode != 'supplierFullMatch' ? (*/}
                         {/*        <input*/}
                         {/*            type="checkbox"*/}
                         {/*            // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}*/}

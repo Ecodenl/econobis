@@ -20,6 +20,8 @@ function ContactToImportsListApp() {
     const [isLoading, setLoading] = useState(true);
     const [meta, setMetaData] = useState({ total: 0 });
     const [filter, setFilter] = useState([]);
+    const [selectAllNew, setSelectAllNew] = useState(false);
+    const [selectAllUpdate, setSelectAllUpdate] = useState(false);
     const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
@@ -27,24 +29,44 @@ function ContactToImportsListApp() {
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
+            console.log('use effect 1');
             fetchContactToImports();
         },
-        [pagination.offset, sort]
+        [pagination.offset, sort, selectAllNew === true, selectAllUpdate === true]
     );
 
     // If pressed enter then reload data
-    useEffect(
-        function() {
-            if (pressedEnter) {
-                fetchContactToImports();
-            }
-        },
-        [pressedEnter]
-    );
+    // useEffect(
+    //     function() {
+    //         console.log('use effect 2');
+    //         if (pressedEnter) {
+    //             console.log('pressedEnter');
+    //             fetchContactToImports();
+    //         }
+    //     },
+    //     [pressedEnter]
+    // );
+
+    function actionSelectAllNew() {
+        setSelectAllUpdate(false);
+        setSelectAllNew(!selectAllNew);
+    }
+    function actionSelectAllUpdate() {
+        setSelectAllNew(false);
+        setSelectAllUpdate(!selectAllUpdate);
+    }
 
     function fetchContactToImports() {
         axios
-            .all([ContactToImportsAPI.fetchContactToImports(formatFilterHelper(), sort, pagination)])
+            .all([
+                ContactToImportsAPI.fetchContactToImports(
+                    formatFilterHelper(),
+                    sort,
+                    pagination,
+                    selectAllNew,
+                    selectAllUpdate
+                ),
+            ])
             .then(
                 axios.spread(payloadContactToImports => {
                     setContactToImports(payloadContactToImports.data.data);
@@ -89,13 +111,13 @@ function ContactToImportsListApp() {
     function selectAllCheckboxesNew() {
         console.log('selectAllCheckboxesNew');
     }
+    function selectAllCheckboxesUpdate() {
+        console.log('selectAllCheckboxesUpdate');
+    }
     function setCheckedContactNew(importId) {
         console.log('setCheckedContactNew voor import Id: ' + importId);
     }
 
-    function selectAllCheckboxesUpdate() {
-        console.log('selectAllCheckboxesUpdate');
-    }
     function setCheckedContactUpdate(importId, personId) {
         console.log('setCheckedContactNew voor import Id: ' + importId + ' en personId ' + personId);
     }
@@ -103,7 +125,7 @@ function ContactToImportsListApp() {
     function formatFilterHelper() {
         let filters = [];
 
-        filters.push({ field: 'status', data: 'nog niet verwerkt' });
+        filters.push({ field: 'status', data: 'new' });
 
         // if (filter.tableName) {
         //     filters.push({ field: 'tableName', data: filter.tableName });
@@ -160,6 +182,10 @@ function ContactToImportsListApp() {
                         ContactToImportsTotal={meta.total}
                         refreshContactToImports={fetchContactToImports}
                         getCSV={getCSV}
+                        selectAllNew={selectAllNew}
+                        selectAllUpdate={selectAllUpdate}
+                        actionSelectAllNew={actionSelectAllNew}
+                        actionSelectAllUpdate={actionSelectAllUpdate}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">
@@ -174,9 +200,8 @@ function ContactToImportsListApp() {
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
                         refreshContactToImports={fetchContactToImports}
-                        // todo WM: FF snel voor test
-                        // setCheckedContactNew={setCheckedContactNew}
-                        // setCheckedContactUpdate={setCheckedContactUpdate}
+                        setCheckedContactNew={setCheckedContactNew}
+                        setCheckedContactUpdate={setCheckedContactUpdate}
                         selectAllCheckboxesNew={selectAllCheckboxesNew}
                         selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
                     />

@@ -268,6 +268,8 @@ class ContactImportFromEnergySupplierHelper
                             $contact->end_date = $line[18];
                         }
 
+                        $contact->status = 'new';
+
                         $contact->supplier_code_ref = $suppliercodeRef;
 
                         $contact->save();

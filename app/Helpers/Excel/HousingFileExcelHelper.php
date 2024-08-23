@@ -72,6 +72,8 @@ class HousingFileExcelHelper
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik elektriciteit';
 
+        $headerData[] = 'Opbrengst zonnepanelen';
+
         foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
             $headerData[] = $housingFileHoomLinkStatus->label;
         }
@@ -121,7 +123,10 @@ class HousingFileExcelHelper
                 $rowData[31] = $housingFile->amount_gas;
                 $rowData[32] = $housingFile->amount_electricity;
 
-                $colcounter = 33;
+
+                $rowData[33] = $housingFile->revenue_solar_panels;
+
+                $colcounter = 34;
                 foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
                     $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLinkStatus->id)->first();
 

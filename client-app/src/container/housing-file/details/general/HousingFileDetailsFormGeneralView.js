@@ -30,6 +30,7 @@ const HousingFileDetailsFormGeneralView = props => {
         cookType,
         heatSource,
         waterComfort,
+        revenueSolarPanels,
     } = props.housingFileDetails;
 
     const showFields = props.housingFileHoomLinksToShowInEconobis;
@@ -96,6 +97,9 @@ const HousingFileDetailsFormGeneralView = props => {
                 ) : null}
                 {showFields.some(showField => showField.econobisFieldName === 'floor_surface') ? (
                     <ViewText label="Vloeroppervlakte" value={floorSurface && floorSurface} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'revenue_solar_panels') ? (
+                    <ViewText label="Opbrengst zonnepanelen" value={revenueSolarPanels && revenueSolarPanels} />
                 ) : null}
             </div>
             <div className="row">

@@ -41,6 +41,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
         } = props.housingFileDetails;
 
         this.state = {
@@ -79,6 +80,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 cookType: cookType ? cookType.hoomStatusValue : '',
                 heatSource: heatSource ? heatSource.hoomStatusValue : '',
                 waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
+                revenueSolarPanels: revenueSolarPanels ? revenueSolarPanels : '',
             },
         };
     }
@@ -193,6 +195,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
         } = this.state.housingFile;
         const showFields = this.props.housingFileHoomLinksToShowInEconobis;
 
@@ -368,6 +371,16 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             label={'Vloeroppervlakte'}
                             name="floorSurface"
                             value={floorSurface}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'revenue_solar_panels') ? (
+                        <InputText
+                            label={'Opbrengst zonnepanelen'}
+                            name="revenueSolarPanels"
+                            value={revenueSolarPanels}
                             min={0}
                             onChangeAction={this.handleInputChange}
                             readOnly={hasHoomDossierLink}

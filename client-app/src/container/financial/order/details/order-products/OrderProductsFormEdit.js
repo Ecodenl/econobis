@@ -94,6 +94,7 @@ const OrderProductsFormEdit = props => {
                                     type={'number'}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
+                                    onBlurAction={props.handleBlurVariablePrice}
                                     error={props.errors.variablePrice}
                                     required={variablePrice !== null && 'required'}
                                 />

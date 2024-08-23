@@ -305,6 +305,8 @@ class OrderProductsFormNew extends Component {
                     costCenterId: costCenterId,
                     description: description,
                     dateEnd: dateEnd,
+                    variablePrice:
+                        productHasVariablePrice === 'variable' ? this.state.orderProduct.variablePrice : null,
                     [name]: value,
                 },
             },
@@ -456,7 +458,8 @@ class OrderProductsFormNew extends Component {
                                     label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
-                                    value={this.state.price}
+                                    // value={this.state.price}
+                                    value={this.state.orderProduct.variablePrice}
                                     onChangeAction={this.handleInputChangeVariablePrice}
                                     onBlurAction={this.handleBlurVariablePrice}
                                     error={this.state.errors.variablePrice}

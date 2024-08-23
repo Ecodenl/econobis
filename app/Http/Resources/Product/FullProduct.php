@@ -26,7 +26,7 @@ class FullProduct extends JsonResource
                 'name' => $this->name,
                 'invoiceText' => $this->invoice_text,
                 'priceHistory' => GenericResource::collection($this->whenLoaded('priceHistory')),
-                'currentPrice' => GenericResource::make($this->current_price),
+                'currentPrice' => GenericResource::make($this->currentPrice),
                 'isOneTime' => $this->is_one_time,
 
                 'durationId' => $this->duration_id,

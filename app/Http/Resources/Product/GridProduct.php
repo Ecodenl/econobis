@@ -21,7 +21,7 @@ class GridProduct extends JsonResource
                 'id' => $this->id,
                 'code' => $this->code,
                 'name' => $this->name,
-                'currentPrice' => GenericResource::make($this->current_price),
+                'currentPrice' => GenericResource::make($this->currentPrice),
                 'administration' => AdministrationPeek::make($this->whenLoaded('administration')),
                'active' => $this->active,
             ];

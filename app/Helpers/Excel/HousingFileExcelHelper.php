@@ -72,6 +72,7 @@ class HousingFileExcelHelper
         $headerData[] = 'Stooktemperatuur';
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik elektriciteit';
+        $headerData[] = 'Opbrengst zonnepanelen';
         $headerData[] = 'Aanmaakdatum';
 
         foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
@@ -122,9 +123,10 @@ class HousingFileExcelHelper
                 $rowData[30] = $housingFile->boilerSettingComfortHeat ? $housingFile->boilerSettingComfortHeat->hoom_status_name : '';
                 $rowData[31] = $housingFile->amount_gas;
                 $rowData[32] = $housingFile->amount_electricity;
-                $rowData[33] = Carbon::parse($housingFile->created_at)->format('d-m-Y');;
+                $rowData[33] = $housingFile->revenue_solar_panels;
+                $rowData[34] = Carbon::parse($housingFile->created_at)->format('d-m-Y');;
 
-                $colcounter = 34;
+                $colcounter = 35;
                 foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
                     $housingFileHousingStatus = HousingFileHousingStatus::where('housing_file_id', $housingFile->id)->where('housing_file_hoom_links_id', $housingFileHoomLinkStatus->id)->first();
 

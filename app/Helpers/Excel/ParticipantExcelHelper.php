@@ -628,7 +628,7 @@ class ParticipantExcelHelper
                     }
 
                     if($this->isObligationProject) {
-                        $rowData[128] = $participant->obligationNumbersList;
+                        $rowData[128] = $participant->obligationNumbersAsString;
                     }
 
                     $completeData[] = $rowData;
@@ -728,7 +728,7 @@ class ParticipantExcelHelper
                 $rowData[] = $participant->date_register;
 
                 if($this->isObligationProject) {
-                    $rowData[] = $participant->obligationNumbersList;
+                    $rowData[] = $participant->obligationNumbersAsString;
                 }
 
                 $completeData[] = $rowData;

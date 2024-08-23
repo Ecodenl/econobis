@@ -895,7 +895,7 @@ class TemplateVariableHelper
                 }
             case 'obligatienummers':
                 if($projectTypeCodeRef == 'obligation') {
-                    return  $model->obligation_numbers_list;;
+                    return  $model->obligationNumbersAsString;
                 }else{
                     return ' ';
                 }

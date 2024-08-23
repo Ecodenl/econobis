@@ -202,7 +202,6 @@ class OrderProductsFormNewProductOneTime extends Component {
         const { description, costCenterId, ledgerId } = this.state.product;
 
         let ledgerOptions = this.props.ledgers.filter(ledger => {
-            // todo check dit stukje, ziet er raar uit !?
             if (!ledger.vatCode) {
                 return (
                     this.state.product.currentPrice && ledger.vatCode === this.state.product.currentPrice.vatPercentage

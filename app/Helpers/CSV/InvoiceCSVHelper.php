@@ -82,8 +82,8 @@ class InvoiceCSVHelper
                     $invoice->date_invoice = $this->formatDate($invoice->date_requested);
                 }
 
-                $invoice->date_paid_formatted = $invoice->date_paid ? Carbon::parse($invoice->date_paid)->format('d-m-Y') : '';
-                $invoice->online_date_paid = $this->formatDate($invoice->online_date_paid);
+                $invoice->date_paid = $this->formatDate($invoice->date_paid);
+                $invoice->online_date_paid_formatted = $this->formatDate($invoice->online_date_paid);
 
                 //afronden
                 $invoice->total_incl_vat_incl_reduction_formatted = $this->formatFinancial($invoice->total_incl_vat_incl_reduction);
@@ -137,11 +137,11 @@ class InvoiceCSVHelper
                 'date_collection_formatted' => 'Incassodatum',
                 'iban' => 'Ibannr',
                 'iban_attn' => 'Iban tnv',
-                'date_paid_formatted' => 'Datum betaald',
+                'date_paid' => 'Datum betaald',
                 'amount_paid' => 'Bedrag betaald',
                 'payment_reference' => 'Betalingskenmerk',
                 'online_reference' => '(online) betalingskenmerk',
-                'online_date_paid' => '(online) datum betaald'
+                'online_date_paid_formatted' => '(online) datum betaald',
             ], $headers);
             $headers = false;
         }
@@ -215,8 +215,8 @@ class InvoiceCSVHelper
                     $invoicesProduct->invoice->date_invoice = $this->formatDate($invoicesProduct->invoice->date_requested);
                 }
 
-                $invoicesProduct->invoice->date_paid_formatted = $invoicesProduct->invoice->date_paid ? Carbon::parse($invoicesProduct->invoice->date_paid)->format('d-m-Y') : '';
-                $invoicesProduct->invoice->online_date_paid = $this->formatDate($invoicesProduct->invoice->online_date_paid);
+                $invoicesProduct->invoice->date_paid = $this->formatDate($invoicesProduct->invoice->date_paid);
+                $invoicesProduct->invoice->online_date_paid_formatted = $this->formatDate($invoicesProduct->invoice->online_date_paid);
 
                 //afronden
                 $invoicesProduct->invoice->total_incl_vat_incl_reduction_formatted = $this->formatFinancial($invoicesProduct->invoice->total_incl_vat_incl_reduction);
@@ -270,11 +270,11 @@ class InvoiceCSVHelper
                 'invoice.date_collection_formatted' => 'Incassodatum',
                 'invoice.iban' => 'Ibannr',
                 'invoice.iban_attn' => 'Iban tnv',
-                'invoice.date_paid_formatted' => 'Datum betaald',
+                'invoice.date_paid' => 'Datum betaald',
                 'invoice.amount_paid' => 'Bedrag betaald',
                 'invoice.payment_reference' => 'Betalingskenmerk',
                 'invoice.online_reference' => '(online) betalingskenmerk',
-                'invoice.online_date_paid' => '(online) datum betaald',
+                'invoice.online_date_paid_formatted' => '(online) datum betaald',
                 'product_name' => 'Product naam',
                 'amount' => 'Aantal',
                 'amount_incl_reduction_excl_vat' => 'Bedrag ex btw',

@@ -252,6 +252,15 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 error={errors.hoomConnectCoachLink && touched.hoomConnectCoachLink}
                                 errorMessage={errors.hoomConnectCoachLink}
                             />
+                            <InputReactSelect
+                                label={'Hoom groep'}
+                                name={'hoomGroupId'}
+                                options={staticContactGroups}
+                                value={values.hoomGroupId}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                                isLoading={isLoading}
+                                clearable={true}
+                            />
                         </div>
                         <div className="row">
                             <InputReactSelect
@@ -264,10 +273,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 clearable={true}
                             />
                             <InputReactSelect
-                                label={'Hoom groep'}
-                                name={'hoomGroupId'}
-                                options={staticContactGroups}
-                                value={values.hoomGroupId}
+                                label={'Hoom mailbox'}
+                                name={'hoomMailboxId'}
+                                options={mailboxAddresses}
+                                optionName={'name'}
+                                value={values.hoomMailboxId}
                                 onChangeAction={(value, name) => setFieldValue(name, value)}
                                 isLoading={isLoading}
                                 clearable={true}

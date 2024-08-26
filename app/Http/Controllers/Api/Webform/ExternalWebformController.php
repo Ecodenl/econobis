@@ -656,6 +656,9 @@ class ExternalWebformController extends Controller
 
         $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
 
+        $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+        $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
             $data['contact']['address_number'] = 0;
@@ -2406,10 +2409,10 @@ class ExternalWebformController extends Controller
             $eneryLabelStatus = null;
         }
 
-        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
+        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
         if (!$boilerSettingComfortHeat) {
             $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
-            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('hoom_status_value', 'unsure')->first();
+            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', 'unsure')->first();
         }
 
         $rofeType = RoofType::find($data['roof_type_id']);
@@ -2549,7 +2552,7 @@ class ExternalWebformController extends Controller
             $housingFile->remark_coach = $data['remark_coach'];
             $housingFile->amount_electricity = $data['amount_electricity'];
             $housingFile->amount_gas = $data['amount_gas'];
-            $housingFile->boiler_setting_comfort_heat = $data['boiler_setting_comfort_heat'];
+            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null;
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 

@@ -18,6 +18,7 @@ class LoggedInEmailPeek extends JsonResource
         return [
             'id' => $this->mailbox_id,
             'email' => $this->email,
+            'name' => $this->name,
         ];
     }
 }

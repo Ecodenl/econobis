@@ -79,6 +79,8 @@ class HousingFileExcelHelper
             $headerData[] = $housingFileHoomLinkStatus->label;
         }
 
+        $headerData[] = 'Aanmaak datum';
+
         $completeData[] = $headerData;
 
         foreach ($this->housingFiles->chunk(500) as $chunk) {
@@ -137,6 +139,8 @@ class HousingFileExcelHelper
                     }
                     $colcounter = $colcounter + 1;
                 }
+
+                $rowData[$colcounter] = $housingFile->created_at;
 
                 $completeData[] = $rowData;
             }

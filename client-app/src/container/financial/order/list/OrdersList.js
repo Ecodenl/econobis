@@ -104,7 +104,7 @@ class OrdersList extends Component {
         }
     };
 
-    fetchOrdersData = (showOrdersWithoutOrderlines = 'true') => {
+    fetchOrdersData = (showOnlyOrdersWithOrderProducts = false) => {
         this.props.clearOrders();
 
         setTimeout(() => {
@@ -114,7 +114,7 @@ class OrdersList extends Component {
             const pagination = { limit: 50, offset: this.props.ordersPagination.offset };
             const administrationId = this.props.administrationId;
 
-            this.props.fetchOrders(filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines);
+            this.props.fetchOrders(filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts);
         }, 100);
 
         this.props.fetchTotalsInfoAdministration(this.props.administrationId);
@@ -169,11 +169,8 @@ class OrdersList extends Component {
             previewOrderText: "Preview concept nota's",
         });
 
-        if (this.state.showSelectOrdersToCreate) {
-            this.fetchOrdersData(true);
-        } else {
-            this.fetchOrdersData(false);
-        }
+        this.fetchOrdersData(true);
+
         if (this.state.orderIds.length > 0) {
             this.props.previewCreate(this.state.orderIds);
             hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);

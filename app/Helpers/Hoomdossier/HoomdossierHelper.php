@@ -8,6 +8,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Template\TemplateVariableHelper;

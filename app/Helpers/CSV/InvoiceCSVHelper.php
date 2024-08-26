@@ -63,10 +63,10 @@ class InvoiceCSVHelper
                 $invoice->city = ($address ? $address->city : '');
                 $invoice->country = (($address && $address->country) ? $address->country->name : '');
 
-                $invoice->date_reminder_1 = $this->formatDate($invoice->date_reminder_1);
-                $invoice->date_reminder_2 = $this->formatDate($invoice->date_reminder_2);
-                $invoice->date_reminder_3 = $this->formatDate($invoice->date_reminder_3);
-                $invoice->date_exhortation = $this->formatDate($invoice->date_exhortation);
+                $invoice->date_reminder_1_formatted = $this->formatDate($invoice->date_reminder_1);
+                $invoice->date_reminder_2_formatted = $this->formatDate($invoice->date_reminder_2);
+                $invoice->date_reminder_3_formatted = $this->formatDate($invoice->date_reminder_3);
+                $invoice->date_exhortation_formatted = $this->formatDate($invoice->date_exhortation);
 
                 $invoice->status = $invoice->getStatus()->name;
                 $invoice->payment_type = $invoice->getPaymentType()->name;
@@ -76,13 +76,13 @@ class InvoiceCSVHelper
                 }
 
                 if($invoice->date_sent){
-                    $invoice->date_invoice = $this->formatDate($invoice->date_sent);
+                    $invoice->date_invoice_formatted = $this->formatDate($invoice->date_sent);
                 }
                 else{
-                    $invoice->date_invoice = $this->formatDate($invoice->date_requested);
+                    $invoice->date_invoice_formatted = $this->formatDate($invoice->date_requested);
                 }
 
-                $invoice->date_paid = $this->formatDate($invoice->date_paid);
+                $invoice->date_paid_formatted = $this->formatDate($invoice->date_paid);
                 $invoice->online_date_paid_formatted = $this->formatDate($invoice->online_date_paid);
 
                 //afronden
@@ -112,7 +112,7 @@ class InvoiceCSVHelper
                 'status' => 'Status',
                 'sub_status' => 'Substatus',
                 'subject' => 'Onderwerp',
-                'date_invoice' => 'Notadatum',
+                'date_invoice_formatted' => 'Notadatum',
                 'emailed_to' => 'Verstuurd naar e-mail',
                 'sent_to_name' => 'Nota naam',
                 'sent_to_street' => 'Nota straat',
@@ -120,13 +120,13 @@ class InvoiceCSVHelper
                 'sent_to_addition' => 'Nota toevoeging',
                 'sent_to_postal_code' => 'Nota postcode',
                 'sent_to_country' => 'Nota land',
-                'date_reminder_1' => 'Herinnering 1 verstuurd',
+                'date_reminder_1_formatted' => 'Herinnering 1 verstuurd',
                 'email_reminder_1' => 'E-mail herinnering 1',
-                'date_reminder_2' => 'Herinnering 2 verstuurd',
+                'date_reminder_2_formatted' => 'Herinnering 2 verstuurd',
                 'email_reminder_2' => 'E-mail herinnering 2',
-                'date_reminder_3' => 'Herinnering 3 verstuurd',
+                'date_reminder_3_formatted' => 'Herinnering 3 verstuurd',
                 'email_reminder_3' => 'E-mail herinnering 3',
-                'date_exhortation' => 'Aanmaning verstuurd',
+                'date_exhortation_formatted' => 'Aanmaning verstuurd',
                 'email_exhortation' => 'E-mail aanmaning',
                 'days_to_expire' => 'Verloopt over',
                 'days_last_reminder' => 'Laatste herinnering',
@@ -137,7 +137,7 @@ class InvoiceCSVHelper
                 'date_collection_formatted' => 'Incassodatum',
                 'iban' => 'Ibannr',
                 'iban_attn' => 'Iban tnv',
-                'date_paid' => 'Datum betaald',
+                'date_paid_formatted' => 'Datum betaald',
                 'amount_paid' => 'Bedrag betaald',
                 'payment_reference' => 'Betalingskenmerk',
                 'online_reference' => '(online) betalingskenmerk',
@@ -196,10 +196,10 @@ class InvoiceCSVHelper
                 $invoicesProduct->invoice->city = ($address ? $address->city : '');
                 $invoicesProduct->invoice->country = (($address && $address->country) ? $address->country->name : '');
 
-                $invoicesProduct->invoice->date_reminder_1 = $this->formatDate($invoicesProduct->invoice->date_reminder_1);
-                $invoicesProduct->invoice->date_reminder_2 = $this->formatDate($invoicesProduct->invoice->date_reminder_2);
-                $invoicesProduct->invoice->date_reminder_3 = $this->formatDate($invoicesProduct->invoice->date_reminder_3);
-                $invoicesProduct->invoice->date_exhortation = $this->formatDate($invoicesProduct->invoice->date_exhortation);
+                $invoicesProduct->invoice->date_reminder_1_formatted = $this->formatDate($invoicesProduct->invoice->date_reminder_1);
+                $invoicesProduct->invoice->date_reminder_2_formatted = $this->formatDate($invoicesProduct->invoice->date_reminder_2);
+                $invoicesProduct->invoice->date_reminder_3_formatted = $this->formatDate($invoicesProduct->invoice->date_reminder_3);
+                $invoicesProduct->invoice->date_exhortation_formatted = $this->formatDate($invoicesProduct->invoice->date_exhortation);
 
                 $invoicesProduct->invoice->status = $invoicesProduct->invoice->getStatus()->name;
                 $invoicesProduct->invoice->payment_type = $invoicesProduct->invoice->getPaymentType()->name;
@@ -209,13 +209,13 @@ class InvoiceCSVHelper
                 }
 
                 if($invoicesProduct->invoice->date_sent){
-                    $invoicesProduct->invoice->date_invoice = $this->formatDate($invoicesProduct->invoice->date_sent);
+                    $invoicesProduct->invoice->date_invoice_formatted = $this->formatDate($invoicesProduct->invoice->date_sent);
                 }
                 else{
-                    $invoicesProduct->invoice->date_invoice = $this->formatDate($invoicesProduct->invoice->date_requested);
+                    $invoicesProduct->invoice->date_invoice_formatted = $this->formatDate($invoicesProduct->invoice->date_requested);
                 }
 
-                $invoicesProduct->invoice->date_paid = $this->formatDate($invoicesProduct->invoice->date_paid);
+                $invoicesProduct->invoice->date_paid_formatted = $this->formatDate($invoicesProduct->invoice->date_paid);
                 $invoicesProduct->invoice->online_date_paid_formatted = $this->formatDate($invoicesProduct->invoice->online_date_paid);
 
                 //afronden
@@ -245,7 +245,7 @@ class InvoiceCSVHelper
                 'invoice.status' => 'Status',
                 'invoice.sub_status' => 'Substatus',
                 'invoice.subject' => 'Onderwerp',
-                'invoice.date_invoice' => 'Notadatum',
+                'invoice.date_invoice_formatted' => 'Notadatum',
                 'invoice.emailed_to' => 'Verstuurd naar e-mail',
                 'invoice.sent_to_name' => 'Nota naam',
                 'invoice.sent_to_street' => 'Nota straat',
@@ -253,13 +253,13 @@ class InvoiceCSVHelper
                 'invoice.sent_to_addition' => 'Nota toevoeging',
                 'invoice.sent_to_postal_code' => 'Nota postcode',
                 'invoice.sent_to_country' => 'Nota land',
-                'invoice.date_reminder_1' => 'Herinnering 1 verstuurd',
+                'invoice.date_reminder_1_formatted' => 'Herinnering 1 verstuurd',
                 'invoice.email_reminder_1' => 'E-mail herinnering 1',
-                'invoice.date_reminder_2' => 'Herinnering 2 verstuurd',
+                'invoice.date_reminder_2_formatted' => 'Herinnering 2 verstuurd',
                 'invoice.email_reminder_2' => 'E-mail herinnering 2',
-                'invoice.date_reminder_3' => 'Herinnering 3 verstuurd',
+                'invoice.date_reminder_3_formatted' => 'Herinnering 3 verstuurd',
                 'invoice.email_reminder_3' => 'E-mail herinnering 3',
-                'invoice.date_exhortation' => 'Aanmaning verstuurd',
+                'invoice.date_exhortation_formatted' => 'Aanmaning verstuurd',
                 'invoice.email_exhortation' => 'E-mail aanmaning',
                 'invoice.days_to_expire' => 'Verloopt over',
                 'invoice.days_last_reminder' => 'Laatste herinnering',
@@ -270,7 +270,7 @@ class InvoiceCSVHelper
                 'invoice.date_collection_formatted' => 'Incassodatum',
                 'invoice.iban' => 'Ibannr',
                 'invoice.iban_attn' => 'Iban tnv',
-                'invoice.date_paid' => 'Datum betaald',
+                'invoice.date_paid_formatted' => 'Datum betaald',
                 'invoice.amount_paid' => 'Bedrag betaald',
                 'invoice.payment_reference' => 'Betalingskenmerk',
                 'invoice.online_reference' => '(online) betalingskenmerk',

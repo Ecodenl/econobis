@@ -16,7 +16,7 @@ class checkWrongDateEntryParticipation extends Command
      * @var string
      */
     protected $signature = 'participation:checkWrongDateEntry';
-    protected $mailTo = 'patrick.koeman@xaris.nl';
+    protected $mailTo = 'wim.mosman@xaris.nl';
 
     /**
      * The console command description.

@@ -97,15 +97,6 @@ const OpportunitiesListFilter = props => {
                 </th>
             )}
 
-            <th>
-                <input
-                    type="text"
-                    className="form-control input-sm"
-                    value={props.filters.number.data}
-                    onChange={onNumberChange}
-                />
-            </th>
-
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
                 endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
@@ -124,6 +115,14 @@ const OpportunitiesListFilter = props => {
                     className="form-control input-sm"
                     value={props.filters.name.data}
                     onChange={onNameChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
                 />
             </th>
             <th>

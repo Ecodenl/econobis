@@ -70,10 +70,10 @@ class OpportunitiesListItem extends Component {
                         />
                     </td>
                 )}
-                <td>{number}</td>
                 <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{desiredDate ? moment(desiredDate).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
+                <td>{number}</td>
                 <td>{measureCategoryName}</td>
                 <td className="pre-wrap">
                     {measures.length

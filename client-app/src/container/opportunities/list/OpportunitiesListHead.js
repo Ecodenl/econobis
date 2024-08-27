@@ -15,7 +15,6 @@ const OpportunitiesListHead = props => {
     return (
         <tr className="thead-title">
             {props.showCheckbox ? <th width="3%" /> : null}
-            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'desiredDate'}
@@ -24,6 +23,7 @@ const OpportunitiesListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategory'}
                 title={'Maatregel categorie'}

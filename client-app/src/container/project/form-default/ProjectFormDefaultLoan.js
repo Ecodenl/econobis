@@ -16,6 +16,8 @@ const ProjectFormEditLoan = ({
     amountOptioned,
     amountInteressed,
     handleInputChange,
+    errors,
+    errorMessages,
 }) => {
     const amountAvailable = amountOfLoanNeeded - amountDefinitive;
 
@@ -31,8 +33,10 @@ const ProjectFormEditLoan = ({
                     value={loanTypeId}
                     onChangeAction={handleInputChange}
                     required={'required'}
-                    emptyOption={false}
+                    // emptyOption={false}
                     readOnly={hasConfirmedLoanRedemptionRevenue}
+                    error={errors.loanTypeId}
+                    errorMessage={errorMessages.loanTypeId}
                 />
             </div>
 

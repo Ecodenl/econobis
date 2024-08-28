@@ -39,7 +39,7 @@ class OpportunitiesListItem extends Component {
     render() {
         const {
             id,
-            number,
+            intake,
             createdAt,
             desiredDate,
             contactName,
@@ -73,7 +73,7 @@ class OpportunitiesListItem extends Component {
                 <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{desiredDate ? moment(desiredDate).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
-                <td>{number}</td>
+                <td>{intake}</td>
                 <td>{measureCategoryName}</td>
                 <td className="pre-wrap">
                     {measures.length

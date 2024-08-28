@@ -15,14 +15,14 @@ import {
     setFilterOpportunityMeasureCategory,
     setFilterOpportunityMeasureName,
     setFilterOpportunityName,
-    setFilterOpportunityNumber,
+    setFilterOpportunityIntake,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
 const OpportunitiesListFilter = props => {
-    const onNumberChange = e => {
-        props.setFilterOpportunityNumber(e.target.value);
+    const onIntakeChange = e => {
+        props.setFilterOpportunityIntake(e.target.value);
     };
 
     const onCreatedAtStartChange = selectedDay => {
@@ -121,8 +121,8 @@ const OpportunitiesListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={props.filters.number.data}
-                    onChange={onNumberChange}
+                    value={props.filters.intake.data}
+                    onChange={onIntakeChange}
                 />
             </th>
             <th>
@@ -205,7 +205,7 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityMeasureCategory,
             setFilterOpportunityMeasureName,
             setFilterOpportunityName,
-            setFilterOpportunityNumber,
+            setFilterOpportunityIntake,
             setFilterOpportunityStatusId,
         },
         dispatch

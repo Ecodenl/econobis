@@ -4,6 +4,7 @@ namespace App\Http\Resources\Opportunity;
 
 use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class GridOpportunity extends JsonResource
 {
@@ -15,9 +16,10 @@ class GridOpportunity extends JsonResource
      */
     public function toArray($request)
     {
+        Log::info(optional(optional($this->intake)->address)->full_address);
         return [
             'id' => $this->id,
-            'number' => $this->number,
+            'intakeAddress' => optional(optional($this->intake)->address)->full_address,
             'createdAt' => $this->created_at,
             'desiredDate' => $this->desired_date,
             'contactName' => optional(optional($this->intake)->contact)->full_name,

@@ -7,11 +7,18 @@ const ContactToImportsListHead = props => {
     return (
         <tr className="thead-title">
             <th width={'6%'}>
-                <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
-                Nieuw
-                <br />
-                <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
-                Bijwerken
+                {props.selectAllNew ? (
+                    <>
+                        <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
+                        {' Nieuw'}
+                    </>
+                ) : null}
+                {props.selectAllUpdate ? (
+                    <>
+                        <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
+                        {' Bijwerken'}
+                    </>
+                ) : null}
             </th>
             <DataTableHeadTitle title={'Match'} width={'8%'} />
             <DataTableHeadTitleAndSort

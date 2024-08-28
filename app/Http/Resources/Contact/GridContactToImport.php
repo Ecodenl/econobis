@@ -29,6 +29,7 @@ class GridContactToImport extends JsonResource
             'phoneNumber' => $this->phone_number,
             'ean' => $this->ean,
             'esNumber' => $this->es_number,
+            'supplierCodeRef' => $this->supplier_code_ref,
             'memberSince' => $this->member_since,
             'endDate' => $this->end_date,
             'contactForImports' => $this->contactForImports,

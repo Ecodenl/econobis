@@ -11,8 +11,9 @@ function ContactToImportsListItem({
     showCheckboxNew,
     checkedNew,
     setCheckedContactNew,
-    // showCheckboxUpdate,
+    showCheckboxUpdate,
     // checkedUpdate,
+    selectedContactsUpdate,
     setCheckedContactUpdate,
     id,
     number,
@@ -25,6 +26,9 @@ function ContactToImportsListItem({
     city,
     emailContact,
     phoneNumber,
+    ean,
+    supplierCodeRef,
+    esNumber,
     permissions,
     matchCode,
     contactForImports,
@@ -96,6 +100,7 @@ function ContactToImportsListItem({
         return matchCode;
     };
 
+    console.log('showCheckboxNew');
     return (
         <>
             <tr style={{ backgroundColor: '#ececec' }}>
@@ -107,7 +112,7 @@ function ContactToImportsListItem({
                     {/*) : (*/}
                     {/*    ''*/}
                     {/*)}*/}
-                    {showCheckboxNew ? (
+                    {!showCheckboxUpdate ? (
                         <>
                             <input
                                 type="checkbox"
@@ -130,9 +135,9 @@ function ContactToImportsListItem({
                 <td>{city}</td>
                 <td>{emailContact}</td>
                 <td>{phoneNumber}</td>
-                <td>ean</td>
-                <td>leverancier</td>
-                <td>klantnummer</td>
+                <td>{ean}</td>
+                <td>{supplierCodeRef}</td>
+                <td>{esNumber}</td>
                 {/*<td>{matchCode}</td>*/}
                 {/*<td>*/}
                 {/*    {showActionButtons && permissions.manageContactToImports ? (*/}
@@ -168,9 +173,12 @@ function ContactToImportsListItem({
                                     <>
                                         <input
                                             type="checkbox"
-                                            checked={contactForImport.checkedUpdate}
-                                            // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}
-                                            onChange={() => setCheckedContactUpdate(id, contactForImport.personId)}
+                                            checked={
+                                                selectedContactsUpdate
+                                                    ? selectedContactsUpdate.includes(contactForImport.id)
+                                                    : false
+                                            }
+                                            onChange={() => setCheckedContactUpdate(id, contactForImport.id)}
                                         />
                                         {' Bijwerken'}
                                     </>

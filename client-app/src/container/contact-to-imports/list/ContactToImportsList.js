@@ -19,10 +19,14 @@ function ContactToImportsList({
     handleChangeFilter,
     handleKeyUp,
     refreshContactToImports,
+    selectAllNew,
     setCheckedContactNew,
-    setCheckedContactUpdate,
     selectAllCheckboxesNew,
+    selectedImportsNew,
+    selectAllUpdate,
+    setCheckedContactUpdate,
     selectAllCheckboxesUpdate,
+    selectedContactsUpdate,
 }) {
     return (
         <div>
@@ -31,6 +35,8 @@ function ContactToImportsList({
                     <DataTableHead>
                         <ContactToImportsListHead
                             handleChangeSort={handleChangeSort}
+                            selectAllNew={selectAllNew}
+                            selectAllUpdate={selectAllUpdate}
                             selectAllCheckboxesNew={selectAllCheckboxesNew}
                             selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
                         />
@@ -46,9 +52,19 @@ function ContactToImportsList({
                                 return (
                                     <ContactToImportsListItem
                                         // todo WM: FF snel voor test
-                                        showCheckboxNew={true}
-                                        checkedNew={false}
+                                        showCheckboxNew={selectAllNew}
+                                        // checkedNew={false}
+                                        checkedNew={
+                                            selectedImportsNew ? selectedImportsNew.includes(ContactToImport.id) : false
+                                        }
                                         setCheckedContactNew={setCheckedContactNew}
+                                        showCheckboxUpdate={selectAllUpdate}
+                                        // checkedUpdate={
+                                        //     selectedContactsUpdate
+                                        //         ? selectedContactsUpdate.includes(ContactToImport.id)
+                                        //         : false
+                                        // }
+                                        selectedContactsUpdate={selectedContactsUpdate}
                                         setCheckedContactUpdate={setCheckedContactUpdate}
                                         key={ContactToImport.id}
                                         refreshContactToImports={refreshContactToImports}

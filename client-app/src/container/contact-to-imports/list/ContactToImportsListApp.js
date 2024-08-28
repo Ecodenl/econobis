@@ -13,13 +13,17 @@ import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import { hashHistory } from 'react-router';
 
-const recordsPerPage = 50;
+const recordsPerPage = 3;
 
 function ContactToImportsListApp() {
     const [ContactToImports, setContactToImports] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [meta, setMetaData] = useState({ total: 0 });
+    const [meta, setMetaData] = useState({ total: 0, totalImportIds: 0, totalContactIds: 0 });
     const [filter, setFilter] = useState([]);
+    const [checkedAllNew, setCheckedAllNew] = useState(false);
+    const [selectedImportsNew, setSelectedImportsNew] = useState([]);
+    const [checkedAllUpdate, setCheckedAllUpdate] = useState(false);
+    const [selectedContactsUpdate, setSelectedContactsUpdate] = useState([]);
     const [selectAllNew, setSelectAllNew] = useState(false);
     const [selectAllUpdate, setSelectAllUpdate] = useState(false);
     const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
@@ -51,6 +55,7 @@ function ContactToImportsListApp() {
         setSelectAllUpdate(false);
         setSelectAllNew(!selectAllNew);
     }
+
     function actionSelectAllUpdate() {
         setSelectAllNew(false);
         setSelectAllUpdate(!selectAllUpdate);
@@ -109,10 +114,62 @@ function ContactToImportsListApp() {
     }
 
     function selectAllCheckboxesNew() {
-        console.log('selectAllCheckboxesNew');
+        if (checkedAllNew === false) {
+            setCheckedAllNew(true);
+            setSelectedImportsNew(meta.totalImportIds);
+        } else {
+            setCheckedAllNew(false);
+            setSelectedImportsNew([]);
+        }
     }
+
+    // function toggleCheckedAllNew() {
+    //     const isChecked = event.target.checked;
+    //     let orderIds = [];
+    //
+    //     if (isChecked) {
+    //         orderIds = this.props.orders.meta.orderIdsTotal;
+    //     }
+    //
+    //     this.setState({
+    //         orderIds: orderIds,
+    //         checkedAll: isChecked,
+    //     });
+    // };
+    //
+    // function toggleOrderCheck(event) {
+    //     const isChecked = event.target.checked;
+    //     const orderId = Number(event.target.name);
+    //
+    //     if (isChecked) {
+    //         this.setState(
+    //             {
+    //                 orderIds: [...this.state.orderIds, orderId],
+    //             },
+    //             this.checkAllOrdersAreChecked
+    //         );
+    //     } else {
+    //         this.setState({
+    //             orderIds: this.state.orderIds.filter(item => item !== orderId),
+    //             checkedAll: false,
+    //         });
+    //     }
+    // };
+    //
+    // function checkAllOrdersAreChecked() {
+    //     this.setState({
+    //         checkedAll: this.state.orderIds.length === this.props.orders.meta.orderIdsTotal.length,
+    //     });
+    // }
+
     function selectAllCheckboxesUpdate() {
-        console.log('selectAllCheckboxesUpdate');
+        if (checkedAllUpdate === false) {
+            setCheckedAllUpdate(true);
+            setSelectedContactsUpdate(meta.totalContactIds);
+        } else {
+            setCheckedAllUpdate(false);
+            setSelectedContactsUpdate([]);
+        }
     }
     function setCheckedContactNew(importId) {
         console.log('setCheckedContactNew voor import Id: ' + importId);
@@ -200,10 +257,14 @@ function ContactToImportsListApp() {
                         handleChangeFilter={handleChangeFilter}
                         handleKeyUp={handleKeyUp}
                         refreshContactToImports={fetchContactToImports}
+                        selectAllNew={selectAllNew}
                         setCheckedContactNew={setCheckedContactNew}
-                        setCheckedContactUpdate={setCheckedContactUpdate}
                         selectAllCheckboxesNew={selectAllCheckboxesNew}
+                        selectedImportsNew={selectedImportsNew}
+                        selectAllUpdate={selectAllUpdate}
+                        setCheckedContactUpdate={setCheckedContactUpdate}
                         selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                        selectedContactsUpdate={selectedContactsUpdate}
                     />
                 </div>
             </PanelBody>

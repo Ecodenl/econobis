@@ -504,6 +504,18 @@ class QuotationRequestController
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'contact', $contact);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'offerteverzoek', $quotationRequest);
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kansactie', $quotationRequest);
+        if ($quotationRequest->opportunity) {
+            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
+            if ($quotationRequest->opportunity->intake) {
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake',
+                    $quotationRequest->opportunity->intake);
+                if ($quotationRequest->opportunity->intake->campaign) {
+                    $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                        $quotationRequest->opportunity->intake->campaign);
+                }
+            }
+        }
+
         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $quotationRequest->opportunity);
 
         $htmlBody = TemplateVariableHelper::stripRemainingVariableTags($htmlBody);

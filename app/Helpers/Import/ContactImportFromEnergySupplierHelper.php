@@ -210,7 +210,7 @@ class ContactImportFromEnergySupplierHelper
                 } else {
                     try {
                         DB::beginTransaction();
-                        $contact = new ContactToImport();
+                        $contactToImport = new ContactToImport();
 
                         $address = $this->splitAddress($line[12]);
                         Log::info('address', $address);
@@ -218,61 +218,64 @@ class ContactImportFromEnergySupplierHelper
                         Log::info('lastName', $lastName);
 
                         if ($line[2]) {
-                            $contact->first_name = $line[2];
+                            $contactToImport->first_name = $line[2];
                         }
 
                         if ($lastName['last_name']) {
-                            $contact->last_name = $lastName['last_name'];
+                            $contactToImport->last_name = $lastName['last_name'];
                         }
 
                         if ($lastName['last_name_prefix']) {
-                            $contact->last_name_prefix = $lastName['last_name_prefix'];
+                            $contactToImport->last_name_prefix = $lastName['last_name_prefix'];
                         }
 
                         if ($line[12]) {
-                            $contact->address = $line[12];
+                            $contactToImport->address = $line[12];
                         }
                         if ($address['street']) {
-                            $contact->street = $address['street'];
+                            $contactToImport->street = $address['street'];
                         }
                         if ($address['housenumber']) {
-                            $contact->housenumber = $address['housenumber'];
+                            $contactToImport->housenumber = $address['housenumber'];
                         }
                         if ($address['addition']) {
-                            $contact->addition = $address['addition'];
+                            $contactToImport->addition = $address['addition'];
                         }
                         if ($line[13]) {
-                            $contact->postal_code = $line[13];
+                            $contactToImport->postal_code = $line[13];
                         }
                         if ($line[14]) {
-                            $contact->city = $line[14];
+                            $contactToImport->city = $line[14];
                         }
                         if ($line[28]) {
-                            $contact->email_contact = $line[28];
+                            $contactToImport->email_contact = $line[28];
                         }
                         if ($line[30]) {
-                            $contact->phone_number = $line[30];
+                            $contactToImport->phone_number = $line[30];
                         }
                         if ($line[7]) {
-                            $contact->ean = $line[7];
+                            $contactToImport->ean = $line[7];
+                        }
+                        if ($line[8]) {
+                            $contactToImport->ean_type = $line[8];
                         }
                         if ($line[6]) {
-                            $contact->es_number = $line[6];
+                            $contactToImport->es_number = $line[6];
                         }
 
                         if ($line[14]) {
-                            $contact->member_since = $line[17];
+                            $contactToImport->member_since = $line[17];
                         }
 
                         if ($line[18]) {
-                            $contact->end_date = $line[18];
+                            $contactToImport->end_date = $line[18];
                         }
 
-                        $contact->status = 'new';
+                        $contactToImport->status = 'new';
 
-                        $contact->supplier_code_ref = $suppliercodeRef;
+                        $contactToImport->supplier_code_ref = $suppliercodeRef;
 
-                        $contact->save();
+                        $contactToImport->save();
 
                         DB::commit();
                     } catch (\PDOException $e) {

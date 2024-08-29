@@ -28,6 +28,7 @@ class GridContactToImport extends JsonResource
             'emailContact' => $this->email_contact,
             'phoneNumber' => $this->phone_number,
             'ean' => $this->ean,
+            'eanType' => $this->ean_type,
             'esNumber' => $this->es_number,
             'supplierCodeRef' => $this->supplier_code_ref,
             'memberSince' => $this->member_since,

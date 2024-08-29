@@ -28,12 +28,20 @@ class GridContactForImport extends JsonResource
             'postalCode' => $this->primaryAddress?->postal_code ?? '',
             'city' => $this->primaryAddress?->city ?? '',
             'emailContact' => $this->primaryEmailAddress?->email ?? '',
-            'phoneNumber' => $this->phone_number,
-            'ean' => $this->ean,
-            'esNumber' => $this->es_number,
-            'memberSince' => $this->member_since,
-            'endDate' => $this->end_date,
-            'personId' => $this->person?->id ?? '' ,
+            'phoneNumber' => $this->primaryphoneNumber?->number ?? '',
+            'eanElectricity' => $this->primaryAddress?->ean_electricity,
+            'eanGas' => $this->primaryAddress?->ean_gas,
+            'esTypeElectricity' => $this->primaryAddress?->currentAddressEnergySupplierElectricity?->energySupplyType?->name ?? '',
+            'esCodeRefElectricity' => $this->primaryAddress?->currentAddressEnergySupplierElectricity?->energySupplier->abbreviation ?? '',
+            'esNumberElectricity' => $this->primaryAddress?->currentAddressEnergySupplierElectricity?->es_number ?? '',
+            'esMemberSinceElectricity' => $this->primaryAddress?->currentAddressEnergySupplierElectricity?->member_since ?? '',
+            'esEndDateElectricity' => $this->primaryAddress?->currentAddressEnergySupplierElectricity?->end_date ?? '',
+            'esTypeGas' => $this->primaryAddress?->currentAddressEnergySupplierGas?->energySupplyType?->name ?? '',
+            'esCodeRefGas' => $this->primaryAddress?->currentAddressEnergySupplierGas?->energySupplier->abbreviation ?? '',
+            'esNumberGas' =>  $this->primaryAddress?->currentAddressEnergySupplierGas?->es_number ?? '',
+            'esMemberSinceGas' => $this->primaryAddress?->currentAddressEnergySupplierGas?->member_since ?? '',
+            'esEndDateGas' => $this->primaryAddress?->currentAddressEnergySupplierGas?->end_date ?? '',
         ];
     }
 }
+

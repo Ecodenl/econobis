@@ -18,9 +18,9 @@ class ContactToImportController extends Controller
 {
     public function index(Request $request, RequestQuery $requestQuery)
     {
-        $contactToImports = $requestQuery->getQueryNoPagination()->get();
+        $contactToImports = collect($requestQuery->getQueryNoPagination()->get());
 
-        $limit =  (int)$requestQuery->getRequest()->limit;
+        $limit = (int)$requestQuery->getRequest()->limit;
         $offset = (int)$requestQuery->getRequest()->offset;
         $selectAllNew = $requestQuery->getRequest()->selectAllNew == 'true';
         $selectAllUpdate = $requestQuery->getRequest()->selectAllUpdate == 'true';
@@ -29,8 +29,16 @@ class ContactToImportController extends Controller
 
         $totalImports = $filteredContactToImports->count();
         $totalImportIds = $filteredContactToImports->pluck('id');
-        // Pluck all IDs of related contactForImports and flatten them into a single array
-        $totalContactIds = $filteredContactToImports->pluck('contactForImports.*.id')->flatten();
+
+        // Ensure contactForImports is treated as a collection
+        $totalContactIds = $filteredContactToImports->flatMap(function($import) {
+            return collect($import->contactForImports)->map(function($contact) use ($import) {
+                return [
+                    'importId' => $import->id,
+                    'contactId' => $contact['id'],
+                ];
+            });
+        });
 
         // Apply pagination (offset and limit)
         if ($offset || $limit) {
@@ -142,7 +150,7 @@ class ContactToImportController extends Controller
         $filteredContactToImports = collect();
 
         foreach ($contactToImports as $contactToImport) {
-            $matchedContactIds = [];
+//            $matchedContactIds = [];
             $matches = collect();
             $energySupplierId = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first()->id;
             if (!$energySupplierId) continue;
@@ -249,7 +257,7 @@ class ContactToImportController extends Controller
                         })
                             ->orWhereDoesntHave('emailAddresses');
                     }),
-                'supplierIgnoreLastName' => fn($query) => $query
+                'supplierIgnoreName' => fn($query) => $query
                     ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
                         $query->where('es_number', $contactToImport->es_number)->orWhere('es_number', '')->orWhereNull('es_number');
                     })
@@ -355,7 +363,7 @@ class ContactToImportController extends Controller
                         })
                             ->orWhereDoesntHave('emailAddresses');
                     }),
-                'contactIgnoreLastName' => fn($query) => $query
+                'contactIgnoreName' => fn($query) => $query
                     ->where(function ($query2) use ($contactToImport) {
                         $query2->whereHas('currentAddressEnergySuppliers', function ($query3) use ($contactToImport) {
                             $query3->where('energy_supplier_id', '!=', $contactToImport->es_number);
@@ -389,22 +397,34 @@ class ContactToImportController extends Controller
                 'supplierIgnoreEsNumber' => ['matchDescription' => 'Klant minus klantnummer', 'matchColor' => '#80FF00'],
                 'supplierIgnoreAddress' => ['matchDescription' => 'Klant minus adres', 'matchColor' => '#00FF00'],
                 'supplierIgnoreEmail' => ['matchDescription' => 'Klant minus email', 'matchColor' => '#FFFF00'],
-                'supplierIgnoreLastName' => ['matchDescription' => 'Klant minus achternaam', 'matchColor' => '#FF8000'],
+                'supplierIgnoreName' => ['matchDescription' => 'Klant minus naam', 'matchColor' => '#FF8000'],
                 'contactMatch' => ['matchDescription' => 'Contact', 'matchColor' => 'repeating-linear-gradient(45deg,#00FF00,#ECECEC 2px,#00FF00 4px)'],
                 'contactIgnoreAddress' => ['matchDescription' => 'Contact minus adres', 'matchColor' => 'repeating-linear-gradient(45deg,#80FF00,#ECECEC 2px,#80FF00 4px)'],
                 'contactIgnoreEmail' => ['matchDescription' => 'Contact minus e-mail', 'matchColor' => 'repeating-linear-gradient(45deg,#FFFF00,#ECECEC 2px,#FFFF00 4px)'],
-                'contactIgnoreLastName' => ['matchDescription' => 'Contact minus achternaam', 'matchColor' => 'repeating-linear-gradient(45deg,#FF8000,#ECECEC 2px,#FF8000 4px)'],
+                'contactIgnoreName' => ['matchDescription' => 'Contact minus naam', 'matchColor' => 'repeating-linear-gradient(45deg,#FF8000,#ECECEC 2px,#FF8000 4px)'],
             ];
 
             $uniqueContactIds = [];  // Array to track unique contact IDs
 
             foreach ($matchConditions as $matchCode => $matchCondition) {
                 $query = Contact::where($matchCondition);
-                // Log::info('Query: ');
-                // Log::info($query->toSql());
+                if($matchCode == 'supplierFullMatch' && $contactToImport->id == 4){
+                    Log::info('Query: ');
+                    $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+                    $sql = vsprintf($sql, $query->getBindings());
+                    Log::info($sql);
+                    $contactForImports = $query->get();
+                    Log::info($contactForImports);
+                }
 
                 $contactForImports = $query->get();
-
+                $contactForImports->load([
+                    'primaryAddress',
+                    'primaryAddress.currentAddressEnergySupplierElectricity',
+                    'primaryAddress.currentAddressEnergySupplierGas',
+                    'primaryEmailAddress',
+                    'primaryphoneNumber',
+                ]);
                 if ($contactForImports->isNotEmpty()) {
                     foreach ($contactForImports as $contactForImport) {
                         // Check if the contact ID is already in the uniqueContactIds array

@@ -20,25 +20,44 @@ function ContactToImportsList({
     handleKeyUp,
     refreshContactToImports,
     selectAllNew,
-    setCheckedContactNew,
-    selectAllCheckboxesNew,
+    toggleCheckedImportNew,
+    toggleAllCheckboxesNew,
     selectedImportsNew,
     selectAllUpdate,
-    setCheckedContactUpdate,
-    selectAllCheckboxesUpdate,
+    toggleCheckedContactUpdate,
+    toggleAllCheckboxesUpdate,
     selectedContactsUpdate,
+    numberSelectedTotal,
 }) {
+    let showSelectImportsInProgress = false;
+    let inProgressText = 'Importeren/Bijwerken contacten';
+
     return (
         <div>
             <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
+                {showSelectImportsInProgress ? (
+                    <div className="col-md-12">
+                        <div className="alert alert-warning">{inProgressText}</div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="col-md-12">&nbsp;</div>
+                        <div className="col-md-12">
+                            {numberSelectedTotal ? (
+                                <div className="alert alert-success">Geselecteerde imports: {numberSelectedTotal}</div>
+                            ) : null}
+                        </div>
+                    </>
+                )}
+
                 <table className="table table-condensed col-xs-12">
                     <DataTableHead>
                         <ContactToImportsListHead
                             handleChangeSort={handleChangeSort}
                             selectAllNew={selectAllNew}
                             selectAllUpdate={selectAllUpdate}
-                            selectAllCheckboxesNew={selectAllCheckboxesNew}
-                            selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                            toggleAllCheckboxesNew={toggleAllCheckboxesNew}
+                            toggleAllCheckboxesUpdate={toggleAllCheckboxesUpdate}
                         />
                         {/*<ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}
                     </DataTableHead>
@@ -53,19 +72,13 @@ function ContactToImportsList({
                                     <ContactToImportsListItem
                                         // todo WM: FF snel voor test
                                         showCheckboxNew={selectAllNew}
-                                        // checkedNew={false}
                                         checkedNew={
                                             selectedImportsNew ? selectedImportsNew.includes(ContactToImport.id) : false
                                         }
-                                        setCheckedContactNew={setCheckedContactNew}
+                                        toggleCheckedImportNew={toggleCheckedImportNew}
                                         showCheckboxUpdate={selectAllUpdate}
-                                        // checkedUpdate={
-                                        //     selectedContactsUpdate
-                                        //         ? selectedContactsUpdate.includes(ContactToImport.id)
-                                        //         : false
-                                        // }
                                         selectedContactsUpdate={selectedContactsUpdate}
-                                        setCheckedContactUpdate={setCheckedContactUpdate}
+                                        toggleCheckedContactUpdate={toggleCheckedContactUpdate}
                                         key={ContactToImport.id}
                                         refreshContactToImports={refreshContactToImports}
                                         {...ContactToImport}

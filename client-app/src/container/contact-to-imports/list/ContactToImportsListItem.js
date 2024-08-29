@@ -10,11 +10,10 @@ import axiosInstance from '../../../api/default-setup/AxiosInstance';
 function ContactToImportsListItem({
     showCheckboxNew,
     checkedNew,
-    setCheckedContactNew,
+    toggleCheckedImportNew,
     showCheckboxUpdate,
-    // checkedUpdate,
     selectedContactsUpdate,
-    setCheckedContactUpdate,
+    toggleCheckedContactUpdate,
     id,
     number,
     firstName,
@@ -27,6 +26,7 @@ function ContactToImportsListItem({
     emailContact,
     phoneNumber,
     ean,
+    eanType,
     supplierCodeRef,
     esNumber,
     permissions,
@@ -74,33 +74,32 @@ function ContactToImportsListItem({
             });
     }
 
-    const matchCodeText = matchCode => {
-        switch (matchCode) {
-            case 'new':
-                return 'Nog verwerken';
-            case 'supplierFullMatch':
-                return 'Match klant';
-            case 'supplierIgnoreEsNumber':
-                return 'Match klant min klantnummer';
-            case 'supplierIgnoreAddress':
-                return 'Match klant minus adres';
-            case 'supplierIgnoreEmail':
-                return 'Match klant minus E-mail';
-            case 'supplierIgnoreLastName':
-                return 'Match klant minus achternaam';
-            case 'contactMatch':
-                return 'Match contact';
-            case 'contactIgnoreAddress':
-                return 'Match contact minus adres';
-            case 'contactIgnoreEmail':
-                return 'Match contact minus e-mail';
-            case 'contactIgnoreLastName':
-                return 'Match contact minus achternaam';
-        }
-        return matchCode;
-    };
+    // const matchCodeText = matchCode => {
+    //     switch (matchCode) {
+    //         case 'new':
+    //             return 'Nog verwerken';
+    //         case 'supplierFullMatch':
+    //             return 'Match klant';
+    //         case 'supplierIgnoreEsNumber':
+    //             return 'Match klant min klantnummer';
+    //         case 'supplierIgnoreAddress':
+    //             return 'Match klant minus adres';
+    //         case 'supplierIgnoreEmail':
+    //             return 'Match klant minus E-mail';
+    //         case 'supplierIgnoreLastName':
+    //             return 'Match klant minus naam';
+    //         case 'contactMatch':
+    //             return 'Match contact';
+    //         case 'contactIgnoreAddress':
+    //             return 'Match contact minus adres';
+    //         case 'contactIgnoreEmail':
+    //             return 'Match contact minus e-mail';
+    //         case 'contactIgnoreLastName':
+    //             return 'Match contact minus naam';
+    //     }
+    //     return matchCode;
+    // };
 
-    console.log('showCheckboxNew');
     return (
         <>
             <tr style={{ backgroundColor: '#ececec' }}>
@@ -114,12 +113,7 @@ function ContactToImportsListItem({
                     {/*)}*/}
                     {!showCheckboxUpdate ? (
                         <>
-                            <input
-                                type="checkbox"
-                                checked={checkedNew}
-                                onChange={() => setCheckedContactNew(id)}
-                                // onChange={() => createNewContactFromContactToImport(id)}
-                            />
+                            <input type="checkbox" checked={checkedNew} onChange={() => toggleCheckedImportNew(id)} />
                             {' Nieuw'}
                         </>
                     ) : null}
@@ -136,6 +130,7 @@ function ContactToImportsListItem({
                 <td>{emailContact}</td>
                 <td>{phoneNumber}</td>
                 <td>{ean}</td>
+                <td>{eanType}</td>
                 <td>{supplierCodeRef}</td>
                 <td>{esNumber}</td>
                 {/*<td>{matchCode}</td>*/}
@@ -175,10 +170,14 @@ function ContactToImportsListItem({
                                             type="checkbox"
                                             checked={
                                                 selectedContactsUpdate
-                                                    ? selectedContactsUpdate.includes(contactForImport.id)
+                                                    ? selectedContactsUpdate.some(
+                                                          item =>
+                                                              item.importId === id &&
+                                                              item.contactId === contactForImport.id
+                                                      )
                                                     : false
                                             }
-                                            onChange={() => setCheckedContactUpdate(id, contactForImport.id)}
+                                            onChange={() => toggleCheckedContactUpdate(id, contactForImport.id)}
                                         />
                                         {' Bijwerken'}
                                     </>
@@ -189,7 +188,8 @@ function ContactToImportsListItem({
                             )}
                         </td>
                         <td style={{ background: contactForImport.matchColor }}>
-                            {matchCodeText(contactForImport.matchCode)}
+                            {/*{matchCodeText(contactForImport.matchCode)}*/}
+                            {contactForImport.matchDescription}
                         </td>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
@@ -201,9 +201,10 @@ function ContactToImportsListItem({
                         <td>{contactForImport.city}</td>
                         <td>{contactForImport.emailContact}</td>
                         <td>{contactForImport.phoneNumber}</td>
-                        <td>ean</td>
-                        <td>leverancier</td>
-                        <td>klantnummer</td>
+                        <td>{contactForImport.eanElectricity}</td>
+                        <td>{contactForImport.esTypeElectricity}</td>
+                        <td>{contactForImport.esCodeRefElectricity}</td>
+                        <td>{contactForImport.esNumberElectricity}</td>
                         {/*<td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>*/}
                         {/*<td>*/}
                         {/*    {showActionButtons && permissions.manageContactToImports ? (*/}

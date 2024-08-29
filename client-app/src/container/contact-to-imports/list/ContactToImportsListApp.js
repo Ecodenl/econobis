@@ -18,7 +18,7 @@ const recordsPerPage = 3;
 function ContactToImportsListApp() {
     const [ContactToImports, setContactToImports] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    const [meta, setMetaData] = useState({ total: 0, totalImportIds: 0, totalContactIds: 0 });
+    const [meta, setMetaData] = useState({ total: 0, totalImportIds: [], totalContactIds: [] });
     const [filter, setFilter] = useState([]);
     const [checkedAllNew, setCheckedAllNew] = useState(false);
     const [selectedImportsNew, setSelectedImportsNew] = useState([]);
@@ -27,7 +27,7 @@ function ContactToImportsListApp() {
     const [selectAllNew, setSelectAllNew] = useState(false);
     const [selectAllUpdate, setSelectAllUpdate] = useState(false);
     const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
-    const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
+    const [pagination, setPagination] = useState({ page: 0, offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
 
     // If pagination, sort or filter created at change then reload data
@@ -52,13 +52,28 @@ function ContactToImportsListApp() {
     // );
 
     function actionSelectAllNew() {
-        setSelectAllUpdate(false);
-        setSelectAllNew(!selectAllNew);
+        setSelectedImportsNew([]);
+        setPagination({ ...pagination, offset: 0 });
+
+        if (selectAllNew === false) {
+            setSelectAllUpdate(false);
+            setSelectAllNew(true);
+        } else {
+            setSelectAllUpdate(false);
+            setSelectAllNew(false);
+        }
     }
 
     function actionSelectAllUpdate() {
-        setSelectAllNew(false);
-        setSelectAllUpdate(!selectAllUpdate);
+        setSelectedContactsUpdate([]);
+        setPagination({ ...pagination, offset: 0 });
+        if (selectAllUpdate === false) {
+            setSelectAllNew(false);
+            setSelectAllUpdate(true);
+        } else {
+            setSelectAllNew(false);
+            setSelectAllUpdate(false);
+        }
     }
 
     function fetchContactToImports() {
@@ -89,9 +104,10 @@ function ContactToImportsListApp() {
     function onSubmitFilter() {
         setContactToImports([]);
 
-        let page = 0;
-        let offset = 0;
-        setPagination({ ...pagination, page, offset });
+        // let page = 0;
+        // let offset = 0;
+        // setPagination({ ...pagination, page, offset });
+        setPagination({ ...pagination, offset: 0 });
     }
 
     function handlePageClick(page) {
@@ -113,7 +129,7 @@ function ContactToImportsListApp() {
         onSubmitFilter();
     }
 
-    function selectAllCheckboxesNew() {
+    function toggleAllCheckboxesNew() {
         if (checkedAllNew === false) {
             setCheckedAllNew(true);
             setSelectedImportsNew(meta.totalImportIds);
@@ -123,20 +139,38 @@ function ContactToImportsListApp() {
         }
     }
 
-    // function toggleCheckedAllNew() {
-    //     const isChecked = event.target.checked;
-    //     let orderIds = [];
-    //
-    //     if (isChecked) {
-    //         orderIds = this.props.orders.meta.orderIdsTotal;
-    //     }
-    //
-    //     this.setState({
-    //         orderIds: orderIds,
-    //         checkedAll: isChecked,
-    //     });
-    // };
-    //
+    function toggleCheckedImportNew(importId) {
+        const isChecked = selectedImportsNew.includes(importId);
+        if (isChecked) {
+            // Remove the importId from the array
+            setSelectedImportsNew(selectedImportsNew.filter(id => id !== importId));
+        } else {
+            // Add the importId to the array
+            setSelectedImportsNew([...selectedImportsNew, importId]);
+        }
+        // checkAllImportsAreChecked;
+    }
+    function toggleCheckedContactUpdate(importId, contactId) {
+        // Create an object representing the current selection
+        const contactUpdateItem = { importId, contactId };
+
+        // Check if this pair is already in the selectedContactsUpdate array
+        const isChecked = selectedContactsUpdate.some(
+            item => item.importId === importId && item.contactId === contactId
+        );
+
+        if (isChecked) {
+            // If the pair is already selected, remove it
+            setSelectedContactsUpdate(
+                selectedContactsUpdate.filter(item => !(item.importId === importId && item.contactId === contactId))
+            );
+        } else {
+            // If the pair is not selected, add it
+            setSelectedContactsUpdate([...selectedContactsUpdate, contactUpdateItem]);
+        }
+        // checkAllImportsAreChecked;
+    }
+
     // function toggleOrderCheck(event) {
     //     const isChecked = event.target.checked;
     //     const orderId = Number(event.target.name);
@@ -162,7 +196,7 @@ function ContactToImportsListApp() {
     //     });
     // }
 
-    function selectAllCheckboxesUpdate() {
+    function toggleAllCheckboxesUpdate() {
         if (checkedAllUpdate === false) {
             setCheckedAllUpdate(true);
             setSelectedContactsUpdate(meta.totalContactIds);
@@ -170,13 +204,6 @@ function ContactToImportsListApp() {
             setCheckedAllUpdate(false);
             setSelectedContactsUpdate([]);
         }
-    }
-    function setCheckedContactNew(importId) {
-        console.log('setCheckedContactNew voor import Id: ' + importId);
-    }
-
-    function setCheckedContactUpdate(importId, personId) {
-        console.log('setCheckedContactNew voor import Id: ' + importId + ' en personId ' + personId);
     }
 
     function formatFilterHelper() {
@@ -205,6 +232,25 @@ function ContactToImportsListApp() {
             console.log('handleKeyUp');
         }
     }
+    const numberSelectedTotal = () => {
+        let numberSelectedTotal = 0;
+
+        if (selectAllNew) {
+            if (selectedImportsNew && meta && meta.totalImportIds) {
+                numberSelectedTotal = selectedImportsNew.length + '/' + meta.totalImportIds.length;
+            } else {
+                numberSelectedTotal = selectedImportsNew.length;
+            }
+        } else if (selectAllUpdate) {
+            if (selectedContactsUpdate && meta && meta.totalContactIds) {
+                numberSelectedTotal = selectedContactsUpdate.length + '/' + meta.totalContactIds.length;
+            } else {
+                numberSelectedTotal = selectedContactsUpdate.length;
+            }
+        }
+
+        return numberSelectedTotal;
+    };
 
     function getCSV() {
         setLoading(true);
@@ -258,13 +304,14 @@ function ContactToImportsListApp() {
                         handleKeyUp={handleKeyUp}
                         refreshContactToImports={fetchContactToImports}
                         selectAllNew={selectAllNew}
-                        setCheckedContactNew={setCheckedContactNew}
-                        selectAllCheckboxesNew={selectAllCheckboxesNew}
+                        toggleCheckedImportNew={toggleCheckedImportNew}
+                        toggleAllCheckboxesNew={toggleAllCheckboxesNew}
                         selectedImportsNew={selectedImportsNew}
                         selectAllUpdate={selectAllUpdate}
-                        setCheckedContactUpdate={setCheckedContactUpdate}
-                        selectAllCheckboxesUpdate={selectAllCheckboxesUpdate}
+                        toggleCheckedContactUpdate={toggleCheckedContactUpdate}
+                        toggleAllCheckboxesUpdate={toggleAllCheckboxesUpdate}
                         selectedContactsUpdate={selectedContactsUpdate}
+                        numberSelectedTotal={numberSelectedTotal()}
                     />
                 </div>
             </PanelBody>

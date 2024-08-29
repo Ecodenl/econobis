@@ -9,13 +9,13 @@ const ContactToImportsListHead = props => {
             <th width={'6%'}>
                 {props.selectAllNew ? (
                     <>
-                        <input type="checkbox" onChange={props.selectAllCheckboxesNew} />
+                        <input type="checkbox" onChange={props.toggleAllCheckboxesNew} />
                         {' Nieuw'}
                     </>
                 ) : null}
                 {props.selectAllUpdate ? (
                     <>
-                        <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />
+                        <input type="checkbox" onChange={props.toggleAllCheckboxesUpdate} />
                         {' Bijwerken'}
                     </>
                 ) : null}
@@ -67,14 +67,15 @@ const ContactToImportsListHead = props => {
             />
             <DataTableHeadTitle title={'Telefoon'} width={'5%'} />
             <DataTableHeadTitle title={'Ean'} width={'5%'} />
-            <DataTableHeadTitle title={'Energielevereancier'} width={'10%'} />
+            <DataTableHeadTitle title={'EanType'} width={'5%'} />
+            <DataTableHeadTitle title={'Energielevereancier'} width={'5%'} />
             <DataTableHeadTitle title={'Klantnr'} width={'10%'} />
             {/*<DataTableHeadTitle title={'Match'} width={'10%'} />*/}
             {/*<th width={'4%'}>*/}
-            {/*    <input type="checkbox" onChange={props.selectAllCheckboxesNew} />*/}
+            {/*    <input type="checkbox" onChange={props.toggleAllCheckboxesNew} />*/}
             {/*    nieuw*/}
             {/*    <br />*/}
-            {/*    <input type="checkbox" onChange={props.selectAllCheckboxesUpdate} />*/}
+            {/*    <input type="checkbox" onChange={props.toggleAllCheckboxesUpdate} />*/}
             {/*    update*/}
             {/*</th>*/}
         </tr>

@@ -27,6 +27,7 @@ class CreateContactToImportsTable extends Migration
             $table->string('email_contact');
             $table->string('phone_number');
             $table->string('ean');
+            $table->string('ean_type');
             $table->string('es_number');
             $table->date('member_since');
             $table->date('end_date')->nullable();

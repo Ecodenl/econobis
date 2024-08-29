@@ -4,8 +4,7 @@ import ReactPaginate from 'react-paginate';
 
 const DataTablePagination = props => {
     const { onPageChangeAction, initialPage, recordsPerPage, totalRecords } = props;
-    console.log('recordsPerPage: ' + recordsPerPage);
-    console.log('totalRecords: ' + totalRecords);
+
     return (
         <ReactPaginate
             onPageChange={onPageChangeAction}

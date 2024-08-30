@@ -8,7 +8,10 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
 use App\Eco\Project\Project;
+use App\Eco\Team\Team;
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -61,8 +64,8 @@ class DeleteContactGroup implements DeleteInterface
     public function canDelete()
     {
         //TODO: onderstaande zaken verder nakijken
-        // Team kan contactgroepen hebben: koppeling blijft bestaan na verwijderen van de groep
-        // tabel contact_group_participation uitzoeken
+        // contact_group_participation
+        // contact_groups_pivot
 
 
         // Group can not be deleted if it is used in portalsettings
@@ -72,18 +75,40 @@ class DeleteContactGroup implements DeleteInterface
             array_push($this->errorMessage, "Deze groep wordt nog gebruikt in algemene portal instellingen.");
         }
 
-        if(Project::where('question_about_membership_group_id', $this->contactGroup->id)->exists()){
-            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Ledengroep");
-        }
-        if(Project::where('member_group_id', $this->contactGroup->id)->exists()){
-            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Contacten die keuze 1 maken toevoegen aan");
-        }
-        if(Project::where('no_member_group_id', $this->contactGroup->id)->exists()){
-            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Contacten die keuze 2 maken toevoegen aan");
+        $usedInProjects = Project::where('question_about_membership_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Ledengroep");
         }
 
-        array_push($this->errorMessage, "Stoppen tbv debug");
+        $usedInProjects = Project::where('member_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Contacten die keuze 1 maken toevoegen aan");
+        }
 
+        $usedInProjects = Project::where('no_member_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Contacten die keuze 2 maken toevoegen aan");
+        }
+
+        $usedInTeams = $this->contactGroup->teams()->get();
+        foreach ($usedInTeams as $usedInTeam){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in team " . $usedInTeam->name);
+        }
+
+        $usedInCooperation = cooperation::where('hoom_group_id', $this->contactGroup->id)->count();
+        if ($usedInCooperation > 0){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de cooperatie als Hoom groep");
+        }
+
+        $usedInPortalSettingsDashboardWidgets = PortalSettingsDashboardWidget::where('show_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInPortalSettingsDashboardWidgets as $usedInPortalSettingsDashboardWidget){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de dashboard widget " . $usedInPortalSettingsDashboardWidget->title . " - Zichtbaar voor groep");
+        }
+
+        $usedInPortalSettingsDashboardWidgets = PortalSettingsDashboardWidget::where('hide_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInPortalSettingsDashboardWidgets as $usedInPortalSettingsDashboardWidget){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de dashboard widget " . $usedInPortalSettingsDashboardWidget->title . " - Verborgen voor groep");
+        }
     }
 
     /** Deletes models recursive

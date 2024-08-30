@@ -109,7 +109,20 @@ class DeleteContactGroup implements DeleteInterface
         foreach ($usedInPortalSettingsDashboardWidgets as $usedInPortalSettingsDashboardWidget){
             array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de dashboard widget " . $usedInPortalSettingsDashboardWidget->title . " - Verborgen voor groep");
         }
+
+        $isParentGroupForGroups = $this->contactGroup->contactGroups()->get();
+        foreach ($isParentGroupForGroups as $isParentGroupForGroup){
+            array_push($this->errorMessage, "Deze groep heeft nog een sub groep " . $isParentGroupForGroup->name);
+        }
+
+        $isSubGroupFromGroups = $this->contactGroup->parent_groups_array;
+        if($isSubGroupFromGroups) {
+            foreach ($isSubGroupFromGroups as $key => $value) {
+                array_push($this->errorMessage, "Deze groep is onderdeel van de volgende groep " . $value);
+            }
+        }
     }
+
 
     /** Deletes models recursive
      *

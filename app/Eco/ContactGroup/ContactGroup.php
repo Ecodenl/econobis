@@ -430,6 +430,22 @@ class ContactGroup extends Model
         return $parentGroups;
     }
 
+    public function getParentGroupsExceptedArrayAttribute(){
+        $composedGroups = ContactGroup::where('type_id', 'composed')->get();
+
+        $parentGroups = [];
+
+        foreach ($composedGroups as $composedGroup){
+            foreach ($composedGroup->contactGroupsExcepted as $contactGroupExcepted){
+                if($this->id === $contactGroupExcepted->id){
+                    $parentGroups[] = $composedGroup->name;
+                }
+            }
+        }
+
+        return $parentGroups;
+    }
+
     // syncronized with lapasta
     public function getIsUsedInLapostaAttribute(){
 

@@ -121,6 +121,18 @@ class DeleteContactGroup implements DeleteInterface
                 array_push($this->errorMessage, "Deze groep is onderdeel van de volgende groep " . $value);
             }
         }
+
+        $isParentGroupForGroupsExcepted = $this->contactGroup->contactGroupsExcepted()->get();
+        foreach ($isParentGroupForGroupsExcepted as $isParentGroupForGroupExcepted){
+            array_push($this->errorMessage, "Deze groep heeft nog een uitgezonderde sub groep " . $isParentGroupForGroupExcepted->name);
+        }
+
+        $isSubGroupFromGroupsExcepted = $this->contactGroup->parent_groups_excepted_array;
+        if($isSubGroupFromGroupsExcepted) {
+            foreach ($isSubGroupFromGroupsExcepted as $key => $value) {
+                array_push($this->errorMessage, "Deze groep is uitgezonderd onderdeel van de volgende groep " . $value);
+            }
+        }
     }
 
 

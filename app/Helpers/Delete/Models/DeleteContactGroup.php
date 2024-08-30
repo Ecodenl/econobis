@@ -8,6 +8,7 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Project\Project;
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -59,12 +60,30 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function canDelete()
     {
+        //TODO: onderstaande zaken verder nakijken
+        // Team kan contactgroepen hebben: koppeling blijft bestaan na verwijderen van de groep
+        // tabel contact_group_participation uitzoeken
+
+
         // Group can not be deleted if it is used in portalsettings
         $defaultContactGroupMemberId = PortalSettings::get('defaultContactGroupMemberId');
         $defaultContactGroupNoMemberId = PortalSettings::get('defaultContactGroupNoMemberId');
         if($this->contactGroup->id == $defaultContactGroupMemberId || $this->contactGroup->id == $defaultContactGroupNoMemberId){
             array_push($this->errorMessage, "Deze groep wordt nog gebruikt in algemene portal instellingen.");
         }
+
+        if(Project::where('question_about_membership_group_id', $this->contactGroup->id)->exists()){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Ledengroep");
+        }
+        if(Project::where('member_group_id', $this->contactGroup->id)->exists()){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Contacten die keuze 1 maken toevoegen aan");
+        }
+        if(Project::where('no_member_group_id', $this->contactGroup->id)->exists()){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in projecten - Contacten die keuze 2 maken toevoegen aan");
+        }
+
+        array_push($this->errorMessage, "Stoppen tbv debug");
+
     }
 
     /** Deletes models recursive

@@ -29,7 +29,6 @@ use App\Http\Resources\Person\PersonPeek;
 use App\Rules\EnumExists;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class PersonController extends ApiController
@@ -138,22 +137,22 @@ class PersonController extends ApiController
 
         }
 
-        if ($request['addressEnergySupplier']) {
-            Validator::make($request['addressEnergySupplier'], [
-                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
-                'energySupplierId' => new EnumExists(EnergySupplier::class),
-            ]);
-
-            $data = $this->sanitizeData($request['addressEnergySupplier'], [
-                //nog aanvullen
-                'memberSince' => 'date',
-                'endDate' => 'date|nullable',
-                'primary' => 'boolean',
-            ]);
-
-            $addressEnergySupplier = new AddressEnergySupplier($this->arrayKeysToSnakeCase($data));
-        }
-
+//        if ($request['addressEnergySupplier']) {
+//            Validator::make($request['addressEnergySupplier'], [
+//                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
+//                'energySupplierId' => new EnumExists(EnergySupplier::class),
+//            ]);
+//
+//            $data = $this->sanitizeData($request['addressEnergySupplier'], [
+//                //nog aanvullen
+//                'memberSince' => 'date',
+//                'endDate' => 'date|nullable',
+//                'primary' => 'boolean',
+//            ]);
+//
+//            $addressEnergySupplier = new AddressEnergySupplier($this->arrayKeysToSnakeCase($data));
+//        }
+//
         if ($request['phoneNumber']['number']) {
             Validator::make($request['phoneNumber'], [
                 'typeId' => new EnumExists(PhoneNumberType::class),
@@ -271,7 +270,8 @@ class PersonController extends ApiController
         }
 
 
-        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber, $addressEnergySupplier) {
+//        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber, $addressEnergySupplier) {
+        DB::transaction(function () use ($person, $contact, $emailAddress, $address, $phoneNumber) {
             $contact->save();
             $person->contact_id = $contact->id;
             $person->save();
@@ -285,11 +285,11 @@ class PersonController extends ApiController
                 $this->authorize('create', $address);
                 $address->save();
             }
-            if(isset($addressEnergySupplier)) {
-                $addressEnergySupplier->address_id = $address->id;
-                $this->authorize('create', $addressEnergySupplier);
-                $addressEnergySupplier->save();
-            }
+//            if(isset($addressEnergySupplier)) {
+//                $addressEnergySupplier->address_id = $address->id;
+//                $this->authorize('create', $addressEnergySupplier);
+//                $addressEnergySupplier->save();
+//            }
             if($phoneNumber) {
                 $phoneNumber->contact_id = $contact->id;
                 $this->authorize('create', $phoneNumber);
@@ -394,64 +394,64 @@ class PersonController extends ApiController
         $person->fill($this->arrayKeysToSnakeCase($personData));
         $person->save();
 
-        if ($request['emailAddress'] && $request['emailAddress']['email']) {
-            $emailAddress = $contact->primaryEmailAddress;
-            $emailAddress->email = $request['emailAddress']['email'];
-            $emailAddress->save();
-        }
-
-        if ($request['phoneNumber'] && $request['phoneNumber']['number']) {
-            $phoneNumber = $contact->primaryphoneNumber;
-            $phoneNumber->number = $request['phoneNumber']['number'];
-            $phoneNumber->save();
-        }
-
-        if ($request['address'] && $request['address']['postalCode']) {
-            Validator::make($request['address'], [
-                'countryId' => 'nullable|exists:countries,id',
-                'typeId' => new EnumExists(AddressType::class),
-                'street' => '',
-                'number' => 'integer',
-                'addition' => 'string',
-                'city' => '',
-                'postalCode' => '',
-                'primary' => 'boolean',
-            ]);
-
-            $newAddressData = $this->sanitizeData($request['address'], [
-                'typeId' => 'nullable',
-                'countryId' => 'nullable',
-                'primary' => 'boolean',
-            ]);
-
-            if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $newAddressData['postalCode'])){
-                $newAddressData['postalCode'] = preg_replace('/\s+/', '', $newAddressData['postalCode']);
-            }
-
-            unset($newAddressData['energySupplyTypeId']);
-            $currentAddressData = $contact->primaryAddress;
-            $currentAddressData->fill($this->arrayKeysToSnakeCase($newAddressData));
-            $currentAddressData->save();
-        }
-
-        if ($request['addressEnergySupplier']) {
-            Validator::make($request['addressEnergySupplier'], [
-                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
-                'energySupplierId' => new EnumExists(EnergySupplier::class),
-            ]);
-
-            $data = $this->sanitizeData($request['addressEnergySupplier'], [
-                //nog aanvullen
-                'memberSince' => 'date',
-                'endDate' => 'date|nullable',
-                'primary' => 'boolean',
-            ]);
-
-            $addressEnergySupplier = $currentAddressData->addressEnergySuppliers()->where('is_current_supplier', true)->first();
-            $addressEnergySupplier->fill($this->arrayKeysToSnakeCase($data));
-            $addressEnergySupplier->save();
-        }
-
+//        if ($request['emailAddress'] && $request['emailAddress']['email']) {
+//            $emailAddress = $contact->primaryEmailAddress;
+//            $emailAddress->email = $request['emailAddress']['email'];
+//            $emailAddress->save();
+//        }
+//
+//        if ($request['phoneNumber'] && $request['phoneNumber']['number']) {
+//            $phoneNumber = $contact->primaryphoneNumber;
+//            $phoneNumber->number = $request['phoneNumber']['number'];
+//            $phoneNumber->save();
+//        }
+//
+//        if ($request['address'] && $request['address']['postalCode']) {
+//            Validator::make($request['address'], [
+//                'countryId' => 'nullable|exists:countries,id',
+//                'typeId' => new EnumExists(AddressType::class),
+//                'street' => '',
+//                'number' => 'integer',
+//                'addition' => 'string',
+//                'city' => '',
+//                'postalCode' => '',
+//                'primary' => 'boolean',
+//            ]);
+//
+//            $newAddressData = $this->sanitizeData($request['address'], [
+//                'typeId' => 'nullable',
+//                'countryId' => 'nullable',
+//                'primary' => 'boolean',
+//            ]);
+//
+//            if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $newAddressData['postalCode'])){
+//                $newAddressData['postalCode'] = preg_replace('/\s+/', '', $newAddressData['postalCode']);
+//            }
+//
+//            unset($newAddressData['energySupplyTypeId']);
+//            $currentAddressData = $contact->primaryAddress;
+//            $currentAddressData->fill($this->arrayKeysToSnakeCase($newAddressData));
+//            $currentAddressData->save();
+//        }
+//
+//        if ($request['addressEnergySupplier']) {
+//            Validator::make($request['addressEnergySupplier'], [
+//                'energySupplyTypeId' => new EnumExists(EnergySupplierType::class),
+//                'energySupplierId' => new EnumExists(EnergySupplier::class),
+//            ]);
+//
+//            $data = $this->sanitizeData($request['addressEnergySupplier'], [
+//                //nog aanvullen
+//                'memberSince' => 'date',
+//                'endDate' => 'date|nullable',
+//                'primary' => 'boolean',
+//            ]);
+//
+//            $addressEnergySupplier = $currentAddressData->addressEnergySuppliers()->where('is_current_supplier', true)->first();
+//            $addressEnergySupplier->fill($this->arrayKeysToSnakeCase($data));
+//            $addressEnergySupplier->save();
+//        }
+//
         // Twinfield customer hoeven we vanuit hier (contact) alleen bij te werken als er een koppeling is.
         // Nieuw aanmaken gebeurt vooralsnog alleen vanuit synchroniseren notas
         if($contact->twinfieldNumbers())

@@ -12,12 +12,11 @@ import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 
-const recordsPerPage = 3;
+const recordsPerPage = 20;
 
 function ContactToImportsListApp() {
     const [ContactToImports, setContactToImports] = useState([]);
     const [isLoading, setLoading] = useState(true);
-    // const [meta, setMetaData] = useState({ total: 0, totalImportIds: [], totalContactIds: [] });
     const [totalCount, setTotalCount] = useState(0);
     const [totalImportIds, setTotalImportIds] = useState([]);
     const [totalContactIds, setTotalContactIds] = useState([]);
@@ -30,7 +29,7 @@ function ContactToImportsListApp() {
     const [selectAllUpdate, setSelectAllUpdate] = useState(false);
     const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ page: 0, offset: 0, limit: recordsPerPage });
-    const pressedEnter = useKeyPress('Enter');
+    // const pressedEnter = useKeyPress('Enter');
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
@@ -104,7 +103,6 @@ function ContactToImportsListApp() {
             .then(
                 axios.spread(payloadContactToImports => {
                     setContactToImports(payloadContactToImports.data.data);
-                    // setMetaData(payloadContactToImports.data.meta);
                     setTotalCount(payloadContactToImports.data.meta.total);
                     setTotalImportIds(payloadContactToImports.data.meta.totalImportIds);
                     setTotalContactIds(payloadContactToImports.data.meta.totalContactIds);
@@ -155,31 +153,29 @@ function ContactToImportsListApp() {
             setSelectedImportsNew([]);
         }
     }
+    function toggleAllCheckboxesUpdate() {
+        if (checkedAllUpdate === false) {
+            setCheckedAllUpdate(true);
+            setSelectedContactsUpdate(totalContactIds);
+        } else {
+            setCheckedAllUpdate(false);
+            setSelectedContactsUpdate([]);
+        }
+    }
 
     function toggleCheckedImportNew(importId) {
         const isChecked = selectedImportsNew.includes(importId);
         if (isChecked) {
             // Remove the importId from the array
             setSelectedImportsNew(selectedImportsNew.filter(id => id !== importId));
+            deBlockSelectContactsUpdate(importId, 'all');
         } else {
             // Add the importId to the array
             setSelectedImportsNew([...selectedImportsNew, importId]);
             blockSelectContactsUpdate(importId, 'all');
         }
     }
-    function checkAllImportsNewAreChecked() {
-        // console.log('checkAllImportsNewAreChecked');
-        // console.log('selectAllNew ' + (selectAllNew ? 'Ja' : 'Nee'));
-        if (selectAllNew) {
-            // console.log('selectedImportsNew ' + selectedImportsNew.length);
-            // console.log('totalImportIds ' + totalImportIds.length);
-            // console.log('totalContactIds ' + totalContactIds.length);
-            setCheckedAllNew(selectedImportsNew.length === totalImportIds.length);
-        }
-    }
-
     function toggleCheckedContactUpdate(importId, contactId) {
-        // console.log(totalContactIds);
         // Create an object representing the current selection
         const contactUpdateItem = { importId, contactId };
 
@@ -193,12 +189,43 @@ function ContactToImportsListApp() {
             setSelectedContactsUpdate(
                 selectedContactsUpdate.filter(item => !(item.importId === importId && item.contactId === contactId))
             );
+            // Update the totalImportIds array to deblock new with same importId
+            deBlockSelectImportNew(importId);
+            // Update the totalContactIds array to deblock other contacts with the same importId
+            deBlockSelectContactsUpdate(importId, contactId);
         } else {
             // If the pair is not selected, add it
             setSelectedContactsUpdate([...selectedContactsUpdate, contactUpdateItem]);
+            // Update the totalImportIds array to block new with same importId
+            blockSelectImportNew(importId);
             // Update the totalContactIds array to block other contacts with the same importId
             blockSelectContactsUpdate(importId, contactId);
         }
+    }
+    function checkAllImportsNewAreChecked() {
+        if (selectAllNew) {
+            setCheckedAllNew(selectedImportsNew.length === totalImportIds.length);
+        }
+    }
+    function checkAllContactsUpdateAreChecked() {
+        if (selectAllUpdate) {
+            setCheckedAllUpdate(selectedContactsUpdate.length === totalContactIds.length);
+        }
+    }
+
+    function blockSelectImportNew(importId) {
+        // Update the totalImportIds array to block for same importId
+        setTotalImportIds(
+            totalImportIds.map(item => {
+                if (item.importId === importId) {
+                    return {
+                        ...item,
+                        blocked: true,
+                    };
+                }
+                return item;
+            })
+        );
     }
     function blockSelectContactsUpdate(importId, contactId) {
         // Update the totalContactIds array to block other contacts with the same importId
@@ -214,24 +241,33 @@ function ContactToImportsListApp() {
             })
         );
     }
-
-    function toggleAllCheckboxesUpdate() {
-        if (checkedAllUpdate === false) {
-            setCheckedAllUpdate(true);
-            setSelectedContactsUpdate(totalContactIds);
-        } else {
-            setCheckedAllUpdate(false);
-            setSelectedContactsUpdate([]);
-        }
+    function deBlockSelectImportNew(importId) {
+        // Update the totalImportIds array to deblock for same importId
+        setTotalImportIds(
+            totalImportIds.map(item => {
+                if (item.importId === importId) {
+                    return {
+                        ...item,
+                        blocked: false,
+                    };
+                }
+                return item;
+            })
+        );
     }
-    function checkAllContactsUpdateAreChecked() {
-        // console.log('checkAllContactsUpdateAreChecked');
-        // console.log('selectAllUpdate ' + (selectAllUpdate ? 'Ja' : 'Nee'));
-        if (selectAllUpdate) {
-            // console.log('selectedContactsUpdate ' + selectedContactsUpdate.length);
-            // console.log('totalContactIds ' + totalContactIds.length);
-            setCheckedAllUpdate(selectedContactsUpdate.length === totalContactIds.length);
-        }
+    function deBlockSelectContactsUpdate(importId, contactId) {
+        // Update the totalContactIds array to deblock other contacts with the same importId
+        setTotalContactIds(
+            totalContactIds.map(item => {
+                if (item.importId === importId) {
+                    return {
+                        ...item,
+                        blocked: false,
+                    };
+                }
+                return item;
+            })
+        );
     }
 
     function formatFilterHelper() {
@@ -308,12 +344,8 @@ function ContactToImportsListApp() {
     }
 
     function createContactsFromImport() {
-        // console.log('ContactToImportsListApp - createContactsFromImport');
-        // console.log(selectedImportsNew);
         ContactToImportsAPI.createContactsFromImport(selectedImportsNew)
             .then(payload => {
-                // console.log('payload?');
-                // console.log(payload);
                 setTimeout(() => {
                     setSelectAllNew(false);
                     setSelectAllUpdate(false);
@@ -330,12 +362,8 @@ function ContactToImportsListApp() {
             });
     }
     function updateContactsFromImport() {
-        // console.log('ContactToImportsListApp - updateContactsFromImport');
-        // console.log(selectedContactsUpdate);
         ContactToImportsAPI.updateContactsFromImport(selectedContactsUpdate)
             .then(payload => {
-                // console.log('payload?');
-                // console.log(payload);
                 setTimeout(() => {
                     setSelectAllNew(false);
                     setSelectAllUpdate(false);
@@ -374,18 +402,18 @@ function ContactToImportsListApp() {
                         checkedAllUpdate={checkedAllUpdate}
                         recordsPerPage={recordsPerPage}
                         isLoading={isLoading}
-                        filter={filter}
+                        // filter={filter}
                         handlePageClick={handlePageClick}
                         handleChangeSort={handleChangeSort}
-                        handleChangeFilter={handleChangeFilter}
+                        // handleChangeFilter={handleChangeFilter}
                         // handleKeyUp={handleKeyUp}
-                        refreshContactToImports={fetchContactToImports}
+                        totalImportIds={totalImportIds}
+                        totalContactIds={totalContactIds}
                         selectAllNew={selectAllNew}
                         toggleCheckedImportNew={toggleCheckedImportNew}
                         toggleAllCheckboxesNew={toggleAllCheckboxesNew}
                         selectedImportsNew={selectedImportsNew}
                         numberSelectedNewTotal={numberSelectedNewTotal()}
-                        totalContactIds={totalContactIds}
                         selectAllUpdate={selectAllUpdate}
                         toggleCheckedContactUpdate={toggleCheckedContactUpdate}
                         toggleAllCheckboxesUpdate={toggleAllCheckboxesUpdate}

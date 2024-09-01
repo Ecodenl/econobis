@@ -8,13 +8,7 @@
 
 namespace App\Helpers\CSV;
 
-use App\Eco\Address\AddressType;
-use App\Eco\FreeFields\FreeFieldsField;
-use App\Eco\FreeFields\FreeFieldsTable;
-use Carbon\Carbon;
 use League\Csv\Reader;
-use Illuminate\Support\Facades\Log;
-use App\Eco\Address\Address;
 
 class ContactToImportCSVHelper
 {

@@ -11,14 +11,10 @@ namespace App\Helpers\Import;
 
 
 use App\Eco\Contact\ContactToImport;
-use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\LastNamePrefix\LastNamePrefix;
-use App\Eco\PhoneNumber\PhoneNumber;
-use App\Eco\Title\Title;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
-use Particle\Validator\Validator;
 
 class ContactImportFromEnergySupplierHelper
 {

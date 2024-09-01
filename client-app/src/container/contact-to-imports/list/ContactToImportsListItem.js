@@ -8,7 +8,6 @@ import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImport
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
 
 function ContactToImportsListItem({
-    showCheckboxNew,
     checkedNew,
     toggleCheckedImportNew,
     showCheckboxUpdate,
@@ -32,89 +31,23 @@ function ContactToImportsListItem({
     permissions,
     matchCode,
     contactForImports,
-    refreshContactToImports,
+    totalImportIds,
     totalContactIds,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
-
-    // function updateContactFromContactToImport(contactToImport, contactForImport) {
-    //     ContactToImportsAPI.getContactFromContactToImport(contactToImport)
-    //         .then(payload => {
-    //             return axiosInstance.post(`/person/${contactForImport}`, payload.data);
-    //         })
-    //         .then(payload => {
-    //             ContactToImportsAPI.setContactToImportStatus(
-    //                 contactToImport,
-    //                 'geïmporteerd update',
-    //                 payload.data.data.id
-    //             );
-    //         })
-    //         .then(() => {
-    //             setTimeout(() => {
-    //                 refreshContactToImports();
-    //             }, 200);
-    //         });
-    // }
-    //
-    // function createNewContactFromContactToImport(contactToImport) {
-    //     ContactToImportsAPI.getContactFromContactToImport(contactToImport)
-    //         .then(payload => {
-    //             return axiosInstance.post('/person', payload.data);
-    //         })
-    //         .then(payload => {
-    //             ContactToImportsAPI.setContactToImportStatus(
-    //                 contactToImport,
-    //                 'geïmporteerd nieuw',
-    //                 payload.data.data.id
-    //             );
-    //         })
-    //         .then(() => {
-    //             setTimeout(() => {
-    //                 refreshContactToImports();
-    //             }, 200);
-    //         });
-    // }
-
-    // const matchCodeText = matchCode => {
-    //     switch (matchCode) {
-    //         case 'new':
-    //             return 'Nog verwerken';
-    //         case 'supplierFullMatch':
-    //             return 'Match klant';
-    //         case 'supplierIgnoreEsNumber':
-    //             return 'Match klant min klantnummer';
-    //         case 'supplierIgnoreAddress':
-    //             return 'Match klant minus adres';
-    //         case 'supplierIgnoreEmail':
-    //             return 'Match klant minus E-mail';
-    //         case 'supplierIgnoreLastName':
-    //             return 'Match klant minus naam';
-    //         case 'contactMatch':
-    //             return 'Match contact';
-    //         case 'contactIgnoreAddress':
-    //             return 'Match contact minus adres';
-    //         case 'contactIgnoreEmail':
-    //             return 'Match contact minus e-mail';
-    //         case 'contactIgnoreLastName':
-    //             return 'Match contact minus naam';
-    //     }
-    //     return matchCode;
-    // };
 
     return (
         <>
             <tr style={{ backgroundColor: '#ececec' }}>
                 <td>
-                    {/*{showActionButtons && permissions.manageContactToImports ? (*/}
-                    {/*    <a role="button" onClick={() => openItem(id)}>*/}
-                    {/*        <Icon className="mybtn-success" size={14} icon={pencil} />*/}
-                    {/*    </a>*/}
-                    {/*) : (*/}
-                    {/*    ''*/}
-                    {/*)}*/}
                     {!showCheckboxUpdate ? (
                         <>
-                            <input type="checkbox" checked={checkedNew} onChange={() => toggleCheckedImportNew(id)} />
+                            <input
+                                type="checkbox"
+                                checked={checkedNew}
+                                onChange={() => toggleCheckedImportNew(id)}
+                                disabled={totalImportIds.some(item => item.importId === id && item.blocked === true)}
+                            />
                             {' Nieuw'}
                         </>
                     ) : null}
@@ -134,29 +67,12 @@ function ContactToImportsListItem({
                 <td>{eanType}</td>
                 <td>{supplierCodeRef}</td>
                 <td>{esNumber}</td>
-                {/*<td>{matchCode}</td>*/}
-                {/*<td>*/}
-                {/*    {showActionButtons && permissions.manageContactToImports ? (*/}
-                {/*        <a role="button" onClick={() => openItem(id)}>*/}
-                {/*            <Icon className="mybtn-success" size={14} icon={pencil} />*/}
-                {/*        </a>*/}
-                {/*    ) : (*/}
-                {/*        ''*/}
-                {/*    )}*/}
-                {/*    <input*/}
-                {/*        type="checkbox"*/}
-                {/*        // onChange={() => createNewContactFromContactToImport(id)}*/}
-                {/*    />{' '}*/}
-                {/*    nieuw*/}
-                {/*</td>*/}
             </tr>
 
             {contactForImports.map(contactForImport => {
-                // console.log('contactForImport.id ' + contactForImport.id);
                 let checkboxBlocked = selectedContactsUpdate.filter(
                     item => item.importId === id && item.contactId === contactForImport.id
                 );
-                // console.log(checkboxBlocked);
 
                 return (
                     <tr>
@@ -171,7 +87,6 @@ function ContactToImportsListItem({
                             )}
                             {contactForImport.matchCode != 'supplierFullMatch' ? (
                                 <>
-                                    {/*{contactForImport.showCheckboxUpdate ? (*/}
                                     <>
                                         <input
                                             type="checkbox"
@@ -194,16 +109,12 @@ function ContactToImportsListItem({
                                         />
                                         {' Bijwerken'}
                                     </>
-                                    {/*) : null}*/}
                                 </>
                             ) : (
                                 ''
                             )}
                         </td>
-                        <td style={{ background: contactForImport.matchColor }}>
-                            {/*{matchCodeText(contactForImport.matchCode)}*/}
-                            {contactForImport.matchDescription}
-                        </td>
+                        <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchDescription}</td>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
                         <td>{contactForImport.lastName}</td>

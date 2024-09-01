@@ -34,7 +34,13 @@ class ContactToImportController extends Controller
         $filteredContactToImports = $this->getFilteredContactToImports($contactToImports, $selectAllNew, $selectAllUpdate);
 
         $totalImports = $filteredContactToImports->count();
-        $totalImportIds = $filteredContactToImports->pluck('id');
+
+        $totalImportIds = $filteredContactToImports->map(function($import) {
+            return [
+                'importId' => $import->id,
+                'blocked' => false,
+            ];
+        });
 
         // Ensure contactForImports is treated as a collection
         $totalContactIds = $filteredContactToImports->flatMap(function($import) {
@@ -81,14 +87,14 @@ class ContactToImportController extends Controller
 
     public function createContactsFromImport(Request $request)
     {
-//        Log::info('createContactsFromImport');
         $this->authorize('import', Contact::class);
 
-        $contactToImports = ContactToImport::whereIn('id', $request->input('selectedImportsNew'))->with('contact')->get();
+        // Retrieve the array from the request
+        $selectedImportsNew = $request->input('selectedImportsNew');
+
+        $contactToImports = ContactToImport::whereIn('id', $selectedImportsNew)->with('contact')->get();
 
         foreach ($contactToImports as $contactToImport) {
-//            Log::info('contactToImport id: ' . $contactToImport->id);
-//            Log::info($contactToImport);
             $contact = $this->createContactFromImport($contactToImport);
 
             if($contact){
@@ -175,8 +181,6 @@ class ContactToImportController extends Controller
         return $contact;
     }
 
-//Log::info('updateContactsFromImport');
-//Log::info($request->input('selectedContactsUpdate'));
     public function updateContactsFromImport(Request $request)
     {
         $this->authorize('import', Contact::class);

@@ -16,18 +16,18 @@ function ContactToImportsList({
     checkedAllUpdate,
     recordsPerPage,
     isLoading,
-    filter,
+    // filter,
     handlePageClick,
     handleChangeSort,
-    handleChangeFilter,
+    // handleChangeFilter,
     // handleKeyUp,
-    refreshContactToImports,
+    totalImportIds,
+    totalContactIds,
     selectAllNew,
     toggleCheckedImportNew,
     toggleAllCheckboxesNew,
     selectedImportsNew,
     numberSelectedNewTotal,
-    totalContactIds,
     selectAllUpdate,
     toggleCheckedContactUpdate,
     toggleAllCheckboxesUpdate,
@@ -39,8 +39,6 @@ function ContactToImportsList({
     let showSelectImportsInProgress = false;
     let inProgressText = 'Importeren/Bijwerken contacten';
 
-    // console.log('totalContactIds');
-    // console.log(totalContactIds);
     return (
         <div>
             {/*<form onKeyUp={handleKeyUp} className={'margin-10-top'}>*/}
@@ -115,8 +113,6 @@ function ContactToImportsList({
                             ContactToImports.map(ContactToImport => {
                                 return (
                                     <ContactToImportsListItem
-                                        // todo WM: FF snel voor test
-                                        showCheckboxNew={selectAllNew}
                                         checkedNew={
                                             selectedImportsNew ? selectedImportsNew.includes(ContactToImport.id) : false
                                         }
@@ -125,7 +121,7 @@ function ContactToImportsList({
                                         selectedContactsUpdate={selectedContactsUpdate}
                                         toggleCheckedContactUpdate={toggleCheckedContactUpdate}
                                         key={ContactToImport.id}
-                                        refreshContactToImports={refreshContactToImports}
+                                        totalImportIds={totalImportIds}
                                         totalContactIds={totalContactIds}
                                         {...ContactToImport}
                                     />

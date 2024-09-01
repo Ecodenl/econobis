@@ -33,46 +33,47 @@ function ContactToImportsListItem({
     matchCode,
     contactForImports,
     refreshContactToImports,
+    totalContactIds,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
 
-    function updateContactFromContactToImport(contactToImport, contactForImport) {
-        ContactToImportsAPI.getContactFromContactToImport(contactToImport)
-            .then(payload => {
-                return axiosInstance.post(`/person/${contactForImport}`, payload.data);
-            })
-            .then(payload => {
-                ContactToImportsAPI.setContactToImportStatus(
-                    contactToImport,
-                    'geïmporteerd update',
-                    payload.data.data.id
-                );
-            })
-            .then(() => {
-                setTimeout(() => {
-                    refreshContactToImports();
-                }, 200);
-            });
-    }
-
-    function createNewContactFromContactToImport(contactToImport) {
-        ContactToImportsAPI.getContactFromContactToImport(contactToImport)
-            .then(payload => {
-                return axiosInstance.post('/person', payload.data);
-            })
-            .then(payload => {
-                ContactToImportsAPI.setContactToImportStatus(
-                    contactToImport,
-                    'geïmporteerd nieuw',
-                    payload.data.data.id
-                );
-            })
-            .then(() => {
-                setTimeout(() => {
-                    refreshContactToImports();
-                }, 200);
-            });
-    }
+    // function updateContactFromContactToImport(contactToImport, contactForImport) {
+    //     ContactToImportsAPI.getContactFromContactToImport(contactToImport)
+    //         .then(payload => {
+    //             return axiosInstance.post(`/person/${contactForImport}`, payload.data);
+    //         })
+    //         .then(payload => {
+    //             ContactToImportsAPI.setContactToImportStatus(
+    //                 contactToImport,
+    //                 'geïmporteerd update',
+    //                 payload.data.data.id
+    //             );
+    //         })
+    //         .then(() => {
+    //             setTimeout(() => {
+    //                 refreshContactToImports();
+    //             }, 200);
+    //         });
+    // }
+    //
+    // function createNewContactFromContactToImport(contactToImport) {
+    //     ContactToImportsAPI.getContactFromContactToImport(contactToImport)
+    //         .then(payload => {
+    //             return axiosInstance.post('/person', payload.data);
+    //         })
+    //         .then(payload => {
+    //             ContactToImportsAPI.setContactToImportStatus(
+    //                 contactToImport,
+    //                 'geïmporteerd nieuw',
+    //                 payload.data.data.id
+    //             );
+    //         })
+    //         .then(() => {
+    //             setTimeout(() => {
+    //                 refreshContactToImports();
+    //             }, 200);
+    //         });
+    // }
 
     // const matchCodeText = matchCode => {
     //     switch (matchCode) {
@@ -151,6 +152,12 @@ function ContactToImportsListItem({
             </tr>
 
             {contactForImports.map(contactForImport => {
+                // console.log('contactForImport.id ' + contactForImport.id);
+                let checkboxBlocked = selectedContactsUpdate.filter(
+                    item => item.importId === id && item.contactId === contactForImport.id
+                );
+                // console.log(checkboxBlocked);
+
                 return (
                     <tr>
                         <td>
@@ -178,6 +185,12 @@ function ContactToImportsListItem({
                                                     : false
                                             }
                                             onChange={() => toggleCheckedContactUpdate(id, contactForImport.id)}
+                                            disabled={totalContactIds.some(
+                                                item =>
+                                                    item.importId === id &&
+                                                    item.contactId === contactForImport.id &&
+                                                    item.blocked === true
+                                            )}
                                         />
                                         {' Bijwerken'}
                                     </>
@@ -205,24 +218,6 @@ function ContactToImportsListItem({
                         <td>{contactForImport.esTypeElectricity}</td>
                         <td>{contactForImport.esCodeRefElectricity}</td>
                         <td>{contactForImport.esNumberElectricity}</td>
-                        {/*<td style={{ background: contactForImport.matchColor }}>{contactForImport.matchCode}</td>*/}
-                        {/*<td>*/}
-                        {/*    {showActionButtons && permissions.manageContactToImports ? (*/}
-                        {/*        <a role="button" onClick={() => openItem(id)}>*/}
-                        {/*            <Icon className="mybtn-success" size={14} icon={pencil} />*/}
-                        {/*        </a>*/}
-                        {/*    ) : (*/}
-                        {/*        ''*/}
-                        {/*    )}*/}
-                        {/*    {contactForImport.matchCode != 'supplierFullMatch' ? (*/}
-                        {/*        <input*/}
-                        {/*            type="checkbox"*/}
-                        {/*            // onChange={() => updateContactFromContactToImport(id, contactForImport.personId)}*/}
-                        {/*        />*/}
-                        {/*    ) : (*/}
-                        {/*        ''*/}
-                        {/*    )}*/}
-                        {/*</td>*/}
                     </tr>
                 );
             })}

@@ -85,8 +85,8 @@ Route::namespace('Api')
 
         Route::get('/contact-to-imports/grid', 'Contact\ContactToImportController@index');
         Route::get('/contact-to-imports/peek-with-status', 'Contact\ContactToImportController@peekWithStatus');
-        Route::get('/contact-to-imports/{contactToImport}/getContactToImport', 'Contact\ContactToImportController@createNewContactFromContactToImport');
-        Route::get('/contact-to-imports/{contactToImport}/setContactToImportStatus/{status}/contactForImport/{contactForImport}', 'Contact\ContactToImportController@setContactToImportStatus');
+        Route::post('/contact-to-imports/createContactsFromImport', 'Contact\ContactToImportController@createContactsFromImport');
+        Route::post('/contact-to-imports/updateContactsFromImport', 'Contact\ContactToImportController@updateContactsFromImport');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');

@@ -2,39 +2,49 @@ import React, { useState } from 'react';
 
 import ContactToImportsListItem from './ContactToImportsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-import DataTable from '../../../components/dataTable/DataTable';
+// import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactToImportsListHead from './ContactToImportsListHead';
-import ContactToImportsListFilter from './ContactToImportsListFilter';
+// import ContactToImportsListFilter from './ContactToImportsListFilter';
+import ButtonText from '../../../components/button/ButtonText';
 
 function ContactToImportsList({
     ContactToImports,
     ContactToImportsTotal,
+    checkedAllNew,
+    checkedAllUpdate,
     recordsPerPage,
     isLoading,
     filter,
     handlePageClick,
     handleChangeSort,
     handleChangeFilter,
-    handleKeyUp,
+    // handleKeyUp,
     refreshContactToImports,
     selectAllNew,
     toggleCheckedImportNew,
     toggleAllCheckboxesNew,
     selectedImportsNew,
+    numberSelectedNewTotal,
+    totalContactIds,
     selectAllUpdate,
     toggleCheckedContactUpdate,
     toggleAllCheckboxesUpdate,
     selectedContactsUpdate,
-    numberSelectedTotal,
+    numberSelectedUpdateTotal,
+    createContactsFromImport,
+    updateContactsFromImport,
 }) {
     let showSelectImportsInProgress = false;
     let inProgressText = 'Importeren/Bijwerken contacten';
 
+    // console.log('totalContactIds');
+    // console.log(totalContactIds);
     return (
         <div>
-            <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
+            {/*<form onKeyUp={handleKeyUp} className={'margin-10-top'}>*/}
+            <form className={'margin-10-top'}>
                 {showSelectImportsInProgress ? (
                     <div className="col-md-12">
                         <div className="alert alert-warning">{inProgressText}</div>
@@ -42,11 +52,44 @@ function ContactToImportsList({
                 ) : (
                     <>
                         <div className="col-md-12">&nbsp;</div>
-                        <div className="col-md-12">
-                            {numberSelectedTotal ? (
-                                <div className="alert alert-success">Geselecteerde imports: {numberSelectedTotal}</div>
-                            ) : null}
-                        </div>
+                        {selectedImportsNew && selectedImportsNew.length > 0 ? (
+                            <div className="col-md-12">
+                                <div className="alert alert-success">
+                                    <div className="row">
+                                        <div className="col-md-3">
+                                            {'  Geselecteerde imports nieuw: '}
+                                            {numberSelectedNewTotal}
+                                        </div>
+                                        <div className="col-md-3">
+                                            <ButtonText
+                                                buttonText={'Aanmaken als nieuwe contact(en)'}
+                                                onClickAction={createContactsFromImport}
+                                            />
+                                        </div>
+                                        <div className="col-md-6">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
+                        {selectedContactsUpdate && selectedContactsUpdate.length > 0 ? (
+                            <div className="col-md-12">
+                                <div className="alert alert-success">
+                                    <div className="row">
+                                        <div className="col-md-3">
+                                            {'  Geselecteerde contacten bijwerken: '}
+                                            {numberSelectedUpdateTotal}
+                                        </div>
+                                        <div className="col-md-3">
+                                            <ButtonText
+                                                buttonText={'Bijwerken contact(en)'}
+                                                onClickAction={updateContactsFromImport}
+                                            />
+                                        </div>
+                                        <div className="col-md-6">&nbsp;</div>
+                                    </div>
+                                </div>
+                            </div>
+                        ) : null}
                     </>
                 )}
 
@@ -54,6 +97,8 @@ function ContactToImportsList({
                     <DataTableHead>
                         <ContactToImportsListHead
                             handleChangeSort={handleChangeSort}
+                            checkedAllNew={checkedAllNew}
+                            checkedAllUpdate={checkedAllUpdate}
                             selectAllNew={selectAllNew}
                             selectAllUpdate={selectAllUpdate}
                             toggleAllCheckboxesNew={toggleAllCheckboxesNew}
@@ -81,6 +126,7 @@ function ContactToImportsList({
                                         toggleCheckedContactUpdate={toggleCheckedContactUpdate}
                                         key={ContactToImport.id}
                                         refreshContactToImports={refreshContactToImports}
+                                        totalContactIds={totalContactIds}
                                         {...ContactToImport}
                                     />
                                 );

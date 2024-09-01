@@ -26,15 +26,29 @@ export default {
         });
     },
 
-    getContactFromContactToImport: contactToImport => {
-        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/getContactToImport`;
+    createContactsFromImport: selectedImportsNew => {
+        // console.log('ContactToImportsAPI - selectedImportsNew');
+        // console.log(selectedImportsNew);
+        const requestUrl = `${URL_API}/api/contact-to-imports/createContactsFromImport`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance
+            .post(requestUrl, { selectedImportsNew: selectedImportsNew })
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
     },
 
-    setContactToImportStatus: (contactToImport, status, contactForImport) => {
-        const requestUrl = `${URL_API}/api/contact-to-imports/${contactToImport}/setContactToImportStatus/${status}/contactForImport/${contactForImport}`;
+    updateContactsFromImport: selectedContactsUpdate => {
+        // console.log('ContactToImportsAPI - selectedContactsUpdate');
+        // console.log(selectedContactsUpdate);
+        const requestUrl = `${URL_API}/api/contact-to-imports/updateContactsFromImport`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance
+            .post(requestUrl, { selectedContactsUpdate: selectedContactsUpdate })
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
     },
 };

@@ -2,16 +2,22 @@
 
 namespace App\Http\Controllers\Api\Contact;
 
+use App\Eco\Address\Address;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactToImport;
+use App\Eco\Contact\ContactType;
+use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Person\Person;
+use App\Eco\PhoneNumber\PhoneNumber;
 use App\Helpers\CSV\ContactToImportCSVHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactForImport;
 use App\Http\Resources\Contact\GridContactToImport;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class ContactToImportController extends Controller
@@ -36,6 +42,7 @@ class ContactToImportController extends Controller
                 return [
                     'importId' => $import->id,
                     'contactId' => $contact['id'],
+                    'blocked' => false,
                 ];
             });
         });
@@ -72,71 +79,212 @@ class ContactToImportController extends Controller
         return $contactCSVHelper->downloadCSV();
     }
 
-    public function createNewContactFromContactToImport(Request $request)
+    public function createContactsFromImport(Request $request)
     {
-        $contactToImport = contactToImport::find($request->contactToImport);
+//        Log::info('createContactsFromImport');
+        $this->authorize('import', Contact::class);
 
-        $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
+        $contactToImports = ContactToImport::whereIn('id', $request->input('selectedImportsNew'))->with('contact')->get();
 
-        if($contactToImport->last_name_prefix) {
-            $lastNamePrefix = LastNamePrefix::where('name', $contactToImport->last_name_prefix)->first();
-            $lastNamePrefixId = $lastNamePrefix ?  $lastNamePrefix->id : null;
-        } else {
-            $lastNamePrefixId = null;
+        foreach ($contactToImports as $contactToImport) {
+//            Log::info('contactToImport id: ' . $contactToImport->id);
+//            Log::info($contactToImport);
+            $contact = $this->createContactFromImport($contactToImport);
+
+            if($contact){
+                $contactToImport->status = 'created';
+                $contactToImport->contact_id = $contact->id;
+                $contactToImport->save();
+            }
+
         }
 
-        $return = [];
+    }
+    private function createContactFromImport(ContactToImport $contactToImport)
+    {
+        $userId = Auth::id();
 
-        $return['person']['contactToImport'] = $contactToImport->id;
+        $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
+        if(!$energySupplier) return false;
 
-        $return['person']['ownerId'] = 1;
-        $return['person']['didAgreeAvg'] = 0;
-        $return['person']['inspectionPersonTypeId'] = '';
-        $return['person']['hoomAccountId'] = null;
+        $contactNew = Contact::create([
+            'type_id' => 'person', // todo: Later komt organistion er denk ik ook nog bij ?
+            'status_id' => 'importEsClient',
+            'created_with' => 'econobis',
+            'owner_id' => $userId,
+        ]);
 
-        $return['person']['initials'] = '';
-        $return['person']['firstName'] = $contactToImport->first_name;
-        $return['person']['lastName'] =  $contactToImport->last_name;
-        $return['person']['lastNamePrefix'] = $lastNamePrefixId;
-        $return['person']['titleId'] = 3;
-        $return['person']['dateOfBirth'] = null;
+        $person = Person::create([
+            'contact_id' => $contactNew->id,
+            'title_id' => null,
+            'initials' => '',
+            'first_name' => $contactToImport->first_name ?? '',
+            'last_name' => $contactToImport->last_name ?? '',
+            'last_name_prefix' => $contactToImport->last_name_prefix,
+            'date_of_birth' => null,
+        ]);
 
-        $return['emailAddress'] = [];
-        $return['emailAddress']['primary'] = true;
-        $return['emailAddress']['typeId'] = 'home';
-        $return['emailAddress']['email'] = $contactToImport->email_contact;
+        // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
+        $contact = Contact::find($contactNew->id);
 
-        $return['address'] = [];
-        $return['address']['primary'] = true;
-        $return['address']['street'] = $contactToImport->street;
-        $return['address']['number'] = $contactToImport->housenumber;
-        $return['address']['addition'] = $contactToImport->addition ?? '';
-        $return['address']['city'] = $contactToImport->city;
-        $return['address']['postalCode'] = $contactToImport->postal_code;
-        $return['address']['eanElectricity'] = $contactToImport->ean; //todo Patrick alleen ean_electricity?
-        $return['address']['typeId'] = 'visit';
+        $emailaddress = EmailAddress::create([
+            'contact_id' => $contact->id,
+            'type_id' => 'home',
+            'email' => $contactToImport->email_contact,
+        ]);
 
-        $return['addressEnergySupplier'] = [];
-        $return['addressEnergySupplier']['energySupplyTypeId'] = 2; //todo Patrick welke moet hier?
-        $return['addressEnergySupplier']['energySupplierId'] = $energySupplier->id;
-        $return['addressEnergySupplier']['isCurrentSupplier'] = 1;
-        $return['addressEnergySupplier']['memberSince'] = $contactToImport->member_since->format('Y-m-d');
-        $return['addressEnergySupplier']['esNumber'] = $contactToImport->es_number;
-        if ($contactToImport->end_date != null) { $return['addressEnergySupplier']['endDate'] = $contactToImport->end_date->format('Y-m-d'); }
+        $phoneNumber = PhoneNumber::create([
+            'contact_id' => $contact->id,
+            'type_id' => 'home',
+            'number' => $contactToImport->phone_number,
+        ]);
 
-        $return['phoneNumber'] = [];
-        $return['phoneNumber']['primary'] = true;
-        $return['phoneNumber']['typeId'] = 'home';
-        $return['phoneNumber']['number'] = $contactToImport->phone_number;
+        $eanGas = null;
+        $eanElectricity = null;
+        $energySupplyTypeId = 3;
+        if($contactToImport->ean_type === 'Elektriciteit'){
+            $energySupplyTypeId = 2;
+            $eanElectricity = $contactToImport->ean;
+        } elseif ($contactToImport->ean_type === 'Gas'){
+            $energySupplyTypeId = 1;
+            $eanGas = $contactToImport->ean;;
+        }
 
-        return $return;
+        $address = Address::create([
+            'contact_id' => $contact->id,
+            'type_id' => 'visit',
+            'street' => $contactToImport->street,
+            'number' => $contactToImport->housenumber,
+            'addition' => $contactToImport->addition ?? '',
+            'city' => $contactToImport->city,
+            'postal_code' => $contactToImport->postal_code,
+            'country_id' => null,
+            'ean_electricity' => $eanElectricity,
+            'ean_gas' => $eanGas,
+        ]);
+
+        $addressEnergySupplier = AddressEnergySupplier::create([
+            'address_id' => $address->id,
+            'energy_supplier_id' => $energySupplier->id,
+            'es_number' => $contactToImport->es_number,
+            'energy_supply_type_id' => $energySupplyTypeId,
+            'member_since' => $contactToImport->member_since ?: null,
+            'endDate' => $contactToImport->end_date ?: null,
+        ]);
+
+        return $contact;
     }
 
-    public function setContactToImportStatus(contactToImport $contactToImport, $status, $contactForImport)
+//Log::info('updateContactsFromImport');
+//Log::info($request->input('selectedContactsUpdate'));
+    public function updateContactsFromImport(Request $request)
     {
-        $contactToImport->status = $status;
-        $contactToImport->contact_id = $contactForImport;
-        $contactToImport->save();
+        $this->authorize('import', Contact::class);
+
+        // Retrieve the array from the request
+        $selectedContactsUpdate = $request->input('selectedContactsUpdate');
+
+        // Sort the array by importId and then by contactId
+        usort($selectedContactsUpdate, function ($a, $b) {
+            if ($a['importId'] == $b['importId']) {
+                return $a['contactId'] <=> $b['contactId'];
+            }
+            return $a['importId'] <=> $b['importId'];
+        });
+
+        // Extract importIds and contactIds for batch fetching
+        $importIds = array_column($selectedContactsUpdate, 'importId');
+        $contactIds = array_column($selectedContactsUpdate, 'contactId');
+
+        // Fetch all contacts and imports in a single query to reduce DB hits
+        $contactsToImport = ContactToImport::whereIn('id', $importIds)->get()->keyBy('id');
+        $contacts = Contact::whereIn('id', $contactIds)->get()->keyBy('id');
+
+        // Iterate through each item in the sorted array
+        foreach ($selectedContactsUpdate as $item) {
+            $importId = $item['importId'];
+            $contactId = $item['contactId'];
+
+            $contactToImport = $contactsToImport->get($importId);
+            $contact = $contacts->get($contactId);
+
+            if ($contactToImport && $contact) {
+                $updateOk = $this->updateContactFromImport($contactToImport, $contact);
+
+                if($updateOk){
+                    $contactToImport->status = 'updated';
+                    $contactToImport->contact_id = $contact->id;
+                    $contactToImport->save();
+                }
+
+            } else {
+                // Optionally log or handle the error case
+                Log::warning("ContactToImport or Contact not found for importId: $importId, contactId: $contactId");
+            }
+        }
+
+//        return response()->json([ 'error' => 409, 'message' => 'error'], 409);
+
+        return response()->json(['message' => 'Contacts updated successfully']);
+
+    }
+    private function updateContactFromImport(ContactToImport $contactToImport, Contact $contact)
+    {
+        $userId = Auth::id();
+
+        // vooralsnog allen persons
+        if($contact->type_id != ContactType::PERSON) return false;
+
+        $contact->person->first_name = $contactToImport->first_name ?? '';
+        $contact->person->last_name = $contactToImport->last_name ?? '';
+        $contact->person->last_name_prefix = $contactToImport->last_name_prefix;
+        $contact->person->update();
+
+        if($contact->primaryEmailAddress){
+            $contact->primaryEmailAddress->email = $contactToImport->email_contact;
+            $contact->primaryEmailAddress->update();
+        }
+
+        if($contact->primaryphoneNumber){
+            $contact->primaryphoneNumber->number = $contactToImport->phone_number;
+            $contact->primaryphoneNumber->update();
+        }
+
+        $eanGas = null;
+        $eanElectricity = null;
+        $energySupplyTypeId = 3;
+        if($contactToImport->ean_type === 'Elektriciteit'){
+            $energySupplyTypeId = 2;
+            $eanElectricity = $contactToImport->ean;
+        } elseif ($contactToImport->ean_type === 'Gas'){
+            $energySupplyTypeId = 1;
+            $eanGas = $contactToImport->ean;;
+        }
+
+        if($contact->primaryAddress){
+            $contact->primaryAddress->street = $contactToImport->street;
+            $contact->primaryAddress->number = $contactToImport->housenumber;
+            $contact->primaryAddress->addition = $contactToImport->addition;
+            $contact->primaryAddress->city = $contactToImport->city;
+            if($energySupplyTypeId == 2 || $energySupplyTypeId == 3){
+                $contact->primaryAddress->ean_electricity = $eanElectricity;
+            }
+            if($energySupplyTypeId == 1 || $energySupplyTypeId == 3){
+                $contact->primaryAddress->ean_gas = $eanGas;
+            }
+            $contact->primaryAddress->update();
+        }
+//
+//        $addressEnergySupplier = AddressEnergySupplier::create([
+//            'address_id' => $address->id,
+//            'energy_supplier_id' => $energySupplier->id,
+//            'es_number' => $contactToImport->es_number,
+//            'energy_supply_type_id' => $energySupplyTypeId,
+//            'member_since' => $contactToImport->member_since ?: null,
+//            'endDate' => $contactToImport->end_date ?: null,
+//        ]);
+
+        return true;
     }
 
     /**
@@ -408,14 +556,14 @@ class ContactToImportController extends Controller
 
             foreach ($matchConditions as $matchCode => $matchCondition) {
                 $query = Contact::where($matchCondition);
-                if($matchCode == 'supplierFullMatch' && $contactToImport->id == 4){
-                    Log::info('Query: ');
-                    $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
-                    $sql = vsprintf($sql, $query->getBindings());
-                    Log::info($sql);
-                    $contactForImports = $query->get();
-                    Log::info($contactForImports);
-                }
+//                if($matchCode == 'supplierFullMatch' && $contactToImport->id == 4){
+//                    Log::info('Query: ');
+//                    $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//                    $sql = vsprintf($sql, $query->getBindings());
+//                    Log::info($sql);
+//                    $contactForImports = $query->get();
+//                    Log::info($contactForImports);
+//                }
 
                 $contactForImports = $query->get();
                 $contactForImports->load([

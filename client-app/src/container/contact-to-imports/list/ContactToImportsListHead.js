@@ -9,13 +9,17 @@ const ContactToImportsListHead = props => {
             <th width={'6%'}>
                 {props.selectAllNew ? (
                     <>
-                        <input type="checkbox" onChange={props.toggleAllCheckboxesNew} />
+                        <input type="checkbox" checked={props.checkedAllNew} onChange={props.toggleAllCheckboxesNew} />
                         {' Nieuw'}
                     </>
                 ) : null}
                 {props.selectAllUpdate ? (
                     <>
-                        <input type="checkbox" onChange={props.toggleAllCheckboxesUpdate} />
+                        <input
+                            type="checkbox"
+                            checked={props.checkedAllUpdate}
+                            onChange={props.toggleAllCheckboxesUpdate}
+                        />
                         {' Bijwerken'}
                     </>
                 ) : null}

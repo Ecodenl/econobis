@@ -56,12 +56,14 @@ class ContactToImportCSVHelper
                 'city' => 'Woonplaats',
                 'email_contact' => 'Email primair',
                 'phone_number' => 'Telefoon',
+                'supplier_code_ref' => 'Energieleverancier',
                 'ean' => 'Ean',
+                'ean_type' => 'EanType',
                 'es_number' => 'Huidige klantnummer',
                 'member_since' => 'Klant sinds',
                 'end_date' => 'Klant tot',
                 'status' => 'Status',
-                'contact_number' => 'Contact nummer van actie',
+                'contact_number' => 'Contactnummer van actie',
             ];
 
             $csv = $this->csvExporter->build($chunk, $mapping, $headers);

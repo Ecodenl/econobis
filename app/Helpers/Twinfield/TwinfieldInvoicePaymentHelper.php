@@ -32,6 +32,7 @@ class TwinfieldInvoicePaymentHelper
     private $office;
     private $redirectUri;
     private $invoiceApiConnector;
+    private $countRequestsgetBrowserData = 0;
     public $messages;
 
     /**
@@ -41,6 +42,17 @@ class TwinfieldInvoicePaymentHelper
      */
     public function __construct(Administration $administration, $fromInvoiceDateSent)
     {
+        $message = 'Start synchroniseren betalingen.';
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+
+
         $this->administration = $administration;
 
         if($fromInvoiceDateSent){
@@ -112,6 +124,7 @@ class TwinfieldInvoicePaymentHelper
                 $columnsSalesTransaction = $this->getSalesTransaction($invoiceToBeChecked);
                 try {
                     $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
+                    $this->countRequestsgetBrowserData++;
                 } catch (PhpTwinfieldException $exceptionTwinfield) {
                     $message = 'Er is een twinfield fout opgetreden bij ophalen verkoopgegevens notanr. ' . $invoiceToBeChecked->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
                     Log::info($message);
@@ -174,6 +187,7 @@ class TwinfieldInvoicePaymentHelper
                     //Paid info - ophalen van Twinfield
                     try {
                         $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsPaidInfo);
+                        $this->countRequestsgetBrowserData++;
                     } catch (PhpTwinfieldException $exceptionTwinfield) {
                         $message = 'Er is een twinfield fout opgetreden bij ophalen betaalgegevens notanr. ' . $invoiceToBeChecked->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
                         Log::info($message);
@@ -240,6 +254,18 @@ class TwinfieldInvoicePaymentHelper
             }
         }
 
+        $message = 'Einde synchroniseren betalingen. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData . '.';
+
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+
+
         if(count($this->messages) == 0){
             array_push($this->messages, 'Geen betalingen gevonden.');
         }
@@ -247,7 +273,7 @@ class TwinfieldInvoicePaymentHelper
         return implode(';', $this->messages);
     }
 
-    public function getSalesTransaction($invoiceToBeChecked){
+    private function getSalesTransaction($invoiceToBeChecked){
 
         $columns = [];
 
@@ -304,7 +330,7 @@ class TwinfieldInvoicePaymentHelper
 
     }
 
-    public function getPaidInfo($invoiceToBeChecked){
+    private function getPaidInfo($invoiceToBeChecked){
 
         $columns = [];
 

@@ -582,6 +582,9 @@ class ExternalWebformController extends Controller
                 'kansactie_opmerking_bewoner' => 'client_note',
                 'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
                 'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
+                'kansactie_bijlage_1' => 'quotation_request_attachment_1',
+                'kansactie_bijlage_2' => 'quotation_request_attachment_2',
+                'kansactie_bijlage_3' => 'quotation_request_attachment_3',
             ],
             'housing_file' => [
                 // HousingFile
@@ -3678,8 +3681,67 @@ class ExternalWebformController extends Controller
                 'quotation_amount' => $quotationAmount,
                 'cost_adjustment' => $costAdjustment,
             ]);
+
+            // Indien kansactie bijlage url meegegeven deze als document opslaan
+            if($dataQuotationRequest['quotation_request_attachment_1']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_1']);
+            }
+            if($dataQuotationRequest['quotation_request_attachment_2']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+            }
+            if($dataQuotationRequest['quotation_request_attachment_3']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+            }
+
             $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
 
         }
+    }
+
+
+    protected function addQuotationRequestAttachment($quotationRequest, $quotationRequestAttachmentUrl) {
+        $fileName = basename($quotationRequestAttachmentUrl);
+        $tmpFileName = Str::random(9) . '-' . $fileName;
+
+        $document = new Document();
+        $document->description = 'Kansactie bijlage';
+        $document->document_type = 'upload';
+        $document->document_group = 'general';
+        $document->filename = $fileName;
+        $document->contact_id = $quotationRequest->contact_id;
+        $document->quotation_request_id = $quotationRequest->id;
+
+
+        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
+
+        $document->document_created_from_id = $documentCreatedFromId;
+
+        $document->save();
+
+        $contents = file_get_contents($quotationRequestAttachmentUrl);
+        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
+        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
+        $pos = strrpos($tmpFileName, '/');
+        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+
+        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
+
+        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
+            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
+
+            //delete file on server, still saved on alfresco.
+            Storage::disk('documents')->delete($tmpFileName);
+            $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
+
+        } else {
+            $document->filename = $tmpFileName;
+            $document->alfresco_node_id = null;
+            $this->log('Kansactie bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
+        }
+
+        $document->save();
     }
 }

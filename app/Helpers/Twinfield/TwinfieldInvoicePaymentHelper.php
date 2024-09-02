@@ -42,17 +42,6 @@ class TwinfieldInvoicePaymentHelper
      */
     public function __construct(Administration $administration, $fromInvoiceDateSent)
     {
-        $message = 'Start synchroniseren betalingen.';
-        TwinfieldLog::create([
-            'invoice_id' => null,
-            'contact_id' => null,
-            'message_text' => substr($message, 0, 256),
-            'message_type' => 'payment',
-            'user_id' => Auth::user()->id,
-            'is_error' => false,
-        ]);
-
-
         $this->administration = $administration;
 
         if($fromInvoiceDateSent){
@@ -62,6 +51,16 @@ class TwinfieldInvoicePaymentHelper
         }else{
             $this->fromInvoiceDateSent = '2019-01-01';
         }
+
+        $message = 'Start synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: ' . $administration->twinfield_organization_code . ', code : ' . $administration->twinfield_office_code . ', client Id: ' . $administration->twinfield_client_id;
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
 
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
@@ -254,7 +253,7 @@ class TwinfieldInvoicePaymentHelper
             }
         }
 
-        $message = 'Einde synchroniseren betalingen. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData . '.';
+        $message = 'Einde synchroniseren betalingen, organisatie: ' . $this->administration->twinfield_organization_code . ', code : ' . $this->administration->twinfield_office_code . ', client Id: ' . $this->administration->twinfield_client_id . '. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData . '.';
 
         TwinfieldLog::create([
             'invoice_id' => null,

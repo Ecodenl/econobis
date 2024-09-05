@@ -1,6 +1,6 @@
 const filtersReducerDefaultState = {
-    intakeAddress: {
-        field: 'intakeAddress',
+    address: {
+        field: 'address',
         data: '',
     },
     createdAtStart: {
@@ -51,12 +51,12 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
-        case 'SET_FILTER_OPPORTUNITY_INTAKE_ADDRESS':
+        case 'SET_FILTER_OPPORTUNITY_ADDRESS':
             return {
                 ...state,
-                intakeAddress: {
-                    ...state.intakeAddress,
-                    data: action.intakeAddress,
+                address: {
+                    ...state.address,
+                    data: action.address,
                 },
             };
         case 'SET_FILTER_OPPORTUNITY_CREATED_AT_START':

@@ -43,4 +43,9 @@ class Joiner extends RequestJoiner
         $query->join('contacts', 'intakes3.contact_id', '=', 'contacts.id');
     }
 
+    protected function applyAddressJoin($query)
+    {
+        $query->join('intakes as intakes4',  'opportunities.intake_id', '=', 'intakes4.id');
+        $query->join('addresses',  'intakes4.address_id', '=', 'addresses.id');
+    }
 }

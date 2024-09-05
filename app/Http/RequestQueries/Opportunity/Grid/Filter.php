@@ -15,7 +15,7 @@ use Carbon\Carbon;
 class Filter extends RequestFilter
 {
     protected $fields = [
-        'number',
+        'address',
         'createdAtStart',
         'createdAtEnd',
         'desiredDateStart',
@@ -44,6 +44,7 @@ class Filter extends RequestFilter
         'campaign' => 'campaigns',
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
+        'address' => 'address',
     ];
 
     protected $defaultTypes = [
@@ -89,6 +90,22 @@ class Filter extends RequestFilter
         foreach ($terms as $term){
             $query->where(function($query) use ($term) {
                 $query->where('addressAreaName.shared_area_name', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+
+    protected function applyAddressFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
             });
         }
 

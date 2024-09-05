@@ -1,6 +1,6 @@
-export const setFilterOpportunityIntakeAddress = intakeAddress => ({
-    type: 'SET_FILTER_OPPORTUNITY_INTAKE_ADDRESS',
-    intakeAddress,
+export const setOpportunityAddressFilter = address => ({
+    type: 'SET_FILTER_OPPORTUNITY_ADDRESS',
+    address,
 });
 
 export const setFilterOpportunityCreatedAtStart = createdAtStart => ({

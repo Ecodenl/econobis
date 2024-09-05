@@ -15,7 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
-        'number',
+        'address',
         'createdAt',
         'desiredDate',
         'name',
@@ -28,7 +28,6 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
-        'number' => 'opportunities.number',
         'createdAt' => 'opportunities.created_at',
         'desiredDate' => 'opportunities.desired_date',
         'name' => 'contacts.full_name',
@@ -45,11 +44,19 @@ class Sort extends RequestSort
         'campaign' => 'campaigns',
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
+        'address' => 'address',
     ];
 
     protected function applyAmountOfQuotationRequestsSort($query, $data)
     {
         $query->withCount('quotationRequests')->orderBy('quotation_requests_count', $data);
+
+        return false;
+    }
+
+    protected function applyAddressSort($query, $data)
+    {
+        $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
 
         return false;
     }

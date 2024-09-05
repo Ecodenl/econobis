@@ -19,7 +19,7 @@ class GridOpportunity extends JsonResource
         Log::info(optional(optional($this->intake)->address)->full_address);
         return [
             'id' => $this->id,
-            'intakeAddress' => optional(optional($this->intake)->address)->full_address,
+            'address' => optional(optional($this->intake)->address)->full_address,
             'createdAt' => $this->created_at,
             'desiredDate' => $this->desired_date,
             'contactName' => optional(optional($this->intake)->contact)->full_name,

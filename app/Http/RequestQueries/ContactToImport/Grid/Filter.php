@@ -13,11 +13,30 @@ use App\Helpers\RequestQuery\RequestFilter;
 
 class Filter extends RequestFilter
 {
-    protected $fields = ['status'];
+    protected $fields = [
+        'status',
+        'firstName',
+        'lastName',
+        'street',
+        'postalCode',
+        'city',
+        'emailContact',
+    ];
 
-    protected $mapping = [];
+    protected $mapping = [
+        'status' => 'contact_to_imports.status',
+        'firstName' => 'contact_to_imports.first_name',
+        'lastName' => 'contact_to_imports.last_name',
+        'street' => 'contact_to_imports.street',
+        'postalCode' => 'contact_to_imports.postal_code',
+        'city' => 'contact_to_imports.city',
+        'emailContact' => 'contact_to_imports.email_contact',
+    ];
 
     protected $joins = [];
 
-    protected $defaultTypes = [];
+    protected $defaultTypes = [
+        '*' => 'ct',
+        'createdById' => 'eq',
+    ];
 }

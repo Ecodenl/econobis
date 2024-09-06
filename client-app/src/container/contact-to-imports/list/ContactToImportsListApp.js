@@ -4,10 +4,8 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ContactToImportsList from './ContactToImportsList';
 import ContactToImportsListToolbar from './ContactToImportsListToolbar';
-import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
 import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
-// import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
@@ -30,7 +28,6 @@ function ContactToImportsListApp() {
     const [selectAllUpdate, setSelectAllUpdate] = useState(false);
     const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ page: 0, offset: 0, limit: recordsPerPage });
-    // const pressedEnter = useKeyPress('Enter');
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
@@ -38,7 +35,7 @@ function ContactToImportsListApp() {
             // console.log('use effect pagination.offset, sort, selectAllNew === true, selectAllUpdate === true');
             fetchContactToImports();
         },
-        [pagination.offset, sort, selectAllNew === true, selectAllUpdate === true]
+        [pagination.offset, filter, sort, selectAllNew === true, selectAllUpdate === true]
     );
 
     // useEffect hook to monitor changes in selectedImportsNew
@@ -281,27 +278,27 @@ function ContactToImportsListApp() {
 
         filters.push({ field: 'status', data: 'new' });
 
-        // if (filter.tableName) {
-        //     filters.push({ field: 'tableName', data: filter.tableName });
-        // }
-        //
-        // if (filter.fieldName) {
-        //     filters.push({ field: 'fieldName', data: filter.fieldName });
-        // }
-        //
-        // if (filter.fieldFormatName) {
-        //     filters.push({ field: 'fieldFormatName', data: filter.fieldFormatName });
-        // }
+        if (filter.firstName) {
+            filters.push({ field: 'firstName', data: filter.firstName });
+        }
+        if (filter.lastName) {
+            filters.push({ field: 'lastName', data: filter.lastName });
+        }
+        if (filter.street) {
+            filters.push({ field: 'street', data: filter.street });
+        }
+        if (filter.postalCode) {
+            filters.push({ field: 'postalCode', data: filter.postalCode });
+        }
+        if (filter.city) {
+            filters.push({ field: 'city', data: filter.city });
+        }
+        if (filter.emailContact) {
+            filters.push({ field: 'emailContact', data: filter.emailContact });
+        }
         return filters;
     }
 
-    // On key Enter filter form will submit
-    // function handleKeyUp(e) {
-    //     if (e.keyCode === 13) {
-    //         onSubmitFilter();
-    //         console.log('handleKeyUp');
-    //     }
-    // }
     const numberSelectedNewTotal = () => {
         let numberSelectedNewTotal = 0;
 
@@ -326,16 +323,8 @@ function ContactToImportsListApp() {
 
     function getCSV() {
         setLoading(true);
-        // const { extraFilters, filterType, dataControleType } = this.state;
-        // const filters = filterHelper(this.props.contactsFilters);
-        // const sorts = this.props.contactsSorts;
-        let filters = [];
-        let extraFilters = [];
-        let sorts = '';
-        let filterType = '';
-        let dataControleType = '';
 
-        ContactsAPI.getCSVFromEnergySupplier({ filters, extraFilters, sorts, filterType, dataControleType })
+        ContactsAPI.getCSVFromEnergySupplier({ filters, sorts })
             .then(payload => {
                 fileDownload(
                     payload.data,
@@ -409,11 +398,10 @@ function ContactToImportsListApp() {
                         checkedAllUpdate={checkedAllUpdate}
                         recordsPerPage={recordsPerPage}
                         isLoading={isLoading}
-                        // filter={filter}
+                        filter={filter}
                         handlePageClick={handlePageClick}
                         handleChangeSort={handleChangeSort}
-                        // handleChangeFilter={handleChangeFilter}
-                        // handleKeyUp={handleKeyUp}
+                        handleChangeFilter={handleChangeFilter}
                         totalImportIds={totalImportIds}
                         allowUpdateAction={allowUpdateAction}
                         totalContactIds={totalContactIds}

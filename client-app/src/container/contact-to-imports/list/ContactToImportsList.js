@@ -2,11 +2,10 @@ import React, { useState } from 'react';
 
 import ContactToImportsListItem from './ContactToImportsListItem';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
-// import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactToImportsListHead from './ContactToImportsListHead';
-// import ContactToImportsListFilter from './ContactToImportsListFilter';
+import ContactToImportsListFilter from './ContactToImportsListFilter';
 import ButtonText from '../../../components/button/ButtonText';
 
 function ContactToImportsList({
@@ -16,11 +15,10 @@ function ContactToImportsList({
     checkedAllUpdate,
     recordsPerPage,
     isLoading,
-    // filter,
+    filter,
     handlePageClick,
     handleChangeSort,
-    // handleChangeFilter,
-    // handleKeyUp,
+    handleChangeFilter,
     totalImportIds,
     allowUpdateAction,
     totalContactIds,
@@ -42,7 +40,6 @@ function ContactToImportsList({
 
     return (
         <div>
-            {/*<form onKeyUp={handleKeyUp} className={'margin-10-top'}>*/}
             <form className={'margin-10-top'}>
                 {showSelectImportsInProgress ? (
                     <div className="col-md-12">
@@ -103,7 +100,7 @@ function ContactToImportsList({
                             toggleAllCheckboxesNew={toggleAllCheckboxesNew}
                             toggleAllCheckboxesUpdate={toggleAllCheckboxesUpdate}
                         />
-                        {/*<ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />*/}
+                        <ContactToImportsListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
                     </DataTableHead>
                     <DataTableBody>
                         {isLoading ? (

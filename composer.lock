@@ -6618,16 +6618,16 @@
         },
         {
             "name": "php-twinfield/twinfield",
-            "version": "v3.4.0",
+            "version": "v3.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/php-twinfield/twinfield.git",
-                "reference": "9d78de5dfd6a2263e2f9b81c24ce558e3be40d97"
+                "reference": "86a4217c0aaa8cc6d93b231e9a54eac29678bbb2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-twinfield/twinfield/zipball/9d78de5dfd6a2263e2f9b81c24ce558e3be40d97",
-                "reference": "9d78de5dfd6a2263e2f9b81c24ce558e3be40d97",
+                "url": "https://api.github.com/repos/php-twinfield/twinfield/zipball/86a4217c0aaa8cc6d93b231e9a54eac29678bbb2",
+                "reference": "86a4217c0aaa8cc6d93b231e9a54eac29678bbb2",
                 "shasum": ""
             },
             "require": {
@@ -6680,9 +6680,9 @@
             ],
             "support": {
                 "issues": "https://github.com/php-twinfield/twinfield/issues",
-                "source": "https://github.com/php-twinfield/twinfield/tree/v3.4.0"
+                "source": "https://github.com/php-twinfield/twinfield/tree/v3.6.0"
             },
-            "time": "2023-07-17T09:50:09+00:00"
+            "time": "2024-03-25T18:41:26+00:00"
         },
         {
             "name": "phpoffice/phpspreadsheet",

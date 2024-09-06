@@ -17,6 +17,7 @@ class GridContactToImport extends JsonResource
         return [
             'id' => $this->id,
             'importMatchCode' => $this->importMatchCode,
+            'importMatchDescription' => $this->importMatchDescription,
             'status' => $this->status,
             'firstName' => $this->first_name,
             'lastName' => $this->last_name,

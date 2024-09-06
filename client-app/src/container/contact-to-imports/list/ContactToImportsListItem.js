@@ -29,9 +29,10 @@ function ContactToImportsListItem({
     supplierCodeRef,
     esNumber,
     permissions,
-    matchCode,
+    importMatchDescription,
     contactForImports,
     totalImportIds,
+    allowUpdateAction,
     totalContactIds,
 }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
@@ -52,7 +53,7 @@ function ContactToImportsListItem({
                         </>
                     ) : null}
                 </td>
-                <td>{matchCode}</td>
+                <td>{importMatchDescription}</td>
                 <td>{number}</td>
                 <td>{firstName}</td>
                 <td>{lastName}</td>
@@ -70,10 +71,6 @@ function ContactToImportsListItem({
             </tr>
 
             {contactForImports.map(contactForImport => {
-                let checkboxBlocked = selectedContactsUpdate.filter(
-                    item => item.importId === id && item.contactId === contactForImport.id
-                );
-
                 return (
                     <tr>
                         <td>
@@ -85,7 +82,7 @@ function ContactToImportsListItem({
                             ) : (
                                 ''
                             )}
-                            {contactForImport.matchCode != 'supplierFullMatch' ? (
+                            {contactForImport.matchCode != 'supplierFullMatch' && allowUpdateAction ? (
                                 <>
                                     <>
                                         <input

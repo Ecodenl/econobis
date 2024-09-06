@@ -10,6 +10,7 @@ function ContactToImportsListToolbar({
     refreshContactToImports,
     permissions,
     getCSV,
+    allowUpdateAction,
     selectAllNew,
     selectAllUpdate,
     actionSelectAllNew,
@@ -24,11 +25,16 @@ function ContactToImportsListToolbar({
                     <ButtonText
                         buttonText={selectAllNew ? 'Alles' : 'Alleen nieuw selectie'}
                         onClickAction={actionSelectAllNew}
-                    />{' '}
-                    <ButtonText
-                        buttonText={selectAllUpdate ? 'Alles' : 'Alleen bijwerken selectie'}
-                        onClickAction={actionSelectAllUpdate}
                     />
+                    {allowUpdateAction ? (
+                        <>
+                            {' '}
+                            <ButtonText
+                                buttonText={selectAllUpdate ? 'Alles' : 'Alleen bijwerken selectie'}
+                                onClickAction={actionSelectAllUpdate}
+                            />
+                        </>
+                    ) : null}
                 </div>
             </div>
             <div className="col-md-4">

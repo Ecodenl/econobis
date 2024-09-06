@@ -26,6 +26,8 @@ class ContactToImportController extends Controller
     {
         $contactToImports = collect($requestQuery->getQueryNoPagination()->get());
 
+        $allowUpdateAction = false;
+
         $limit = (int)$requestQuery->getRequest()->limit;
         $offset = (int)$requestQuery->getRequest()->offset;
         $selectAllNew = $requestQuery->getRequest()->selectAllNew == 'true';
@@ -43,15 +45,19 @@ class ContactToImportController extends Controller
         });
 
         // Ensure contactForImports is treated as a collection
-        $totalContactIds = $filteredContactToImports->flatMap(function($import) {
-            return collect($import->contactForImports)->map(function($contact) use ($import) {
-                return [
-                    'importId' => $import->id,
-                    'contactId' => $contact['id'],
-                    'blocked' => false,
-                ];
+        $totalContactIds = collect([]);
+
+        if($allowUpdateAction){
+            $totalContactIds = $filteredContactToImports->flatMap(function($import) {
+                return collect($import->contactForImports)->map(function($contact) use ($import) {
+                    return [
+                        'importId' => $import->id,
+                        'contactId' => $contact['id'],
+                        'blocked' => false,
+                    ];
+                });
             });
-        });
+        }
 
         // Apply pagination (offset and limit)
         if ($offset || $limit) {
@@ -63,6 +69,7 @@ class ContactToImportController extends Controller
                 'meta' => [
                     'total' => $totalImports,
                     'totalImportIds' => $totalImportIds,
+                    'allowUpdateAction' => $allowUpdateAction,
                     'totalContactIds' => $totalContactIds,
                 ],
             ]);
@@ -598,9 +605,11 @@ class ContactToImportController extends Controller
 
             if ($matches->isNotEmpty()) {
                 $contactToImport->importMatchCode = 'match';
+                $contactToImport->importMatchDescription = 'Match(es)';
                 $contactToImport->contactForImports = $matches;
             } else {
                 $contactToImport->importMatchCode = 'no-match';
+                $contactToImport->importMatchDescription = 'Geen match';
                 $contactToImport->contactForImports = [];
             }
 

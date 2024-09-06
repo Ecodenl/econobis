@@ -22,6 +22,7 @@ function ContactToImportsList({
     // handleChangeFilter,
     // handleKeyUp,
     totalImportIds,
+    allowUpdateAction,
     totalContactIds,
     selectAllNew,
     toggleCheckedImportNew,
@@ -114,7 +115,9 @@ function ContactToImportsList({
                                 return (
                                     <ContactToImportsListItem
                                         checkedNew={
-                                            selectedImportsNew ? selectedImportsNew.includes(ContactToImport.id) : false
+                                            selectedImportsNew
+                                                ? selectedImportsNew.some(item => item.importId === ContactToImport.id)
+                                                : false
                                         }
                                         toggleCheckedImportNew={toggleCheckedImportNew}
                                         showCheckboxUpdate={selectAllUpdate}
@@ -122,6 +125,7 @@ function ContactToImportsList({
                                         toggleCheckedContactUpdate={toggleCheckedContactUpdate}
                                         key={ContactToImport.id}
                                         totalImportIds={totalImportIds}
+                                        allowUpdateAction={allowUpdateAction}
                                         totalContactIds={totalContactIds}
                                         {...ContactToImport}
                                     />

@@ -19,6 +19,7 @@ function ContactToImportsListApp() {
     const [isLoading, setLoading] = useState(true);
     const [totalCount, setTotalCount] = useState(0);
     const [totalImportIds, setTotalImportIds] = useState([]);
+    const [allowUpdateAction, setAllowUpdateAction] = useState(false);
     const [totalContactIds, setTotalContactIds] = useState([]);
     const [filter, setFilter] = useState([]);
     const [checkedAllNew, setCheckedAllNew] = useState(false);
@@ -105,6 +106,7 @@ function ContactToImportsListApp() {
                     setContactToImports(payloadContactToImports.data.data);
                     setTotalCount(payloadContactToImports.data.meta.total);
                     setTotalImportIds(payloadContactToImports.data.meta.totalImportIds);
+                    setAllowUpdateAction(payloadContactToImports.data.meta.allowUpdateAction);
                     setTotalContactIds(payloadContactToImports.data.meta.totalContactIds);
 
                     setLoading(false);
@@ -164,14 +166,18 @@ function ContactToImportsListApp() {
     }
 
     function toggleCheckedImportNew(importId) {
-        const isChecked = selectedImportsNew.includes(importId);
+        const importNewItem = { importId };
+
+        // const isChecked = selectedImportsNew.includes(importId);
+        const isChecked = selectedImportsNew.some(item => item.importId === importId);
+
         if (isChecked) {
             // Remove the importId from the array
-            setSelectedImportsNew(selectedImportsNew.filter(id => id !== importId));
+            setSelectedImportsNew(selectedImportsNew.filter(item => !(item.importId === importId)));
             deBlockSelectContactsUpdate(importId, 'all');
         } else {
             // Add the importId to the array
-            setSelectedImportsNew([...selectedImportsNew, importId]);
+            setSelectedImportsNew([...selectedImportsNew, importNewItem]);
             blockSelectContactsUpdate(importId, 'all');
         }
     }
@@ -388,6 +394,7 @@ function ContactToImportsListApp() {
                         ContactToImportsTotal={totalCount}
                         refreshContactToImports={fetchContactToImports}
                         getCSV={getCSV}
+                        allowUpdateAction={allowUpdateAction}
                         selectAllNew={selectAllNew}
                         selectAllUpdate={selectAllUpdate}
                         actionSelectAllNew={actionSelectAllNew}
@@ -408,6 +415,7 @@ function ContactToImportsListApp() {
                         // handleChangeFilter={handleChangeFilter}
                         // handleKeyUp={handleKeyUp}
                         totalImportIds={totalImportIds}
+                        allowUpdateAction={allowUpdateAction}
                         totalContactIds={totalContactIds}
                         selectAllNew={selectAllNew}
                         toggleCheckedImportNew={toggleCheckedImportNew}

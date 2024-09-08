@@ -25,27 +25,33 @@ const ContactToImportsListHead = props => {
                 ) : null}
             </th>
             <DataTableHeadTitle title={'Match'} width={'8%'} />
-            <DataTableHeadTitle title={'Contactnr'} width={'5%'} />
+            <DataTableHeadTitle title={'Contact nr'} width={'5%'} />
             <DataTableHeadTitleAndSort
                 sortColumn={'firstName'}
                 title={'Voornaam'}
                 width={'5%'}
                 setSorts={props.handleChangeSort}
             />
+            <DataTableHeadTitle
+                sortColumn={'lastNamePrefix'}
+                title={'Tussen voegsel'}
+                width={'5%'}
+                setSorts={props.handleChangeSort}
+            />
             <DataTableHeadTitleAndSort
                 sortColumn={'lastName'}
                 title={'Achternaam'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'street'}
                 title={'Adres'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={props.handleChangeSort}
             />
-            <DataTableHeadTitle title={'Huisnr'} width={'4%'} />
-            <DataTableHeadTitle title={'Toevoeging'} width={'3%'} />
+            <DataTableHeadTitle title={'Huis nr'} width={'4%'} />
+            <DataTableHeadTitle title={'Toev.'} width={'3%'} />
             <DataTableHeadTitleAndSort
                 sortColumn={'postalCode'}
                 title={'Postcode'}
@@ -61,14 +67,14 @@ const ContactToImportsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'emailContact'}
                 title={'Email primair'}
-                width={'10%'}
+                width={'9%'}
                 setSorts={props.handleChangeSort}
             />
             <DataTableHeadTitle title={'Telefoon'} width={'5%'} />
-            <DataTableHeadTitle title={'Ean'} width={'5%'} />
-            <DataTableHeadTitle title={'EanType'} width={'5%'} />
-            <DataTableHeadTitle title={'Energielevereancier'} width={'5%'} />
-            <DataTableHeadTitle title={'Klantnr'} width={'10%'} />
+            <DataTableHeadTitle title={'Energie leverancier'} width={'5%'} />
+            <DataTableHeadTitle title={'Ean type'} width={'5%'} />
+            <DataTableHeadTitle title={'Ean'} width={'8%'} />
+            <DataTableHeadTitle title={'Klant nr'} width={'5%'} />
         </tr>
     );
 };

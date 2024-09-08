@@ -16,6 +16,7 @@ function ContactToImportsListFilter({ filter, handleChangeFilter }) {
                         onChange={e => handleChangeFilter('firstName', e.target.value)}
                     />
                 </th>
+                <th />
                 <th>
                     <input
                         type="text"

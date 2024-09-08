@@ -11,7 +11,7 @@ use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
-use App\Helpers\CSV\ContactToImportCSVHelper;
+use App\Helpers\Excel\ContactToImportExcelHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
 use App\Http\Resources\Contact\GridContactForImport;
@@ -82,14 +82,19 @@ class ContactToImportController extends Controller
         return $contactToImports;
     }
 
-    public function csvFromEnergySupplier(RequestQuery $requestQuery)
+    public function excelContactToImport(RequestQuery $requestQuery)
     {
         set_time_limit(0);
-        $contacts = $requestQuery->getQueryNoPagination()->get();
+        $contactToImports = $requestQuery->getQueryNoPagination()->get();
+        $filteredContactToImports = $this->getFilteredContactToImports($contactToImports, false, false);
 
-        $contactCSVHelper = new ContactToImportCSVHelper($contacts);
+        // Use the GridContactToImport resource for transformation
+        $transformedContactToImports = GridContactToImport::collection($filteredContactToImports)->toArray(request());
 
-        return $contactCSVHelper->downloadCSV();
+        // Convert transformed data to an Eloquent Collection
+        $contactToImportExcelHelper = new ContactToImportExcelHelper(collect($transformedContactToImports));
+
+        return $contactToImportExcelHelper->downloadExcel();
     }
 
     public function createContactsFromImport(Request $request)

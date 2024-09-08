@@ -16,6 +16,7 @@ function ContactToImportsListItem({
     id,
     number,
     firstName,
+    lastNamePrefix,
     lastName,
     street,
     housenumber,
@@ -56,6 +57,7 @@ function ContactToImportsListItem({
                 <td>{importMatchDescription}</td>
                 <td>{number}</td>
                 <td>{firstName}</td>
+                <td>{lastNamePrefix}</td>
                 <td>{lastName}</td>
                 <td>{street}</td>
                 <td>{housenumber}</td>
@@ -64,9 +66,9 @@ function ContactToImportsListItem({
                 <td>{city}</td>
                 <td>{emailContact}</td>
                 <td>{phoneNumber}</td>
-                <td>{ean}</td>
-                <td>{eanType}</td>
                 <td>{supplierCodeRef}</td>
+                <td>{eanType}</td>
+                <td>{ean}</td>
                 <td>{esNumber}</td>
             </tr>
 
@@ -114,6 +116,7 @@ function ContactToImportsListItem({
                         <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchDescription}</td>
                         <td>{contactForImport.number}</td>
                         <td>{contactForImport.firstName}</td>
+                        <td>{contactForImport.lastNamePrefix}</td>
                         <td>{contactForImport.lastName}</td>
                         <td>{contactForImport.street}</td>
                         <td>{contactForImport.housenumber}</td>
@@ -122,10 +125,14 @@ function ContactToImportsListItem({
                         <td>{contactForImport.city}</td>
                         <td>{contactForImport.emailContact}</td>
                         <td>{contactForImport.phoneNumber}</td>
-                        <td>{contactForImport.eanElectricity}</td>
-                        <td>{contactForImport.esTypeElectricity}</td>
-                        <td>{contactForImport.esCodeRefElectricity}</td>
-                        <td>{contactForImport.esNumberElectricity}</td>
+                        <td>
+                            {eanType === 'Gas' ? contactForImport.esCodeRefGas : contactForImport.esCodeRefElectricity}
+                        </td>
+                        <td>{eanType === 'Gas' ? contactForImport.esTypeGas : contactForImport.esTypeElectricity}</td>
+                        <td>{eanType === 'Gas' ? contactForImport.eanGas : contactForImport.eanElectricity}</td>
+                        <td>
+                            {eanType === 'Gas' ? contactForImport.esNumberGas : contactForImport.esNumberElectricity}
+                        </td>
                     </tr>
                 );
             })}

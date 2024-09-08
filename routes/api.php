@@ -69,7 +69,7 @@ Route::namespace('Api')
         Route::post('/contact/import', 'Contact\ContactController@import');
         Route::post('/contact/validate-import-from-energy-supplier', 'Contact\ContactController@validateImportFromEnergySupplier');
         Route::post('/contact/import-from-energy-supplier', 'Contact\ContactController@importFromEnergySupplier');
-        Route::get('/contact/csv-from-energy-supplier', 'Contact\ContactToImportController@csvFromEnergySupplier');
+        Route::get('/contact/excel-contact-to-import', 'Contact\ContactToImportController@excelContactToImport');
         Route::get('/contact/contact-to-imports-suppliers', 'Contact\ContactController@contactToImportsSuppliers');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');

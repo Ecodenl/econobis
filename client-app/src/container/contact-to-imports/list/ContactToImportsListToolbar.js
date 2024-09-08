@@ -9,7 +9,7 @@ function ContactToImportsListToolbar({
     ContactToImportsTotal,
     refreshContactToImports,
     permissions,
-    getCSV,
+    getExcel,
     allowUpdateAction,
     selectAllNew,
     selectAllUpdate,
@@ -21,7 +21,11 @@ function ContactToImportsListToolbar({
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={refreshContactToImports} />
-                    <ButtonIcon iconName={'download'} onClickAction={getCSV} title="Downloaden contacten naar CSV" />
+                    <ButtonIcon
+                        iconName={'download'}
+                        onClickAction={getExcel}
+                        title="Downloaden contacten naar Excel"
+                    />
                     <ButtonText
                         buttonText={selectAllNew ? 'Alles' : 'Alleen nieuw selectie'}
                         onClickAction={actionSelectAllNew}

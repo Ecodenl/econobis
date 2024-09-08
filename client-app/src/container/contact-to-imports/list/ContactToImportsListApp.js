@@ -26,16 +26,16 @@ function ContactToImportsListApp() {
     const [selectedContactsUpdate, setSelectedContactsUpdate] = useState([]);
     const [selectAllNew, setSelectAllNew] = useState(false);
     const [selectAllUpdate, setSelectAllUpdate] = useState(false);
-    const [sort, setSort] = useState([{ field: 'lastName', order: 'ASC' }]);
+    const [sorts, setSorts] = useState([{ field: 'lastName', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ page: 0, offset: 0, limit: recordsPerPage });
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
         function() {
-            // console.log('use effect pagination.offset, sort, selectAllNew === true, selectAllUpdate === true');
+            // console.log('use effect pagination.offset, sorts, selectAllNew === true, selectAllUpdate === true');
             fetchContactToImports();
         },
-        [pagination.offset, filter, sort, selectAllNew === true, selectAllUpdate === true]
+        [pagination.offset, filter, sorts, selectAllNew === true, selectAllUpdate === true]
     );
 
     // useEffect hook to monitor changes in selectedImportsNew
@@ -92,7 +92,7 @@ function ContactToImportsListApp() {
             .all([
                 ContactToImportsAPI.fetchContactToImports(
                     formatFilterHelper(),
-                    sort,
+                    sorts,
                     pagination,
                     selectAllNew,
                     selectAllUpdate
@@ -131,11 +131,11 @@ function ContactToImportsListApp() {
     }
 
     function handleChangeSort(column, value) {
-        let originalSort = sort;
-        if (originalSort.length === 3) originalSort.pop();
+        let originalSorts = sorts;
+        if (originalSorts.length === 3) originalSorts.pop();
 
         let sortItem = { field: `${column}`, order: `${value}` };
-        setSort([sortItem, ...originalSort]);
+        setSorts([sortItem, ...originalSorts]);
     }
 
     function handleChangeFilter(column, value) {
@@ -321,14 +321,16 @@ function ContactToImportsListApp() {
         return numberSelectedUpdateTotal;
     };
 
-    function getCSV() {
+    function getExcel() {
         setLoading(true);
 
-        ContactsAPI.getCSVFromEnergySupplier({ filters, sorts })
+        const filters = formatFilterHelper();
+
+        ContactsAPI.getExcelContactToImport({ filters, sorts })
             .then(payload => {
                 fileDownload(
                     payload.data,
-                    `signaleringslijst-importeren-energieklanten-${moment().format('YYYY-MM-DD HH:mm:ss')}.csv`
+                    `signaleringslijst-importeren-energieklanten-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`
                 );
                 setLoading(false);
             })
@@ -382,7 +384,7 @@ function ContactToImportsListApp() {
                     <ContactToImportsListToolbar
                         ContactToImportsTotal={totalCount}
                         refreshContactToImports={fetchContactToImports}
-                        getCSV={getCSV}
+                        getExcel={getExcel}
                         allowUpdateAction={allowUpdateAction}
                         selectAllNew={selectAllNew}
                         selectAllUpdate={selectAllUpdate}

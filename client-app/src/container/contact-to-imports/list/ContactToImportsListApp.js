@@ -91,7 +91,7 @@ function ContactToImportsListApp() {
         axios
             .all([
                 ContactToImportsAPI.fetchContactToImports(
-                    formatFilterHelper(),
+                    formatFilterHelper(true),
                     sorts,
                     pagination,
                     selectAllNew,
@@ -273,10 +273,12 @@ function ContactToImportsListApp() {
         );
     }
 
-    function formatFilterHelper() {
+    function formatFilterHelper($onlyNew) {
         let filters = [];
 
-        filters.push({ field: 'status', data: 'new' });
+        if ($onlyNew) {
+            filters.push({ field: 'status', data: 'new' });
+        }
 
         if (filter.firstName) {
             filters.push({ field: 'firstName', data: filter.firstName });
@@ -324,7 +326,7 @@ function ContactToImportsListApp() {
     function getExcel() {
         setLoading(true);
 
-        const filters = formatFilterHelper();
+        const filters = formatFilterHelper(false);
 
         ContactsAPI.getExcelContactToImport({ filters, sorts })
             .then(payload => {

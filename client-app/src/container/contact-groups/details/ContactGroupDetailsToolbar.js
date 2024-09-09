@@ -69,9 +69,11 @@ function ContactGroupDetailsToolbar({
                         <div className="col-md-3">
                             <div className="btn-group" role="group">
                                 <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                                {permissions.manageGroup && !contactGroup.isUsedInComposedGroup && (
-                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
-                                )}
+                                {permissions.manageGroup &&
+                                    !contactGroup.isUsedInComposedGroup &&
+                                    !contactGroup.isUsedInExceptedGroup && (
+                                        <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                    )}
                                 <ButtonText
                                     buttonText={`Open lijst (${numberOfContacts})`}
                                     onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}

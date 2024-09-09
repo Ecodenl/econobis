@@ -413,6 +413,9 @@ class ContactGroup extends Model
 
         return false;
     }
+    public function getIsUsedInExceptedGroupAttribute(){
+        return count($this->parentGroupsExceptedArray) > 0;
+    }
 
     public function getParentGroupsArrayAttribute(){
         $composedGroups = ContactGroup::where('type_id', 'composed')->get();

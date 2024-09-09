@@ -70,7 +70,30 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
-        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load(
+            'administration',
+            'task',
+            'order',
+            'administration',
+            'contact',
+            'intake',
+            'contactGroup',
+            'opportunity',
+            'quotationRequest',
+            'housingFile',
+            'campaign',
+            'measure',
+            'sentBy',
+            'createdBy',
+            'documentCreatedFrom',
+            'template',
+            'opportunity.measureCategory',
+            'opportunity.status',
+            'order',
+            'project',
+            'participant',
+            'participant.contact',
+            'participant.project');
 
         return FullDocument::make($document);
     }

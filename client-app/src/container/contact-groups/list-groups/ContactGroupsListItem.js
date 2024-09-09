@@ -48,6 +48,7 @@ class ContactGroupsListItem extends Component {
             permissions,
             type,
             isUsedInComposedGroup,
+            isUsedInExceptedGroup,
             isUsedInLaposta,
             groupUpToDateWithLaposta,
             numberOfLapostaMembers,
@@ -103,11 +104,16 @@ class ContactGroupsListItem extends Component {
                         ''
                     )}
                     &nbsp;
-                    {this.state.showActionButtons && permissions.manageGroup && !isUsedInComposedGroup ? (
+                    {this.state.showActionButtons &&
+                    permissions.manageGroup &&
+                    !isUsedInComposedGroup &&
+                    !isUsedInExceptedGroup ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, name, type.id)}>
                             <Icon className="mybtn-danger" size={14} icon={trash} />
                         </a>
-                    ) : this.state.showActionButtons && permissions.manageGroup && isUsedInComposedGroup ? (
+                    ) : this.state.showActionButtons &&
+                      permissions.manageGroup &&
+                      (isUsedInComposedGroup || isUsedInExceptedGroup) ? (
                         <a
                             role="button"
                             onClick={this.props.showPartOfComposedGroupModal.bind(this, parentGroupsArray)}

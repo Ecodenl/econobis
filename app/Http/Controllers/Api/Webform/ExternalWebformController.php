@@ -3718,9 +3718,6 @@ class ExternalWebformController extends Controller
         $document->campaign_id = $quotationRequest->opportunity->intake->campaign_id;
         $document->quotation_request_id = $quotationRequest->id;
 
-        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
-        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
-
         $document->document_created_from_id = $documentCreatedFromId;
 
         $document->save();

@@ -29,9 +29,6 @@ const DocumentDetailsFormView = props => {
         showOnPortal,
     } = props.documentDetails;
 
-    console.log(opportunity.measureCategory.name + ' ' + opportunity.status.name);
-    console.log(props.documentDetails);
-    // console.log(campaign);
     return (
         <div>
             <div className="row" onClick={props.switchToEdit}>
@@ -53,7 +50,7 @@ const DocumentDetailsFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <div className="row">
                     <ViewText
-                        label={'Kansx'}
+                        label={'Kans'}
                         value={opportunity && opportunity.measureCategory.name + ' ' + opportunity.status.name}
                     />
                     <ViewText label={'Taak'} value={task && task.name} />

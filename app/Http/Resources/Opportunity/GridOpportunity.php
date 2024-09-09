@@ -18,6 +18,7 @@ class GridOpportunity extends JsonResource
     {
         return [
             'id' => $this->id,
+            'number' => $this->number,
             'address' => optional(optional($this->intake)->address)->full_address,
             'createdAt' => $this->created_at,
             'desiredDate' => $this->desired_date,

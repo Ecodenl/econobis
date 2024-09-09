@@ -1,4 +1,8 @@
 const filtersReducerDefaultState = {
+    number: {
+        field: 'number',
+        data: '',
+    },
     address: {
         field: 'address',
         data: '',
@@ -51,6 +55,14 @@ const filtersReducerDefaultState = {
 
 export default (state = filtersReducerDefaultState, action) => {
     switch (action.type) {
+        case 'SET_FILTER_OPPORTUNITY_NUMBER':
+            return {
+                ...state,
+                number: {
+                    ...state.number,
+                    data: action.number,
+                },
+            };
         case 'SET_FILTER_OPPORTUNITY_ADDRESS':
             return {
                 ...state,

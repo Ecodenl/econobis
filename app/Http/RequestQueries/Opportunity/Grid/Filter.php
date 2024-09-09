@@ -15,6 +15,7 @@ use Carbon\Carbon;
 class Filter extends RequestFilter
 {
     protected $fields = [
+        'number',
         'address',
         'createdAtStart',
         'createdAtEnd',
@@ -30,6 +31,7 @@ class Filter extends RequestFilter
     ];
 
     protected $mapping = [
+        'number' => 'opportunities.number',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
         'measureName' => 'measures.name',

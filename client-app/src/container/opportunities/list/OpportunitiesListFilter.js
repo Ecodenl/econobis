@@ -15,12 +15,17 @@ import {
     setFilterOpportunityMeasureCategory,
     setFilterOpportunityMeasureName,
     setFilterOpportunityName,
+    setFilterOpportunityNumber,
     setFilterOpportunityAddress,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
 const OpportunitiesListFilter = props => {
+    const onNumberChange = e => {
+        props.setFilterOpportunityNumber(e.target.value);
+    };
+
     const onAddressChange = e => {
         props.setFilterOpportunityAddress(e.target.value);
     };
@@ -96,6 +101,15 @@ const OpportunitiesListFilter = props => {
                     <input type="checkbox" onChange={props.toggleCheckedAll} />
                 </th>
             )}
+
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
+                    value={props.filters.number.data}
+                    onChange={onNumberChange}
+                />
+            </th>
 
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
@@ -205,6 +219,7 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityMeasureCategory,
             setFilterOpportunityMeasureName,
             setFilterOpportunityName,
+            setFilterOpportunityNumber,
             setFilterOpportunityAddress,
             setFilterOpportunityStatusId,
         },

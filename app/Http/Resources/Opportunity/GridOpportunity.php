@@ -16,7 +16,6 @@ class GridOpportunity extends JsonResource
      */
     public function toArray($request)
     {
-        Log::info(optional(optional($this->intake)->address)->full_address);
         return [
             'id' => $this->id,
             'address' => optional(optional($this->intake)->address)->full_address,

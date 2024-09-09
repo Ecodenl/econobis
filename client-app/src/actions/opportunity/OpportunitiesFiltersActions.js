@@ -1,4 +1,4 @@
-export const setOpportunityAddressFilter = address => ({
+export const setFilterOpportunityAddress = address => ({
     type: 'SET_FILTER_OPPORTUNITY_ADDRESS',
     address,
 });

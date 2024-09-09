@@ -11,7 +11,6 @@ namespace App\Helpers\Delete\Models;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
 use App\Eco\Project\Project;
-use App\Eco\Team\Team;
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Settings\PortalSettings;

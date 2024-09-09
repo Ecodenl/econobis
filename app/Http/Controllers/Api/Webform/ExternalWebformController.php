@@ -582,7 +582,7 @@ class ExternalWebformController extends Controller
                 'kansactie_opmerking_bewoner' => 'client_note',
                 'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
                 'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
-                'kansactie_bijlage_1' => 'quotation_request_attachment_1',
+                'kansactie_bijlage' => 'quotation_request_attachment',
                 'kansactie_bijlage_2' => 'quotation_request_attachment_2',
                 'kansactie_bijlage_3' => 'quotation_request_attachment_3',
             ],
@@ -2372,7 +2372,7 @@ class ExternalWebformController extends Controller
             $tmpFileName = Str::random(9) . '-' . $fileName;
 
             $document = new Document();
-            $document->description = 'contact bijlage';
+            $document->description = 'Contact bijlage';
             $document->document_type = 'upload';
             $document->document_group = 'general';
             $document->filename = $fileName;
@@ -3683,8 +3683,8 @@ class ExternalWebformController extends Controller
             ]);
 
             // Indien kansactie bijlage url meegegeven deze als document opslaan
-            if($dataQuotationRequest['quotation_request_attachment_1']){
-                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_1']);
+            if($dataQuotationRequest['quotation_request_attachment']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
             }
             if($dataQuotationRequest['quotation_request_attachment_2']){
                 $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
@@ -3700,6 +3700,9 @@ class ExternalWebformController extends Controller
 
 
     protected function addQuotationRequestAttachment($quotationRequest, $quotationRequestAttachmentUrl) {
+        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
+
         $fileName = basename($quotationRequestAttachmentUrl);
         $tmpFileName = Str::random(9) . '-' . $fileName;
 
@@ -3708,9 +3711,12 @@ class ExternalWebformController extends Controller
         $document->document_type = 'upload';
         $document->document_group = 'general';
         $document->filename = $fileName;
-        $document->contact_id = $quotationRequest->contact_id;
+        $document->document_created_from_id = $documentCreatedFromId;
+        $document->contact_id = $quotationRequest->opportunity->intake->contact_id;
+        $document->opportunity_id = $quotationRequest->opportunity_id;
+        $document->intake_id = $quotationRequest->opportunity->intake_id;
+        $document->campaign_id = $quotationRequest->opportunity->intake->campaign_id;
         $document->quotation_request_id = $quotationRequest->id;
-
 
         $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
         $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;

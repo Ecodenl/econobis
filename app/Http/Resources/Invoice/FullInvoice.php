@@ -68,6 +68,7 @@ class FullInvoice extends JsonResource
                 'dateReminder1' => $this->date_reminder_1,
                 'dateReminder2' => $this->date_reminder_2,
                 'dateReminder3' => $this->date_reminder_3,
+                'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
                 'dateExhortation' => $this->date_exhortation,
                 'emailReminder1' => $this->email_reminder_1,
                 'emailReminder2' => $this->email_reminder_2,

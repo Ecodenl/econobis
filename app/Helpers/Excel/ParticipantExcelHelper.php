@@ -467,7 +467,7 @@ class ParticipantExcelHelper
                         $mollieDatePaidsRaw = $mutation->molliePayments->pluck('date_paid');
                         $mollieDatePaidsArray = [];
                         foreach ($mollieDatePaidsRaw as $mollieDatePaid){
-                            $mollieDatePaidsArray[] = $mollieDatePaid != '' ? Carbon::parse($mollieDatePaid)->format('d-m-Y') : '00-00-0000';
+                            $mollieDatePaidsArray[] = $mollieDatePaid != '' ? Carbon::parse($mollieDatePaid)->format('d-m-Y') : '';
                         }
                         $mollieDatePaids = implode(', ', $mollieDatePaidsArray);
                     } else {

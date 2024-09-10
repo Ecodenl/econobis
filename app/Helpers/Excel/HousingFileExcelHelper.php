@@ -73,13 +73,11 @@ class HousingFileExcelHelper
         $headerData[] = 'Verbruik gas';
         $headerData[] = 'Verbruik elektriciteit';
         $headerData[] = 'Opbrengst zonnepanelen';
-        $headerData[] = 'Aanmaakdatum';
+        $headerData[] = 'Aanmaak datum';
 
         foreach($this->housingFileHoomLinksStatus as $housingFileHoomLinkStatus) {
             $headerData[] = $housingFileHoomLinkStatus->label;
         }
-
-        $headerData[] = 'Aanmaak datum';
 
         $completeData[] = $headerData;
 

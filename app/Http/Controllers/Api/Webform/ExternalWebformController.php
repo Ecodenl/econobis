@@ -536,6 +536,7 @@ class ExternalWebformController extends Controller
             'order' => [
                 // Order / OrderProduct
                 'order_product_id' => 'product_id',
+                'order_variabele_prijs' => 'variable_price',
                 'order_aantal' => 'amount',
                 'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
@@ -693,6 +694,8 @@ class ExternalWebformController extends Controller
         $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
 
         $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
+
+        $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
@@ -3281,9 +3284,21 @@ class ExternalWebformController extends Controller
             $product = Product::find($data['product_id']);
 
             if (!$product) {
-                $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
+                $this->log('Product met id ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
                 $this->addTaskError('Ongeldige product code meegegeven bij verzenden webformulier.');
                 return null;
+            }
+
+            $orderVariablePrice = null;
+            if ($product->currentPrice && $product->currentPrice->has_variable_price) {
+                if($data['variable_price']) {
+                    $orderVariablePrice = floatval(str_replace(',', '.', $data['variable_price']));
+                } else {
+                    $this->log('Product met id ' . $data['product_id'] . ' is een product met variabele prijs maar variabele prijs is niet meegegeven, variabele prijs is op 0.00 gezet.');
+                    $orderVariablePrice = 0.00;
+                }
+            } elseif($data['variable_price']) {
+                $this->log('Product met id ' . $data['product_id'] . ' is een product zonder variabele prijs, meegegeven variabele prijs wordt niet gebruikt');
             }
 
             $statusId = $data['status_id'];
@@ -3354,6 +3369,7 @@ class ExternalWebformController extends Controller
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'date_start' => $dateStart,
+                'variable_price' => $orderVariablePrice,
                 'date_period_start_first_invoice' => $datePeriodStartFirstInvoice,
             ]);
 

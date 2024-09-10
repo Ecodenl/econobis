@@ -30,6 +30,7 @@ const HousingFileDetailsFormGeneralView = props => {
         cookType,
         heatSource,
         waterComfort,
+        revenueSolarPanels,
     } = props.housingFileDetails;
 
     const showFields = props.housingFileHoomLinksToShowInEconobis;
@@ -91,19 +92,11 @@ const HousingFileDetailsFormGeneralView = props => {
                 ) : null}
             </div>
             <div className="row">
-                {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
-                    <ViewText label="Kozijntype" value={frameType && frameType.hoomStatusName} />
-                ) : null}
                 {showFields.some(showField => showField.econobisFieldName === 'floor_surface') ? (
                     <ViewText label="Vloeroppervlakte" value={floorSurface && floorSurface} />
                 ) : null}
-            </div>
-            <div className="row">
-                {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
-                    <ViewText label="Hellend dakoppervlakte" value={pitchedRoofSurface && pitchedRoofSurface} />
-                ) : null}
-                {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
-                    <ViewText label="Platte dakoppervlakte" value={flatRoofSurface && flatRoofSurface} />
+                {showFields.some(showField => showField.econobisFieldName === 'revenue_solar_panels') ? (
+                    <ViewText label="Opbrengst zonnepanelen" value={revenueSolarPanels && revenueSolarPanels} />
                 ) : null}
             </div>
             <div className="row">
@@ -117,6 +110,17 @@ const HousingFileDetailsFormGeneralView = props => {
             <div className="row">
                 {showFields.some(showField => showField.econobisFieldName === 'water_comfort') ? (
                     <ViewText label="Water comfort" value={waterComfort && waterComfort.hoomStatusName} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
+                    <ViewText label="Kozijntype" value={frameType && frameType.hoomStatusName} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                    <ViewText label="Hellend dakoppervlakte" value={pitchedRoofSurface && pitchedRoofSurface} />
+                ) : null}
+                {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
+                    <ViewText label="Platte dakoppervlakte" value={flatRoofSurface && flatRoofSurface} />
                 ) : null}
             </div>
             <div className="row">

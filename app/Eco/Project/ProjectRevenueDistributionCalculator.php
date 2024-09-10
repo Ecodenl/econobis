@@ -207,7 +207,7 @@ class ProjectRevenueDistributionCalculator
         }
 
         if($this->projectTypeCodeRef !== 'loan') {
-            $payout = floatval( number_format($payout, 2, '.', '') ) * $amount;
+            $payout = floatval( number_format($payout, 10, '.', '') ) * $amount;
         }
 
         return number_format($payout, 2, '.', '');

@@ -782,7 +782,7 @@ class TemplateVariableHelper
         $mutationWithDrawalTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['withDrawal'])->get()->pluck('id');
         switch ($varname) {
             case 'contact_naam':
-                return $model->contact->full_name;
+                return $model->contact->full_name_fnf;
                 break;
             case 'contact_voornaam':
                 if($model->contact->type_id == 'person'){
@@ -907,6 +907,12 @@ class TemplateVariableHelper
                     return  $model->participations_definitive;
                 }else{
                     return 0;
+                }
+            case 'obligatienummers':
+                if($projectTypeCodeRef == 'obligation') {
+                    return  $model->obligationNumbersAsString;
+                }else{
+                    return ' ';
                 }
                 break;
             case 'bedrag_interesse':

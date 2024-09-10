@@ -108,9 +108,11 @@ class InvoiceProductsFormItem extends Component {
                 ? this.state.invoiceProduct.variablePrice
                 : 0;
         } else {
-            price = validator.isFloat(this.props.invoiceProduct.product.currentPrice.priceInclVat + '')
-                ? this.props.invoiceProduct.product.currentPrice.priceInclVat
-                : 0;
+            price =
+                this.props.invoiceProduct.product.currentPrice &&
+                validator.isFloat(this.props.invoiceProduct.product.currentPrice.priceInclVat + '')
+                    ? this.props.invoiceProduct.product.currentPrice.priceInclVat
+                    : 0;
         }
         let amount = validator.isFloat(this.state.invoiceProduct.amount + '') ? this.state.invoiceProduct.amount : 0;
         let percentageReduction = validator.isFloat(this.state.invoiceProduct.percentageReduction + '')

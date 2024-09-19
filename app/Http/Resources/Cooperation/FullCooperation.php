@@ -38,6 +38,8 @@ class FullCooperation extends JsonResource
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],
             'hoomGroupId' => $this->hoom_group_id ? $this->hoom_group_id : '',
             'hoomGroup' => ['name' => $this->contactGroup ? $this->contactGroup->name : ''],
+            'hoomMailboxId' => $this->hoom_mailbox_id ? $this->hoom_mailbox_id : '',
+            'hoomMailbox' => ['name' => $this->hoomMailbox ? $this->hoomMailbox->name : ''],
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,

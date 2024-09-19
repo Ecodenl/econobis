@@ -44,6 +44,7 @@ class UpdateCooperation extends FormRequest
             'sendEmail' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
+            'hoomMailboxId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],

@@ -155,6 +155,11 @@ class ParticipantProject extends Model
         return $this->hasMany(ObligationNumber::class, 'participation_id');
     }
 
+    public function getObligationNumbersAsStringAttribute()
+    {
+        return implode(', ', $this->obligationNumbers->pluck('number')->toArray());;
+    }
+
     public function documents()
     {
         return $this->hasMany(Document::class, 'participation_project_id')->orderBy('documents.id', 'desc');

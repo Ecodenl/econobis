@@ -50,6 +50,7 @@ class FullHousingFile extends JsonResource
                 'totalWindowSurface' => $this->total_window_surface,
                 'frameType' => GenericResource::make($this->whenLoaded('frameType')),
                 'floorSurface' => $this->floor_surface,
+                'revenueSolarPanels' => $this->revenue_solar_panels,
                 'pitchedRoofSurface' => $this->pitched_roof_surface,
                 'flatRoofSurface' => $this->flat_roof_surface,
                 'cookType' => GenericResource::make($this->whenLoaded('cookType')),

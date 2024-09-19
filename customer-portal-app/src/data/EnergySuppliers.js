@@ -72,5 +72,5 @@ export default [
     { id: 47, name: 'Welkom Energie' },
     { id: 41, name: 'Windcentrale' },
     { id: 73, name: 'Zonneplan' },
-    { id: 57, name: 'Onbekend' },
+    { id: 57, name: 'Onbekend/n.v.t.' },
 ];

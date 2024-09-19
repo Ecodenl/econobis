@@ -41,6 +41,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
         } = props.housingFileDetails;
 
         this.state = {
@@ -79,6 +80,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 cookType: cookType ? cookType.hoomStatusValue : '',
                 heatSource: heatSource ? heatSource.hoomStatusValue : '',
                 waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
+                revenueSolarPanels: revenueSolarPanels ? revenueSolarPanels : '',
             },
         };
     }
@@ -193,6 +195,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             cookType,
             heatSource,
             waterComfort,
+            revenueSolarPanels,
         } = this.state.housingFile;
         const showFields = this.props.housingFileHoomLinksToShowInEconobis;
 
@@ -351,18 +354,6 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     ) : null}
                 </div>
                 <div className="row">
-                    {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
-                        <InputSelect
-                            label={'Kozijntype'}
-                            size={'col-sm-6'}
-                            name="frameType"
-                            value={frameType}
-                            options={this.state.frameTypeSelection}
-                            optionValue={'key'}
-                            onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
-                        />
-                    ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'floor_surface') ? (
                         <InputText
                             label={'Vloeroppervlakte'}
@@ -373,23 +364,11 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             readOnly={hasHoomDossierLink}
                         />
                     ) : null}
-                </div>
-                <div className="row">
-                    {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                    {showFields.some(showField => showField.econobisFieldName === 'revenue_solar_panels') ? (
                         <InputText
-                            label={'Hellend dakoppervlakte'}
-                            name="pitchedRoofSurface"
-                            value={pitchedRoofSurface}
-                            min={0}
-                            onChangeAction={this.handleInputChange}
-                            readOnly={hasHoomDossierLink}
-                        />
-                    ) : null}
-                    {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
-                        <InputText
-                            label={'Platte dakoppervlakte'}
-                            name="flatRoofSurface"
-                            value={flatRoofSurface}
+                            label={'Opbrengst zonnepanelen'}
+                            name="revenueSolarPanels"
+                            value={revenueSolarPanels}
                             min={0}
                             onChangeAction={this.handleInputChange}
                             readOnly={hasHoomDossierLink}
@@ -431,6 +410,40 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={waterComfort}
                             options={this.state.waterComfortSelection}
                             optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'frame_type') ? (
+                        <InputSelect
+                            label={'Kozijntype'}
+                            size={'col-sm-6'}
+                            name="frameType"
+                            value={frameType}
+                            options={this.state.frameTypeSelection}
+                            optionValue={'key'}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                </div>
+                <div className="row">
+                    {showFields.some(showField => showField.econobisFieldName === 'pitched_roof_surface') ? (
+                        <InputText
+                            label={'Hellend dakoppervlakte'}
+                            name="pitchedRoofSurface"
+                            value={pitchedRoofSurface}
+                            min={0}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                        />
+                    ) : null}
+                    {showFields.some(showField => showField.econobisFieldName === 'flat_roof_surface') ? (
+                        <InputText
+                            label={'Platte dakoppervlakte'}
+                            name="flatRoofSurface"
+                            value={flatRoofSurface}
+                            min={0}
                             onChangeAction={this.handleInputChange}
                             readOnly={hasHoomDossierLink}
                         />

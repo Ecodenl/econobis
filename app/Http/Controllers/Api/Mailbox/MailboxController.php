@@ -244,7 +244,7 @@ class MailboxController extends Controller
     {
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }
@@ -288,7 +288,7 @@ class MailboxController extends Controller
             abort(403);
         }
 
-        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email')->where('is_active', 1)->get();
+        $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
     }

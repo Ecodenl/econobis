@@ -3,7 +3,7 @@ import axiosInstance from '../default-setup/AxiosInstance';
 const URL_ORDER = `${URL_API}/api/order`;
 
 export default {
-    fetchOrders: ({ filters, sorts, pagination, administrationId, showOrdersWithoutOrderlines }) => {
+    fetchOrders: ({ filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts }) => {
         const requestUrl = `${URL_ORDER}/grid`;
 
         return axiosInstance.get(requestUrl, {
@@ -13,7 +13,7 @@ export default {
                 sorts: JSON.stringify(sorts),
                 limit: pagination.limit,
                 offset: pagination.offset,
-                showOrdersWithoutOrderlines: showOrdersWithoutOrderlines,
+                showOnlyOrdersWithOrderProducts: showOnlyOrdersWithOrderProducts,
             },
         });
     },

@@ -43,7 +43,7 @@ class TwinfieldSalesTransactionHelper
 // Add a property to store accumulated transactions
     private $salesTransactionsBatch = [];
 
-    const BATCH_SIZE = 10; // Set a batch size limit
+    const BATCH_SIZE = 50; // Set a batch size limit
 
     /**
      * TwinfieldSalesTransactionHelper constructor.
@@ -53,30 +53,10 @@ class TwinfieldSalesTransactionHelper
     public function __construct(Administration $administration)
     {
         $this->administration = $administration;
-
-        if($this->administration->date_sync_twinfield_invoices){
-            $this->fromInvoiceDateSent = $this->administration->date_sync_twinfield_invoices;
-        }else{
-            $this->fromInvoiceDateSent = '2019-01-01';
-        }
-
+        $this->fromInvoiceDateSent = $this->determineInvoiceDateSent();
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
-
-        if ($administration->twinfield_connection_type === "openid") {
-
-            $provider = new OAuthProvider([
-                'clientId'                => $administration ? $administration->twinfield_client_id : '',    // The client ID assigned to you by the provider
-                'clientSecret'            => $administration ? $administration->twinfield_client_secret : '',   // The client password assigned to you by the provider
-                'redirectUri'             => $this->redirectUri,
-            ]);
-            if(!empty($administration->twinfield_refresh_token)){
-                $this->connection = new OpenIdConnectAuthentication($provider, $administration->twinfield_refresh_token, $this->office);
-            }else{
-                $this->connection = null;
-            }
-
-        }
+        $this->initializeConnection();
 
         $this->transactionApiConnector = new TransactionApiConnector($this->connection);
         $this->changPayStatusTransactionApiConnector = new ChangPayStatusTransactionApiConnector($this->connection);
@@ -84,67 +64,74 @@ class TwinfieldSalesTransactionHelper
         $this->currency = new Currency( config('services.twinfield.verkoop_default_currency') );
         $this->grootboekDebiteuren = config('services.twinfield.verkoop_grootboek_debiteuren');
         $this->messages = [];
-
+        $this->logStartSync();
     }
 
-    public function procesTwinfieldSalesTransaction(){
-        if(!$this->administration->uses_twinfield){
+    private function determineInvoiceDateSent($fromInvoiceDateSent)
+    {
+        if($this->administration->date_sync_twinfield_invoices){
+            return $this->administration->date_sync_twinfield_invoices;
+        }
+
+        return '2019-01-01';
+    }
+
+    private function initializeConnection()
+    {
+        if ($this->administration->twinfield_connection_type === "openid") {
+            $provider = new OAuthProvider([
+                'clientId'     => $this->administration->twinfield_client_id,
+                'clientSecret' => $this->administration->twinfield_client_secret,
+                'redirectUri'  => $this->redirectUri,
+            ]);
+
+            if (!empty($this->administration->twinfield_refresh_token)) {
+                $this->connection = new OpenIdConnectAuthentication($provider, $this->administration->twinfield_refresh_token, $this->office);
+            } else {
+                $this->connection = null;
+            }
+        }
+    }
+
+    public function procesTwinfieldSalesTransaction()
+    {
+        if (!$this->administration->uses_twinfield) {
             return "Deze administratie maakt geen gebruik van Twinfield.";
         }
-        if(!$this->administration->twinfield_is_valid){
+
+        if (!$this->administration->twinfield_is_valid) {
             return "Twinfield is onjuist geconfigureerd. Pas de configuratie aan om Twinfield te gebruiken.";
         }
+
         set_time_limit(0);
 
-// Fetch invoices as per existing logic
-        // We controleren alle invoices met status exported of paid en met koppeling Twinfield
-        // Standaard invoices vanaf 01-01-2019 tenzij anders opgegeven bij administratie.
-        if($this->administration->date_sync_twinfield_invoices){
-        $invoicesToBeChecked = $this->administration->invoices()
-            ->where('status_id', 'sent')
-            ->where('date_sent', '>=', $this->fromInvoiceDateSent)
-            ->whereDoesntHave('invoiceProducts', function ($query) {
-                $query->whereNull('twinfield_ledger_code');
-            })
-            ->get();
-        }else{
-            $invoicesToBeChecked = $this->administration->invoices()
-                ->where('status_id', 'sent')
-                ->where('date_sent', '>=', '20190101')
-                ->whereDoesntHave('invoiceProducts', function ($query) {
-                    $query->whereNull('twinfield_ledger_code');
-                })
-                ->get();
-        }
+        // Retrieve invoices to be checked in batches
+        $invoicesToBeChecked = $this->getInvoicesToBeChecked();
 
-        // Process each invoice
-        foreach ($invoicesToBeChecked as $invoice){
-            $transaction = $this->createSalesTransaction($invoice);
-            if ($transaction) {
-                $this->salesTransactionsBatch[] = $transaction;
-                if (count($this->salesTransactionsBatch) >= self::BATCH_SIZE) {
-                    $this->sendBatchTransactions();
-                    // Indien contact ingesteld op Incasso, maar nota is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
-                    $contact = $invoice->order->contact;
-                    if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
-                    {
-                        $this->changePaymentStatus($invoice);
-                    }
-                }
-            }
-        }
+        // Split invoices into chunks/batches
+        $invoiceBatches = array_chunk($invoicesToBeChecked->toArray(), self::BATCH_SIZE);
 
-        // Send remaining transactions if any
-        if (count($this->salesTransactionsBatch) > 0) {
-            $this->sendBatchTransactions();
-            // Indien contact ingesteld op Incasso, maar nota is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
-            $contact = $invoice->order->contact;
-            if($contact->is_collect_mandate && $invoice->payment_type_id=='transfer')
-            {
-                $this->changePaymentStatus($invoice);
-            }
-        }
+        $chunkNumber = 0;
+        $numberOfChunks = ceil($invoicesToBeChecked->count() / self::BATCH_SIZE);
 
+        foreach ($invoiceBatches as $batch) {
+            $chunkNumber++;
+            $message = 'Start batch voor nota\'s (' . $chunkNumber . '/' . $numberOfChunks . ') voor in totaal ' . $invoicesToBeChecked->count() . ' nota\'s (' . self::BATCH_SIZE . ' per batch)';
+            $this->logBatchSync($message);
+
+            $this->processInvoiceBatch($batch);
+            // hier eventueel delay inbouwen?
+
+        }
+        // Log the end of the entire synchronization process
+        $message = 'Einde synchroniseren nota\'s voor Twinfield (organisatie: '
+            . $this->administration->twinfield_organization_code
+            . ', code: ' . $this->administration->twinfield_office_code
+            . ', client Id: ' . $this->administration->twinfield_client_id
+            . ').';
+        $this->logEndSync($message);
+
+        // If no messages were generated, add a default one
         if (count($this->messages) == 0) {
             array_push($this->messages, "Geen nota's om te synchroniseren gevonden.");
         }
@@ -152,50 +139,95 @@ class TwinfieldSalesTransactionHelper
         return implode(';', $this->messages);
     }
 
-    public function createSalesTransaction(Invoice $invoice) {
+    private function getInvoicesToBeChecked()
+    {
+        return $this->administration->invoices()
+            ->where('status_id', 'sent')
+            ->where('date_sent', '>=', $this->fromInvoiceDateSent)
+            ->whereDoesntHave('invoiceProducts', function ($query) {
+                $query->whereNull('twinfield_ledger_code');
+            })
+            ->get();
+    }
+
+    private function processInvoiceBatch(array $invoiceBatch)
+    {
+        foreach ($invoiceBatch as $invoiceToBeChecked) {
+            $invoiceToProcess = Invoice::find($invoiceToBeChecked['id']);
+            if ($invoiceToProcess){
+                $this->processInvoice($invoiceToProcess);
+            }
+        }
+    }
+    private function processInvoice($invoiceToProcess)
+    {
+        $response = $this->createSalesTransaction($invoiceToProcess);
+
+        if($response === true){
+            $message = 'Transactie nota ' . $invoiceToProcess->number . ' succesvol gesynchroniseerd.';
+            $this->logGeneral($invoiceToProcess, $message, false, false);
+            array_push($this->messages, $message);
+            // Indien contact ingesteld op Incasso, maar nota is gekenmerkt voor Overboeking, dan blokkeer voor betaal/incasso run in Twinfield
+            $contact = $invoiceToProcess->order->contact;
+            if($contact->is_collect_mandate && $invoiceToProcess->payment_type_id == 'transfer')
+            {
+                $this->changePaymentStatus($invoiceToProcess);
+            }
+        }
+        else{
+            //soms zitten in de error message van Twinfield // voor de melding.
+            $response = str_replace('//', '', $response);
+            $message = 'Synchronisatie transactie nota ' . $invoiceToProcess->number . ' gaf de volgende foutmelding: ' . $response;
+            $this->logGeneral($invoiceToProcess, $message, true, false);
+            array_push($this->messages, $message);
+        }
+
+    }
+
+    public function createSalesTransaction(Invoice $invoiceToProcess) {
         // connection van hier kunnen we ook gebruiken in TwinfieldcustomerHelper
         $twinfieldCustomerHelper = new TwinfieldCustomerHelper($this->administration, $this->connection);
-        $twinfieldNumbers = $invoice->order->contact->twinfieldNumbers;
+        $twinfieldNumbers = $invoiceToProcess->order->contact->twinfieldNumbers;
         $twinfieldNumber  = $twinfieldNumbers->where('administration_id', '=', $this->administration->id)->first();
         $twinfieldCustomer = null;
         if($twinfieldNumber && $twinfieldNumber->twinfield_number)
         {
-            $twinfieldCustomer = $twinfieldCustomerHelper->getTwinfieldCustomerByCode($twinfieldNumber->twinfield_number, $invoice->order->contact);
+            $twinfieldCustomer = $twinfieldCustomerHelper->getTwinfieldCustomerByCode($twinfieldNumber->twinfield_number, $invoiceToProcess->order->contact);
         }
         if(!$twinfieldCustomer)
         {
-            $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoice->order->contact);
-            $twinfieldCustomerHelper->updateCustomer($invoice->order->contact);
+            $twinfieldCustomer = $twinfieldCustomerHelper->createCustomer($invoiceToProcess->order->contact);
+            $twinfieldCustomerHelper->updateCustomer($invoiceToProcess->order->contact);
         }
 
         //Invoice totaal bedrag incl. BTW
         //Destiny FINAL indien 0 invoice, anders TEMPORARY
-        $totaalBedragIncl = new Money((round($invoice->getTotalInclVatInclReductionAttribute() * 100, 0) ), $this->currency );
-        $isNullInvoice = $invoice->getTotalInclVatInclReductionAttribute() == 0;
+        $totaalBedragIncl = new Money((round($invoiceToProcess->getTotalInclVatInclReductionAttribute() * 100, 0) ), $this->currency );
+        $isNullInvoice = $invoiceToProcess->getTotalInclVatInclReductionAttribute() == 0;
         $invoiceDestiny = $isNullInvoice ? Destiny::FINAL() : Destiny::TEMPORARY();
 
         //Invoice datum
-        $dateInvoice = Carbon::parse($invoice->date_sent);
+        $dateInvoice = Carbon::parse($invoiceToProcess->date_sent);
 
         //Due datum bepalen
-        if ($invoice->payment_type_id === 'transfer') {
-            if ( $invoice->days_to_expire && $invoice->days_to_expire > 0 ){
-                $daysToAdd2 = new \DateInterval('P' . $invoice->days_to_expire . 'D');
-                $dueDateInvoice2 = new \DateTime($invoice->date_sent); ;
+        if ($invoiceToProcess->payment_type_id === 'transfer') {
+            if ( $invoiceToProcess->days_to_expire && $invoiceToProcess->days_to_expire > 0 ){
+                $daysToAdd2 = new \DateInterval('P' . $invoiceToProcess->days_to_expire . 'D');
+                $dueDateInvoice2 = new \DateTime($invoiceToProcess->date_sent); ;
                 $dueDateInvoice2->add( $daysToAdd2);
 
-                $dueDateInvoice = Carbon::parse($invoice->date_sent)->addDay($invoice->days_to_expire);
+                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDay($invoiceToProcess->days_to_expire);
             }else {
-                $datePaymentDue = $invoice->getDatePaymentDueAttribute();
+                $datePaymentDue = $invoiceToProcess->getDatePaymentDueAttribute();
                 if ($dueDateInvoice = 0) {
-                    $dueDateInvoice = Carbon::parse($invoice->date_sent);
+                    $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent);
                 } else {
                     $dueDateInvoice = Carbon::parse($datePaymentDue);
                 }
             }
         }else{
-            if ($invoice->payment_type_id === 'collection' && $invoice->date_collection) {
-                $dueDateInvoice = Carbon::parse($invoice->date_collection);
+            if ($invoiceToProcess->payment_type_id === 'collection' && $invoiceToProcess->date_collection) {
+                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_collection);
             }
         }
 
@@ -208,7 +240,7 @@ class TwinfieldSalesTransactionHelper
             ->setCurrency($this->currency)
             ->setDate($dateInvoice)
             ->setPeriod($dateInvoice->format("Y/m"))
-            ->setInvoiceNumber($invoice->number)
+            ->setInvoiceNumber($invoiceToProcess->number)
             ->setPaymentReference("")
             ->setOffice($this->office)
             ->setDueDate($dueDateInvoice);
@@ -223,13 +255,13 @@ class TwinfieldSalesTransactionHelper
             ->setDim2($twinfieldCustomer->getCode())
             ->setValue($totaalBedragIncl)
             ->setDebitCredit($totaalBedragIncl->getAmount()<0 ? DebitCredit::CREDIT() : DebitCredit::DEBIT())
-            ->setDescription(substr($this->translateToValidCharacterSet($invoice->subject), 0, 40));
+            ->setDescription(substr($this->translateToValidCharacterSet($invoiceToProcess->subject), 0, 40));
         $twinfieldSalesTransaction->addLine($twinfieldTransactionLineTotal);
 
         //Vanuit invoice products bedragen per product (omzet) / bedragen per btw code alvast doortellen voor VAT regels hierna
         //Salestransaction - Detail lines maken (omzet regels)
         $vatData = new Collection();
-        foreach($invoice->invoiceProducts as $invoiceProduct){
+        foreach($invoiceToProcess->invoiceProducts as $invoiceProduct){
             $vatCode   = $invoiceProduct->product->ledger->vatCode;
             $vatCodeTwinfield   = "";
             if($vatCode && $vatCode->id>0)
@@ -239,7 +271,7 @@ class TwinfieldSalesTransactionHelper
             }
             $ledgerCode = $invoiceProduct->twinfield_ledger_code ? $invoiceProduct->twinfield_ledger_code :  "";
 
-            $order = $invoice->order;
+            $order = $invoiceToProcess->order;
             $orderProduct = $order->orderProducts->where('product_id', '=', $invoiceProduct->product_id)->first();
             $costCenterCode = '';
             if($orderProduct && $orderProduct->costCenter)
@@ -263,8 +295,8 @@ class TwinfieldSalesTransactionHelper
 
             $exclAmount = round($invoiceProduct->getAmountInclReductionExclVat()*100, 0);
             $invoiceDetailExcl = new Money($exclAmount, $this->currency );
-//            $descriptionDetail = $twinfieldCustomer ? ($twinfieldCustomer->getCode() . " " . $twinfieldCustomer->getName()) : ($invoice->contact->number . " " . $invoice->contact->full_name);
-            $descriptionDetail = $invoice->order->contact->number . " " . $this->translateToValidCharacterSet($invoice->order->contact->full_name);
+//            $descriptionDetail = $twinfieldCustomer ? ($twinfieldCustomer->getCode() . " " . $twinfieldCustomer->getName()) : ($invoiceToProcess->contact->number . " " . $invoiceToProcess->contact->full_name);
+            $descriptionDetail = $invoiceToProcess->order->contact->number . " " . $this->translateToValidCharacterSet($invoiceToProcess->order->contact->full_name);
 
             $twinfieldTransactionLineDetail = new SalesTransactionLine();
             $idTeller++;
@@ -273,7 +305,7 @@ class TwinfieldSalesTransactionHelper
                 ->setLineType(LineType::DETAIL())
                 ->setDim1($ledgerCode)
                 ->setDim2($costCenterCode)
-                ->setDim3($invoice->order->project_number)
+                ->setDim3($invoiceToProcess->order->project_number)
                 ->setDescription(substr($descriptionDetail, 0, 40))
                 ->setVatValue($invoiceVatAmount)
                 ->setValue($invoiceDetailExcl)
@@ -302,77 +334,45 @@ class TwinfieldSalesTransactionHelper
             $twinfieldSalesTransaction->addLine($twinfieldTransactionLineVat);
         }
 
-        return $twinfieldSalesTransaction;
-    }
-
-    private function sendBatchTransactions() {
+        //Salestransaction - versturen naar Twinfield
         try {
-            foreach ($this->salesTransactionsBatch as $transaction) {
-                $response = $this->transactionApiConnector->send($transaction);
-                $invoice = Invoice::find($transaction->getInvoiceNumber()); // Assuming getInvoiceNumber returns the ID
-
-                if ($invoice->status_id === 'sent') {
-                    if ($transaction->getTotalInclVatInclReductionAttribute() == 0) {
-                        $invoice->status_id = 'paid';
-                    } else {
-                        $invoice->status_id = 'exported';
-                    }
+            $response = $this->transactionApiConnector->send($twinfieldSalesTransaction);
+            if($invoiceToProcess->status_id === 'sent'){
+                // 0 invoice meteen op betaald zetten
+                if($isNullInvoice){
+                    $invoiceToProcess->status_id = 'paid';
+                }else{
+                    $invoiceToProcess->status_id = 'exported';
                 }
-                $invoice->twinfield_number = $response->getNumber();
-                $invoice->save();
-
-                $message = 'Transactie nota ' . $invoice->number . ' succesvol gesynchroniseerd.';
-                TwinfieldLog::create([
-                    'invoice_id' => $invoice->id,
-                    'contact_id' => null,
-                    'message_text' => substr($message, 0, 256),
-                    'message_type' => 'invoice',
-                    'user_id' => Auth::user()->id,
-                    'is_error' => false,
-                ]);
-                array_push($this->messages, $message);
             }
+            $invoiceToProcess->twinfield_number = $response->getNumber();
+            $invoiceToProcess->save();
+            return true;
         } catch (PhpTwinfieldException $exceptionTwinfield) {
-            $this->handleBatchError($exceptionTwinfield->getMessage());
+            $message = 'Er is een twinfield fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+            return $this->logGeneral($invoiceToProcess, $message, true, true);
         } catch (\Exception $e) {
-            $this->handleBatchError($e->getMessage());
-        } finally {
-// Clear the batch
-            $this->salesTransactionsBatch = [];
+            $message = 'Er is een fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Foutmelding: ' . $e->getMessage();
+            return $this->logGeneral($invoiceToProcess, $message, true, true);
         }
     }
 
-    private function handleBatchError($message) {
-        Log::info($message);
-        foreach ($this->salesTransactionsBatch as $transaction) {
-            $invoice = Invoice::find($transaction->getInvoiceNumber());
-            TwinfieldLog::create([
-                'invoice_id' => $invoice->id,
-                'contact_id' => null,
-                'message_text' => substr($message, 0, 256),
-                'message_type' => 'invoice',
-                'user_id' => Auth::user()->id,
-                'is_error' => true,
-            ]);
-            array_push($this->messages, 'Synchronisatie transactie nota ' . $invoice->number . ' gaf de volgende foutmelding: ' . $message);
-        }
-    }
-
-    public function changePaymentStatus(Invoice $invoice)
+    public function changePaymentStatus(Invoice $invoiceToProcess)
     {
         $transaction = new ChangPayStatusTransaction();
         $transaction->setOffice($this->office)
             ->setCode($this->dagboekCode)
-            ->setNumber($invoice->twinfield_number)
+            ->setNumber($invoiceToProcess->twinfield_number)
             ->setPayStatus('N');
 
         try {
             $this->changPayStatusTransactionApiConnector->send($transaction);
-            $this->messages[] = "Payment status updated successfully for Invoice {$invoice->number}.";
+            $this->messages[] = "Payment status updated successfully for Invoice {$invoiceToProcess->number}.";
 
-            $message = 'Transactie nota ' . $invoice->number . ' geblokkeerd voor betaalrun.';
+            $message = 'Transactie nota ' . $invoiceToProcess->number . ' geblokkeerd voor betaalrun.';
+            return $this->logGeneral($invoiceToProcess, $message, false, false);
             TwinfieldLog::create([
-                'invoice_id' => $invoice->id,
+                'invoice_id' => $invoiceToProcess->id,
                 'contact_id' => null,
                 'message_text' => substr($message, 0, 256),
                 'message_type' => 'invoice',
@@ -382,32 +382,67 @@ class TwinfieldSalesTransactionHelper
             array_push($this->messages, $message);
 
         } catch (PhpTwinfieldException $exceptionTwinfield) {
-            $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-            Log::info($message);
-            TwinfieldLog::create([
-                'invoice_id' => $invoice->id,
-                'contact_id' => null,
-                'message_text' => substr($message, 0, 256),
-                'message_type' => 'invoice',
-                'user_id' => Auth::user()->id,
-                'is_error' => true,
-            ]);
-            array_push($this->messages, $message);
+            $message = 'Er is een twinfield fout opgetreden bij Blokkeren voor betaalrun, nota:  ' . $invoiceToProcess->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
+            return $this->logGeneral($invoiceToProcess, $message, true, true);
         } catch (\Exception $e) {
-            $message = 'Blokkeren voor betaalrun (nota ' . $invoice->number . ') gaf de volgende foutmelding: ' . $e->getMessage();
-            Log::info($message);
-            TwinfieldLog::create([
-                'invoice_id' => $invoice->id,
-                'contact_id' => null,
-                'message_text' => substr($message, 0, 256),
-                'message_type' => 'invoice',
-                'user_id' => Auth::user()->id,
-                'is_error' => true,
-            ]);
-            array_push($this->messages, $message);
+            $message = 'Er is een fout opgetreden bij Blokkeren voor betaalrun, nota: ' . $invoiceToProcess->number . '. Foutmelding: ' . $e->getMessage();
+            return $this->logGeneral($invoiceToProcess, $message, true, true);
         }
     }
 
+    private function logStartSync()
+    {
+        $message = 'Start synchroniseren nota\'s (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
+            . $this->administration->twinfield_organization_code
+            . ', code : ' . $this->administration->twinfield_office_code
+            . ', client Id: ' . $this->administration->twinfield_client_id
+            . '.';
+
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'invoice',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
+    private function logBatchSync($message)
+    {
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'invoice',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
+    private function logEndSync($message)
+    {
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'invoice',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
+    private function logGeneral($invoiceToProcess, $message, $isError, $laravelInfo)
+    {
+        if ($laravelInfo){
+            Log::info($message);
+        }
+        TwinfieldLog::create([
+            'invoice_id' => $invoiceToProcess->id,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'invoice',
+            'user_id' => Auth::user()->id,
+            'is_error' => $isError,
+        ]);
+    }
     protected function translateToValidCharacterSet($field){
 
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');

@@ -72,24 +72,6 @@ class TwinfieldInvoicePaymentHelper
         }
     }
 
-    private function logStartSync()
-    {
-        $message = 'Start synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
-            . $this->administration->twinfield_organization_code
-            . ', code : ' . $this->administration->twinfield_office_code
-            . ', client Id: ' . $this->administration->twinfield_client_id
-            . '.';
-
-        TwinfieldLog::create([
-            'invoice_id' => null,
-            'contact_id' => null,
-            'message_text' => substr($message, 0, 256),
-            'message_type' => 'payment',
-            'user_id' => Auth::user()->id,
-            'is_error' => false,
-        ]);
-    }
-
     public function processTwinfieldInvoicePayment()
     {
         if (!$this->administration->uses_twinfield) {
@@ -147,17 +129,6 @@ class TwinfieldInvoicePaymentHelper
             ->get();
     }
 
-    private function logBatchSync($message)
-    {
-        TwinfieldLog::create([
-            'invoice_id' => null,
-            'contact_id' => null,
-            'message_text' => substr($message, 0, 256),
-            'message_type' => 'payment',
-            'user_id' => Auth::user()->id,
-            'is_error' => false,
-        ]);
-    }
     private function processInvoiceBatch(array $invoiceBatch, $browseDataApiConnector)
     {
         foreach ($invoiceBatch as $invoiceToBeChecked) {
@@ -173,7 +144,7 @@ class TwinfieldInvoicePaymentHelper
             return;
         }
 
-        $columnsSalesTransaction = $this->getSalesTransactionColumns($invoiceToBeChecked);
+        $columnsSalesTransaction = $this->getSalesTransaction($invoiceToBeChecked);
         try {
             $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsSalesTransaction);
             $this->countRequestsgetBrowserData++;
@@ -192,52 +163,61 @@ class TwinfieldInvoicePaymentHelper
         }
     }
 
-    private function logMissingTwinfieldNumber($invoiceToBeChecked, $message)
-    {
-        Log::info($message);
+    private function getSalesTransaction($invoiceToBeChecked){
 
-        TwinfieldLog::create([
-            'invoice_id' => $invoiceToBeChecked['id'],
-            'contact_id' => null,
-            'message_text' => substr($message, 0, 256),
-            'message_type' => 'payment',
-            'user_id' => Auth::user()->id,
-            'is_error' => true,
-        ]);
-    }
-
-    private function getSalesTransactionColumns($invoiceToBeChecked)
-    {
         $columns = [];
 
-        $columns[] = $this->createColumn('fin.trs.head.office', 'Office code', $this->office, BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.head.code', 'Dagboek', 'VRK', BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.line.invnumber', 'Notanr.', $invoiceToBeChecked['number'], BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.line.matchstatus', 'Betaalstatus');
-        $columns[] = $this->createColumn('fin.trs.line.matchnumber', 'Betaalnr.');
-        $columns[] = $this->createColumn('fin.trs.line.basevaluesigned', 'Bedrag in administratie valuta');
-        $columns[] = $this->createColumn('fin.trs.line.openbasevaluesigned', 'Openstaand bedrag');
+        // [0] - Filter Office (code)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.office')
+            ->setLabel('Office code')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $this->office );
+        // [1] - Dagboek (VRK)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.code')
+            ->setLabel('Dagboek')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom("VRK");
+        // [2] - Notanr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.invnumber')
+            ->setLabel('Notanr.')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $invoiceToBeChecked['number']);
+        // [3] - Matchstatus
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchstatus')
+            ->setLabel('Betaalstatus')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [4] - Matchnumber
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchnumber')
+            ->setLabel('Betaalnr.')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [5] - Notabedrag in EUR
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.basevaluesigned')
+            ->setLabel('Bedrag in administratie valuta')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [6] - Openstaand bedrag
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.openbasevaluesigned')
+            ->setLabel('Openstaand bedrag')
+            ->setVisible(true)
+            ->setAsk(false);
 
         return $columns;
-    }
 
-    private function createColumn($field, $label, $value = null, $operator = null, $ask = false)
-    {
-        $column = (new BrowseColumn())
-            ->setField($field)
-            ->setLabel($label)
-            ->setVisible(true)
-            ->setAsk($ask);
-
-        if ($operator) {
-            $column->setOperator($operator);
-        }
-
-        if ($value) {
-            $column->setFrom($value);
-        }
-
-        return $column;
     }
 
     private function getPaidData($twinfieldInvoiceTransactions)
@@ -270,7 +250,7 @@ class TwinfieldInvoicePaymentHelper
 
     private function processPaidData($invoiceToBeChecked, $browseDataApiConnector, $paidData)
     {
-        $columnsPaidInfo = $this->getPaidInfoColumns($invoiceToBeChecked);
+        $columnsPaidInfo = $this->getPaidInfo($invoiceToBeChecked);
         try {
             $twinfieldInvoiceTransactions = $browseDataApiConnector->getBrowseData('100', $columnsPaidInfo);
             $this->countRequestsgetBrowserData++;
@@ -315,17 +295,68 @@ class TwinfieldInvoicePaymentHelper
         }
     }
 
-    private function getPaidInfoColumns($invoiceToBeChecked)
-    {
+    private function getPaidInfo($invoiceToBeChecked){
+
         $columns = [];
 
-        $columns[] = $this->createColumn('fin.trs.head.office', 'Office code', $this->office, BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.head.code', 'Dagboek', 'BANK', BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.line.matchnumber', 'Match number', $invoiceToBeChecked['twinfield_number'], BrowseColumnOperator::EQUAL(), true);
-        $columns[] = $this->createColumn('fin.trs.line.matchstatus', 'Betaalstatus');
-        $columns[] = $this->createColumn('fin.trs.line.basevaluesigned', 'Bedrag in administratie valuta');
+        // [0] - Filter Office (code)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.office')
+            ->setLabel('Office code')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $this->office );
+        // [1] - Dagboek (alles)
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.code')
+            ->setLabel('Dagboek')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [2] - Notanr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.invnumber')
+            ->setLabel('Notanr.')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::EQUAL())
+            ->setFrom( $invoiceToBeChecked['number']);
+        // [3] - Notabedrag in EUR
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.basevaluesigned')
+            ->setLabel('Bedrag in administratie valuta')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [4] - Betaaldatum
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchdate')
+            ->setLabel('Betaaldatum')
+            ->setVisible(true)
+            ->setAsk(true)
+            ->setOperator(BrowseColumnOperator::BETWEEN())
+            ->setFrom('19800101')
+            ->setTo('20391201');
+        // [5] - Twinfield nr.
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.head.number')
+            ->setLabel('Boekst.nr.')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [6] - Matchnumber
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.matchnumber')
+            ->setLabel('Betaalnr.')
+            ->setVisible(true)
+            ->setAsk(false);
+        // [7] - Wijzigingsdatum
+        $columns[] = (new BrowseColumn())
+            ->setField('fin.trs.line.modified')
+            ->setLabel('Wijzigingsdatum')
+            ->setVisible(true)
+            ->setAsk(false);
 
         return $columns;
+
     }
 
     private function setPaymentsInProgress($invoiceToBeChecked)
@@ -414,6 +445,48 @@ class TwinfieldInvoicePaymentHelper
             }
         }
 
+    }
+
+    private function logStartSync()
+    {
+        $message = 'Start synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
+            . $this->administration->twinfield_organization_code
+            . ', code : ' . $this->administration->twinfield_office_code
+            . ', client Id: ' . $this->administration->twinfield_client_id
+            . '.';
+
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
+    private function logBatchSync($message)
+    {
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
+    private function logMissingTwinfieldNumber($invoiceToBeChecked, $message)
+    {
+        Log::info($message);
+
+        TwinfieldLog::create([
+            'invoice_id' => $invoiceToBeChecked['id'],
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => true,
+        ]);
     }
 
     private function logPaymentSuccess($invoiceToBeChecked, $message)

@@ -28,7 +28,7 @@ class TwinfieldInvoicePaymentHelper
     private $invoiceApiConnector;
     private $countRequestsgetBrowserData = 0;
     public $messages;
-    private const BATCH_SIZE = 50; // Set the batch size for processing invoices
+    private const BATCH_SIZE = 100; // Set the batch size for processing invoices
 
     public function __construct(Administration $administration, $fromInvoiceDateSent = null)
     {
@@ -111,8 +111,17 @@ class TwinfieldInvoicePaymentHelper
 
         $invoiceBatches = array_chunk($invoicesToBeChecked->toArray(), self::BATCH_SIZE);
 
+        $chunkNumber = 0;
+        $numberOfChunks = ceil($invoicesToBeChecked->count() / self::BATCH_SIZE);
+
         foreach ($invoiceBatches as $batch) {
+            $chunkNumber = $chunkNumber + 1;
+            $message = 'Start batch voor betalingen (' . $chunkNumber . '/' . $numberOfChunks . ') voor in totaal ' . $invoicesToBeChecked->count() . ' nota\'s (' . self::BATCH_SIZE . ' per batch)';
+            $this->logBatchSync($message);
+
             $this->processInvoiceBatch($batch, $browseDataApiConnector);
+            // hier eventueel delay inbouwen?
+
         }
         $message = 'Einde synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
             . $this->administration->twinfield_organization_code
@@ -138,6 +147,17 @@ class TwinfieldInvoicePaymentHelper
             ->get();
     }
 
+    private function logBatchSync($message)
+    {
+        TwinfieldLog::create([
+            'invoice_id' => null,
+            'contact_id' => null,
+            'message_text' => substr($message, 0, 256),
+            'message_type' => 'payment',
+            'user_id' => Auth::user()->id,
+            'is_error' => false,
+        ]);
+    }
     private function processInvoiceBatch(array $invoiceBatch, $browseDataApiConnector)
     {
         foreach ($invoiceBatch as $invoiceToBeChecked) {

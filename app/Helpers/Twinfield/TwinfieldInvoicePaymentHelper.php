@@ -23,6 +23,7 @@ class TwinfieldInvoicePaymentHelper
     private $connection;
     private $administration;
     private $fromInvoiceDateSent;
+    private $forInvoiceId;
     private $office;
     private $redirectUri;
     private $invoiceApiConnector;
@@ -30,10 +31,11 @@ class TwinfieldInvoicePaymentHelper
     public $messages;
     private const BATCH_SIZE = 100; // Set the batch size for processing invoices
 
-    public function __construct(Administration $administration, $fromInvoiceDateSent = null)
+    public function __construct(Administration $administration, $fromInvoiceDateSent = null, $forInvoiceId = null)
     {
         $this->administration = $administration;
-        $this->fromInvoiceDateSent = $this->determineInvoiceDateSent($fromInvoiceDateSent);
+        $this->forInvoiceId = $forInvoiceId;
+        $this->fromInvoiceDateSent = $forInvoiceId == null ? $this->determineInvoiceDateSent($fromInvoiceDateSent) : null;
         $this->office = Office::fromCode($administration->twinfield_office_code);
         $this->redirectUri = \Config::get('app.url_api') . '/twinfield';
         $this->initializeConnection();
@@ -44,15 +46,23 @@ class TwinfieldInvoicePaymentHelper
 
     private function determineInvoiceDateSent($fromInvoiceDateSent)
     {
+        // Get the date exactly one year ago from today
+        $oneYearAgo = now()->subYear();
+
+        // If $fromInvoiceDateSent is provided, ensure it's not older than 1 year
         if ($fromInvoiceDateSent) {
-            return $fromInvoiceDateSent;
+            return $fromInvoiceDateSent < $oneYearAgo ? $oneYearAgo : $fromInvoiceDateSent;
         }
 
+        // Use the administration's sync date if it exists, or default to one year ago
         if ($this->administration->date_sync_twinfield_payments) {
-            return $this->administration->date_sync_twinfield_payments;
+            return $this->administration->date_sync_twinfield_payments < $oneYearAgo
+                ? $oneYearAgo
+                : $this->administration->date_sync_twinfield_payments;
         }
 
-        return '2019-01-01';
+        // Default to one year ago if no other condition applies
+        return $oneYearAgo;
     }
 
     private function initializeConnection()
@@ -122,6 +132,14 @@ class TwinfieldInvoicePaymentHelper
 
     private function getInvoicesToBeChecked()
     {
+        if ($this->forInvoiceId) {
+            return $this->administration->invoices()
+                ->whereIn('status_id', ['exported', 'paid'])
+                ->whereNotNull('twinfield_number')
+                ->where('id', $this->forInvoiceId)
+                ->get();
+        }
+
         return $this->administration->invoices()
             ->whereIn('status_id', ['exported', 'paid'])
             ->whereNotNull('twinfield_number')

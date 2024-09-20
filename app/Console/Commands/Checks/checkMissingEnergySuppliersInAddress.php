@@ -54,7 +54,7 @@ class checkMissingEnergySuppliersInAddress extends Command
 
         Log::info($this->description . ($doRecover ? ' MET HERSTEL!' : '') );
 
-        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+        $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
         $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
 
         $missingEnergySuppliersInAddressData = [];

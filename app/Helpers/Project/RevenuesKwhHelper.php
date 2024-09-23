@@ -289,7 +289,7 @@ class RevenuesKwhHelper
             })->first();
         // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
         if(!$addressEnergySupplier) {
-            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
             $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
             $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
             $addressEnergySupplierData = [
@@ -428,7 +428,7 @@ class RevenuesKwhHelper
         if(!in_array($distributionPartsKwh->status, ['processed'])){
             // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
             if(!$addressEnergySupplier){
-                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+                $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
                 $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
                 $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
 

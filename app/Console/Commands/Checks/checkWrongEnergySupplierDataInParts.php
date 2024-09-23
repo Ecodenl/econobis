@@ -54,7 +54,7 @@ class checkWrongEnergySupplierDataInParts extends Command
         DB::table('_wrong_energy_supplier_data_in_parts')
             ->delete();
 
-        $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+        $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
 
         $revenuesKwh = RevenuesKwh::all();
         foreach($revenuesKwh as $revenueKwh) {

@@ -593,7 +593,7 @@ class ExternalWebformController extends Controller
                 'woondossier_energielabel_id' => 'energy_label_id',
                 'woondossier_aantal_bouwlagen' => 'floors',
                 'woondossier_status_energielabel_id' => 'energy_label_status_id',
-                'woondossier_momument' => 'is_monument',
+                'woondossier_monument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
                 'woondossier_maatregelen_antwoorden' => 'measure_answers',

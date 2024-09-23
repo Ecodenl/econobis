@@ -67,7 +67,7 @@ class TwinfieldSalesTransactionHelper
         $this->logStartSync();
     }
 
-    private function determineInvoiceDateSent($fromInvoiceDateSent)
+    private function determineInvoiceDateSent()
     {
         if($this->administration->date_sync_twinfield_invoices){
             return $this->administration->date_sync_twinfield_invoices;
@@ -177,9 +177,9 @@ class TwinfieldSalesTransactionHelper
         else{
             //soms zitten in de error message van Twinfield // voor de melding.
             $response = str_replace('//', '', $response);
-            $message = 'Synchronisatie transactie nota ' . $invoiceToProcess->number . ' gaf de volgende foutmelding: ' . $response;
-            $this->logGeneral($invoiceToProcess, $message, true, false);
-            array_push($this->messages, $message);
+//            $message = 'Synchronisatie transactie nota ' . $invoiceToProcess->number . ' gaf de volgende foutmelding: ' . $response;
+//            $this->logGeneral($invoiceToProcess, $message, true, false);
+            array_push($this->messages, $response);
         }
 
     }
@@ -350,10 +350,12 @@ class TwinfieldSalesTransactionHelper
             return true;
         } catch (PhpTwinfieldException $exceptionTwinfield) {
             $message = 'Er is een twinfield fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-            return $this->logGeneral($invoiceToProcess, $message, true, true);
+            $this->logGeneral($invoiceToProcess, $message, true, true);
+            return $message;
         } catch (\Exception $e) {
             $message = 'Er is een fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Foutmelding: ' . $e->getMessage();
-            return $this->logGeneral($invoiceToProcess, $message, true, true);
+            $this->logGeneral($invoiceToProcess, $message, true, true);
+            return $message;
         }
     }
 
@@ -383,10 +385,10 @@ class TwinfieldSalesTransactionHelper
 
         } catch (PhpTwinfieldException $exceptionTwinfield) {
             $message = 'Er is een twinfield fout opgetreden bij Blokkeren voor betaalrun, nota:  ' . $invoiceToProcess->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
-            return $this->logGeneral($invoiceToProcess, $message, true, true);
+            $this->logGeneral($invoiceToProcess, $message, true, true);
         } catch (\Exception $e) {
             $message = 'Er is een fout opgetreden bij Blokkeren voor betaalrun, nota: ' . $invoiceToProcess->number . '. Foutmelding: ' . $e->getMessage();
-            return $this->logGeneral($invoiceToProcess, $message, true, true);
+            $this->logGeneral($invoiceToProcess, $message, true, true);
         }
     }
 

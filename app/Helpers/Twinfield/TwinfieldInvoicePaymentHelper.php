@@ -24,6 +24,7 @@ class TwinfieldInvoicePaymentHelper
     private $administration;
     private $fromInvoiceDateSent;
     private $forInvoiceId;
+    private $forInvoice;
     private $office;
     private $redirectUri;
     private $invoiceApiConnector;
@@ -41,7 +42,22 @@ class TwinfieldInvoicePaymentHelper
         $this->initializeConnection();
         $this->invoiceApiConnector = new InvoiceApiConnector($this->connection);
         $this->messages = [];
-        $this->logStartSync();
+        if( $forInvoiceId != null) {
+            $this->forInvoice = Invoice::find($forInvoiceId);
+            $message = 'Start synchroniseren betalingen (nota ' . $this->forInvoice->number . '), organisatie: '
+                . $this->administration->twinfield_organization_code
+                . ', code : ' . $this->administration->twinfield_office_code
+                . ', client Id: ' . $this->administration->twinfield_client_id
+                . '.';
+
+        } else {
+            $message = 'Start synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
+                . $this->administration->twinfield_organization_code
+                . ', code : ' . $this->administration->twinfield_office_code
+                . ', client Id: ' . $this->administration->twinfield_client_id
+                . '.';
+        }
+        $this->logStartSync($message);
     }
 
     private function determineInvoiceDateSent($fromInvoiceDateSent)
@@ -55,11 +71,12 @@ class TwinfieldInvoicePaymentHelper
         }
 
         // Use the administration's sync date if it exists, or default to one year ago
-        if ($this->administration->date_sync_twinfield_payments) {
-            return $this->administration->date_sync_twinfield_payments < $oneYearAgo
-                ? $oneYearAgo
-                : $this->administration->date_sync_twinfield_payments;
-        }
+//        todo WM: opschonen
+//        if ($this->administration->date_sync_twinfield_payments) {
+//            return $this->administration->date_sync_twinfield_payments < $oneYearAgo
+//                ? $oneYearAgo
+//                : $this->administration->date_sync_twinfield_payments;
+//        }
 
         // Default to one year ago if no other condition applies
         return $oneYearAgo;
@@ -115,12 +132,22 @@ class TwinfieldInvoicePaymentHelper
             // hier eventueel delay inbouwen?
 
         }
-        $message = 'Einde synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
-            . $this->administration->twinfield_organization_code
-            . ', code : ' . $this->administration->twinfield_office_code
-            . ', client Id: ' . $this->administration->twinfield_client_id
-            . '. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData
-            . '.';
+        if( $this->forInvoice != null) {
+            $message = 'Einde synchroniseren betalingen (nota ' . $this->forInvoice->number . '), organisatie: '
+                . $this->administration->twinfield_organization_code
+                . ', code : ' . $this->administration->twinfield_office_code
+                . ', client Id: ' . $this->administration->twinfield_client_id
+                . '. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData
+                . '.';
+
+        } else {
+            $message = 'Einde synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
+                . $this->administration->twinfield_organization_code
+                . ', code : ' . $this->administration->twinfield_office_code
+                . ', client Id: ' . $this->administration->twinfield_client_id
+                . '. Aantal verzoeken naar Twinfield: ' . $this->countRequestsgetBrowserData
+                . '.';
+        }
         $this->logEndSync($message);
 
         if (count($this->messages) == 0) {
@@ -465,14 +492,8 @@ class TwinfieldInvoicePaymentHelper
 
     }
 
-    private function logStartSync()
+    private function logStartSync($message)
     {
-        $message = 'Start synchroniseren betalingen (vanaf ' . Carbon::parse($this->fromInvoiceDateSent)->format('d-m-Y') . '), organisatie: '
-            . $this->administration->twinfield_organization_code
-            . ', code : ' . $this->administration->twinfield_office_code
-            . ', client Id: ' . $this->administration->twinfield_client_id
-            . '.';
-
         TwinfieldLog::create([
             'invoice_id' => null,
             'contact_id' => null,

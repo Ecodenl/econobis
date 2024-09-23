@@ -491,8 +491,8 @@ class TwinfieldCustomerHelper
             Log::info($message);
         }
         TwinfieldLog::create([
-            'invoice_id' => $contact->id,
-            'contact_id' => null,
+            'invoice_id' => null,
+            'contact_id' => $contact->id,
             'message_text' => substr($message, 0, 256),
             'message_type' => 'contact',
             'user_id' => Auth::user()->id,

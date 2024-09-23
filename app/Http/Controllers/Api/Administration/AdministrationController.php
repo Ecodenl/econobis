@@ -384,7 +384,7 @@ class AdministrationController extends ApiController
         $inputData = $requestInput
             ->string('fromDateSent')->onEmpty(null)->next()
             ->get();
-        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent']);
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent'], null);
         return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 

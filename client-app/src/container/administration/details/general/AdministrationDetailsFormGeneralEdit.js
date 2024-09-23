@@ -1030,20 +1030,22 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                     />
                                 </div>
                                 <div className="row">
-                                    <InputDate
-                                        label={'Synchroniseer betalingen vanaf'}
-                                        name={'dateSyncTwinfieldPayments'}
-                                        value={dateSyncTwinfieldPayments}
-                                        onChangeAction={this.handleInputChangeDate}
-                                        disabledBefore={disableBeforeDateSyncTwinfieldPayments}
-                                        disabledAfter={oldestUnpaidInvoiceDate}
-                                        readOnly={usesTwinfield == false || pendingInvoicesPresent}
-                                        error={this.state.errors.dateSyncTwinfieldPayments}
-                                        size={'col-sm-5'}
-                                        textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
-                                            basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
-                                            niet betaalde nota.`}
-                                    />
+                                    {/*todo WM: opschonen*/}
+                                    {/*<InputDate*/}
+                                    {/*    label={'Synchroniseer betalingen vanaf'}*/}
+                                    {/*    name={'dateSyncTwinfieldPayments'}*/}
+                                    {/*    value={dateSyncTwinfieldPayments}*/}
+                                    {/*    onChangeAction={this.handleInputChangeDate}*/}
+                                    {/*    disabledBefore={disableBeforeDateSyncTwinfieldPayments}*/}
+                                    {/*    disabledAfter={oldestUnpaidInvoiceDate}*/}
+                                    {/*    readOnly={usesTwinfield == false || pendingInvoicesPresent}*/}
+                                    {/*    error={this.state.errors.dateSyncTwinfieldPayments}*/}
+                                    {/*    size={'col-sm-5'}*/}
+                                    {/*    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op*/}
+                                    {/*        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog*/}
+                                    {/*        niet betaalde nota.`}*/}
+                                    {/*/>*/}
+                                    <div className={'col-sm-6 form-group'} />
                                     <ViewText
                                         className={'col-sm-6 form-group'}
                                         label={'Oudste nota datum met status niet betaald'}

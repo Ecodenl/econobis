@@ -49,6 +49,7 @@ class FullInvoice extends JsonResource
                 'statusId' => $this->status_id,
                 'status' => FullEnumWithIdAndName::make($this->getStatus()),
                 'subStatus' => $this->sub_status,
+                'administrationId' => $this->administration->id,
                 'usesTwinfield' => $this->administration->uses_twinfield,
                 'usesMollie' => $this->administration->uses_mollie,
                 'isPaidByMollie' => $this->is_paid_by_mollie,

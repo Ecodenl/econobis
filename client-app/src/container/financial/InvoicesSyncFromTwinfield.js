@@ -36,6 +36,7 @@ class InvoicesSyncFromTwinfield extends Component {
                         label="Synchroniseer betalingen vanaf"
                         name="fromDateSent"
                         value={fromDateSent}
+                        disabledBefore={fromDateSent}
                         onChangeAction={this.props.handleInputChangeDate}
                         required={'required'}
                         error={this.props.errors.fromDateSent}

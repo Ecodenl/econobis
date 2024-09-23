@@ -400,11 +400,11 @@ class InvoiceController extends ApiController
     public function syncOneInvoiceFromTwinfield(RequestInput $requestInput, Invoice $invoice){
 
         $inputData = $requestInput
-            ->integer('administrationId')->onEmpty(null)->next()
+            ->integer('administrationId')->onEmpty(null)->whenMissing(null)->next()
             ->get();
         $administration = Administration::find($inputData['administrationId']);
         if(!$administration){
-            Return "Administratie is niet bekend.";
+            return "Administratie is niet bekend.";
         }
         $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null, $invoice->id);
         return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();

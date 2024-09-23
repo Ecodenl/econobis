@@ -633,6 +633,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
+        Route::post('invoice/{invoice}/sync-one-invoice-from-twinfield', 'Invoice\InvoiceController@syncOneInvoiceFromTwinfield');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
 //        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');

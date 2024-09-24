@@ -38,11 +38,17 @@ class InvoicesListItem extends Component {
             });
         } else if (this.props.dateReminder2) {
             this.setState({
-                reminderText: 'Wilt u de derde herinnering sturen?',
+                reminderText:
+                    this.props.numberOfInvoiceReminders > 2
+                        ? 'Wilt u de derde herinnering sturen?'
+                        : 'Wilt u de aanmaning sturen?',
             });
         } else if (this.props.dateReminder1) {
             this.setState({
-                reminderText: 'Wilt u de tweede herinnering sturen?',
+                reminderText:
+                    this.props.numberOfInvoiceReminders > 1
+                        ? 'Wilt u de tweede herinnering sturen?'
+                        : 'Wilt u de aanmaning sturen?',
             });
         } else {
             this.setState({
@@ -257,7 +263,11 @@ class InvoicesListItem extends Component {
                     (this.props.statusId === 'sent' || this.props.statusId === 'exported') &&
                     !this.props.dateExhortation &&
                     !this.props.isPaidByMollie ? (
-                        <a role="button" onClick={() => this.showSendNotification()} title="Verstuur herinnering">
+                        <a
+                            role="button"
+                            onClick={() => this.showSendNotification()}
+                            title="Verstuur herinnering/aanmaning"
+                        >
                             <Icon className="mybtn-success" size={14} icon={bullhorn} />
                             &nbsp;
                         </a>

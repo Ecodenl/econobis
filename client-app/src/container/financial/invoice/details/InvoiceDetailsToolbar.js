@@ -34,11 +34,17 @@ class InvoiceToolbar extends Component {
                 });
             } else if (nextProps.invoiceDetails.dateReminder2) {
                 this.setState({
-                    reminderText: 'Wilt u de derde herinnering sturen?',
+                    reminderText:
+                        nextProps.invoiceDetails.numberOfInvoiceReminders > 2
+                            ? 'Wilt u de derde herinnering sturen?'
+                            : 'Wilt u de aanmaning sturen?',
                 });
             } else if (nextProps.invoiceDetails.dateReminder1) {
                 this.setState({
-                    reminderText: 'Wilt u de tweede herinnering sturen?',
+                    reminderText:
+                        nextProps.invoiceDetails.numberOfInvoiceReminders > 1
+                            ? 'Wilt u de tweede herinnering sturen?'
+                            : 'Wilt u de aanmaning sturen?',
                 });
             } else {
                 this.setState({
@@ -112,9 +118,7 @@ class InvoiceToolbar extends Component {
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress !== 'Geen e-mail bekend' &&
-                            !compatibleStatus && (
-                                <ButtonIcon iconName={'envelopeO'} onClickAction={this.showSend} />
-                            )}
+                            !compatibleStatus && <ButtonIcon iconName={'envelopeO'} onClickAction={this.showSend} />}
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
                             this.props.invoiceDetails.emailToAddress === 'Geen e-mail bekend' &&

@@ -35,15 +35,14 @@ class InvoiceToolbar extends Component {
             } else if (nextProps.invoiceDetails.dateReminder2) {
                 this.setState({
                     reminderText:
-                        nextProps.invoiceDetails.numberOfInvoiceReminders === 3
+                        nextProps.invoiceDetails.numberOfInvoiceReminders > 2
                             ? 'Wilt u de derde herinnering sturen?'
                             : 'Wilt u de aanmaning sturen?',
                 });
             } else if (nextProps.invoiceDetails.dateReminder1) {
                 this.setState({
                     reminderText:
-                        nextProps.invoiceDetails.numberOfInvoiceReminders === 3 ||
-                        nextProps.invoiceDetails.numberOfInvoiceReminders === 2
+                        nextProps.invoiceDetails.numberOfInvoiceReminders > 1
                             ? 'Wilt u de tweede herinnering sturen?'
                             : 'Wilt u de aanmaning sturen?',
                 });

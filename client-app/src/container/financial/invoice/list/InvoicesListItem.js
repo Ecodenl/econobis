@@ -46,7 +46,7 @@ class InvoicesListItem extends Component {
         } else if (this.props.dateReminder1) {
             this.setState({
                 reminderText:
-                    this.props.numberOfInvoiceReminders === 2 || this.props.numberOfInvoiceReminders === 3
+                    this.props.numberOfInvoiceReminders > 1
                         ? 'Wilt u de tweede herinnering sturen?'
                         : 'Wilt u de aanmaning sturen?',
             });

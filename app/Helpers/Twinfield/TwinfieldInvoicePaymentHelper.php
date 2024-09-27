@@ -168,7 +168,7 @@ class TwinfieldInvoicePaymentHelper
         }
 
         return $this->administration->invoices()
-            ->whereIn('status_id', ['exported', 'paid'])
+            ->whereIn('status_id', ['exported'])
             ->whereNotNull('twinfield_number')
             ->where('date_sent', '>=', $this->fromInvoiceDateSent)
             ->get();

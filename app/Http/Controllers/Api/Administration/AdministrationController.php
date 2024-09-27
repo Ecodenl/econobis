@@ -382,9 +382,9 @@ class AdministrationController extends ApiController
     public function syncSentInvoicesFromTwinfield(RequestInput $requestInput, Administration $administration){
 
         $inputData = $requestInput
-            ->string('fromDateSent')->onEmpty(null)->next()
+            ->string('fromDateSent')->onEmpty(null)->whenMissing(null)->next()
             ->get();
-        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent']);
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent'], null);
         return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 

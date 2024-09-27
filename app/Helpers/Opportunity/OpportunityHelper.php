@@ -149,7 +149,7 @@ class OpportunityHelper
 
                         // zijn er binnen deze kans wel offerteverzoeken
                         if($otherQuotationRequestsCount !== 0){
-                            // is er minstens 1 offertverzoeke met status "Uitgevoerd" en andere niet de status "Offerte nog niet aangevraagd", "Offerte aangevraagd",
+                            // is er minstens 1 offertverzoek met status "Uitgevoerd" en andere niet de status "Offerte nog niet aangevraagd", "Offerte aangevraagd",
                             // "Offerte aanvraag in behandeling", "In overweging bij bewoner" of "Bewoner is akkoord", "Offerteverzoek akkoord" of "Offerteverzoek niet akkoord" hebben.
                             // Nieuwe Kansstatus wordt: Uitgevoerd anders In afwachting.
                             if($otherQuotationRequestsExecutedCount !== 0
@@ -166,7 +166,7 @@ class OpportunityHelper
 
                             }
                         }
-
+                    // Afspraak afgezegd
                     case 'cancelled':
                         //zijn er binnen deze kans ook offerteverzoeken
                         $otherQuotationRequestsCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, null);

@@ -151,7 +151,7 @@ class OpportunityHelper
                         if($otherQuotationRequestsCount !== 0){
                             // is er minstens 1 offertverzoek met status "Uitgevoerd" en andere niet de status "Offerte nog niet aangevraagd", "Offerte aangevraagd",
                             // "Offerte aanvraag in behandeling", "In overweging bij bewoner" of "Bewoner is akkoord", "Offerteverzoek akkoord" of "Offerteverzoek niet akkoord" hebben.
-                            // Nieuwe Kansstatus wordt: Uitgevoerd anders In afwachting.
+                            // Nieuwe Kansstatus wordt: Uitgevoerd.
                             if($otherQuotationRequestsExecutedCount !== 0
                                 && $otherQuotationRequestsNotMadeCount === 0
                                 && $otherQuotationRequestsDefaultCount === 0
@@ -161,9 +161,18 @@ class OpportunityHelper
                                 && $otherQuotationRequestsPmApprovedCount === 0
                                 && $otherQuotationRequestsPmNotApprovedCount === 0)  {
                                 return 'executed';
-                            } else {
+                            }
+                            // Als 1 van de andere status "Offerte nog niet aangevraagd", "Offerte aangevraagd",
+                            // "Offerte aanvraag in behandeling", "In overweging bij bewoner" of "Bewoner is akkoord", "Offerteverzoek akkoord" of "Offerteverzoek niet akkoord" hebben.
+                            // Nieuwe Kansstatus wordt: In afwachting.
+                            if($otherQuotationRequestsNotMadeCount !== 0
+                                || $otherQuotationRequestsDefaultCount !== 0
+                                || $otherQuotationRequestsUnderReviewCount !== 0
+                                || $otherQuotationRequestsUnderReviewOccupantCount !== 0
+                                || $otherQuotationRequestsApprovedCount !== 0
+                                || $otherQuotationRequestsPmApprovedCount !== 0
+                                || $otherQuotationRequestsPmNotApprovedCount !== 0)  {
                                 return 'pending';
-
                             }
                         }
                     // Afspraak afgezegd
@@ -197,33 +206,56 @@ class OpportunityHelper
                         }
                 }
                 break;
-//            case 'quotation-request':
-//                switch ($this->quotationRequest->status->code_ref) {
-//                    //Offerte aangevraagd
-//                    case 'default':
-//                        //regel 14 Excel
-//                        return 'pending';
-//                    //Offerte aanvraag in behandeling
-//                    case 'under-review':
-//                        //regel 15 Excel
-//                        return 'pending';
-//                    //In overweging bij bewoner
-//                    case 'under-review-occupant':
-//                        //regel 16 Excel
-//                        return 'pending';
-//                    //Bewoner is akkoord
-//                    case 'approved':
-//                        //zijn er binnen deze kans andere offerteverzoeken waar de status "Opdracht" / "mandate" is
-//                        $otherQuotationRequestsHaveStatusMandateCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, 'mandate');
-//
-//                        //zijn er binnen deze kans andere offerteverzoeken waar de status niet "Opdracht" / "mandate", "Bewoner heeft afgewezen" / "not-approved", "Offerte niet mogelijk" / "not-possible" of "Offerteverzoek niet akkoord" / "pm-not-approved" is
-//                        $otherQuotationRequestsHaveStatusOtherThenMandateNotApprovedNotPossiblePmNotPossibleCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, ['mandate', 'not-approved', 'not-possible', 'pm-not-approved'], 'no');
-//
-//                        if($otherQuotationRequestsHaveStatusMandateCount > 0 && $otherQuotationRequestsHaveStatusOtherThenMandateNotApprovedNotPossiblePmNotPossibleCount === 0) {
-//                            //regel 17 Excel
-//                            return 'pending';
-//                        }
-//                        return false;
+// Offerteverzoek statussen:
+// Offerte aangevraagd	            default
+// Offerte aanvraag in behandeling	under-review
+// In overweging bij bewoner	    under-review-occupant
+// Geen reactie ontvangen	        no-response
+// Offerteverzoek akkoord	        pm-approved
+
+// Offerte nog niet aangevraagd	    not-made
+// Bewoner is akkoord	            approved
+// Bewoner heeft afgewezen	        not-approved
+// Offerte niet mogelijk	        not-possible
+// Uitgevoerd	                    executed
+// Offerteverzoek niet akkoord	    pm-not-approved
+            case 'quotation-request':
+                switch ($this->quotationRequest->status->code_ref) {
+                    // Offerte aangevraagd
+                    case 'default':
+                        return 'pending';
+                    //Offerte aanvraag in behandeling
+                    case 'under-review':
+                        return 'pending';
+                    //In overweging bij bewoner
+                    case 'under-review-occupant':
+                        return 'pending';
+                    //Geen reactie ontvangen
+                    case 'no-response':
+                        return 'pending';
+                    //Offerteverzoek akkoord
+                    case 'pm-approved':
+                        return 'pending';
+
+                    //Bewoner is akkoord
+                    case 'approved':
+                        //zijn er binnen deze kans andere offerteverzoeken waar de status "Bewoner is akkoord" is
+//                        $otherQuotationRequestsHaveStatusApprovedCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusApprovedId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "In overweging bij bewoner"
+                        $otherQuotationRequestsWithStatusUnderReviewOccupantCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusUnderReviewOccupantId);
+
+                        //zijn er binnen deze kans ook bezoeken met status "Offerte aanvraag in behandeling"
+                        $otherQuotationRequestsWithStatusUnderReviewCount = $this->otherOpportunityActionCount($this->opportunityActionQuotationRequestId, $quotationRequestStatusUnderReviewId);
+
+                        // is er minstens 1 offertverzoek met status "Bewoner is akkoord" en andere niet de status "In overweging bij bewoner" of "Offerte aanvraag in behandeling" hebben.
+                        // Nieuwe Kansstatus wordt: Opdracht.
+//                        if($otherQuotationRequestsHaveStatusApprovedCount > 0
+                        if($otherQuotationRequestsWithStatusUnderReviewOccupantCount === 0
+                            && $otherQuotationRequestsWithStatusUnderReviewCount === 0  ) {
+                            return 'mandate';
+                        }
+                        return false;
 //                    //Bewoner heeft afgewezen
 //                    case 'not-approved':
 //                        //zijn er binnen deze kans andere bezoeken waar de status niet "Afspraak gedaan" / "done" of "Afspraak afgezegd" / "cancelled" is
@@ -250,10 +282,6 @@ class OpportunityHelper
 //                            return 'no_execution';
 //                        }
 //                        return false;
-//                    //Geen reactie ontvangen
-//                    case 'no-response':
-//                        //regel 20 Excel
-//                        return 'pending';
 //                    //Uitgevoerd
 //                    case 'executed':
 //                        //zijn er binnen deze kans andere bezoeken waar de status niet "Afspraak gedaan" / "done" of "Afspraak afgezegd" / "cancelled" is
@@ -267,10 +295,6 @@ class OpportunityHelper
 //                            return 'executed';
 //                        }
 //                        return false;
-//                    //Offerteverzoek akkoord
-//                    case 'pm-approved':
-//                        //regel 22 Excel
-//                        return 'pending';
 //                    //Offerteverzoek niet akkoord
 //                    case 'pm-not-approved':
 //                        //zijn er binnen deze kans andere bezoeken waar de status niet "Afspraak gedaan" / "done" of "Afspraak afgezegd" / "cancelled" is
@@ -387,7 +411,7 @@ class OpportunityHelper
 //                    case 'linked':
 //                        //regel 40 Excel
 //                        return 'pending';
-//                }
+                }
         }
     }
 

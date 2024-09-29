@@ -89,6 +89,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                       }).id
                     : null,
             opportunity: {
+                opportunityId: opportunity.id ? opportunity.id : '',
                 opportunityNumber: opportunity.number ? opportunity.number : '',
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
@@ -352,6 +353,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
         const {
+            opportunityId,
             opportunityNumber,
             fullName,
             fullAddress,
@@ -416,6 +418,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         id={'opportunityNumber'}
                         className={'col-sm-6 form-group'}
                         value={opportunityNumber}
+                        link={opportunityId != '' ? 'kans/' + opportunityId : ''}
                     />
                 </div>
 

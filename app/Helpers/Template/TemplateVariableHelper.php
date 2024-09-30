@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Settings\PortalSettings;
@@ -18,6 +19,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class TemplateVariableHelper
 {
@@ -389,7 +391,9 @@ class TemplateVariableHelper
                 }
                 return $link;
                 break;
-
+            case 'portal_email':
+                return $model->portalUser ? $model->portalUser->email : '';
+                break;
             default:
                 return '';
                 break;
@@ -433,6 +437,12 @@ class TemplateVariableHelper
 
     public static function getOpportunityVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return optional($model->intake)->contact->full_name;
                 break;
@@ -505,6 +515,12 @@ class TemplateVariableHelper
 
     public static function getIntakeVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return $model->contact->full_name;
                 break;
@@ -679,6 +695,12 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
+            case 'type_lening':
+                if($projectTypeCodeRef == 'loan') {
+                    return ProjectLoanType::find($model->loan_type_id)->name;
+                }else{
+                    return "";
+                }
             case 'amount_of_loan_needed':
             case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;
@@ -760,7 +782,7 @@ class TemplateVariableHelper
         $mutationWithDrawalTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['withDrawal'])->get()->pluck('id');
         switch ($varname) {
             case 'contact_naam':
-                return $model->contact->full_name;
+                return $model->contact->full_name_fnf;
                 break;
             case 'contact_voornaam':
                 if($model->contact->type_id == 'person'){
@@ -886,6 +908,12 @@ class TemplateVariableHelper
                 }else{
                     return 0;
                 }
+            case 'obligatienummers':
+                if($projectTypeCodeRef == 'obligation') {
+                    return  $model->obligationNumbersAsString;
+                }else{
+                    return ' ';
+                }
                 break;
             case 'bedrag_interesse':
                 if($projectTypeCodeRef == 'loan') {
@@ -954,6 +982,7 @@ class TemplateVariableHelper
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
                 break;
             case 'geschonken_door':
+            case 'schenker_naam':
                 if($model->giftedByContact) {
                     if ($model->giftedByContact->type_id == 'person') {
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -967,7 +996,21 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'geschonken_door_voorletters':
+            case 'schenker_voorletters':
+                if($model->giftedByContact) {
+                    if ($model->giftedByContact->type_id == 'person') {
+                        return $model->giftedByContact->person->initials;
+                    } else {
+                        return '';
+                    }
+                }
+                else {
+                    return '';
+                }
+                break;
             case 'geschonken_door_voornaam':
+            case 'schenker_voornaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         return $model->giftedByContact->person->first_name;
@@ -981,6 +1024,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'geschonken_door_achternaam':
+            case 'schenker_achternaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -2187,6 +2231,12 @@ class TemplateVariableHelper
 
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'organisatie_naam':
                 return optional(optional($model->organisationOrCoach)->organisation)->name;
                 break;

@@ -33,7 +33,16 @@ class ProjectObserver
         }
     }
 
-    public function saving(Project $project)
+    public function saved(Project $project)
     {
+        if ($project->isDirty('loan_type_id')) {
+            // Als type lening veranderd is dan concept euro en aflossing revenues op concept-to-update zetten.
+            $projectRevenueCategoryRedemptionEuro = ProjectRevenueCategory::whereIn('code_ref', ['revenueEuro', 'redemptionEuro'])->first()->id;
+            $projectRevenues = $project->projectRevenues()->where('confirmed', false)->whereIn('status', ['concept'])->whereIn('category_id', [$projectRevenueCategoryRedemptionEuro])->get();
+            foreach ($projectRevenues as $projectRevenue) {
+                $projectRevenue->status = 'concept-to-update';
+                $projectRevenue->save();
+            }
+        }
     }
 }

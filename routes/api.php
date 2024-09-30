@@ -513,6 +513,7 @@ Route::namespace('Api')
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
+        Route::get('project/participant/{participantProject}/additional-info-for-terminating-or-change-entry-date', 'ParticipationProject\ParticipationProjectController@getAdditionalInfoForTerminatingOrChangeEntryDate');
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('project/participant', 'ParticipationProject\ParticipationProjectController@store');
         Route::post('project/participant/transfer', 'ParticipationProject\ParticipationProjectController@transfer');
@@ -530,7 +531,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
-        Route::post('project/participant/{participantProject}/terminate-obligation', 'ParticipationProject\ParticipationProjectController@terminateObligation');
+        Route::post('project/participant/{participantProject}/terminate-loan-or-obligation', 'ParticipationProject\ParticipationProjectController@terminateLoanOrObligation');
         Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
@@ -624,6 +625,7 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
+        Route::post('invoice/{invoice}/sync-one-invoice-from-twinfield', 'Invoice\InvoiceController@syncOneInvoiceFromTwinfield');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
 //        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');

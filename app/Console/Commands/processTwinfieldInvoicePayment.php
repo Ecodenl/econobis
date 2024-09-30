@@ -60,7 +60,7 @@ class processTwinfieldInvoicePayment extends Command
         }
 
         foreach (Administration::where('twinfield_is_valid', 1)->where('uses_twinfield', 1)->get() as $administration) {
-            $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null);
+            $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null, null);
             $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
         }
 

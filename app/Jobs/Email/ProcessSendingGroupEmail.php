@@ -144,6 +144,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     protected function markEmailAsSent()
     {
+        $this->email->cc = $this->email->getCcRecipients()->getEmailAdresses()->toArray();
         $this->email->sent_by_user_id = $this->user->id;
         $this->email->date_sent = new Carbon();
         $this->email->folder = 'sent';

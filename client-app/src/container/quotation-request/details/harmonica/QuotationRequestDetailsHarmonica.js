@@ -121,14 +121,15 @@ class QuotationRequestDetailsHarmonica extends Component {
                     />
                 )}
 
-                {externalPartyId && opportunityActionCodeRef === 'subsidy-request' && (
-                    <ExternalpartyEmailSentHarmonica
-                        toggleShowList={() => this.toggleShowList('externalpartyEmailsSent')}
-                        showEmailsSentList={this.state.toggleShowList.externalpartyEmailsSent}
-                        newEmail={this.newExternalpartyEmail}
-                        emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyEmailsSent?.length}
-                    />
-                )}
+                {externalPartyId &&
+                    (opportunityActionCodeRef === 'subsidy-request' || opportunityActionCodeRef === 'redirection') && (
+                        <ExternalpartyEmailSentHarmonica
+                            toggleShowList={() => this.toggleShowList('externalpartyEmailsSent')}
+                            showEmailsSentList={this.state.toggleShowList.externalpartyEmailsSent}
+                            newEmail={this.newExternalpartyEmail}
+                            emailSentCount={this.props.quotationRequestDetails.relatedExternalpartyEmailsSent?.length}
+                        />
+                    )}
 
                 <DocumentHarmonica
                     toggleShowList={() => this.toggleShowList('documents')}

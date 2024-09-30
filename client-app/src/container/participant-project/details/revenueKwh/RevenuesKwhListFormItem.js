@@ -9,9 +9,6 @@ class RevenuesKwhListFormItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightLine: '',
-            revenueKwh: {
-                ...props.revenueKwh,
-            },
         };
     }
 
@@ -37,7 +34,7 @@ class RevenuesKwhListFormItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    revenueKwh={this.state.revenueKwh}
+                    revenueKwh={this.props.revenueKwh}
                 />
             </div>
         );

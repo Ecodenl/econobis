@@ -70,6 +70,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
                     value={externalParty && externalParty.fullName}
                     link={externalParty ? 'contact/' + externalParty.id : ''}
                 />
+                <ViewText label={'Kansnummer'} value={opportunity.number} />
             </div>
             {organisationOrCoach && organisationOrCoach.typeId === 'organisation' && (
                 <div className="row">

@@ -193,7 +193,7 @@ class ContactImportFromEnergySupplierHelper
         $header = true;
         while ($line = fgetcsv($csv, 1024, ";")) {
             if (!in_array($counter, $warninglinesArray)) {
-                Log::info('line');
+//                Log::info('line');
                 foreach ($line as $k => $field) {
                     // when encoding isn't UTF-8 encode lineField to utf8.
                     $encodingLineField = mb_detect_encoding($field, 'UTF-8', true);
@@ -209,12 +209,14 @@ class ContactImportFromEnergySupplierHelper
                         $contactToImport = new ContactToImport();
 
                         $address = $this->splitAddress($line[12]);
-                        Log::info('address', $address);
+//                        Log::info('address', $address);
                         $lastName = $this->splitName($line[3]);
-                        Log::info('lastName', $lastName);
+//                        Log::info('lastName', $lastName);
 
                         if ($line[2]) {
                             $contactToImport->first_name = $line[2];
+                        } else {
+                            $contactToImport->first_name = '';
                         }
 
                         if ($lastName['last_name']) {
@@ -245,15 +247,19 @@ class ContactImportFromEnergySupplierHelper
                         }
                         if ($line[28]) {
                             $contactToImport->email_contact = $line[28];
+                        } else {
+                            $contactToImport->email_contact = '';
                         }
                         if ($line[30]) {
                             $contactToImport->phone_number = $line[30];
+                        } else {
+                            $contactToImport->phone_number = '';
                         }
                         if ($line[7]) {
                             $contactToImport->ean = $line[7];
                         }
-                        if ($line[8]) {
-                            $contactToImport->ean_type = $line[8];
+                        if ($line[9]) {
+                            $contactToImport->ean_type = $line[9];
                         }
                         if ($line[6]) {
                             $contactToImport->es_number = $line[6];
@@ -293,14 +299,14 @@ class ContactImportFromEnergySupplierHelper
         $splits = explode(' ', $eanAdres);
         $teller = count($splits);
         $teller = $teller - 1;
-        Log::info('splits', $splits);
+//        Log::info('splits', $splits);
         $straatNaam = '';
         $huisnummer = '';
         $toevoeging = '';
         $toevoegingTemp = '';
         while ($teller > 0) {
             $string = $splits[$teller];
-            Log::info('string: ' . $string);
+//            Log::info('string: ' . $string);
             $substring = substr($string, 0, 1);
             if (1 === preg_match('~[0-9]~', substr($string, 0, 1))) {
                 $teller2 = 1;

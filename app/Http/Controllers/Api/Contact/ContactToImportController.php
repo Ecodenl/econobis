@@ -24,6 +24,8 @@ class ContactToImportController extends Controller
 {
     public function index(Request $request, RequestQuery $requestQuery)
     {
+        set_time_limit(0);
+
         $contactToImports = collect($requestQuery->getQueryNoPagination()->get());
 
         $allowUpdateAction = false;

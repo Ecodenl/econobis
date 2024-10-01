@@ -33,6 +33,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
@@ -536,6 +537,7 @@ class ExternalWebformController extends Controller
             'order' => [
                 // Order / OrderProduct
                 'order_product_id' => 'product_id',
+                'order_variabele_prijs' => 'variable_price',
                 'order_aantal' => 'amount',
                 'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
@@ -605,6 +607,9 @@ class ExternalWebformController extends Controller
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
                 'woondossier_opmerking_coach' => 'remark_coach',
+                'woondossier_verbruik_elektriciteit' => 'amount_electricity',
+                'woondossier_verbruik_gas' => 'amount_gas',
+                'woondossier_stooktemperatuur' => 'boiler_setting_comfort_heat',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -693,6 +698,11 @@ class ExternalWebformController extends Controller
         $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
 
         $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
+
+        $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+
+        $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+        $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
@@ -2461,6 +2471,9 @@ class ExternalWebformController extends Controller
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
             && $data['remark_coach'] == ''
+            && $data['amount_electricity'] == ''
+            && $data['amount_gas'] == ''
+            && $data['boiler_setting_comfort_heat'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2504,6 +2517,12 @@ class ExternalWebformController extends Controller
         if (!$eneryLabelStatus) {
             $this->log('Er is geen bekende waarde voor status energie label meegegeven, default naar "geen"');
             $eneryLabelStatus = null;
+        }
+
+        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
+        if (!$boilerSettingComfortHeat) {
+            $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
+            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', 'unsure')->first();
         }
 
         $rofeType = RoofType::find($data['roof_type_id']);
@@ -2576,6 +2595,9 @@ class ExternalWebformController extends Controller
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
                 'remark_coach' => $data['remark_coach'],
+                'amount_electricity' => $data['amount_electricity'],
+                'amount_gas' => $data['amount_gas'],
+                'boiler_setting_comfort_heat' => $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null,
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2638,6 +2660,9 @@ class ExternalWebformController extends Controller
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
             $housingFile->remark_coach = $data['remark_coach'];
+            $housingFile->amount_electricity = $data['amount_electricity'];
+            $housingFile->amount_gas = $data['amount_gas'];
+            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null;
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
@@ -3281,9 +3306,21 @@ class ExternalWebformController extends Controller
             $product = Product::find($data['product_id']);
 
             if (!$product) {
-                $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
+                $this->log('Product met id ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
                 $this->addTaskError('Ongeldige product code meegegeven bij verzenden webformulier.');
                 return null;
+            }
+
+            $orderVariablePrice = null;
+            if ($product->currentPrice && $product->currentPrice->has_variable_price) {
+                if($data['variable_price']) {
+                    $orderVariablePrice = floatval(str_replace(',', '.', $data['variable_price']));
+                } else {
+                    $this->log('Product met id ' . $data['product_id'] . ' is een product met variabele prijs maar variabele prijs is niet meegegeven, variabele prijs is op 0.00 gezet.');
+                    $orderVariablePrice = 0.00;
+                }
+            } elseif($data['variable_price']) {
+                $this->log('Product met id ' . $data['product_id'] . ' is een product zonder variabele prijs, meegegeven variabele prijs wordt niet gebruikt');
             }
 
             $statusId = $data['status_id'];
@@ -3354,6 +3391,7 @@ class ExternalWebformController extends Controller
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'date_start' => $dateStart,
+                'variable_price' => $orderVariablePrice,
                 'date_period_start_first_invoice' => $datePeriodStartFirstInvoice,
             ]);
 

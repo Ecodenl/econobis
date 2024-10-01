@@ -30,6 +30,7 @@ const INITIAL_STATE = {
         hoomCampaigns: {},
         hoomEmailTemplateId: '',
         hoomGroupId: '',
+        hoomMailboxId: '',
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,

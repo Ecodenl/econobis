@@ -97,6 +97,10 @@ class QuotationRequestWorkflowHelper
                     $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->quotationRequest->opportunity);
                     if($this->quotationRequest->opportunity->intake) {
                         $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake', $this->quotationRequest->opportunity->intake);
+                        if ($this->quotationRequest->opportunity->intake->campaign) {
+                            $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                                $this->quotationRequest->opportunity->intake->campaign);
+                        }
                     }
                 }
             }

@@ -43,6 +43,7 @@ class CreateCooperation extends FormRequest
             'hoomKey' => [''],
             'hoomEmailTemplateId' => [''],
             'hoomGroupId' => [''],
+            'hoomMailboxId' => [''],
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],

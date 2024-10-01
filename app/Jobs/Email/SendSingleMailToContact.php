@@ -73,15 +73,15 @@ class SendSingleMailToContact extends SendSingleMail
         $string = TemplateVariableHelper::replaceTemplatePortalVariables($string, 'contacten_portal');
         $string = TemplateVariableHelper::replaceTemplateCooperativeVariables($string, 'cooperatie');
 
-        if ($email->intake) {
-            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'intake', $email->intake);
-        }
         if ($email->task) {
             $string = TemplateVariableHelper::replaceTemplateVariables($string, 'taak', $email->task);
         }
-        if ($email->quotationRequest) {
-            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'offerteverzoek', $email->quotationRequest);
-            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kansactie', $email->quotationRequest);
+        if ($email->intake) {
+            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'intake', $email->intake);
+            if ($email->intake->campaign) {
+                $string = TemplateVariableHelper::replaceTemplateVariables($string, 'campagne',
+                    $email->intake->campaign);
+            }
         }
         if ($email->opportunity) {
             $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kans', $email->opportunity);
@@ -91,6 +91,21 @@ class SendSingleMailToContact extends SendSingleMail
                 if ($email->opportunity->intake->campaign) {
                     $string = TemplateVariableHelper::replaceTemplateVariables($string, 'campagne',
                         $email->opportunity->intake->campaign);
+                }
+            }
+        }
+        if ($email->quotationRequest) {
+            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'offerteverzoek', $email->quotationRequest);
+            $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kansactie', $email->quotationRequest);
+            if ($email->quotationRequest->opportunity) {
+                $string = TemplateVariableHelper::replaceTemplateVariables($string, 'kans', $email->quotationRequest->opportunity);
+                if ($email->quotationRequest->opportunity->intake) {
+                    $string = TemplateVariableHelper::replaceTemplateVariables($string, 'intake',
+                        $email->quotationRequest->opportunity->intake);
+                    if ($email->quotationRequest->opportunity->intake->campaign) {
+                        $string = TemplateVariableHelper::replaceTemplateVariables($string, 'campagne',
+                            $email->quotationRequest->opportunity->intake->campaign);
+                    }
                 }
             }
         }

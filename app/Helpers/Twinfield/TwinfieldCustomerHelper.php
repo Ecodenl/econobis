@@ -125,13 +125,13 @@ class TwinfieldCustomerHelper
     private function getContactsToBeChecked()
     {
         return Contact::whereHas('invoices', function ($query) {
-            $query->where('administration_id', $this->administration->id)
-                ->whereNull('twinfield_number')
-                ->whereIn('status_id', ['sent', 'paid'])
-                ->where('date_sent', '>=', $this->fromInvoiceDateSent);
+            $query->where('invoices.administration_id', $this->administration->id)
+                ->whereNull('invoices.twinfield_number')
+                ->whereIn('invoices.status_id', ['sent', 'paid'])
+                ->where('invoices.date_sent', '>=', $this->fromInvoiceDateSent);
         })
             ->whereDoesntHave('twinfieldNumbers', function ($query) {
-                $query->where('administration_id', $this->administration->id);
+                $query->where('administration_contact_twinfield.administration_id', $this->administration->id);
             })
             ->get();
     }

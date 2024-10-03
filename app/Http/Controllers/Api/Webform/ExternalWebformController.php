@@ -585,8 +585,8 @@ class ExternalWebformController extends Controller
                 'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
                 'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
                 'kansactie_bijlage' => 'quotation_request_attachment',
-                'kansactie_bijlage_2' => 'quotation_request_attachment_2',
-                'kansactie_bijlage_3' => 'quotation_request_attachment_3',
+                'kansactie_bijlage2' => 'quotation_request_attachment_2',
+                'kansactie_bijlage3' => 'quotation_request_attachment_3',
             ],
             'housing_file' => [
                 // HousingFile

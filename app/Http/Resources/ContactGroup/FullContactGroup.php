@@ -47,6 +47,7 @@ class FullContactGroup extends JsonResource
             'composedGroups' => $this->contactGroups()->whereTeamContactGroupIds(Auth::user())->get(),
             'composedExceptGroups' => $this->contactGroupsExcepted()->get(),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
+            'isUsedInExceptedGroup' => $this->is_used_in_excepted_group,
             'contactGroupComposedType' => $this->composed_group_type,
             'dynamicFilterType' => $this->dynamic_filter_type,
             'composedOf' => $this->composed_of,

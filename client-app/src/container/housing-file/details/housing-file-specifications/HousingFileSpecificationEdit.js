@@ -13,6 +13,7 @@ import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import InputTextArea from '../../../../components/form/InputTextArea';
 import InputText from '../../../../components/form/InputText';
 import { hashHistory } from 'react-router';
+import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
 
 class HousingFileSpecificationEdit extends Component {
     constructor(props) {
@@ -35,6 +36,7 @@ class HousingFileSpecificationEdit extends Component {
             savingsGas,
             savingsElectricity,
             co2Savings,
+            campaign,
         } = props.housingFileSpecification;
 
         this.state = {
@@ -55,9 +57,20 @@ class HousingFileSpecificationEdit extends Component {
                 savingsGas,
                 savingsElectricity,
                 co2Savings,
+                campaignId: campaign ? campaign.id : null,
             },
+            campaigns: [],
             errors: {},
         };
+    }
+
+    componentDidMount() {
+        CampaignsAPI.peekNotFinishedCampaigns().then(payload => {
+            this.setState({
+                ...this.state,
+                campaigns: payload,
+            });
+        });
     }
 
     handleInputChange = event => {
@@ -124,6 +137,7 @@ class HousingFileSpecificationEdit extends Component {
             savingsGas,
             savingsElectricity,
             co2Savings,
+            campaignId,
         } = this.state.housingFileSpecification;
         const hasHoomDossierLink = this.props.hasHoomDossierLink;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategoryId);
@@ -214,6 +228,14 @@ class HousingFileSpecificationEdit extends Component {
                                 value={typeBrand}
                                 onChangeAction={this.handleInputChange}
                             />
+
+                            <InputSelect
+                                label={'Campagne'}
+                                name={'campaignId'}
+                                options={this.state.campaigns}
+                                value={campaignId}
+                                onChangeAction={this.handleInputChange}
+                            />
                         </div>
 
                         <div className="row">
@@ -279,6 +301,7 @@ class HousingFileSpecificationEdit extends Component {
 }
 
 const mapStateToProps = state => {
+    console.log(state.systemData);
     return {
         hasHoomDossierLink: state.housingFileDetails.hoomBuildingId != null ? true : false,
         measures: state.systemData.measures,

@@ -3,6 +3,7 @@
 namespace App\Http\Resources\HousingFile;
 
 use App\Eco\Measure\Measure;
+use App\Http\Resources\Campaign\GridCampaign;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Measure\FullMeasure;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -40,7 +41,7 @@ class FullHousingFileSpecification extends JsonResource
                 'hasOpportunities' => $this->has_opportunities,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
-                'campaignId' => $this->campaign_id,
+                'campaign' => GridCampaign::make($this->campaign),
             ];
     }
 }

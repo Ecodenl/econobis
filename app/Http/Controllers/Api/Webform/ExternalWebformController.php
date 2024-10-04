@@ -595,6 +595,7 @@ class ExternalWebformController extends Controller
                 'woondossier_koophuis' => 'is_house_for_sale',
                 'woondossier_gebruiksoppervlakte' => 'surface',
                 'woondossier_daktype_id' => 'roof_type_id',
+                'woondossier_maatregelen_campagne_id' => 'measure_campaign_id',
                 'woondossier_energielabel_id' => 'energy_label_id',
                 'woondossier_aantal_bouwlagen' => 'floors',
                 'woondossier_status_energielabel_id' => 'energy_label_status_id',
@@ -2459,6 +2460,7 @@ class ExternalWebformController extends Controller
             && $data['is_house_for_sale'] == ''
             && $data['surface'] == ''
             && $data['roof_type_id'] == ''
+            && $data['measure_campaign_id'] == ''
             && $data['energy_label_id'] == ''
             && $data['floors'] == ''
             && $data['energy_label_status_id'] == ''
@@ -2533,6 +2535,14 @@ class ExternalWebformController extends Controller
             $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
             $rofeType = null;
         }
+
+        $housingFileSpecificationCampaign = Campaign::whereNull('status_id')->orWhere('status_id', '!=', Campaign::STATUS_CLOSED)->where('id', $data['measure_campaign_id'])->first();
+        if (!$housingFileSpecificationCampaign) {
+            $this->log('Er is geen bekende waarde voor de campagne meegegeven, default naar "geen"');
+            $housingFileSpecificationCampaign = null;
+        }
+
+
 
 //        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
         $measures = [];
@@ -2639,6 +2649,7 @@ class ExternalWebformController extends Controller
                         'floor_id' => $measureFloorId,
                         'side_id' => $measureSidesid,
                         'type_brand' => $measureTypeBrand,
+                        'campaign_id' => $housingFileSpecificationCampaign ? $housingFileSpecificationCampaign->id : null,
                     ]);
 //                    $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                 }

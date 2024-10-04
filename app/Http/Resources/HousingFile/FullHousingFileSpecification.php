@@ -40,6 +40,7 @@ class FullHousingFileSpecification extends JsonResource
                 'hasOpportunities' => $this->has_opportunities,
                 'createdAt' => $this->created_at,
                 'updatedAt' => $this->updated_at,
+                'campaignId' => $this->campaign_id,
             ];
     }
 }

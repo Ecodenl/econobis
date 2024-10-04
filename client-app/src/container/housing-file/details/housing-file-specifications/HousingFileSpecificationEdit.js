@@ -36,7 +36,7 @@ class HousingFileSpecificationEdit extends Component {
             savingsGas,
             savingsElectricity,
             co2Savings,
-            campaign,
+            campaignId,
         } = props.housingFileSpecification;
 
         this.state = {
@@ -57,7 +57,7 @@ class HousingFileSpecificationEdit extends Component {
                 savingsGas,
                 savingsElectricity,
                 co2Savings,
-                campaignId: campaign ? campaign.id : null,
+                campaignId: campaignId ?? null,
             },
             campaigns: [],
             errors: {},

@@ -51,4 +51,14 @@ export default {
                 console.log(error);
             });
     },
+    updateContactMatches: () => {
+        const requestUrl = `${URL_API}/api/contact/update-contact-matches`;
+
+        return axiosInstance
+            .post(requestUrl)
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
 };

@@ -12,6 +12,7 @@ namespace App\Helpers\Import;
 
 use App\Eco\Contact\ContactToImport;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Http\Controllers\Api\Contact\ContactToImportController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -185,7 +186,7 @@ class ContactImportFromEnergySupplierHelper
     {
         $csv = fopen($file, 'r');
 
-        ContactToImport::truncate();
+        ContactToImport::query()->delete();
 
         $warninglinesArray = explode(',', $warninglines);
 
@@ -316,6 +317,10 @@ class ContactImportFromEnergySupplierHelper
             }
             $counter++;
         }
+
+        $contactToImportController = new ContactToImportController();
+        $contactToImportController->processContactMatches();
+
         return 'succes';
     }
 

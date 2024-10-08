@@ -23,4 +23,8 @@ class ContactToImport extends Model
     {
         return $this->belongsTo(Contact::class);
     }
+    public function contactForImports()
+    {
+        return $this->hasMany(ContactForImport::class);
+    }
 }

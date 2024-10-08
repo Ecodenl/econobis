@@ -14,7 +14,17 @@ return new class extends Migration
     public function up()
     {
         Schema::table('contact_to_imports', function (Blueprint $table) {
-            $table->string('contact_type');
+            $table->string('contact_type')->after('id');
+        });
+        Schema::create('contact_for_imports', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('contact_to_import_id')->nullable();
+            $table->foreign('contact_to_import_id')->references('id')->on('contact_to_imports')->onDelete('cascade');
+            $table->unsignedInteger('contact_id')->nullable();
+            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->string('match_code');
+            $table->string('match_description');
+            $table->string('match_color');
         });
     }
 
@@ -25,6 +35,8 @@ return new class extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('contact_for_imports');
+
         Schema::table('contact_to_imports', function (Blueprint $table) {
             $table->dropColumn('contact_type');
         });

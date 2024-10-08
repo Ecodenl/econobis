@@ -23,6 +23,7 @@ class GridContactGroup extends JsonResource
             'closedStatus' => $this->present()->closedStatus(),
             'type' => FullEnumWithIdAndName::make($this->getType()),
             'isUsedInComposedGroup' => $this->is_used_in_composed_group,
+            'isUsedInExceptedGroup' => $this->is_used_in_excepted_group,
             'isUsedInLaposta' => $this->is_used_in_laposta,
             'groupUpToDateWithLaposta' => $this->group_up_to_date_with_laposta,
             'numberOfLapostaMembers' => $this->number_of_laposta_members,

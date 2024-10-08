@@ -20,7 +20,10 @@ class Joiner extends RequestJoiner
 
     protected function applyAddressJoin($query)
     {
-        $query->join('addresses', 'intakes.address_id', '=', 'addresses.id');
+        $query->leftJoin('addresses', function ($join) {
+            $join->on('addresses.id', '=', 'intakes.address_id')
+                ->whereNull('addresses.deleted_at');
+        });
     }
 
     protected function applyAddressAreaNameJoin($query)

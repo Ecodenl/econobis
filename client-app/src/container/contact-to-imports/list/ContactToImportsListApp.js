@@ -361,6 +361,7 @@ function ContactToImportsListApp() {
             });
     }
     function updateContactMatches() {
+        setLoading(true);
         ContactToImportsAPI.updateContactMatches()
             .then(payload => {
                 setTimeout(() => {
@@ -372,6 +373,7 @@ function ContactToImportsListApp() {
                     setSelectedContactsUpdate([]);
                     fetchContactToImports();
                 }, 200);
+                setLoading(false);
             })
             .catch(() => {
                 setLoading(false);

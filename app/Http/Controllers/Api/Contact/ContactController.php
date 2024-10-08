@@ -85,6 +85,13 @@ class ContactController extends Controller
         return $contactImportFromEnergySupplierHelper->import($request->file('attachment'), $request->input('suppliercodeRef'), $request->input('warninglines'));
     }
 
+    public function updateContactMatches(){
+        $this->authorize('import', Contact::class);
+        set_time_limit(300);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->updateContactMatches();
+    }
+
     public function contactToImportsSuppliers (){
         $this->authorize('import', Contact::class);
         set_time_limit(180);

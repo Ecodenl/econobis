@@ -37,7 +37,7 @@ class GridContactToImport extends JsonResource
             'memberSince' => $this->member_since,
             'endDate' => $this->end_date,
             'contactNumber' => $this->contact ? $this->contact->number : '',
-            'contactForImports' => $this->contactForImports,
+            'contactForImports' => GridContactForImport::collection($this->whenLoaded('contactForImports')),
         ];
     }
 }

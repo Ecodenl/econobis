@@ -44,6 +44,9 @@ class Filter extends RequestFilter
 
     protected function applyResponsibleNameFilter($query, $type, $data)
     {
+        // Teams nog even erbij joinen.
+        $query->leftJoin('teams', 'tasks.responsible_team_id', '=', 'teams.id');
+
         // Elke term moet in een van de naam velden voor komen.
         // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
         $terms = explode(' ', $data);
@@ -53,12 +56,10 @@ class Filter extends RequestFilter
                 $query->where('users.last_name', 'LIKE', '%' . $term . '%');
                 $query->orWhere('users.first_name', 'LIKE', '%' . $term . '%');
                 $query->orWhere('last_name_prefixes.name', 'LIKE', '%' . $term . '%');
+                $query->orWhere('teams.name', 'LIKE', '%' . $term . '%');
             });
         }
 
-        //of in de team->naam
-        $query->leftJoin('teams', 'tasks.responsible_team_id', '=', 'teams.id');
-        $query->orWhere('teams.name', 'LIKE', '%' . $data . '%');
         return false;
     }
 

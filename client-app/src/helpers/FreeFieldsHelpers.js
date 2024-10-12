@@ -63,19 +63,16 @@ export function checkFieldRecord(record) {
                         }
                         break;
                     case 'a':
-                        console.log('a');
                         if (!explodedValue[i] || !explodedValue[i].match(/^[a-zA-Z]$/)) {
                             return false;
                         }
                         break;
                     case 'x':
-                        console.log('x');
                         if (!explodedValue[i] || !explodedValue[i].match(/^[a-zA-Z0-9]$/)) {
                             return false;
                         }
                         break;
                     default:
-                        console.log('default');
                         if (explodedValue[i] != explodedMask[i]) {
                             return false;
                         }

@@ -63,11 +63,19 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($this->contact->primaryEmailAddress);
+        $mail = Mail::fromMailbox($mailbox);
+
+        if($campaignWorkflow->mail_to_contact_wf) {
+            $mail->to($this->contact->primaryEmailAddress);
+        }
         if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-            $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
+            if($campaignWorkflow->mail_to_contact_wf) {
+                $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+                $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
+            } else {
+                $mail->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+                $cc = '';
+            }
         } else {
             $cc = '';
         }

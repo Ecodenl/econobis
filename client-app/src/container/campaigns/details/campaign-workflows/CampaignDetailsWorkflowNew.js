@@ -20,11 +20,13 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
         statusId: false,
         emailTemplatedIdWf: false,
         numberOfDaysToSendEmail: false,
+        mailCcToCoachWfOrMailToContactWf: false,
     });
     const [errorMessages, setErrorMessages] = useState({
         statusId: '',
         emailTemplatedIdWf: '',
         numberOfDaysToSendEmail: '',
+        mailCcToCoachWfOrMailToContactWf: '',
     });
 
     const [emailtemplates, setEmailtemplates] = useState([]);
@@ -59,11 +61,11 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
     }
 
     function handleMailCcToCoachWfChange(event) {
-        setMailCcToCoachWf(event.target.value);
+        setMailCcToCoachWf(event.target.checked);
     }
 
     function handleMailToContactWfChange(event) {
-        setMailToContactWf(event.target.value);
+        setMailToContactWf(event.target.checked);
     }
 
     function handleStatusChange(event) {
@@ -85,11 +87,13 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             statusId: false,
             emailTemplatedIdWf: false,
             numberOfDaysToSendEmail: false,
+            mailCcToCoachWfOrMailToContactWf: false,
         };
         let errorMessages = {
             statusId: '',
             emailTemplatedIdWf: '',
             numberOfDaysToSendEmail: '',
+            mailCcToCoachWfOrMailToContactWf: '',
         };
         let hasErrors = false;
 
@@ -108,6 +112,18 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
         if (!numberOfDaysToSendEmail) {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        }
+        console.log('--');
+        console.log(mailCcToCoachWf);
+        console.log(mailToContactWf);
+        console.log('--');
+
+        if (mailCcToCoachWf == false && mailToContactWf == false) {
+            console.log('test');
+            errors.mailCcToCoachWfOrMailToContactWf = true;
+            errorMessages.mailCcToCoachWfOrMailToContactWf =
+                'Minimaal één van de volgende opties is verplicht: Email cc naar coach en/of Email naar bewoner';
             hasErrors = true;
         }
 
@@ -207,6 +223,15 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                             />
                         ) : null}
                     </div>
+
+                    {errors.mailCcToCoachWfOrMailToContactWf && (
+                        <div className={'row'}>
+                            <div className="form-group col-sm-6"></div>
+                            <div className="col-sm-6 has-error-message">
+                                {errorMessages.mailCcToCoachWfOrMailToContactWf}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

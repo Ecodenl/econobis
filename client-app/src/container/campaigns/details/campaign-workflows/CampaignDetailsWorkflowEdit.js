@@ -19,10 +19,12 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     const [errors, setErrors] = useState({
         emailTemplatedIdWf: false,
         numberOfDaysToSendEmail: false,
+        mailCcToCoachWfOrMailToContactWf: false,
     });
     const [errorMessages, setErrorMessages] = useState({
         emailTemplatedIdWf: '',
         numberOfDaysToSendEmail: '',
+        mailCcToCoachWfOrMailToContactWf: '',
     });
 
     function handleChangeEmailTemplateChange(event) {
@@ -61,10 +63,12 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         let errors = {
             emailTemplatedIdWf: false,
             numberOfDaysToSendEmail: false,
+            mailCcToCoachWfOrMailToContactWf: false,
         };
         let errorMessages = {
             emailTemplatedIdWf: '',
             numberOfDaysToSendEmail: '',
+            mailCcToCoachWfOrMailToContactWf: '',
         };
         let hasErrors = false;
 
@@ -85,6 +89,12 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         if (numberOfDaysToSendEmail < 0) {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
+            hasErrors = true;
+        }
+        if (mailCcToCoachWf == 0 && mailToContactWf == 0) {
+            errors.mailCcToCoachWfOrMailToContactWf = true;
+            errorMessages.mailCcToCoachWfOrMailToContactWf =
+                'Minimaal één van de volgende opties is verplicht: Email cc naar coach en/of Email naar bewoner';
             hasErrors = true;
         }
 
@@ -174,6 +184,15 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             />
                         ) : null}
                     </div>
+
+                    {errors.mailCcToCoachWfOrMailToContactWf && (
+                        <div className={'row'}>
+                            <div className="form-group col-sm-6"></div>
+                            <div className="col-sm-6 has-error-message">
+                                {errorMessages.mailCcToCoachWfOrMailToContactWf}
+                            </div>
+                        </div>
+                    )}
 
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

@@ -114,13 +114,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
             hasErrors = true;
         }
-        console.log('--');
-        console.log(mailCcToCoachWf);
-        console.log(mailToContactWf);
-        console.log('--');
 
         if (mailCcToCoachWf == false && mailToContactWf == false) {
-            console.log('test');
             errors.mailCcToCoachWfOrMailToContactWf = true;
             errorMessages.mailCcToCoachWfOrMailToContactWf =
                 'Minimaal één van de volgende opties is verplicht: Email cc naar coach en/of Email naar bewoner';

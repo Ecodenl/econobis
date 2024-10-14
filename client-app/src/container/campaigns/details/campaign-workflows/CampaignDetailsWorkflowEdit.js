@@ -162,18 +162,6 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             value={Boolean(isActive)}
                             onChangeAction={handleIsActiveChange}
                         />
-                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
-                            <InputToggle
-                                label={'Email cc naar coach'}
-                                name={'mailCcToCoachWf'}
-                                value={Boolean(mailCcToCoachWf)}
-                                onChangeAction={handleMailCcToCoachWfChange}
-                            />
-                        ) : null}
-                    </div>
-
-                    <div className="row">
-                        <div class="form-group col-sm-6 "></div>
 
                         {campaignWorkflow.workflowForType === 'quotationrequest' ? (
                             <InputToggle
@@ -181,6 +169,18 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                                 name={'mailToContactWf'}
                                 value={Boolean(mailToContactWf)}
                                 onChangeAction={handleMailToContactWfChange}
+                            />
+                        ) : null}
+                    </div>
+
+                    <div className="row">
+                        <div class="form-group col-sm-6 "></div>
+                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email cc naar coach'}
+                                name={'mailCcToCoachWf'}
+                                value={Boolean(mailCcToCoachWf)}
+                                onChangeAction={handleMailCcToCoachWfChange}
                             />
                         ) : null}
                     </div>

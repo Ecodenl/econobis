@@ -27,7 +27,7 @@ class AddCampaignIdToHousingFileSpecifications extends Migration
      */
     public function down()
     {
-        Schema::table('cooperations', function (Blueprint $table) {
+        Schema::table('housing_file_specifications', function (Blueprint $table) {
             $table->dropForeign(['campaign_id']);
             $table->dropColumn('campaign_id');
         });

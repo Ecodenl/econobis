@@ -147,7 +147,7 @@ class HousingFileSpecificationEdit extends Component {
             { id: 'Z', name: 'Zelf doen' },
             { id: 'L', name: 'Laten doen' },
         ];
-        console.log(campaignId);
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>

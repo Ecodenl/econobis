@@ -14,6 +14,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
+    const [mailToContactWf, setMailToContactWf] = useState(campaignWorkflow.mailToContactWf);
     const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [errors, setErrors] = useState({
         emailTemplatedIdWf: false,
@@ -38,6 +39,10 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
 
     function handleMailCcToCoachWfChange(event) {
         setMailCcToCoachWf(event.target.checked);
+    }
+
+    function handleMailToContactWfChange(event) {
+        setMailToContactWf(event.target.checked);
     }
 
     const [emailtemplates, setEmailtemplates] = useState([]);
@@ -90,6 +95,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                 data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
                 data.append('isActive', isActive == 1 ? 1 : 0);
                 data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+                data.append('mailToContactWf', mailToContactWf == 1 ? 1 : 0);
 
                 await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
 
@@ -140,6 +146,12 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                     </div>
 
                     <div className="row">
+                        <InputToggle
+                            label={'Actief'}
+                            name={'isActive'}
+                            value={Boolean(isActive)}
+                            onChangeAction={handleIsActiveChange}
+                        />
                         {campaignWorkflow.workflowForType === 'quotationrequest' ? (
                             <InputToggle
                                 label={'Email cc naar coach'}
@@ -148,12 +160,19 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                                 onChangeAction={handleMailCcToCoachWfChange}
                             />
                         ) : null}
-                        <InputToggle
-                            label={'Actief'}
-                            name={'isActive'}
-                            value={Boolean(isActive)}
-                            onChangeAction={handleIsActiveChange}
-                        />
+                    </div>
+
+                    <div className="row">
+                        <div class="form-group col-sm-6 "></div>
+
+                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email naar bewoner'}
+                                name={'mailToContactWf'}
+                                value={Boolean(mailToContactWf)}
+                                onChangeAction={handleMailToContactWfChange}
+                            />
+                        ) : null}
                     </div>
 
                     <div className="pull-right btn-group" role="group">

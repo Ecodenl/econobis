@@ -14,6 +14,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'opportunity' ? false : true);
+    const [mailToContactWf, setMailToContactWf] = useState(workflowForType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         statusId: false,
@@ -59,6 +60,10 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
 
     function handleMailCcToCoachWfChange(event) {
         setMailCcToCoachWf(event.target.value);
+    }
+
+    function handleMailToContactWfChange(event) {
+        setMailToContactWf(event.target.value);
     }
 
     function handleStatusChange(event) {
@@ -115,6 +120,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             data.append('campaignId', campaignId);
             data.append('isActive', isActive == 1 ? 1 : 0);
             data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+            data.append('mailToContactWf', mailToContactWf == 1 ? 1 : 0);
 
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);
@@ -192,6 +198,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                             value={Boolean(isActive)}
                             onChangeAction={handleIsActiveChange}
                         />
+                        {workflowForType === 'quotationrequest' ? (
+                            <InputToggle
+                                label={'Email naar bewoner'}
+                                name={'mailToContactWf'}
+                                value={Boolean(mailToContactWf)}
+                                onChangeAction={handleMailToContactWfChange}
+                            />
+                        ) : null}
                     </div>
 
                     <div className="pull-right btn-group" role="group">

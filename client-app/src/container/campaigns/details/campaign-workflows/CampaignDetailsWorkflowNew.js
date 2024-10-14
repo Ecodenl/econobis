@@ -194,7 +194,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                         />
                         {workflowForType === 'quotationrequest' ? (
                             <InputToggle
-                                label={'Email naar bewoner'}
+                                label={'E-mail bewoner'}
                                 name={'mailToContactWf'}
                                 value={Boolean(mailToContactWf)}
                                 onChangeAction={handleMailToContactWfChange}
@@ -211,7 +211,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                         />
                         {workflowForType === 'quotationrequest' ? (
                             <InputToggle
-                                label={'Email cc naar coach'}
+                                label={'E-mail coach'}
                                 name={'mailCcToCoachWf'}
                                 value={Boolean(mailCcToCoachWf)}
                                 onChangeAction={handleMailCcToCoachWfChange}

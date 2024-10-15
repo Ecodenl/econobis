@@ -105,7 +105,7 @@ function ContactToImportsList({
                     <DataTableBody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan={15}>Bezig met gegevens laden</td>
+                                <td colSpan={16}>Bezig met gegevens laden</td>
                             </tr>
                         ) : ContactToImports.length > 0 ? (
                             ContactToImports.map(ContactToImport => {
@@ -130,7 +130,7 @@ function ContactToImportsList({
                             })
                         ) : (
                             <tr>
-                                <td colSpan={15}>Geen resultaten!</td>
+                                <td colSpan={16}>Geen resultaten!</td>
                             </tr>
                         )}
                     </DataTableBody>

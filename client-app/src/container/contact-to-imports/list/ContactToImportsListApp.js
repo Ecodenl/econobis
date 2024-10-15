@@ -280,6 +280,9 @@ function ContactToImportsListApp() {
             filters.push({ field: 'status', data: 'new' });
         }
 
+        if (filter.initials) {
+            filters.push({ field: 'initials', data: filter.initials });
+        }
         if (filter.firstName) {
             filters.push({ field: 'firstName', data: filter.firstName });
         }

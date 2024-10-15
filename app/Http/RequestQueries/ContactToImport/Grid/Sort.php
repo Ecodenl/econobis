@@ -15,6 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
+        'initials',
         'firstName',
         'lastName',
         'street',
@@ -24,6 +25,7 @@ class Sort extends RequestSort
     ];
 
     protected $mapping = [
+        'initials' => 'contact_to_imports.initials',
         'firstName' => 'contact_to_imports.first_name',
         'lastName' => 'contact_to_imports.last_name',
         'street' => 'contact_to_imports.street',

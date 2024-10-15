@@ -19,6 +19,7 @@ class GridContactForImport extends JsonResource
             'matchDescription' => $this->match_description,
             'matchColor' => $this->match_color,
             'number' => $this->contact?->number,
+            'initials' => $this->contact?->initials,
             'firstName' => $this->contact?->first_name,
             'lastNamePrefix' => $this->contact?->last_name_prefix,
             'lastName' => $this->contact?->last_name,

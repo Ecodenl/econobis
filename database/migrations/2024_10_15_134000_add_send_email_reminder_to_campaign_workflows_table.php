@@ -13,7 +13,7 @@ class AddSendEmailReminderToCampaignWorkflowsTable extends Migration
      */
     public function up()
     {
-        Schema::table('campaign_workflows', function (Blueprint $table) {
+        Schema::table('quotation_request_status', function (Blueprint $table) {
             $table->boolean('send_email_reminder')->default(0)->after('number_of_days_to_send_email');
         });
     }
@@ -25,7 +25,7 @@ class AddSendEmailReminderToCampaignWorkflowsTable extends Migration
      */
     public function down()
     {
-        Schema::table('campaign_workflows', function (Blueprint $table) {
+        Schema::table('quotation_request_status', function (Blueprint $table) {
             $table->dropColumn('send_email_reminder');
         });
     }

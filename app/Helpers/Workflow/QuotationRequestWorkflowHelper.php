@@ -64,32 +64,47 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox);
-
+//        if($campaignWorkflow->mail_to_contact_wf == 1) {
+//            Log::info('to mail_to_contact_wf is geset');
+//            $to = $this->contact->primaryEmailAddress->email;
+//            $mail->to($this->contact->primaryEmailAddress);
+//        }
+        $to = null;
+        $cc = null;
         if($campaignWorkflow->mail_to_contact_wf == 1) {
             Log::info('to mail_to_contact_wf is geset');
-            $mail->to($this->contact->primaryEmailAddress);
-            $to = $this->contact->primaryEmailAddress->email;
-        }
-        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-            if($campaignWorkflow->mail_to_contact_wf == 1) {
-                $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-                $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
-            } else {
-                Log::info('to mail_cc_to_coach_wf is geset');
-                $mail->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-                $cc = '';
-                $to = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
+            $to = $this->contact->primaryEmailAddress;
+            if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
+                Log::info('cc mail_cc_to_coach_wf is geset');
+                $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
             }
         } else {
-            $cc = '';
+            if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
+                Log::info('to mail_cc_to_coach_wf is geset');
+                $to = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
+            }
+        }
+        if(!$to && !$cc) {
+            Log::info('geen to en geen cc');
         }
 
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $cc, $to);
+        if(!$to) return false;
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($to);
+        $toEmail = $to->email;
+
+        $ccEmail = '';
+        if($cc) {
+            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+            $ccEmail = $cc->email;
+        }
+
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $toEmail, $ccEmail);
         return true;
     }
 
-    public function mailWorkflow($emailTemplate, $mail, $mailbox, $cc, $to)
+    public function mailWorkflow($emailTemplate, $mail, $mailbox, $to, $cc)
     {
 //        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
@@ -131,14 +146,15 @@ class QuotationRequestWorkflowHelper
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
-Log::info("to: " . $to);
         //save the mail to send
-        if($to) {
+        Log::info("to: " . $to);
+        Log::info("cc: " . $cc);
+        if($to != '') {
             $email = new Email();
             $email->mailbox_id = $mailbox->id;
             $email->from = $mailbox->email;
             $email->to = [$to];
-            $email->cc = [$cc];
+            $email->cc = ($cc != '') ? [$cc] : [];
             $email->bcc = [];
             $email->subject = $subject;
             $email->folder = 'sent';
@@ -154,9 +170,14 @@ Log::info("to: " . $to);
             $email->save();
 
             $email->contacts()->attach([$this->contact->id]);
+
+            //end save the mail to send
+            Log::info('mail');
+            Log::info(json_encode($mail));
+            $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
+        } else {
+            Log::info('geen to, geen mail');
         }
-        //end save the mail to send
-        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

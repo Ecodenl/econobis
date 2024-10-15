@@ -12,6 +12,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper
@@ -65,26 +66,30 @@ class QuotationRequestWorkflowHelper
 
         $mail = Mail::fromMailbox($mailbox);
 
-        if($campaignWorkflow->mail_to_contact_wf) {
+        if($campaignWorkflow->mail_to_contact_wf == 1) {
+            Log::info('to mail_to_contact_wf is geset');
             $mail->to($this->contact->primaryEmailAddress);
+            $to = $this->contact->primaryEmailAddress->email;
         }
         if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-            if($campaignWorkflow->mail_to_contact_wf) {
+            if($campaignWorkflow->mail_to_contact_wf == 1) {
                 $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
                 $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
             } else {
+                Log::info('to mail_cc_to_coach_wf is geset');
                 $mail->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
                 $cc = '';
+                $to = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
             }
         } else {
             $cc = '';
         }
 
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $cc);
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $cc, $to);
         return true;
     }
 
-    public function mailWorkflow($emailTemplate, $mail, $mailbox, $cc)
+    public function mailWorkflow($emailTemplate, $mail, $mailbox, $cc, $to)
     {
 //        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
@@ -124,16 +129,15 @@ class QuotationRequestWorkflowHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
-
+Log::info("to: " . $to);
         //save the mail to send
-        if($this->contact && $this->contact->primaryEmailAddress) {
+        if($to) {
             $email = new Email();
             $email->mailbox_id = $mailbox->id;
             $email->from = $mailbox->email;
-            $email->to = [$this->contact->primaryEmailAddress->email];
+            $email->to = [$to];
             $email->cc = [$cc];
             $email->bcc = [];
             $email->subject = $subject;

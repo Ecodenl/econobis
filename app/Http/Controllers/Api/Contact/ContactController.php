@@ -75,7 +75,7 @@ class ContactController extends Controller
         set_time_limit(180);
 
         $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
-        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplier'));
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplierCodeRef'), $request->input('fileHeader'));
     }
 
     public function importFromEnergySupplier(Request $request){

@@ -8,6 +8,7 @@ function ContactToImportsListFilter({ filter, handleChangeFilter }) {
                 <th />
                 <th />
                 <th />
+                <th />
                 <th>
                     <input
                         type="text"

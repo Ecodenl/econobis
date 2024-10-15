@@ -19,6 +19,7 @@ class GridContactToImport extends JsonResource
             'importMatchCode' => $this->importMatchCode,
             'importMatchDescription' => $this->importMatchDescription,
             'status' => $this->status,
+            'initials' => $this->initials,
             'firstName' => $this->first_name,
             'lastNamePrefix' => $this->last_name_prefix,
             'lastName' => $this->last_name,

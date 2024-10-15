@@ -12,6 +12,14 @@ function ContactToImportsListFilter({ filter, handleChangeFilter }) {
                     <input
                         type="text"
                         className="form-control input-sm"
+                        value={filter.initials}
+                        onChange={e => handleChangeFilter('initials', e.target.value)}
+                    />
+                </th>
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
                         value={filter.firstName}
                         onChange={e => handleChangeFilter('firstName', e.target.value)}
                     />

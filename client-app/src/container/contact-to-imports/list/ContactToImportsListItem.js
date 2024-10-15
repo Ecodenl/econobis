@@ -15,6 +15,7 @@ function ContactToImportsListItem({
     toggleCheckedContactUpdate,
     id,
     number,
+    initials,
     firstName,
     lastNamePrefix,
     lastName,
@@ -56,6 +57,7 @@ function ContactToImportsListItem({
                 </td>
                 <td>{importMatchDescription}</td>
                 <td>{number}</td>
+                <td>{initials}</td>
                 <td>{firstName}</td>
                 <td>{lastNamePrefix}</td>
                 <td>{lastName}</td>
@@ -115,6 +117,7 @@ function ContactToImportsListItem({
                         </td>
                         <td style={{ background: contactForImport.matchColor }}>{contactForImport.matchDescription}</td>
                         <td>{contactForImport.number}</td>
+                        <td>{contactForImport.initials}</td>
                         <td>{contactForImport.firstName}</td>
                         <td>{contactForImport.lastNamePrefix}</td>
                         <td>{contactForImport.lastName}</td>

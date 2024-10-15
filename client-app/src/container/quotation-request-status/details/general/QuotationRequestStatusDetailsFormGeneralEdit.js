@@ -118,8 +118,9 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
             emailTemplateIdWf,
             numberOfDaysToSendEmail,
             mailCcToCoachWf,
+            sendEmailReminder,
         } = this.state.quotationRequestStatus;
-
+        console.log(sendEmailReminder);
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>
@@ -138,6 +139,15 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                                 divSize={'col-sm-10'}
                                 name={'usesWf'}
                                 value={usesWf}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Verstuur herinnering'}
+                                divSize={'col-sm-10'}
+                                name={'sendEmailReminder'}
+                                value={sendEmailReminder}
                                 onChangeAction={this.handleInputChange}
                             />
                         </div>

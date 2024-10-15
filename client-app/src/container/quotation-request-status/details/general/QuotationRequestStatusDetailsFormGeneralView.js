@@ -15,6 +15,7 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
     switchToEdit,
     explanationWf,
     mailCcToCoachWf,
+    sendEmailReminder,
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -33,6 +34,15 @@ const QuotationRequestStatusDetailsFormGeneralView = ({
                             label={'Gebruikt workflow bij deze status'}
                             divSize={'col-sm-10'}
                             value={usesWf ? 'Ja' : 'Nee'}
+                            className={'col-sm-10 form-group'}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={'Verstuur herinnering'}
+                            divSize={'col-sm-10'}
+                            value={sendEmailReminder ? 'Ja' : 'Nee'}
                             className={'col-sm-10 form-group'}
                         />
                     </div>

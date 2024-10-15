@@ -17,6 +17,7 @@ export default {
                         'order',
                         'mailCcToCoachWf',
                         'opportunityActionName',
+                        'sendEmailReminder',
                     ],
                     srt: ['opportunityActionId', 'order'],
                 },

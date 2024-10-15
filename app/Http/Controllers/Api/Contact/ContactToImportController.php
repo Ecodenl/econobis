@@ -5,17 +5,16 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Address\Address;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Contact\Contact;
-use App\Eco\Contact\ContactForImport;
 use App\Eco\Contact\ContactToImport;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\Organisation\Organisation;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Helpers\Excel\ContactToImportExcelHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
-use App\Http\Resources\Contact\GridContactForImport;
 use App\Http\Resources\Contact\GridContactToImport;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -177,21 +176,30 @@ class ContactToImportController extends Controller
         if(!$energySupplier) return false;
 
         $contactNew = Contact::create([
-            'type_id' => 'person', // todo: Later komt organistion er denk ik ook nog bij ?
+            'type_id' =>$contactToImport->contact_type === 'Zakelijk' ? 'organisation' : 'person',
             'status_id' => 'importEsClient',
             'created_with' => 'econobis',
             'owner_id' => $userId,
         ]);
 
-        $person = Person::create([
-            'contact_id' => $contactNew->id,
-            'title_id' => null,
-            'initials' => '',
-            'first_name' => $contactToImport->first_name ?? '',
-            'last_name' => $contactToImport->last_name ?? '',
-            'last_name_prefix' => $contactToImport->last_name_prefix,
-            'date_of_birth' => null,
-        ]);
+        if($contactToImport->contact_type === 'Zakelijk' ){
+            Organisation::create([
+                'contact_id' => $contactNew->id,
+                'name' => $contactToImport->last_name ?? '',
+                'statutory_name' => '',
+            ]);
+        } else {
+            Person::create([
+                'contact_id' => $contactNew->id,
+                'title_id' => null,
+                'initials' => '',
+                'first_name' => $contactToImport->first_name ?? '',
+                'last_name' => $contactToImport->last_name ?? '',
+                'last_name_prefix' => $contactToImport->last_name_prefix,
+                'date_of_birth' => null,
+            ]);
+
+        }
 
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contactNew->id);

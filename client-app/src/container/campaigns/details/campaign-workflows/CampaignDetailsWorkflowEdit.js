@@ -12,24 +12,40 @@ import InputToggle from '../../../../components/form/InputToggle';
 
 function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampaignData }) {
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
+    const [emailTemplatedIdReminder, setEmailTemplateIdReminder] = useState(campaignWorkflow.emailTemplateReminder.id);
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
+    const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState(
+        campaignWorkflow.numberOfDaysToSendEmailReminder
+    );
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
     const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [errors, setErrors] = useState({
         emailTemplatedIdWf: false,
+        emailTemplatedIdReminder: false,
         numberOfDaysToSendEmail: false,
+        numberOfDaysToSendEmailReminder: false,
     });
     const [errorMessages, setErrorMessages] = useState({
         emailTemplatedIdWf: '',
+        emailTemplatedIdReminder: '',
         numberOfDaysToSendEmail: '',
+        numberOfDaysToSendEmailReminder: '',
     });
 
     function handleChangeEmailTemplateChange(event) {
         setEmailTemplateIdWf(event.target.value);
     }
 
+    function handleChangeEmailTemplateReminderChange(event) {
+        setEmailTemplateIdReminder(event.target.value);
+    }
+
     function handleNumberOfDaysToSendEmailChange(event) {
         setNumberOfDaysToSendEmail(event.target.value);
+    }
+
+    function handleNumberOfDaysToSendEmailReminderChange(event) {
+        setNumberOfDaysToSendEmailReminder(event.target.value);
     }
 
     function handleIsActiveChange(event) {
@@ -55,17 +71,27 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
 
         let errors = {
             emailTemplatedIdWf: false,
+            emailTemplatedIdReminder: false,
             numberOfDaysToSendEmail: false,
+            numberOfDaysToSendEmailReminder: false,
         };
         let errorMessages = {
             emailTemplatedIdWf: '',
+            emailTemplatedIdReminder: '',
             numberOfDaysToSendEmail: '',
+            numberOfDaysToSendEmailReminder: '',
         };
         let hasErrors = false;
 
         if (!emailTemplatedIdWf) {
             errors.emailTemplatedIdWf = true;
             errorMessages.emailTemplatedIdWf = 'E-email template is verplicht.';
+            hasErrors = true;
+        }
+
+        if (!emailTemplatedIdReminder) {
+            errors.emailTemplatedIdReminder = true;
+            errorMessages.emailTemplatedIdReminder = 'E-email template herinnering is verplicht.';
             hasErrors = true;
         }
 
@@ -82,12 +108,20 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
             hasErrors = true;
         }
+        if (numberOfDaysToSendEmailReminder < 0) {
+            errors.numberOfDaysToSendEmailReminder = true;
+            errorMessages.numberOfDaysToSendEmailReminder =
+                'Aantal dagen e-mail herinnering na deze status mag niet negatief zijn';
+            hasErrors = true;
+        }
 
         if (!hasErrors) {
             try {
                 const data = new FormData();
                 data.append('emailTemplatedIdWf', emailTemplatedIdWf);
+                data.append('emailTemplatedIdReminder', emailTemplatedIdReminder);
                 data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
+                data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
                 data.append('isActive', isActive == 1 ? 1 : 0);
                 data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
 
@@ -153,6 +187,34 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                             name={'isActive'}
                             value={Boolean(isActive)}
                             onChangeAction={handleIsActiveChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label={'Aantal dagen na aanmaken'}
+                            divSize={'col-sm-6'}
+                            type={'number'}
+                            id={'numberOfDaysToSendEmailReminder'}
+                            name={'numberOfDaysToSendEmailReminder'}
+                            value={numberOfDaysToSendEmailReminder}
+                            allowZero={true}
+                            onChangeAction={handleNumberOfDaysToSendEmailReminderChange}
+                            required={'required'}
+                            min={0}
+                            error={errors.numberOfDaysToSendEmailReminder}
+                            errorMessage={errorMessages.numberOfDaysToSendEmailReminder}
+                        />
+                        <InputSelect
+                            label={'E-email template herinnering'}
+                            size={'col-sm-6'}
+                            name={'emailTemplatedReminderId'}
+                            options={emailtemplates}
+                            value={emailTemplatedIdReminder}
+                            required={'required'}
+                            onChangeAction={handleChangeEmailTemplateReminderChange}
+                            error={errors.emailTemplatedIdReminder}
+                            errorMessage={errorMessages.emailTemplatedIdReminder}
                         />
                     </div>
 

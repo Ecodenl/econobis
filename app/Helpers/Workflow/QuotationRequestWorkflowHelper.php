@@ -48,6 +48,12 @@ class QuotationRequestWorkflowHelper
         if (!$emailTemplate) {
             return false;
         }
+
+        $emailTemplateReminder = EmailTemplate::find($campaignWorkflow->email_template_id_reminder);
+        if (!$emailTemplateReminder) {
+            return false;
+        }
+
         if(!$this->contact->primaryEmailAddress)
         {
             return false;

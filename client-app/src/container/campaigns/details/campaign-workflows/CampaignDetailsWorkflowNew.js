@@ -12,18 +12,24 @@ import InputToggle from '../../../../components/form/InputToggle';
 function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType, fetchCampaignData }) {
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
+    const [emailTemplatedIdReminder, setEmailTemplatedIdReminder] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
+    const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState('');
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         statusId: false,
         emailTemplatedIdWf: false,
+        emailTemplatedIdReminder: false,
         numberOfDaysToSendEmail: false,
+        numberOfDaysToSendEmailReminder: false,
     });
     const [errorMessages, setErrorMessages] = useState({
         statusId: '',
         emailTemplatedIdWf: '',
+        emailTemplatedIdReminder: '',
         numberOfDaysToSendEmail: '',
+        numberOfDaysToSendEmailReminder: '',
     });
 
     const [emailtemplates, setEmailtemplates] = useState([]);
@@ -73,6 +79,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
         setNumberOfDaysToSendEmail(event.target.value);
     }
 
+    function handleChangeEmailTemplateReminderChange(event) {
+        setEmailTemplatedIdReminder(event.target.value);
+    }
+
+    function handleNumberOfDaysToSendEmailReminderChange(event) {
+        setNumberOfDaysToSendEmailReminder(event.target.value);
+    }
+
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -80,11 +94,14 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             statusId: false,
             emailTemplatedIdWf: false,
             numberOfDaysToSendEmail: false,
+            numberOfDaysToSendEmailReminder: false,
         };
         let errorMessages = {
             statusId: '',
             emailTemplatedIdWf: '',
+            emailTemplatedIdReminder: '',
             numberOfDaysToSendEmail: '',
+            numberOfDaysToSendEmailReminder: '',
         };
         let hasErrors = false;
 
@@ -100,9 +117,22 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             hasErrors = true;
         }
 
+        if (!emailTemplatedIdReminder) {
+            errors.emailTemplatedIdReminder = true;
+            errorMessages.emailTemplatedIdReminder = 'E-email template herinnering is verplicht.';
+            hasErrors = true;
+        }
+
         if (!numberOfDaysToSendEmail) {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
+            hasErrors = true;
+        }
+
+        if (!numberOfDaysToSendEmailReminder) {
+            errors.numberOfDaysToSendEmailReminder = true;
+            errorMessages.numberOfDaysToSendEmailReminder =
+                'Aantal dagen e-mail herinnering na deze status is verplicht';
             hasErrors = true;
         }
 
@@ -110,11 +140,13 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             const data = new FormData();
             data.append('statusId', statusId);
             data.append('emailTemplatedIdWf', emailTemplatedIdWf);
+            data.append('emailTemplatedIdReminder', emailTemplatedIdReminder);
             data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
             data.append('workflowForType', workflowForType);
             data.append('campaignId', campaignId);
             data.append('isActive', isActive == 1 ? 1 : 0);
             data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+            data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
 
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);
@@ -191,6 +223,34 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                             name={'isActive'}
                             value={Boolean(isActive)}
                             onChangeAction={handleIsActiveChange}
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputText
+                            label={'Aantal dagen na aanmaken'}
+                            divSize={'col-sm-6'}
+                            type={'number'}
+                            id={'numberOfDaysToSendEmailReminder'}
+                            name={'numberOfDaysToSendEmailReminder'}
+                            value={numberOfDaysToSendEmailReminder}
+                            allowZero={true}
+                            onChangeAction={handleNumberOfDaysToSendEmailReminderChange}
+                            required={'required'}
+                            min={0}
+                            error={errors.numberOfDaysToSendEmailReminder}
+                            errorMessage={errorMessages.numberOfDaysToSendEmailReminder}
+                        />
+                        <InputSelect
+                            label={'E-email template herinnering'}
+                            size={'col-sm-6'}
+                            name={'emailTemplatedIdReminder'}
+                            options={emailtemplates}
+                            value={emailTemplatedIdReminder}
+                            required={'required'}
+                            onChangeAction={handleChangeEmailTemplateReminderChange}
+                            error={errors.emailTemplatedIdReminder}
+                            errorMessage={errorMessages.emailTemplatedIdReminder}
                         />
                     </div>
 

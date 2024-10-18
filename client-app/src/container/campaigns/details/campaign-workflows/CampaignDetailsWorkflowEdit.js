@@ -13,8 +13,8 @@ import InputToggle from '../../../../components/form/InputToggle';
 function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampaignData }) {
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
-    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
     const [mailToContactWf, setMailToContactWf] = useState(campaignWorkflow.mailToContactWf);
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
     const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [errors, setErrors] = useState({
         emailTemplatedIdWf: false,
@@ -39,12 +39,12 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         setIsActive(event.target.checked);
     }
 
-    function handleMailCcToCoachWfChange(event) {
-        setMailCcToCoachWf(event.target.checked);
-    }
-
     function handleMailToContactWfChange(event) {
         setMailToContactWf(event.target.checked);
+    }
+
+    function handleMailCcToCoachWfChange(event) {
+        setMailCcToCoachWf(event.target.checked);
     }
 
     const [emailtemplates, setEmailtemplates] = useState([]);
@@ -94,7 +94,7 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         if (mailCcToCoachWf == 0 && mailToContactWf == 0) {
             errors.mailCcToCoachWfOrMailToContactWf = true;
             errorMessages.mailCcToCoachWfOrMailToContactWf =
-                'Minimaal één van de volgende opties is verplicht: Email cc naar coach en/of Email naar bewoner';
+                'Minimaal één van de volgende opties is verplicht: Email bewoner en/of Email coach';
             hasErrors = true;
         }
 
@@ -104,8 +104,8 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                 data.append('emailTemplatedIdWf', emailTemplatedIdWf);
                 data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
                 data.append('isActive', isActive == 1 ? 1 : 0);
-                data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
                 data.append('mailToContactWf', mailToContactWf == 1 ? 1 : 0);
+                data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
 
                 await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
 

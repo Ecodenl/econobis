@@ -64,36 +64,30 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-//        if($campaignWorkflow->mail_to_contact_wf == 1) {
-//            Log::info('to mail_to_contact_wf is geset');
-//            $to = $this->contact->primaryEmailAddress->email;
-//            $mail->to($this->contact->primaryEmailAddress);
-//        }
         $to = null;
         $cc = null;
         if($campaignWorkflow->mail_to_contact_wf == 1) {
-            Log::info('to mail_to_contact_wf is geset');
+//            Log::info('to mail_to_contact_wf is geset');
             $to = $this->contact->primaryEmailAddress;
-            if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-                Log::info('cc mail_cc_to_coach_wf is geset');
+            if ($campaignWorkflow->mail_cc_to_coach_wf && $this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+//                Log::info('cc mail_cc_to_coach_wf is geset');
                 $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
             }
         } else {
-            if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-                Log::info('to mail_cc_to_coach_wf is geset');
+            if ($campaignWorkflow->mail_cc_to_coach_wf && $this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+//                Log::info('to mail_cc_to_coach_wf is geset');
                 $to = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
             }
         }
-        if(!$to && !$cc) {
-            Log::info('geen to en geen cc');
-        }
+//        if(!$to && !$cc) {
+//            Log::info('geen to en geen cc');
+//        }
 
         if(!$to) return false;
 
         $mail = Mail::fromMailbox($mailbox)
             ->to($to);
         $toEmail = $to->email;
-
         $ccEmail = '';
         if($cc) {
             $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
@@ -146,9 +140,10 @@ class QuotationRequestWorkflowHelper
 
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
+
         //save the mail to send
-        Log::info("to: " . $to);
-        Log::info("cc: " . $cc);
+//        Log::info("to: " . $to);
+//        Log::info("cc: " . $cc);
         if($to != '') {
             $email = new Email();
             $email->mailbox_id = $mailbox->id;
@@ -172,11 +167,11 @@ class QuotationRequestWorkflowHelper
             $email->contacts()->attach([$this->contact->id]);
 
             //end save the mail to send
-            Log::info('mail');
-            Log::info(json_encode($mail));
+//            Log::info('mail');
+//            Log::info(json_encode($mail));
             $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
-        } else {
-            Log::info('geen to, geen mail');
+//        } else {
+//            Log::info('geen to, geen mail');
         }
     }
 

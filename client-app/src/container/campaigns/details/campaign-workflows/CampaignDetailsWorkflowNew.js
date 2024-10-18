@@ -13,8 +13,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
     const [statusId, setStatusId] = useState('');
     const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
-    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'opportunity' ? false : true);
     const [mailToContactWf, setMailToContactWf] = useState(workflowForType === 'opportunity' ? false : true);
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'opportunity' ? false : true);
     const [isActive, setIsActive] = useState(true);
     const [errors, setErrors] = useState({
         statusId: false,
@@ -118,7 +118,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
         if (mailCcToCoachWf == false && mailToContactWf == false) {
             errors.mailCcToCoachWfOrMailToContactWf = true;
             errorMessages.mailCcToCoachWfOrMailToContactWf =
-                'Minimaal één van de volgende opties is verplicht: Email cc naar coach en/of Email naar bewoner';
+                'Minimaal één van de volgende opties is verplicht: Email bewoner en/of Email coach';
             hasErrors = true;
         }
 
@@ -130,8 +130,8 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
             data.append('workflowForType', workflowForType);
             data.append('campaignId', campaignId);
             data.append('isActive', isActive == 1 ? 1 : 0);
-            data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
             data.append('mailToContactWf', mailToContactWf == 1 ? 1 : 0);
+            data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
 
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);

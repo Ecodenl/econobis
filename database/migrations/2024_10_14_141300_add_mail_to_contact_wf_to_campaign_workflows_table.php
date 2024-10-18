@@ -14,7 +14,7 @@ class AddMailToContactWfToCampaignWorkflowsTable extends Migration
     public function up()
     {
         Schema::table('campaign_workflows', function (Blueprint $table) {
-            $table->boolean('mail_to_contact_wf')->after('mail_cc_to_coach_wf')->default(false);
+            $table->boolean('mail_to_contact_wf')->after('mail_cc_to_coach_wf')->default(true);
         });
     }
 

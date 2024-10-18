@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
+import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { browserHistory, hashHistory } from 'react-router';
-import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
-import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
+import PortalFreeFieldsPagesDetailsFormGeneral from './general/PortalFreeFieldsPagesDetailsFormGeneral';
+import PortalFreeFieldsPagesDeleteItem from '../list/PortalFreeFieldsPagesDeleteItem';
 import { isEmpty } from 'lodash';
 
-function FreeFieldDetailsApp(props) {
-    const [freeField, setFreeField] = useState({});
+function PortalFreeFieldsPagesDetailsApp(props) {
+    const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -23,13 +23,13 @@ function FreeFieldDetailsApp(props) {
     }
 
     useEffect(() => {
-        fetchFreeField();
+        fetchPortalFreeFieldsPage();
     }, []);
 
-    function deleteFreeFieldsField(freeField) {
-        FreeFieldsAPI.deleteFreeFieldsField(freeField)
+    function deletePortalFreeFieldsPage(portalFreeFieldsPage) {
+        PortalFreeFieldsAPI.deletePortalFreeFieldsPage(portalFreeFieldsPage)
             .then(() => {
-                hashHistory.push(`/vrije-velden`);
+                hashHistory.push(`/vrije-velden-portaal-pagina`);
             })
             .catch(error => {
                 console.log(error);
@@ -37,11 +37,11 @@ function FreeFieldDetailsApp(props) {
             });
     }
 
-    function fetchFreeField() {
+    function fetchPortalFreeFieldsPage() {
         setIsLoading(true);
-        FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
+        PortalFreeFieldsAPI.fetchPortalFreeFieldsPageDetails(props.params.id)
             .then(data => {
-                setFreeField(data);
+                setPortalFreeFieldsPage(data);
                 setIsLoading(false);
                 setHasError(false);
             })
@@ -54,11 +54,11 @@ function FreeFieldDetailsApp(props) {
 
     let loadingText = '';
     if (hasError) {
-        loadingText = 'Fout bij het ophalen van het vrije veld.';
+        loadingText = 'Fout bij het ophalen van het vrije velden portaal pagina.';
     } else if (isLoading) {
         loadingText = 'Gegevens aan het laden.';
-    } else if (isEmpty(freeField)) {
-        loadingText = 'Geen vrij veld gevonden!';
+    } else if (isEmpty(portalFreeFieldsPage)) {
+        loadingText = "Geen vrije velden portaal pagina's gevonden!";
     }
 
     return isLoading || hasError ? (
@@ -73,14 +73,12 @@ function FreeFieldDetailsApp(props) {
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                                        {!freeField.hasFreeFieldsFieldRecords && (
-                                            <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
-                                        )}
+                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <h4 className="text-center">
-                                        Vrij veld: {freeField.table.name} / {freeField.fieldName}
+                                        Vrije velden portaal pagina: {portalFreeFieldsPage.name}
                                     </h4>
                                 </div>
                                 <div className="col-md-4" />
@@ -90,21 +88,24 @@ function FreeFieldDetailsApp(props) {
                 </div>
 
                 <div className="col-md-12">
-                    <FreeFieldDetailsFormGeneral freeField={freeField} fetchFreeField={fetchFreeField} />
+                    <PortalFreeFieldsPagesDetailsFormGeneral
+                        portalFreeFieldsPage={portalFreeFieldsPage}
+                        fetchPortalFreeFieldsPage={fetchPortalFreeFieldsPage}
+                    />
                 </div>
 
                 <div className="col-md-12 margin-10-top"></div>
             </div>
             {showDeleteItem && (
-                <FreeFieldsDeleteItem
+                <PortalFreeFieldsPagesDeleteItem
                     closeDeleteItemModal={closeDeleteItemModal}
-                    deleteFreeFieldsField={deleteFreeFieldsField}
-                    description={freeField.fieldName}
-                    id={freeField.id}
+                    deletePortalFreeFieldsPage={deletePortalFreeFieldsPage}
+                    description={portalFreeFieldsPage.name}
+                    id={portalFreeFieldsPage.id}
                 />
             )}
         </div>
     );
 }
 
-export default FreeFieldDetailsApp;
+export default PortalFreeFieldsPagesDetailsApp;

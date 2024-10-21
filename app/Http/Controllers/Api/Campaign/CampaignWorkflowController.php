@@ -35,14 +35,15 @@ class CampaignWorkflowController extends ApiController
 
         $data = $requestInput
             ->integer('statusId')->validate('required')->alias('status_id')->next()
-            ->integer('emailTemplatedIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
-            ->integer('emailTemplatedIdReminder')->validate('required|exists:email_templates,id')->alias('email_template_id_reminder')->next()
+            ->integer('emailTemplateIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
             ->integer('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
             ->string('workflowForType')->validate('required')->alias('workflow_for_type')->next()
             ->integer('campaignId')->validate('required')->alias('campaign_id')->next()
             ->boolean('isActive')->validate('required')->alias('is_active')->next()
             ->boolean('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
-            ->integer('numberOfDaysToSendEmailReminder')->validate('required|numeric')->alias('number_of_days_to_send_email_reminder')->next()
+            ->boolean('mailReminderToCoachWf')->validate('required')->alias('mail_reminder_to_coach_wf')->next()
+            ->integer('emailTemplateIdReminder')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_reminder')->next()
+            ->integer('numberOfDaysToSendEmailReminder')->validate('nullable|numeric')->onEmpty(0)->whenMissing(0)->alias('number_of_days_to_send_email_reminder')->next()
             ->get();
 
         $campaignworkflow = new CampaignWorkflow();
@@ -53,12 +54,13 @@ class CampaignWorkflowController extends ApiController
         }
         $campaignworkflow->workflow_for_type = $data['workflow_for_type'];
         $campaignworkflow->email_template_id_wf = $data['email_template_id_wf'];
-        $campaignworkflow->email_template_id_reminder = $data['email_template_id_reminder'];
         $campaignworkflow->number_of_days_to_send_email = $data['number_of_days_to_send_email'];
-        $campaignworkflow->number_of_days_to_send_email_reminder = $data['number_of_days_to_send_email_reminder'];
         $campaignworkflow->campaign_id = $data['campaign_id'];
         $campaignworkflow->is_active = $data['is_active'];
         $campaignworkflow->mail_cc_to_coach_wf = $data['mail_cc_to_coach_wf'];
+        $campaignworkflow->mail_reminder_to_coach_wf = $data['mail_reminder_to_coach_wf'];
+        $campaignworkflow->email_template_id_reminder = $data['email_template_id_reminder'];
+        $campaignworkflow->number_of_days_to_send_email_reminder = $data['number_of_days_to_send_email_reminder'];
         $campaignworkflow->save();
 
         return FullCampaignWorkflow::make($campaignworkflow->fresh());
@@ -69,20 +71,22 @@ class CampaignWorkflowController extends ApiController
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
-            ->integer('emailTemplatedIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
-            ->integer('emailTemplatedIdReminder')->validate('required|exists:email_templates,id')->alias('email_template_id_reminder')->next()
+            ->integer('emailTemplateIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
             ->integer('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
-            ->integer('isActive')->validate('required')->alias('is_active')->next()
-            ->integer('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
-            ->integer('numberOfDaysToSendEmailReminder')->validate('required|numeric')->alias('number_of_days_to_send_email_reminder')->next()
+            ->boolean('isActive')->validate('required')->alias('is_active')->next()
+            ->boolean('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
+            ->boolean('mailReminderToCoachWf')->validate('required')->alias('mail_reminder_to_coach_wf')->next()
+            ->integer('emailTemplateIdReminder')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_reminder')->next()
+            ->integer('numberOfDaysToSendEmailReminder')->validate('nullable|numeric')->onEmpty(0)->whenMissing(0)->alias('number_of_days_to_send_email_reminder')->next()
             ->get();
 
         $campaignWorkflow->email_template_id_wf = $data['email_template_id_wf'];
-        $campaignWorkflow->email_template_id_reminder = $data['email_template_id_reminder'];
         $campaignWorkflow->number_of_days_to_send_email = $data['number_of_days_to_send_email'];
         $campaignWorkflow->is_active = $data['is_active'];
         $campaignWorkflow->mail_cc_to_coach_wf = $data['mail_cc_to_coach_wf'];
-        $campaignWorkflow->number_of_days_to_send_email_reminder = $data['number_of_days_to_send_email_reminder'];
+        $campaignWorkflow->mail_reminder_to_coach_wf = $data['mail_reminder_to_coach_wf'];
+        $campaignWorkflow->email_template_id_reminder = $data['email_template_id_reminder'] ?: null;
+        $campaignWorkflow->number_of_days_to_send_email_reminder = $data['number_of_days_to_send_email_reminder'] ?: 0;
         $campaignWorkflow->save();
 
         return FullCampaignWorkflow::make($campaignWorkflow->fresh());

@@ -120,7 +120,8 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
             mailCcToCoachWf,
             sendEmailReminder,
         } = this.state.quotationRequestStatus;
-        console.log(sendEmailReminder);
+        // console.log(sendEmailReminder);
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel>

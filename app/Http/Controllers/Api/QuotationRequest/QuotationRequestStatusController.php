@@ -23,7 +23,6 @@ class QuotationRequestStatusController extends Controller
         // todo WM: opschonen velden email_template_id_wf, mail_cc_to_coach_wf en number_of_days_to_send_email
         $data = $input->boolean('usesWf')->alias('uses_wf')->next()
             ->integer('emailTemplateIdWf')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_wf')->next()
-            ->integer('emailTemplateIdReminder')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_reminder')->next()
             ->boolean('mailCcToCoachWf')->alias('mail_cc_to_coach_wf')->next()
             ->integer('numberOfDaysToSendEmail')->alias('number_of_days_to_send_email')->next()
             ->boolean('sendEmailReminder')->alias('send_email_reminder')->next()

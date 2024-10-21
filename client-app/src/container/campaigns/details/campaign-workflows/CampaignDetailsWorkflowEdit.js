@@ -11,23 +11,26 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
 function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampaignData }) {
-    const [emailTemplatedIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
-    const [emailTemplatedIdReminder, setEmailTemplateIdReminder] = useState(campaignWorkflow.emailTemplateReminder.id);
+    const [emailTemplateIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
+    const [emailTemplateIdReminder, setEmailTemplateIdReminder] = useState(
+        campaignWorkflow.emailTemplateReminder ? campaignWorkflow.emailTemplateReminder.id : ''
+    );
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
     const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState(
         campaignWorkflow.numberOfDaysToSendEmailReminder
     );
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
+    const [mailReminderToCoachWf, setMailReminderToCoachWf] = useState(campaignWorkflow.mailReminderToCoachWf);
     const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [errors, setErrors] = useState({
-        emailTemplatedIdWf: false,
-        emailTemplatedIdReminder: false,
+        emailTemplateIdWf: false,
+        emailTemplateIdReminder: false,
         numberOfDaysToSendEmail: false,
         numberOfDaysToSendEmailReminder: false,
     });
     const [errorMessages, setErrorMessages] = useState({
-        emailTemplatedIdWf: '',
-        emailTemplatedIdReminder: '',
+        emailTemplateIdWf: '',
+        emailTemplateIdReminder: '',
         numberOfDaysToSendEmail: '',
         numberOfDaysToSendEmailReminder: '',
     });
@@ -55,6 +58,9 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
     function handleMailCcToCoachWfChange(event) {
         setMailCcToCoachWf(event.target.checked);
     }
+    function handleMailReminderToCoachWfChange(event) {
+        setMailReminderToCoachWf(event.target.checked);
+    }
 
     const [emailtemplates, setEmailtemplates] = useState([]);
 
@@ -70,28 +76,28 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         event.preventDefault();
 
         let errors = {
-            emailTemplatedIdWf: false,
-            emailTemplatedIdReminder: false,
+            emailTemplateIdWf: false,
+            emailTemplateIdReminder: false,
             numberOfDaysToSendEmail: false,
             numberOfDaysToSendEmailReminder: false,
         };
         let errorMessages = {
-            emailTemplatedIdWf: '',
-            emailTemplatedIdReminder: '',
+            emailTemplateIdWf: '',
+            emailTemplateIdReminder: '',
             numberOfDaysToSendEmail: '',
             numberOfDaysToSendEmailReminder: '',
         };
         let hasErrors = false;
 
-        if (!emailTemplatedIdWf) {
-            errors.emailTemplatedIdWf = true;
-            errorMessages.emailTemplatedIdWf = 'E-email template is verplicht.';
+        if (!emailTemplateIdWf) {
+            errors.emailTemplateIdWf = true;
+            errorMessages.emailTemplateIdWf = 'E-email template is verplicht.';
             hasErrors = true;
         }
 
-        if (!emailTemplatedIdReminder) {
-            errors.emailTemplatedIdReminder = true;
-            errorMessages.emailTemplatedIdReminder = 'E-email template herinnering is verplicht.';
+        if (Boolean(mailReminderToCoachWf) === true && !emailTemplateIdReminder) {
+            errors.emailTemplateIdReminder = true;
+            errorMessages.emailTemplateIdReminder = 'E-email template herinnering is verplicht.';
             hasErrors = true;
         }
 
@@ -99,13 +105,20 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status is verplicht';
             hasErrors = true;
-        } else {
-            console.log('numberOfDaysToSendEmail');
-            console.log(numberOfDaysToSendEmail);
         }
         if (numberOfDaysToSendEmail < 0) {
             errors.numberOfDaysToSendEmail = true;
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
+            hasErrors = true;
+        }
+
+        if (
+            Boolean(mailReminderToCoachWf) === true &&
+            (numberOfDaysToSendEmailReminder === null || numberOfDaysToSendEmailReminder === '')
+        ) {
+            errors.numberOfDaysToSendEmailReminder = true;
+            errorMessages.numberOfDaysToSendEmailReminder =
+                'Aantal dagen e-mail herinnering na deze status is verplicht';
             hasErrors = true;
         }
         if (numberOfDaysToSendEmailReminder < 0) {
@@ -118,12 +131,13 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         if (!hasErrors) {
             try {
                 const data = new FormData();
-                data.append('emailTemplatedIdWf', emailTemplatedIdWf);
-                data.append('emailTemplatedIdReminder', emailTemplatedIdReminder);
+                data.append('emailTemplateIdWf', emailTemplateIdWf);
                 data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
-                data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
                 data.append('isActive', isActive == 1 ? 1 : 0);
                 data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
+                data.append('mailReminderToCoachWf', mailReminderToCoachWf == 1 ? 1 : 0);
+                data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
+                data.append('emailTemplateIdReminder', emailTemplateIdReminder);
 
                 await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
 
@@ -145,16 +159,25 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             <Panel className={'panel-grey'}>
                 <PanelBody>
                     <div className="row">
+                        <div className="form-group col-sm-6" />
+                        <InputToggle
+                            label={'Actief'}
+                            name={'isActive'}
+                            value={Boolean(isActive)}
+                            onChangeAction={handleIsActiveChange}
+                        />
+                    </div>
+                    <div className="row">
                         <InputSelect
                             label={'E-email template'}
                             size={'col-sm-6'}
-                            name={'emailTemplatedWfId'}
+                            name={'emailTemplateIdWf'}
                             options={emailtemplates}
-                            value={emailTemplatedIdWf}
+                            value={emailTemplateIdWf}
                             required={'required'}
                             onChangeAction={handleChangeEmailTemplateChange}
-                            error={errors.emailTemplatedIdWf}
-                            errorMessage={errorMessages.emailTemplatedIdWf}
+                            error={errors.emailTemplateIdWf}
+                            errorMessage={errorMessages.emailTemplateIdWf}
                         />
 
                         <InputText
@@ -173,50 +196,57 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                         />
                     </div>
 
-                    <div className="row">
-                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
-                            <InputToggle
-                                label={'Email cc naar coach'}
-                                name={'mailCcToCoachWf'}
-                                value={Boolean(mailCcToCoachWf)}
-                                onChangeAction={handleMailCcToCoachWfChange}
-                            />
-                        ) : null}
-                        <InputToggle
-                            label={'Actief'}
-                            name={'isActive'}
-                            value={Boolean(isActive)}
-                            onChangeAction={handleIsActiveChange}
-                        />
-                    </div>
+                    {campaignWorkflow.workflowForType === 'quotationrequest' ? (
+                        <>
+                            <div className="row">
+                                <div className="form-group col-sm-6" />
+                                <InputToggle
+                                    label={'Email cc naar coach'}
+                                    name={'mailCcToCoachWf'}
+                                    value={Boolean(mailCcToCoachWf)}
+                                    onChangeAction={handleMailCcToCoachWfChange}
+                                />
+                            </div>
 
-                    <div className="row">
-                        <InputText
-                            label={'Aantal dagen na aanmaken'}
-                            divSize={'col-sm-6'}
-                            type={'number'}
-                            id={'numberOfDaysToSendEmailReminder'}
-                            name={'numberOfDaysToSendEmailReminder'}
-                            value={numberOfDaysToSendEmailReminder}
-                            allowZero={true}
-                            onChangeAction={handleNumberOfDaysToSendEmailReminderChange}
-                            required={'required'}
-                            min={0}
-                            error={errors.numberOfDaysToSendEmailReminder}
-                            errorMessage={errorMessages.numberOfDaysToSendEmailReminder}
-                        />
-                        <InputSelect
-                            label={'E-email template herinnering'}
-                            size={'col-sm-6'}
-                            name={'emailTemplatedReminderId'}
-                            options={emailtemplates}
-                            value={emailTemplatedIdReminder}
-                            required={'required'}
-                            onChangeAction={handleChangeEmailTemplateReminderChange}
-                            error={errors.emailTemplatedIdReminder}
-                            errorMessage={errorMessages.emailTemplatedIdReminder}
-                        />
-                    </div>
+                            <div className="row">
+                                <div className="form-group col-sm-6" />
+                                <InputToggle
+                                    label={'Herinnering Email coach'}
+                                    name={'mailReminderToCoachWf'}
+                                    value={Boolean(mailReminderToCoachWf)}
+                                    onChangeAction={handleMailReminderToCoachWfChange}
+                                />
+                            </div>
+
+                            <div className="row">
+                                <InputSelect
+                                    label={'E-email template herinnering'}
+                                    size={'col-sm-6'}
+                                    name={'emailTemplateIdReminder'}
+                                    options={emailtemplates}
+                                    value={emailTemplateIdReminder}
+                                    required={mailReminderToCoachWf ? 'required' : ''}
+                                    onChangeAction={handleChangeEmailTemplateReminderChange}
+                                    error={errors.emailTemplateIdReminder}
+                                    errorMessage={errorMessages.emailTemplateIdReminder}
+                                />
+                                <InputText
+                                    label={'Aantal dagen na aanmaken'}
+                                    divSize={'col-sm-6'}
+                                    type={'number'}
+                                    id={'numberOfDaysToSendEmailReminder'}
+                                    name={'numberOfDaysToSendEmailReminder'}
+                                    value={numberOfDaysToSendEmailReminder}
+                                    allowZero={true}
+                                    onChangeAction={handleNumberOfDaysToSendEmailReminderChange}
+                                    required={mailReminderToCoachWf ? 'required' : ''}
+                                    min={0}
+                                    error={errors.numberOfDaysToSendEmailReminder}
+                                    errorMessage={errorMessages.numberOfDaysToSendEmailReminder}
+                                />
+                            </div>
+                        </>
+                    ) : null}
 
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

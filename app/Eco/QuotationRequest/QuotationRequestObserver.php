@@ -233,6 +233,10 @@ class QuotationRequestObserver
                     $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                     $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
                 }
+                if ($quotationRequest->status->uses_wf && $quotationRequest->status->send_email_reminder && $campaignWorkflow && $campaignWorkflow->is_active && $campaignWorkflow->number_of_days_to_send_email_reminder === 0){
+                    $quotationRequestflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
+                    $quotationRequestflowHelper->processWorkflowEmailReminder($campaignWorkflow);
+                }
             }
         }
     }

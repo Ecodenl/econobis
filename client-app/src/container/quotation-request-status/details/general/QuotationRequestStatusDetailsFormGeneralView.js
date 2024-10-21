@@ -10,11 +10,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 const QuotationRequestStatusDetailsFormGeneralView = ({
     name,
     usesWf,
-    emailTemplateWorkflow,
-    numberOfDaysToSendEmail,
     switchToEdit,
     explanationWf,
-    mailCcToCoachWf,
     sendEmailReminder,
 }) => {
     return (

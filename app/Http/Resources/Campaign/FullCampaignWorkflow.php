@@ -28,12 +28,13 @@ class FullCampaignWorkflow extends JsonResource
             'quotationRequestStatusId' => $this->quotation_request_status_id,
             'numberOfDaysToSendEmail' => $this->number_of_days_to_send_email,
             'emailTemplateIdWf' => $this->email_template_id_wf,
-            'emailTemplateIdReminder' => $this->email_template_id_reminder,
+            'emailTemplateReminder' => $this->emailTemplateReminder,
             'mailCcToCoachWf' => $this->mail_cc_to_coach_wf,
+            'mailReminderToCoachWf' => $this->mail_reminder_to_coach_wf,
             'isActive' => $this->is_active,
             'status' => $this->workflow_for_type === 'opportunity' ? GenericResource::make($this->whenLoaded('opportunityStatus')) : GenericResource::make($this->whenLoaded('quotationRequestStatus')),
             'emailTemplateWorkflow' => $this->emailTemplateWorkflow,
-            'emailTemplateReminder' => $this->emailTemplateReminder,
+            'emailTemplateIdReminder' => $this->email_template_id_reminder,
             'numberOfDaysToSendEmailReminder' => $this->number_of_days_to_send_email_reminder,
         ];
     }

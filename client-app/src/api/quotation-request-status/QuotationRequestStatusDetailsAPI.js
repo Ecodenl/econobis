@@ -14,7 +14,7 @@ const defaultFields = {
         'mailCcToCoachWf',
         'sendEmailReminder',
     ],
-    rlt: { emailTemplateWorkflow: [], emailTemplateReminder: [] },
+    rlt: { emailTemplateWorkflow: [] },
 };
 
 export default {

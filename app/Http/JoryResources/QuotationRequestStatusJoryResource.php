@@ -24,7 +24,6 @@ class QuotationRequestStatusJoryResource extends JoryResource
         $this->field('name')->filterable()->sortable();
         $this->field('uses_wf')->filterable()->sortable();
         $this->field('email_template_id_wf')->filterable()->sortable();
-        $this->field('email_template_id_reminder')->filterable()->sortable();
         $this->field('mail_cc_to_coach_wf')->filterable()->sortable();
         $this->field('number_of_days_to_send_email')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
@@ -35,7 +34,6 @@ class QuotationRequestStatusJoryResource extends JoryResource
 
         // Relations
         $this->relation('emailTemplateWorkflow');
-        $this->relation('emailTemplateReminder');
 
         // Attributes
         $this->field('opportunity_action_name')->filterable()->sortable();

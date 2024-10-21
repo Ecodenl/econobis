@@ -32,11 +32,6 @@ class QuotationRequestStatus extends Model
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf');
     }
 
-    public function emailTemplateReminder()
-    {
-        return $this->belongsTo(EmailTemplate::class, 'email_template_id_reminder');
-    }
-
     public function opportunityAction()
     {
         return $this->belongsTo(OpportunityAction::class, 'opportunity_action_id');

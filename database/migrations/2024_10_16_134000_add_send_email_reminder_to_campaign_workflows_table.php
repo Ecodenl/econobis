@@ -14,12 +14,14 @@ class AddSendEmailReminderToCampaignWorkflowsTable extends Migration
     public function up()
     {
         Schema::table('campaign_workflows', function (Blueprint $table) {
+            $table->boolean('mail_reminder_to_coach_wf')->after('mail_cc_to_coach_wf')->default(false);
             $table->unsignedInteger('email_template_id_reminder')->nullable()->after('email_template_id_wf');
             $table->unsignedInteger('number_of_days_to_send_email_reminder')->default(0)->after('email_template_id_reminder');
             $table->foreign('email_template_id_reminder')
                 ->references('id')->on('email_templates')
                 ->onDelete('restrict');
         });
+
     }
 
     /**
@@ -33,6 +35,7 @@ class AddSendEmailReminderToCampaignWorkflowsTable extends Migration
             $table->dropForeign(['email_template_id_reminder']);
             $table->dropColumn('number_of_days_to_send_email_reminder');
             $table->dropColumn('email_template_id_reminder');
+            $table->dropColumn('mail_reminder_to_coach_wf');
         });
     }
 }

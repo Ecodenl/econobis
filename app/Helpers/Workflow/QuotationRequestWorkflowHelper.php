@@ -140,7 +140,8 @@ class QuotationRequestWorkflowHelper
 
         $mail = Mail::fromMailbox($mailbox)
             ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, null);
+
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddres->email, '');
 
         return true;
     }
@@ -192,8 +193,8 @@ class QuotationRequestWorkflowHelper
         $email = new Email();
         $email->mailbox_id = $mailbox->id;
         $email->from = $mailbox->email;
-        $email->to = $to;
-        $email->cc = $cc ? [$cc] : [];
+        $email->to = [$to];
+        $email->cc = ($cc != '') ? [$cc] : [];
         $email->bcc = [];
         $email->subject = $subject;
         $email->folder = 'sent';
@@ -210,13 +211,10 @@ class QuotationRequestWorkflowHelper
 
         $email->contacts()->attach([$this->contact->id]);
 
-            //end save the mail to send
-//            Log::info('mail');
-//            Log::info(json_encode($mail));
-            $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
-//        } else {
-//            Log::info('geen to, geen mail');
-        }
+        //end save the mail to send
+//        Log::info('mail');
+//        Log::info(json_encode($mail));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

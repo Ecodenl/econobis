@@ -11,17 +11,17 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
 function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampaignData }) {
+    const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [emailTemplateIdWf, setEmailTemplateIdWf] = useState(campaignWorkflow.emailTemplateWorkflow.id);
+    const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
+    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
+    const [mailReminderToCoachWf, setMailReminderToCoachWf] = useState(campaignWorkflow.mailReminderToCoachWf);
     const [emailTemplateIdReminder, setEmailTemplateIdReminder] = useState(
         campaignWorkflow.emailTemplateReminder ? campaignWorkflow.emailTemplateReminder.id : ''
     );
-    const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState(campaignWorkflow.numberOfDaysToSendEmail);
     const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState(
         campaignWorkflow.numberOfDaysToSendEmailReminder
     );
-    const [mailCcToCoachWf, setMailCcToCoachWf] = useState(campaignWorkflow.mailCcToCoachWf);
-    const [mailReminderToCoachWf, setMailReminderToCoachWf] = useState(campaignWorkflow.mailReminderToCoachWf);
-    const [isActive, setIsActive] = useState(campaignWorkflow.isActive);
     const [errors, setErrors] = useState({
         emailTemplateIdWf: false,
         emailTemplateIdReminder: false,
@@ -114,11 +114,13 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
 
         if (
             Boolean(mailReminderToCoachWf) === true &&
-            (numberOfDaysToSendEmailReminder === null || numberOfDaysToSendEmailReminder === '')
+            (numberOfDaysToSendEmailReminder === null ||
+                numberOfDaysToSendEmailReminder === '' ||
+                numberOfDaysToSendEmailReminder == 0)
         ) {
             errors.numberOfDaysToSendEmailReminder = true;
             errorMessages.numberOfDaysToSendEmailReminder =
-                'Aantal dagen e-mail herinnering na deze status is verplicht';
+                'Aantal dagen e-mail herinnering na deze status is verplicht en moet minimaal 1 zijn';
             hasErrors = true;
         }
         if (numberOfDaysToSendEmailReminder < 0) {
@@ -131,13 +133,13 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         if (!hasErrors) {
             try {
                 const data = new FormData();
+                data.append('isActive', isActive == 1 ? 1 : 0);
                 data.append('emailTemplateIdWf', emailTemplateIdWf);
                 data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
-                data.append('isActive', isActive == 1 ? 1 : 0);
                 data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
                 data.append('mailReminderToCoachWf', mailReminderToCoachWf == 1 ? 1 : 0);
-                data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
                 data.append('emailTemplateIdReminder', emailTemplateIdReminder);
+                data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
 
                 await CampaignDetailsAPI.editCampaignWorkflow(campaignWorkflow.id, data);
 

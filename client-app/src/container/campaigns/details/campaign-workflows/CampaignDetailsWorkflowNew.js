@@ -11,13 +11,13 @@ import InputToggle from '../../../../components/form/InputToggle';
 
 function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType, fetchCampaignData }) {
     const [statusId, setStatusId] = useState('');
+    const [isActive, setIsActive] = useState(true);
     const [emailTemplateIdWf, setEmailTemplateIdWf] = useState('');
-    const [emailTemplateIdReminder, setEmailTemplateIdReminder] = useState('');
     const [numberOfDaysToSendEmail, setNumberOfDaysToSendEmail] = useState('');
-    const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState('');
     const [mailCcToCoachWf, setMailCcToCoachWf] = useState(workflowForType === 'quotationrequest' ? true : false);
     const [mailReminderToCoachWf, setMailReminderToCoachWf] = useState(false);
-    const [isActive, setIsActive] = useState(true);
+    const [emailTemplateIdReminder, setEmailTemplateIdReminder] = useState('');
+    const [numberOfDaysToSendEmailReminder, setNumberOfDaysToSendEmailReminder] = useState(1);
     const [errors, setErrors] = useState({
         statusId: false,
         emailTemplateIdWf: false,
@@ -140,11 +140,13 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
 
         if (
             Boolean(mailReminderToCoachWf) === true &&
-            (numberOfDaysToSendEmailReminder === null || numberOfDaysToSendEmailReminder === '')
+            (numberOfDaysToSendEmailReminder === null ||
+                numberOfDaysToSendEmailReminder === '' ||
+                numberOfDaysToSendEmailReminder == 0)
         ) {
             errors.numberOfDaysToSendEmailReminder = true;
             errorMessages.numberOfDaysToSendEmailReminder =
-                'Aantal dagen e-mail herinnering na deze status is verplicht';
+                'Aantal dagen e-mail herinnering na deze status is verplicht en moet minimaal 1 zijn';
             hasErrors = true;
         }
         if (numberOfDaysToSendEmailReminder < 0) {
@@ -156,16 +158,16 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
 
         if (!hasErrors) {
             const data = new FormData();
+            data.append('campaignId', campaignId);
             data.append('statusId', statusId);
+            data.append('isActive', isActive == 1 ? 1 : 0);
             data.append('emailTemplateIdWf', emailTemplateIdWf);
             data.append('numberOfDaysToSendEmail', numberOfDaysToSendEmail);
             data.append('workflowForType', workflowForType);
-            data.append('campaignId', campaignId);
-            data.append('isActive', isActive == 1 ? 1 : 0);
             data.append('mailCcToCoachWf', mailCcToCoachWf == 1 ? 1 : 0);
             data.append('mailReminderToCoachWf', mailReminderToCoachWf == 1 ? 1 : 0);
-            data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
             data.append('emailTemplateIdReminder', emailTemplateIdReminder);
+            data.append('numberOfDaysToSendEmailReminder', numberOfDaysToSendEmailReminder);
 
             try {
                 await CampaignDetailsAPI.addCampaignWorkflow(data);

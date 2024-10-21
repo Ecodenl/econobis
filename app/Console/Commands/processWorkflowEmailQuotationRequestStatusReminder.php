@@ -65,8 +65,10 @@ class processWorkflowEmailQuotationRequestStatusReminder extends Command
             Log::info("Proces: Workflow email herinnering voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email_reminder);
             $campaignId = $campaignWorkflow->campaign_id;
 
+            $checkDatePlannedToSendReminder = Carbon::now()->addDays($campaignWorkflow->number_of_days_to_send_email_reminder)->startOfDay()->toDateString();
+            Log::info('checkDatePlannedToSendReminder: ' . $checkDatePlannedToSendReminder);
             $quotationRequestsToProcess = QuotationRequest::where('status_id', $campaignWorkflow->quotation_request_status_id)
-                ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
+                ->where('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSendReminder)
                 ->whereHas('opportunity', function ($query) use ($campaignId) {
                     $query->whereHas('intake', function ($query) use ($campaignId) {
                         $query->where('campaign_id', $campaignId);

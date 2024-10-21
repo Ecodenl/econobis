@@ -1692,7 +1692,7 @@ class ExternalWebformController extends Controller
             $contactPersonUpdateArray['last_name'] = $data['last_name'];
 
         } else {
-            if(!$data['initials']){
+            if($data['initials']){
                 $contactPersonUpdateArray['initials'] = $data['initials'];
             }
 

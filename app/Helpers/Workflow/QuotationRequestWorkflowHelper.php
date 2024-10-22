@@ -141,7 +141,7 @@ class QuotationRequestWorkflowHelper
         $mail = Mail::fromMailbox($mailbox)
             ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
 
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddres->email, '');
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');
 
         return true;
     }

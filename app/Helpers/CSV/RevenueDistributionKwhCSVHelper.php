@@ -3,6 +3,7 @@
 namespace App\Helpers\CSV;
 
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 use League\Csv\Reader;
 
 class RevenueDistributionKwhCSVHelper
@@ -40,6 +41,7 @@ class RevenueDistributionKwhCSVHelper
             ]);
 
             $this->csvExporter->beforeEach(function ($distributionPartsKwh) {
+                $distributionPartsKwh->power_kwh_consumption = $distributionPartsKwh->distributionKwh->participation->power_kwh_consumption;
 
                 $distributionPartsKwh->period_start = $this->formatDate($distributionPartsKwh->date_begin_from_till_visible);
                 $distributionPartsKwh->period_end = $this->formatDate($distributionPartsKwh->partsKwh->date_end);
@@ -76,6 +78,7 @@ class RevenueDistributionKwhCSVHelper
                 'distributionKwh.contact.number' => 'Nummer',
                 'distributionKwh.contact.full_name' => 'Naam',
                 'participations_quantity' => 'Participaties',
+                'power_kwh_consumption' => 'Jaarlijks verbruik',
                 'payout_formatted' => 'Uit te keren bedrag',
                 'payout_type' => 'Uitkeren op',
                 'date_payout' => 'Datum uitkering',

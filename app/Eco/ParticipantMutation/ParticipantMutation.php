@@ -7,6 +7,7 @@ use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantMutation extends Model
@@ -75,6 +76,15 @@ class ParticipantMutation extends Model
         return route('portal.mollie.pay', [
             'participantMutationCode' => $this->code,
         ]);
+    }
+
+    public function getParticipationHasMutationsWithStatusDepositOrWithdrawalAttribute()
+    {
+        $counter = $this->participation->mutations()->whereHas('type', function ($query) {
+            $query->where('code_ref', 'deposit')->orWhere('code_ref', 'withDrawal');
+        })->count();
+
+        return $counter > 0;
     }
 
     public function getDateSortAttribute()

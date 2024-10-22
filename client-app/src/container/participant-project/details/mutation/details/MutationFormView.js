@@ -52,20 +52,26 @@ const MutationFormView = ({
         deletedAt,
         financialOverviewDefinitive,
         isPaidByMollie,
+        participationHasMutationsWithStatusDepositOrWithdrawal,
     } = participantMutation;
 
     let allowDelete = false;
-    if (status && status.codeRef !== 'final') {
+    if (
+        status &&
+        status.codeRef !== 'final' &&
+        (type.codeRef != 'first_deposit' || !participationHasMutationsWithStatusDepositOrWithdrawal)
+    ) {
         allowDelete = true;
     } else if (
         participantMutation.changeAllowed &&
         !isPaidByMollie &&
         !financialOverviewDefinitive &&
-        participantProjectDateTerminated === null
+        participantProjectDateTerminated === null &&
+        (type.codeRef != 'first_deposit' || !participationHasMutationsWithStatusDepositOrWithdrawal)
     ) {
         allowDelete = true;
     }
-
+    console.log(type.codeRef);
     return (
         <div
             className={`row border ${highlightLine}`}

@@ -2,9 +2,8 @@ import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_OPPORTUNITY_STATUS = `opportunity-status`;
 
-// todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
 const defaultFields = {
-    fld: ['id', 'name', 'usesWf', 'emailTemplateIdWf', 'numberOfDaysToSendEmail'],
+    fld: ['id', 'name', 'usesWf'],
     rlt: { emailTemplateWorkflow: [] },
 };
 

@@ -4,15 +4,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-// todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
-const OpportunityStatusDetailsFormGeneralView = ({
-    name,
-    usesWf,
-    emailTemplateWorkflow,
-    numberOfDaysToSendEmail,
-    switchToEdit,
-    explanationWf,
-}) => {
+const OpportunityStatusDetailsFormGeneralView = ({ name, usesWf, switchToEdit, explanationWf }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
@@ -44,22 +36,6 @@ const OpportunityStatusDetailsFormGeneralView = ({
                                     className={'col-sm-10 form-group'}
                                 />
                             </div>
-                            {/*<div className="row">*/}
-                            {/*    <ViewText*/}
-                            {/*        label={'Template e-mail bij deze status'}*/}
-                            {/*        divSize={'col-sm-10'}*/}
-                            {/*        value={emailTemplateWorkflow ? emailTemplateWorkflow.name : ''}*/}
-                            {/*        className={'col-sm-10 form-group'}*/}
-                            {/*    />*/}
-                            {/*</div>*/}
-                            {/*<div className="row">*/}
-                            {/*    <ViewText*/}
-                            {/*        label={'Aantal dagen email na deze status'}*/}
-                            {/*        divSize={'col-sm-10'}*/}
-                            {/*        value={numberOfDaysToSendEmail}*/}
-                            {/*        className={'col-sm-10 form-group'}*/}
-                            {/*    />*/}
-                            {/*</div>*/}
                         </React.Fragment>
                     )}
                 </PanelBody>

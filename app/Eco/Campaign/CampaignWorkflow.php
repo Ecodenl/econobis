@@ -50,4 +50,9 @@ class CampaignWorkflow extends Model
     {
         return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf');
     }
+
+    public function emailTemplateReminder()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_id_reminder');
+    }
 }

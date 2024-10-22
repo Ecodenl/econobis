@@ -10,7 +10,7 @@ import InputTextDate from '../../../../components/form/InputTextDate';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit }) {
+function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
     return (
@@ -111,7 +111,7 @@ function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit 
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -123,7 +123,7 @@ function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit 
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 step="900"
                                             />
                                         )}
@@ -191,13 +191,7 @@ function QuotationRequestCoach({ history, initialQuotationRequest, handleSubmit 
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

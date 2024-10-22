@@ -10,7 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 
-function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [pmApproved, setPmApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'pm-approved'
             ? true
@@ -112,7 +112,7 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                                     {initialQuotationRequest.hasExternalParty ? (
                                         <>
                                             <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                                Datum opname
+                                                Afspraak gedaan op
                                             </FormLabel>
                                             <Field name="dateRecorded">
                                                 {({ field }) => (
@@ -120,7 +120,7 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                                                         field={field}
                                                         type="datetime-local"
                                                         id="date_recorded"
-                                                        placeholder={'Datum opname'}
+                                                        placeholder={'Afspraak gedaan op'}
                                                         readOnly={true}
                                                     />
                                                 )}
@@ -295,13 +295,7 @@ function SubsidyRequestOccupant({ history, initialQuotationRequest, handleSubmit
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

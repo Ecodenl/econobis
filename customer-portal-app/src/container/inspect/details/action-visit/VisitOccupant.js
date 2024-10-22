@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
-function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
+function VisitOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -145,7 +145,7 @@ function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -153,7 +153,7 @@ function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 readOnly={true}
                                             />
                                         )}
@@ -168,21 +168,13 @@ function VisitOccupant({ history, initialQuotationRequest, handleSubmit }) {
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Terug naar overzicht
                                         </Button>
                                         {/*<Button*/}
                                         {/*    variant={'outline-dark'}*/}
                                         {/*    size="sm"*/}
-                                        {/*    onClick={function() {*/}
-                                        {/*        history.push(`/schouwen`);*/}
-                                        {/*    }}*/}
+                                        {/*    onClick={() => redirectBack()}*/}
                                         {/*>*/}
                                         {/*    Annuleren*/}
                                         {/*</Button>*/}

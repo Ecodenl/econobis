@@ -70,7 +70,30 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
-        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load(
+            'administration',
+            'task',
+            'order',
+            'administration',
+            'contact',
+            'intake',
+            'contactGroup',
+            'opportunity',
+            'quotationRequest',
+            'housingFile',
+            'campaign',
+            'measure',
+            'sentBy',
+            'createdBy',
+            'documentCreatedFrom',
+            'template',
+            'opportunity.measureCategory',
+            'opportunity.status',
+            'order',
+            'project',
+            'participant',
+            'participant.contact',
+            'participant.project');
 
         return FullDocument::make($document);
     }
@@ -334,9 +357,7 @@ class DocumentController extends Controller
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
-//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
-
-        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

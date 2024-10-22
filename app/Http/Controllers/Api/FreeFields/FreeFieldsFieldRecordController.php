@@ -51,7 +51,6 @@ class FreeFieldsFieldRecordController extends ApiController
 
     public function updateValues(Request $request)
     {
-
         $table = $request->get('data')['table'];
         $recordId = $request->get('data')['recordId'];
 
@@ -91,11 +90,11 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
                     break;
                 case 'int':
-                    $freeFieldsFieldRecord->field_value_int = (int)$record['fieldRecordValueInt'];
+                    $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'] != '' ? (int)$record['fieldRecordValueInt'] : null;
                     break;
                 case 'double_2_dec':
                 case 'amount_euro':
-                    $freeFieldsFieldRecord->field_value_double = (float)$record['fieldRecordValueDouble'];
+                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'] != '' ? (float)$record['fieldRecordValueDouble'] : null;
                     break;
                 case 'date':
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') . ' 00:00:00' : null;
@@ -104,6 +103,7 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;
                     break;
             }
+
             $freeFieldsFieldRecord->save();
         }
     }

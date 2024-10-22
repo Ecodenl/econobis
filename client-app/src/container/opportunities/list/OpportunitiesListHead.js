@@ -1,9 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
-
 import DataTableHeadTitleAndSort from '../../../components/dataTable/DataTableHeadTitleAndSort';
 import { setOpportunitiesSortsFilter } from '../../../actions/opportunity/OpportunitiesSortsActions';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 
 const OpportunitiesListHead = props => {
     const setSorts = (field, order) => {
@@ -16,15 +14,17 @@ const OpportunitiesListHead = props => {
 
     return (
         <tr className="thead-title">
-            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'9%'} setSorts={setSorts} />
+            {props.showCheckbox ? <th width="3%" /> : null}
+            <DataTableHeadTitleAndSort sortColumn={'number'} title={'Nummer'} width={'6%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'createdAt'} title={'Datum'} width={'6%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'desiredDate'}
                 title={'Datum Uitvoering'}
-                width={'9%'}
+                width={'6%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'11%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'11%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategory'}
                 title={'Maatregel categorie'}
@@ -43,7 +43,7 @@ const OpportunitiesListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'amountOfQuotationRequests'}
                 title={'Aantal kansacties'}
-                width={'9%'}
+                width={'5%'}
                 setSorts={setSorts}
             />
             <th width="6%" />

@@ -13,6 +13,7 @@ use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Invoice\InvoiceHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Sepa\SepaHelper;
+use App\Helpers\Twinfield\TwinfieldInvoicePaymentHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\Order\OrderController;
 use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
@@ -160,6 +161,20 @@ class InvoiceController extends ApiController
         $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
 
         $csv = $invoiceCSVHelper->downloadCSV();
+
+        return $csv;
+    }
+
+    public function csvWithProducts(RequestQuery $requestQuery)
+    {
+        $this->authorize('view', Invoice::class);
+
+        set_time_limit(0);
+        $invoices = $requestQuery->getQueryNoPagination()->get();
+
+        $invoiceCSVHelper = new InvoiceCSVHelper($invoices);
+
+        $csv = $invoiceCSVHelper->downloadCSVWithProducts();
 
         return $csv;
     }
@@ -380,6 +395,19 @@ class InvoiceController extends ApiController
         $invoice->status_id = 'irrecoverable';
         $invoice->save();
         return $invoice;
+    }
+
+    public function syncOneInvoiceFromTwinfield(RequestInput $requestInput, Invoice $invoice){
+
+        $inputData = $requestInput
+            ->integer('administrationId')->onEmpty(null)->whenMissing(null)->next()
+            ->get();
+        $administration = Administration::find($inputData['administrationId']);
+        if(!$administration){
+            return "Administratie is niet bekend.";
+        }
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, null, $invoice->id);
+        return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 
     public function sendAll(Request $request)

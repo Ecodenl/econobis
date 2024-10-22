@@ -38,7 +38,7 @@ class OrderProduct extends Model
 
     public function getAmountExclVat()
     {
-        if(!$this->product->current_price) return 0;
+        if(!$this->product->currentPrice) return 0;
 
         $inputInclVat = $this->product->currentPrice->input_incl_vat;
 
@@ -66,7 +66,7 @@ class OrderProduct extends Model
     }
     public function getAmountInclVat()
     {
-        if(!$this->product->current_price) return 0;
+        if(!$this->product->currentPrice) return 0;
 
         $inputInclVat = $this->product->currentPrice->input_incl_vat;
 
@@ -89,6 +89,8 @@ class OrderProduct extends Model
     }
     public function getAmountReductionAmountExclVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $amountReduction = 0;
         if ($this->amount_reduction) {
             $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
@@ -112,6 +114,8 @@ class OrderProduct extends Model
     }
     public function getAmountReductionAmountInclVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $amountReduction = 0;
         if ($this->amount_reduction) {
             $amountReduction = $this->amount_reduction; // ingevoerd bedrag korting
@@ -130,6 +134,8 @@ class OrderProduct extends Model
     }
     public function getAmountReductionPercentageExclVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $amountReduction = 0;
         if ($this->percentage_reduction) {
             $inputInclVat = false;
@@ -156,6 +162,8 @@ class OrderProduct extends Model
     }
     public function getAmountReductionPercentageInclVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $amountReduction = 0;
         if ($this->percentage_reduction) {
             $inputInclVat = false;
@@ -184,8 +192,15 @@ class OrderProduct extends Model
         return floatval( number_format( ($amountExclVat + $amountReductionAmountExclVat + $amountReductionPercentageExclVat), 2, '.', ''));
     }
 
+    public function getAmountInclReductionExclVatAttribute()
+    {
+        return number_format($this->getAmountInclReductionExclVat(), 2, ',', '');
+    }
+
     public function getAmountInclReductionVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $inputInclVat = false;
         if ($this->product->currentPrice) {
             $inputInclVat = $this->product->currentPrice->input_incl_vat;
@@ -203,6 +218,8 @@ class OrderProduct extends Model
 
     public function getAmountInclReductionInclVat()
     {
+        if(!$this->product->currentPrice) return 0;
+
         $inputInclVat = false;
         if ($this->product->currentPrice) {
             $inputInclVat = $this->product->currentPrice->input_incl_vat;
@@ -218,6 +235,11 @@ class OrderProduct extends Model
         }
 
         return floatval( number_format( $amountInclReductionInclVat, 2, '.', ''));
+    }
+
+    public function getAmountInclReductionInclVatAttribute()
+    {
+        return number_format($this->getAmountInclReductionInclVat(), 2, ',', '');
     }
 
     public function getAmountInclReductionInclVatPerYear()

@@ -133,6 +133,19 @@ export default {
             });
     },
 
+    peekActiveContactGroups: () => {
+        const requestUrl = `${URL_API}/api/contact-group/peek/active`;
+
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     peekStaticContactGroups: () => {
         const requestUrl = `${URL_API}/api/contact-group/peek/static`;
 

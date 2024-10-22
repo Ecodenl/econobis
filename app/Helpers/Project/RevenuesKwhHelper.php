@@ -289,7 +289,7 @@ class RevenuesKwhHelper
             })->first();
         // indien geen geldige addressEnergySupplier gevonden, dan aanmaken met onbekende energieleverancier
         if(!$addressEnergySupplier) {
-            $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+            $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
             $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
             $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionKwh->participation->address_id, $partDateBegin);
             $addressEnergySupplierData = [
@@ -428,7 +428,7 @@ class RevenuesKwhHelper
         if(!in_array($distributionPartsKwh->status, ['processed'])){
             // Indien geen $addressEnergySupplier gevonden, dan adhoc hier aanmaken met energySupllier Onbekend.
             if(!$addressEnergySupplier){
-                $energySupplierUnknown = EnergySupplier::where('name', 'Onbekend')->first();
+                $energySupplierUnknown = EnergySupplier::where('abbreviation', 'ONB')->first();
                 $energySupplierTypeElectriciteit = EnergySupplierType::where('name', 'Elektriciteit')->first();
                 $firstNextAddressEnergySupplier = $this->getFirstNextAddressEnergySupplier($distributionPartsKwh->distributionKwh->participation->address_id, $distributionPartsKwh->partsKwh->date_begin);
 
@@ -631,6 +631,30 @@ class RevenuesKwhHelper
         }
 
         return ['success' => false, 'errorMessage' => 'Onbekende fout'];
+
+    }
+    public function updateIndicatorFieldEndParticipation(ParticipantProject $participant, $originalSplitDate)
+    {
+        $splitDateString = Carbon::parse($originalSplitDate)->format('Y-m-d');
+
+        $distributionsKwhThisParticipantIds = RevenueDistributionKwh::where('participation_id', $participant->id)
+            ->whereIn('status', ['concept', 'confirmed'])
+            ->pluck('id')->toArray();
+
+        // Wel evt. bijwerken indicator fields
+        $distributionPartsKwhThisParticipant = RevenueDistributionPartsKwh::whereIn('distribution_id', $distributionsKwhThisParticipantIds)
+            ->where('is_end_participation', true)
+            ->whereIn('status', ['concept', 'confirmed'])
+            ->whereHas('partsKwh', function ($query) use($splitDateString) {
+                $query->where('date_end', '=', $splitDateString);
+            })
+            ->get();
+
+        foreach ($distributionPartsKwhThisParticipant as $distributionPartsKwh){
+            $distributionPartsKwh->is_end_participation = false;
+            $distributionPartsKwh->is_visible = $this->determineIsVisible($distributionPartsKwh);
+            $distributionPartsKwh->save();
+        }
 
     }
 

@@ -394,6 +394,20 @@ class Contact extends Model
             ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
+    public function occupationsActive()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->orderBy('contacts.full_name');
+    }
 
     public function isPrimaryOccupant()
     {
@@ -529,7 +543,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -541,7 +555,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -562,7 +576,7 @@ class Contact extends Model
 
         $dynamicGroupsForContact = $dynamicGroups->filter(function ($dynamicGroup) {
             foreach ($dynamicGroup->all_contacts as $dynamic_contact) {
-                if ($dynamic_contact->id === $this->id) {
+                if ($dynamic_contact && $dynamic_contact->id === $this->id) {
                     return true;
                 }
             }
@@ -577,7 +591,7 @@ class Contact extends Model
 
         $composedGroupsForContact = $composedGroups->filter(function ($composedGroup) {
             foreach ($composedGroup->all_contacts as $composed_contact) {
-                if ($composed_contact->id === $this->id) {
+                if ($composed_contact && $composed_contact->id === $this->id) {
                     return true;
                 }
             }

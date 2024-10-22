@@ -94,34 +94,39 @@ const OrderProductsFormEdit = props => {
                                     type={'number'}
                                     value={variablePrice}
                                     onChangeAction={props.handleInputChangeVariablePrice}
+                                    onBlurAction={props.handleBlurVariablePrice}
                                     error={props.errors.variablePrice}
                                     required={variablePrice !== null && 'required'}
                                 />
                             ) : (
                                 <InputText
                                     label={
+                                        props.orderProduct.product.currentPrice &&
                                         props.orderProduct.product.currentPrice.inputInclVat
                                             ? 'Prijs incl. BTW'
                                             : 'Prijs excl. BTW'
                                     }
                                     name={'price'}
                                     value={
-                                        props.orderProduct.product.currentPrice.inputInclVat
-                                            ? '€ ' +
-                                              props.orderProduct.product.currentPrice.priceInclVat.toLocaleString(
-                                                  'nl',
-                                                  {
+                                        props.orderProduct.product.currentPrice
+                                            ? props.orderProduct.product.currentPrice.inputInclVat
+                                                ? '€ ' +
+                                                  props.orderProduct.product.currentPrice.priceInclVat.toLocaleString(
+                                                      'nl',
+                                                      {
+                                                          minimumFractionDigits: 2,
+                                                          maximumFractionDigits:
+                                                              props.orderProduct.product.currentPrice
+                                                                  .priceNumberOfDecimals,
+                                                      }
+                                                  )
+                                                : '€ ' +
+                                                  props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                       minimumFractionDigits: 2,
                                                       maximumFractionDigits:
                                                           props.orderProduct.product.currentPrice.priceNumberOfDecimals,
-                                                  }
-                                              )
-                                            : '€ ' +
-                                              props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
-                                                  minimumFractionDigits: 2,
-                                                  maximumFractionDigits:
-                                                      props.orderProduct.product.currentPrice.priceNumberOfDecimals,
-                                              })
+                                                  })
+                                            : ''
                                     }
                                     readOnly={true}
                                 />

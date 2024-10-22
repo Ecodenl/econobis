@@ -10,6 +10,7 @@ namespace App\Helpers\Template;
 
 
 use App\Eco\Document\Document;
+use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
 use App\Helpers\Settings\PortalSettings;
@@ -18,6 +19,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 
 class TemplateVariableHelper
 {
@@ -389,7 +391,9 @@ class TemplateVariableHelper
                 }
                 return $link;
                 break;
-
+            case 'portal_email':
+                return $model->portalUser ? $model->portalUser->email : '';
+                break;
             default:
                 return '';
                 break;
@@ -433,6 +437,12 @@ class TemplateVariableHelper
 
     public static function getOpportunityVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return optional($model->intake)->contact->full_name;
                 break;
@@ -505,6 +515,12 @@ class TemplateVariableHelper
 
     public static function getIntakeVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'contact_naam':
                 return $model->contact->full_name;
                 break;
@@ -679,6 +695,12 @@ class TemplateVariableHelper
             case 'min_participaties':
                 return $model->min_participations;
                 break;
+            case 'type_lening':
+                if($projectTypeCodeRef == 'loan') {
+                    return ProjectLoanType::find($model->loan_type_id)->name;
+                }else{
+                    return "";
+                }
             case 'amount_of_loan_needed':
             case 'bedrag_lening_nodig':
                 return $model->amount_of_loan_needed;
@@ -760,7 +782,7 @@ class TemplateVariableHelper
         $mutationWithDrawalTypes = ParticipantMutationType::where('project_type_id', $model->project->project_type_id)->whereIn('code_ref', ['withDrawal'])->get()->pluck('id');
         switch ($varname) {
             case 'contact_naam':
-                return $model->contact->full_name;
+                return $model->contact->full_name_fnf;
                 break;
             case 'contact_voornaam':
                 if($model->contact->type_id == 'person'){
@@ -886,6 +908,12 @@ class TemplateVariableHelper
                 }else{
                     return 0;
                 }
+            case 'obligatienummers':
+                if($projectTypeCodeRef == 'obligation') {
+                    return  $model->obligationNumbersAsString;
+                }else{
+                    return ' ';
+                }
                 break;
             case 'bedrag_interesse':
                 if($projectTypeCodeRef == 'loan') {
@@ -954,6 +982,7 @@ class TemplateVariableHelper
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
                 break;
             case 'geschonken_door':
+            case 'schenker_naam':
                 if($model->giftedByContact) {
                     if ($model->giftedByContact->type_id == 'person') {
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -967,7 +996,21 @@ class TemplateVariableHelper
                     return '';
                 }
                 break;
+            case 'geschonken_door_voorletters':
+            case 'schenker_voorletters':
+                if($model->giftedByContact) {
+                    if ($model->giftedByContact->type_id == 'person') {
+                        return $model->giftedByContact->person->initials;
+                    } else {
+                        return '';
+                    }
+                }
+                else {
+                    return '';
+                }
+                break;
             case 'geschonken_door_voornaam':
+            case 'schenker_voornaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         return $model->giftedByContact->person->first_name;
@@ -981,6 +1024,7 @@ class TemplateVariableHelper
                 }
                 break;
             case 'geschonken_door_achternaam':
+            case 'schenker_achternaam':
                 if($model->giftedByContact) {
                     if($model->giftedByContact->type_id == 'person'){
                         $prefix = $model->giftedByContact->person->last_name_prefix;
@@ -2113,7 +2157,6 @@ class TemplateVariableHelper
                 return $model->energy_supplier_number;
                 break;
             case 'begindatum':
-//                return $model->date_begin_from_till_visible ? Carbon::parse($model->date_begin_from_till_visible)->format('d-m-Y') : null;
                 return $model->not_reported_date_begin ? Carbon::parse($model->not_reported_date_begin)->format('d-m-Y') : null;
                 break;
             case 'einddatum':
@@ -2188,6 +2231,12 @@ class TemplateVariableHelper
 
     public static function getQuotationRequestVar($model, $varname){
         switch ($varname) {
+            case 'id':
+                return $model->id;
+                break;
+            case 'id_encrypted':
+                return Crypt::encrypt($model->id);
+                break;
             case 'organisatie_naam':
                 return optional(optional($model->organisationOrCoach)->organisation)->name;
                 break;
@@ -2306,6 +2355,33 @@ class TemplateVariableHelper
                 return optional(optional($model->externalParty)->primaryPhoneNumber)->number;
                 break;
 
+            //variables safe to use in an URL
+            case 'contact_voornaam_voor_URL':
+                return rawurlencode(optional(optional($model->opportunity->intake->contact)->person)->first_name);
+            case 'contact_tussenvoegsel_voor_URL':
+                return rawurlencode(optional(optional($model->opportunity->intake->contact)->person)->last_name_prefix);
+            case 'contact_achternaam_voor_URL':
+                if(optional($model->opportunity->intake->contact)->type_id == 'person'){
+                    $prefix = optional(optional($model->opportunity->intake->contact)->person)->last_name_prefix;
+                    return rawurlencode($prefix ? $prefix . ' ' . optional(optional($model->opportunity->intake->contact)->person)->last_name : optional(optional($model->opportunity->intake->contact)->person)->last_name);
+                }
+                elseif($model->type_id == 'organisation'){
+                    return rawurlencode(optional($model->opportunity->intake->contact)->full_name);
+                }
+            case 'contact_email_voor_URL':
+            case 'verzoek_voor_email_voor_URL':
+                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email);
+            case 'contact_adres_voor_URL':
+            case 'verzoek_voor_adres_voor_URL':
+            return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . (optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition) : ''));
+            case 'contact_postcode_voor_URL':
+            case 'verzoek_voor_postcode_voor_URL':
+                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->postal_code);
+            case 'contact_plaats_voor_URL':
+            case 'contact_woonplaats_voor_URL':
+            case 'verzoek_voor_plaats_voor_URL':
+                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city);
+
             case 'contact_naam':
             case 'verzoek_voor_naam':
                 return optional(optional($model->opportunity)->intake)->contact->full_name_fnf;
@@ -2393,7 +2469,45 @@ class TemplateVariableHelper
                 return optional(optional($model->createdBy)->present())->fullName();
                 break;
             case 'datum_afspraak':
-                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : null;
+                // Afspraak 24-09-2024 09:00.
+                // Wij komen langs tussen {kansactie_datum_afspraak} en {kansactie_datum_afspraak_zonder_tijdstip} {tijdstip_afspraak_30_min_later}
+                // Wij komen langs tussen 24-09-2024 09:00 en 24-09-2024 09:30
+                // Wij komen langs tussen {kansactie_datum_afspraak} en {tijdstip_afspraak_30_min_later}
+                // Wij komen langs tussen 24-09-2024 09:00 en 09:30
+                if (!$model->date_planned) {
+                    return null;
+                }
+                return Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : Carbon::parse($model->date_planned)->format('d-m-Y');
+                break;
+            case 'tijdstip_afspraak':
+                return $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->format('H:i') : null;
+                break;
+            case 'datum_afspraak_zonder_tijdstip':
+                return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y') : null;
+                break;
+            case 'tijdstip_afspraak_30_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
+                break;
+            case 'tijdstip_afspraak_60_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(60)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
+                break;
+            case 'tijdstip_afspraak_90_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(90)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
+                break;
+            case 'tijdstip_afspraak_120_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(120)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
+                break;
+            case 'tijdstip_afspraak_150_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(150)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
+                break;
+            case 'tijdstip_afspraak_180_min_later':
+                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(180)->format('H:i') : null;
+                return $tijdStip30MinutenLater ?: null;
                 break;
 //            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
 //            case 'datum_opname':
@@ -2547,9 +2661,9 @@ class TemplateVariableHelper
             break;
             case 'deelname_bedrag_toegekend':
                 if ($projectTypeCodeRef == 'loan') {
-                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '' );
+                    $amount = number_format( optional(optional($model->order)->participation)->amount_granted, 2, ',', '.' );
                 } else {
-                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional($model->order)->participation)->project->currentBookWorth() ), 2, ',', '');
+                    $amount = number_format(( optional(optional($model->order)->participation)->participations_granted * optional(optional(optional($model->order)->participation)->project)->currentBookWorth() ), 2, ',', '.');
                 }
                 return $amount;
             break;
@@ -2562,7 +2676,7 @@ class TemplateVariableHelper
             case 'iban_tnv':
                 return $model->order->contact->iban_attn;
             case 'totaal_incl_btw':
-                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '');
+                return number_format($model->total_incl_vat_incl_reduction, 2, ',', '.');
             case 'datum':
                 if( $model->invoice_number == 0){
                     return "Nog niet bekend";

@@ -3,7 +3,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Field, Form, Formik } from 'formik';
 import FormLabel from 'react-bootstrap/FormLabel';
-import * as Yup from 'yup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
@@ -12,7 +11,7 @@ import moment from 'moment/moment';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
 
-function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [underReview, setUnderReview] = useState(initialQuotationRequest.status?.codeRef === 'under-review');
     const [approved, setApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'approved'
@@ -370,13 +369,7 @@ function SubsidyRequestExternalParty({ history, initialQuotationRequest, handleS
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

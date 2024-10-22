@@ -702,10 +702,16 @@ class ExternalWebformController extends Controller
 
         $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
 
-        $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+        if($data['order']['variable_price']) {
+            $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+        }
 
-        $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
-        $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+        if($data['housing_file']['amount_electricity']) {
+            $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+        }
+        if($data['housing_file']['amount_gas']) {
+            $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+        }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
@@ -3317,7 +3323,7 @@ class ExternalWebformController extends Controller
             $orderVariablePrice = null;
             if ($product->currentPrice && $product->currentPrice->has_variable_price) {
                 if($data['variable_price']) {
-                    $orderVariablePrice = floatval(str_replace(',', '.', $data['variable_price']));
+                    $orderVariablePrice = $data['variable_price'];
                 } else {
                     $this->log('Product met id ' . $data['product_id'] . ' is een product met variabele prijs maar variabele prijs is niet meegegeven, variabele prijs is op 0.00 gezet.');
                     $orderVariablePrice = 0.00;

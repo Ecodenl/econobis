@@ -52,12 +52,14 @@ class PortalFreeFieldsPagesDetailsFormGeneral extends Component {
                 {this.state.showEdit && permissions.manageFreeFields ? (
                     <PortalFreeFieldsPagesDetailsFormGeneralEdit
                         portalFreeFieldsPage={this.props.portalFreeFieldsPage}
+                        portalUrl={this.props.portalUrl}
                         switchToView={this.switchToView}
                         fetchPortalFreeFieldsPage={this.props.fetchPortalFreeFieldsPage}
                     />
                 ) : (
                     <PortalFreeFieldsPagesDetailsFormGeneralView
                         {...this.props.portalFreeFieldsPage}
+                        portalUrl={this.props.portalUrl}
                         switchToEdit={this.switchToEdit}
                     />
                 )}

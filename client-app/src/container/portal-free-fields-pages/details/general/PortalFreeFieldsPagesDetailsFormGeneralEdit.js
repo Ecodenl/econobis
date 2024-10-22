@@ -7,6 +7,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
+import InputTextArea from '../../../../components/form/InputTextArea';
 
 class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -79,6 +80,16 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
+        if (
+            portalFreeFieldsPage.urlPageRef != null &&
+            !validator.isEmpty(portalFreeFieldsPage.urlPageRef) &&
+            !portalFreeFieldsPage.urlPageRef.match(/^[a-z-]+$/)
+        ) {
+            errors.urlPageRef = true;
+            errorsMessage.urlPageRef = 'Waarde ongeldig. Alleen kleine letters en koppelteken (-) toegestaan.';
+            hasErrors = true;
+        }
+
         this.setState({ ...this.state, errors: errors, errorsMessage: errorsMessage });
 
         // If no errors send form
@@ -104,7 +115,7 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                     <PanelBody>
                         <div className="row">
                             <InputText
-                                label="agina naam"
+                                label="Pagina naam"
                                 name={'name'}
                                 value={name}
                                 onChangeAction={this.handleInputChange}
@@ -123,7 +134,7 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextArea
                                 label="Pagina beschrijving"
                                 name={'description'}
                                 value={description}
@@ -132,17 +143,36 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                                 error={this.state.errors.description}
                                 errorMessage={this.state.errorsMessage.description}
                             />
+                        </div>
+                        <div className="row">
                             <InputText
-                                label={'Portaal url: https://xxxx.mijnenergiesamen.nl/#/vrije-velden/'}
+                                size={'col-sm-5'}
+                                label={`Pagina referentie voor portaal url`}
                                 name={'urlPageRef'}
                                 value={urlPageRef}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.urlPageRef}
                                 errorMessage={this.state.errorsMessage.urlPageRef}
+                                textToolTip={
+                                    'Te gebruiken pagina referentie voor portaal url. Alleen kleine letters en koppelteken (-) toegestaan.'
+                                }
                             />
                         </div>
-
+                        <div className="row">
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="urlPageRefView" className="col-sm-12">
+                                            Portaal url
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9" id="urlPageRefView">
+                                        {`https://${this.props.portalUrl}/#/vrije-velden/${urlPageRef}`}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>{' '}
                         <hr />
                     </PanelBody>
 

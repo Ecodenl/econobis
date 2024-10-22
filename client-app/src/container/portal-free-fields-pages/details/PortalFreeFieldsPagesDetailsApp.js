@@ -7,9 +7,13 @@ import { browserHistory, hashHistory } from 'react-router';
 import PortalFreeFieldsPagesDetailsFormGeneral from './general/PortalFreeFieldsPagesDetailsFormGeneral';
 import PortalFreeFieldsPagesDeleteItem from '../list/PortalFreeFieldsPagesDeleteItem';
 import { isEmpty } from 'lodash';
+import axios from 'axios';
+import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
+import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 
 function PortalFreeFieldsPagesDetailsApp(props) {
     const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
+    const [portalUrl, setPortalUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
     const [showDeleteItem, setShowDeleteItem] = useState(false);
@@ -39,12 +43,32 @@ function PortalFreeFieldsPagesDetailsApp(props) {
 
     function fetchPortalFreeFieldsPage() {
         setIsLoading(true);
-        PortalFreeFieldsAPI.fetchPortalFreeFieldsPageDetails(props.params.id)
-            .then(data => {
-                setPortalFreeFieldsPage(data);
-                setIsLoading(false);
-                setHasError(false);
-            })
+        // PortalFreeFieldsAPI.fetchPortalFreeFieldsPageDetails(props.params.id)
+        //     .then(data => {
+        //         setPortalFreeFieldsPage(data);
+        //         setIsLoading(false);
+        //         setHasError(false);
+        //     })
+        //     .catch(() => {
+        //         alert('Er is iets misgegaan met ophalen van het vrije veld.');
+        //         setIsLoading(false);
+        //         setHasError(true);
+        //     });
+
+        const keys = '?keys[]=portalUrl';
+        axios
+            .all([
+                PortalFreeFieldsAPI.fetchPortalFreeFieldsPageDetails(props.params.id),
+                PortalSettingsAPI.fetchPortalSettings(keys),
+            ])
+            .then(
+                axios.spread((payloadPortalFreeFieldsPage, payloadPortalSettings) => {
+                    setPortalFreeFieldsPage(payloadPortalFreeFieldsPage);
+                    setPortalUrl(payloadPortalSettings.data.portalUrl);
+                    setIsLoading(false);
+                    setHasError(false);
+                })
+            )
             .catch(() => {
                 alert('Er is iets misgegaan met ophalen van het vrije veld.');
                 setIsLoading(false);
@@ -90,6 +114,7 @@ function PortalFreeFieldsPagesDetailsApp(props) {
                 <div className="col-md-12">
                     <PortalFreeFieldsPagesDetailsFormGeneral
                         portalFreeFieldsPage={portalFreeFieldsPage}
+                        portalUrl={portalUrl}
                         fetchPortalFreeFieldsPage={fetchPortalFreeFieldsPage}
                     />
                 </div>

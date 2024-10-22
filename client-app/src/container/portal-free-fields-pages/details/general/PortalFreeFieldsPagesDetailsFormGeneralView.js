@@ -5,7 +5,14 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-const PortalFreeFieldsPagesDetailsFormGeneralView = ({ name, isActive, description, urlPageRef, switchToEdit }) => {
+const PortalFreeFieldsPagesDetailsFormGeneralView = ({
+    name,
+    isActive,
+    description,
+    urlPageRef,
+    portalUrl,
+    switchToEdit,
+}) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
@@ -16,15 +23,25 @@ const PortalFreeFieldsPagesDetailsFormGeneralView = ({ name, isActive, descripti
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Pagina beschrijving'} value={description} />
+                        <div className="col-sm-3">
+                            <label htmlFor="description" className="col-sm-12">
+                                Pagina beschrijving
+                            </label>
+                        </div>
+                        <div className="col-sm-9" id="description">
+                            {description}
+                        </div>
                     </div>
 
                     <div className="row">
-                        <ViewText
-                            className={'col-md-12'}
-                            label={'Portaal url: https://xxxx.mijnenergiesamen.nl/#/vrije-velden/'}
-                            value={urlPageRef}
-                        />
+                        <div className="col-sm-3">
+                            <label htmlFor="urlPageRef" className="col-sm-12">
+                                Portaal url
+                            </label>
+                        </div>
+                        <div className="col-sm-9" id="urlPageRef">
+                            {`https://${portalUrl}/#/vrije-velden/${urlPageRef}`}
+                        </div>
                     </div>
                 </PanelBody>
             </Panel>

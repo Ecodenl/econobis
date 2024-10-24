@@ -68,12 +68,6 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        if (validator.isEmpty(portalFreeFieldsPage.description + '')) {
-            errors.description = true;
-            errorsMessage.description = 'verplicht';
-            hasErrors = true;
-        }
-
         if (validator.isEmpty(portalFreeFieldsPage.urlPageRef + '')) {
             errors.urlPageRef = true;
             errorsMessage.urlPageRef = 'verplicht';
@@ -128,7 +122,6 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                                 name={'isActive'}
                                 value={isActive}
                                 onChangeAction={this.handleInputChange}
-                                // required={'required'}
                                 error={this.state.errors.isActive}
                                 errorMessage={this.state.errorsMessage.isActive}
                             />
@@ -139,7 +132,6 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                                 name={'description'}
                                 value={description}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                                 error={this.state.errors.description}
                                 errorMessage={this.state.errorsMessage.description}
                             />

@@ -28,7 +28,7 @@ const PortalFreeFieldsPagesDetailsFormGeneralView = ({
                                 Pagina beschrijving
                             </label>
                         </div>
-                        <div className="col-sm-9" id="description">
+                        <div className="col-sm-9" id="description" style={{ whiteSpace: 'break-spaces' }}>
                             {description}
                         </div>
                     </div>

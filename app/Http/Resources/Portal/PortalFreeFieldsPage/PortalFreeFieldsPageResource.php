@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\PortalFreeFields;
+namespace App\Http\Resources\Portal\PortalFreeFieldsPage;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullPortalFreeFieldsPage extends JsonResource
+class PortalFreeFieldsPageResource extends JsonResource
 {
     public function toArray($request)
     {

@@ -48,8 +48,8 @@ class DeleteContactGroup implements DeleteInterface
     public function delete()
     {
         $this->canDelete();
-        $this->deleteModels();
         $this->dissociateRelations();
+        $this->deleteModels();
         $this->deleteRelations();
         $this->customDeleteActions();
         $this->contactGroup->delete();
@@ -140,6 +140,8 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function deleteModels()
     {
+        // DissociateRelations comes first and does its thing for tasks with a contact attached,
+        // this delete function deletes all leftover tasks that have no contact
         foreach ($this->contactGroup->tasks as $task){
             $deleteTask = new DeleteTask($task);
             $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
@@ -150,6 +152,11 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function dissociateRelations()
     {
+        foreach ($this->contactGroup->tasks()->whereNotNull('contact_id')->get() as $task){
+            $task->contactGroup()->dissociate();
+            $task->save();
+        }
+
         foreach ($this->contactGroup->documents as $document){
             $document->contactGroup()->dissociate();
             $document->save();

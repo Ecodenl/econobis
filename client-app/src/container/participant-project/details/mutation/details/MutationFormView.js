@@ -71,7 +71,6 @@ const MutationFormView = ({
     ) {
         allowDelete = true;
     }
-    console.log(type.codeRef);
     return (
         <div
             className={`row border ${highlightLine}`}

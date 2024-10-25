@@ -28,6 +28,7 @@ const MutationFormEdit = ({
     participantBelongsToMembershipGroup,
     participantChoiceMembership,
     projectDateInterestBearingKwh,
+    participationHasMutationsWithStatusDepositOrWithdrawal,
 }) => {
     const { type, statusId } = participantMutationFromState;
     let buttonTextSubmit = 'Opslaan';
@@ -98,6 +99,9 @@ const MutationFormEdit = ({
                             participantBelongsToMembershipGroup={participantBelongsToMembershipGroup}
                             participantChoiceMembership={participantChoiceMembership}
                             projectDateInterestBearingKwh={projectDateInterestBearingKwh}
+                            participationHasMutationsWithStatusDepositOrWithdrawal={
+                                participationHasMutationsWithStatusDepositOrWithdrawal
+                            }
                         />
                     ) : null}
                     {type.codeRef === 'withDrawal' ? (

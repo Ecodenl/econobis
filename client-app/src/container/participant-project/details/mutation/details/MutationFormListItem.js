@@ -347,6 +347,9 @@ class MutationFormListItem extends Component {
                             cancelDetails={this.cancelDetails}
                             errors={this.state.errors}
                             errorMessage={this.state.errorMessage}
+                            participationHasMutationsWithStatusDepositOrWithdrawal={
+                                this.props.participantMutation.participationHasMutationsWithStatusDepositOrWithdrawal
+                            }
                         />
                     )}
                     {this.state.showDelete &&

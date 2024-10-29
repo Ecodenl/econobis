@@ -47,6 +47,13 @@ class FreeFieldsFieldController extends ApiController
         return FilterFreeFieldsField::collection(FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get());
     }
 
+    public function peekContacts(Request $request)
+    {
+        Log::info('test peekContacts !!');
+        $tableIdContacts = FreeFieldsTable::where('table', 'contacts')->first()->id;
+        return FilterFreeFieldsField::collection(FreeFieldsField::where('table_id', $tableIdContacts)->orderBy('sort_order')->get());
+    }
+
     public function show(FreeFieldsField $freeFieldsField)
     {
         $this->authorize('view', FreeFieldsField::class);

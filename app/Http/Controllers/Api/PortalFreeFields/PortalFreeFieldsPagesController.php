@@ -9,12 +9,14 @@
 namespace App\Http\Controllers\Api\PortalFreeFields;
 
 use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
 use App\Helpers\Delete\Models\DeletePortalFreeFieldsPage;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\PortalFreeFieldsPages\Grid\RequestQuery;
+use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsField;
 use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsPage;
 use App\Http\Resources\PortalFreeFields\GridPortalFreeFieldsPages;
 use Illuminate\Http\Request;
@@ -28,13 +30,13 @@ class PortalFreeFieldsPagesController extends ApiController
         $this->authorize('view', FreeFieldsField::class);
         $this->authorize('manage', PortalSettingsDashboard::class);
 
-        $freeFields = $requestQuery->get();
-//        $freeFields->load([
-//            'freeFieldsTable',
-//            'freeFieldsFieldFormat',
-//        ]);
+        $portalFreeFieldsPages = $requestQuery->get();
+        $portalFreeFieldsPages->load([
+            'portalFreeFieldsFields',
+            'portalFreeFieldsFields.freeFieldsField',
+        ]);
 
-        return GridPortalFreeFieldsPages::collection($freeFields)
+        return GridPortalFreeFieldsPages::collection($portalFreeFieldsPages)
             ->additional([
                 'meta' => [
                    'total' => $requestQuery->total(),
@@ -46,10 +48,10 @@ class PortalFreeFieldsPagesController extends ApiController
     {
         $this->authorize('view', FreeFieldsField::class);
 
-//        $portalFreeFieldsPage->load([
-//            'freeFieldsTable',
-//            'freeFieldsFieldFormat',
-//        ]);
+        $portalFreeFieldsPage->load([
+            'portalFreeFieldsFields',
+            'portalFreeFieldsFields.freeFieldsField',
+        ]);
 
         return FullPortalFreeFieldsPage::make($portalFreeFieldsPage);
     }
@@ -109,5 +111,51 @@ class PortalFreeFieldsPagesController extends ApiController
             abort(501, 'Er is helaas een fout opgetreden.');
         }
     }
+
+    public function storePortalFreeFieldsField(RequestInput $input, Request $request)
+    {
+        $this->authorize('manage', FreeFieldsField::class);
+
+        $data = $input->integer('pageId')->alias('page_id')->next()
+            ->string('fieldId')->whenMissing('')->onEmpty('')->alias('field_id')->next()
+            ->integer('sortOrder')->whenMissing(999)->onEmpty(999)->alias('sort_order')->next()
+            ->boolean('changePortal')->whenMissing(false)->onEmpty(false)->alias('change_portal')->next()
+            ->get();
+
+        $portalFreeFieldsField = new PortalFreeFieldsField($data);
+        $portalFreeFieldsField->save();
+
+        $portalFreeFieldsField->load([
+            'freeFieldsField',
+        ]);
+        
+        return FullPortalFreeFieldsField::make($portalFreeFieldsField);
+    }
+    public function updatePortalFreeFieldsField(RequestInput $input, Request $request, PortalFreeFieldsField $portalFreeFieldsField)
+    {
+        $this->authorize('manage', FreeFieldsField::class);
+
+        $data = $input->integer('sortOrder')->whenMissing(999)->onEmpty(999)->alias('sort_order')->next()
+            ->boolean('changePortal')->whenMissing(false)->onEmpty(false)->alias('change_portal')->next()
+            ->get();
+
+        $portalFreeFieldsField->fill($data);
+        $portalFreeFieldsField->save();
+
+        $portalFreeFieldsField->load([
+            'freeFieldsField',
+        ]);
+
+        return FullPortalFreeFieldsField::make($portalFreeFieldsField);
+
+    }
+    public function destroyPortalFreeFieldsField(PortalFreeFieldsField $portalFreeFieldsField)
+    {
+        $this->authorize('manage', FreeFieldsField::class);
+
+        $portalFreeFieldsField->delete();
+    }
+
+
 
 }

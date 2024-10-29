@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import validator from 'validator';
+import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
 
 import InputText from '../../../components/form/InputText';
 import ButtonText from '../../../components/button/ButtonText';
-import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
+import PanelBody from '../../../components/panel/PanelBody';
 import InputToggle from '../../../components/form/InputToggle';
-import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
+import InputTextArea from '../../../components/form/InputTextArea';
 import axios from 'axios';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 // import { checkFieldRecord } from '../../../helpers/PortalFreeFieldsHelpers';
@@ -82,7 +83,7 @@ class PortalFreeFieldsPagesNewForm extends Component {
         if (!hasErrors) {
             PortalFreeFieldsAPI.newPortalFreeFieldsPage(portalFreeFieldsPage)
                 .then(payload => {
-                    hashHistory.push(`/vrije-velden-portaal-pagina/${payload.data.id}`);
+                    hashHistory.push(`/vrije-velden-portaal-pagina`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -113,13 +114,12 @@ class PortalFreeFieldsPagesNewForm extends Component {
                                 name={'isActive'}
                                 value={isActive}
                                 onChangeAction={this.handleInputChange}
-                                // required={'required'}
                                 error={this.state.errors.isActive}
                                 errorMessage={this.state.errorsMessage.isActive}
                             />
                         </div>
                         <div className="row">
-                            <InputText
+                            <InputTextArea
                                 label="Pagina beschrijving"
                                 name={'description'}
                                 value={description}
@@ -127,17 +127,36 @@ class PortalFreeFieldsPagesNewForm extends Component {
                                 error={this.state.errors.description}
                                 errorMessage={this.state.errorsMessage.description}
                             />
+                        </div>
+                        <div className="row">
                             <InputText
-                                label={'Portaal url: https://xxxx.mijnenergiesamen.nl/#/vrije-velden/'}
+                                size={'col-sm-5'}
+                                label={`Pagina referentie voor portaal url`}
                                 name={'urlPageRef'}
                                 value={urlPageRef}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.urlPageRef}
                                 errorMessage={this.state.errorsMessage.urlPageRef}
+                                textToolTip={
+                                    'Te gebruiken pagina referentie voor portaal url. Alleen kleine letters en koppelteken (-) toegestaan.'
+                                }
                             />
                         </div>
-
+                        <div className="row">
+                            <div className="form-group col-sm-12">
+                                <div className="row">
+                                    <div className="col-sm-3">
+                                        <label htmlFor="urlPageRefView" className="col-sm-12">
+                                            Portaal url
+                                        </label>
+                                    </div>
+                                    <div className="col-sm-9" id="urlPageRefView">
+                                        {`https://${this.props.portalUrl}/#/vrije-velden/${urlPageRef}`}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>{' '}
                         <hr />
                     </PanelBody>
 

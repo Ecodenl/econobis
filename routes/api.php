@@ -743,6 +743,7 @@ Route::namespace('Api')
         Route::post('free-fields-field', 'FreeFields\FreeFieldsFieldController@store');
         Route::get('free-fields-field/{freeFieldsField}', 'FreeFields\FreeFieldsFieldController@show');
         Route::post('free-fields-field/{freeFieldsField}/update', 'FreeFields\FreeFieldsFieldController@update');
+        Route::get('free-fields-field/free-fields-contacts/peek-contacts', 'FreeFields\FreeFieldsFieldController@peekContacts');
 
         Route::get('free-fields-field-records/get-values', 'FreeFields\FreeFieldsFieldRecordController@getValues');
         Route::post('free-fields-field-records/update-values', 'FreeFields\FreeFieldsFieldRecordController@updateValues');
@@ -756,6 +757,10 @@ Route::namespace('Api')
         Route::post('portal-free-fields-page', 'PortalFreeFields\PortalFreeFieldsPagesController@store');
         Route::get('portal-free-fields-page/{portalFreeFieldsPage}', 'PortalFreeFields\PortalFreeFieldsPagesController@show');
         Route::post('portal-free-fields-page/{portalFreeFieldsPage}/update', 'PortalFreeFields\PortalFreeFieldsPagesController@update');
+
+        Route::post('portal-free-fields-page-field', 'PortalFreeFields\PortalFreeFieldsPagesController@storePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}', 'PortalFreeFields\PortalFreeFieldsPagesController@updatePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@destroyPortalFreeFieldsField');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

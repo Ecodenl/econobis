@@ -73,6 +73,23 @@ export default {
     //         .then(response => response.data);
     // },
     //
+
+    createPortalFreeFieldsField: payload => {
+        const requestUrl = `${URL_API}/api/portal-free-fields-page-field`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
+    updatePortalFreeFieldsField: (recordId, payload) => {
+        const requestUrl = `${URL_API}/api/portal-free-fields-page-field/${recordId}`;
+
+        return axiosInstance.post(requestUrl, payload);
+    },
+    deletePortalFreeFieldsField: recordId => {
+        const requestUrl = `${URL_API}/api/portal-free-fields-page-field/${recordId}/delete`;
+
+        return axiosInstance.post(requestUrl);
+    },
+
     // updatePortalFreeFieldsFieldRecords: (data, recordId) => {
     //     const requestUrl = `${URL_API}/api/free-fields-field-records/update-values`;
     //     return axiosInstance.post(requestUrl, { data: { records: data, recordId: recordId } });

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
+import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
@@ -8,8 +9,6 @@ import PortalFreeFieldsPagesDetailsFormGeneral from './general/PortalFreeFieldsP
 import PortalFreeFieldsPagesDeleteItem from '../list/PortalFreeFieldsPagesDeleteItem';
 import { isEmpty } from 'lodash';
 import axios from 'axios';
-import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
-import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 
 function PortalFreeFieldsPagesDetailsApp(props) {
     const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
@@ -43,17 +42,6 @@ function PortalFreeFieldsPagesDetailsApp(props) {
 
     function fetchPortalFreeFieldsPage() {
         setIsLoading(true);
-        // PortalFreeFieldsAPI.fetchPortalFreeFieldsPageDetails(props.params.id)
-        //     .then(data => {
-        //         setPortalFreeFieldsPage(data);
-        //         setIsLoading(false);
-        //         setHasError(false);
-        //     })
-        //     .catch(() => {
-        //         alert('Er is iets misgegaan met ophalen van het vrije veld.');
-        //         setIsLoading(false);
-        //         setHasError(true);
-        //     });
 
         const keys = '?keys[]=portalUrl';
         axios

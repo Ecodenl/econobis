@@ -8,12 +8,13 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InputToggle from '../../../../components/form/InputToggle';
 import InputTextArea from '../../../../components/form/InputTextArea';
+import PortalFreeFieldsFields from '../portal-free-fields-fields/PortalFreeFieldsFields';
 
 class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, name, isActive, description, urlPageRef } = props.portalFreeFieldsPage;
+        const { id, name, isActive, description, urlPageRef, portalFreeFieldsFields } = props.portalFreeFieldsPage;
 
         this.state = {
             portalFreeFieldsPage: {
@@ -22,6 +23,7 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                 isActive,
                 description,
                 urlPageRef,
+                portalFreeFieldsFields,
             },
             errors: {
                 name: false,
@@ -101,7 +103,7 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, isActive, description, urlPageRef } = this.state.portalFreeFieldsPage;
+        const { id, name, isActive, description, urlPageRef, portalFreeFieldsFields } = this.state.portalFreeFieldsPage;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -179,6 +181,11 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
                         </div>
                     </PanelBody>
                 </Panel>
+                <PortalFreeFieldsFields
+                    pageId={id}
+                    portalFreeFieldsFields={portalFreeFieldsFields}
+                    showEditPage={true}
+                />
             </form>
         );
     }

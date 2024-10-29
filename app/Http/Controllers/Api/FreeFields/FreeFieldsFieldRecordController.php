@@ -95,7 +95,8 @@ class FreeFieldsFieldRecordController extends ApiController
                 ->where('visible_portal', true)
                 ->orderBy('sort_order')->get();
         } else {
-            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get();
+            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)
+                ->orderBy('sort_order')->get();
         }
 
         foreach ($freeFieldsFieldPerTable as $field) {

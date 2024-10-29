@@ -1,16 +1,18 @@
 import React from 'react';
-import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+import PortalFreeFieldsFields from '../portal-free-fields-fields/PortalFreeFieldsFields';
 
 const PortalFreeFieldsPagesDetailsFormGeneralView = ({
+    id,
     name,
     isActive,
     description,
     urlPageRef,
     portalUrl,
+    portalFreeFieldsFields,
     switchToEdit,
 }) => {
     return (
@@ -45,6 +47,7 @@ const PortalFreeFieldsPagesDetailsFormGeneralView = ({
                     </div>
                 </PanelBody>
             </Panel>
+            <PortalFreeFieldsFields pageId={id} portalFreeFieldsFields={portalFreeFieldsFields} showEditPage={false} />
         </div>
     );
 };

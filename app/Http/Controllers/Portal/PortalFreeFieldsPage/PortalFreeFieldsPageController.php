@@ -7,7 +7,7 @@ namespace App\Http\Controllers\Portal\PortalFreeFieldsPage;
 use App\Eco\Contact\Contact;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\Portal\PortalFreeFieldsPage\PortalFreeFieldsPageResource;
+use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsPage;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -31,21 +31,18 @@ class PortalFreeFieldsPageController extends Controller
             abort(403, 'Verboden');
         }
 
-// todo WM: opschonen
-//        Log::info('urlPageRef:');
-//        Log::info($urlPageRef);
-
         $portalFreeFieldsPage = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->first();
 
         if (!$portalFreeFieldsPage) {
             abort(403, 'Geen toegang tot deze pagina.');
         }
 
-// todo WM: opschonen
-//        Log::info('portalFreeFieldsPage:');
-//        Log::info($portalFreeFieldsPage);
+        $portalFreeFieldsPage->load([
+            'portalFreeFieldsFields',
+            'portalFreeFieldsFields.freeFieldsField',
+        ]);
 
-        return PortalFreeFieldsPageResource::make($portalFreeFieldsPage);
+        return FullPortalFreeFieldsPage::make($portalFreeFieldsPage);
     }
 
 }

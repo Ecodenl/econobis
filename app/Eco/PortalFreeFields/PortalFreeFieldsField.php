@@ -2,6 +2,7 @@
 
 namespace App\Eco\PortalFreeFields;
 
+use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldFormat;
 use App\Eco\FreeFields\FreeFieldsTable;
 use Illuminate\Database\Eloquent\Model;
@@ -12,30 +13,16 @@ class PortalFreeFieldsField extends Model
 
     protected $table = 'portal_free_fields_fields';
 
-    public function freeFieldsTable()
-    {
-        return $this->belongsTo(FreeFieldsTable::class, 'table_id');
-    }
-
-    public function freeFieldsFieldFormat()
-    {
-        return $this->belongsTo(FreeFieldsFieldFormat::class, 'field_format_id');
-    }
-
     public function portalFreeFieldsPage()
     {
         return $this->belongsTo(PortalFreeFieldsPage::class, 'page_id');
     }
 
-    public function portalFreeFieldsFieldRecords()
+    public function freeFieldsField()
     {
-        return $this->hasMany(PortalFreeFieldsFieldRecord::class, 'field_id');
+        return $this->belongsTo(FreeFieldsField::class, 'field_id');
     }
 
-    public function hasPortalFreeFieldsFieldRecords(): bool
-    {
-        return $this->portalFreeFieldsFieldRecords()->exists();
-    }
 }
 
 

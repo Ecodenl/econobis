@@ -19,6 +19,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
@@ -34,6 +35,7 @@ use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\FreeFields\FreeFieldsFieldRecordController;
+use App\Http\Controllers\Api\PortalFreeFields\PortalFreeFieldsFieldRecordController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Http\Resources\Project\ProjectRegister;
@@ -150,10 +152,17 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
-    public function getValuesForPortal(Contact $contact)
+    public function getContactFreeFields(Contact $contact)
     {
         $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
         return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
+    }
+    public function getContactPortalFreeFields(Contact $contact, Request $request)
+    {
+        $urlPageRef = $request->get('urlPageRef');
+
+        $portalFreeFieldsFieldRecordController = new PortalFreeFieldsFieldRecordController();
+        return $portalFreeFieldsFieldRecordController->getValuesForPortal($urlPageRef, 'contacts', $contact->id,);
     }
 
     public function getContactProjects(Contact $contact)

@@ -18,19 +18,19 @@ use Illuminate\Support\Facades\Log;
  *
  * @package App\Helpers\Delete\Models
  */
-class DeleteFreeFieldsField implements DeleteInterface
+class DeletePortalFreeFieldsField implements DeleteInterface
 {
     private $errorMessage = [];
-    private $freeFieldsField;
+    private $portalFreeFieldsField;
 
     /** Sets the model to delete
      *
-     * @param Model $freeFieldsField the model to delete
+     * @param Model $portalFreeFieldsField the model to delete
      */
 
-    public function __construct(Model $freeFieldsField)
+    public function __construct(Model $portalFreeFieldsField)
     {
-        $this->freeFieldsField = $freeFieldsField;
+        $this->portalFreeFieldsField = $portalFreeFieldsField;
     }
 
     /** Main method for deleting this model and all it's relations
@@ -45,7 +45,7 @@ class DeleteFreeFieldsField implements DeleteInterface
         $this->dissociateRelations();
         $this->deleteRelations();
         $this->customDeleteActions();
-        $this->freeFieldsField->delete();
+        $this->portalFreeFieldsField->delete();
 
         return $this->errorMessage;
     }
@@ -55,9 +55,6 @@ class DeleteFreeFieldsField implements DeleteInterface
      */
     public function canDelete()
     {
-        if($this->freeFieldsField->portalFreeFieldsFields->count() == 1){
-            array_push($this->errorMessage, "Er zijn nog koppelingen in vrije velden portaal pagina.");
-        }
 
     }
 

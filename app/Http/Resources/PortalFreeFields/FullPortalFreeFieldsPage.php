@@ -14,6 +14,7 @@ class FullPortalFreeFieldsPage extends JsonResource
             'isActive' => $this->is_active,
             'description' => $this->description,
             'urlPageRef' => $this->url_page_ref,
+            'portalFreeFieldsFields' => GridPortalFreeFieldsFields::collection($this->portalFreeFieldsFields->sortBy('sort_order')),
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
         ];

@@ -8,6 +8,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Measure extends Model
@@ -24,6 +25,20 @@ class Measure extends Model
     protected $guarded = [
         'id'
     ];
+
+    public function getNameAttribute($value)
+    {
+        if($this->name_custom) {
+            return $this->name_custom;
+        } else {
+            return $value;
+        }
+    }
+
+    public function getNameDefaultAttribute()
+    {
+        return $this->getAttributes()['name'];
+    }
 
     public function housingFileSpecifications()
     {

@@ -23,6 +23,7 @@ class FullMeasure extends JsonResource
             'id' => $this->id,
             'number' => $this->number,
             'name' => $this->name,
+            'name_default' => $this->name_default,
             'name_custom' => $this->name_custom,
             'description' => $this->description,
             'visible' => $this->visible,

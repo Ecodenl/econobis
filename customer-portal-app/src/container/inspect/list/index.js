@@ -14,6 +14,7 @@ function Inspectlist(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [statuses, setStatuses] = useState([]);
     const [contactFullNameFilter, setContactFullNameFilter] = useState('');
+    const [measureFilter, setMeasureFilter] = useState('');
     const [streetPostalCodeCityFilter, setStreetPostalCodeCityFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [datePlannedFromFilter, setDatePlannedFromFilter] = useState('');
@@ -217,6 +218,7 @@ function Inspectlist(props) {
                                                 }
                                             />
                                         </th>
+                                        <th>Maatregel specifiek</th>
                                         <th>
                                             Status
                                             <br />
@@ -307,6 +309,16 @@ function Inspectlist(props) {
                                                 onChange={e => setStreetPostalCodeCityFilter(e.target.value)}
                                                 style={{ width: '100px' }}
                                                 title={'Filter op adres'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type="text"
+                                                className={`text-input w-input content`}
+                                                value={measureFilter}
+                                                onChange={e => setMeasureFilter(e.target.value)}
+                                                style={{ width: '100px' }}
+                                                title={'Filter op maatregel specifiek'}
                                             />
                                         </th>
                                         <th style={{ verticalAlign: ' top' }}>
@@ -442,6 +454,7 @@ function Inspectlist(props) {
                                                     </Link>
                                                 )}
                                             </td>
+                                            <td>{quotationRequest.measureNames}</td>
                                             <td>
                                                 {quotationRequest.opportunityAction.name +
                                                     ' - ' +

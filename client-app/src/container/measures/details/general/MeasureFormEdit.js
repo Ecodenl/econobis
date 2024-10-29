@@ -56,7 +56,7 @@ class MeasureFormEdit extends Component {
 
     render() {
         const { description, visible, name_custom } = this.state.measure;
-        const { name, number, measureCategory = {} } = this.props.measureDetails;
+        const { name_default, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -74,8 +74,8 @@ class MeasureFormEdit extends Component {
                 <div className="row">
                     <InputText
                         label={'Maatregel specifiek'}
-                        name={'name'}
-                        value={name}
+                        name={'name_default'}
+                        value={name_default}
                         onChangeAction={() => {}}
                         readOnly={true}
                     />

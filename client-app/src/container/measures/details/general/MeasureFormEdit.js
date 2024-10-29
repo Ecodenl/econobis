@@ -70,7 +70,6 @@ class MeasureFormEdit extends Component {
                     />
                     <InputText label={'Nummer'} name={'number'} value={number} readOnly={true} />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Maatregel specifiek'}
@@ -93,6 +92,7 @@ class MeasureFormEdit extends Component {
                         name={'name_custom'}
                         value={name_custom}
                         onChangeAction={this.handleInputChange}
+                        readOnly={!this.props.keyUserRole && true}
                     />
                 </div>
 
@@ -104,7 +104,6 @@ class MeasureFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -134,6 +133,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Key user'),
     };
 };
 

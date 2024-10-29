@@ -20,6 +20,7 @@ class GridMeasure extends JsonResource
             'number' => $this->number,
             'measureCategory' => GenericResource::make($this->whenLoaded('measureCategory')),
             'name' => $this->name,
+            'name_custom' => $this->name_custom,
             'visible' => $this->visible,
         ];
     }

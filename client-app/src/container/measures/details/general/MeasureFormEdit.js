@@ -17,13 +17,14 @@ class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, description, visible } = props.measureDetails;
+        const { id, description, visible, name_custom } = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
                 description: description ? description : '',
                 visible: visible ? visible : false,
+                name_custom: name_custom ? name_custom : '',
             },
         };
     }
@@ -54,7 +55,7 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const { description, visible } = this.state.measure;
+        const { description, visible, name_custom } = this.state.measure;
         const { name, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
@@ -82,6 +83,15 @@ class MeasureFormEdit extends Component {
                         label={'Zichtbaar'}
                         name={'visible'}
                         value={visible}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label={'Naam aangepast'}
+                        name={'name_custom'}
+                        value={name_custom}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

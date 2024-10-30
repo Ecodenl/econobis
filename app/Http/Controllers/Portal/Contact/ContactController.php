@@ -850,7 +850,7 @@ class ContactController extends ApiController
                         break;
                     case 'double_2_dec':
                     case 'amount_euro':
-                        $record['fieldRecordValueDouble'] = (float) $value;
+                        $record['fieldRecordValueDouble'] = (double) str_replace(',', '.', $value);
                         break;
                     case 'date':
                     case 'datetime':

@@ -11,71 +11,16 @@ namespace App\Http\Controllers\Api\PortalFreeFields;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
-use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class PortalFreeFieldsFieldRecordController extends ApiController
 {
-//    public function getValues(Request $request)
-//    {
-////        $this->authorize('view', FreeFieldsField::class);
-//
-//        $table = $request->get('table');
-//        $recordId = $request->get('recordId');
-//
-//        return $this->getFreeFieldsValues(false, $table, $recordId);
-//    }
-//
     public function getValuesForPortal($urlPageRef, $table, $recordId)
     {
         return $this->getPortalFreeFieldsValues($table, $urlPageRef, $recordId);
     }
-
-//    public function updateValues(Request $request)
-//    {
-//        $recordId = $request->get('data')['recordId'];
-////        $this->authorize('view', FreeFieldsField::class);
-//
-//        foreach($request->get('data')['records'] as $record) {
-//
-//            $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $record['id'])->firstOrNew();
-//
-//            // Id nog niet bekend, dan nieuw! Overnemen: field_id en table_record_id
-//            if(!isset($freeFieldsFieldRecord->id)) {
-//                $freeFieldsFieldRecord->field_id = $record['id'];
-//                $freeFieldsFieldRecord->table_record_id = $recordId;
-//            }
-//
-//            switch ($record['fieldFormatType']) {
-//                case 'boolean':
-//                    $freeFieldsFieldRecord->field_value_boolean = (bool)$record['fieldRecordValueBoolean'];
-//                    break;
-//                case 'text_short':
-//                case 'text_long':
-//                    $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
-//                    break;
-//                case 'int':
-//                    $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'] != '' ? (int)$record['fieldRecordValueInt'] : null;
-//                    break;
-//                case 'double_2_dec':
-//                case 'amount_euro':
-//                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'] != '' ? (float)$record['fieldRecordValueDouble'] : null;
-//                    break;
-//                case 'date':
-//                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') . ' 00:00:00' : null;
-//                    break;
-//                case 'datetime':
-//                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;
-//                    break;
-//            }
-//
-//            $freeFieldsFieldRecord->save();
-//        }
-//    }
 
     /**
      * @param mixed $tableId

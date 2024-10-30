@@ -14,6 +14,7 @@ import { Form, Formik } from 'formik';
 import ValidationSchemaFreeFields from '../../../helpers/ValidationSchemaFreeFields';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
+import moment from 'moment';
 
 function Index({ match, history }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
@@ -71,7 +72,9 @@ function Index({ match, history }) {
                                     acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
                                     break;
                                 case 'date':
-                                    acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;
+                                    acc[`record-${record.id}`] = record.fieldRecordValueDatetime
+                                        ? moment(record.fieldRecordValueDatetime).format('YYYY-MM-DD')
+                                        : null;
                                     break;
                                 case 'datetime':
                                     acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;

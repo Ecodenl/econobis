@@ -11,6 +11,7 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
+import moment from 'moment/moment';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
@@ -80,7 +81,9 @@ const ContactDetails = function(props) {
                                 acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
                                 break;
                             case 'date':
-                                acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;
+                                acc[`record-${record.id}`] = record.fieldRecordValueDatetime
+                                    ? moment(record.fieldRecordValueDatetime).format('YYYY-MM-DD')
+                                    : null;
                                 break;
                             case 'datetime':
                                 acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;

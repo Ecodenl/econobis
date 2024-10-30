@@ -7,6 +7,8 @@ import Col from 'react-bootstrap/Col';
 import TextBlock from '../general/TextBlock';
 import { Field } from 'formik';
 import InputText from '../form/InputText';
+import InputTextCurrency from '../form/InputTextCurrency';
+import InputTextDate from '../form/InputTextDate';
 // import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
 
 function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue, values, layout }) {
@@ -15,7 +17,7 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
     return (
         <Row>
             {freeFieldsFieldRecords.map(record => {
-                const fieldName = `freeFieldsFieldRecords.record-${record.id}`;
+                const fieldRecordName = `freeFieldsFieldRecords.record-${record.id}`;
 
                 const fieldValue = values.freeFieldsFieldRecords[`record-${record.id}`]
                     ? values.freeFieldsFieldRecords[`record-${record.id}`]
@@ -25,10 +27,43 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                     case 'boolean':
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className="col-12" placeholder={''}>
-                                    {Boolean(fieldValue) === true ? 'Ja' : 'Nee'}
-                                </TextBlock>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <>
+                                                <label className="w-checkbox checkbox-fld">
+                                                    <input
+                                                        type="checkbox"
+                                                        {...field}
+                                                        id={`change-${fieldRecordName}`}
+                                                        checked={field.value}
+                                                        className="w-checkbox-input checkbox"
+                                                        value={false}
+                                                    />
+                                                    <span
+                                                        htmlFor={`change-${fieldRecordName}`}
+                                                        className="checkbox-label w-form-label"
+                                                    >
+                                                        {Boolean(field.value) === true ? 'Ja' : 'Nee'}
+                                                    </span>
+                                                    {touched[fieldRecordName] && errors[fieldRecordName] ? (
+                                                        <div className={'error-message text-danger'}>
+                                                            {errors[fieldRecordName]}
+                                                        </div>
+                                                    ) : null}
+                                                </label>
+                                            </>
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className="col-12" placeholder={''}>
+                                        {Boolean(fieldValue) === true ? 'Ja' : 'Nee'}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
                         break;
@@ -40,13 +75,13 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                                     {record.mandatory ? 'Ja' : 'Nee'}
                                 </FormLabel>
                                 {record.changePortal ? (
-                                    <Field name={fieldName}>
+                                    <Field name={fieldRecordName}>
                                         {({ field }) => (
                                             <InputText
                                                 field={field}
                                                 errors={errors}
                                                 touched={touched}
-                                                id={`record-${record.id}`}
+                                                id={fieldRecordName}
                                                 placeholder={record.fieldName}
                                                 required={record.mandatory}
                                             />
@@ -69,7 +104,7 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                                 </FormLabel>
                                 {record.changePortal ? (
                                     <Field
-                                        name={fieldName}
+                                        name={fieldRecordName}
                                         as="textarea"
                                         className="form-control"
                                         style={{ whiteSpace: 'pre-wrap' }}
@@ -88,9 +123,25 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                                 <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className={'col-12 col-sm-6'} placeholder={''}>
-                                    {fieldValue || ''}
-                                </TextBlock>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <InputText
+                                                type="number"
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id={fieldRecordName}
+                                                placeholder={record.fieldName}
+                                                required={record.mandatory}
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className={'col-12'} placeholder={''}>
+                                        {fieldValue || ''}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
                         break;
@@ -98,9 +149,22 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                                 <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className={'col-12 col-sm-6'} placeholder={''}>
-                                    {fieldValue ? parseFloat(fieldValue).toFixed(2) : ''}
-                                </TextBlock>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id={fieldRecordName}
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className="col-12" placeholder={''}>
+                                        {fieldValue ? parseFloat(fieldValue).toFixed(2) : ''}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
                         break;
@@ -108,9 +172,22 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                                 <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className={'col-12 col-sm-6'} placeholder={''}>
-                                    {fieldValue ? MoneyPresenter(fieldValue) : ''}
-                                </TextBlock>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <InputTextCurrency
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id={fieldRecordName}
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className="col-12" placeholder={''}>
+                                        {fieldValue ? MoneyPresenter(fieldValue) : ''}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
                         break;
@@ -118,9 +195,24 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                                 <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className={'col-12 col-sm-6'} placeholder={''}>
-                                    {fieldValue ? moment(fieldValue).format('L') : ''}
-                                </TextBlock>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="date"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id={fieldRecordName}
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className={'col-12'} placeholder={''}>
+                                        {fieldValue ? moment(fieldValue).format('L') : ''}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
                         break;
@@ -135,9 +227,25 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                                 <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
-                                <TextBlock className={'col-12 col-sm-6'} placeholder={''}>
-                                    {dateTimeFormated}
-                                </TextBlock>
+                                {record.changePortal ? (
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <InputTextDate
+                                                field={field}
+                                                type="datetime-local"
+                                                errors={errors}
+                                                touched={touched}
+                                                onChangeAction={setFieldValue}
+                                                id={fieldRecordName}
+                                                step="900"
+                                            />
+                                        )}
+                                    </Field>
+                                ) : (
+                                    <TextBlock className={'col-12'} placeholder={''}>
+                                        {dateTimeFormated}
+                                    </TextBlock>
+                                )}
                             </Col>
                         );
 

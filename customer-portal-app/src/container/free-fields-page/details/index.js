@@ -10,12 +10,10 @@ import Button from 'react-bootstrap/Button';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import axios from 'axios';
 import FreeFields from '../../../components/freeFields/FreeFields';
-import { Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import ValidationSchemaFreeFields from '../../../helpers/ValidationSchemaFreeFields';
-import FormLabel from 'react-bootstrap/FormLabel';
-import TextBlock from '../../../components/general/TextBlock';
-import MoneyPresenter from '../../../helpers/MoneyPresenter';
-import moment from 'moment/moment';
+import { ClipLoader } from 'react-spinners';
+import { Alert } from 'react-bootstrap';
 
 function Index({ match, history }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
@@ -103,7 +101,7 @@ function Index({ match, history }) {
 
     function handleSubmitContactValues(values, actions, switchToView) {
         const updatedContact = { ...contact, ...values, projectId: null };
-        PortalFreeFieldsPageAPI.update(updatedContact.freeFieldsFieldRecords)
+        PortalFreeFieldsPageAPI.updatePortalFreeFieldsPageValues(updatedContact.id, updatedContact)
             .then(payload => {
                 callFetchFreeFieldsPage();
                 actions.setSubmitting(false);
@@ -117,16 +115,6 @@ function Index({ match, history }) {
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
-
-    // todo WM: opschonen
-    // const handleSubmit = (values, actions) => {
-    //     PortalFreeFieldsPageAPI.update({
-    //         id: match.params.id,
-    //         freeFieldValue: values.freeFieldValue,
-    //     }).then(response => {
-    //         redirectBack();
-    //     });
-    // };
 
     if (errorMessage) {
         return (
@@ -195,41 +183,86 @@ function Index({ match, history }) {
                         >
                             {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                                 return (
-                                    <FreeFields
-                                        freeFieldsFieldRecords={portalFreeFieldsFieldRecords}
-                                        showEdit={showEdit}
-                                        touched={touched}
-                                        errors={errors}
-                                        setFieldValue={setFieldValue}
-                                        values={values}
-                                        layout="double" // Renders in two columns
-                                    />
+                                    <Form>
+                                        <FreeFields
+                                            freeFieldsFieldRecords={portalFreeFieldsFieldRecords}
+                                            showEdit={showEdit}
+                                            touched={touched}
+                                            errors={errors}
+                                            setFieldValue={setFieldValue}
+                                            values={values}
+                                            layout="double" // Renders in two columns
+                                        />
+                                        {showEdit ? (
+                                            <>
+                                                <Row>
+                                                    <Col>
+                                                        <ButtonGroup aria-label="free-fields" className="float-right">
+                                                            <Button
+                                                                variant={'outline-dark'}
+                                                                size="sm"
+                                                                onClick={function() {
+                                                                    setShowEdit(false);
+                                                                }}
+                                                            >
+                                                                Annuleren
+                                                            </Button>
+                                                            <Button
+                                                                className={'w-button'}
+                                                                size="sm"
+                                                                onClick={handleSubmit}
+                                                                disabled={isSubmitting}
+                                                            >
+                                                                {isSubmitting ? (
+                                                                    <span>
+                                                                        <ClipLoader color={'white'} size={14} />
+                                                                        Bezig met opslaan
+                                                                    </span>
+                                                                ) : (
+                                                                    'Opslaan'
+                                                                )}
+                                                            </Button>
+                                                        </ButtonGroup>
+                                                    </Col>
+                                                </Row>
+                                                {!isEmpty(errors) ? (
+                                                    <Row>
+                                                        <Col>
+                                                            <div className="alert-wrapper">
+                                                                <Alert
+                                                                    key={'form-general-error-alert'}
+                                                                    variant={'warning'}
+                                                                >
+                                                                    Niet alle verplichte velden zijn (juist) ingevuld!
+                                                                </Alert>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                ) : null}
+                                                {status && status.message ? (
+                                                    <Row>
+                                                        <Col>
+                                                            <div className="alert-wrapper">
+                                                                <Alert
+                                                                    key={'form-general-error-alert'}
+                                                                    variant={'danger'}
+                                                                >
+                                                                    {status.message}
+                                                                </Alert>
+                                                            </div>
+                                                        </Col>
+                                                    </Row>
+                                                ) : null}
+                                            </>
+                                        ) : (
+                                            <Row>
+                                                <Col>{editButtonGroup}</Col>
+                                            </Row>
+                                        )}
+                                    </Form>
                                 );
                             }}
                         </Formik>
-                        {/*todo WM: opschonen*/}
-                        {/*<FreeFields freeFieldsFieldRecords={portalFreeFieldsFieldRecords} showEdit={showEdit} />*/}
-                        {/*<Row className={'mt-5'}>*/}
-                        {/*    <Col>*/}
-                        {/*        <FreeFieldsPageDetailsFieldsList*/}
-                        {/*            redirectBack={redirectBack}*/}
-                        {/*            initialPortalFreeFieldsPage={portalFreeFieldsPage}*/}
-                        {/*            handleSubmit={{}}*/}
-                        {/*            // handleSubmit={handleSubmit}*/}
-                        {/*        />*/}
-                        {/*    </Col>*/}
-                        {/*</Row>*/}
-                        {/*<Row>*/}
-                        {/*    <Col>*/}
-                        {/*        <ButtonGroup className="float-right">*/}
-                        {/*            <Link to={`/inschrijven/${project.id}`}>*/}
-                        {/*                <Button className={'w-button'} size="sm">*/}
-                        {/*                    Ga naar inschrijven*/}
-                        {/*                </Button>*/}
-                        {/*            </Link>*/}
-                        {/*        </ButtonGroup>*/}
-                        {/*    </Col>*/}
-                        {/*</Row>*/}
                     </div>
                 </>
             )}

@@ -35,11 +35,26 @@ class FreeFieldsFieldRecordController extends ApiController
 
     public function updateValues(Request $request)
     {
-        $recordId = $request->get('data')['recordId'];
 //        $this->authorize('view', FreeFieldsField::class);
 
-        foreach($request->get('data')['records'] as $record) {
+        if( isset($request->get('data')['recordId']) && isset($request->get('data')['records']) ){
+            $recordId = $request->get('data')['recordId'];
+            $records = $request->get('data')['records'];
+            $this->updateRecordValues($recordId, $records);
 
+        }
+
+    }
+    public function updateValuesFromFreeFieldsContact($contactId, array $records)
+    {
+//        $this->authorize('view', FreeFieldsField::class);
+
+        $this->updateRecordValues($contactId, $records);
+
+    }
+    private function updateRecordValues($recordId, array $records)
+    {
+        foreach($records as $record) {
             $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $record['id'])->firstOrNew();
 
             // Id nog niet bekend, dan nieuw! Overnemen: field_id en table_record_id

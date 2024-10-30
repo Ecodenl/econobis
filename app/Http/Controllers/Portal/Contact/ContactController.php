@@ -16,10 +16,10 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
-use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
@@ -44,6 +44,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends ApiController
@@ -104,6 +105,9 @@ class ContactController extends ApiController
                     $currentAddressEnergySupplierElectricity = isset($request['primaryAddress']['currentAddressEnergySupplierElectricity']) ? $request['primaryAddress']['currentAddressEnergySupplierElectricity'] : null;
                     $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
+                if (isset($request['freeFieldsFieldRecords'])) {
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                }
             }
 
             // ORGANISATION
@@ -124,6 +128,9 @@ class ContactController extends ApiController
                 if (isset($request['invoiceAddress'])) {
                     $this->updateAddress(ContactType::ORGANISATION, $contact, $request['invoiceAddress'], null, 'invoice', null);
                 }
+                if (isset($request['freeFieldsFieldRecords'])) {
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                }
             }
 
         });
@@ -134,6 +141,41 @@ class ContactController extends ApiController
 
     }
 
+    public function updatePortalFreeFieldsPageValues(Contact $contact, Request $request)
+    {
+        if (!isset($request) || !isset($request->id)) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        $updateUser = User::find($responsibleUserId);
+        $updateUser->occupation = '@portal-update@';
+        Auth::setUser($updateUser);
+
+        DB::transaction(function () use ($contact, $request) {
+
+            $contact = Contact::find($contact->id);
+            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+
+        });
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
+
+    }
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
@@ -767,6 +809,63 @@ class ContactController extends ApiController
             }
         }
 
+    }
+
+    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData)
+    {
+        // Array to hold transformed records
+        $updateValues = [];
+
+        foreach ($freeFieldsFieldRecordsData as $key => $value) {
+            // Extract record id from "record-{id}" format
+            $recordId = (int) str_replace('record-', '', $key);
+
+            // Fetch field format type from FreeFieldsField model
+            $freeFieldsField = FreeFieldsField::find($recordId);
+            $fieldFormatType = $freeFieldsField?->freeFieldsFieldFormat?->format_type ?? null;
+
+            if ($fieldFormatType) {
+                // Initialize a single record array with defaults
+                $record = [
+                    'id' => $recordId,
+                    'fieldFormatType' => $fieldFormatType, // add fieldFormatType
+                    'fieldRecordValueText' => null,
+                    'fieldRecordValueBoolean' => null,
+                    'fieldRecordValueInt' => null,
+                    'fieldRecordValueDouble' => null,
+                    'fieldRecordValueDatetime' => null,
+                ];
+
+                // Assign values based on format type
+                switch ($fieldFormatType) {
+                    case 'boolean':
+                        $record['fieldRecordValueBoolean'] = (bool) $value;
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        $record['fieldRecordValueText'] = $value;
+                        break;
+                    case 'int':
+                        $record['fieldRecordValueInt'] = (int) $value;
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $record['fieldRecordValueDouble'] = (float) $value;
+                        break;
+                    case 'date':
+                    case 'datetime':
+                        $record['fieldRecordValueDatetime'] = $value;
+                        break;
+                }
+
+                // Add the transformed record to updateValues
+                $updateValues[] = $record;
+            }
+        }
+
+        // Call updateValues with transformed data
+        $controller = new FreeFieldsFieldRecordController();
+        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues);
     }
 
     protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)

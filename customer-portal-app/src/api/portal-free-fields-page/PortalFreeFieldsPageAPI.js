@@ -7,11 +7,9 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
-    update: function(contactId, urlPageRef) {
-        console.log('hier api call voor update');
-        return true;
-        // const requestUrl = `/portal-free-fields-page/${contactId}/${urlPageRef}`;
-        //
-        // return axiosInstance.get(requestUrl);
+    updatePortalFreeFieldsPageValues: function(contactId, portalFreeFieldsPageRecords) {
+        const requestUrl = `/portal-free-fields-page-values/${contactId}/update`;
+
+        return axiosInstance.post(requestUrl, portalFreeFieldsPageRecords);
     },
 };

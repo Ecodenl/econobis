@@ -14,6 +14,7 @@ import { Alert } from 'react-bootstrap';
 function ContactDetailsPersonal({
     portalSettings,
     initialContact,
+    freeFieldsFieldRecords,
     handleSubmitContactValues,
     editButtonGroup,
     editForm,
@@ -44,6 +45,7 @@ function ContactDetailsPersonal({
                                 <DefaultContactPersonalEdit
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
+                                    freeFieldsFieldRecords={freeFieldsFieldRecords}
                                     touched={touched}
                                     errors={errors}
                                     setFieldValue={setFieldValue}
@@ -107,7 +109,11 @@ function ContactDetailsPersonal({
                 </Formik>
             ) : (
                 <>
-                    <DefaultContactPersonalView portalSettings={portalSettings} initialContact={initialContact} />
+                    <DefaultContactPersonalView
+                        portalSettings={portalSettings}
+                        initialContact={initialContact}
+                        freeFieldsFieldRecords={freeFieldsFieldRecords}
+                    />
                     <Row>
                         <Col>{editButtonGroup}</Col>
                     </Row>

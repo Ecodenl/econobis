@@ -147,6 +147,7 @@ class FreeFieldsFieldRecordController extends ApiController
                 'fieldRecordValueInt' => $fieldRecordValueInt,
                 'fieldRecordValueDouble' => $fieldRecordValueDouble,
                 'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
+                'changePortal' => $field->change_portal,
                 'mandatory' => $field->mandatory,
                 'mask' => $field->mask,
             ];

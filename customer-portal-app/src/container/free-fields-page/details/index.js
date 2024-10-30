@@ -10,9 +10,16 @@ import Button from 'react-bootstrap/Button';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import axios from 'axios';
 import FreeFields from '../../../components/freeFields/FreeFields';
+import { Formik } from 'formik';
+import ValidationSchemaFreeFields from '../../../helpers/ValidationSchemaFreeFields';
+import FormLabel from 'react-bootstrap/FormLabel';
+import TextBlock from '../../../components/general/TextBlock';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import moment from 'moment/moment';
 
 function Index({ match, history }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
+    const [contact, setContact] = useState({});
     const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
     const [portalFreeFieldsFieldRecords, setPortalFreeFieldsFieldRecords] = useState({});
     const [isLoading, setLoading] = useState(true);
@@ -21,30 +28,7 @@ function Index({ match, history }) {
 
     useEffect(() => {
         if (currentSelectedContact.id) {
-            (function callFetchFreeFieldsPage() {
-                setLoading(true);
-
-                axios
-                    .all([
-                        PortalFreeFieldsPageAPI.fetchFreeFieldsPage(currentSelectedContact.id, match.params.urlPageRef),
-                        ContactAPI.fetchContactPortalFreeFields(currentSelectedContact.id, match.params.urlPageRef),
-                    ])
-                    .then(
-                        axios.spread((payloadFreeFieldsPage, payloadContactPortalFreeFields) => {
-                            setPortalFreeFieldsPage(payloadFreeFieldsPage.data.data);
-                            setPortalFreeFieldsFieldRecords(payloadContactPortalFreeFields.data);
-                            setLoading(false);
-                        })
-                    )
-                    .catch(error => {
-                        setErrorMessage(
-                            error?.response?.data?.message
-                                ? error.response.data.message
-                                : 'Er is iets misgegaan met laden. Herlaad de pagina opnieuw.'
-                        );
-                        setLoading(false);
-                    });
-            })();
+            callFetchFreeFieldsPage();
         }
     }, [match, currentSelectedContact]);
 
@@ -53,14 +37,96 @@ function Index({ match, history }) {
         history.push('/dashboard');
     }
 
-    const handleSubmit = (values, actions) => {
-        PortalFreeFieldsPageAPI.update({
-            id: match.params.id,
-            freeFieldValue: values.freeFieldValue,
-        }).then(response => {
-            redirectBack();
-        });
-    };
+    function callFetchFreeFieldsPage() {
+        setLoading(true);
+
+        axios
+            .all([
+                PortalFreeFieldsPageAPI.fetchFreeFieldsPage(currentSelectedContact.id, match.params.urlPageRef),
+                ContactAPI.fetchContactPortalFreeFields(currentSelectedContact.id, match.params.urlPageRef),
+            ])
+            .then(
+                axios.spread((payloadFreeFieldsPage, payloadContactPortalFreeFields) => {
+                    setPortalFreeFieldsPage(payloadFreeFieldsPage.data.data);
+                    setPortalFreeFieldsFieldRecords(payloadContactPortalFreeFields.data);
+
+                    // Set up initial freeFieldsFieldRecords inside contact
+                    const initialPortalFreeFieldsFieldRecords = payloadContactPortalFreeFields.data.reduce(
+                        (acc, record) => {
+                            switch (record.fieldFormatType) {
+                                case 'boolean':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueBoolean || null;
+                                    break;
+                                case 'text_short':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueText || null;
+                                    break;
+                                case 'text_long':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueText || null;
+                                    break;
+                                case 'int':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueInt || null;
+                                    break;
+                                case 'double_2_dec':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
+                                    break;
+                                case 'amount_euro':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
+                                    break;
+                                case 'date':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;
+                                    break;
+                                case 'datetime':
+                                    acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;
+                                    break;
+                            }
+                            return acc;
+                        },
+                        {}
+                    );
+
+                    let contactData = { ...currentSelectedContact };
+                    contactData.freeFieldsFieldRecords = initialPortalFreeFieldsFieldRecords;
+                    setContact(contactData);
+
+                    setLoading(false);
+                })
+            )
+            .catch(error => {
+                setErrorMessage(
+                    error?.response?.data?.message
+                        ? error.response.data.message
+                        : 'Er is iets misgegaan met laden. Herlaad de pagina opnieuw.'
+                );
+                setLoading(false);
+            });
+    }
+
+    function handleSubmitContactValues(values, actions, switchToView) {
+        const updatedContact = { ...contact, ...values, projectId: null };
+        PortalFreeFieldsPageAPI.update(updatedContact.freeFieldsFieldRecords)
+            .then(payload => {
+                callFetchFreeFieldsPage();
+                actions.setSubmitting(false);
+                switchToView();
+            })
+            .catch(error => {
+                actions.setSubmitting(false);
+                actions.setStatus({
+                    message: error.response.data.message,
+                });
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+            });
+    }
+
+    // todo WM: opschonen
+    // const handleSubmit = (values, actions) => {
+    //     PortalFreeFieldsPageAPI.update({
+    //         id: match.params.id,
+    //         freeFieldValue: values.freeFieldValue,
+    //     }).then(response => {
+    //         redirectBack();
+    //     });
+    // };
 
     if (errorMessage) {
         return (
@@ -80,8 +146,10 @@ function Index({ match, history }) {
         );
     }
 
+    const validationSchema = ValidationSchemaFreeFields.validationSchemaBasic;
+
     const editButtonGroup = (
-        <ButtonGroup aria-label="free-fields-page]" className={'float-right'}>
+        <ButtonGroup aria-label="free-fields-page" className={'float-right'}>
             <Button
                 className={'w-button'}
                 size="sm"
@@ -101,20 +169,12 @@ function Index({ match, history }) {
             ) : (
                 <>
                     <div className="content-container w-container">
-                        {showEdit ? (
-                            <Row>
-                                <Col>
-                                    <h1 className="content-heading mt-0">{portalFreeFieldsPage.name} EDIT !</h1>
-                                </Col>
-                            </Row>
-                        ) : (
-                            <Row>
-                                <Col>
-                                    <h1 className="content-heading mt-0">{portalFreeFieldsPage.name}</h1>
-                                </Col>
-                                <Col>{editButtonGroup}</Col>
-                            </Row>
-                        )}
+                        <Row>
+                            <Col>
+                                <h1 className="content-heading mt-0">{portalFreeFieldsPage.name}</h1>
+                            </Col>
+                            {!showEdit && <Col>{editButtonGroup}</Col>}
+                        </Row>
                         <Row>
                             <Col>
                                 {!isEmpty(portalFreeFieldsPage.description) ? (
@@ -124,7 +184,31 @@ function Index({ match, history }) {
                                 ) : null}
                             </Col>
                         </Row>
-                        <FreeFields freeFieldsFieldRecords={portalFreeFieldsFieldRecords} showEdit={showEdit} />
+                        <Formik
+                            initialValues={contact}
+                            enableReinitialize={true}
+                            validationSchema={validationSchema}
+                            onSubmit={(values, actions) => {
+                                actions.setSubmitting(true);
+                                handleSubmitContactValues(values, actions, () => setShowEdit(false));
+                            }}
+                        >
+                            {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                                return (
+                                    <FreeFields
+                                        freeFieldsFieldRecords={portalFreeFieldsFieldRecords}
+                                        showEdit={showEdit}
+                                        touched={touched}
+                                        errors={errors}
+                                        setFieldValue={setFieldValue}
+                                        values={values}
+                                        layout="double" // Renders in two columns
+                                    />
+                                );
+                            }}
+                        </Formik>
+                        {/*todo WM: opschonen*/}
+                        {/*<FreeFields freeFieldsFieldRecords={portalFreeFieldsFieldRecords} showEdit={showEdit} />*/}
                         {/*<Row className={'mt-5'}>*/}
                         {/*    <Col>*/}
                         {/*        <FreeFieldsPageDetailsFieldsList*/}

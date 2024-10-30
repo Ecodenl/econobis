@@ -84,22 +84,28 @@ class PortalFreeFieldsFieldRecordController extends ApiController
      */
     private function getPortalFreeFieldsValues(mixed $table, mixed $urlPageRef, mixed $recordId): \Illuminate\Http\JsonResponse
     {
+        // Retrieve table ID based on table name
         $tableId = FreeFieldsTable::where('table', $table)->first()->id;
-Log::info('urlPageRef ' . $urlPageRef);
-        $pageId = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->first()->id;
-Log::info('pageId ' . $pageId);
 
+        // Retrieve page ID based on URL reference
+        $pageId = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->first()->id;
+
+        // Get fields linked to the specified table and page, ordered by sort order
         $fields = FreeFieldsField::where('table_id', $tableId)
             ->whereHas('portalFreeFieldsFields', function ($query) use ($pageId) {
-                $query->where('page_id', $pageId); // Filter to fields that are related to the specified page
+                $query->where('page_id', $pageId);
             })
-            ->orderBy('sort_order') // Apply sorting by `sort_order`
+            ->orderBy('sort_order')
             ->get();
-        Log::info('fields ' . $fields);
 
         $portalFreeFieldsFieldRecords = [];
 
         foreach ($fields as $field) {
+            // Fetch the `PortalFreeFieldsField` relation to access `change_portal` from `portal_free_fields_fields`
+            $portalField = $field->portalFreeFieldsFields()
+                ->where('page_id', $pageId)
+                ->first();
+
             // Fetch or initialize the FreeFieldsFieldRecord based on `table_record_id` and `field_id`
             $record = FreeFieldsFieldRecord::where('table_record_id', $recordId)
                 ->where('field_id', $field->id)
@@ -147,7 +153,7 @@ Log::info('pageId ' . $pageId);
                 }
             }
 
-            // Add each field’s record data to the results array
+            // Populate the result array, using `change_portal` from the `portal_free_fields_fields` table
             $portalFreeFieldsFieldRecords[] = [
                 'id' => $field->id,
                 'tableName' => $field->freeFieldsTable->name,
@@ -158,13 +164,14 @@ Log::info('pageId ' . $pageId);
                 'fieldRecordValueInt' => $fieldRecordValueInt,
                 'fieldRecordValueDouble' => $fieldRecordValueDouble,
                 'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
+                'changePortal' => $portalField->change_portal ?? null, // Accessing `change_portal` from `portal_free_fields_fields`
                 'mandatory' => $field->mandatory,
                 'mask' => $field->mask,
             ];
         }
 
-        Log::info('portalFreeFieldsFieldRecords ');
-        Log::info($portalFreeFieldsFieldRecords);
+//        Log::info('portalFreeFieldsFieldRecords ');
+//        Log::info($portalFreeFieldsFieldRecords);
 
         return response()->json($portalFreeFieldsFieldRecords);
     }

@@ -772,8 +772,11 @@ const DefaultContactPersonalEdit = function({
                 <Col xs={12}>
                     <FreeFields
                         freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        values={values}
                         showEdit={true}
+                        touched={touched}
+                        errors={errors}
+                        setFieldValue={setFieldValue}
+                        values={values}
                         layout="single"
                     />
                 </Col>

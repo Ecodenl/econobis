@@ -122,7 +122,10 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                     case 'int':
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
                                 {record.changePortal ? (
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (
@@ -148,7 +151,10 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                     case 'double_2_dec':
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
                                 {record.changePortal ? (
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (
@@ -171,7 +177,10 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                     case 'amount_euro':
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
                                 {record.changePortal ? (
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (
@@ -194,7 +203,10 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                     case 'date':
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
                                 {record.changePortal ? (
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (
@@ -226,7 +238,10 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
 
                         return (
                             <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>{record.fieldName}</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                                    {record.mandatory ? 'Ja' : 'Nee'}
+                                </FormLabel>
                                 {record.changePortal ? (
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (

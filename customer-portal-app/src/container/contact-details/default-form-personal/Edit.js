@@ -1,6 +1,6 @@
 import React from 'react';
 import InputText from '../../../components/form/InputText';
-import { Field } from 'formik';
+import { Field, Formik } from 'formik';
 import Select from '../../../components/form/Select';
 import Countries from '../../../data/Countries';
 import EnergySuppliers from '../../../data/EnergySuppliers';
@@ -15,12 +15,13 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
-import FreeFields from '../../../components/freeFields/FreeFields';
+import ContactFreeFields from '../ContactFreeFields';
 
 const DefaultContactPersonalEdit = function({
     portalSettings,
     initialContact,
     freeFieldsFieldRecords,
+    saveButtonGroup,
     projectTypeCodeRef,
     errors,
     touched,
@@ -767,17 +768,15 @@ const DefaultContactPersonalEdit = function({
                     ) : null}
                 </Col>
             </Row>
-            {/* FreeFields Section */}
             <Row>
+                <Col>{saveButtonGroup}</Col>
+            </Row>
+            {/* FreeFields Section */}
+            <Row className="mt-5">
                 <Col xs={12}>
-                    <FreeFields
-                        freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        showEdit={true}
-                        touched={touched}
-                        errors={errors}
-                        setFieldValue={setFieldValue}
-                        values={values}
-                        layout="single"
+                    <ContactFreeFields
+                        contactFreeFieldsFieldRecords={freeFieldsFieldRecords}
+                        initialContact={initialContact}
                     />
                 </Col>
             </Row>

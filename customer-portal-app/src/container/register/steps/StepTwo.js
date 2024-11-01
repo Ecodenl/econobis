@@ -52,7 +52,17 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                     handleSubmitContactValues(values, actions, next);
                 }}
             >
-                {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                {({
+                    errors,
+                    touched,
+                    setFieldValue,
+                    setFieldError,
+                    setFieldTouched,
+                    isSubmitting,
+                    status,
+                    values,
+                    handleSubmit,
+                }) => {
                     return (
                         <Form>
                             {/* If contact is person */}
@@ -62,6 +72,8 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     initialContact={initialContact}
                                     projectTypeCodeRef={project.projectType.codeRef}
                                     setFieldValue={setFieldValue}
+                                    setFieldError={setFieldError}
+                                    setFieldTouched={setFieldTouched}
                                     values={values}
                                     touched={touched}
                                     errors={errors}
@@ -75,6 +87,8 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     initialContact={initialContact}
                                     projectTypeCodeRef={project.projectType.codeRef}
                                     setFieldValue={setFieldValue}
+                                    setFieldError={setFieldError}
+                                    setFieldTouched={setFieldTouched}
                                     values={values}
                                     touched={touched}
                                     errors={errors}

@@ -9,9 +9,18 @@ import { Field } from 'formik';
 import InputText from '../form/InputText';
 import InputTextCurrency from '../form/InputTextCurrency';
 import InputTextDate from '../form/InputTextDate';
-// import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
+import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
 
-function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue, values, layout }) {
+function FreeFieldsEdit({
+    freeFieldsFieldRecords,
+    touched,
+    errors,
+    setFieldValue,
+    setFieldError,
+    setFieldTouched,
+    values,
+    layout,
+}) {
     const isSingleColumn = layout === 'single';
 
     return (
@@ -84,6 +93,33 @@ function FreeFieldsEdit({ freeFieldsFieldRecords, touched, errors, setFieldValue
                                                 id={fieldRecordName}
                                                 placeholder={record.fieldName}
                                                 required={record.mandatory}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueText: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>

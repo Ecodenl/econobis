@@ -14,11 +14,13 @@ import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
 import FreeFields from '../../../components/freeFields/FreeFields';
+import ContactFreeFields from '../ContactFreeFields';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
     initialContact,
     freeFieldsFieldRecords,
+    saveButtonGroup,
     projectTypeCodeRef,
     errors,
     touched,
@@ -936,17 +938,15 @@ const DefaultContactOrganisationEdit = function({
                     </Row>
                 </Col>
             </Row>
-            {/* FreeFields Section */}
             <Row>
+                <Col>{saveButtonGroup}</Col>
+            </Row>
+            {/* FreeFields Section */}
+            <Row className="mt-5">
                 <Col xs={12}>
-                    <FreeFields
-                        freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        showEdit={true}
-                        touched={touched}
-                        errors={errors}
-                        setFieldValue={setFieldValue}
-                        values={values}
-                        layout="single"
+                    <ContactFreeFields
+                        contactFreeFieldsFieldRecords={freeFieldsFieldRecords}
+                        initialContact={initialContact}
                     />
                 </Col>
             </Row>

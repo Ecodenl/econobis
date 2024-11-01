@@ -27,6 +27,7 @@ function ContactDetailsPersonal({
         : initialContact.isParticipant
         ? ValidationSchemaPersonal.validationSchemaBasic.concat(ValidationSchemaPersonal.validationSchemaAdditional)
         : ValidationSchemaPersonal.validationSchemaBasic;
+
     return (
         <div>
             {editForm ? (
@@ -39,48 +40,55 @@ function ContactDetailsPersonal({
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                 >
-                    {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                    {({
+                        errors,
+                        touched,
+                        setFieldValue,
+                        setFieldError,
+                        setFieldTouched,
+                        isSubmitting,
+                        status,
+                        values,
+                        handleSubmit,
+                    }) => {
+                        const saveButtonGroup = (
+                            <ButtonGroup aria-label="personal" className="float-right">
+                                <Button
+                                    variant={'outline-dark'}
+                                    size="sm"
+                                    onClick={function() {
+                                        setEditForm(false);
+                                    }}
+                                >
+                                    Annuleren
+                                </Button>
+                                <Button className={'w-button'} size="sm" onClick={handleSubmit} disabled={isSubmitting}>
+                                    {isSubmitting ? (
+                                        <span>
+                                            <ClipLoader color={'white'} size={14} />
+                                            Bezig met opslaan
+                                        </span>
+                                    ) : (
+                                        'Opslaan'
+                                    )}
+                                </Button>
+                            </ButtonGroup>
+                        );
+
                         return (
                             <Form>
                                 <DefaultContactPersonalEdit
                                     portalSettings={portalSettings}
                                     initialContact={initialContact}
                                     freeFieldsFieldRecords={freeFieldsFieldRecords}
+                                    saveButtonGroup={saveButtonGroup}
                                     touched={touched}
                                     errors={errors}
                                     setFieldValue={setFieldValue}
+                                    setFieldError={setFieldError}
+                                    setFieldTouched={setFieldTouched}
                                     values={values}
                                 />
-                                <Row>
-                                    <Col>
-                                        <ButtonGroup aria-label="personal" className="float-right">
-                                            <Button
-                                                variant={'outline-dark'}
-                                                size="sm"
-                                                onClick={function() {
-                                                    setEditForm(false);
-                                                }}
-                                            >
-                                                Annuleren
-                                            </Button>
-                                            <Button
-                                                className={'w-button'}
-                                                size="sm"
-                                                onClick={handleSubmit}
-                                                disabled={isSubmitting}
-                                            >
-                                                {isSubmitting ? (
-                                                    <span>
-                                                        <ClipLoader color={'white'} size={14} />
-                                                        Bezig met opslaan
-                                                    </span>
-                                                ) : (
-                                                    'Opslaan'
-                                                )}
-                                            </Button>
-                                        </ButtonGroup>
-                                    </Col>
-                                </Row>
                                 {!isEmpty(errors) ? (
                                     <Row>
                                         <Col>
@@ -113,10 +121,8 @@ function ContactDetailsPersonal({
                         portalSettings={portalSettings}
                         initialContact={initialContact}
                         freeFieldsFieldRecords={freeFieldsFieldRecords}
+                        editButtonGroup={editButtonGroup}
                     />
-                    <Row>
-                        <Col>{editButtonGroup}</Col>
-                    </Row>
                 </>
             )}
         </div>

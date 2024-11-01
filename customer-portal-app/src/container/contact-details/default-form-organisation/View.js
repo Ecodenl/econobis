@@ -4,9 +4,9 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import Row from 'react-bootstrap/Row';
 import moment from 'moment';
-import FreeFields from '../../../components/freeFields/FreeFields';
+import ContactFreeFields from '../ContactFreeFields';
 
-function DefaultContactOrganisationView({ portalSettings, initialContact, freeFieldsFieldRecords }) {
+function DefaultContactOrganisationView({ portalSettings, initialContact, freeFieldsFieldRecords, editButtonGroup }) {
     const {
         organisation = {},
         emailCorrespondence,
@@ -261,13 +261,11 @@ function DefaultContactOrganisationView({ portalSettings, initialContact, freeFi
                 </Col>
             </Row>
             {/* FreeFields Section */}
-            <Row>
+            <Row className="mt-5">
                 <Col xs={12}>
-                    <FreeFields
-                        freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        values={initialContact}
-                        showEdit={false}
-                        layout="single"
+                    <ContactFreeFields
+                        contactFreeFieldsFieldRecords={freeFieldsFieldRecords}
+                        initialContact={initialContact}
                     />
                 </Col>
             </Row>

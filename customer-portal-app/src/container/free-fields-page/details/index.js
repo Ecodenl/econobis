@@ -11,7 +11,7 @@ import ContactAPI from '../../../api/contact/ContactAPI';
 import axios from 'axios';
 import FreeFields from '../../../components/freeFields/FreeFields';
 import { Form, Formik } from 'formik';
-import ValidationSchemaFreeFields from '../../../helpers/ValidationSchemaFreeFields';
+import { checkFieldRecord } from '../../../helpers/FreeFieldsHelpers';
 import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import moment from 'moment';
@@ -104,6 +104,7 @@ function Index({ match, history }) {
 
     function handleSubmitContactValues(values, actions, switchToView) {
         const updatedContact = { ...contact, ...values, projectId: null };
+
         PortalFreeFieldsPageAPI.updatePortalFreeFieldsPageValues(updatedContact.id, updatedContact)
             .then(payload => {
                 callFetchFreeFieldsPage();
@@ -113,9 +114,9 @@ function Index({ match, history }) {
             .catch(error => {
                 actions.setSubmitting(false);
                 actions.setStatus({
-                    message: error.response.data.message,
+                    message:
+                        error.response?.data?.message || 'Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.',
                 });
-                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
             });
     }
 
@@ -137,7 +138,25 @@ function Index({ match, history }) {
         );
     }
 
-    const validationSchema = ValidationSchemaFreeFields.validationSchemaBasic;
+    const validate = values => {
+        const errors = {};
+
+        portalFreeFieldsFieldRecords.forEach(record => {
+            const fieldValue = values.freeFieldsFieldRecords[`record-${record.id}`];
+
+            // Check each field using your checkFieldRecord function
+            const validationError = checkFieldRecord({
+                ...record,
+                fieldRecordValueText: fieldValue,
+            });
+
+            if (validationError) {
+                errors[`freeFieldsFieldRecords.record-${record.id}`] = validationError;
+            }
+        });
+
+        return errors;
+    };
 
     const editButtonGroup = (
         <ButtonGroup aria-label="free-fields-page" className={'float-right'}>
@@ -177,14 +196,42 @@ function Index({ match, history }) {
                         </Row>
                         <Formik
                             initialValues={contact}
+                            validate={validate}
                             enableReinitialize={true}
-                            validationSchema={validationSchema}
+                            validateOnChange={false} // Disable automatic validation
+                            validateOnBlur={false} // Disable automatic validation on blur
                             onSubmit={(values, actions) => {
-                                actions.setSubmitting(true);
-                                handleSubmitContactValues(values, actions, () => setShowEdit(false));
+                                // todo WM: opschonen
+                                // console.log('Before validating form:', actions.errors);
+
+                                // Check manually set errors before validating form
+                                const errors = actions.errors;
+
+                                // Proceed with Formik validation
+                                actions.validateForm().then(validationErrors => {
+                                    // todo WM: opschonen
+                                    // console.log('Validation errors after validating form:', validationErrors);
+
+                                    if (Object.keys(validationErrors).length > 0) {
+                                        actions.setSubmitting(false); // Prevent submission if errors exist
+                                    } else {
+                                        actions.setSubmitting(true);
+                                        handleSubmitContactValues(values, actions, () => setShowEdit(false));
+                                    }
+                                });
                             }}
                         >
-                            {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
+                            {({
+                                errors,
+                                touched,
+                                setFieldValue,
+                                setFieldError,
+                                setFieldTouched,
+                                isSubmitting,
+                                status,
+                                values,
+                                handleSubmit,
+                            }) => {
                                 return (
                                     <Form>
                                         <FreeFields
@@ -193,6 +240,8 @@ function Index({ match, history }) {
                                             touched={touched}
                                             errors={errors}
                                             setFieldValue={setFieldValue}
+                                            setFieldError={setFieldError}
+                                            setFieldTouched={setFieldTouched}
                                             values={values}
                                             layout="double" // Renders in two columns
                                         />
@@ -205,6 +254,7 @@ function Index({ match, history }) {
                                                                 variant={'outline-dark'}
                                                                 size="sm"
                                                                 onClick={function() {
+                                                                    callFetchFreeFieldsPage();
                                                                     setShowEdit(false);
                                                                 }}
                                                             >

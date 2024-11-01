@@ -77,6 +77,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     values={values}
                                     touched={touched}
                                     errors={errors}
+                                    stepTwo={true}
                                 />
                             ) : null}
 
@@ -92,6 +93,7 @@ function StepTwo({ portalSettings, previous, next, project, initialContact, hand
                                     values={values}
                                     touched={touched}
                                     errors={errors}
+                                    stepTwo={true}
                                 />
                             ) : null}
 

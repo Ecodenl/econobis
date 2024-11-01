@@ -1,15 +1,11 @@
 import React from 'react';
 import Button from 'react-bootstrap/Button';
-import Row from 'react-bootstrap/Row';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import DefaultContactOrganisationView from './default-form-organisation/View';
 import DefaultContactOrganisationEdit from './default-form-organisation/Edit';
-import Col from 'react-bootstrap/Col';
 import { Form, Formik } from 'formik';
 import { ClipLoader } from 'react-spinners';
 import ValidationSchemaOrganisation from './../../helpers/ValidationSchemaOrganisation';
-import { isEmpty } from 'lodash';
-import { Alert } from 'react-bootstrap';
 
 function ContactDetailsOrganisation({
     portalSettings,
@@ -42,17 +38,7 @@ function ContactDetailsOrganisation({
                         handleSubmitContactValues(values, actions, () => setEditForm(false));
                     }}
                 >
-                    {({
-                        errors,
-                        touched,
-                        setFieldValue,
-                        setFieldError,
-                        setFieldTouched,
-                        isSubmitting,
-                        status,
-                        values,
-                        handleSubmit,
-                    }) => {
+                    {({ errors, touched, setFieldValue, isSubmitting, status, values, handleSubmit }) => {
                         const saveButtonGroup = (
                             <ButtonGroup aria-label="organisation" className="float-right">
                                 <Button
@@ -84,35 +70,13 @@ function ContactDetailsOrganisation({
                                     initialContact={initialContact}
                                     freeFieldsFieldRecords={freeFieldsFieldRecords}
                                     saveButtonGroup={saveButtonGroup}
+                                    setFieldValue={setFieldValue}
+                                    values={values}
                                     touched={touched}
                                     errors={errors}
-                                    setFieldValue={setFieldValue}
-                                    setFieldError={setFieldError}
-                                    setFieldTouched={setFieldTouched}
-                                    values={values}
+                                    formikStatus={status}
+                                    stepTwo={false}
                                 />
-                                {!isEmpty(errors) ? (
-                                    <Row>
-                                        <Col>
-                                            <div className="alert-wrapper">
-                                                <Alert key={'form-general-error-alert'} variant={'warning'}>
-                                                    Niet alle verplichte velden zijn (juist) ingevuld!
-                                                </Alert>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                ) : null}
-                                {status && status.message ? (
-                                    <Row>
-                                        <Col>
-                                            <div className="alert-wrapper">
-                                                <Alert key={'form-general-error-alert'} variant={'danger'}>
-                                                    {status.message}
-                                                </Alert>
-                                            </div>
-                                        </Col>
-                                    </Row>
-                                ) : null}
                             </Form>
                         );
                     }}

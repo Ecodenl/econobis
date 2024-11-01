@@ -10,6 +10,7 @@ import InputText from '../form/InputText';
 import InputTextCurrency from '../form/InputTextCurrency';
 import InputTextDate from '../form/InputTextDate';
 import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
+import { get } from 'lodash';
 
 function FreeFieldsEdit({
     freeFieldsFieldRecords,
@@ -44,6 +45,11 @@ function FreeFieldsEdit({
                                     <Field name={fieldRecordName}>
                                         {({ field }) => (
                                             <>
+                                                {get(errors, field.name, '') && get(touched, field.name, '') ? (
+                                                    <small className={'text-danger'}>
+                                                        {get(errors, field.name, '')}
+                                                    </small>
+                                                ) : null}
                                                 <label className="w-checkbox checkbox-fld">
                                                     <input
                                                         type="checkbox"
@@ -52,6 +58,36 @@ function FreeFieldsEdit({
                                                         checked={field.value}
                                                         className="w-checkbox-input checkbox"
                                                         value={false}
+                                                        onChange={e => {
+                                                            const newValue = e.target.checked;
+                                                            setFieldValue(fieldRecordName, newValue);
+
+                                                            // Immediate validation on change
+                                                            const validationError = checkFieldRecord({
+                                                                ...record,
+                                                                fieldRecordValueBoolean: newValue,
+                                                            });
+
+                                                            if (validationError) {
+                                                                setFieldError(fieldRecordName, validationError); // Set the error
+                                                                setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                            } else {
+                                                                setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                                // Check if we should clear the entire section of errors
+                                                                const allFieldsValid = freeFieldsFieldRecords.every(
+                                                                    rec =>
+                                                                        !errors[
+                                                                            `freeFieldsFieldRecords.record-${rec.id}`
+                                                                        ]
+                                                                );
+                                                                if (allFieldsValid) {
+                                                                    // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                                    setFieldError('freeFieldsFieldRecords', undefined);
+                                                                }
+                                                                setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                            }
+                                                        }}
                                                     />
                                                     <span
                                                         htmlFor={`change-${fieldRecordName}`}
@@ -59,11 +95,6 @@ function FreeFieldsEdit({
                                                     >
                                                         {Boolean(field.value) === true ? 'Ja' : 'Nee'}
                                                     </span>
-                                                    {touched[fieldRecordName] && errors[fieldRecordName] ? (
-                                                        <div className={'error-message text-danger'}>
-                                                            {errors[fieldRecordName]}
-                                                        </div>
-                                                    ) : null}
                                                 </label>
                                             </>
                                         )}
@@ -139,12 +170,53 @@ function FreeFieldsEdit({
                                     {record.mandatory ? 'Ja' : 'Nee'}
                                 </FormLabel>
                                 {record.changePortal ? (
-                                    <Field
-                                        name={fieldRecordName}
-                                        as="textarea"
-                                        className="form-control"
-                                        style={{ whiteSpace: 'pre-wrap' }}
-                                    />
+                                    <Field name={fieldRecordName}>
+                                        {({ field }) => (
+                                            <>
+                                                {get(errors, field.name, '') && get(touched, field.name, '') ? (
+                                                    <small className={'text-danger'}>
+                                                        {get(errors, field.name, '')}
+                                                    </small>
+                                                ) : null}
+                                                <textarea
+                                                    {...field}
+                                                    id={`change-${fieldRecordName}`}
+                                                    className="form-control"
+                                                    style={{
+                                                        whiteSpace: 'pre-wrap',
+                                                    }}
+                                                    onChange={e => {
+                                                        const newValue = e.target.value;
+                                                        setFieldValue(fieldRecordName, newValue);
+
+                                                        // Immediate validation on change
+                                                        const validationError = checkFieldRecord({
+                                                            ...record,
+                                                            fieldRecordValueText: newValue,
+                                                        });
+
+                                                        if (validationError) {
+                                                            setFieldError(fieldRecordName, validationError); // Set the error
+                                                            setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                        } else {
+                                                            setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                            // Check if we should clear the entire section of errors
+                                                            const allFieldsValid = freeFieldsFieldRecords.every(
+                                                                rec =>
+                                                                    !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                            );
+                                                            if (allFieldsValid) {
+                                                                // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                                setFieldError('freeFieldsFieldRecords', undefined);
+                                                            }
+                                                            setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                        }
+                                                    }}
+                                                />
+                                            </>
+                                        )}
+                                    </Field>
                                 ) : (
                                     <TextBlock className={'col-12'} placeholder={''}>
                                         <p className={'text-left'} style={{ whiteSpace: 'break-spaces' }}>
@@ -173,6 +245,33 @@ function FreeFieldsEdit({
                                                 id={fieldRecordName}
                                                 placeholder={record.fieldName}
                                                 required={record.mandatory}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueInt: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>
@@ -199,6 +298,33 @@ function FreeFieldsEdit({
                                                 errors={errors}
                                                 touched={touched}
                                                 id={fieldRecordName}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueDouble: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>
@@ -225,6 +351,33 @@ function FreeFieldsEdit({
                                                 errors={errors}
                                                 touched={touched}
                                                 id={fieldRecordName}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueDouble: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>
@@ -253,6 +406,33 @@ function FreeFieldsEdit({
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id={fieldRecordName}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueDatetime: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>
@@ -286,9 +466,36 @@ function FreeFieldsEdit({
                                                 type="datetime-local"
                                                 errors={errors}
                                                 touched={touched}
-                                                onChangeAction={setFieldValue}
                                                 id={fieldRecordName}
                                                 step="900"
+                                                // onChangeAction={setFieldValue}
+                                                customOnChange={e => {
+                                                    const newValue = e.target.value;
+                                                    setFieldValue(fieldRecordName, newValue);
+
+                                                    // Immediate validation on change
+                                                    const validationError = checkFieldRecord({
+                                                        ...record,
+                                                        fieldRecordValueDatetime: newValue,
+                                                    });
+
+                                                    if (validationError) {
+                                                        setFieldError(fieldRecordName, validationError); // Set the error
+                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
+                                                    } else {
+                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
+
+                                                        // Check if we should clear the entire section of errors
+                                                        const allFieldsValid = freeFieldsFieldRecords.every(
+                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+                                                        );
+                                                        if (allFieldsValid) {
+                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
+                                                            setFieldError('freeFieldsFieldRecords', undefined);
+                                                        }
+                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
+                                                    }
+                                                }}
                                             />
                                         )}
                                     </Field>

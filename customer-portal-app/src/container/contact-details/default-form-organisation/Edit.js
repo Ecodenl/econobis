@@ -13,8 +13,8 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
-import FreeFields from '../../../components/freeFields/FreeFields';
 import ContactFreeFields from '../ContactFreeFields';
+import { Alert } from 'react-bootstrap';
 
 const DefaultContactOrganisationEdit = function({
     portalSettings,
@@ -22,10 +22,12 @@ const DefaultContactOrganisationEdit = function({
     freeFieldsFieldRecords,
     saveButtonGroup,
     projectTypeCodeRef,
-    errors,
-    touched,
-    values,
     setFieldValue,
+    values,
+    touched,
+    errors,
+    formikStatus,
+    stepTwo,
 }) {
     // determine memberSince disabledBefore and after
     let memberSinceDisabledBefore = '';
@@ -941,15 +943,40 @@ const DefaultContactOrganisationEdit = function({
             <Row>
                 <Col>{saveButtonGroup}</Col>
             </Row>
+            {!isEmpty(errors) ? (
+                <Row>
+                    <Col>
+                        <div className="alert-wrapper">
+                            <Alert key={'form-general-error-alert'} variant={'warning'}>
+                                Niet alle verplichte velden zijn (juist) ingevuld!
+                            </Alert>
+                        </div>
+                    </Col>
+                </Row>
+            ) : null}
+            {formikStatus && formikStatus.message ? (
+                <Row>
+                    <Col>
+                        <div className="alert-wrapper">
+                            <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                {formikStatus.message}
+                            </Alert>
+                        </div>
+                    </Col>
+                </Row>
+            ) : null}
+
             {/* FreeFields Section */}
-            <Row className="mt-5">
-                <Col xs={12}>
-                    <ContactFreeFields
-                        contactFreeFieldsFieldRecords={freeFieldsFieldRecords}
-                        initialContact={initialContact}
-                    />
-                </Col>
-            </Row>
+            {!stepTwo && (
+                <Row className="mt-5">
+                    <Col xs={12}>
+                        <ContactFreeFields
+                            contactFreeFieldsFieldRecords={freeFieldsFieldRecords}
+                            initialContact={initialContact}
+                        />
+                    </Col>
+                </Row>
+            )}
         </>
     );
 };

@@ -16,7 +16,7 @@ import { ClipLoader } from 'react-spinners';
 import { Alert } from 'react-bootstrap';
 import moment from 'moment';
 
-function Index({ match, history }) {
+function FreeFieldsPageDetails({ match, history }) {
     const { currentSelectedContact } = useContext(PortalUserContext);
     const [contact, setContact] = useState({});
     const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
@@ -323,4 +323,4 @@ function Index({ match, history }) {
     );
 }
 
-export default Index;
+export default FreeFieldsPageDetails;

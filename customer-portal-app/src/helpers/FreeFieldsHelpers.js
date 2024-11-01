@@ -1,6 +1,9 @@
 // import validator from 'validator';
 
 export function checkFieldRecord(record) {
+    // todo WM: opschonen
+    // console.log('hallo checkFieldRecord');
+    // console.log('Type: ' + record.fieldFormatType);
     let valueToCheck = null;
 
     switch (record.fieldFormatType) {
@@ -34,7 +37,7 @@ export function checkFieldRecord(record) {
     }
 
     // if (record.mandatory == 1 && (valueToCheck == null || validator.isEmpty(valueToCheck + ''))) {
-    if (record.mandatory == 1 && (valueToCheck == null || valueToCheck == '')) {
+    if (record.mandatory == 1 && (valueToCheck == null || valueToCheck + '' == '')) {
         return 'verplicht';
     }
     if (!checkMask(valueToCheck, record.mask, record.mandatory)) {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import moment from 'moment/moment';
+import moment from 'moment';
 import MoneyPresenter from '../../helpers/MoneyPresenter';
 import FormLabel from 'react-bootstrap/FormLabel';
 import Row from 'react-bootstrap/Row';
@@ -10,7 +10,8 @@ import InputText from '../form/InputText';
 import InputTextCurrency from '../form/InputTextCurrency';
 import InputTextDate from '../form/InputTextDate';
 import { checkFieldRecord } from '../../helpers/FreeFieldsHelpers';
-import { get } from 'lodash';
+import InputCheckBox from '../form/InputCheckBox';
+import InputTextArea from '../form/InputTextArea';
 
 function FreeFieldsEdit({
     freeFieldsFieldRecords,
@@ -24,491 +25,277 @@ function FreeFieldsEdit({
 }) {
     const isSingleColumn = layout === 'single';
 
+    const handleFieldChange = (record, fieldRecordName, valueType, value) => {
+        setFieldValue(fieldRecordName, value);
+
+        const validationError = checkFieldRecord({ ...record, [valueType]: value });
+
+        if (validationError) {
+            setFieldError(fieldRecordName, validationError);
+            setFieldTouched(fieldRecordName, true, false);
+        } else {
+            setFieldError(fieldRecordName, undefined);
+
+            const allFieldsValid = freeFieldsFieldRecords.every(
+                rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+            );
+            if (allFieldsValid) {
+                setFieldError('freeFieldsFieldRecords', undefined);
+            }
+            setFieldTouched(fieldRecordName, true, false);
+        }
+    };
+
     return (
         <Row>
             {freeFieldsFieldRecords.map(record => {
                 const fieldRecordName = `freeFieldsFieldRecords.record-${record.id}`;
+                const fieldValue = values.freeFieldsFieldRecords[`record-${record.id}`] || null;
 
-                const fieldValue = values.freeFieldsFieldRecords[`record-${record.id}`]
-                    ? values.freeFieldsFieldRecords[`record-${record.id}`]
-                    : null;
-
-                switch (record.fieldFormatType) {
-                    case 'boolean':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
-                                            <>
-                                                {get(errors, field.name, '') && get(touched, field.name, '') ? (
-                                                    <small className={'text-danger'}>
-                                                        {get(errors, field.name, '')}
-                                                    </small>
-                                                ) : null}
-                                                <label className="w-checkbox checkbox-fld">
-                                                    <input
-                                                        type="checkbox"
-                                                        {...field}
-                                                        id={`change-${fieldRecordName}`}
-                                                        checked={field.value}
-                                                        className="w-checkbox-input checkbox"
-                                                        value={false}
-                                                        onChange={e => {
-                                                            const newValue = e.target.checked;
-                                                            setFieldValue(fieldRecordName, newValue);
-
-                                                            // Immediate validation on change
-                                                            const validationError = checkFieldRecord({
-                                                                ...record,
-                                                                fieldRecordValueBoolean: newValue,
-                                                            });
-
-                                                            if (validationError) {
-                                                                setFieldError(fieldRecordName, validationError); // Set the error
-                                                                setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                            } else {
-                                                                setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                                // Check if we should clear the entire section of errors
-                                                                const allFieldsValid = freeFieldsFieldRecords.every(
-                                                                    rec =>
-                                                                        !errors[
-                                                                            `freeFieldsFieldRecords.record-${rec.id}`
-                                                                        ]
-                                                                );
-                                                                if (allFieldsValid) {
-                                                                    // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                                    setFieldError('freeFieldsFieldRecords', undefined);
-                                                                }
-                                                                setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                            }
-                                                        }}
-                                                    />
+                return (
+                    <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
+                        <FormLabel className={'field-label'}>
+                            {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
+                            {record.mandatory ? 'Ja' : 'Nee'}
+                        </FormLabel>
+                        {record.changePortal ? (
+                            <Field name={fieldRecordName}>
+                                {({ field }) => {
+                                    const fieldTypeComponent = {
+                                        boolean: (
+                                            <InputCheckBox
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
+                                                id={fieldRecordName}
+                                                placeholder={record.fieldName}
+                                                required={record.mandatory}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueBoolean',
+                                                        e.target.checked
+                                                    )
+                                                }
+                                                errors={errors}
+                                                touched={touched}
+                                                label={
                                                     <span
                                                         htmlFor={`change-${fieldRecordName}`}
-                                                        className="checkbox-label w-form-label"
+                                                        className="checkbox-label w-form-label ml-2"
                                                     >
-                                                        {Boolean(field.value) === true ? 'Ja' : 'Nee'}
+                                                        {field.value ? 'Ja' : 'Nee'}
                                                     </span>
-                                                </label>
-                                            </>
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className="col-12" placeholder={''}>
-                                        {Boolean(fieldValue) === true ? 'Ja' : 'Nee'}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'text_short':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id} className="mb-3">
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
+                                                }
+                                            />
+                                        ),
+                                        text_short: (
                                             <InputText
-                                                field={field}
-                                                errors={errors}
-                                                touched={touched}
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
                                                 id={fieldRecordName}
                                                 placeholder={record.fieldName}
                                                 required={record.mandatory}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueText: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueText',
+                                                        e.target.value
+                                                    )
+                                                }
+                                                errors={errors}
+                                                touched={touched}
                                             />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className="col-12" placeholder={''}>
-                                        {fieldValue || ''}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'text_long':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id} className="mb-3">
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
-                                            <>
-                                                {get(errors, field.name, '') && get(touched, field.name, '') ? (
-                                                    <small className={'text-danger'}>
-                                                        {get(errors, field.name, '')}
-                                                    </small>
-                                                ) : null}
-                                                <textarea
-                                                    {...field}
-                                                    id={`change-${fieldRecordName}`}
-                                                    className="form-control"
-                                                    style={{
-                                                        whiteSpace: 'pre-wrap',
-                                                    }}
-                                                    onChange={e => {
-                                                        const newValue = e.target.value;
-                                                        setFieldValue(fieldRecordName, newValue);
-
-                                                        // Immediate validation on change
-                                                        const validationError = checkFieldRecord({
-                                                            ...record,
-                                                            fieldRecordValueText: newValue,
-                                                        });
-
-                                                        if (validationError) {
-                                                            setFieldError(fieldRecordName, validationError); // Set the error
-                                                            setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                        } else {
-                                                            setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                            // Check if we should clear the entire section of errors
-                                                            const allFieldsValid = freeFieldsFieldRecords.every(
-                                                                rec =>
-                                                                    !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                            );
-                                                            if (allFieldsValid) {
-                                                                // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                                setFieldError('freeFieldsFieldRecords', undefined);
-                                                            }
-                                                            setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                        }
-                                                    }}
-                                                />
-                                            </>
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className={'col-12'} placeholder={''}>
-                                        <p className={'text-left'} style={{ whiteSpace: 'break-spaces' }}>
-                                            {fieldValue || ''}
-                                        </p>
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'int':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
+                                        ),
+                                        text_long: (
+                                            <InputTextArea
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
+                                                className={'form-control'}
+                                                id={fieldRecordName}
+                                                placeholder={record.fieldName}
+                                                required={record.mandatory}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueText',
+                                                        e.target.value
+                                                    )
+                                                }
+                                                errors={errors}
+                                                touched={touched}
+                                            />
+                                        ),
+                                        int: (
                                             <InputText
                                                 type="number"
-                                                field={field}
-                                                errors={errors}
-                                                touched={touched}
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
                                                 id={fieldRecordName}
                                                 placeholder={record.fieldName}
                                                 required={record.mandatory}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueInt: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
-                                            />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className={'col-12'} placeholder={''}>
-                                        {fieldValue || ''}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'double_2_dec':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
-                                            <InputTextCurrency
-                                                field={field}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueInt',
+                                                        e.target.value
+                                                    )
+                                                }
                                                 errors={errors}
                                                 touched={touched}
-                                                id={fieldRecordName}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueDouble: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
                                             />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className="col-12" placeholder={''}>
-                                        {fieldValue ? parseFloat(fieldValue).toFixed(2) : ''}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'amount_euro':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
+                                        ),
+                                        double_2_dec: (
                                             <InputTextCurrency
-                                                field={field}
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
+                                                id={fieldRecordName}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueDouble',
+                                                        e.target.value
+                                                    )
+                                                }
                                                 errors={errors}
                                                 touched={touched}
-                                                id={fieldRecordName}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueDouble: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
                                             />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className="col-12" placeholder={''}>
-                                        {fieldValue ? MoneyPresenter(fieldValue) : ''}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'date':
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
+                                        ),
+                                        amount_euro: (
+                                            <InputTextCurrency
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
+                                                id={fieldRecordName}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueDouble',
+                                                        e.target.value
+                                                    )
+                                                }
+                                                errors={errors}
+                                                touched={touched}
+                                            />
+                                        ),
+                                        date: (
                                             <InputTextDate
-                                                field={field}
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
                                                 type="date"
-                                                errors={errors}
-                                                touched={touched}
-                                                onChangeAction={setFieldValue}
                                                 id={fieldRecordName}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueDatetime: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
-                                            />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className={'col-12'} placeholder={''}>
-                                        {fieldValue ? moment(fieldValue).format('L') : ''}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
-                        break;
-                    case 'datetime':
-                        const valueTime = fieldValue ? moment(fieldValue).format('HH:mm') : '00:00';
-                        const dateTimeFormated = fieldValue
-                            ? valueTime === '00:00'
-                                ? moment(fieldValue).format('L') + ' (onbekend)'
-                                : moment(fieldValue).format('L HH:mm')
-                            : '';
-
-                        return (
-                            <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                                <FormLabel className={'field-label'}>
-                                    {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                                    {record.mandatory ? 'Ja' : 'Nee'}
-                                </FormLabel>
-                                {record.changePortal ? (
-                                    <Field name={fieldRecordName}>
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="datetime-local"
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueDatetime',
+                                                        e.target.value
+                                                    )
+                                                }
                                                 errors={errors}
                                                 touched={touched}
+                                            />
+                                        ),
+                                        datetime: (
+                                            <InputTextDate
+                                                field={
+                                                    field || {
+                                                        name: fieldRecordName,
+                                                        value: fieldValue,
+                                                        onChange: () => {},
+                                                    }
+                                                }
+                                                type="datetime-local"
                                                 id={fieldRecordName}
                                                 step="900"
-                                                // onChangeAction={setFieldValue}
-                                                customOnChange={e => {
-                                                    const newValue = e.target.value;
-                                                    setFieldValue(fieldRecordName, newValue);
-
-                                                    // Immediate validation on change
-                                                    const validationError = checkFieldRecord({
-                                                        ...record,
-                                                        fieldRecordValueDatetime: newValue,
-                                                    });
-
-                                                    if (validationError) {
-                                                        setFieldError(fieldRecordName, validationError); // Set the error
-                                                        setFieldTouched(fieldRecordName, true, false); // Mark field as touched
-                                                    } else {
-                                                        setFieldError(fieldRecordName, undefined); // Clear the specific error if validation passes
-
-                                                        // Check if we should clear the entire section of errors
-                                                        const allFieldsValid = freeFieldsFieldRecords.every(
-                                                            rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-                                                        );
-                                                        if (allFieldsValid) {
-                                                            // Clear the entire freeFieldsFieldRecords object if no errors exist
-                                                            setFieldError('freeFieldsFieldRecords', undefined);
-                                                        }
-                                                        setFieldTouched(fieldRecordName, true, false); // Ensure touched is still set
-                                                    }
-                                                }}
+                                                customOnChange={e =>
+                                                    handleFieldChange(
+                                                        record,
+                                                        fieldRecordName,
+                                                        'fieldRecordValueDatetime',
+                                                        e.target.value
+                                                    )
+                                                }
+                                                errors={errors}
+                                                touched={touched}
                                             />
-                                        )}
-                                    </Field>
-                                ) : (
-                                    <TextBlock className={'col-12'} placeholder={''}>
-                                        {dateTimeFormated}
-                                    </TextBlock>
-                                )}
-                            </Col>
-                        );
+                                        ),
+                                    };
 
-                        break;
-                }
+                                    return (
+                                        <>
+                                            {/*{get(errors, field.name, '') && get(touched, field.name, '') && (*/}
+                                            {/*    <small className="text-danger">{get(errors, field.name, '')}</small>*/}
+                                            {/*)}*/}
+                                            {fieldTypeComponent[record.fieldFormatType]}
+                                        </>
+                                    );
+                                }}
+                            </Field>
+                        ) : (
+                            <TextBlock className="col-12" placeholder={''}>
+                                {(() => {
+                                    switch (record.fieldFormatType) {
+                                        case 'boolean':
+                                            return fieldValue ? 'Ja' : 'Nee';
+                                        case 'double_2_dec':
+                                            return fieldValue ? parseFloat(fieldValue).toFixed(2) : '';
+                                        case 'amount_euro':
+                                            return fieldValue ? MoneyPresenter(fieldValue) : '';
+                                        case 'date':
+                                            return fieldValue ? moment(fieldValue).format('L') : '';
+                                        case 'datetime':
+                                            const valueTime = fieldValue ? moment(fieldValue).format('HH:mm') : '00:00';
+                                            return valueTime === '00:00'
+                                                ? `${moment(fieldValue).format('L')} (onbekend)`
+                                                : moment(fieldValue).format('L HH:mm');
+                                        default:
+                                            return fieldValue || '';
+                                    }
+                                })()}
+                            </TextBlock>
+                        )}
+                    </Col>
+                );
             })}
         </Row>
     );

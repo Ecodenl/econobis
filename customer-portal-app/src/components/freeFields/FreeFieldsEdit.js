@@ -41,7 +41,7 @@ function FreeFieldsEdit({
 
             // Check if all fields are valid to potentially clear empty errors.freeFieldsFieldRecords
             const allFieldsValid = freeFieldsFieldRecords.every(
-                rec => !errors.freeFieldsFieldRecords[`record-${rec.id}`]
+                rec => errors.freeFieldsFieldRecords && !errors.freeFieldsFieldRecords[`record-${rec.id}`]
             );
             if (allFieldsValid) {
                 setFieldError('freeFieldsFieldRecords', undefined);

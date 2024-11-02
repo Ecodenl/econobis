@@ -35,32 +35,17 @@ function FreeFieldsEdit({
         if (validationError) {
             // Set an error if validation fails
             setFieldError(fieldRecordName, validationError);
-            setFieldTouched(fieldRecordName, true, false);
         } else {
             // Clear the error for the current field only if it is now valid
             setFieldError(fieldRecordName, undefined);
-        }
 
-        // const allFieldsValid = freeFieldsFieldRecords.every(
-        //     rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-        // );
-        // if (allFieldsValid) {
-        //     setFieldError('freeFieldsFieldRecords', undefined);
-        // }
-
-        // Check if all fields are valid to potentially clear form-wide errors
-        const allFieldsValid = freeFieldsFieldRecords.every(rec => {
-            const recFieldName = `record-${rec.id}`;
-            const fullErrorPath = errors.freeFieldsFieldRecords && errors.freeFieldsFieldRecords[recFieldName];
-
-            return recFieldName === fieldRecordName.split('.').pop() // Check if current field matches the modified name
-                ? !validationError // Check current field's validation state
-                : !fullErrorPath; // Check other fields' error state
-        });
-
-        // Conditionally clear the global freeFieldsFieldRecords error if all are valid
-        if (allFieldsValid) {
-            setFieldError('freeFieldsFieldRecords', undefined);
+            // Check if all fields are valid to potentially clear empty errors.freeFieldsFieldRecords
+            const allFieldsValid = freeFieldsFieldRecords.every(
+                rec => !errors.freeFieldsFieldRecords[`record-${rec.id}`]
+            );
+            if (allFieldsValid) {
+                setFieldError('freeFieldsFieldRecords', undefined);
+            }
         }
 
         setFieldTouched(fieldRecordName, true, false);

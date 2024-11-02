@@ -26,24 +26,44 @@ function FreeFieldsEdit({
     const isSingleColumn = layout === 'single';
 
     const handleFieldChange = (record, fieldRecordName, valueType, value) => {
+        // Update the field value
         setFieldValue(fieldRecordName, value);
 
+        // Perform validation for the current field
         const validationError = checkFieldRecord({ ...record, [valueType]: value });
 
         if (validationError) {
+            // Set an error if validation fails
             setFieldError(fieldRecordName, validationError);
             setFieldTouched(fieldRecordName, true, false);
         } else {
+            // Clear the error for the current field only if it is now valid
             setFieldError(fieldRecordName, undefined);
-
-            const allFieldsValid = freeFieldsFieldRecords.every(
-                rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
-            );
-            if (allFieldsValid) {
-                setFieldError('freeFieldsFieldRecords', undefined);
-            }
-            setFieldTouched(fieldRecordName, true, false);
         }
+
+        // const allFieldsValid = freeFieldsFieldRecords.every(
+        //     rec => !errors[`freeFieldsFieldRecords.record-${rec.id}`]
+        // );
+        // if (allFieldsValid) {
+        //     setFieldError('freeFieldsFieldRecords', undefined);
+        // }
+
+        // Check if all fields are valid to potentially clear form-wide errors
+        const allFieldsValid = freeFieldsFieldRecords.every(rec => {
+            const recFieldName = `record-${rec.id}`;
+            const fullErrorPath = errors.freeFieldsFieldRecords && errors.freeFieldsFieldRecords[recFieldName];
+
+            return recFieldName === fieldRecordName.split('.').pop() // Check if current field matches the modified name
+                ? !validationError // Check current field's validation state
+                : !fullErrorPath; // Check other fields' error state
+        });
+
+        // Conditionally clear the global freeFieldsFieldRecords error if all are valid
+        if (allFieldsValid) {
+            setFieldError('freeFieldsFieldRecords', undefined);
+        }
+
+        setFieldTouched(fieldRecordName, true, false);
     };
 
     return (
@@ -54,7 +74,7 @@ function FreeFieldsEdit({
 
                 return (
                     <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
-                        <FormLabel className={'field-label'}>
+                        <FormLabel className={`field-label ${record.mandatory ? 'required' : ''}`}>
                             {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
                             {record.mandatory ? 'Ja' : 'Nee'}
                         </FormLabel>

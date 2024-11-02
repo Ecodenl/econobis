@@ -14,12 +14,11 @@ import { ClipLoader } from 'react-spinners';
 function ContactFreeFields({ initialContact, contactFreeFieldsFieldRecords }) {
     const [showEdit, setShowEdit] = useState(false);
 
-    function handleSubmitContactValues(values, actions, switchToView) {
+    function handleSubmitContactFreeFieldsValues(values, actions, switchToView) {
         const updatedContact = { ...initialContact, ...values, projectId: null };
 
         PortalFreeFieldsPageAPI.updatePortalFreeFieldsPageValues(updatedContact.id, updatedContact)
             .then(payload => {
-                // here refresch contact free fields
                 actions.setSubmitting(false);
                 switchToView();
             })
@@ -33,22 +32,47 @@ function ContactFreeFields({ initialContact, contactFreeFieldsFieldRecords }) {
     }
 
     const validate = values => {
-        const errors = {};
+        const errors = { freeFieldsFieldRecords: {} };
+
         contactFreeFieldsFieldRecords.forEach(record => {
             const fieldValue = values.freeFieldsFieldRecords[`record-${record.id}`];
+
+            let valueType = null;
+            switch (record.fieldFormatType) {
+                case 'boolean':
+                    valueType = 'fieldRecordValueBoolean';
+                    break;
+                case 'text_short':
+                case 'text_long':
+                    valueType = 'fieldRecordValueText';
+                    break;
+                case 'int':
+                    valueType = 'fieldRecordValueInt';
+                    break;
+                case 'double_2_dec':
+                case 'amount_euro':
+                    valueType = 'fieldRecordValueDouble';
+                    break;
+                case 'date':
+                case 'datetime':
+                    valueType = 'fieldRecordValueDatetime';
+                    break;
+            }
 
             // Check each field using your checkFieldRecord function
             const validationError = checkFieldRecord({
                 ...record,
-                fieldRecordValueText: fieldValue,
+                [valueType]: fieldValue,
             });
 
             if (validationError) {
-                errors[`freeFieldsFieldRecords.record-${record.id}`] = validationError;
+                // Set the error within the nested freeFieldsFieldRecords object
+                errors.freeFieldsFieldRecords[`record-${record.id}`] = validationError;
             }
         });
 
-        return errors;
+        // Return the full errors object if there are errors; otherwise, return undefined
+        return Object.keys(errors.freeFieldsFieldRecords).length > 0 ? errors : {};
     };
 
     return (
@@ -81,18 +105,8 @@ function ContactFreeFields({ initialContact, contactFreeFieldsFieldRecords }) {
                 validateOnChange={false} // Disable automatic validation
                 validateOnBlur={false} // Disable automatic validation on blur
                 onSubmit={(values, actions) => {
-                    // Check manually set errors before validating form
-                    const errors = actions.errors;
-
-                    // Proceed with Formik validation
-                    actions.validateForm().then(validationErrors => {
-                        if (Object.keys(validationErrors).length > 0) {
-                            actions.setSubmitting(false); // Prevent submission if errors exist
-                        } else {
-                            actions.setSubmitting(true);
-                            handleSubmitContactValues(values, actions, () => setShowEdit(false));
-                        }
-                    });
+                    actions.setSubmitting(true);
+                    handleSubmitContactFreeFieldsValues(values, actions, () => setShowEdit(false));
                 }}
             >
                 {({

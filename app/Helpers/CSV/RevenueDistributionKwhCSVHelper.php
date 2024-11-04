@@ -3,7 +3,6 @@
 namespace App\Helpers\CSV;
 
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
 use League\Csv\Reader;
 
 class RevenueDistributionKwhCSVHelper

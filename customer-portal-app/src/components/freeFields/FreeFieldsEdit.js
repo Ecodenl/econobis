@@ -60,8 +60,10 @@ function FreeFieldsEdit({
                 return (
                     <Col xs={12} md={isSingleColumn ? 12 : 6} key={record.id}>
                         <FormLabel className={`field-label ${record.mandatory ? 'required' : ''}`}>
-                            {record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}
-                            {record.mandatory ? 'Ja' : 'Nee'}
+                            {record.fieldName}
+                            {/*todo WM: opschonen*/}
+                            {/*{record.fieldName} Wijzigbaar: {record.changePortal ? 'Ja' : 'Nee'} Verplicht:{' '}*/}
+                            {/*{record.mandatory ? 'Ja' : 'Nee'}*/}
                         </FormLabel>
                         {record.changePortal ? (
                             <Field name={fieldRecordName}>

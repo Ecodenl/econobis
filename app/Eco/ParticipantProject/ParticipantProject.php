@@ -367,12 +367,34 @@ class ParticipantProject extends Model
 
         return floatval( number_format( $total, 2, '.', ''));
     }
+//    public function getHasLoanFirstDepositAttribute()
+//    {
+//        $loanProjectTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
+//        $loanMutationFirstDepositId = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $loanProjectTypeId)->first()->id;
+//
+//        return $this->mutations()->where('type_id', $loanMutationFirstDepositId)->first() ? $this->mutations()->where('type_id', $loanMutationFirstDepositId)->first()->status->code_ref : null;
+//    }
     public function getHasLoanFirstDepositAttribute()
     {
-        $loanProjectTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
-        $loanMutationFirstDepositId = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id', $loanProjectTypeId)->first()->id;
+        // Fetch the loan project type and check for null to prevent errors
+        $loanProjectType = ProjectType::where('code_ref', 'loan')->first();
+        if (!$loanProjectType) {
+            return null;
+        }
 
-        return $this->mutations()->where('type_id', $loanMutationFirstDepositId)->exists();
+        // Fetch the loan mutation type and check for null to prevent errors
+        $loanMutationFirstDeposit = ParticipantMutationType::where('code_ref', 'first_deposit')
+            ->where('project_type_id', $loanProjectType->id)
+            ->first();
+
+        if (!$loanMutationFirstDeposit) {
+            return null;
+        }
+
+        // Fetch the mutation once and return its status if it exists
+        $mutation = $this->mutations()->where('type_id', $loanMutationFirstDeposit->id)->first();
+
+        return $mutation ? $mutation->status->code_ref : null;
     }
 
     private function getDateEndLastConfirmedPartsKwh()

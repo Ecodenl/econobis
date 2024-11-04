@@ -92,9 +92,9 @@ class Address extends Model
 
     public function freeFieldsFieldRecords()
     {
-        $fieldTableContact = FreeFieldsTable::where('table', 'addresses')->first();
-        $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
-        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
+        $fieldTableAddress = FreeFieldsTable::where('table', 'addresses')->first();
+        $addressFieldIds = FreeFieldsField::where('table_id', ($fieldTableAddress->id ?? '$#@') )->get()->pluck('id')->toArray();
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $addressFieldIds);
     }
 
     public function getType()

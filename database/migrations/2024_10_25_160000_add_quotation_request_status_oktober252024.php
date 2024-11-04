@@ -27,7 +27,7 @@ class AddQuotationRequestStatusOktober252024 extends Migration
                     'number_of_days_to_send_email' => 0,
                     'created_at' => \Carbon\Carbon::now(),
                     'updated_at' => \Carbon\Carbon::now(),
-                    'order' => $sortOrder->order - 1,
+                    'order' => ($sortOrder->order > 5) ? $sortOrder->order - 5 : 1,
                     'is_pending_status' => 0],
             ]
         );

@@ -228,9 +228,9 @@ class MutationFormNew extends Component {
 
         const participantMutationTypesOptions = participantMutationTypes.filter(participantMutationType => {
             if (projectTypeCodeRef === 'loan') {
-                if (hasLoanFirstDeposit === false) {
+                if (hasLoanFirstDeposit === null) {
                     return participantMutationType.codeRef === 'first_deposit';
-                } else {
+                } else if (hasLoanFirstDeposit === 'final') {
                     return (
                         participantMutationType.codeRef === 'deposit' ||
                         participantMutationType.codeRef === 'withDrawal'

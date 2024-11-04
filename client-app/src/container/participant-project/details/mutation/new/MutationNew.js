@@ -230,7 +230,7 @@ class MutationFormNew extends Component {
             if (projectTypeCodeRef === 'loan') {
                 if (hasLoanFirstDeposit === false) {
                     return participantMutationType.codeRef === 'first_deposit';
-                } else {
+                } else if (statusCodeRef && statusCodeRef === 'final') {
                     return (
                         participantMutationType.codeRef === 'deposit' ||
                         participantMutationType.codeRef === 'withDrawal'

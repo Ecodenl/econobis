@@ -64,7 +64,6 @@ class FullParticipantMutation extends JsonResource
                 'participation' => FullParticipantProject::make($this->whenLoaded('participation')),
                 'econobisPaymentLink' => $this->econobis_payment_link,
                 'changeAllowed' => $this->change_allowed,
-                'participationHasMutationsWithStatusDepositOrWithdrawal' => $this->participation_has_mutations_with_status_deposit_or_withdrawal,
             ];
     }
 }

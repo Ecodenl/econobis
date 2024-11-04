@@ -39,7 +39,6 @@ function MutationFormEditDeposit({
     participantChoiceMembership,
     projectDateInterestBearingKwh,
     project,
-    participationHasMutationsWithStatusDepositOrWithdrawal,
 }) {
     useEffect(() => {
         getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
@@ -280,10 +279,6 @@ function MutationFormEditDeposit({
                     errorMessage={errorMessage}
                     projectTypeCodeRef={projectTypeCodeRef}
                     disableBeforeEntryDate={disableBeforeEntryDate}
-                    participationHasMutationsWithStatusDepositOrWithdrawal={
-                        participationHasMutationsWithStatusDepositOrWithdrawal
-                    }
-                    typeCodeRef={participantMutationFromProps.type.codeRef}
                 />
             )}
             {participantMutationFromProps.status.codeRef === 'final' && (
@@ -300,8 +295,11 @@ function MutationFormEditDeposit({
                     disableBeforeEntryDate={disableBeforeEntryDate}
                 />
             )}
+
             <ParticipantDetailsMutationStatusLog statusLogs={participantMutationFromProps.statusLogs} />
+
             <ParticipantDetailsMutationMolliePayments molliePayments={participantMutationFromProps.molliePayments} />
+
             <ParticipantDetailsMutationConclusion
                 createdAt={participantMutationFromProps.createdAt}
                 createdWith={participantMutationFromProps.createdWith}
@@ -310,6 +308,7 @@ function MutationFormEditDeposit({
                 updatedWith={participantMutationFromProps.updatedWith}
                 updatedBy={participantMutationFromProps.updatedBy}
             />
+
             <div className="pull-right btn-group" role="group">
                 {readOnly ? (
                     <ButtonText buttonClassName={'btn-default'} buttonText={'Sluiten'} onClickAction={cancelDetails} />

@@ -77,15 +77,6 @@ class ParticipantMutation extends Model
         ]);
     }
 
-    public function getParticipationHasMutationsWithStatusDepositOrWithdrawalAttribute()
-    {
-        $counter = $this->participation->mutations()->whereHas('type', function ($query) {
-            $query->where('code_ref', 'deposit')->orWhere('code_ref', 'withDrawal');
-        })->count();
-
-        return $counter > 0;
-    }
-
     public function getDateSortAttribute()
     {
         if($this->date_entry !== null) {
@@ -126,6 +117,21 @@ class ParticipantMutation extends Model
         if($this->participation->date_terminated != null){
             return false;
         }
+
+        if ($this->participation->project->projectType->code_ref === 'loan') {
+            $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->participation->project->projectType->id)->first();
+
+            if($mutationTypeFirstDesposit && $this->type_id === $mutationTypeFirstDesposit->id) {
+                $participationHasMutationsWithStatusDepositOrWithDrawal = $this->participation->mutations()
+                    ->whereHas('type', function ($query) {
+                        $query->whereIn('code_ref', ['deposit', 'withDrawal']);
+                    })->exists();
+                if($participationHasMutationsWithStatusDepositOrWithDrawal){
+                    return false;
+                }
+            }
+        }
+
         $projectRevenueDistributions = $this->participation->projectRevenueDistributions()->whereNotIn('status', ['concept'])
             ->whereHas('revenue', function ($query) {
                 $query->where('date_begin', '<=', Carbon::parse($this->date_entry)->format('Y-m-d'));

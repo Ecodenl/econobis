@@ -15,8 +15,6 @@ const MutationFormEditStatusGranted = ({
     errorMessage,
     projectTypeCodeRef,
     disableBeforeEntryDate,
-    participationHasMutationsWithStatusDepositOrWithdrawal,
-    typeCodeRef,
 }) => (
     <React.Fragment>
         {readOnly && participantMutationFromProps.status.id !== Number(participantMutationFromState.statusId) && (
@@ -130,25 +128,16 @@ const MutationFormEditStatusGranted = ({
                                 errorMessage={errorMessage.quantityFinal}
                             />
                         )}
-                        {participationHasMutationsWithStatusDepositOrWithdrawal &&
-                        typeCodeRef && typeCodeRef === 'first_deposit' ? (
-                            <ViewText
-                                label={'Ingangsdatum.'}
-                                id={'dateEntry'}
-                                className={'col-sm-6 form-group'}
-                                value={moment(participantMutationFromProps.dateEntry).format('L')}
-                            />
-                        ) : (
-                            <InputDate
-                                label={'Ingangsdatum..'}
-                                name={'dateEntry'}
-                                value={participantMutationFromState.dateEntry}
-                                onChangeAction={handleInputChangeDate}
-                                disabledBefore={disableBeforeEntryDate}
-                                required={'required'}
-                                error={errors.dateEntry}
-                            />
-                        )}
+                        <InputDate
+                            label={'Ingangsdatum'}
+                            name={'dateEntry'}
+                            value={participantMutationFromState.dateEntry}
+                            onChangeAction={handleInputChangeDate}
+                            disabledBefore={disableBeforeEntryDate}
+                            readOnly={!participantMutationFromProps.changeAllowed}
+                            required={'required'}
+                            error={errors.dateEntry}
+                        />
                     </div>
                     <div className="row">
                         <InputDate

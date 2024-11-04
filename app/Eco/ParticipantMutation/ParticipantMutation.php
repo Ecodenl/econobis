@@ -7,7 +7,6 @@ use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class ParticipantMutation extends Model

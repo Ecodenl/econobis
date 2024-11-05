@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import moment from 'moment';
 import ContactFreeFields from '../ContactFreeFields';
 
-function DefaultContactPersonalView({ portalSettings, initialContact, freeFieldsFieldRecords, editButtonGroup }) {
+function DefaultContactPersonalView({ portalSettings, initialContact, freeFieldsFieldRecords }) {
     const {
         id,
         person = {},

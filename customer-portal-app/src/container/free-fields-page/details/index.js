@@ -182,20 +182,6 @@ function FreeFieldsPageDetails({ match, history }) {
         return Object.keys(errors.freeFieldsFieldRecords).length > 0 ? errors : {};
     };
 
-    const editButtonGroup = (
-        <ButtonGroup aria-label="free-fields-page" className={'float-right'}>
-            <Button
-                className={'w-button'}
-                size="sm"
-                onClick={function() {
-                    setShowEdit(true);
-                }}
-            >
-                Wijzig
-            </Button>
-        </ButtonGroup>
-    );
-
     return (
         <div className={'content-section'}>
             {isLoading ? (
@@ -207,8 +193,24 @@ function FreeFieldsPageDetails({ match, history }) {
                             <Col>
                                 <h1 className="content-heading mt-0">{portalFreeFieldsPage.name}</h1>
                             </Col>
-                            {!showEdit && <Col>{editButtonGroup}</Col>}
                         </Row>
+                        {!showEdit && (
+                            <Row>
+                                <Col>
+                                    <ButtonGroup aria-label="free-fields-page" className={'float-left mb-3'}>
+                                        <Button
+                                            className={'w-button'}
+                                            size="sm"
+                                            onClick={function() {
+                                                setShowEdit(true);
+                                            }}
+                                        >
+                                            Wijzig
+                                        </Button>
+                                    </ButtonGroup>
+                                </Col>
+                            </Row>
+                        )}
                         <Row>
                             <Col>
                                 {!isEmpty(portalFreeFieldsPage.description) ? (

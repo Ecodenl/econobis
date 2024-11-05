@@ -12,7 +12,6 @@ function ContactDetailsPersonal({
     initialContact,
     freeFieldsFieldRecords,
     handleSubmitContactValues,
-    editButtonGroup,
     editForm,
     setEditForm,
 }) {
@@ -85,7 +84,6 @@ function ContactDetailsPersonal({
                         portalSettings={portalSettings}
                         initialContact={initialContact}
                         freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        editButtonGroup={editButtonGroup}
                     />
                 </>
             )}

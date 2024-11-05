@@ -81,9 +81,11 @@ function ContactFreeFields({ initialContact, contactFreeFieldsFieldRecords }) {
                 <Col>
                     <h1 className="content-heading mt-0">Overig</h1>
                 </Col>
-                {!showEdit && (
+            </Row>
+            {!showEdit && (
+                <Row>
                     <Col>
-                        <ButtonGroup aria-label="free-fields-page" className={'float-right'}>
+                        <ButtonGroup aria-label="free-fields-page" className={'float-left mb-3'}>
                             <Button
                                 className={'w-button'}
                                 size="sm"
@@ -95,8 +97,8 @@ function ContactFreeFields({ initialContact, contactFreeFieldsFieldRecords }) {
                             </Button>
                         </ButtonGroup>
                     </Col>
-                )}
-            </Row>
+                </Row>
+            )}
 
             <Formik
                 initialValues={initialContact}

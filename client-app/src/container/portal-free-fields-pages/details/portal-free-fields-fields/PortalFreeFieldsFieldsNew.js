@@ -38,19 +38,6 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
     }, []);
 
     function processSubmit(values) {
-        //todo WM: check en/of opschonen
-        // Cleanup value data. Data don't needed for update.
-        // const cleanUpFormFields = [
-        //     'createdAt',
-        //     'updatedAt',
-        // ];
-        // for (const item of cleanUpFormFields) {
-        //     delete values[item];
-        // }
-        //
-        // console.log('test processSubmit new');
-        // console.log('values: '.values);
-
         // Process to formdata
         let formData = new FormData();
 
@@ -90,7 +77,7 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
                             size={'col-sm-6'}
                             name={'changePortal'}
                             value={Boolean(values.changePortal)}
-                            onChangeAction={handleChange}
+                            onChangeAction={event => setFieldValue('changePortal', event.target.checked)}
                         />
                     </div>
                     <div className="pull-right btn-group" role="group">

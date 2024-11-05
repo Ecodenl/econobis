@@ -9,11 +9,6 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import InputToggle from '../../../components/form/InputToggle';
 import InputTextArea from '../../../components/form/InputTextArea';
-import axios from 'axios';
-import InputReactSelect from '../../../components/form/InputReactSelect';
-// import { checkFieldRecord } from '../../../helpers/PortalFreeFieldsHelpers';
-import ViewText from '../../../components/form/ViewText';
-import moment from 'moment';
 
 class PortalFreeFieldsPagesNewForm extends Component {
     constructor(props) {
@@ -74,6 +69,16 @@ class PortalFreeFieldsPagesNewForm extends Component {
         if (validator.isEmpty(portalFreeFieldsPage.urlPageRef + '')) {
             errors.urlPageRef = true;
             errorsMessage.urlPageRef = 'verplicht';
+            hasErrors = true;
+        }
+
+        if (
+            portalFreeFieldsPage.urlPageRef != null &&
+            !validator.isEmpty(portalFreeFieldsPage.urlPageRef) &&
+            !portalFreeFieldsPage.urlPageRef.match(/^[a-z-1-9]+$/)
+        ) {
+            errors.urlPageRef = true;
+            errorsMessage.urlPageRef = 'Waarde ongeldig. Alleen kleine letters, cijfers en koppelteken (-) toegestaan.';
             hasErrors = true;
         }
 

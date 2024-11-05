@@ -31,17 +31,8 @@ function PortalFreeFieldsFieldsEdit({ portalFreeFieldsField, cancelEdit, updateR
         },
     });
 
-    // useEffect(function() {
-    //     axios.all([FreeFieldsAPI.peekFreeFieldsContacts()]).then(
-    //         axios.spread((payloadFreeFieldsContacts) => {
-    //             console.log(payloadFreeFieldsContacts.data.data);
-    //             setFreeFieldsContacts(payloadFreeFieldsContacts.data.data);
-    //             setIsLoading(false);
-    //         })
-    //     );
-    // }, []);
-
     function processSubmit(values) {
+        //todo WM: check en/of opschonen
         // Cleanup value data. Data don't needed for update.
         // const cleanUpFormFields = [
         //     'pageId',
@@ -53,6 +44,8 @@ function PortalFreeFieldsFieldsEdit({ portalFreeFieldsField, cancelEdit, updateR
         //     delete values[item];
         // }
         //
+        // console.log('test processSubmit edit');
+        // console.log('values: '.values);
 
         // Process to formdata
         let formData = new FormData();

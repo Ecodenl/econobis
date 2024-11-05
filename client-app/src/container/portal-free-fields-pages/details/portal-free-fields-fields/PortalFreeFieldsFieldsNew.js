@@ -39,6 +39,7 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
     }, []);
 
     function processSubmit(values) {
+        //todo WM: check en/of opschonen
         // Cleanup value data. Data don't needed for update.
         // const cleanUpFormFields = [
         //     'createdAt',
@@ -48,6 +49,8 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
         //     delete values[item];
         // }
         //
+        // console.log('test processSubmit new');
+        // console.log('values: '.values);
 
         // Process to formdata
         let formData = new FormData();

@@ -15,10 +15,12 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'name',
+        'isActive',
     ];
 
     protected $mapping = [
         'name' => 'portal_free_fields_pages.name',
+        'isActive' => 'portal_free_fields_pages.is_active',
     ];
 
     protected $joins = [
@@ -26,6 +28,7 @@ class Filter extends RequestFilter
 
     protected $defaultTypes = [
         '*' => 'ct',
+        'isActive' => 'eq',
     ];
 
 }

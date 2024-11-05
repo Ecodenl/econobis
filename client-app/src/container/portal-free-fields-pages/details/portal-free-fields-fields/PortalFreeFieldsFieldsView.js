@@ -16,7 +16,7 @@ const PortalFreeFieldsFieldsView = props => {
         >
             <div onClick={props.openEdit}>
                 <div className="col-sm-6">{fieldName}</div>
-                <div className="col-sm-5">{changePortal === 1 ? 'Ja' : 'Nee'}</div>
+                <div className="col-sm-5">{Boolean(changePortal) ? 'Ja' : 'Nee'}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons ? (

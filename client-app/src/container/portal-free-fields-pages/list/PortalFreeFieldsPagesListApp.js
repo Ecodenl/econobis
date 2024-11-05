@@ -24,7 +24,7 @@ function PortalFreeFieldsPagesListApp() {
         function() {
             fetchPortalFreeFieldsPages();
         },
-        [pagination.offset, sort, filter.name]
+        [pagination.offset, sort, filter.name, filter.isActive]
     );
 
     // If pressed enter then reload data
@@ -85,6 +85,9 @@ function PortalFreeFieldsPagesListApp() {
         let filters = [];
         if (filter.name) {
             filters.push({ field: 'name', data: filter.name });
+        }
+        if (filter.isActive) {
+            filters.push({ field: 'isActive', data: filter.isActive });
         }
 
         return filters;

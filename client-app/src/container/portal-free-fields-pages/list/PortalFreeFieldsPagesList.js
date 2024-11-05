@@ -45,7 +45,7 @@ function PortalFreeFieldsPagesList({
                     <DataTableBody>
                         {isLoading ? (
                             <tr>
-                                <td colSpan={4}>Bezig met gegevens laden</td>
+                                <td colSpan={3}>Bezig met gegevens laden</td>
                             </tr>
                         ) : portalFreeFieldsPages.length > 0 ? (
                             portalFreeFieldsPages.map(portalFreeFieldsPage => {
@@ -59,7 +59,7 @@ function PortalFreeFieldsPagesList({
                             })
                         ) : (
                             <tr>
-                                <td colSpan={4}>Geen resultaten!</td>
+                                <td colSpan={3}>Geen resultaten!</td>
                             </tr>
                         )}
                     </DataTableBody>

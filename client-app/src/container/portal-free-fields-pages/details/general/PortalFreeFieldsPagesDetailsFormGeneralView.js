@@ -21,7 +21,7 @@ const PortalFreeFieldsPagesDetailsFormGeneralView = ({
                 <PanelBody>
                     <div className="row">
                         <ViewText label={'Pagina naam'} value={name} />
-                        <ViewText label={'Actief'} value={isActive ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Actief'} value={Boolean(isActive) ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">

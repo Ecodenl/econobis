@@ -20,6 +20,7 @@ use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
@@ -202,6 +203,12 @@ class ContactController extends ApiController
     public function getContactPortalFreeFields(Contact $contact, Request $request)
     {
         $urlPageRef = $request->get('urlPageRef');
+
+        // Page must be active
+        $portalFreeFieldsPage = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->where('is_active', true)->first();
+        if (!$portalFreeFieldsPage) {
+            abort(403, 'Geen toegang tot deze pagina.');
+        }
 
         $portalFreeFieldsFieldRecordController = new PortalFreeFieldsFieldRecordController();
         return $portalFreeFieldsFieldRecordController->getValuesForPortal($urlPageRef, 'contacts', $contact->id,);

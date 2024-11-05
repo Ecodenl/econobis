@@ -17,7 +17,7 @@ class PortalFreeFieldsPagesNewForm extends Component {
         this.state = {
             portalFreeFieldsPage: {
                 name: '',
-                isActive: false,
+                isActive: true,
                 description: '',
                 urlPageRef: '',
             },

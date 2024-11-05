@@ -7,7 +7,7 @@ import ViewText_3_9 from '../../../components/form/ViewText_3_9';
 function FreeFieldsDefaultValueView({ fieldFormatType, defaultValue }) {
     switch (fieldFormatType) {
         case 'boolean':
-            return <ViewText label={'Standaard waarde'} value={defaultValue == true ? 'Ja' : 'Nee'} />;
+            return <ViewText label={'Standaard waarde'} value={Boolean(defaultValue) ? 'Ja' : 'Nee'} />;
             break;
         case 'text_short':
             return <ViewText label={'Standaard waarde'} value={defaultValue ? defaultValue : ''} />;

@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\PortalFreeFields;
 
 use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
@@ -16,6 +17,7 @@ use App\Helpers\Delete\Models\DeletePortalFreeFieldsPage;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\PortalFreeFieldsPages\Grid\RequestQuery;
+use App\Http\Resources\FreeFields\FilterFreeFieldsField;
 use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsField;
 use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsPage;
 use App\Http\Resources\PortalFreeFields\GridPortalFreeFieldsPages;
@@ -56,16 +58,27 @@ class PortalFreeFieldsPagesController extends ApiController
         return FullPortalFreeFieldsPage::make($portalFreeFieldsPage);
     }
 
-    public function store(RequestInput $requestInput)
+    public function store(RequestInput $requestInput, Request $request)
     {
         $this->authorize('manage', FreeFieldsField::class);
 
         $data = $requestInput
             ->string('name')->whenMissing(null)->onEmpty(null)->next()
-            ->boolean('isActive')->alias('is_active')->next()
             ->string('description')->whenMissing(null)->onEmpty(null)->next()
             ->string('urlPageRef')->alias('url_page_ref')->whenMissing('')->onEmpty('')->next()
             ->get();
+
+        // Cast 'isActive' to a boolean explicitly if it's a string
+        $isActive = $request->get('isActive');
+        $data['is_active'] = $isActive;
+
+        if (is_string($isActive)) {
+            if($isActive === 'false' || $isActive === '0'){
+                $data['is_active'] = false;
+            } elseif($isActive === 'true' || $isActive === '1'){
+                $data['is_active'] = true;
+            }
+        }
 
         $portalFreeFieldsPage = new PortalFreeFieldsPage($data);
         $portalFreeFieldsPage->save();
@@ -73,16 +86,28 @@ class PortalFreeFieldsPagesController extends ApiController
         return FullPortalFreeFieldsPage::make($portalFreeFieldsPage);
     }
 
-    public function update(RequestInput $requestInput, PortalFreeFieldsPage $portalFreeFieldsPage)
+    public function update(RequestInput $requestInput, Request $request, PortalFreeFieldsPage $portalFreeFieldsPage)
     {
         $this->authorize('manage', FreeFieldsField::class);
 
         $data = $requestInput
             ->string('name')->whenMissing(null)->onEmpty(null)->next()
-            ->boolean('isActive')->alias('is_active')->next()
             ->string('description')->whenMissing(null)->onEmpty(null)->next()
             ->string('urlPageRef')->alias('url_page_ref')->whenMissing('')->onEmpty('')->next()
             ->get();
+
+        // Cast 'isActive' to a boolean explicitly if it's a string
+        $isActive = $request->get('isActive');
+        $data['is_active'] = $isActive;
+
+        if (is_string($isActive)) {
+            if($isActive === 'false' || $isActive === '0'){
+                $data['is_active'] = false;
+            } elseif($isActive === 'true' || $isActive === '1'){
+                $data['is_active'] = true;
+            }
+        }
+
         $portalFreeFieldsPage->fill($data);
         $portalFreeFieldsPage->save();
 
@@ -112,16 +137,43 @@ class PortalFreeFieldsPagesController extends ApiController
         }
     }
 
+    public function peekContacts(PortalFreeFieldsPage $portalFreeFieldsPage, Request $request)
+    {
+        // Get the ID for the 'contacts' table.
+        $tableIdContacts = FreeFieldsTable::where('table', 'contacts')->first()->id;
+
+        // Get the IDs of FreeFieldsField records already used by the incoming $portalFreeFieldsPage.
+        $usedFieldIds = $portalFreeFieldsPage->portalFreeFieldsFields->pluck('field_id');
+
+        // Retrieve and filter the FreeFieldsField collection.
+        return FilterFreeFieldsField::collection(
+            FreeFieldsField::where('table_id', $tableIdContacts)
+                ->whereNotIn('id', $usedFieldIds) // Exclude already used fields
+                ->orderBy('sort_order')
+                ->get()
+        );
+    }
+
     public function storePortalFreeFieldsField(RequestInput $input, Request $request)
     {
         $this->authorize('manage', FreeFieldsField::class);
 
         $data = $input->integer('pageId')->alias('page_id')->next()
-            ->string('fieldId')->whenMissing('')->onEmpty('')->alias('field_id')->next()
+            ->integer('fieldId')->validate('exists:free_fields_fields,id')->alias('field_id')->next()
             ->integer('sortOrder')->whenMissing(999)->onEmpty(999)->alias('sort_order')->next()
-            ->boolean('changePortal')->whenMissing(false)->onEmpty(false)->alias('change_portal')->next()
             ->get();
 
+        // Cast 'changePortal' to a boolean explicitly if it's a string
+        $changePortal = $request->get('changePortal');
+        $data['change_portal'] = $changePortal;
+
+        if (is_string($changePortal)) {
+            if($changePortal === 'false' || $changePortal === '0'){
+                $data['change_portal'] = false;
+            } elseif($changePortal === 'true' || $changePortal === '1'){
+                $data['change_portal'] = true;
+            }
+        }
         $portalFreeFieldsField = new PortalFreeFieldsField($data);
         $portalFreeFieldsField->save();
 
@@ -136,8 +188,19 @@ class PortalFreeFieldsPagesController extends ApiController
         $this->authorize('manage', FreeFieldsField::class);
 
         $data = $input->integer('sortOrder')->whenMissing(999)->onEmpty(999)->alias('sort_order')->next()
-            ->boolean('changePortal')->whenMissing(false)->onEmpty(false)->alias('change_portal')->next()
             ->get();
+
+        // Cast 'changePortal' to a boolean explicitly if it's a string
+        $changePortal = $request->get('changePortal');
+        $data['change_portal'] = $changePortal;
+
+        if (is_string($changePortal)) {
+            if($changePortal === 'false' || $changePortal === '0'){
+                $data['change_portal'] = false;
+            } elseif($changePortal === 'true' || $changePortal === '1'){
+                $data['change_portal'] = true;
+            }
+        }
 
         $portalFreeFieldsField->fill($data);
         $portalFreeFieldsField->save();

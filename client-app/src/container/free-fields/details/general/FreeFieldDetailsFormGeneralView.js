@@ -32,12 +32,12 @@ const FreeFieldDetailsFormGeneralView = ({
 
                     <div className="row">
                         <ViewText label={'Veldnaam'} value={fieldName} />
-                        <ViewText label={'Verplicht'} value={mandatory ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Verplicht'} value={Boolean(mandatory) ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
-                        <ViewText label={'Zichtbaar in portaal'} value={visiblePortal ? 'Ja' : 'Nee'} />
-                        <ViewText label={'Aan te passen in portaal'} value={changePortal ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Zichtbaar in portaal'} value={Boolean(visiblePortal) ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Aan te passen in portaal'} value={Boolean(changePortal) ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">
@@ -46,7 +46,7 @@ const FreeFieldDetailsFormGeneralView = ({
                             fieldFormatType={fieldFormat.formatType}
                             defaultValue={defaultValue}
                         />
-                        <ViewText label={'Exporteerbaar'} value={exportable ? 'Ja' : 'Nee'} />
+                        <ViewText label={'Exporteerbaar'} value={Boolean(exportable) ? 'Ja' : 'Nee'} />
                     </div>
 
                     <div className="row">

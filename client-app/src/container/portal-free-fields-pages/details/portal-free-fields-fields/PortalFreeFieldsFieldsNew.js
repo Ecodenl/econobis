@@ -8,7 +8,6 @@ import PortalFreeFieldsPageAPI from '../../../../api/portal-free-fields/PortalFr
 import { useFormik } from 'formik';
 import { CreatePortalFreeFieldsFieldValidation } from '../Validation';
 import axios from 'axios';
-import FreeFieldsAPI from '../../../../api/free-fields/FreeFieldsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
 function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
@@ -30,7 +29,7 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
     });
 
     useEffect(function() {
-        axios.all([FreeFieldsAPI.peekFreeFieldsContacts()]).then(
+        axios.all([PortalFreeFieldsPageAPI.peekFreeFieldsContacts(pageId)]).then(
             axios.spread(payloadFreeFieldsContacts => {
                 setFreeFieldsContacts(payloadFreeFieldsContacts.data.data);
                 setIsLoading(false);
@@ -39,16 +38,6 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
     }, []);
 
     function processSubmit(values) {
-        // Cleanup value data. Data don't needed for update.
-        // const cleanUpFormFields = [
-        //     'createdAt',
-        //     'updatedAt',
-        // ];
-        // for (const item of cleanUpFormFields) {
-        //     delete values[item];
-        // }
-        //
-
         // Process to formdata
         let formData = new FormData();
 
@@ -88,7 +77,7 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
                             size={'col-sm-6'}
                             name={'changePortal'}
                             value={Boolean(values.changePortal)}
-                            onChangeAction={handleChange}
+                            onChangeAction={event => setFieldValue('changePortal', event.target.checked)}
                         />
                     </div>
                     <div className="pull-right btn-group" role="group">

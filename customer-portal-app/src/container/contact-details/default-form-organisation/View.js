@@ -6,7 +6,7 @@ import Row from 'react-bootstrap/Row';
 import moment from 'moment';
 import ContactFreeFields from '../ContactFreeFields';
 
-function DefaultContactOrganisationView({ portalSettings, initialContact, freeFieldsFieldRecords, editButtonGroup }) {
+function DefaultContactOrganisationView({ portalSettings, initialContact, freeFieldsFieldRecords }) {
     const {
         organisation = {},
         emailCorrespondence,

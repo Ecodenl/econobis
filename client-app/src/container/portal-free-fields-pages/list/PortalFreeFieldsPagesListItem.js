@@ -6,7 +6,7 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
-function PortalFreeFieldsPageListItem({ id, name, showDeleteItemModal, permissions }) {
+function PortalFreeFieldsPageListItem({ id, name, isActive, showDeleteItemModal, permissions }) {
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -32,6 +32,7 @@ function PortalFreeFieldsPageListItem({ id, name, showDeleteItemModal, permissio
             onDoubleClick={() => openItem(id)}
         >
             <td>{name}</td>
+            <td>{Boolean(isActive) ? 'Ja' : 'Nee'}</td>
             <td>
                 {showActionButtons && permissions.manageFreeFields && permissions.managePortalSettings ? (
                     <a role="button" onClick={() => openItem(id)}>

@@ -79,10 +79,10 @@ class PortalFreeFieldsPagesDetailsFormGeneralEdit extends Component {
         if (
             portalFreeFieldsPage.urlPageRef != null &&
             !validator.isEmpty(portalFreeFieldsPage.urlPageRef) &&
-            !portalFreeFieldsPage.urlPageRef.match(/^[a-z-]+$/)
+            !portalFreeFieldsPage.urlPageRef.match(/^[a-z-1-9]+$/)
         ) {
             errors.urlPageRef = true;
-            errorsMessage.urlPageRef = 'Waarde ongeldig. Alleen kleine letters en koppelteken (-) toegestaan.';
+            errorsMessage.urlPageRef = 'Waarde ongeldig. Alleen kleine letters, cijfers en koppelteken (-) toegestaan.';
             hasErrors = true;
         }
 

@@ -137,20 +137,6 @@ const ContactDetails = function(props) {
             });
     }
 
-    const editButtonGroup = (
-        <ButtonGroup aria-label="contact-details" className={'float-right'}>
-            <Button
-                className={'w-button'}
-                size="sm"
-                onClick={function() {
-                    setEditForm(true);
-                }}
-            >
-                Wijzig
-            </Button>
-        </ButtonGroup>
-    );
-
     return (
         <div className="content-section">
             {isLoading ? (
@@ -164,12 +150,28 @@ const ContactDetails = function(props) {
                             </Col>
                         </Row>
                     ) : (
-                        <Row>
-                            <Col>
-                                <h1 className="content-heading mt-0">Contactgegevens</h1>
-                            </Col>
-                            <Col>{editButtonGroup}</Col>
-                        </Row>
+                        <>
+                            <Row>
+                                <Col>
+                                    <h1 className="content-heading mt-0">Contactgegevens</h1>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <ButtonGroup aria-label="contact-details" className={'float-left'}>
+                                        <Button
+                                            className={'w-button'}
+                                            size="sm"
+                                            onClick={function() {
+                                                setEditForm(true);
+                                            }}
+                                        >
+                                            Wijzig
+                                        </Button>
+                                    </ButtonGroup>
+                                </Col>
+                            </Row>
+                        </>
                     )}
                     <div className="w-form" />
                     {/* If contact is person */}
@@ -179,7 +181,6 @@ const ContactDetails = function(props) {
                             initialContact={contact}
                             freeFieldsFieldRecords={freeFieldsFieldRecords}
                             handleSubmitContactValues={handleSubmitContactValues}
-                            editButtonGroup={editButtonGroup}
                             editForm={editForm}
                             setEditForm={setEditForm}
                         />
@@ -191,7 +192,6 @@ const ContactDetails = function(props) {
                             initialContact={contact}
                             freeFieldsFieldRecords={freeFieldsFieldRecords}
                             handleSubmitContactValues={handleSubmitContactValues}
-                            editButtonGroup={editButtonGroup}
                             editForm={editForm}
                             setEditForm={setEditForm}
                         />

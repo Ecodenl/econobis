@@ -12,7 +12,6 @@ function ContactDetailsOrganisation({
     initialContact,
     freeFieldsFieldRecords,
     handleSubmitContactValues,
-    editButtonGroup,
     editForm,
     setEditForm,
 }) {
@@ -87,7 +86,6 @@ function ContactDetailsOrganisation({
                         portalSettings={portalSettings}
                         initialContact={initialContact}
                         freeFieldsFieldRecords={freeFieldsFieldRecords}
-                        editButtonGroup={editButtonGroup}
                     />
                 </>
             )}

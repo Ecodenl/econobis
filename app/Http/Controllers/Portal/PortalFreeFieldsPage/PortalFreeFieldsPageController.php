@@ -31,7 +31,7 @@ class PortalFreeFieldsPageController extends Controller
             abort(403, 'Verboden');
         }
 
-        $portalFreeFieldsPage = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->first();
+        $portalFreeFieldsPage = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->where('is_active', true)->first();
 
         if (!$portalFreeFieldsPage) {
             abort(403, 'Geen toegang tot deze pagina.');

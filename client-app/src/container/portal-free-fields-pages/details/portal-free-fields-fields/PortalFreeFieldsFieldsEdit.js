@@ -1,14 +1,11 @@
 import React, { useEffect, useState } from 'react';
 
 import ButtonText from '../../../../components/button/ButtonText';
-import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PortalFreeFieldsPageAPI from '../../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
 import { useFormik } from 'formik';
 import { UpdatePortalFreeFieldsFieldValidation } from '../Validation';
-import axios from 'axios';
-// import FreeFieldsAPI from '../../../../api/free-fields/FreeFieldsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 
@@ -31,29 +28,7 @@ function PortalFreeFieldsFieldsEdit({ portalFreeFieldsField, cancelEdit, updateR
         },
     });
 
-    // useEffect(function() {
-    //     axios.all([FreeFieldsAPI.peekFreeFieldsContacts()]).then(
-    //         axios.spread((payloadFreeFieldsContacts) => {
-    //             console.log(payloadFreeFieldsContacts.data.data);
-    //             setFreeFieldsContacts(payloadFreeFieldsContacts.data.data);
-    //             setIsLoading(false);
-    //         })
-    //     );
-    // }, []);
-
     function processSubmit(values) {
-        // Cleanup value data. Data don't needed for update.
-        // const cleanUpFormFields = [
-        //     'pageId',
-        //     'fieldId',
-        //     'createdAt',
-        //     'updatedAt',
-        // ];
-        // for (const item of cleanUpFormFields) {
-        //     delete values[item];
-        // }
-        //
-
         // Process to formdata
         let formData = new FormData();
 
@@ -81,7 +56,7 @@ function PortalFreeFieldsFieldsEdit({ portalFreeFieldsField, cancelEdit, updateR
                             size={'col-sm-6'}
                             name={'changePortal'}
                             value={Boolean(values.changePortal)}
-                            onChangeAction={handleChange}
+                            onChangeAction={event => setFieldValue('changePortal', event.target.checked)}
                         />
                     </div>
 

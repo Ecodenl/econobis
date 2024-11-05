@@ -8,7 +8,6 @@ import PortalFreeFieldsPageAPI from '../../../../api/portal-free-fields/PortalFr
 import { useFormik } from 'formik';
 import { CreatePortalFreeFieldsFieldValidation } from '../Validation';
 import axios from 'axios';
-import FreeFieldsAPI from '../../../../api/free-fields/FreeFieldsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
 
 function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
@@ -30,7 +29,7 @@ function PortalFreeFieldsFieldsNew({ pageId, toggleShowNew, addResult }) {
     });
 
     useEffect(function() {
-        axios.all([FreeFieldsAPI.peekFreeFieldsContacts()]).then(
+        axios.all([PortalFreeFieldsPageAPI.peekFreeFieldsContacts(pageId)]).then(
             axios.spread(payloadFreeFieldsContacts => {
                 setFreeFieldsContacts(payloadFreeFieldsContacts.data.data);
                 setIsLoading(false);

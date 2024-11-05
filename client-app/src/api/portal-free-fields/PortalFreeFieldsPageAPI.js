@@ -21,19 +21,12 @@ export default {
         });
     },
 
-    // fetchPortalFreeFieldsFields: (filters, sorts, pagination) => {
-    //     const requestUrl = `${URL_API}/api/portal-free-fields/grid`;
-    //
-    //     return axiosInstance.get(requestUrl, {
-    //         params: {
-    //             filters: JSON.stringify(filters),
-    //             sorts: JSON.stringify(sorts),
-    //             limit: pagination.limit,
-    //             offset: pagination.offset,
-    //         },
-    //     });
-    // },
-    //
+    peekFreeFieldsContacts: pageId => {
+        const requestUrl = `${URL_API}/api/portal-free-fields-page/free-fields-contacts/${pageId}/peek-contacts`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     deletePortalFreeFieldsPage: id => {
         const requestUrl = `${URL_API}/api/portal-free-fields-page/${id}/delete`;
 

@@ -63,12 +63,6 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
-    peekFreeFieldsContacts: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/free-fields-contacts/peek-contacts`;
-
-        return axiosInstance.get(requestUrl);
-    },
-
     peekFreeFieldsFieldFormats: () => {
         const requestUrl = `${URL_API}/api/free-fields-field/free-fields-field-formats/peek`;
 

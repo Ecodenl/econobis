@@ -9,6 +9,7 @@
 namespace App\Http\Controllers\Api\PortalFreeFields;
 
 use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsTable;
 use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
@@ -16,6 +17,7 @@ use App\Helpers\Delete\Models\DeletePortalFreeFieldsPage;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\PortalFreeFieldsPages\Grid\RequestQuery;
+use App\Http\Resources\FreeFields\FilterFreeFieldsField;
 use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsField;
 use App\Http\Resources\PortalFreeFields\FullPortalFreeFieldsPage;
 use App\Http\Resources\PortalFreeFields\GridPortalFreeFieldsPages;
@@ -133,6 +135,23 @@ class PortalFreeFieldsPagesController extends ApiController
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function peekContacts(PortalFreeFieldsPage $portalFreeFieldsPage, Request $request)
+    {
+        // Get the ID for the 'contacts' table.
+        $tableIdContacts = FreeFieldsTable::where('table', 'contacts')->first()->id;
+
+        // Get the IDs of FreeFieldsField records already used by the incoming $portalFreeFieldsPage.
+        $usedFieldIds = $portalFreeFieldsPage->portalFreeFieldsFields->pluck('field_id');
+
+        // Retrieve and filter the FreeFieldsField collection.
+        return FilterFreeFieldsField::collection(
+            FreeFieldsField::where('table_id', $tableIdContacts)
+                ->whereNotIn('id', $usedFieldIds) // Exclude already used fields
+                ->orderBy('sort_order')
+                ->get()
+        );
     }
 
     public function storePortalFreeFieldsField(RequestInput $input, Request $request)

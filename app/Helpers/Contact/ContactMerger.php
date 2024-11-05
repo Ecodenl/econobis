@@ -73,7 +73,7 @@ class ContactMerger
 
             if ($toRecord) {
                 // Get the format type based on the field_id
-                $formatType = $fromRecord->freeFieldField->freeFieldFieldFormat->format_type;
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
 
                 // Determine which field to check for conflicts based on the format_type
                 $fromValue = $this->getFieldValue($fromRecord, $formatType);
@@ -242,6 +242,7 @@ class ContactMerger
         foreach ($this->fromContact->addresses as $address) {
             $existingAddress = $this->toContact->addresses->where('postal_code', $address->postal_code)
                 ->where('number', $address->number)
+                ->where('addition', $address->addition)
                 ->first();
 
             if ($existingAddress) {
@@ -436,7 +437,7 @@ class ContactMerger
 
             if ($toRecord) {
                 // Get the format type based on the field_id
-                $formatType = $fromRecord->freeFieldField->freeFieldFieldFormat->format_type;
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
 
                 // Determine which field to check for conflicts based on the format_type
                 $fromValue = $this->getFieldValue($fromRecord, $formatType);
@@ -468,18 +469,22 @@ class ContactMerger
     {
         switch ($formatType) {
             case 'boolean':
-                return $record->field_value_boolean;
+                // Convert integers 0 and 1 to booleans; return null for other values
+                if ($record->field_value_boolean === 0 || $record->field_value_boolean === 1) {
+                    return (bool) $record->field_value_boolean;
+                }
+                return null; // Return null if the value is not 0 or 1
             case 'text_short':
             case 'text_long':
-                return $record->field_value_text;
+                return $record->field_value_text ?: null;
             case 'int':
-                return $record->field_value_int;
+                return $record->field_value_int ?: null;
             case 'double_2_dec':
             case 'amount_euro':
-                return $record->field_value_double;
+                return $record->field_value_double ?: null;
             case 'date':
             case 'datetime':
-                return $record->field_value_datetime;
+                return $record->field_value_datetime ?: null;
             default:
                 return null;
         }

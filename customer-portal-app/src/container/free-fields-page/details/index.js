@@ -23,7 +23,7 @@ function FreeFieldsPageDetails({ match, history }) {
     const [portalFreeFieldsFieldRecords, setPortalFreeFieldsFieldRecords] = useState({});
     const [isLoading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState(null);
-    const [showEdit, setShowEdit] = useState(false);
+    const [showEdit, setShowEdit] = useState(true);
 
     useEffect(() => {
         if (currentSelectedContact.id) {

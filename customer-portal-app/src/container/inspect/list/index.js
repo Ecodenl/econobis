@@ -14,7 +14,7 @@ function Inspectlist(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [statuses, setStatuses] = useState([]);
     const [contactFullNameFilter, setContactFullNameFilter] = useState('');
-    const [measureFilter, setMeasureFilter] = useState('');
+    const [measureNamesFilter, setMeasureNamesFilter] = useState('');
     const [streetPostalCodeCityFilter, setStreetPostalCodeCityFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [datePlannedFromFilter, setDatePlannedFromFilter] = useState('');
@@ -54,6 +54,11 @@ function Inspectlist(props) {
                 return quotationRequest.streetPostalCodeCity
                     .toUpperCase()
                     .includes(streetPostalCodeCityFilter.toUpperCase());
+            });
+        }
+        if (measureNamesFilter) {
+            varQuotationRequestsArray = varQuotationRequestsArray.filter(quotationRequest => {
+                return quotationRequest.measureNames.toUpperCase().includes(measureNamesFilter.toUpperCase());
             });
         }
         if (statusFilter) {
@@ -218,7 +223,16 @@ function Inspectlist(props) {
                                                 }
                                             />
                                         </th>
-                                        <th>Maatregel specifiek</th>
+                                        <th>
+                                            Maatregel specifiek
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'measureNames', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'measureNames', desc: true })}
+                                            />
+                                        </th>
                                         <th>
                                             Status
                                             <br />
@@ -315,8 +329,8 @@ function Inspectlist(props) {
                                             <input
                                                 type="text"
                                                 className={`text-input w-input content`}
-                                                value={measureFilter}
-                                                onChange={e => setMeasureFilter(e.target.value)}
+                                                value={measureNamesFilter}
+                                                onChange={e => setMeasureNamesFilter(e.target.value)}
                                                 style={{ width: '100px' }}
                                                 title={'Filter op maatregel specifiek'}
                                             />

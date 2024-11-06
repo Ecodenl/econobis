@@ -8,7 +8,6 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Organisation\Organisation;
 use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Log;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Measure extends Model

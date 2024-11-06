@@ -17,14 +17,14 @@ class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, description, visible, name_custom } = props.measureDetails;
+        const { id, description, visible, nameCustom } = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
                 description: description ? description : '',
                 visible: visible ? visible : false,
-                name_custom: name_custom ? name_custom : '',
+                nameCustom: nameCustom ? nameCustom : '',
             },
         };
     }
@@ -55,8 +55,8 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const { description, visible, name_custom } = this.state.measure;
-        const { name_default, number, measureCategory = {} } = this.props.measureDetails;
+        const { description, visible, nameCustom } = this.state.measure;
+        const { nameDefault, number, measureCategory = {} } = this.props.measureDetails;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -73,8 +73,8 @@ class MeasureFormEdit extends Component {
                 <div className="row">
                     <InputText
                         label={'Maatregel specifiek'}
-                        name={'name_default'}
-                        value={name_default}
+                        name={'nameDefault'}
+                        value={nameDefault}
                         onChangeAction={() => {}}
                         readOnly={true}
                     />
@@ -89,8 +89,8 @@ class MeasureFormEdit extends Component {
                 <div className="row">
                     <InputText
                         label={'Naam aangepast'}
-                        name={'name_custom'}
-                        value={name_custom}
+                        name={'nameCustom'}
+                        value={nameCustom}
                         onChangeAction={this.handleInputChange}
                         readOnly={!this.props.keyUserRole && true}
                     />

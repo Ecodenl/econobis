@@ -34,7 +34,6 @@ class Sort extends RequestSort
         'desiredDate' => 'opportunities.desired_date',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'areaName' => 'addressAreaName.shared_area_name',
         'statusId'  => 'opportunities.status_id',
@@ -59,6 +58,19 @@ class Sort extends RequestSort
     protected function applyAddressSort($query, $data)
     {
         $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
+
+    protected function applyMeasureNameSort($query, $data)
+    {
+        $query->orderByRaw("
+        CASE 
+            WHEN measures.name_custom IS NOT NULL AND measures.name_custom != '' 
+                THEN measures.name_custom
+            ELSE measures.name 
+        END
+    " . ($data === 'asc' ? ' ASC' : ' DESC'));
 
         return false;
     }

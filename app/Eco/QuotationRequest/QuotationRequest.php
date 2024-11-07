@@ -109,6 +109,10 @@ class QuotationRequest extends Model
             ->orWhere('id', $this->external_party_id)->orderBy('full_name')->get();
     }
 
+    public function getMeasureNamesAttribute()
+    {
+        return $this->opportunity->measures ? implode(', ', $this->opportunity->measures->pluck('name')->toArray()) : '';
+    }
     public function newEloquentBuilder($query)
     {
         return new QuotationRequestBuilder($query);

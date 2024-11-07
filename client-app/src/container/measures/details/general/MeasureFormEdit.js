@@ -56,7 +56,10 @@ class MeasureFormEdit extends Component {
 
     render() {
         const { description, visible, nameCustom } = this.state.measure;
-        const { nameDefault, number, measureCategory = {} } = this.props.measureDetails;
+        const { keyUserRole = {}, measureDetails = {} } = this.props;
+        const { nameDefault, number, measureCategory = {} } = measureDetails;
+
+        const hasKeyUserRole = keyUserRole && Boolean(keyUserRole.hasRole) === true;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -92,7 +95,7 @@ class MeasureFormEdit extends Component {
                         name={'nameCustom'}
                         value={nameCustom}
                         onChangeAction={this.handleInputChange}
-                        readOnly={!this.props.keyUserRole && true}
+                        readOnly={hasKeyUserRole ? false : true}
                     />
                 </div>
 

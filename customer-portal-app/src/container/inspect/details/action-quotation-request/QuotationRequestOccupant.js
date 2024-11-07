@@ -63,6 +63,13 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"

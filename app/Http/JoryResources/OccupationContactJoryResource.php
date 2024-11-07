@@ -29,6 +29,7 @@ class OccupationContactJoryResource extends JoryResource
         $this->field('start_date')->filterable()->sortable();
         $this->field('end_date')->filterable()->sortable();
         $this->field('primary')->filterable()->sortable();
+        $this->field('allow_manage_in_portal')->filterable()->sortable();
 
         // Relations
         $this->relation('contact');

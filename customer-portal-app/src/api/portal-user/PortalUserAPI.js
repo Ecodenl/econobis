@@ -29,10 +29,17 @@ export default {
                     ],
                     rlt: {
                         occupationsActive: {
-                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
+                            fld: [
+                                'id',
+                                'occupationId',
+                                'primaryContactId',
+                                'contactId',
+                                'primary',
+                                'allowManageInPortal',
+                            ],
                             rlt: {
                                 occupation: {
-                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
                                 },
                                 primaryContact: {
                                     fld: [

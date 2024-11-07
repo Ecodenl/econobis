@@ -12,7 +12,15 @@ import InputReactSelect from '../../../../components/form/InputReactSelect';
 moment.locale('nl');
 
 const ContactDetailsFormOccupationsEdit = props => {
-    const { primaryContactId, contactId, occupationId, startDate, endDate, primary } = props.occupation;
+    const {
+        primaryContactId,
+        contactId,
+        occupationId,
+        startDate,
+        endDate,
+        primary,
+        allowManageInPortal,
+    } = props.occupation;
 
     return (
         <div>
@@ -76,6 +84,12 @@ const ContactDetailsFormOccupationsEdit = props => {
                                 label={'Primair'}
                                 name={'primary'}
                                 value={primary}
+                                onChangeAction={props.handleInputChangePrimary}
+                            />
+                            <InputToggle
+                                label={'Beheer in portaal'}
+                                name={'allowManageInPortal'}
+                                value={allowManageInPortal}
                                 onChangeAction={props.handleInputChange}
                             />
                         </div>

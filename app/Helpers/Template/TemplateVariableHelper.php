@@ -394,6 +394,38 @@ class TemplateVariableHelper
             case 'portal_email':
                 return $model->portalUser ? $model->portalUser->email : '';
                 break;
+
+            //variables safe to use in an URL
+            case 'nummer_voor_URL':
+                return rawurlencode($model?->number);
+            case 'voornaam_voor_URL':
+                return rawurlencode($model?->person?->first_name);
+            case 'tussenvoegsel_voor_URL':
+                return rawurlencode($model?->person?->last_name_prefix);
+            case 'achternaam_voor_URL':
+                if($model?->type_id == 'person'){
+                    return rawurlencode($model?->person?->last_name);
+                } elseif($model?->type_id == 'organisation') {
+                    return rawurlencode($model?->full_name);
+                } else {
+                    return '';
+                }
+            case 'email_voor_URL':
+                return rawurlencode($model?->primaryEmailAddress?->email);
+            case 'straatnaam_voor_URL':
+                return rawurlencode($model?->primaryAddress?->street);
+            case 'huisnummer_voor_URL':
+                return rawurlencode($model?->primaryAddress?->number);
+            case 'toevoeging_voor_URL':
+                return rawurlencode($model?->primaryAddress?->addition);
+            case 'adres_voor_URL':
+                return rawurlencode($model?->primaryAddress?->street . ' ' . $model?->primaryAddress?->number . ($model?->primaryAddress?->addition ? ('-' . $model?->primaryAddress?->addition) : ''));
+            case 'postcode_voor_URL':
+                return rawurlencode($model?->primaryAddress?->postal_code);
+            case 'plaats_voor_URL':
+            case 'woonplaats_voor_URL':
+                return rawurlencode($model?->primaryAddress?->city);
+
             default:
                 return '';
                 break;
@@ -2230,6 +2262,9 @@ class TemplateVariableHelper
     }
 
     public static function getQuotationRequestVar($model, $varname){
+
+        $contact = $model?->opportunity?->intake?->contact;
+
         switch ($varname) {
             case 'id':
                 return $model->id;
@@ -2357,70 +2392,76 @@ class TemplateVariableHelper
 
             //variables safe to use in an URL
             case 'contact_voornaam_voor_URL':
-                return rawurlencode(optional(optional($model->opportunity->intake->contact)->person)->first_name);
+                return rawurlencode($contact?->person?->first_name);
             case 'contact_tussenvoegsel_voor_URL':
-                return rawurlencode(optional(optional($model->opportunity->intake->contact)->person)->last_name_prefix);
+                return rawurlencode($contact?->person?->last_name_prefix);
             case 'contact_achternaam_voor_URL':
-                if(optional($model->opportunity->intake->contact)->type_id == 'person'){
-                    $prefix = optional(optional($model->opportunity->intake->contact)->person)->last_name_prefix;
-                    return rawurlencode($prefix ? $prefix . ' ' . optional(optional($model->opportunity->intake->contact)->person)->last_name : optional(optional($model->opportunity->intake->contact)->person)->last_name);
-                }
-                elseif($model->type_id == 'organisation'){
-                    return rawurlencode(optional($model->opportunity->intake->contact)->full_name);
+                if($contact?->type_id == 'person'){
+                    return rawurlencode($contact?->person?->last_name);
+                } elseif($contact?->type_id == 'organisation') {
+                    return rawurlencode($contact?->full_name);
+                } else {
+                    return '';
                 }
             case 'contact_email_voor_URL':
             case 'verzoek_voor_email_voor_URL':
-                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email);
+                return rawurlencode($contact?->primaryEmailAddress?->email);
+            case 'contact_straatnaam_voor_URL':
+                return rawurlencode($contact?->primaryAddress?->street);
+            case 'contact_huisnummer_voor_URL':
+                return rawurlencode($contact?->primaryAddress?->number);
+            case 'contact_toevoeging_voor_URL':
+                return rawurlencode($contact?->primaryAddress?->addition);
             case 'contact_adres_voor_URL':
             case 'verzoek_voor_adres_voor_URL':
-            return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . (optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition) : ''));
+                return rawurlencode($contact?->primaryAddress?->street . ' ' . $contact?->primaryAddress?->number . ($contact?->primaryAddress?->addition ? ('-' . $contact?->primaryAddress?->addition) : ''));
             case 'contact_postcode_voor_URL':
             case 'verzoek_voor_postcode_voor_URL':
-                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->postal_code);
+                return rawurlencode($contact?->primaryAddress?->postal_code);
             case 'contact_plaats_voor_URL':
             case 'contact_woonplaats_voor_URL':
             case 'verzoek_voor_plaats_voor_URL':
-                return rawurlencode(optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city);
+                return rawurlencode($contact?->primaryAddress?->city);
 
             case 'contact_naam':
             case 'verzoek_voor_naam':
-                return optional(optional($model->opportunity)->intake)->contact->full_name_fnf;
+                return $contact?->full_name_fnf;
                 break;
             case 'verzoek_voor_titel':
-                return optional(optional(optional($model->opportunity->intake->contact)->person)->title)->name;
+                return $contact?->person?->title?->name;
                 break;
             case 'verzoek_voor_voornaam':
-                return optional(optional($model->opportunity->intake->contact)->person)->first_name;
+                return $contact?->person?->first_name;
                 break;
             case 'verzoek_voor_achternaam':
-                if(optional($model->opportunity->intake->contact)->type_id == 'person'){
-                    $prefix = $model->opportunity->intake->contact->person->last_name_prefix;
-                    return $prefix ? $prefix . ' ' . $model->opportunity->intake->contact->person->last_name : $model->opportunity->intake->contact->person->last_name;
+                if($contact?->type_id == 'person'){
+                    $prefix = $contact?->person?->last_name_prefix;
+                    return $prefix ? $prefix . ' ' . $contact?->person?->last_name : $contact?->person?->last_name;
                 }
                 elseif($model->type_id == 'organisation'){
-                    return optional($model->opportunity->intake->contact)->full_name;
+                    return $contact?->full_name;
                 }
                 break;
             case 'contact_adres':
             case 'verzoek_voor_adres':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->street . ' ' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->number . (optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition ? ('-' . optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->addition) : '');
+                return $contact?->primaryAddress?->street . ' ' . $contact?->primaryAddress?->number . ($contact?->primaryAddress?->addition ? ('-' . $contact?->primaryAddress?->addition) : '');
                 break;
             case 'contact_postcode':
             case 'verzoek_voor_postcode':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->postal_code;
+                return $contact?->primaryAddress?->postal_code;
                 break;
             case 'contact_plaats':
             case 'contact_woonplaats':
             case 'verzoek_voor_plaats':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryAddress)->city;
+                return $contact?->primaryAddress?->city;
                 break;
             case 'contact_email':
             case 'verzoek_voor_email':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryEmailAddress)->email;
+                return $contact?->primaryEmailAddress?->email;
                 break;
             case 'contact_telefoonnummer':
             case 'verzoek_voor_telefoon':
-                return optional(optional(optional($model->opportunity)->intake)->contact->primaryPhoneNumber)->number;
+                return $contact?->primaryPhoneNumber?->number;
                 break;
             case 'datum_opname':
                 return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y') : null;

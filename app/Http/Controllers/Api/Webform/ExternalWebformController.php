@@ -428,6 +428,7 @@ class ExternalWebformController extends Controller
             ],
             'contact' => [
                 // Contact
+                'contact_nummer' => 'number',
                 'titel_id' => 'title_id',
                 'voorletters' => 'initials',
                 'voornaam' => 'first_name',
@@ -765,9 +766,18 @@ class ExternalWebformController extends Controller
 
         $this->log('Forceer nieuw contact : ' . $data['force_new_contact']);
 
+        $this->contactActie = "???";
+
+        // forceer nieuw contact
         if($data['force_new_contact'] == 1) {
             $contact = null;
             $this->contactActie = "NCG";
+        // bepaal contact bij contact_nummer indien meegegeven
+        } elseif ($data['number'] != '') {
+            $contact = $this->getContactByNumber($data);
+            if(!$contact) return null;
+            $this->contactActie = "UPC";
+        // bepaal contact bij adres en/of email
         } else {
             $contact = $this->getContactByAddressAndEmail($data);
         }
@@ -923,10 +933,29 @@ class ExternalWebformController extends Controller
         throw new WebformException($string, $statusCode);
     }
 
+    protected function getContactByNumber(array $dataContact)
+    {
+        $contact = null;
+        if ($dataContact['number']) {
+
+            $fetchContact = Contact::where('number', $dataContact['number']);
+            if (!$fetchContact->exists()) {
+                $this->error('Geen contact gevonden voor contact_nummer (' . $dataContact['number'] . ').');
+            } elseif ($fetchContact->count() > 1) {
+                $this->error("Meerdere contacten gevonden met nummer " . $dataContact['number'] . " gevonden.");
+            } else {
+                $contact = $fetchContact->first();
+                $this->log("Contact met nummer " . $contact->number . " (" . $contact->full_name. ", id: " . $contact->id . ") gevonden.");
+            }
+
+        } else {
+            $this->log('Er is geen kans_id meegegeven, kansactie bij kans niet aanmaken.');
+        }
+        return $contact;
+    }
+
     protected function getContactByAddressAndEmail(array $data)
     {
-        $this->contactActie = "???";
-
         if ($data['organisation_name']) {
             $contactTypeId = 'organisation';
         }else{

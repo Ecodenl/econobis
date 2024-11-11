@@ -831,8 +831,6 @@ class ProjectFormEdit extends Component {
             errors.documentTemplateIncreaseParticipationsId = true;
             errorMessages.documentTemplateIncreaseParticipationsId = 'Verplicht';
             hasErrors = true;
-        } else {
-            hasErrors = true;
         }
         if (
             project.allowIncreaseParticipationsInPortal &&

@@ -201,6 +201,8 @@ class ParticipationProjectController extends Controller
         }
     }
 
+    // todo WM: hier moet ook variant voor bijschrijven voor komen.
+
     public function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;

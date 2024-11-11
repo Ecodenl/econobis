@@ -142,6 +142,14 @@ class Project extends Model
         return $this->belongsTo(EmailTemplate::class, 'email_template_agreement_id');
     }
 
+    public function documentTemplateIncreaseParticipations(){
+        return $this->belongsTo(DocumentTemplate::class, 'document_template_increase_participations_id');
+    }
+
+    public function emailTemplateIncreaseParticipations(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_increase_participations_id');
+    }
+
     public function questionAboutMembershipGroup(){
         return $this->belongsTo(ContactGroup::class, 'question_about_membership_group_id');
     }

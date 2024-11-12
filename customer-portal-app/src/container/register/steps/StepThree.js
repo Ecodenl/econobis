@@ -11,7 +11,15 @@ import ProjectAPI from '../../../api/project/ProjectAPI';
 import fileDownload from 'js-file-download';
 import { FaFileDownload } from 'react-icons/all';
 
-function StepThree({ project, contactProjectData, previous, next, initialRegisterValues, handleSubmitRegisterValues }) {
+function StepThree({
+    project,
+    registerType,
+    contactProjectData,
+    previous,
+    next,
+    initialRegisterValues,
+    handleSubmitRegisterValues,
+}) {
     const validationSchema = Yup.object({
         didAcceptAgreement: Yup.bool().test(
             'didAcceptAgreement',

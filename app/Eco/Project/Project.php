@@ -397,4 +397,14 @@ class Project extends Model
 
         return false;
     }
+
+    public function getAllowIncreaseParticipationsAttribute()
+    {
+        if ($this->allow_increase_participations_in_portal
+            && $this->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $this->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+            return true;
+        }
+        return false;
+    }
 }

@@ -6,6 +6,7 @@ import Col from 'react-bootstrap/Col';
 function MasterForm({
     portalSettings,
     project,
+    registerType,
     contactProjectData,
     initialRegisterValues,
     handleSubmitRegisterValues,
@@ -29,17 +30,13 @@ function MasterForm({
                 <Row className={'mb-4'}>
                     <Col>
                         <div className={'arrow-steps clearfix'}>
-                            <div className={`step ${currentStep === 1 ? 'current' : ''}`}>1. Inschrijven</div>
+                            <div className={`step ${currentStep === 1 ? 'current' : ''}`}>
+                                1. {registerType === 'verhogen' ? 'Bijschrijven' : 'Inschrijven'}
+                            </div>
                             <div className={`step ${currentStep === 2 ? 'current' : ''}`}>2. Gegevens</div>
                             <div className={`step ${currentStep === 3 ? 'current' : ''}`}>3. Voorwaarden</div>
                             <div className={`step ${currentStep === 4 ? 'current' : ''}`}>
-                                {
-                                    project.usesMollie ? (
-                                        <>4. Bevestigen en betalen</>
-                                    ) : (
-                                        <>4. Bevestigen</>
-                                    )
-                                }
+                                {project.usesMollie ? <>4. Bevestigen en betalen</> : <>4. Bevestigen</>}
                             </div>
                         </div>
                     </Col>
@@ -51,6 +48,7 @@ function MasterForm({
                 previous={previous}
                 next={next}
                 project={project}
+                registerType={registerType}
                 contactProjectData={contactProjectData}
                 initialRegisterValues={initialRegisterValues}
                 handleSubmitRegisterValues={handleSubmitRegisterValues}

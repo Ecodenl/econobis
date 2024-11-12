@@ -14,6 +14,8 @@ import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
 import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 import { Alert } from 'react-bootstrap';
+import ErrorPage from '../../components/general/ErrorPage';
+import moment from 'moment';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -43,10 +45,14 @@ function RegisterProject({ match, currentSelectedContact }) {
     const [contact, setContact] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isSucces, setSucces] = useState(false);
     const [contactProjectData, setContactProjectData] = useState({});
 
     useEffect(() => {
+        setHasError(false);
+
         if (currentSelectedContact.id) {
             (function fetchContactAndProject() {
                 setLoading(true);
@@ -59,76 +65,87 @@ function RegisterProject({ match, currentSelectedContact }) {
                     ])
                     .then(
                         axios.spread((payloadProject, payloadContact, payloadContactProjectData) => {
-                            const contact = payloadContact.data.data;
-                            const project = payloadProject.data.data;
-                            setProject(project);
-                            setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
-                            const contactData = rebaseContact(contact);
-                            setContact(contactData);
-
-                            setContactProjectData(payloadContactProjectData.data);
-
                             if (
-                                project &&
-                                project.projectType &&
-                                project.projectType.codeRef === 'postalcode_link_capital'
+                                payloadProject.data.data.dateStartRegistrations === null ||
+                                payloadProject.data.data.dateStartRegistrations > moment().format('YYYY-MM-DD') ||
+                                (payloadProject.data.data.dateEndRegistrations !== null &&
+                                    payloadProject.data.data.dateEndRegistrations < moment().format('YYYY-MM-DD'))
                             ) {
-                                let pcrPostalCode = '';
-                                if (contactData.typeId === 'organisation') {
-                                    pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
-                                } else {
-                                    pcrPostalCode = contactData.primaryAddress
-                                        ? contactData.primaryAddress.postalCode
-                                        : '';
-                                }
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                    ...initialPcrValues,
-                                    pcrPostalCode,
-                                });
+                                setHasError(true);
+                                setErrorMessage('Inschrijving niet mogelijk op dit moment');
                             } else {
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                });
-                            }
+                                const contact = payloadContact.data.data;
+                                const project = payloadProject.data.data;
+                                setProject(project);
+                                setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
+                                const contactData = rebaseContact(contact);
+                                setContact(contactData);
 
-                            if (
-                                payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
-                                payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
-                            ) {
-                                /**
-                                 * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
-                                 * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
-                                 */
-                                setRegisterValues(current => {
-                                    return {
-                                        ...current,
-                                        participationsOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .participationsOptioned,
-                                        amountOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
-                                        pcrYearlyPowerKwhConsumption:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .powerKwhConsumption,
-                                        didAcceptAgreement: true,
-                                        didUnderstandInfo: true,
-                                    };
-                                });
-                            }
+                                setContactProjectData(payloadContactProjectData.data);
 
+                                if (
+                                    project &&
+                                    project.projectType &&
+                                    project.projectType.codeRef === 'postalcode_link_capital'
+                                ) {
+                                    let pcrPostalCode = '';
+                                    if (contactData.typeId === 'organisation') {
+                                        pcrPostalCode = contactData.visitAddress
+                                            ? contactData.visitAddress.postalCode
+                                            : '';
+                                    } else {
+                                        pcrPostalCode = contactData.primaryAddress
+                                            ? contactData.primaryAddress.postalCode
+                                            : '';
+                                    }
+                                    setRegisterValues({
+                                        ...registerValues,
+                                        projectId: match.params.id,
+                                        contactId: currentSelectedContact.id,
+                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                        ...initialPcrValues,
+                                        pcrPostalCode,
+                                    });
+                                } else {
+                                    setRegisterValues({
+                                        ...registerValues,
+                                        projectId: match.params.id,
+                                        contactId: currentSelectedContact.id,
+                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                    });
+                                }
+
+                                if (
+                                    payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
+                                    payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
+                                ) {
+                                    /**
+                                     * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
+                                     * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
+                                     */
+                                    setRegisterValues(current => {
+                                        return {
+                                            ...current,
+                                            participationsOptioned:
+                                                payloadContactProjectData.data.projectRegisterIndicators
+                                                    .participationsOptioned,
+                                            amountOptioned:
+                                                payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
+                                            pcrYearlyPowerKwhConsumption:
+                                                payloadContactProjectData.data.projectRegisterIndicators
+                                                    .powerKwhConsumption,
+                                            didAcceptAgreement: true,
+                                            didUnderstandInfo: true,
+                                        };
+                                    });
+                                }
+                            }
                             setLoading(false);
                         })
                     )
                     .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                         setLoading(false);
+                        setHasError(true);
                     });
             })();
         }
@@ -149,7 +166,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                     setPortalSettings({ ...payload.data });
                 })
                 .catch(error => {
-                    this.setState({ isLoading: false, hasError: true });
+                    setLoading(false);
+                    setHasError(true);
                 });
         })();
     }, [match, currentSelectedContact]);
@@ -170,8 +188,9 @@ function RegisterProject({ match, currentSelectedContact }) {
                         nextStep();
                     })
                     .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                         setLoading(false);
+                        setHasError(true);
                     });
             })
             .catch(error => {
@@ -180,21 +199,27 @@ function RegisterProject({ match, currentSelectedContact }) {
                     message: error.response.data.message,
                 });
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                setHasError(true);
             });
     }
 
+    // console.log(match);
     return (
         <div className={'content-section'}>
             <div className="content-container w-container">
                 {isLoading ? (
                     <LoadingView />
-                ) : !contactProjectData.projectRegisterIndicators.hasParticipation &&
+                ) : hasError ? (
+                    <ErrorPage message={errorMessage} />
+                ) : (!contactProjectData.projectRegisterIndicators.hasParticipation ||
+                      project.allowIncreaseParticipations) &&
                   !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
                     <>
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    Inschrijving voor project <strong>{project.name}</strong>
+                                    {match?.params?.type === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'} voor project{' '}
+                                    <strong>{project.name}</strong>
                                 </h1>
                                 <Row className={'mb-4'}>
                                     <Col>
@@ -229,6 +254,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         </Row>
                     </>
                 ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
+                  !project.allowIncreaseParticipations &&
                   !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
                     <>
                         <Row>
@@ -256,7 +282,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Col>
                             {isSucces ? (
                                 <h1 className="content-heading">
-                                    Ingeschreven voor project <strong>{project.name}</strong>
+                                    {match?.params?.type === 'verhogen' ? 'Bijgeschreven' : 'Ingeschreven'} voor project{' '}
+                                    <strong>{project.name}</strong>
                                 </h1>
                             ) : (
                                 <>
@@ -270,7 +297,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                                         </ButtonGroup>
                                     </Row>
                                     <h1 className="content-heading">
-                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                        Schrijf <strong>{contact.fullNameFnf}</strong>{' '}
+                                        {match?.params?.type === 'verhogen' ? 'bij' : 'in'} voor project{' '}
                                         <strong>{project.name}</strong>
                                     </h1>
                                 </>
@@ -278,6 +306,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             <MasterForm
                                 portalSettings={portalSettings}
                                 project={project}
+                                registerType={match?.params?.type}
                                 contactProjectData={contactProjectData}
                                 initialRegisterValues={registerValues}
                                 handleSubmitRegisterValues={handleSubmitRegisterValues}

@@ -20,18 +20,11 @@ class ParticipantProjectResource extends JsonResource
     {
         $projectTypeCodeRef = $this->project->projectType->code_ref;
 
-        $allowIncreaseParticipationsInPortal = false;
-        if($this->project->allow_increase_participations_in_portal
-        && $this->project->date_start_registrations <= Carbon::now()->format('Y-m-d')
-        && $this->project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
-            $allowIncreaseParticipationsInPortal = true;
-        }
-
         $basicInformation = [
             'contactName' => $this->contact ? $this->contact->full_name_fnf : '',
             'projectName' => $this->project ? $this->project->name : '',
             'projectId' => $this->project ? $this->project->id : '',
-            'allowIncreaseParticipationsInPortal' => $allowIncreaseParticipationsInPortal,
+            'allowIncreaseParticipations' => $this->project->allowIncreaseParticipations,
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
             'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',
         ];

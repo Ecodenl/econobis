@@ -171,10 +171,10 @@ export default {
         return axiosInstance.post(requestUrl, contact);
     },
 
-    previewDocument: registerValues => {
+    previewDocument: function(registerValues, registerType) {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
-        return axiosInstance.post(requestUrl, registerValues);
+        return axiosInstance.post(requestUrl, { registerValues, registerType });
     },
 
     fetchContactFreeFields: function(contactId) {

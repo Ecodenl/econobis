@@ -16,13 +16,13 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-function StepFour({ project, contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({ project, registerType, contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
-            ContactAPI.previewDocument(registerValues)
+            ContactAPI.previewDocument(registerValues, registerType)
                 .then(payload => {
                     setContactDocument(payload.data);
                     setLoading(false);
@@ -35,7 +35,7 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
     }, [registerValues]);
 
     function handleSubmitRegisterValues(actions, next) {
-        ParticipantProjectAPI.createParticipantProject(registerValues)
+        ParticipantProjectAPI.createParticipantProject(registerValues, registerType)
             .then(payload => {
                 actions.setSubmitting(false);
 
@@ -211,9 +211,19 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                                 ) : (
                                                     <>
                                                         {project.usesMollie ? (
-                                                            <>Betaal en bevestig de inschrijving</>
+                                                            <>
+                                                                Betaal en bevestig de{' '}
+                                                                {registerType === 'verhogen'
+                                                                    ? 'bijschrijving'
+                                                                    : 'inschrijving'}
+                                                            </>
                                                         ) : (
-                                                            <>Bevestig inschrijving</>
+                                                            <>
+                                                                Bevestig{' '}
+                                                                {registerType === 'verhogen'
+                                                                    ? 'bijschrijving'
+                                                                    : 'inschrijving'}
+                                                            </>
                                                         )}
                                                     </>
                                                 )}

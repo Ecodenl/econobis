@@ -109,10 +109,10 @@ class ProjectJoryResource extends JoryResource
         $this->field('transaction_costs_percentage_2')->filterable()->sortable();
         $this->field('transaction_costs_amount_3')->filterable()->sortable();
         $this->field('transaction_costs_percentage_3')->filterable()->sortable();
-        $this->field('allow_increase_participations_in_portal')->filterable()->sortable();
 
         // Attributes
         $this->field('current_book_worth')->filterable()->sortable();
+        $this->field('allow_increase_participations')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');

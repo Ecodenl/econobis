@@ -1,10 +1,10 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    createParticipantProject: registerValues => {
+    createParticipantProject: function(registerValues, registerType) {
         const requestUrl = `/project/participant/create`;
 
-        return axiosInstance.post(requestUrl, registerValues);
+        return axiosInstance.post(requestUrl, { registerValues, registerType });
     },
 
     show: id => {

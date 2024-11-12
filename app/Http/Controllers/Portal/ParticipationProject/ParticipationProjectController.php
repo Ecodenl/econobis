@@ -117,7 +117,12 @@ class ParticipationProjectController extends Controller
 
     public function create(Request $request)
     {
-        if (!isset($request) || !isset($request->contactId)) {
+        if (!isset($request)
+            || !isset($request->registerType)
+            || !isset($request->registerValues)
+            || !isset($request->registerValues['contactId'])
+            || !isset($request->registerValues['projectId'])
+        ) {
             abort(501, 'Er is helaas een fout opgetreden (1).');
         }
         // ophalen contactgegevens portal user (vertegenwoordiger)
@@ -126,12 +131,12 @@ class ParticipationProjectController extends Controller
             abort(501, 'Er is helaas een fout opgetreden (2).');
         }
         // ophalen contactgegevens
-        $contact = Contact::find($request->contactId);
+        $contact = Contact::find($request->registerValues['contactId']);
         if (!$contact) {
             abort(501, 'Er is helaas een fout opgetreden (3).');
         }
         // ophalen projectgegevens
-        $project = Project::find($request->projectId);
+        $project = Project::find($request->registerValues['projectId']);
         if (!$project) {
             abort(501, 'Er is helaas een fout opgetreden (4).');
         }
@@ -182,7 +187,7 @@ class ParticipationProjectController extends Controller
              */
             try {
                 if(!$project->uses_mollie) {
-                    $this->createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, $this->participationMutation);
+                    $this->createAndSendRegistrationDocument($contact, $project, $request->registerType, $participation, $responsibleUserId, $this->participationMutation);
                 }
             }
             catch(\Exception $e){
@@ -203,9 +208,16 @@ class ParticipationProjectController extends Controller
 
     // todo WM: hier moet ook variant voor bijschrijven voor komen.
 
-    public function createAndSendRegistrationDocument($contact, $project, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
+    public function createAndSendRegistrationDocument($contact, $project, $registerType, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
     {
-        $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
+        if($registerType === 'verhogen') {
+            $documentTemplateAgreementId = $project ? $project->document_template_increase_participations_id : 0;
+            $emailTemplateAgreementId = $project ? $project->email_template_increase_participations_id : 0;
+        } else {
+            $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
+            $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
+        }
+
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
 
         if(!$documentTemplate)
@@ -218,8 +230,6 @@ class ParticipationProjectController extends Controller
                 'transactionCostsAmount' => $participantMutation->transaction_costs_amount,
             ]);
         }
-
-        $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
 
         $emailTemplate = EmailTemplate::find($emailTemplateAgreementId);
         $pdf = PDF::loadView('documents.generic', [
@@ -353,7 +363,6 @@ class ParticipationProjectController extends Controller
 //            $htmlBodyWithContactVariables = str_replace('{contactpersoon}', $contactInfo['contactPerson'],
 //                $htmlBodyWithContactVariables);
 
-
             $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                 $htmlBodyWithContactVariables, $document, $emailTemplate->default_attachment_document_id));
         }
@@ -406,18 +415,19 @@ class ParticipationProjectController extends Controller
                 $payoutTypeId = ParticipantProjectPayoutType::where('code_ref', 'account')->value('id');
                 break;
         }
-        $powerKwhConsumption = ($request->pcrYearlyPowerKwhConsumption && $request->pcrYearlyPowerKwhConsumption!= '') ? $request->pcrYearlyPowerKwhConsumption : 0;
+
+        $powerKwhConsumption = data_get($request->registerValues, 'pcrYearlyPowerKwhConsumption', 0);
         $participation = ParticipantProject::create([
             'created_with' => 'portal',
             'contact_id' => $contact->id,
             'address_id' => $address->id,
             'project_id' => $project->id,
             'type_id' => $payoutTypeId,
-            'did_accept_agreement' => (bool)$request->didAcceptAgreement,
+            'did_accept_agreement' => (bool) data_get($request->registerValues, 'didAcceptAgreement', null),
             'date_did_accept_agreement' => $today,
-            'did_understand_info' => (bool)$request->didUnderstandInfo,
+            'did_understand_info' => (bool) data_get($request->registerValues, 'didUnderstandInfo', null),
             'date_did_understand_info'  => $today,
-            'choice_membership' => $request->choiceMembership,
+            'choice_membership' => (bool) data_get($request->registerValues, 'choiceMembership', null),
             'power_kwh_consumption' => $powerKwhConsumption,
         ]);
 
@@ -444,9 +454,9 @@ class ParticipationProjectController extends Controller
         switch($status->code_ref){
             case 'option' :
                 $participationMutationDate = $today ?: null;
-                $participationMutationAmount = $request->amountOptioned ?: null;
-                $participationMutationQuantity = $request->participationsOptioned ?: null;
-                $participationMutationTransactionCostsAmount = $request->transactionCostsAmount ?: null;
+                $participationMutationAmount = data_get($request->registerValues, 'amountOptioned', null);
+                $participationMutationQuantity = data_get($request->registerValues, 'participationsOptioned', null);
+                $participationMutationTransactionCostsAmount = data_get($request->registerValues, 'transactionCostsAmount', null);
                 $dateOption = $participationMutationDate;
                 $amountOption = $participationMutationAmount;
                 $quantityOption = $participationMutationQuantity;

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useContext } from 'react';
+import React, { useEffect, useReducer, useContext, useState } from 'react';
 import ParticipantProjectAPI from '../../../api/participant-project/ParticipantProjectAPI';
 import LoadingView from '../../../components/general/LoadingView';
 import RegistrationDetailsTitle from './Title';
@@ -12,6 +12,7 @@ import { ThemeSettingsContext } from '../../../context/ThemeSettingsContext';
 import { PortalUserContext } from '../../../context/PortalUserContext';
 import Col from 'react-bootstrap/Col';
 import RegistrationDetailsDocumentTable from './document-table';
+import ErrorPage from '../../../components/general/ErrorPage';
 
 const INITIAL_STATE = {
     result: [],
@@ -39,6 +40,7 @@ function RegistrationDetails({ match: { params } }) {
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
     const { currentSelectedContact } = useContext(PortalUserContext);
+    const [hasError, setHasError] = useState(false);
 
     useEffect(() => {
         if (currentSelectedContact.id) {
@@ -53,8 +55,9 @@ function RegistrationDetails({ match: { params } }) {
                         setIsLoading(false);
                     })
                     .catch(() => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                         setIsLoading(false);
+                        setHasError(true);
                     });
             })();
         }
@@ -71,6 +74,8 @@ function RegistrationDetails({ match: { params } }) {
         <div className={'content-section'}>
             {state.isLoading ? (
                 <LoadingView />
+            ) : hasError ? (
+                <ErrorPage />
             ) : (
                 <>
                     <div className="content-container w-container">
@@ -95,7 +100,7 @@ function RegistrationDetails({ match: { params } }) {
                                 <RegistrationDetailsMutationTable
                                     participantMutations={state.result.participantMutations}
                                 />
-                                {state.result.basicInformation.allowIncreaseParticipationsInPortal ? (
+                                {state.result.basicInformation.allowIncreaseParticipations ? (
                                     <Row>
                                         <Col>
                                             <ButtonGroup className="float-right">

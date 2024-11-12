@@ -18,6 +18,7 @@ function StepOnePcr({
     portalSettings,
     next,
     project,
+    registerType,
     contactProjectData,
     initialContact,
     initialRegisterValues,

@@ -18,6 +18,7 @@ function Steps({
     previous,
     next,
     project,
+    registerType,
     contactProjectData,
     initialRegisterValues,
     handleSubmitRegisterValues,
@@ -30,7 +31,10 @@ function Steps({
             <Container className={'content-section'}>
                 <Row>
                     <Col>
-                        <p>Fout bij ophalen project. Inschrijving niet (meer) mogelijk op dit moment.</p>
+                        <p>
+                            Fout bij ophalen project. {registerType === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'}{' '}
+                            niet (meer) mogelijk op dit moment.
+                        </p>
                     </Col>
                 </Row>
             </Container>
@@ -45,6 +49,7 @@ function Steps({
                         <StepOneLoan
                             next={next}
                             project={project}
+                            registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
@@ -55,6 +60,7 @@ function Steps({
                         <StepOneObligation
                             next={next}
                             project={project}
+                            registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
@@ -65,6 +71,7 @@ function Steps({
                         <StepOneCapital
                             next={next}
                             project={project}
+                            registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
                             handleSubmitRegisterValues={handleSubmitRegisterValues}
@@ -76,6 +83,7 @@ function Steps({
                             portalSettings={portalSettings}
                             next={next}
                             project={project}
+                            registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialContact={initialContact}
                             initialRegisterValues={initialRegisterValues}
@@ -93,6 +101,7 @@ function Steps({
                     previous={previous}
                     next={next}
                     project={project}
+                    registerType={registerType}
                     initialContact={initialContact}
                     handleSubmitContactValues={handleSubmitContactValues}
                 />
@@ -101,6 +110,7 @@ function Steps({
             return (
                 <StepThree
                     project={project}
+                    registerType={registerType}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
@@ -112,6 +122,7 @@ function Steps({
             return (
                 <StepFour
                     project={project}
+                    registerType={registerType}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}

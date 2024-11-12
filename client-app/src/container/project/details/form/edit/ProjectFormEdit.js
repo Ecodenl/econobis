@@ -119,6 +119,9 @@ class ProjectFormEdit extends Component {
                 textAcceptAgreementQuestion: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
+                allowIncreaseParticipationsInPortal: false,
+                documentTemplateIncreaseParticipationsId: false,
+                emailTemplateIncreaseParticipationsId: false,
                 textRegistrationFinished: false,
                 loanTypeId: false,
             },
@@ -166,6 +169,9 @@ class ProjectFormEdit extends Component {
                 textAcceptAgreementQuestion: '',
                 documentTemplateAgreementId: '',
                 emailTemplateAgreementId: '',
+                allowIncreaseParticipationsInPortal: '',
+                documentTemplateIncreaseParticipationsId: '',
+                emailTemplateIncreaseParticipationsId: '',
                 textRegistrationFinished: '',
                 loanTypeId: '',
             },
@@ -817,6 +823,30 @@ class ProjectFormEdit extends Component {
             project.maxAmountLoan = project.maxAmountLoan.replace(/,/g, '.');
         }
 
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.documentTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.documentTemplateIncreaseParticipationsId))
+        ) {
+            errors.documentTemplateIncreaseParticipationsId = true;
+            errorMessages.documentTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.emailTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.emailTemplateIncreaseParticipationsId))
+        ) {
+            errors.emailTemplateIncreaseParticipationsId = true;
+            errorMessages.emailTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        // If allowIncreaseParticipationsInPortal is false, set documentTemplateIncreaseParticipationsId and emailTemplateIncreaseParticipationsId to null
+        if (!project.allowIncreaseParticipationsInPortal) {
+            project.documentTemplateIncreaseParticipationsId = null;
+            project.emailTemplateIncreaseParticipationsId = null;
+        }
+
         this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         if (!hasErrors) {
@@ -922,6 +952,9 @@ class ProjectFormEdit extends Component {
             addressNumberSeries,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
+            allowIncreaseParticipationsInPortal,
+            documentTemplateIncreaseParticipationsId,
+            emailTemplateIncreaseParticipationsId,
             linkAgreeTerms,
             linkUnderstandInfo,
             linkProjectInfo,
@@ -1040,10 +1073,13 @@ class ProjectFormEdit extends Component {
                     contactGroups={this.state.contactGroups}
                     staticContactGroups={this.state.staticContactGroups}
                     amountOfParticipants={amountOfParticipants}
-                    documentTemplateAgreementId={documentTemplateAgreementId}
                     documentTemplates={this.state.documentTemplates}
-                    emailTemplateAgreementId={emailTemplateAgreementId}
                     emailTemplates={this.state.emailTemplates}
+                    documentTemplateAgreementId={documentTemplateAgreementId}
+                    emailTemplateAgreementId={emailTemplateAgreementId}
+                    allowIncreaseParticipationsInPortal={allowIncreaseParticipationsInPortal}
+                    documentTemplateIncreaseParticipationsId={documentTemplateIncreaseParticipationsId}
+                    emailTemplateIncreaseParticipationsId={emailTemplateIncreaseParticipationsId}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
                     linkProjectInfo={linkProjectInfo}

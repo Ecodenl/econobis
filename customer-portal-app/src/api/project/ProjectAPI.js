@@ -34,7 +34,6 @@ export default {
                         'description',
                         'dateStartRegistrations',
                         'dateEndRegistrations',
-                        'dateEndRegistrations',
                         'minParticipations',
                         'maxParticipations',
                         'totalParticipations',
@@ -62,13 +61,8 @@ export default {
                         'transactionCostsPercentage2',
                         'transactionCostsAmount3',
                         'transactionCostsPercentage3',
+                        'allowIncreaseParticipations',
                     ],
-                    flt: {
-                        and: [
-                            { f: 'dateStartRegistrations', o: '<=', d: moment().format('YYYY-MM-DD') },
-                            { f: 'dateEndRegistrations', o: '>=', d: moment().format('YYYY-MM-DD') },
-                        ],
-                    },
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },
                         administration: { fld: ['id', 'name', 'portalSettingsLayoutAssigned'] },

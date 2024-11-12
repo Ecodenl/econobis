@@ -142,6 +142,14 @@ class Project extends Model
         return $this->belongsTo(EmailTemplate::class, 'email_template_agreement_id');
     }
 
+    public function documentTemplateIncreaseParticipations(){
+        return $this->belongsTo(DocumentTemplate::class, 'document_template_increase_participations_id');
+    }
+
+    public function emailTemplateIncreaseParticipations(){
+        return $this->belongsTo(EmailTemplate::class, 'email_template_increase_participations_id');
+    }
+
     public function questionAboutMembershipGroup(){
         return $this->belongsTo(ContactGroup::class, 'question_about_membership_group_id');
     }
@@ -387,6 +395,16 @@ class Project extends Model
             return true;
         }
 
+        return false;
+    }
+
+    public function getAllowIncreaseParticipationsAttribute()
+    {
+        if ($this->allow_increase_participations_in_portal
+            && $this->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $this->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+            return true;
+        }
         return false;
     }
 }

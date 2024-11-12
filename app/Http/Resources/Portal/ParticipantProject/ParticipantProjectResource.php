@@ -4,6 +4,7 @@ namespace App\Http\Resources\Portal\ParticipantProject;
 
 use App\Http\Resources\Document\FullDocument;
 use App\Http\Resources\Portal\ParticipantMutation\ParticipantMutationCollection;
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class ParticipantProjectResource extends JsonResource
@@ -18,9 +19,12 @@ class ParticipantProjectResource extends JsonResource
     public function toArray($request)
     {
         $projectTypeCodeRef = $this->project->projectType->code_ref;
+
         $basicInformation = [
             'contactName' => $this->contact ? $this->contact->full_name_fnf : '',
             'projectName' => $this->project ? $this->project->name : '',
+            'projectId' => $this->project ? $this->project->id : '',
+            'allowIncreaseParticipations' => $this->project->allowIncreaseParticipations,
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
             'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',
         ];

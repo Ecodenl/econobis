@@ -34,7 +34,6 @@ export default {
                         'description',
                         'dateStartRegistrations',
                         'dateEndRegistrations',
-                        'dateEndRegistrations',
                         'minParticipations',
                         'maxParticipations',
                         'totalParticipations',

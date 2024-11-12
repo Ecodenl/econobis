@@ -841,6 +841,11 @@ class ContactController extends ApiController
                 $project->allowPayMollie = true;
                 $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
             }
+//            if ($project->allow_increase_participations_in_portal
+//                && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
+//                && $project->date_end_registrations >= Carbon::now()->format('Y-m-d') ) {
+//                $project->allowChangeParticipation = true;
+//            }
 
         // no participation for this contact/project yet
         } else {

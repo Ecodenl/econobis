@@ -95,6 +95,22 @@ function RegistrationDetails({ match: { params } }) {
                                 <RegistrationDetailsMutationTable
                                     participantMutations={state.result.participantMutations}
                                 />
+                                {state.result.basicInformation.allowIncreaseParticipationsInPortal ? (
+                                    <Row>
+                                        <Col>
+                                            <ButtonGroup className="float-right">
+                                                <Link
+                                                    to={`/inschrijven/verhogen/${state.result.basicInformation.projectId}`}
+                                                >
+                                                    <Button className={'w-button'} size="sm">
+                                                        Deelname verhogen
+                                                    </Button>
+                                                </Link>
+                                            </ButtonGroup>
+                                        </Col>
+                                    </Row>
+                                ) : null}
+
                                 <RegistrationDetailsDocumentTable
                                     participantId={params.id}
                                     documents={state.result.documents}

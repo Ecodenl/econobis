@@ -72,6 +72,7 @@ class FullDocument extends JsonResource
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),
             'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
             'template' => FullDocumentTemplate::make($this->whenLoaded('template')),
+            'htmlBody' => $this->html_body,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'showOnPortal' => $this->show_on_portal,

@@ -54,7 +54,6 @@ class DocumentTemplateController extends Controller
 
         $data = $requestInput
             ->string('characteristic')->next()
-            ->string('htmlBody')->alias('html_body')->next()
             ->string('name')->next()
             ->string('documentTemplateTypeId')->validate('required')->alias('template_type')->next()
             ->string('documentGroupId')->alias('document_group')->next()
@@ -62,6 +61,8 @@ class DocumentTemplateController extends Controller
             ->string('headerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('header_id')->next()
             ->string('footerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('footer_id')->next()
             ->boolean('active')->validate('required')->next()
+            ->string('htmlBody')->alias('html_body')->next()
+            ->boolean('allowChangeHtmlBody')->alias('allow_change_html_body')->next()
             ->get();
 
         $documentTemplate = new DocumentTemplate();
@@ -85,13 +86,14 @@ class DocumentTemplateController extends Controller
 
         $data = $requestInput
             ->string('characteristic')->next()
-            ->string('htmlBody')->alias('html_body')->next()
             ->string('name')->next()
             ->string('documentGroupId')->alias('document_group')->next()
             ->string('baseTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('base_template_id')->next()
             ->string('headerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('header_id')->next()
             ->string('footerTemplateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('footer_id')->next()
             ->boolean('active')->validate('required')->next()
+            ->string('htmlBody')->alias('html_body')->next()
+            ->boolean('allowChangeHtmlBody')->alias('allow_change_html_body')->next()
             ->get();
 
         $documentTemplate->fill($data);

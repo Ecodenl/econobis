@@ -27,6 +27,7 @@ class DocumentTemplateFormEdit extends Component {
             roles,
             characteristic,
             htmlBody,
+            allowChangeHtmlBody,
             baseTemplate,
             headerTemplate,
             footerTemplate,
@@ -45,6 +46,7 @@ class DocumentTemplateFormEdit extends Component {
                 roleIdsSelected: roles ? roles : [],
                 characteristic: characteristic ? characteristic : '',
                 htmlBody: htmlBody ? htmlBody : '',
+                allowChangeHtmlBody,
                 baseTemplateId: baseTemplate ? baseTemplate.id : '',
                 headerTemplateId: headerTemplate ? headerTemplate.id : '',
                 footerTemplateId: footerTemplate ? footerTemplate.id : '',
@@ -155,6 +157,7 @@ class DocumentTemplateFormEdit extends Component {
             roleIdsSelected,
             characteristic,
             htmlBody,
+            allowChangeHtmlBody,
             baseTemplateId,
             headerTemplateId,
             footerTemplateId,
@@ -221,6 +224,15 @@ class DocumentTemplateFormEdit extends Component {
                             />
                         </div>
                     </div>
+                </div>
+                <div className="row">
+                    <InputToggle
+                        label={'Tekst wijzigbaar bij document'}
+                        name={'allowChangeHtmlBody'}
+                        value={allowChangeHtmlBody}
+                        onChangeAction={this.handleInputChange}
+                        id={'allowChangeHtmlBody'}
+                    />
                 </div>
                 {this.state.isGeneral && (
                     <div className="row">

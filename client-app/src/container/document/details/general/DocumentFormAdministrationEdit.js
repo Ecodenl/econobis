@@ -8,6 +8,7 @@ import InputText from '../../../../components/form/InputText';
 import { updateDocument } from '../../../../actions/document/DocumentDetailsActions';
 import DocumentDetailsAPI from '../../../../api/document/DocumentDetailsAPI';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
 
 class DocumentDetailsFormAdministrationEdit extends Component {
     constructor(props) {
@@ -18,23 +19,30 @@ class DocumentDetailsFormAdministrationEdit extends Component {
             administration,
             documentType,
             description,
-            freeText1,
-            freeText2,
             documentGroup,
             template,
+            htmlBody,
+            freeText1,
+            freeText2,
+            filename,
             showOnPortal,
         } = props.documentDetails;
 
         this.state = {
+            documentTypeId: documentType?.id ?? '',
+            hasTemplate: template ? true : false,
             document: {
                 id: id,
-                // administration: administration && administration.id,
-                documentType: documentType && documentType.id,
+                administrationName: administration?.name ?? '',
+                documentTypeName: documentType?.name ?? '',
                 description: description,
+                documentGroupName: documentGroup?.name ?? '',
+                templateName: template?.name ?? '',
+                templateHtmlBody: template?.htmlBody ?? '',
+                htmlBody: htmlBody,
                 freeText1: freeText1,
                 freeText2: freeText2,
-                documentGroup: documentGroup && documentGroup.id,
-                template: template && template.id,
+                filename: filename,
                 showOnPortal: showOnPortal,
             },
             errors: {
@@ -87,8 +95,20 @@ class DocumentDetailsFormAdministrationEdit extends Component {
     };
 
     render() {
-        const { document, errors } = this.state;
-        const { documentType, description, freeText1, freeText2, showOnPortal } = document;
+        const { documentTypeId, hasTemplate, document, errors } = this.state;
+        const {
+            administrationName,
+            documentTypeName,
+            description,
+            documentGroupName,
+            templateName,
+            templateHtmlBody,
+            htmlBody,
+            freeText1,
+            freeText2,
+            filename,
+            showOnPortal,
+        } = document;
 
         return (
             <div>
@@ -97,20 +117,10 @@ class DocumentDetailsFormAdministrationEdit extends Component {
                         <InputText
                             label="Administration"
                             name={'administration'}
-                            value={
-                                this.props.documentDetails.administration &&
-                                this.props.documentDetails.administration.name
-                            }
+                            value={administrationName}
                             readOnly={true}
                         />
-                        <InputText
-                            label="Type"
-                            name={'documentType'}
-                            value={
-                                this.props.documentDetails.documentType && this.props.documentDetails.documentType.name
-                            }
-                            readOnly={true}
-                        />
+                        <InputText label="Type" name={'documentType'} value={documentTypeName} readOnly={true} />
                     </div>
 
                     <div className="row">
@@ -142,45 +152,65 @@ class DocumentDetailsFormAdministrationEdit extends Component {
                         </div>
                     </div>
 
-                    {documentType === 'upload' ? (
-                        <div className="row margin-30-top">
-                            <InputText
-                                label="Documentgroep"
-                                name={'documentGroup'}
-                                value={
-                                    this.props.documentDetails.documentGroup &&
-                                    this.props.documentDetails.documentGroup.name
-                                }
-                                readOnly={true}
-                            />
-                            <InputText
-                                label="Bestandsnaam"
-                                name={'filename'}
-                                value={this.props.documentDetails.filename}
-                                readOnly={true}
-                            />
-                        </div>
+                    {documentTypeId === 'upload' ? (
+                        <>
+                            <div className="row margin-30-top">
+                                <div className="col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Documentgroep</label>
+                                        </div>
+                                        <div className="col-sm-9">{documentGroupName}</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Bestandsnaam</label>
+                                        </div>
+                                        <div className="col-sm-9">{filename}</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </>
                     ) : (
                         <>
                             <div className="row margin-30-top">
-                                <InputText
-                                    label="Documentgroep"
-                                    name={'documentGroup'}
-                                    value={
-                                        this.props.documentDetails.documentGroup &&
-                                        this.props.documentDetails.documentGroup.name
-                                    }
-                                    readOnly={true}
-                                />
-                                <InputText
-                                    label="Template"
-                                    name={'template'}
-                                    value={
-                                        this.props.documentDetails.template && this.props.documentDetails.template.name
-                                    }
-                                    readOnly={true}
-                                />
+                                <div className="col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Documentgroep</label>
+                                        </div>
+                                        <div className="col-sm-9">{documentGroupName}</div>
+                                    </div>
+                                </div>
                             </div>
+                            <div className="row">
+                                <div className="col-sm-12">
+                                    <div className="row">
+                                        <div className="col-sm-3">
+                                            <label className="col-sm-12">Template</label>
+                                        </div>
+                                        <div className="col-sm-9">{templateName}</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {hasTemplate ? (
+                                <div className="row">
+                                    <div className="form-group col-sm-12">
+                                        <div className="row">
+                                            <ViewHtmlAsText
+                                                label={'Template inhoud'}
+                                                value={htmlBody && htmlBody != '' ? htmlBody : templateHtmlBody}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                            ) : null}
+
                             <div className="row">
                                 <div className="form-group col-sm-12">
                                     <div className="row">

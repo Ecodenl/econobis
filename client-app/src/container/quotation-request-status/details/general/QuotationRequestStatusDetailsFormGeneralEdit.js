@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 
-import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -11,25 +10,18 @@ import QuotationRequestStatusDetailsAPI from '../../../../api/quotation-request-
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputToggle from '../../../../components/form/InputToggle';
-import InputReactSelect from '../../../../components/form/InputReactSelect';
 import ViewText from '../../../../components/form/ViewText';
-import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
-import validator from 'validator';
 
 class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            emailTemplates: [],
             quotationRequestStatus: {
                 ...props.quotationRequestStatus,
             },
             errors: {
                 usesWf: false,
-            },
-            peekLoading: {
-                emailTemplates: true,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -57,18 +49,6 @@ class QuotationRequestStatusDetailsFormGeneralEdit extends Component {
                 [name]: selectedOption,
             },
         });
-    }
-
-    componentDidMount() {
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then(emailTemplates =>
-            this.setState({
-                emailTemplates,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    emailTemplates: false,
-                },
-            })
-        );
     }
 
     handleSubmit = event => {

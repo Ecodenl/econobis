@@ -4,7 +4,6 @@ const URL_QUOTATION_REQUEST_STATUS = `quotation-request-status`;
 
 const defaultFields = {
     fld: ['id', 'name', 'usesWf', 'order', 'sendEmailReminder'],
-    rlt: { emailTemplateWorkflow: [] },
 };
 
 export default {

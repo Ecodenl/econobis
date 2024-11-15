@@ -22,6 +22,7 @@ function StepOneLoan({
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
+    console.log(initialRegisterValues);
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')

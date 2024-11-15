@@ -22,6 +22,7 @@ function StepOneCapital({
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
+    console.log(initialRegisterValues);
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')

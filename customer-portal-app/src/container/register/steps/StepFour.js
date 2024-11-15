@@ -19,6 +19,9 @@ import MoneyPresenter from '../../../helpers/MoneyPresenter';
 function StepFour({ project, registerType, contactProjectData, previous, next, registerValues, setSucces }) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
@@ -35,6 +38,8 @@ function StepFour({ project, registerType, contactProjectData, previous, next, r
     }, [registerValues]);
 
     function handleSubmitRegisterValues(actions, next) {
+        setHasError(false);
+        setErrorMessage(null);
         ParticipantProjectAPI.createParticipantProject(registerValues, registerType)
             .then(payload => {
                 actions.setSubmitting(false);
@@ -52,7 +57,12 @@ function StepFour({ project, registerType, contactProjectData, previous, next, r
                 next();
             })
             .catch(error => {
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                console.log('error');
+                console.log(error);
+                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                setHasError(true);
+                setErrorMessage('Er is iets misgegaan met opslaan!');
+
                 actions.setSubmitting(false);
             });
     }
@@ -74,6 +84,33 @@ function StepFour({ project, registerType, contactProjectData, previous, next, r
         <>
             {isLoading ? (
                 <LoadingView />
+            ) : hasError ? (
+                <>
+                    <Row>
+                        <Col>
+                            <div className="alert-wrapper">
+                                <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                    {errorMessage}
+                                </Alert>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Button
+                                    className={'w-button'}
+                                    size="sm"
+                                    onClick={() => {
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Probeer opnieuw
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
             ) : !contactDocumentOk ? (
                 <>
                     <Row>

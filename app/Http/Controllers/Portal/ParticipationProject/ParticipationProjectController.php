@@ -173,13 +173,23 @@ class ParticipationProjectController extends Controller
              * 1) Het project gebruik maakt van Mollie, en
              * 2) De betaling nog niet is gedaan.
              */
-            $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
-            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
-            if($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie){
-                $this->deleteParticipantProject($previousMutation, $previousParticipantProject);
-            }
+            // Get previousParticipantProject for contact/project (not terminated).
+            $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->where('date_terminated', null)->first();
+            if($previousParticipantProject) {
+                $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
+                if (
+                    ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') ||
+                    (!$project->uses_mollie && (bool)$project->allow_increase_participations_in_portal === true && $previousMutation && $previousMutation->status && $previousMutation->status->code_ref === 'option')
+                ) {
+                    $this->deleteParticipantProject($previousMutation);
+                    $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
+                } else {
+                    abort(412, "Fout bij verwerken inschrijving project");
+                }
 
-            $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
+            } else {
+                $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
+            }
 
             /**
              * Alleen aanmaken bevestigingsformulier en mailen als Mollie is uitgeschakeld, als Mollie

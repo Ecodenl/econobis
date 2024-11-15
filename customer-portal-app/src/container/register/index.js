@@ -52,6 +52,7 @@ function RegisterProject({ match, currentSelectedContact }) {
 
     useEffect(() => {
         setHasError(false);
+        setErrorMessage(null);
 
         if (currentSelectedContact.id) {
             (function fetchContactAndProject() {
@@ -116,8 +117,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                                 }
 
                                 if (
-                                    payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
-                                    payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
+                                    payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation
+                                    // && payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
                                 ) {
                                     /**
                                      * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier

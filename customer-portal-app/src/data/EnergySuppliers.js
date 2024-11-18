@@ -2,6 +2,7 @@ export default [
     { id: 26, name: 'Agem' },
     // { id: 27, name: 'Anode Energie' },
     { id: 66, name: 'ANWB Energie' },
+    { id: 79, name: 'Atlas Power and Gas' },
     { id: 24, name: 'Betuwe stroom' },
     { id: 2, name: 'Budget Energie' },
     { id: 58, name: 'CEN / WoonEnergie' },

@@ -73,8 +73,8 @@ class processWorkflowEmailQuotationRequestStatus extends Command
                     });
                 })->get();
 
-            Log::info('Check Date for send Emails: ' . $checkDatePlannedToSend);
-            Log::info('Quotation Requests to Process: ' . $quotationRequestsToProcess->count());
+//            Log::info('Check Date for send Emails: ' . $checkDatePlannedToSend);
+//            Log::info('Quotation Requests to Process: ' . $quotationRequestsToProcess->count());
 
             foreach ($quotationRequestsToProcess as $quotationRequest) {
 //                Log::info("processWorkflowEmail voor " . $quotationRequest->id);

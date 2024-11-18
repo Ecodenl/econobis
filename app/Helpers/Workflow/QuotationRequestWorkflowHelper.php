@@ -12,7 +12,6 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-//use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper

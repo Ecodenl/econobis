@@ -85,7 +85,7 @@ const DocumentDetailsFormProjectView = props => {
                         </div>
                     </div>
 
-                    {template ? (
+                    {template && template.allowChangeHtmlBody ? (
                         <div className="row" onClick={props.switchToEdit}>
                             <ViewHtmlAsText
                                 label={'Template inhoud'}

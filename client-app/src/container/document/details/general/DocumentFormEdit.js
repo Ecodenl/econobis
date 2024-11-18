@@ -70,7 +70,7 @@ class DocumentDetailsFormEdit extends Component {
             orders: [],
             administrations: [],
             documentTypeId: documentType?.id ?? '',
-            hasTemplate: template ? true : false,
+            showTemplate: template && template.allowChangeHtmlBody ? true : false,
             document: {
                 id: id,
                 administrationId: administrationId || '',
@@ -352,7 +352,7 @@ class DocumentDetailsFormEdit extends Component {
     render() {
         const {
             documentTypeId,
-            hasTemplate,
+            showTemplate,
             document,
             errors,
             errorMessage,
@@ -683,7 +683,7 @@ class DocumentDetailsFormEdit extends Component {
                                 </div>
                             </div>
 
-                            {hasTemplate ? (
+                            {showTemplate ? (
                                 <div className="row">
                                     <div className="form-group col-sm-12">
                                         <div className="row">

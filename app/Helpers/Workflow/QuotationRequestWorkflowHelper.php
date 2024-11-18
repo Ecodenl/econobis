@@ -139,7 +139,8 @@ class QuotationRequestWorkflowHelper
 
         $mail = Mail::fromMailbox($mailbox)
             ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, null);
+
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');
 
         return true;
     }
@@ -188,37 +189,31 @@ class QuotationRequestWorkflowHelper
         $mail->html_body = $htmlBody;
 
         //save the mail to send
-//        Log::info("to: " . $to);
-//        Log::info("cc: " . $cc);
-        if($to != '') {
-            $email = new Email();
-            $email->mailbox_id = $mailbox->id;
-            $email->from = $mailbox->email;
-            $email->to = [$to];
-            $email->cc = ($cc != '') ? [$cc] : [];
-            $email->bcc = [];
-            $email->subject = $subject;
-            $email->folder = 'sent';
-            if($this->quotationRequest) {
-                $email->quotation_request_id = $this->quotationRequest->id;
-                if($this->quotationRequest->opportunity) {
-                    $email->opportunity_id = $this->quotationRequest->opportunity->id;
-                }
+        $email = new Email();
+        $email->mailbox_id = $mailbox->id;
+        $email->from = $mailbox->email;
+        $email->to = [$to];
+        $email->cc = ($cc != '') ? [$cc] : [];
+        $email->bcc = [];
+        $email->subject = $subject;
+        $email->folder = 'sent';
+        if($this->quotationRequest) {
+            $email->quotation_request_id = $this->quotationRequest->id;
+            if($this->quotationRequest->opportunity) {
+                $email->opportunity_id = $this->quotationRequest->opportunity->id;
             }
-            $email->date_sent = new Carbon();
-            $email->html_body = $htmlBody;
-            $email->sent_by_user_id = Auth::id();
-            $email->save();
-
-            $email->contacts()->attach([$this->contact->id]);
-
-            //end save the mail to send
-//            Log::info('mail');
-//            Log::info(json_encode($mail));
-            $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
-//        } else {
-//            Log::info('geen to, geen mail');
         }
+        $email->date_sent = new Carbon();
+        $email->html_body = $htmlBody;
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        $email->contacts()->attach([$this->contact->id]);
+
+        //end save the mail to send
+//        Log::info('mail');
+//        Log::info(json_encode($mail));
+        $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 
 }

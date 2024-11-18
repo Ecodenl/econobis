@@ -75,8 +75,8 @@ class CampaignWorkflowController extends ApiController
         $data = $requestInput
             ->integer('emailTemplateIdWf')->validate('required|exists:email_templates,id')->alias('email_template_id_wf')->next()
             ->integer('numberOfDaysToSendEmail')->validate('required|numeric')->alias('number_of_days_to_send_email')->next()
-            ->integer('isActive')->validate('required')->alias('is_active')->next()
-            ->integer('mailToContactWf')->validate('required')->alias('mail_to_contact_wf')->next()
+            ->boolean('isActive')->validate('required')->alias('is_active')->next()
+            ->boolean('mailToContactWf')->validate('required')->alias('mail_to_contact_wf')->next()
             ->boolean('mailCcToCoachWf')->validate('required')->alias('mail_cc_to_coach_wf')->next()
             ->boolean('mailReminderToCoachWf')->validate('required')->alias('mail_reminder_to_coach_wf')->next()
             ->integer('emailTemplateIdReminder')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_reminder')->next()

@@ -24,7 +24,7 @@ class processWorkflowEmailQuotationRequestStatusReminder extends Command
      *
      * @var string
      */
-    protected $description = "Workflow email herinnering versturen na X aantal dagen op bepaalde status.";
+    protected $description = "Workflow email herinnering versturen na X aantal dagen na verzonden email bij bepaalde status.";
 
     /**
      * Create a new command instance.
@@ -62,20 +62,23 @@ class processWorkflowEmailQuotationRequestStatusReminder extends Command
                 $query->where('send_email_reminder', true);
             })->get();
         foreach ($campaignWorkflowsToProces as $campaignWorkflow) {
-            Log::info("Proces: Workflow email herinnering voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email_reminder);
+//            Log::info("Proces: Workflow email herinnering voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email_reminder);
             $campaignId = $campaignWorkflow->campaign_id;
 
-            $checkDatePlannedToSendReminder = Carbon::now()->addDays($campaignWorkflow->number_of_days_to_send_email_reminder)->startOfDay()->toDateString();
-            Log::info('checkDatePlannedToSendReminder: ' . $checkDatePlannedToSendReminder);
+            $checkDatePlannedToSendReminder = Carbon::now()->subDays($campaignWorkflow->number_of_days_to_send_email_reminder)->toDateString();
             $quotationRequestsToProcess = QuotationRequest::where('status_id', $campaignWorkflow->quotation_request_status_id)
-                ->where('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSendReminder)
+                ->whereDate('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSendReminder)
                 ->whereHas('opportunity', function ($query) use ($campaignId) {
                     $query->whereHas('intake', function ($query) use ($campaignId) {
                         $query->where('campaign_id', $campaignId);
                     });
                 })->get();
+
+//            Log::info('Check Date for Reminder Emails: ' . $checkDatePlannedToSendReminder);
+//            Log::info('Quotation Requests to Process: ' . $quotationRequestsToProcess->count());
+
             foreach ($quotationRequestsToProcess as $quotationRequest) {
-                Log::info("processWorkflowEmail voor " . $quotationRequest->id);
+//                Log::info("processWorkflowEmail voor " . $quotationRequest->id);
                 $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                 $quotationRequestWorkflowHelper->processWorkflowEmailReminder($campaignWorkflow);
             }
@@ -85,6 +88,6 @@ class processWorkflowEmailQuotationRequestStatusReminder extends Command
         $commandRun->finished = true;
         $commandRun->save();
 
-        Log::info("Emails herinnering verstuurd kansacties met bepaalde status.");
+        Log::info("Emails herinnering kansacties verstuurd bij bepaalde status.");
     }
 }

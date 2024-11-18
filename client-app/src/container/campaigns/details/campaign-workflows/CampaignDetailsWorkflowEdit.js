@@ -27,16 +27,41 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         emailTemplateIdWf: false,
         emailTemplateIdReminder: false,
         numberOfDaysToSendEmail: false,
-        mailCcToCoachWfOrMailToContactWf: false,
         numberOfDaysToSendEmailReminder: false,
+        mailCcToCoachWfOrMailToContactWf: false,
     });
     const [errorMessages, setErrorMessages] = useState({
         emailTemplateIdWf: '',
         emailTemplateIdReminder: '',
         numberOfDaysToSendEmail: '',
-        mailCcToCoachWfOrMailToContactWf: '',
         numberOfDaysToSendEmailReminder: '',
+        mailCcToCoachWfOrMailToContactWf: '',
     });
+
+    const [emailtemplates, setEmailtemplates] = useState([]);
+
+    useEffect(function() {
+        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
+            axios.spread((emailtemplates, mailboxAddresses) => {
+                setEmailtemplates(emailtemplates);
+            })
+        );
+    }, []);
+
+    function handleIsActiveChange(event) {
+        setIsActive(event.target.checked);
+    }
+
+    function handleMailToContactWfChange(event) {
+        setMailToContactWf(event.target.checked);
+    }
+    function handleMailCcToCoachWfChange(event) {
+        setMailCcToCoachWf(event.target.checked);
+    }
+
+    function handleMailReminderToCoachWfChange(event) {
+        setMailReminderToCoachWf(event.target.checked);
+    }
 
     function handleChangeEmailTemplateChange(event) {
         setEmailTemplateIdWf(event.target.value);
@@ -54,31 +79,6 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
         setNumberOfDaysToSendEmailReminder(event.target.value);
     }
 
-    function handleIsActiveChange(event) {
-        setIsActive(event.target.checked);
-    }
-
-    function handleMailToContactWfChange(event) {
-        setMailToContactWf(event.target.checked);
-    }
-
-    function handleMailCcToCoachWfChange(event) {
-        setMailCcToCoachWf(event.target.checked);
-    }
-    function handleMailReminderToCoachWfChange(event) {
-        setMailReminderToCoachWf(event.target.checked);
-    }
-
-    const [emailtemplates, setEmailtemplates] = useState([]);
-
-    useEffect(function() {
-        axios.all([EmailTemplateAPI.fetchEmailTemplatesPeek()]).then(
-            axios.spread((emailtemplates, mailboxAddresses) => {
-                setEmailtemplates(emailtemplates);
-            })
-        );
-    }, []);
-
     async function handleSubmit(event) {
         event.preventDefault();
 
@@ -86,27 +86,21 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             emailTemplateIdWf: false,
             emailTemplateIdReminder: false,
             numberOfDaysToSendEmail: false,
-            mailCcToCoachWfOrMailToContactWf: false,
             numberOfDaysToSendEmailReminder: false,
+            mailCcToCoachWfOrMailToContactWf: false,
         };
         let errorMessages = {
             emailTemplateIdWf: '',
             emailTemplateIdReminder: '',
             numberOfDaysToSendEmail: '',
-            mailCcToCoachWfOrMailToContactWf: '',
             numberOfDaysToSendEmailReminder: '',
+            mailCcToCoachWfOrMailToContactWf: '',
         };
         let hasErrors = false;
 
         if (!emailTemplateIdWf) {
             errors.emailTemplateIdWf = true;
             errorMessages.emailTemplateIdWf = 'E-email template is verplicht.';
-            hasErrors = true;
-        }
-
-        if (Boolean(mailReminderToCoachWf) === true && !emailTemplateIdReminder) {
-            errors.emailTemplateIdReminder = true;
-            errorMessages.emailTemplateIdReminder = 'E-email template herinnering is verplicht.';
             hasErrors = true;
         }
 
@@ -120,29 +114,36 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
             errorMessages.numberOfDaysToSendEmail = 'Aantal dagen e-mail na deze status mag niet negatief zijn';
             hasErrors = true;
         }
-        if (mailCcToCoachWf == 0 && mailToContactWf == 0) {
-            errors.mailCcToCoachWfOrMailToContactWf = true;
-            errorMessages.mailCcToCoachWfOrMailToContactWf =
-                'Minimaal één van de volgende opties is verplicht: Email bewoner en/of Email coach';
-            hasErrors = true;
-        }
 
-        if (
-            Boolean(mailReminderToCoachWf) === true &&
-            (numberOfDaysToSendEmailReminder === null ||
-                numberOfDaysToSendEmailReminder === '' ||
-                numberOfDaysToSendEmailReminder == 0)
-        ) {
-            errors.numberOfDaysToSendEmailReminder = true;
-            errorMessages.numberOfDaysToSendEmailReminder =
-                'Aantal dagen e-mail herinnering na deze status is verplicht en moet minimaal 1 zijn';
-            hasErrors = true;
-        }
-        if (numberOfDaysToSendEmailReminder < 0) {
-            errors.numberOfDaysToSendEmailReminder = true;
-            errorMessages.numberOfDaysToSendEmailReminder =
-                'Aantal dagen e-mail herinnering na deze status mag niet negatief zijn';
-            hasErrors = true;
+        if (campaignWorkflow.workflowForType === 'quotationrequest') {
+            if (Boolean(mailReminderToCoachWf) === true && !emailTemplateIdReminder) {
+                errors.emailTemplateIdReminder = true;
+                errorMessages.emailTemplateIdReminder = 'E-email template herinnering is verplicht.';
+                hasErrors = true;
+            }
+            if (mailCcToCoachWf == 0 && mailToContactWf == 0) {
+                errors.mailCcToCoachWfOrMailToContactWf = true;
+                errorMessages.mailCcToCoachWfOrMailToContactWf =
+                    'Minimaal één van de volgende opties is verplicht: Email bewoner en/of Email coach';
+                hasErrors = true;
+            }
+            if (
+                Boolean(mailReminderToCoachWf) === true &&
+                (numberOfDaysToSendEmailReminder === null ||
+                    numberOfDaysToSendEmailReminder === '' ||
+                    numberOfDaysToSendEmailReminder == 0)
+            ) {
+                errors.numberOfDaysToSendEmailReminder = true;
+                errorMessages.numberOfDaysToSendEmailReminder =
+                    'Aantal dagen e-mail herinnering na deze status is verplicht en moet minimaal 1 zijn';
+                hasErrors = true;
+            }
+            if (numberOfDaysToSendEmailReminder < 0) {
+                errors.numberOfDaysToSendEmailReminder = true;
+                errorMessages.numberOfDaysToSendEmailReminder =
+                    'Aantal dagen e-mail herinnering na deze status mag niet negatief zijn';
+                hasErrors = true;
+            }
         }
 
         if (!hasErrors) {
@@ -214,55 +215,36 @@ function CampaignDetailsWorkflowEdit({ campaignWorkflow, cancelEdit, fetchCampai
                         />
                     </div>
 
-                    <div className="row">
-                        <InputToggle
-                            label={'Actief'}
-                            name={'isActive'}
-                            value={Boolean(isActive)}
-                            onChangeAction={handleIsActiveChange}
-                        />
-
-                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
-                            <InputToggle
-                                label={'E-mail bewoner'}
-                                name={'mailToContactWf'}
-                                value={Boolean(mailToContactWf)}
-                                onChangeAction={handleMailToContactWfChange}
-                            />
-                        ) : null}
-                    </div>
-
-                    <div className="row">
-                        <div class="form-group col-sm-6 "></div>
-                        {campaignWorkflow.workflowForType === 'quotationrequest' ? (
-                            <InputToggle
-                                label={'E-mail coach'}
-                                name={'mailCcToCoachWf'}
-                                value={Boolean(mailCcToCoachWf)}
-                                onChangeAction={handleMailCcToCoachWfChange}
-                            />
-                        ) : null}
-                    </div>
-
-                    {errors.mailCcToCoachWfOrMailToContactWf && (
-                        <div className={'row'}>
-                            <div className="form-group col-sm-6"></div>
-                            <div className="col-sm-6 has-error-message">
-                                {errorMessages.mailCcToCoachWfOrMailToContactWf}
-                            </div>
-                        </div>
-                    )}
                     {campaignWorkflow.workflowForType === 'quotationrequest' ? (
                         <>
                             <div className="row">
+                                <div className="form-group col-sm-6 "></div>
+                                <InputToggle
+                                    label={'E-mail bewoner'}
+                                    name={'mailToContactWf'}
+                                    value={Boolean(mailToContactWf)}
+                                    onChangeAction={handleMailToContactWfChange}
+                                />
+                            </div>
+
+                            <div className="row">
                                 <div className="form-group col-sm-6" />
                                 <InputToggle
-                                    label={'Email cc naar coach'}
+                                    label={'E-mail coach'}
                                     name={'mailCcToCoachWf'}
                                     value={Boolean(mailCcToCoachWf)}
                                     onChangeAction={handleMailCcToCoachWfChange}
                                 />
                             </div>
+
+                            {errors.mailCcToCoachWfOrMailToContactWf && (
+                                <div className={'row'}>
+                                    <div className="form-group col-sm-6"></div>
+                                    <div className="col-sm-6 has-error-message">
+                                        {errorMessages.mailCcToCoachWfOrMailToContactWf}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="row">
                                 <div className="form-group col-sm-6" />

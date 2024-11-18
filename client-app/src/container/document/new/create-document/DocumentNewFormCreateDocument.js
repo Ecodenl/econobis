@@ -56,14 +56,12 @@ function DocumentNewFormCreateDocument(props) {
                     <div className="row">
                         {allowChangeHtmlBody ? (
                             <InputTinyMCEUpdateable
-                                label={'Tekst'}
+                                label={'Template inhoud'}
                                 initialValue={initialHtmlBody}
                                 value={htmlBody != '' ? htmlBody : initialHtmlBody}
                                 onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
                             />
-                        ) : (
-                            <ViewHtmlAsText label={'Tekst'} value={htmlBody != '' ? htmlBody : initialHtmlBody} />
-                        )}
+                        ) : null}
                     </div>
                 </div>
             </div>

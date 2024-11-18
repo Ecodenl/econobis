@@ -30,7 +30,7 @@ class DocumentDetailsFormProjectEdit extends Component {
 
         this.state = {
             documentTypeId: documentType?.id ?? '',
-            hasTemplate: template ? true : false,
+            showTemplate: template && template.allowChangeHtmlBody ? true : false,
             document: {
                 id: id,
                 projectName: project?.name ?? '',
@@ -95,7 +95,7 @@ class DocumentDetailsFormProjectEdit extends Component {
     };
 
     render() {
-        const { documentTypeId, hasTemplate, document, errors } = this.state;
+        const { documentTypeId, showTemplate, document, errors } = this.state;
         const {
             projectName,
             documentTypeName,
@@ -193,7 +193,7 @@ class DocumentDetailsFormProjectEdit extends Component {
                                 </div>
                             </div>
 
-                            {hasTemplate ? (
+                            {showTemplate ? (
                                 <div className="row">
                                     <div className="form-group col-sm-12">
                                         <div className="row">

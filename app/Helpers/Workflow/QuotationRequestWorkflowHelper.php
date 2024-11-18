@@ -12,7 +12,6 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class QuotationRequestWorkflowHelper
@@ -95,6 +94,53 @@ class QuotationRequestWorkflowHelper
         }
 
         $this->mailWorkflow($emailTemplate, $mail, $mailbox, $toEmail, $ccEmail);
+        return true;
+    }
+
+    public function processWorkflowEmailReminder(CampaignWorkflow $campaignWorkflow){
+        set_time_limit(0);
+
+        if (!$this->quotationRequest_status) {
+            return false;
+        }
+        if (!$this->quotationRequest_status->send_email_reminder) {
+            return false;
+        }
+
+        if (!$this->contact) {
+            return false;
+        }
+
+        if (!$campaignWorkflow->is_active) {
+            return false;
+        }
+        if (!$campaignWorkflow->mail_reminder_to_coach_wf) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($campaignWorkflow->email_template_id_reminder);
+        if (!$emailTemplate) {
+            return false;
+        }
+
+        if (!$this->quotationRequest->organisationOrCoach || !$this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+            return false;
+        }
+
+        $campaign = $this->quotationRequest->opportunity->intake->campaign;
+        if ($campaign->default_workflow_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->default_workflow_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, null);
+
         return true;
     }
 

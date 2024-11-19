@@ -28,6 +28,7 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\PortalFreeFields\PortalFreeFieldsField;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Project\ProjectRevenueDistribution;
 use App\Eco\Portal\PortalUser;
@@ -95,6 +96,25 @@ class Contact extends Model
         $fieldTableContact = FreeFieldsTable::where('table', 'contacts')->first();
         $contactFieldIds = FreeFieldsField::where('table_id', ($fieldTableContact->id ?? '$#@') )->get()->pluck('id')->toArray();
         return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $contactFieldIds);
+    }
+    public function portalFreeFieldsFieldRecords()
+    {
+        // Step 1: Retrieve the table for 'contacts' to filter fields in `portal_free_fields_fields`
+        $fieldTableContact = FreeFieldsTable::where('table', 'contacts')->first();
+
+        // Step 2: Get all field IDs from `free_fields_fields` related to `contacts`
+        $contactFieldIds = FreeFieldsField::where('table_id', $fieldTableContact->id ?? null)
+            ->pluck('id')
+            ->toArray();
+
+        // Step 3: Find all `portal_free_fields_fields` that relate to these `free_fields_fields`
+        $portalFreeFieldIds = PortalFreeFieldsField::whereIn('field_id', $contactFieldIds)
+            ->pluck('field_id')
+            ->toArray();
+
+        // Step 4: Filter `free_fields_field_records` based on these `portalFreeFieldIds` and `table_record_id`
+        return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')
+            ->whereIn('field_id', $portalFreeFieldIds);
     }
 
     public function addressesActive()
@@ -391,7 +411,7 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)
             ->join('contacts', 'primary_contact_id', '=', 'contacts.id')
             ->join('occupations', 'occupation_id', '=', 'occupations.id')
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
     public function occupationsActive()
@@ -405,7 +425,7 @@ class Contact extends Model
                 $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
                     ->orWhereNull('occupation_contact.start_date');
             })
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
 

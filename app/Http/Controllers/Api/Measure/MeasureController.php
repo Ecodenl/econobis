@@ -64,6 +64,7 @@ class MeasureController extends ApiController
 
         $data = $requestInput
             ->string('description')->onEmpty(null)->next()
+            ->string('nameCustom')->onEmpty(null)->alias('name_custom')->next()
             ->boolean('visible')->validate('boolean')->onEmpty(false)->whenMissing(false)->next()
             ->get();
 

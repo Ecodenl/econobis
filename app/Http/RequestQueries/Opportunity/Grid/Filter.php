@@ -34,7 +34,6 @@ class Filter extends RequestFilter
         'number' => 'opportunities.number',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
     ];
@@ -112,4 +111,25 @@ class Filter extends RequestFilter
 
         return false;
     }
+
+    protected function applyMeasureNameFilter($query, $type, $data)
+    {
+        $query->where(function($query) use ($data) {
+            $query
+                ->where(function($query) use ($data) {
+                    $query->whereNotNull('measures.name_custom')
+                        ->where('measures.name_custom', '!=', '')
+                        ->where('measures.name_custom', 'LIKE', '%' . $data . '%');
+                })
+                ->orWhere(function($query) use ($data) {
+                    $query->where(function($query) {
+                        $query->whereNull('measures.name_custom')
+                            ->orWhere('measures.name_custom', '=', '');
+                    })
+                        ->where('measures.name', 'LIKE', '%' . $data . '%');
+                });
+        });
+        return false;
+    }
+
 }

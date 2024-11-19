@@ -143,9 +143,9 @@ class ContactController extends Controller
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         if ($teamContactIds){
-            $query = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
         }else{
-            $query = Contact::select('id', 'full_name', 'number')->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->orderBy('full_name');
         }
 
         if($inspectionPersonType !== null AND $inspectionPersonType !== "null") {

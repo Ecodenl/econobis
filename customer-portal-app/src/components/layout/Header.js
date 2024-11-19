@@ -113,10 +113,7 @@ function Header({ location, history }) {
                                             </Dropdown.Item>
                                             {user.occupationsActive && user.occupationsActive.length > 0
                                                 ? user.occupationsActive.map(occupationContact =>
-                                                      (occupationContact.primaryContact.typeId === 'organisation' &&
-                                                          occupationContact.primary) ||
-                                                      (occupationContact.primaryContact.typeId === 'person' &&
-                                                          occupationContact.occupation.occupationForPortal) ? (
+                                                      occupationContact.allowManageInPortal ? (
                                                           <Dropdown.Item
                                                               key={occupationContact.id}
                                                               onClick={() => {

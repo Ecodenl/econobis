@@ -138,10 +138,7 @@ export const SwitchContactDashboardWidget = function({
                                 {user.fullNameFnf}
                             </Button>
                             {user.occupationsActive.map(occupationContact =>
-                                (occupationContact.primaryContact.typeId === 'organisation' &&
-                                    occupationContact.primary) ||
-                                (occupationContact.primaryContact.typeId === 'person' &&
-                                    occupationContact.occupation.occupationForPortal) ? (
+                                occupationContact.allowManageInPortal ? (
                                     <Button
                                         className="w-button btn btn-primary btn-sm"
                                         key={'user-' + occupationContact.primaryContact.id}

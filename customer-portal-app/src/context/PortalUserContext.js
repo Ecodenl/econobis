@@ -30,9 +30,12 @@ const PortalUserProvider = function(props) {
             }
         } else {
             // If there is no selected contact then set default the login user as selected contact.
-            // Except if the user has an organisation as occupation that is primary
+            // Except if the user has an organisation as occupation that is primary and allowManageInPortal
             const organisationUser = user.occupationsActive.find(
-                occupation => occupation.primaryContact.typeId === 'organisation' && occupation.primary
+                occupation =>
+                    occupation.primaryContact.typeId === 'organisation' &&
+                    occupation.primary &&
+                    occupation.allowManageInPortal
             );
 
             if (organisationUser) {

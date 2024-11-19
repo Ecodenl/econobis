@@ -25,6 +25,7 @@ class OccupationController extends ApiController
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
+            ->boolean('allowManageInPortal')->alias('allow_manage_in_portal')->next()
             ->get();
 
         // link primaryContact = person and contact = orginastion is not allowed.
@@ -101,6 +102,7 @@ class OccupationController extends ApiController
             ->date('startDate')->onEmpty(null)->alias('start_date')->next()
             ->date('endDate')->onEmpty(null)->alias('end_date')->next()
             ->boolean('primary')->next()
+            ->boolean('allowManageInPortal')->alias('allow_manage_in_portal')->next()
             ->get();
 
         // link primaryContact = person and contact = orginastion is not allowed.

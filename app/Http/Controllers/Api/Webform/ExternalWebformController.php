@@ -428,6 +428,7 @@ class ExternalWebformController extends Controller
             ],
             'contact' => [
                 // Contact
+                'contact_nummer' => 'number',
                 'titel_id' => 'title_id',
                 'voorletters' => 'initials',
                 'voornaam' => 'first_name',
@@ -600,6 +601,7 @@ class ExternalWebformController extends Controller
                 'woondossier_status_energielabel_id' => 'energy_label_status_id',
                 'woondossier_monument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
+                'woondossier_maatregelen_campagne_id' => 'measure_campaign_id',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
                 'woondossier_maatregelen_antwoorden' => 'measure_answers',
                 'woondossier_maatregelen_status_ids' => 'measure_status_ids',
@@ -764,9 +766,18 @@ class ExternalWebformController extends Controller
 
         $this->log('Forceer nieuw contact : ' . $data['force_new_contact']);
 
+        $this->contactActie = "???";
+
+        // forceer nieuw contact
         if($data['force_new_contact'] == 1) {
             $contact = null;
             $this->contactActie = "NCG";
+        // bepaal contact bij contact_nummer indien meegegeven
+        } elseif ($data['number'] != '') {
+            $contact = $this->getContactByNumber($data);
+            if(!$contact) return null;
+            $this->contactActie = "UPC";
+        // bepaal contact bij adres en/of email
         } else {
             $contact = $this->getContactByAddressAndEmail($data);
         }
@@ -922,10 +933,29 @@ class ExternalWebformController extends Controller
         throw new WebformException($string, $statusCode);
     }
 
+    protected function getContactByNumber(array $dataContact)
+    {
+        $contact = null;
+        if ($dataContact['number']) {
+
+            $fetchContact = Contact::where('number', $dataContact['number']);
+            if (!$fetchContact->exists()) {
+                $this->error('Geen contact gevonden voor contact_nummer (' . $dataContact['number'] . ').');
+            } elseif ($fetchContact->count() > 1) {
+                $this->error("Meerdere contacten gevonden met nummer " . $dataContact['number'] . " gevonden.");
+            } else {
+                $contact = $fetchContact->first();
+                $this->log("Contact met nummer " . $contact->number . " (" . $contact->full_name. ", id: " . $contact->id . ") gevonden.");
+            }
+
+        } else {
+            $this->log('Er is geen kans_id meegegeven, kansactie bij kans niet aanmaken.');
+        }
+        return $contact;
+    }
+
     protected function getContactByAddressAndEmail(array $data)
     {
-        $this->contactActie = "???";
-
         if ($data['organisation_name']) {
             $contactTypeId = 'organisation';
         }else{
@@ -2470,6 +2500,7 @@ class ExternalWebformController extends Controller
             && $data['energy_label_status_id'] == ''
             && $data['is_monument'] == ''
             && $data['measure_ids'] == ''
+            && $data['measure_campaign_id'] == ''
             && $data['measure_dates'] == ''
             && $data['measure_answers'] == ''
             && $data['measure_status_ids'] == ''
@@ -2538,6 +2569,18 @@ class ExternalWebformController extends Controller
         if (!$rofeType) {
             $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
             $rofeType = null;
+        }
+
+        $housingFileSpecificationCampaignId = null;
+        if ($data['measure_campaign_id']) {
+            $housingFileSpecificationCampaign = Campaign::find($data['measure_campaign_id']);
+            if ($housingFileSpecificationCampaign && $housingFileSpecificationCampaign->status_id !== Campaign::STATUS_CLOSED) {
+                $this->log('housingFileSpecificationCampaign->id: ' . $housingFileSpecificationCampaign->id );
+                $housingFileSpecificationCampaignId = $housingFileSpecificationCampaign->id;
+            }
+        }
+        if ($housingFileSpecificationCampaignId === null) {
+            $this->log('Er is geen bekende waarde voor de campagne meegegeven, default naar "geen"');
         }
 
 //        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
@@ -2645,6 +2688,7 @@ class ExternalWebformController extends Controller
                         'floor_id' => $measureFloorId,
                         'side_id' => $measureSidesid,
                         'type_brand' => $measureTypeBrand,
+                        'campaign_id' => $housingFileSpecificationCampaignId,
                     ]);
 //                    $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                 }
@@ -2712,8 +2756,9 @@ class ExternalWebformController extends Controller
                             'floor_id' => $measureFloorId,
                             'side_id' => $measureSidesid,
                             'type_brand' => $measureTypeBrand,
+                            'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
-//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
+//                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                     } else {
                         $housingFileSpecification->update([
                             'measure_date' => $measureDate,
@@ -2722,8 +2767,9 @@ class ExternalWebformController extends Controller
                             'floor_id' => $measureFloorId,
                             'side_id' => $measureSidesid,
                             'type_brand' => $measureTypeBrand,
+                            'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
-//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " gewijzigd voor specification id: " . $housingFileSpecification->id . ".");
+//                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " gewijzigd voor id: " . $housingFileSpecification->id . ".");
                     }
                 }
             } else {

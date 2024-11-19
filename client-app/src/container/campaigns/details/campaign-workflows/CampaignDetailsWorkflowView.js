@@ -6,7 +6,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const CampaignDetailsWorkflowView = ({
-    campaignWorkflow: { id, status, emailTemplateWorkflow, numberOfDaysToSendEmail, isActive },
+    campaignWorkflow: { id, status, emailTemplateWorkflow, emailTemplateReminder, numberOfDaysToSendEmail, isActive },
     highlightLine,
     onLineEnter,
     onLineLeave,

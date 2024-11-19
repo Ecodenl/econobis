@@ -40,7 +40,6 @@ class Filter extends RequestFilter
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'statusId' => 'status_id',
         'floorId' => 'floor_id',
         'sideId' => 'side_id',
@@ -98,6 +97,26 @@ class Filter extends RequestFilter
             });
         }
 
+        return false;
+    }
+
+    protected function applyMeasureNameFilter($query, $type, $data)
+    {
+        $query->where(function($query) use ($data) {
+            $query
+                ->where(function($query) use ($data) {
+                    $query->whereNotNull('measures.name_custom')
+                        ->where('measures.name_custom', '!=', '')
+                        ->where('measures.name_custom', 'LIKE', '%' . $data . '%');
+                })
+                ->orWhere(function($query) use ($data) {
+                    $query->where(function($query) {
+                        $query->whereNull('measures.name_custom')
+                            ->orWhere('measures.name_custom', '=', '');
+                    })
+                        ->where('measures.name', 'LIKE', '%' . $data . '%');
+                });
+        });
         return false;
     }
 

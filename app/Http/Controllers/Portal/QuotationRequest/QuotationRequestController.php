@@ -342,6 +342,7 @@ class QuotationRequestController
                 'name' => $quotationRequest->status->name,
                 'codeRef' => $quotationRequest->status->code_ref,
             ],
+            'measureNames' => $quotationRequest->measureNames,
             'quotationAmount' => $quotationRequest->quotation_amount,
             'costAdjustment' => $quotationRequest->cost_adjustment,
             'awardAmount' => $quotationRequest->award_amount,

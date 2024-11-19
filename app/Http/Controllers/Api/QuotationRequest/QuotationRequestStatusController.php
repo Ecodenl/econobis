@@ -25,6 +25,7 @@ class QuotationRequestStatusController extends Controller
             ->integer('emailTemplateIdWf')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_wf')->next()
             ->boolean('mailCcToCoachWf')->alias('mail_cc_to_coach_wf')->next()
             ->integer('numberOfDaysToSendEmail')->alias('number_of_days_to_send_email')->next()
+            ->boolean('sendEmailReminder')->alias('send_email_reminder')->next()
             ->get();
 
         $quotationRequestStatus->fill($data);

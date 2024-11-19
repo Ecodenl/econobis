@@ -250,6 +250,7 @@ class HousingFileController extends ApiController
             ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
             ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
             ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
+            ->integer('campaignId')->validate('nullable|exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->get();
 
         $housingFileSpecification = new HousingFileSpecification($data);
@@ -281,6 +282,7 @@ class HousingFileController extends ApiController
             ->numeric('savingsGas')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_gas')->next()
             ->numeric('savingsElectricity')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('savings_electricity')->next()
             ->numeric('co2Savings')->validate('nullable|numeric')->whenMissing(null)->onEmpty(null)->alias('co2_savings')->next()
+            ->integer('campaignId')->validate('nullable|exists:campaigns,id')->whenMissing(null)->onEmpty(null)->alias('campaign_id')->next()
             ->get();
 
         $housingFileSpecification->fill($data);

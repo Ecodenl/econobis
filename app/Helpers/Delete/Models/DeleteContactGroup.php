@@ -140,16 +140,18 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function deleteModels()
     {
-        foreach ($this->contactGroup->tasks as $task){
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
-        }
+
     }
 
     /** The relations which should be dissociated
      */
     public function dissociateRelations()
     {
+        foreach ($this->contactGroup->tasks as $task){
+            $task->contactGroup()->dissociate();
+            $task->save();
+        }
+
         foreach ($this->contactGroup->documents as $document){
             $document->contactGroup()->dissociate();
             $document->save();

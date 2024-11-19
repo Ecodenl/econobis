@@ -134,6 +134,7 @@ const MutationFormEditStatusGranted = ({
                             value={participantMutationFromState.dateEntry}
                             onChangeAction={handleInputChangeDate}
                             disabledBefore={disableBeforeEntryDate}
+                            readOnly={!participantMutationFromProps.changeAllowed}
                             required={'required'}
                             error={errors.dateEntry}
                         />

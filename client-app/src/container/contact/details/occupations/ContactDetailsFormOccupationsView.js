@@ -9,7 +9,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const ContactDetailsFormOccupationsView = props => {
-    const { primaryContact, contact, occupation, startDate, endDate, primary } = props.occupation;
+    const { primaryContact, contact, occupation, startDate, endDate, primary, allowManageInPortal } = props.occupation;
 
     return (
         <div
@@ -34,7 +34,8 @@ const ContactDetailsFormOccupationsView = props => {
                 </div>
                 <div className="col-sm-2">{startDate ? moment(startDate).format('DD-MM-Y') : ''}</div>
                 <div className="col-sm-2">{endDate ? moment(endDate).format('DD-MM-Y') : ''}</div>
-                <div className="col-sm-2">{primary ? <span className="pull-right">Primair</span> : ''}</div>
+                <div className="col-sm-1">{primary ? 'Primair' : ''}</div>
+                <div className="col-sm-1">{allowManageInPortal ? 'Ja' : 'Nee'}</div>
             </div>
             <div className="col-sm-1">
                 {props.permissions.updateContactOccupation && props.showActionButtons ? (

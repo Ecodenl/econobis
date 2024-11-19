@@ -736,6 +736,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
+        // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
@@ -748,6 +749,18 @@ Route::namespace('Api')
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');
+
+        // Free fields portal pages
+        Route::get('portal-free-fields-pages/grid', 'PortalFreeFields\PortalFreeFieldsPagesController@grid');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@delete');
+        Route::post('portal-free-fields-page', 'PortalFreeFields\PortalFreeFieldsPagesController@store');
+        Route::get('portal-free-fields-page/{portalFreeFieldsPage}', 'PortalFreeFields\PortalFreeFieldsPagesController@show');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/update', 'PortalFreeFields\PortalFreeFieldsPagesController@update');
+        Route::get('portal-free-fields-page/free-fields-contacts/{portalFreeFieldsPage}/peek-contacts', 'PortalFreeFields\PortalFreeFieldsPagesController@peekContacts');
+
+        Route::post('portal-free-fields-page-field', 'PortalFreeFields\PortalFreeFieldsPagesController@storePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}', 'PortalFreeFields\PortalFreeFieldsPagesController@updatePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@destroyPortalFreeFieldsField');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

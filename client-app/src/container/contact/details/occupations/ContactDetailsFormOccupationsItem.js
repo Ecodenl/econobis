@@ -26,6 +26,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                 startDate: props.occupation.startDate ? props.occupation.startDate : '',
                 endDate: props.occupation.endDate ? props.occupation.endDate : '',
                 contactId: props.occupation.contact.id,
+                selectedTypeId: props.occupation.contact.typeId ? props.occupation.contact.typeId : null,
                 occupationId: props.occupation.occupation.id,
             },
             errors: {
@@ -47,6 +48,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                     startDate: nextProps.occupation.startDate ? nextProps.occupation.startDate : '',
                     endDate: nextProps.occupation.endDate ? nextProps.occupation.endDate : '',
                     contactId: nextProps.occupation.contact.id,
+                    selectedTypeId: nextProps.occupation.contact.typeId ? nextProps.occupation.contact.typeId : null,
                     occupationId: nextProps.occupation.occupation.id,
                 },
             });
@@ -109,6 +111,33 @@ class ContactDetailsFormOccupationsItem extends Component {
         });
     };
 
+    handleInputChangePrimary = event => {
+        const value = event.target.checked;
+
+        let allowManageInPortal = this.state.occupation.allowManageInPortal;
+
+        if (value === true && this.state.occupation.selectedTypeId) {
+            if (this.state.occupation.selectedTypeId) {
+                if (
+                    (this.props.currentContactTypeId === 'organisation' &&
+                        this.state.occupation.selectedTypeId === 'person') ||
+                    (this.props.currentContactTypeId === 'person' &&
+                        this.state.occupation.selectedTypeId === 'organisation')
+                ) {
+                    allowManageInPortal = true;
+                }
+            }
+        }
+
+        this.setState({
+            ...this.state,
+            occupation: {
+                ...this.state.occupation,
+                primary: value,
+                allowManageInPortal: allowManageInPortal,
+            },
+        });
+    };
     handleStartDate = date => {
         const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
 
@@ -195,6 +224,7 @@ class ContactDetailsFormOccupationsItem extends Component {
                     <ContactDetailsFormOccupationsEdit
                         occupation={this.state.occupation}
                         handleInputChange={this.handleInputChange}
+                        handleInputChangePrimary={this.handleInputChangePrimary}
                         handleStartDate={this.handleStartDate}
                         handleEndDate={this.handleEndDate}
                         handleSubmit={this.handleSubmit}
@@ -224,6 +254,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         id: state.contactDetails.id,
+        currentContactTypeId: state.contactDetails.typeId,
     };
 };
 

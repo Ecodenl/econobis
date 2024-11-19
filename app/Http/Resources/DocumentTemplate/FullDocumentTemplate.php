@@ -23,6 +23,7 @@ class FullDocumentTemplate extends JsonResource
             'name' => $this->name,
             'characteristic' => $this->characteristic,
             'htmlBody' => $this->html_body,
+            'allowChangeHtmlBody' => $this->allow_change_html_body,
             'documentTemplateType' => FullEnumWithIdAndName::make($this->getTemplateType()),
             'documentGroup' => FullEnumWithIdAndName::make($this->getDocumentGroup()),
             'baseTemplate' => FullDocumentTemplate::make($this->whenLoaded('baseTemplate')),

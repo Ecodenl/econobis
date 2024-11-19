@@ -190,6 +190,16 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchContactPortalFreeFields: function(contactId, urlPageRef) {
+        const requestUrl = `/contact/${contactId}/contact-portal-free-fields`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                urlPageRef: urlPageRef,
+            },
+        });
+    },
+
     fetchContactProjects: function(contactId) {
         const requestUrl = `/contact/${contactId}/contact-projects`;
 

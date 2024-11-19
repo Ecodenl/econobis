@@ -11,9 +11,11 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Col from 'react-bootstrap/Col';
 import Row from 'react-bootstrap/Row';
 import axios from 'axios';
+import moment from 'moment/moment';
 
 const ContactDetails = function(props) {
     const [contact, setContact] = useState({});
+    const [freeFieldsFieldRecords, setFreeFieldsFieldRecords] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
     const [isLoading, setLoading] = useState(true);
     const prevCurrentSelectedContact = usePrevious(props.currentSelectedContact);
@@ -55,9 +57,45 @@ const ContactDetails = function(props) {
             ])
             .then(
                 axios.spread((payloadContact, payloadContactFreeFields) => {
+                    setFreeFieldsFieldRecords(payloadContactFreeFields.data);
+
+                    // Set up initial freeFieldsFieldRecords inside contact
+                    const initialFreeFieldsFieldRecords = payloadContactFreeFields.data.reduce((acc, record) => {
+                        switch (record.fieldFormatType) {
+                            case 'boolean':
+                                acc[`record-${record.id}`] = record.fieldRecordValueBoolean || null;
+                                break;
+                            case 'text_short':
+                                acc[`record-${record.id}`] = record.fieldRecordValueText || null;
+                                break;
+                            case 'text_long':
+                                acc[`record-${record.id}`] = record.fieldRecordValueText || null;
+                                break;
+                            case 'int':
+                                acc[`record-${record.id}`] = record.fieldRecordValueInt || null;
+                                break;
+                            case 'double_2_dec':
+                                acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
+                                break;
+                            case 'amount_euro':
+                                acc[`record-${record.id}`] = record.fieldRecordValueDouble || null;
+                                break;
+                            case 'date':
+                                acc[`record-${record.id}`] = record.fieldRecordValueDatetime
+                                    ? moment(record.fieldRecordValueDatetime).format('YYYY-MM-DD')
+                                    : null;
+                                break;
+                            case 'datetime':
+                                acc[`record-${record.id}`] = record.fieldRecordValueDatetime || null;
+                                break;
+                        }
+                        return acc;
+                    }, {});
+
                     let contactData = rebaseContact(payloadContact.data.data);
-                    contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
+                    contactData.freeFieldsFieldRecords = initialFreeFieldsFieldRecords;
                     setContact(contactData);
+
                     props.updateNameSelectedContact(
                         contactData.fullNameFnf,
                         contactData.typeId,
@@ -99,20 +137,6 @@ const ContactDetails = function(props) {
             });
     }
 
-    const editButtonGroup = (
-        <ButtonGroup aria-label="contact-details" className={'float-right'}>
-            <Button
-                className={'w-button'}
-                size="sm"
-                onClick={function() {
-                    setEditForm(true);
-                }}
-            >
-                Wijzig
-            </Button>
-        </ButtonGroup>
-    );
-
     return (
         <div className="content-section">
             {isLoading ? (
@@ -126,12 +150,28 @@ const ContactDetails = function(props) {
                             </Col>
                         </Row>
                     ) : (
-                        <Row>
-                            <Col>
-                                <h1 className="content-heading mt-0">Contactgegevens</h1>
-                            </Col>
-                            <Col>{editButtonGroup}</Col>
-                        </Row>
+                        <>
+                            <Row>
+                                <Col>
+                                    <h1 className="content-heading mt-0">Contactgegevens</h1>
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col>
+                                    <ButtonGroup aria-label="contact-details" className={'float-left'}>
+                                        <Button
+                                            className={'w-button'}
+                                            size="sm"
+                                            onClick={function() {
+                                                setEditForm(true);
+                                            }}
+                                        >
+                                            Wijzig
+                                        </Button>
+                                    </ButtonGroup>
+                                </Col>
+                            </Row>
+                        </>
                     )}
                     <div className="w-form" />
                     {/* If contact is person */}
@@ -139,8 +179,8 @@ const ContactDetails = function(props) {
                         <ContactDetailsPersonal
                             portalSettings={portalSettings}
                             initialContact={contact}
+                            freeFieldsFieldRecords={freeFieldsFieldRecords}
                             handleSubmitContactValues={handleSubmitContactValues}
-                            editButtonGroup={editButtonGroup}
                             editForm={editForm}
                             setEditForm={setEditForm}
                         />
@@ -150,8 +190,8 @@ const ContactDetails = function(props) {
                         <ContactDetailsOrganisation
                             portalSettings={portalSettings}
                             initialContact={contact}
+                            freeFieldsFieldRecords={freeFieldsFieldRecords}
                             handleSubmitContactValues={handleSubmitContactValues}
-                            editButtonGroup={editButtonGroup}
                             editForm={editForm}
                             setEditForm={setEditForm}
                         />

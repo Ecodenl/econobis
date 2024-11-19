@@ -653,19 +653,22 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <Nav id="free-fields">
                             <NavText>
                                 <Link className="sidebar-link" to="vrije-velden">
-                                    Vrije velden
+                                    Vrije velden Algemeen
                                 </Link>
                             </NavText>
                         </Nav>
                     )}
-                    {/* todo WM check: wordt niet meer gebruikt toch ?*/}
-                    {/*<Nav id="postal-code-link">*/}
-                    {/*    <NavText>*/}
-                    {/*        <Link className="sidebar-link" to="postcoderoos">*/}
-                    {/*            Postcoderoos*/}
-                    {/*        </Link>*/}
-                    {/*    </NavText>*/}
-                    {/*</Nav>*/}
+                    {permissions.manageFreeFields &&
+                        permissions.menuPortalSettings &&
+                        permissions.managePortalSettings && (
+                            <Nav id="free-fields-portal-page">
+                                <NavText>
+                                    <Link className="sidebar-link" to="vrije-velden-portaal-pagina">
+                                        Vrije velden Portaal pagina
+                                    </Link>
+                                </NavText>
+                            </Nav>
+                        )}
                 </Nav>
             )}
 

@@ -35,6 +35,7 @@ class HousingFileExcelSpecificationsHelper
         $headerData[] = 'Woonplaats';
         $headerData[] = 'Maatregel categorie';
         $headerData[] = 'Maatregel';
+        $headerData[] = 'Campagne';
         $headerData[] = 'Status';
         $headerData[] = 'Datum realisatie';
         $headerData[] = 'Waarde';
@@ -63,17 +64,18 @@ class HousingFileExcelSpecificationsHelper
                 $rowData[2] = $housingFile->address ? $housingFile->address->city : '';
                 $rowData[3] = $housingFileSpecification->measure ? $housingFileSpecification->measure->name : ''; //'Maatregel categorie'
                 $rowData[4] = ($housingFileSpecification->measure && $housingFileSpecification->measure->measureCategory) ? $housingFileSpecification->measure->measureCategory->name : ''; //'Maatregel'
-                $rowData[5] = $housingFileSpecification->status ? $housingFileSpecification->status->name : ''; //'Status'
-                $rowData[6] = $housingFileSpecification->measure_date; //'Datum realisatie'
-                $rowData[7] = $housingFileSpecification->answer;
-                $rowData[8] = $housingFileSpecification->floor ? $housingFileSpecification->floor->name : ''; //'Verdieping'
-                $rowData[9] = $housingFileSpecification->side ? $housingFileSpecification->side->name : ''; //'Zijde'
-                $rowData[10] = $housingFileSpecification->type_brand;
-                $rowData[11] = $housingFileSpecification->type_of_execution ? $typeOfExecutionOptions[$housingFileSpecification->type_of_execution] : 'Onbekend'; //'Uitvoering'
-                $rowData[12] = $housingFileSpecification->savings_gas; //'Savings gas'
-                $rowData[13] = $housingFileSpecification->savings_electricity; //'Savings elektriciteit'
-                $rowData[14] = $housingFileSpecification->co2_savings; //'Savings Co2 '
-                $rowData[15] = $housingFileSpecification->created_at;
+                $rowData[5] = $housingFileSpecification->campaign ? $housingFileSpecification->campaign->name : ''; //'Campagne'
+                $rowData[6] = $housingFileSpecification->status ? $housingFileSpecification->status->name : ''; //'Status'
+                $rowData[7] = $housingFileSpecification->measure_date; //'Datum realisatie'
+                $rowData[8] = $housingFileSpecification->answer;
+                $rowData[9] = $housingFileSpecification->floor ? $housingFileSpecification->floor->name : ''; //'Verdieping'
+                $rowData[10] = $housingFileSpecification->side ? $housingFileSpecification->side->name : ''; //'Zijde'
+                $rowData[11] = $housingFileSpecification->type_brand;
+                $rowData[12] = $housingFileSpecification->type_of_execution ? $typeOfExecutionOptions[$housingFileSpecification->type_of_execution] : 'Onbekend'; //'Uitvoering'
+                $rowData[13] = $housingFileSpecification->savings_gas; //'Savings gas'
+                $rowData[14] = $housingFileSpecification->savings_electricity; //'Savings elektriciteit'
+                $rowData[15] = $housingFileSpecification->co2_savings; //'Savings Co2 '
+                $rowData[16] = $housingFileSpecification->created_at;
 
                 $completeData[] = $rowData;
             }
@@ -91,7 +93,7 @@ class HousingFileExcelSpecificationsHelper
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:P1')
+        $sheet->getStyle('A1:R1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

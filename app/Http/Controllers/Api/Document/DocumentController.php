@@ -108,6 +108,8 @@ class DocumentController extends Controller
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('filename')->next()
+            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
+            ->string('htmlBody')->whenMissing(null)->onEmpty(null)->alias('html_body')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
@@ -115,7 +117,6 @@ class DocumentController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
-            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
@@ -216,9 +217,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
-            ->string('documentType')->validate('required')->alias('document_type')->next()
-            ->string('documentGroup')->validate('required')->alias('document_group')->next()
+            ->string('htmlBody')->whenMissing(null)->onEmpty(null)->alias('html_body')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
@@ -226,7 +225,6 @@ class DocumentController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
-            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
@@ -273,20 +271,28 @@ class DocumentController extends Controller
         $document->load('template.footer', 'template.baseTemplate', 'template.header');
 
         if($document->template) {
-            $html = $document->template->header
-                ? $document->template->header->html_body : '';
 
-            if ($document->template->baseTemplate) {
-                $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body,
-                    $document->template->html_body, $document->free_text_1,
-                    $document->free_text_2);
-            } else {
-                $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body,
+            if($document->html_body && $document->html_body != ''){
+                $html = TemplateVariableHelper::replaceTemplateFreeTextVariables($document->html_body,
                     $document->free_text_1, $document->free_text_2);
-            }
 
-            $html .= $document->template->footer
-                ? $document->template->footer->html_body : '';
+            } else {
+                $html = $document->template->header
+                    ? $document->template->header->html_body : '';
+
+                if ($document->template->baseTemplate) {
+                    $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body,
+                        $document->template->html_body, $document->free_text_1,
+                        $document->free_text_2);
+                } else {
+                    $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body,
+                        $document->free_text_1, $document->free_text_2);
+                }
+
+                $html .= $document->template->footer
+                    ? $document->template->footer->html_body : '';
+
+            }
 
             $html
                 = TemplateVariableHelper::replaceDocumentTemplateVariables($document,

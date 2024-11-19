@@ -2884,12 +2884,13 @@ class TemplateVariableHelper
 
     public static function replaceDocumentTemplateVariables(Document $document, $html){
         //load relations
-        $document->load('contact', 'order', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'project', 'participant');
+        $document->load('administration', 'contact', 'order', 'contactGroup', 'opportunity', 'intake', 'sentBy', 'campaign', 'housingFile', 'quotationRequest', 'measure', 'task', 'project', 'participant');
 
         //Eerst alle {tabel_} vervangen
         $html = TemplateTableHelper::replaceTemplateTables($html, $document);
 
         //Dan alle andere tags
+        $html = TemplateVariableHelper::replaceTemplateVariables($html, 'administratie', $document->administration);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'contact', $document->contact);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'groep', $document->contactGroup);
         $html = TemplateVariableHelper::replaceTemplateVariables($html, 'kans', $document->opportunity);

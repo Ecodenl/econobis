@@ -391,7 +391,7 @@ class Contact extends Model
         return $this->hasMany(OccupationContact::class)
             ->join('contacts', 'primary_contact_id', '=', 'contacts.id')
             ->join('occupations', 'occupation_id', '=', 'occupations.id')
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
     public function occupationsActive()
@@ -405,7 +405,7 @@ class Contact extends Model
                 $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
                     ->orWhereNull('occupation_contact.start_date');
             })
-            ->select('contacts.*', 'occupation_contact.*', 'occupations.occupation_for_portal', 'occupation_contact.id as ocid')
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
             ->orderBy('contacts.full_name');
     }
 

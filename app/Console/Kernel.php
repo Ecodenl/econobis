@@ -15,6 +15,7 @@ use App\Console\Commands\processTwinfieldInvoicePayment;
 use App\Console\Commands\processWorkflowEmailCompleteTask;
 use App\Console\Commands\processWorkflowEmailExpiredTask;
 use App\Console\Commands\processWorkflowEmailOpportunityStatus;
+use App\Console\Commands\processWorkflowEmailQuotationRequestStatusReminder;
 use App\Console\Commands\processWorkflowEmailQuotationRequestStatus;
 use App\Console\Commands\setDaysLastReminderInvoice;
 use App\Console\Commands\setDaysToExpireInvoice;
@@ -48,6 +49,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailCompleteTask::class,
         processWorkflowEmailExpiredTask::class,
         processWorkflowEmailOpportunityStatus::class,
+        processWorkflowEmailQuotationRequestStatusReminder::class,
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongTwinfieldInvoices::class,
         contactGroupsContactsForReport::class,
@@ -102,7 +104,8 @@ class Kernel extends ConsoleKernel
                 $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:01');
                 $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:03');
                 $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:05');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:07');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatusReminder')->timezone('Europe/Amsterdam')->dailyAt('06:07');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:09');
 
                 $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('06:45');
                 /**
@@ -147,7 +150,8 @@ class Kernel extends ConsoleKernel
                 $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:09');
                 $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:11');
                 $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:13');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:15');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatusReminder')->timezone('Europe/Amsterdam')->dailyAt('06:15');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:17');
 
                 $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('06:47');
                 /**
@@ -192,7 +196,8 @@ class Kernel extends ConsoleKernel
                 $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:17');
                 $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:19');
                 $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:21');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:23');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatusReminder')->timezone('Europe/Amsterdam')->dailyAt('06:23');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:25');
 
                 $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('06:49');
                 /**
@@ -237,7 +242,8 @@ class Kernel extends ConsoleKernel
                 $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:25');
                 $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:27');
                 $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:29');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:31');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatusReminder')->timezone('Europe/Amsterdam')->dailyAt('06:31');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:33');
 
                 $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('06:51');
                 /**
@@ -282,7 +288,8 @@ class Kernel extends ConsoleKernel
                 $schedule->command('workflow:processWorkflowEmailCompleteTask')->timezone('Europe/Amsterdam')->dailyAt('06:33');
                 $schedule->command('workflow:processWorkflowEmailExpiredTask')->timezone('Europe/Amsterdam')->dailyAt('06:35');
                 $schedule->command('workflow:processWorkflowEmailOpportunityStatus')->timezone('Europe/Amsterdam')->dailyAt('06:37');
-                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:39');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatusReminder')->timezone('Europe/Amsterdam')->dailyAt('06:39');
+                $schedule->command('workflow:processWorkflowEmailQuotationRequestStatus')->timezone('Europe/Amsterdam')->dailyAt('06:41');
 
                 $schedule->command('invoice:checkWrongTwinfieldInvoices')->timezone('Europe/Amsterdam')->dailyAt('06:53');
                 /**

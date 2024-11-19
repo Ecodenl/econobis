@@ -27,11 +27,6 @@ class QuotationRequestStatus extends Model
         return $this->hasMany(QuotationRequest::class);
     }
 
-    public function emailTemplateWorkflow()
-    {
-        return $this->belongsTo(EmailTemplate::class, 'email_template_id_wf');
-    }
-
     public function opportunityAction()
     {
         return $this->belongsTo(OpportunityAction::class, 'opportunity_action_id');

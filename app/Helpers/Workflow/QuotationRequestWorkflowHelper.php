@@ -63,20 +63,89 @@ class QuotationRequestWorkflowHelper
             $mailbox = Mailbox::getDefault();
         }
 
-        $mail = Mail::fromMailbox($mailbox)
-            ->to($this->contact->primaryEmailAddress);
-        if ($this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress && $campaignWorkflow->mail_cc_to_coach_wf) {
-            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
-            $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email;
+        $to = null;
+        $cc = null;
+        if($campaignWorkflow->mail_to_contact_wf == 1) {
+//            Log::info('to mail_to_contact_wf is geset');
+            $to = $this->contact->primaryEmailAddress;
+            if ($campaignWorkflow->mail_cc_to_coach_wf && $this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+//                Log::info('cc mail_cc_to_coach_wf is geset');
+                $cc = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
+            }
         } else {
-            $cc = '';
+            if ($campaignWorkflow->mail_cc_to_coach_wf && $this->quotationRequest->organisationOrCoach && $this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+//                Log::info('to mail_cc_to_coach_wf is geset');
+                $to = $this->quotationRequest->organisationOrCoach->primaryEmailAddress;
+            }
+        }
+//        if(!$to && !$cc) {
+//            Log::info('geen to en geen cc');
+//        }
+
+        if(!$to) return false;
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($to);
+        $toEmail = $to->email;
+        $ccEmail = '';
+        if($cc) {
+            $mail->cc($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+            $ccEmail = $cc->email;
         }
 
-        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $cc);
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $toEmail, $ccEmail);
         return true;
     }
 
-    public function mailWorkflow($emailTemplate, $mail, $mailbox, $cc)
+    public function processWorkflowEmailReminder(CampaignWorkflow $campaignWorkflow){
+        set_time_limit(0);
+
+        if (!$this->quotationRequest_status) {
+            return false;
+        }
+        if (!$this->quotationRequest_status->send_email_reminder) {
+            return false;
+        }
+
+        if (!$this->contact) {
+            return false;
+        }
+
+        if (!$campaignWorkflow->is_active) {
+            return false;
+        }
+        if (!$campaignWorkflow->mail_reminder_to_coach_wf) {
+            return false;
+        }
+
+        $emailTemplate = EmailTemplate::find($campaignWorkflow->email_template_id_reminder);
+        if (!$emailTemplate) {
+            return false;
+        }
+
+        if (!$this->quotationRequest->organisationOrCoach || !$this->quotationRequest->organisationOrCoach->primaryEmailAddress) {
+            return false;
+        }
+
+        $campaign = $this->quotationRequest->opportunity->intake->campaign;
+        if ($campaign->default_workflow_mailbox_id) {
+            $mailbox = Mailbox::find($campaign->default_workflow_mailbox_id);
+            if (!$mailbox) {
+                $mailbox = Mailbox::getDefault();
+            }
+        } else {
+            $mailbox = Mailbox::getDefault();
+        }
+
+        $mail = Mail::fromMailbox($mailbox)
+            ->to($this->quotationRequest->organisationOrCoach->primaryEmailAddress);
+
+        $this->mailWorkflow($emailTemplate, $mail, $mailbox, $this->quotationRequest->organisationOrCoach->primaryEmailAddress->email, '');
+
+        return true;
+    }
+
+    public function mailWorkflow($emailTemplate, $mail, $mailbox, $to, $cc)
     {
 //        $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van Econobis';
         $subject = $emailTemplate->subject ? $emailTemplate->subject : 'Bericht van ' . $this->cooperativeName;
@@ -116,34 +185,34 @@ class QuotationRequestWorkflowHelper
             . $subject . '</title></head>'
             . $htmlBody . '</html>';
 
-
         $mail->subject = $subject;
         $mail->html_body = $htmlBody;
 
         //save the mail to send
-        if($this->contact && $this->contact->primaryEmailAddress) {
-            $email = new Email();
-            $email->mailbox_id = $mailbox->id;
-            $email->from = $mailbox->email;
-            $email->to = [$this->contact->primaryEmailAddress->email];
-            $email->cc = [$cc];
-            $email->bcc = [];
-            $email->subject = $subject;
-            $email->folder = 'sent';
-            if($this->quotationRequest) {
-                $email->quotation_request_id = $this->quotationRequest->id;
-                if($this->quotationRequest->opportunity) {
-                    $email->opportunity_id = $this->quotationRequest->opportunity->id;
-                }
+        $email = new Email();
+        $email->mailbox_id = $mailbox->id;
+        $email->from = $mailbox->email;
+        $email->to = [$to];
+        $email->cc = ($cc != '') ? [$cc] : [];
+        $email->bcc = [];
+        $email->subject = $subject;
+        $email->folder = 'sent';
+        if($this->quotationRequest) {
+            $email->quotation_request_id = $this->quotationRequest->id;
+            if($this->quotationRequest->opportunity) {
+                $email->opportunity_id = $this->quotationRequest->opportunity->id;
             }
-            $email->date_sent = new Carbon();
-            $email->html_body = $htmlBody;
-            $email->sent_by_user_id = Auth::id();
-            $email->save();
-
-            $email->contacts()->attach([$this->contact->id]);
         }
+        $email->date_sent = new Carbon();
+        $email->html_body = $htmlBody;
+        $email->sent_by_user_id = Auth::id();
+        $email->save();
+
+        $email->contacts()->attach([$this->contact->id]);
+
         //end save the mail to send
+//        Log::info('mail');
+//        Log::info(json_encode($mail));
         $mail->send(new GenericMailWithoutAttachment($mail, $htmlBody, $emailTemplate->default_attachment_document_id));
     }
 

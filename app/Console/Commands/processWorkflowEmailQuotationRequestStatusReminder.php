@@ -10,21 +10,21 @@ use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
-class processWorkflowEmailQuotationRequestStatus extends Command
+class processWorkflowEmailQuotationRequestStatusReminder extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'workflow:processWorkflowEmailQuotationRequestStatus';
+    protected $signature = 'workflow:processWorkflowEmailQuotationRequestStatusReminder';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = "Workflow email versturen na X aantal dagen bij bepaalde status.";
+    protected $description = "Workflow email herinnering versturen na X aantal dagen na verzonden email bij bepaalde status.";
 
     /**
      * Create a new command instance.
@@ -55,31 +55,32 @@ class processWorkflowEmailQuotationRequestStatus extends Command
 
         // Get campaign workflows with workflow enabled and active and number of days to send not 0 (they are sent immediately)
         $campaignWorkflowsToProces = CampaignWorkflow::where('workflow_for_type', 'quotationrequest')
-            ->where('number_of_days_to_send_email', '!=', 0)
+            ->where('number_of_days_to_send_email_reminder', '!=', 0)
             ->where('is_active', true)
             ->whereHas('quotationRequestStatus', function($query){
                 $query->where('uses_wf', true);
+                $query->where('send_email_reminder', true);
             })->get();
         foreach ($campaignWorkflowsToProces as $campaignWorkflow) {
-//            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
+//            Log::info("Proces: Workflow email herinnering voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email_reminder);
             $campaignId = $campaignWorkflow->campaign_id;
 
-            $checkDatePlannedToSend = Carbon::now()->toDateString();
+            $checkDatePlannedToSendReminder = Carbon::now()->subDays($campaignWorkflow->number_of_days_to_send_email_reminder)->toDateString();
             $quotationRequestsToProcess = QuotationRequest::where('status_id', $campaignWorkflow->quotation_request_status_id)
-                ->whereDate('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSend)
+                ->whereDate('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSendReminder)
                 ->whereHas('opportunity', function ($query) use ($campaignId) {
                     $query->whereHas('intake', function ($query) use ($campaignId) {
                         $query->where('campaign_id', $campaignId);
                     });
                 })->get();
 
-//            Log::info('Check Date for send Emails: ' . $checkDatePlannedToSend);
+//            Log::info('Check Date for Reminder Emails: ' . $checkDatePlannedToSendReminder);
 //            Log::info('Quotation Requests to Process: ' . $quotationRequestsToProcess->count());
 
             foreach ($quotationRequestsToProcess as $quotationRequest) {
 //                Log::info("processWorkflowEmail voor " . $quotationRequest->id);
                 $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
-                $quotationRequestWorkflowHelper->processWorkflowEmail($campaignWorkflow);
+                $quotationRequestWorkflowHelper->processWorkflowEmailReminder($campaignWorkflow);
             }
         }
 
@@ -87,6 +88,6 @@ class processWorkflowEmailQuotationRequestStatus extends Command
         $commandRun->finished = true;
         $commandRun->save();
 
-        Log::info("Emails kansacties verstuurd bij bepaalde status.");
+        Log::info("Emails herinnering kansacties verstuurd bij bepaalde status.");
     }
 }

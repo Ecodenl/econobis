@@ -17,12 +17,14 @@ import calculateTransactionCosts from '../../../helpers/CalculateTransactionCost
 function StepOneCapital({
     next,
     project,
+    participantId,
     registerType,
     contactProjectData,
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
-    console.log(initialRegisterValues);
+    // todo WM: opschonen log
+    // console.log(initialRegisterValues);
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')

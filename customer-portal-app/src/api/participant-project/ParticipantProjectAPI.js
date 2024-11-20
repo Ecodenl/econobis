@@ -1,8 +1,13 @@
 import axiosInstance from '../default-setup/AxiosInstance';
 
 export default {
-    createParticipantProject: function(registerValues, registerType) {
+    createParticipantProject: function(registerValues) {
         const requestUrl = `/project/participant/create`;
+
+        return axiosInstance.post(requestUrl, { registerValues });
+    },
+    updateParticipantProject: function(registerValues, registerType, participantId) {
+        const requestUrl = `/project/participant/${participantId}/update`;
 
         return axiosInstance.post(requestUrl, { registerValues, registerType });
     },

@@ -16,7 +16,16 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-function StepFour({ project, registerType, contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({
+    project,
+    participantId,
+    registerType,
+    contactProjectData,
+    previous,
+    next,
+    registerValues,
+    setSucces,
+}) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
@@ -25,46 +34,86 @@ function StepFour({ project, registerType, contactProjectData, previous, next, r
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
-            ContactAPI.previewDocument(registerValues, registerType)
-                .then(payload => {
-                    setContactDocument(payload.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
+            if (registerType === 'verhogen' && participantId !== null) {
+                ContactAPI.previewDocumentIncrease(registerValues, registerType, participantId)
+                    .then(payload => {
+                        setContactDocument(payload.data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            } else {
+                ContactAPI.previewDocument(registerValues)
+                    .then(payload => {
+                        setContactDocument(payload.data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            }
         })();
     }, [registerValues]);
 
     function handleSubmitRegisterValues(actions, next) {
         setHasError(false);
         setErrorMessage(null);
-        ParticipantProjectAPI.createParticipantProject(registerValues, registerType)
-            .then(payload => {
-                actions.setSubmitting(false);
+        if (registerType === 'verhogen' && participantId !== null) {
+            ParticipantProjectAPI.updateParticipantProject(registerValues, registerType, participantId)
+                .then(payload => {
+                    actions.setSubmitting(false);
 
-                /**
-                 * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
-                 * In dat geval huidige scherm verlaten en door naar mollie.
-                 */
-                if (payload.data.econobisPaymentLink) {
-                    window.location.href = payload.data.econobisPaymentLink;
-                    return;
-                }
+                    /**
+                     * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                     * In dat geval huidige scherm verlaten en door naar mollie.
+                     */
+                    if (payload.data.econobisPaymentLink) {
+                        window.location.href = payload.data.econobisPaymentLink;
+                        return;
+                    }
 
-                setSucces(true);
-                next();
-            })
-            .catch(error => {
-                console.log('error');
-                console.log(error);
-                // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
-                setHasError(true);
-                setErrorMessage('Er is iets misgegaan met opslaan!');
+                    setSucces(true);
+                    next();
+                })
+                .catch(error => {
+                    console.log('error');
+                    console.log(error);
+                    // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Er is iets misgegaan met opslaan!');
 
-                actions.setSubmitting(false);
-            });
+                    actions.setSubmitting(false);
+                });
+        } else {
+            ParticipantProjectAPI.createParticipantProject(registerValues)
+                .then(payload => {
+                    actions.setSubmitting(false);
+
+                    /**
+                     * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                     * In dat geval huidige scherm verlaten en door naar mollie.
+                     */
+                    if (payload.data.econobisPaymentLink) {
+                        window.location.href = payload.data.econobisPaymentLink;
+                        return;
+                    }
+
+                    setSucces(true);
+                    next();
+                })
+                .catch(error => {
+                    console.log('error');
+                    console.log(error);
+                    // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Er is iets misgegaan met opslaan!');
+
+                    actions.setSubmitting(false);
+                });
+        }
     }
 
     const validationSchema = Yup.object({

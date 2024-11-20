@@ -13,6 +13,7 @@ import { FaFileDownload } from 'react-icons/all';
 
 function StepThree({
     project,
+    participantId,
     registerType,
     contactProjectData,
     previous,

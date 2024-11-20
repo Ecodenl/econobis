@@ -21,6 +21,7 @@ class ParticipantProjectResource extends JsonResource
         $projectTypeCodeRef = $this->project->projectType->code_ref;
 
         $basicInformation = [
+            'participantId' => $this->id,
             'contactName' => $this->contact ? $this->contact->full_name_fnf : '',
             'projectName' => $this->project ? $this->project->name : '',
             'projectId' => $this->project ? $this->project->id : '',

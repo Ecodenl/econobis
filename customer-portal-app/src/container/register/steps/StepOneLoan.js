@@ -17,12 +17,14 @@ import InputTextCurrency from '../../../components/form/InputTextCurrency';
 function StepOneLoan({
     next,
     project,
+    participantId,
     registerType,
     contactProjectData,
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
-    console.log(initialRegisterValues);
+    // todo WM: opschonen log
+    // console.log(initialRegisterValues);
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')

@@ -17,6 +17,7 @@ import calculateTransactionCosts from '../../../helpers/CalculateTransactionCost
 function StepOneObligation({
     next,
     project,
+    participantId,
     registerType,
     contactProjectData,
     initialRegisterValues,

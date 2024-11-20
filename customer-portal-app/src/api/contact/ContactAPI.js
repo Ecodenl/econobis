@@ -171,8 +171,14 @@ export default {
         return axiosInstance.post(requestUrl, contact);
     },
 
-    previewDocument: function(registerValues, registerType) {
+    previewDocument: function(registerValues) {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
+
+        return axiosInstance.post(requestUrl, { registerValues });
+    },
+
+    previewDocumentIncrease: function(registerValues, registerType, participantId) {
+        const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/${participantId}/preview-increase-document`;
 
         return axiosInstance.post(requestUrl, { registerValues, registerType });
     },

@@ -118,7 +118,6 @@ class ParticipationProjectController extends Controller
     public function create(Request $request)
     {
         if (!isset($request)
-            || !isset($request->registerType)
             || !isset($request->registerValues)
             || !isset($request->registerValues['contactId'])
             || !isset($request->registerValues['projectId'])
@@ -172,14 +171,13 @@ class ParticipationProjectController extends Controller
              * participatie nog worden overschreven, maar alleen als:
              * 1) Het project gebruik maakt van Mollie, en
              * 2) De betaling nog niet is gedaan.
+             * 3) Status mutatie nog inschrijving is.
              */
             // Get previousParticipantProject for contact/project (not terminated).
             $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->where('date_terminated', null)->first();
             if($previousParticipantProject) {
                 $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
-                if (
-                    ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') ||
-                    (!$project->uses_mollie && (bool)$project->allow_increase_participations_in_portal === true && $previousMutation && $previousMutation->status && $previousMutation->status->code_ref === 'option')
+                if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option'
                 ) {
                     $this->deleteParticipantProject($previousMutation);
                     $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
@@ -216,8 +214,86 @@ class ParticipationProjectController extends Controller
         }
     }
 
-    // todo WM: hier moet ook variant voor bijschrijven voor komen.
+    public function update(Request $request, ParticipantProject $participantProject)
+    {
+        if (!$participantProject
+            || !isset($request)
+            || !isset($request->registerType)
+            || !isset($request->registerValues)
+            || !isset($request->registerValues['contactId'])
+            || !isset($request->registerValues['projectId'])
+        ) {
+            abort(501, 'Er is helaas een fout opgetreden (1).');
+        }
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden (2).');
+        }
+        // ophalen contactgegevens
+        $contact = Contact::find($request->registerValues['contactId']);
+        if (!$contact) {
+            abort(501, 'Er is helaas een fout opgetreden (3).');
+        }
+        // ophalen projectgegevens
+        $project = Project::find($request->registerValues['projectId']);
+        if (!$project) {
+            abort(501, 'Er is helaas een fout opgetreden (4).');
+        }
+        // project moet nog openstaan voor inschrijving
+        if ($project->date_start_registrations > Carbon::now()->format('Y-m-d')) {
+            abort(501, 'Project is nog niet open voor inschrijving.');
+        }
+        // project moet nog openstaan voor inschrijving
+        if ($project->date_end_registrations < Carbon::now()->format('Y-m-d')) {
+            abort(501, 'Project is gesloten voor inschrijving.');
+        }
 
+        // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden (5).');
+        }
+
+        if($project->check_double_addresses && $contact->addressForPostalCodeCheck) {
+            $addressHelper = new AddressHelper($contact, $contact->addressForPostalCodeCheck);
+            if ($addressHelper->checkDoubleAddress($project)) {
+                abort(412, 'Er is al een deelnemer ingeschreven op dit adres die meedoet aan een SCE project.');
+                return false;
+            }
+        }
+
+        $address = $contact->addressForPostalCodeCheck;
+
+        DB::transaction(function () use ($contact, $address, $project, $participantProject, $request, $portalUser, $responsibleUserId) {
+             $this->updateParticipantProject($contact, $project, $participantProject, $request, $portalUser, $responsibleUserId);
+
+            /**
+             * Alleen aanmaken bevestigingsformulier en mailen als Mollie is uitgeschakeld, als Mollie
+             * is ingeschakeld willen we deze stap pas na de betaling uitvoeren.
+             */
+            try {
+                if(!$project->uses_mollie) {
+                    $this->createAndSendRegistrationDocument($contact, $project, $request->registerType, $participantProject, $responsibleUserId, $this->participationMutation);
+                }
+            }
+            catch(\Exception $e){
+                Log::error('Er ging wat fout bij het maken of mailen van bevestigingsformulier. Participation id: ' . $participantProject->id);
+                Log::error($e->getMessage());
+            }
+        });
+
+        if($this->participationMutation->participation->project->uses_mollie){
+            /**
+             * Als Mollie voor dit project aan staat dan returnen we die zodat er naar de betaalpagina geredirect kan worden.
+             */
+            return [
+                'econobisPaymentLink' => $this->participationMutation->econobis_payment_link,
+            ];
+        }
+
+    }
     public function createAndSendRegistrationDocument($contact, $project, $registerType, $participation, $responsibleUserId, ParticipantMutation $participantMutation)
     {
         if($registerType === 'verhogen') {
@@ -234,7 +310,7 @@ class ParticipationProjectController extends Controller
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $participation, $documentTemplate, [
                 'amountOptioned' => $participantMutation->amount,
                 'participationsOptioned' => $participantMutation->quantity,
                 'transactionCostsAmount' => $participantMutation->transaction_costs_amount,
@@ -409,16 +485,19 @@ class ParticipationProjectController extends Controller
 
     protected function createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId)
     {
+
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         $responsibleUser = User::find($responsibleUserId);
         $responsibleUser->occupation = '@portal-update@';
         Auth::setUser($responsibleUser);
 
         $today = Carbon::now();
-
         $projectTypeCodeRef = $project->projectType->code_ref;
+
+        $participantMutationTypeId = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref','first_deposit')->value('id');
+
         $payoutTypeId = null;
-        switch($projectTypeCodeRef){
+        switch ($projectTypeCodeRef) {
             // default Betaalwijze Op rekening indien lening of obligatie
             case 'loan' :
             case 'obligation' :
@@ -433,11 +512,11 @@ class ParticipationProjectController extends Controller
             'address_id' => $address->id,
             'project_id' => $project->id,
             'type_id' => $payoutTypeId,
-            'did_accept_agreement' => (bool) data_get($request->registerValues, 'didAcceptAgreement', null),
+            'did_accept_agreement' => (bool)data_get($request->registerValues, 'didAcceptAgreement', null),
             'date_did_accept_agreement' => $today,
-            'did_understand_info' => (bool) data_get($request->registerValues, 'didUnderstandInfo', null),
-            'date_did_understand_info'  => $today,
-            'choice_membership' => (bool) data_get($request->registerValues, 'choiceMembership', null),
+            'did_understand_info' => (bool)data_get($request->registerValues, 'didUnderstandInfo', null),
+            'date_did_understand_info' => $today,
+            'choice_membership' => (bool)data_get($request->registerValues, 'choiceMembership', null),
             'power_kwh_consumption' => $powerKwhConsumption,
         ]);
 
@@ -476,7 +555,7 @@ class ParticipationProjectController extends Controller
         $participantMutation = ParticipantMutation::create([
             'participation_id' => $participation->id,
             'created_with' => 'portal',
-            'type_id' => ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', 'first_deposit')->value('id'),
+            'type_id' => $participantMutationTypeId,
             'status_id' => $status->id,
             'amount' => $participationMutationAmount,
             'quantity' => $participationMutationQuantity,
@@ -541,6 +620,123 @@ class ParticipationProjectController extends Controller
         Auth::setUser($portalUser);
 
         return $participation;
+    }
+
+    protected function updateParticipantProject($contact, $project, $participantProject, $request, $portalUser, $responsibleUserId)
+    {
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
+        $responsibleUser = User::find($responsibleUserId);
+        $responsibleUser->occupation = '@portal-update@';
+        Auth::setUser($responsibleUser);
+
+        $today = Carbon::now();
+        $projectTypeCodeRef = $project->projectType->code_ref;
+        $participantMutationTypeCodeRef =  $projectTypeCodeRef === 'loan' ? 'deposit' : 'first_deposit';
+        $participantMutationTypeId = ParticipantMutationType::where('project_type_id', $project->project_type_id)->where('code_ref', $participantMutationTypeCodeRef)->value('id');
+
+        $powerKwhConsumption = data_get($request->registerValues, 'pcrYearlyPowerKwhConsumption', 0);
+        $participantProject->power_kwh_consumption = $powerKwhConsumption;
+        $participantProject->save();
+
+        // vanuit portal standaard altijd status 'option'
+        $status = ParticipantMutationStatus::where('code_ref', 'option')->first();
+
+        $dateInterest = null;
+        $amountInterest = null;
+        $quantityInterest = null;
+        $dateOption = null;
+        $amountOption = null;
+        $quantityOption = null;
+        $dateGranted = null;
+        $amountGranted = null;
+        $quantityGranted = null;
+        $dateFinal = null;
+        $amountFinal = null;
+        $quantityFinal = null;
+        $participationMutationDate = null;
+        $participationMutationAmount = null;
+        $participationMutationQuantity = null;
+        $participationMutationTransactionCostsAmount = null;
+
+        switch($status->code_ref){
+            case 'option' :
+                $participationMutationDate = $today ?: null;
+                $participationMutationAmount = data_get($request->registerValues, 'amountOptioned', null);
+                $participationMutationQuantity = data_get($request->registerValues, 'participationsOptioned', null);
+                $participationMutationTransactionCostsAmount = data_get($request->registerValues, 'transactionCostsAmount', null);
+                $dateOption = $participationMutationDate;
+                $amountOption = $participationMutationAmount;
+                $quantityOption = $participationMutationQuantity;
+                break;
+        }
+
+        $participantMutation = ParticipantMutation::create([
+            'participation_id' => $participantProject->id,
+            'created_with' => 'portal',
+            'type_id' => $participantMutationTypeId,
+            'status_id' => $status->id,
+            'amount' => $participationMutationAmount,
+            'quantity' => $participationMutationQuantity,
+            'date_interest' => $dateInterest,
+            'amount_interest' => $amountInterest,
+            'quantity_interest' => $quantityInterest,
+            'date_option' => $dateOption,
+            'amount_option' => $amountOption,
+            'quantity_option' => $quantityOption,
+            'date_granted' => $dateGranted,
+            'amount_granted' => $amountGranted,
+            'quantity_granted' => $quantityGranted,
+            'date_entry' => $dateFinal,
+            'amount_final' => $amountFinal,
+            'quantity_final' => $quantityFinal,
+            'transaction_costs_amount' => $participationMutationTransactionCostsAmount,
+        ]);
+
+        // Recalculate dependent data in participantProject
+        $participantMutation->participation->calculator()->run()->save();
+
+        // Recalculate dependent data in project
+        $participantMutation->participation->project->calculator()->run()->save();
+
+        /**
+         * Alleen koppelen aan juiste contactgroup als Mollie is uitgeschakeld, als Mollie
+         * is ingeschakeld willen we koppelen pas na de betaling uitvoeren.
+         */
+        if(!$project->uses_mollie) {
+            $contactGroupController = new ContactGroupController();
+            // indien gekozen voor member of no_member, maak koppeling met juiste contactgroup.
+            switch ($participantProject->choice_membership) {
+                case 1:
+                    // koppel aan member_group_id
+                    $contactGroupMember = ContactGroup::find($project->member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->member_group_id)->exists();
+                    if ($contactGroupMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupMember, $contact);
+                    }
+                    break;
+                case 2:
+                    // koppel aan no_member_group_id
+                    $contactGroupNoMember = ContactGroup::find($project->no_member_group_id);
+                    $contactGroupPivotExists = $contact->groups()->where('id', $project->no_member_group_id)->exists();
+                    if ($contactGroupNoMember && !$contactGroupPivotExists) {
+                        $contactGroupController->addContact($contactGroupNoMember, $contact);
+                    }
+                    break;
+                default:
+                    // no action
+                    break;
+            }
+        }
+
+        /**
+         * Deze maar even in dit object opslaan zodat we hem makkelijk weer kunnen oproepen vanuit de create() functie.
+         */
+        $this->participationMutation = $participantMutation;
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
     }
 
     protected function deleteParticipantProject($previousMutation): void

@@ -18,6 +18,7 @@ function Steps({
     previous,
     next,
     project,
+    participantId,
     registerType,
     contactProjectData,
     initialRegisterValues,
@@ -49,6 +50,7 @@ function Steps({
                         <StepOneLoan
                             next={next}
                             project={project}
+                            participantId={participantId}
                             registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
@@ -60,6 +62,7 @@ function Steps({
                         <StepOneObligation
                             next={next}
                             project={project}
+                            participantId={participantId}
                             registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
@@ -71,6 +74,7 @@ function Steps({
                         <StepOneCapital
                             next={next}
                             project={project}
+                            participantId={participantId}
                             registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialRegisterValues={initialRegisterValues}
@@ -83,6 +87,7 @@ function Steps({
                             portalSettings={portalSettings}
                             next={next}
                             project={project}
+                            participantId={participantId}
                             registerType={registerType}
                             contactProjectData={contactProjectData}
                             initialContact={initialContact}
@@ -101,6 +106,7 @@ function Steps({
                     previous={previous}
                     next={next}
                     project={project}
+                    participantId={participantId}
                     registerType={registerType}
                     initialContact={initialContact}
                     handleSubmitContactValues={handleSubmitContactValues}
@@ -111,6 +117,7 @@ function Steps({
                 <StepThree
                     project={project}
                     registerType={registerType}
+                    participantId={participantId}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}
@@ -123,6 +130,7 @@ function Steps({
                 <StepFour
                     project={project}
                     registerType={registerType}
+                    participantId={participantId}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}

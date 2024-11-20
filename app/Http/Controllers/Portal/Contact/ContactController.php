@@ -834,8 +834,7 @@ class ContactController extends ApiController
 //        Log::info('Test setContactProjectIndicators');
         $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
         $project->hasParticipation = false;
-//        $project->allowIncreaseParticipations = false;
-        $project->allowChangeParticipation = false;
+        $project->allowIncreaseParticipations = false;
         $project->allowPayMollie = false;
         $project->econobisPaymentLink = '';
         $project->allowRegisterToProject = false;
@@ -844,40 +843,37 @@ class ContactController extends ApiController
         $project->amountOptioned = 0;
         $project->powerKwhConsumption = 0;
 
-        // Get previousParticipantProject for contact/project (not terminated).
-        $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->where('date_terminated', null)->first();
-        // Is there allready a participation for this contact/project ?
-        if ($previousParticipantProject) {
-//            Log::info('hasParticipation');
+        // Fetch all participations for the contact that match the project and are not terminated
+        $participantProjects = $contact->participations()
+            ->where('project_id', $project->id)
+            ->whereNull('date_terminated')
+            ->get();
+
+        // Set hasParticipation if participations exist
+        if ($participantProjects->isNotEmpty()) {
             $project->hasParticipation = true;
         }
-        // Is there allready a participation for this contact/project
-        if ( $project->hasParticipation === true ) {
-//            Log::info('there is allready a participation for this contact/project');
-//            Log::info($previousParticipantProject);
-            $project->participationsOptioned = $previousParticipantProject->participations_optioned;
-            $project->amountOptioned = $previousParticipantProject->amount_optioned;
-            $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
 
-            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie.
+        // Check if any mutation meets the criteria
+        $mutationToPay = null;
+        foreach ($participantProjects as $participantProject) {
+            $mutationToPay = $participantProject->mutationsAsc()
+                ->get() // Retrieve all mutations in ascending order
+                ->first(fn($mutation) => !$mutation->is_paid_by_mollie); // Filter by the dynamic attribute
 
-            /* If mollie is used and there was a first mutation with status option and isn't paid by mollie yet, then:
-               - allow change of option participation
-               - allow to pay for mollie (still open)
-               - return also the econobisPaymentLink to pay with mollie */
-//            Log::info($previousMutation->is_paid_by_mollie);
-//            Log::info($previousMutation->status);
-            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') {
-//                Log::info('f mollie is used and there was a first mutation with status option and isn\'t paid by mollie yet');
-                $project->allowChangeParticipation = true;
-                $project->allowPayMollie = true;
-                $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
+            if ($mutationToPay) {
+                break; // Stop searching after finding the first valid mutation
             }
-            /* If mollie is not used and increase is allowed and there was a first mutation with status option, then:
-               - allow change of option participation */
-//            if (!$project->uses_mollie && (bool)$project->allow_increase_participations_in_portal === true && $previousMutation && $previousMutation->status && $previousMutation->status->code_ref === 'option') {
-//                $project->allowChangeParticipation = true;
-//            }
+        }
+
+        // Set project fields if a valid mutation is found
+        if ($mutationToPay && $project->uses_mollie) {
+            $project->allowPayMollie = true;
+            $project->econobisPaymentLink = $mutationToPay->econobis_payment_link;
+        } else if ($project->allow_increase_participations_in_portal
+            && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+            $project->allowIncreaseParticipations = true;
         }
 
         // no participation for this contact/project yet or increase is allowed

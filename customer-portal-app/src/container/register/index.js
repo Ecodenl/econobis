@@ -60,26 +60,16 @@ function RegisterProject({ match, currentSelectedContact }) {
             setRegisterType(registerType || null);
             setProjectId(projectId || null);
             setParticipantId(participantId || null);
-            if (process.env.NODE_ENV === 'development') {
-                console.log('Set state: ', { registerType, projectId, participantId });
-            }
         } else {
             setRegisterType(null);
             setProjectId(null);
             setParticipantId(null);
-            if (process.env.NODE_ENV === 'development') {
-                console.log('Set state all to null', { registerType, projectId, participantId });
-            }
         }
 
         setCurrentSelectedContactId(currentSelectedContact?.id || null);
     }, [match, currentSelectedContact]);
 
     useEffect(() => {
-        if (process.env.NODE_ENV === 'development') {
-            console.log('Updated state: ', { registerType, projectId, participantId, currentSelectedContactId });
-        }
-
         if (projectId && currentSelectedContactId) {
             fetchContactAndProject();
         }
@@ -112,14 +102,6 @@ function RegisterProject({ match, currentSelectedContact }) {
 
         callFetchPortalSettings();
 
-        console.log('fetchContactAndProject');
-        console.log('registerType 1: ' + match?.params?.registerType);
-        console.log('projectId 1: ' + match?.params?.id);
-        console.log('participantId 1: ' + match?.params?.participantId);
-        console.log('registerType 2: ' + registerType);
-        console.log('projectId 2: ' + projectId);
-        console.log('participantId 2: ' + participantId);
-
         axios
             .all([
                 ProjectAPI.fetchProject(projectId),
@@ -143,7 +125,6 @@ function RegisterProject({ match, currentSelectedContact }) {
                         setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
                         const contactData = rebaseContact(contact);
                         setContact(contactData);
-
                         setContactProjectData(payloadContactProjectData.data);
 
                         if (
@@ -173,37 +154,13 @@ function RegisterProject({ match, currentSelectedContact }) {
                                 // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
                             });
                         }
-
-                        // if (
-                        // payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation
-                        // // && payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
-                        if (
-                            payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
-                            payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
-                        ) {
-                            /**
-                             * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
-                             * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
-                             */
-                            setRegisterValues(current => {
-                                return {
-                                    ...current,
-                                    participationsOptioned:
-                                        payloadContactProjectData.data.projectRegisterIndicators.participationsOptioned,
-                                    amountOptioned:
-                                        payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
-                                    pcrYearlyPowerKwhConsumption:
-                                        payloadContactProjectData.data.projectRegisterIndicators.powerKwhConsumption,
-                                    didAcceptAgreement: true,
-                                    didUnderstandInfo: true,
-                                };
-                            });
-                        }
                     }
                     setLoading(false);
                 })
             )
             .catch(error => {
+                // console.log('error');
+                // console.log(error);
                 setLoading(false);
                 setHasError(true);
             });
@@ -248,7 +205,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                 ) : hasError ? (
                     <ErrorPage message={errorMessage} />
                 ) : (!contactProjectData.projectRegisterIndicators.hasParticipation ||
-                      project.allowIncreaseParticipations) &&
+                      contactProjectData.projectRegisterIndicators.allowIncreaseParticipations) &&
                   !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
                     <>
                         <Row>
@@ -290,8 +247,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                         </Row>
                     </>
                 ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
-                  !project.allowIncreaseParticipations &&
-                  !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
+                  (registerType !== 'verhogen' ||
+                      !contactProjectData.projectRegisterIndicators.allowIncreaseParticipations) ? (
                     <>
                         <Row>
                             <Col>

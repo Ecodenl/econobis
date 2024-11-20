@@ -64,6 +64,27 @@ class ParticipationProjectController extends Controller
             abort(403, 'Verboden');
         }
 
+        $participantProject->allowIncreaseParticipations = false;
+
+        if ($participantProject->project->allow_increase_participations_in_portal
+            && $participantProject->project->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $participantProject->project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+
+            if ($participantProject->project->uses_mollie) {
+                // Check if any mutation meets the criteria
+                $hasUnpaidMutation = $participantProject->mutations()
+                    ->get() // Retrieve all mutations
+                    ->contains(fn($mutation) => !$mutation->is_paid_by_mollie); // Check dynamically
+
+                // Set project field if no valid mutation is found
+                if (!$hasUnpaidMutation) {
+                    $participantProject->allowIncreaseParticipations = true;
+                }
+            } else {
+                $participantProject->allowIncreaseParticipations = true;
+            }
+        }
+
         $participantProject->load([
             'contact',
             'project.projectType',
@@ -166,28 +187,7 @@ class ParticipationProjectController extends Controller
         $address = $contact->addressForPostalCodeCheck;
 
         DB::transaction(function () use ($contact, $address, $project, $request, $portalUser, $responsibleUserId) {
-            /**
-             * Als er eerder op dit project is ingeschreven dan kan de
-             * participatie nog worden overschreven, maar alleen als:
-             * 1) Het project gebruik maakt van Mollie, en
-             * 2) De betaling nog niet is gedaan.
-             * 3) Status mutatie nog inschrijving is.
-             */
-            // Get previousParticipantProject for contact/project (not terminated).
-            $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->where('date_terminated', null)->first();
-            if($previousParticipantProject) {
-                $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie, er zou er altijd maar een moeten zijn op dit moment.
-                if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option'
-                ) {
-                    $this->deleteParticipantProject($previousMutation);
-                    $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
-                } else {
-                    abort(412, "Fout bij verwerken inschrijving project");
-                }
-
-            } else {
-                $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
-            }
+            $participation = $this->createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId);
 
             /**
              * Alleen aanmaken bevestigingsformulier en mailen als Mollie is uitgeschakeld, als Mollie

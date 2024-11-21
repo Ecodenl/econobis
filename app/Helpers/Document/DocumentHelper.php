@@ -21,6 +21,9 @@ class DocumentHelper
     /**
      * @param Contact $contact
      * @param Project $project
+     * @param null || ParticipantProject $participantProject
+     * @param DocumentTemplate $documentTemplate
+     * @param array $data
      *
      * @return string
      */

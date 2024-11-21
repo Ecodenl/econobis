@@ -14,17 +14,7 @@ import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 
-function StepOneCapital({
-    next,
-    project,
-    participantId,
-    registerType,
-    contactProjectData,
-    initialRegisterValues,
-    handleSubmitRegisterValues,
-}) {
-    // todo WM: opschonen log
-    // console.log(initialRegisterValues);
+function StepOneCapital({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')

@@ -174,11 +174,13 @@ function RegisterProject({ match, currentSelectedContact }) {
         const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
+                setLoading(true);
                 ContactAPI.fetchContact(currentSelectedContact.id)
                     .then(payload => {
                         const contactData = rebaseContact(payload.data.data);
 
                         setContact(contactData);
+                        setLoading(false);
                         nextStep();
                     })
                     .catch(error => {

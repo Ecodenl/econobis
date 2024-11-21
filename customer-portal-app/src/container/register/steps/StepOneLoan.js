@@ -14,17 +14,7 @@ import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 import InputTextCurrency from '../../../components/form/InputTextCurrency';
 
-function StepOneLoan({
-    next,
-    project,
-    participantId,
-    registerType,
-    contactProjectData,
-    initialRegisterValues,
-    handleSubmitRegisterValues,
-}) {
-    // todo WM: opschonen log
-    // console.log(initialRegisterValues);
+function StepOneLoan({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
         amountOptioned: Yup.string()
             .required('Verplicht')

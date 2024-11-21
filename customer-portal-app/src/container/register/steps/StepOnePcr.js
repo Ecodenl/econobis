@@ -18,8 +18,6 @@ function StepOnePcr({
     portalSettings,
     next,
     project,
-    participantId,
-    registerType,
     contactProjectData,
     initialContact,
     initialRegisterValues,

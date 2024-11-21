@@ -831,7 +831,6 @@ class ContactController extends ApiController
      */
     protected function setContactProjectIndicators($project, Contact $contact, $projects, int $key)
     {
-//        Log::info('Test setContactProjectIndicators');
         $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
         $project->hasParticipation = false;
         $project->allowIncreaseParticipations = false;
@@ -879,21 +878,16 @@ class ContactController extends ApiController
         // no participation for this contact/project yet or increase is allowed
         if ( $project->hasParticipation === false || (bool)$project->allow_increase_participations_in_portal === true ) {
 
-//            Log::info('no participation for this contact/project yet or increase is allowed');
-
             // no membership required, then allow register to project
             if (!$project->is_membership_required) {
-//                Log::info('no membership required, then allow register to project');
                 $project->allowRegisterToProject = true;
                 $project->textNotAllowedRegisterToProject = '';
 
             // membership required and project not visible for all contacts
-//            } elseif (!$project->visible_for_all_contacts) {
-//                Log::info('membership required and project not visible for all contacts');
+            } elseif (!$project->visible_for_all_contacts) {
 
                 // determine if contact is member (through the linked contactgroups of project)
                 if ($project->requiresContactGroups()) {
-//                    Log::info('linked contactgroups available');
                     $contactInRequiredContactGroup = false;
                     foreach ($project->requiresContactGroups as $contactGroup) {
                         $allContacts = (array_unique($contactGroup->getAllContacts()->pluck('id')->toArray()));
@@ -905,30 +899,25 @@ class ContactController extends ApiController
 
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
-//                        Log::info('if contact is member (through the linked contactgroups of project), then allow register to project');
                         $project->allowRegisterToProject = true;
                         $project->textNotAllowedRegisterToProject = '';
                     }else {
                         // Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.
                         if (!$project->allowRegisterToProject && $projects) {
-//                            Log::info('Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.');
                             $projects->forget($key);
                         }
                     }
 
                 // no linked contactgroups available, then don't show project
                 } else {
-//                    Log::info('no linked contactgroups available, then don\'t show project');
                     // If function came with incoming collection projects, then we remove (forget) this project.
                     if($projects){
-//                        Log::info('If function came with incoming collection projects, then we remove (forget) this project.');
                         $projects->forget($key);
                     }
                 }
 
             // membership required but project is visible for all contacts
             } else {
-//                Log::info('membership required but project is visible for all contacts');
 
                 // determine if contact is member (through the linked contactgroups of project)
                 if ($project->requiresContactGroups()) {
@@ -942,16 +931,13 @@ class ContactController extends ApiController
                     }
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
-//                        Log::info('if contact is member (through the linked contactgroups of project), then allow register to project');
                         $project->allowRegisterToProject = true;
                         $project->textNotAllowedRegisterToProject = '';
                     }else{
                         // Contact not a member, still show project, but don't allow register to project, and put info text in textfield not allowed register to project.
-//                        Log::info('Contact not a member, still show project, but don\'t allow register to project, and put info text in textfield not allowed register to project.');
                         $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;
                     }
                 }
-//                Log::info('no linked contactgroups available, then don\'t show project');
                 // no linked contactgroups available, then don't show project
             }
 
@@ -994,9 +980,6 @@ class ContactController extends ApiController
                 }
 
             }
-
-        } else {
-//            Log::info('participation for this contact/project yet and increase is not allowed');
 
         }
     }

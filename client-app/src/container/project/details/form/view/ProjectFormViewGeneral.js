@@ -5,9 +5,6 @@ import ViewTextLong from '../../../../../components/form/ViewTextLong';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
-import FreeFields from '../../../../../components/freeFields/FreeFields';
-import InputToggle from '../../../../../components/form/InputToggle';
-import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,

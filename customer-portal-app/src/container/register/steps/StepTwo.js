@@ -12,16 +12,7 @@ import DefaultContactOrganisationEdit from '../../contact-details/default-form-o
 import { Alert } from 'react-bootstrap';
 import { isEmpty } from 'lodash';
 
-function StepTwo({
-    portalSettings,
-    previous,
-    next,
-    project,
-    participantId,
-    registerType,
-    initialContact,
-    handleSubmitContactValues,
-}) {
+function StepTwo({ portalSettings, previous, next, project, initialContact, handleSubmitContactValues }) {
     initialContact.isParticipant = true;
     const typeContact = initialContact.typeId ? initialContact.typeId : null;
 

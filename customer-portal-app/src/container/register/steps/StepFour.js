@@ -79,8 +79,8 @@ function StepFour({
                     next();
                 })
                 .catch(error => {
-                    console.log('error');
-                    console.log(error);
+                    // console.log('error');
+                    // console.log(error);
                     // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
                     setHasError(true);
                     setErrorMessage('Er is iets misgegaan met opslaan!');
@@ -105,8 +105,8 @@ function StepFour({
                     next();
                 })
                 .catch(error => {
-                    console.log('error');
-                    console.log(error);
+                    // console.log('error');
+                    // console.log(error);
                     // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
                     setHasError(true);
                     setErrorMessage('Er is iets misgegaan met opslaan!');

@@ -61,7 +61,6 @@ export default {
                         'transactionCostsPercentage2',
                         'transactionCostsAmount3',
                         'transactionCostsPercentage3',
-                        'allowIncreaseParticipations',
                     ],
                     rlt: {
                         projectType: { fld: ['id', 'codeRef'] },

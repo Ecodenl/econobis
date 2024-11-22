@@ -18,6 +18,7 @@ use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
@@ -179,18 +180,31 @@ class ContactController extends ApiController
     }
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
-        if($request->registerType === 'verhogen'){
-            $documentTemplateAgreementId = $project ? $project->document_template_increase_participations_id : 0;
-        } else {
-            $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
-        }
+        $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;
         $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
 
         if(!$documentTemplate)
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, null, $documentTemplate, [
+                'amountOptioned' => data_get($request->registerValues, 'amountOptioned', 0),
+                'participationsOptioned' => data_get($request->registerValues, 'participationsOptioned', 0),
+                'transactionCostsAmount' => data_get($request->registerValues, 'transactionCostsAmount', 0),
+            ]);
+        }
+        return $documentBody;
+    }
+    public function previewIncreaseDocument(Contact $contact, Project $project, ParticipantProject $participantProject, Request $request)
+    {
+        $documentTemplateAgreementId = $project ? $project->document_template_increase_participations_id : 0;
+        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
+
+        if(!$documentTemplate)
+        {
+            $documentBody = '';
+        }else{
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $participantProject, $documentTemplate, [
                 'amountOptioned' => data_get($request->registerValues, 'amountOptioned', 0),
                 'participationsOptioned' => data_get($request->registerValues, 'participationsOptioned', 0),
                 'transactionCostsAmount' => data_get($request->registerValues, 'transactionCostsAmount', 0),
@@ -931,7 +945,7 @@ class ContactController extends ApiController
     {
         $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
         $project->hasParticipation = false;
-        $project->allowChangeParticipation = false;
+        $project->allowIncreaseParticipations = false;
         $project->allowPayMollie = false;
         $project->econobisPaymentLink = '';
         $project->allowRegisterToProject = false;
@@ -940,50 +954,52 @@ class ContactController extends ApiController
         $project->amountOptioned = 0;
         $project->powerKwhConsumption = 0;
 
-        $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
-        // Is there allready a participation for this contact/project ?
-        if ($previousParticipantProject) {
+        // Fetch all participations for the contact that match the project and are not terminated
+        $participantProjects = $contact->participations()
+            ->where('project_id', $project->id)
+            ->whereNull('date_terminated')
+            ->get();
+
+        // Set hasParticipation if participations exist
+        if ($participantProjects->isNotEmpty()) {
             $project->hasParticipation = true;
         }
-        // Is there allready a participation for this contact/project and increase is not allowed?
-        if ($project->hasParticipation === true && $project->allow_increase_participations_in_portal === false) {
-//            Log::info('there is allready a participation for this contact/project and increase is not allowed');
-            $project->participationsOptioned = $previousParticipantProject->participations_optioned;
-            $project->amountOptioned = $previousParticipantProject->amount_optioned;
-            $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
-            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie.
 
-            /* If mollie is used and there was a first mutation with status option and isn't paid by mollie yet, then:
-               - allow change of option participation
-               - allow to pay for mollie (still open)
-               - return also the econobisPaymentLink to pay with mollie */
-            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') {
-                $project->allowChangeParticipation = true;
-                $project->allowPayMollie = true;
-                $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
+        // Check if any mutation meets the criteria
+        $mutationToPay = null;
+        foreach ($participantProjects as $participantProject) {
+            $mutationToPay = $participantProject->mutationsAsc()
+                ->get() // Retrieve all mutations in ascending order
+                ->first(fn($mutation) => !$mutation->is_paid_by_mollie); // Filter by the dynamic attribute
+
+            if ($mutationToPay) {
+                break; // Stop searching after finding the first valid mutation
             }
-//            if ($project->allow_increase_participations_in_portal
-//                && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
-//                && $project->date_end_registrations >= Carbon::now()->format('Y-m-d') ) {
-//                $project->allowChangeParticipation = true;
-//            }
+        }
+
+        // Set project fields if a valid mutation is found
+        if ($mutationToPay && $project->uses_mollie) {
+            $project->allowPayMollie = true;
+            $project->econobisPaymentLink = $mutationToPay->econobis_payment_link;
+        } else if ($project->allow_increase_participations_in_portal
+            && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+            $project->allowIncreaseParticipations = true;
+        }
 
         // no participation for this contact/project yet or increase is allowed
-        } else {
-//            Log::info('no participation for this contact/project yet or increase is allowed');
+        if ( $project->hasParticipation === false || (bool)$project->allow_increase_participations_in_portal === true ) {
 
             // no membership required, then allow register to project
             if (!$project->is_membership_required) {
-//                Log::info('no membership required, then allow register to project');
                 $project->allowRegisterToProject = true;
+                $project->textNotAllowedRegisterToProject = '';
 
             // membership required and project not visible for all contacts
             } elseif (!$project->visible_for_all_contacts) {
-//                Log::info('membership required and project not visible for all contacts');
 
                 // determine if contact is member (through the linked contactgroups of project)
                 if ($project->requiresContactGroups()) {
-//                    Log::info('linked contactgroups available');
                     $contactInRequiredContactGroup = false;
                     foreach ($project->requiresContactGroups as $contactGroup) {
                         $allContacts = (array_unique($contactGroup->getAllContacts()->pluck('id')->toArray()));
@@ -995,29 +1011,25 @@ class ContactController extends ApiController
 
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
-//                        Log::info('if contact is member (through the linked contactgroups of project), then allow register to project');
                         $project->allowRegisterToProject = true;
+                        $project->textNotAllowedRegisterToProject = '';
                     }else {
                         // Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.
                         if (!$project->allowRegisterToProject && $projects) {
-//                            Log::info('Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.');
                             $projects->forget($key);
                         }
                     }
 
                 // no linked contactgroups available, then don't show project
                 } else {
-//                    Log::info('no linked contactgroups available, then don\'t show project');
                     // If function came with incoming collection projects, then we remove (forget) this project.
                     if($projects){
-//                        Log::info('If function came with incoming collection projects, then we remove (forget) this project.');
                         $projects->forget($key);
                     }
                 }
 
             // membership required but project is visible for all contacts
             } else {
-//                Log::info('membership required but project is visible for all contacts');
 
                 // determine if contact is member (through the linked contactgroups of project)
                 if ($project->requiresContactGroups()) {
@@ -1031,15 +1043,13 @@ class ContactController extends ApiController
                     }
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
-//                        Log::info('if contact is member (through the linked contactgroups of project), then allow register to project');
                         $project->allowRegisterToProject = true;
+                        $project->textNotAllowedRegisterToProject = '';
                     }else{
                         // Contact not a member, still show project, but don't allow register to project, and put info text in textfield not allowed register to project.
-//                        Log::info('Contact not a member, still show project, but don\'t allow register to project, and put info text in textfield not allowed register to project.');
                         $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;
                     }
                 }
-//                Log::info('no linked contactgroups available, then don\'t show project');
                 // no linked contactgroups available, then don't show project
             }
 

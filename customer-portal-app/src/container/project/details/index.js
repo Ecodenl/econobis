@@ -164,7 +164,7 @@ function ProjectDetails({ match }) {
                         <Row>
                             <Col>
                                 <ButtonGroup className="float-right">
-                                    <Link to={`/inschrijven/nieuw/${project.id}`}>
+                                    <Link to={`/inschrijven/${project.id}`}>
                                         <Button className={'w-button'} size="sm">
                                             Ga naar inschrijven
                                         </Button>

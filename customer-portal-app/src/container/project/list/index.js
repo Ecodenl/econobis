@@ -161,8 +161,11 @@ function ProjectList(props) {
                                                             <>
                                                                 {project.allowPayMollie ? (
                                                                     <div className="text-center">
-                                                                        Nog niet betaald,
-                                                                        <br />
+                                                                        ✔<br />
+                                                                        <span className="text-danger">
+                                                                            Nog niet betaald
+                                                                        </span>
+                                                                        ,<br />
                                                                         <a href={project.econobisPaymentLink}>
                                                                             betaal nu
                                                                         </a>

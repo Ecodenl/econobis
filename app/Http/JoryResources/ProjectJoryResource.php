@@ -112,7 +112,6 @@ class ProjectJoryResource extends JoryResource
 
         // Attributes
         $this->field('current_book_worth')->filterable()->sortable();
-        $this->field('allow_increase_participations')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');

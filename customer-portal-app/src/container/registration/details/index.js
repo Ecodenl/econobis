@@ -105,7 +105,7 @@ function RegistrationDetails({ match: { params } }) {
                                         <Col>
                                             <ButtonGroup className="float-right">
                                                 <Link
-                                                    to={`/inschrijven/verhogen/${state.result.basicInformation.projectId}`}
+                                                    to={`/inschrijven/verhogen/${state.result.basicInformation.projectId}/${state.result.basicInformation.participantId}`}
                                                 >
                                                     <Button className={'w-button'} size="sm">
                                                         Deelname verhogen

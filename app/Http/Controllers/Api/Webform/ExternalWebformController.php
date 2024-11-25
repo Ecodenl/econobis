@@ -42,6 +42,7 @@ use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
+use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
@@ -476,6 +477,9 @@ class ExternalWebformController extends Controller
                 'bijlage' => 'contact_attachment',
                 'bijlage2' => 'contact_attachment_2',
                 'bijlage3' => 'contact_attachment_3',
+                // Verbinding
+                'verbinding_met_contact_id' => 'occupation_contact_id',
+                'verbinding_type_id' => 'occupation_id',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -817,6 +821,7 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
@@ -838,6 +843,7 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
@@ -1481,6 +1487,7 @@ class ExternalWebformController extends Controller
                 // Overige gegevens aan person hangen
                 $this->addEmailToContact($data, $contactPerson);
                 $this->addContactToGroupContactperson($data, $contactPerson, $ownerAndResponsibleUser);
+                $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
 
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
@@ -1549,6 +1556,7 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -1646,6 +1654,7 @@ class ExternalWebformController extends Controller
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
 
             //freeFieldsFieldRecords updaten
             $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
@@ -1726,6 +1735,7 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -3049,6 +3059,48 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is geen contact groep contactpersoon meegegeven, geen groep koppelen aan de persoon.');
         }
+    }
+
+    protected function addContactToOccupations(array $data, Contact $contact, $ownerAndResponsibleUser)
+    {
+//        'verbinding_met_contact_id' => 'occupation_contact_id',
+//                'verbinding_type_id' => 'occupation_id',
+        if (!$data['occupation_contact_id'] || $data['occupation_id']) {
+            $this->log('Er is geen contact voor verbinding en/of verbinding type meegegeven, geen verbinding maken.');
+            return;
+        }
+
+        $this->log('Er is een verbinding met contact en verbinding type meegegeven, verbinding maken.');
+
+        $contactOccupation = Contact::where('id', $data['occupation_contact_id'])->first();
+        if (!$contactOccupation) {
+            $this->log('Contact voor verbinding met id ' . $data['occupation_contact_id'] . ' is niet gevonden, geen verbing gemaakt.');
+            return;
+        }
+        $occuptation = Occupation::where('id', $data['occupation_id'])->first();
+//        'occupation_id' => 14, // Relatie type "medewerker"
+        if (!$occuptation) {
+            $this->log('Verbinding type met id ' . $data['occupation_id'] . ' is niet gevonden, geen verbing gemaakt.');
+            return;
+        }
+
+        $occuptationContactExists = OccupationContact::where('occupation_id', $occuptation->id)
+            ->where('primary_contact_id', $contactOccupation->id)
+            ->where('contact_id', $contact->id)
+            ->exists();
+        if ($occuptationContactExists) {
+            $this->log('Contact ' . $contactOccupation->full_name . ' voor binding met contact ' . $contact->full_name. ' en verbinding type  ' . $occuptation->primary_occupation . ' bestaat al.');
+            return;
+        }
+
+        // Nieuwe verbinding maken
+        OccupationContact::create([
+            'occupation_id' => $occuptation->id,
+            'primary_contact_id' => $contact->id,
+            'contact_id' => $contactOccupation->id,
+            'primary' => false,
+        ]);
+
     }
 
     protected function doProcessEmailNewContactToGroup(array $data)

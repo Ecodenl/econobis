@@ -16,6 +16,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
@@ -3129,43 +3130,54 @@ class ExternalWebformController extends Controller
 
     protected function addContactToOccupations(array $data, Contact $contact, $ownerAndResponsibleUser)
     {
-//        'verbinding_met_contact_id' => 'occupation_contact_id',
-//                'verbinding_type_id' => 'occupation_id',
-        if (!$data['occupation_contact_id'] || $data['occupation_id']) {
+
+        if (!$data['occupation_contact_id'] || !$data['occupation_id']) {
             $this->log('Er is geen contact voor verbinding en/of verbinding type meegegeven, geen verbinding maken.');
             return;
         }
 
         $this->log('Er is een verbinding met contact en verbinding type meegegeven, verbinding maken.');
 
-        $contactOccupation = Contact::where('id', $data['occupation_contact_id'])->first();
-        if (!$contactOccupation) {
-            $this->log('Contact voor verbinding met id ' . $data['occupation_contact_id'] . ' is niet gevonden, geen verbing gemaakt.');
-            return;
-        }
-        $occuptation = Occupation::where('id', $data['occupation_id'])->first();
-//        'occupation_id' => 14, // Relatie type "medewerker"
-        if (!$occuptation) {
-            $this->log('Verbinding type met id ' . $data['occupation_id'] . ' is niet gevonden, geen verbing gemaakt.');
+        $occupationContact = Contact::where('id', $data['occupation_contact_id'])->first();
+        if (!$occupationContact) {
+            $this->log('Contact voor verbinding met id ' . $data['occupation_contact_id'] . ' is niet gevonden, geen verbinding gemaakt.');
             return;
         }
 
+        $occuptation = Occupation::where('id', $data['occupation_id'])->first();
+        if (!$occuptation) {
+            $this->log('Verbinding type met id ' . $data['occupation_id'] . ' is niet gevonden, geen verbinding gemaakt.');
+            return;
+        }
+
+        // indien contact organisatie is en verbinding met contact is persoon, dan switchen primary en secondary contact
+        if ($contact->type_id == ContactType::ORGANISATION && $occupationContact->type_id == ContactType::PERSON) {
+            $primaryContact = $contact;
+            $secondaryContact = $occupationContact;
+        } else {
+            $primaryContact = $occupationContact;
+            $secondaryContact = $contact;
+        }
+
+
         $occuptationContactExists = OccupationContact::where('occupation_id', $occuptation->id)
-            ->where('primary_contact_id', $contactOccupation->id)
-            ->where('contact_id', $contact->id)
+            ->where('primary_contact_id', $primaryContact->id)
+            ->where('contact_id', $secondaryContact->id)
             ->exists();
         if ($occuptationContactExists) {
-            $this->log('Contact ' . $contactOccupation->full_name . ' voor binding met contact ' . $contact->full_name. ' en verbinding type  ' . $occuptation->primary_occupation . ' bestaat al.');
+            $this->log('Verbinding type '. $occuptation->primary_occupation . ' voor contact ' . $primaryContact->full_name . ' met contact ' . $secondaryContact->full_name_fnf. ' bestaat al.');
             return;
         }
 
         // Nieuwe verbinding maken
         OccupationContact::create([
             'occupation_id' => $occuptation->id,
-            'primary_contact_id' => $contact->id,
-            'contact_id' => $contactOccupation->id,
+            'primary_contact_id' => $primaryContact->id,
+            'contact_id' => $secondaryContact->id,
             'primary' => false,
         ]);
+
+        $this->log('Verbinding type '. $occuptation->primary_occupation . ' voor contact ' . $primaryContact->full_name . ' met contact ' . $secondaryContact->full_name_fnf. ' gemaakt.');
 
     }
 

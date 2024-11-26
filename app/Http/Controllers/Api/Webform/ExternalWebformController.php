@@ -3827,6 +3827,7 @@ class ExternalWebformController extends Controller
         // Die moeten we eerst even setten als we dus hier vanuit webform komen.
         $this->setAuthUserForObservers($webform);
 
+        $coachOrOrganisation = null;
         if($dataQuotationRequest['coach_or_organisation_id']) {
             $coachOrOrganisation = $this->getCoachOrOrganisation($dataQuotationRequest['coach_or_organisation_id'], $quotationRequest->opportunity);
             if ($coachOrOrganisation !== null) {

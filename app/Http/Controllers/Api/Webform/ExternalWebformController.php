@@ -4086,7 +4086,7 @@ class ExternalWebformController extends Controller
      * @return null
      * @throws WebformException
      */
-    private function getCoachOrOrganisation($coach_or_organisation_id, $opportunity): null
+    private function getCoachOrOrganisation($coach_or_organisation_id, $opportunity)
     {
         // geen coach of organisatie
         $coachOrOrganisation = null;

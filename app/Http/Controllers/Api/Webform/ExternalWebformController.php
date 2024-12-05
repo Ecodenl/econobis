@@ -310,8 +310,13 @@ class ExternalWebformController extends Controller
             $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
         }
 
+        // Update quotationrequest
+        if ($data['quotation_request']['quotation_request_id']) {
+            $this->updateQuotationRequest($data['quotation_request'], $webform);
+        }
+
         // after adding to existing intake and/or opportuntiy we are done
-        if ($data['intake']['intake_id'] || $data['opportunity']['opportunity_id']) {
+        if ($data['intake']['intake_id'] || $data['opportunity']['opportunity_id'] || $data['quotation_request']['quotation_request_id']) {
             return;
         }
 

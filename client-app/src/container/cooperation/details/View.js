@@ -192,7 +192,9 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
                     </div>
                 </PanelBody>
+            </Panel>
 
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>

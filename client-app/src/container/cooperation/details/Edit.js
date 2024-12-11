@@ -552,6 +552,14 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                             />
+
+                            <InputToggle
+                                label="Gebruik dongel registratie functionaliteit"
+                                name={'useDongleRegistration'}
+                                value={values.useDongleRegistration}
+                                onChangeAction={e => setFieldValue('useDongleRegistration', e.target.checked)}
+                                size={'col-sm-5'}
+                            />
                         </div>
                     </PanelBody>
 

@@ -23,6 +23,14 @@ const ContactDetailsFormPortalUserDelete = props => {
             title="Verwijderen"
         >
             <p>Verwijder portal gebruiker</p>
+            <p>
+                <strong>Let op:</strong> als je een portal gebruiker inlog verwijderd worden ook de koppelingen met alle
+                bestanden die deze gebruiker heeft ge-upload verwijderd. Deze gebruiker kan dan niet zelf meer zijn
+                ge-uploade bestanden verwijderen bij een eventuele nieuw portal gebruiker inlog en kunnen wij achteraf
+                ook niet meer achterhalen welke portal gebruiker betreffende document(en) heeft ge-upload. Mocht de
+                inlog van deze gebruiker veranderd zijn kan je ook het inlog emailadres aanpassen in plaats van
+                verwijderen.
+            </p>
         </Modal>
     );
 };

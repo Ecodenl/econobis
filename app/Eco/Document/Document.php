@@ -13,6 +13,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Portal\PortalUser;
 use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
@@ -118,6 +119,10 @@ class Document extends Model
 
     public function participant(){
         return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
+    }
+
+    public function createdByPortalUser(){
+        return $this->belongsTo(PortalUser::class, 'created_by_portal_user_id', 'id');
     }
 
     public function newEloquentBuilder($query)

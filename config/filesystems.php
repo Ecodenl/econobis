@@ -48,6 +48,16 @@ return [
             'root' => storage_path('app'),
         ],
 
+        'administration-logos' => [
+            'driver' => 'local',
+            'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'administration-logos'),
+        ],
+        // hebben we deze wellicht nog nodig?
+//        'documents-temp' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'documents-temp'),
+//        ],
+
         'documents' => [
             'driver' => 'local',
             'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'documents'),
@@ -63,10 +73,10 @@ return [
             'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
         ],
 
-        'cooperation' => [
-            'driver' => 'local',
-            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
-        ],
+//        'cooperation' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
+//        ],
 
         'public' => [
             'driver' => 'local',

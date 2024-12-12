@@ -73,11 +73,11 @@ class CooperationController extends ApiController
         }
         $cooperation->save();
 
-        // Store attachment when given
-        if($request->file('attachment')){
-            $this->checkStorageDir($cooperation->id);
-            $this->storeLogo($request->file('attachment'), $cooperation);
-        }
+//        // Store attachment when given
+//        if($request->file('attachment')){
+//            $this->checkStorageDir($cooperation->id);
+//            $this->storeLogo($request->file('attachment'), $cooperation);
+//        }
 
         return $this->show();
     }
@@ -130,10 +130,10 @@ class CooperationController extends ApiController
         }
 
         // Store attachment when given
-        if($request->file('attachment')){
-            $this->checkStorageDir($cooperation->id);
-            $this->storeLogo($request->file('attachment'), $cooperation);
-        }
+//        if($request->file('attachment')){
+//            $this->checkStorageDir($cooperation->id);
+//            $this->storeLogo($request->file('attachment'), $cooperation);
+//        }
 
         return $this->show();
     }
@@ -170,31 +170,33 @@ class CooperationController extends ApiController
         $cooperationHoomCampaign->delete();
     }
 
-    private function checkStorageDir(){
-        //Check if storage map exists
-        $storageDir = Storage::disk('cooperation')->path(DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo');
+//            todo WM: opschonen
+//    private function checkStorageDir(){
+//        //Check if storage map exists
+//        $storageDir = Storage::disk('cooperation')->path(DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo');
+//
+//        if (!is_dir($storageDir)) {
+//            mkdir($storageDir, 0777, true);
+//        }
+//    }
 
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    private function storeLogo($attachment, $cooperation)
-    {
-        $this->authorize('manage', Cooperation::class);
-
-        if (!$attachment->isValid()) {
-            abort('422', 'Error uploading file');
-        }
-
-        $filename = $attachment->store('cooperation'
-            . DIRECTORY_SEPARATOR . 'logo', 'cooperation');
-
-        $cooperation->logo_filename = $filename;
-        $cooperation->logo_name = $attachment->getClientOriginalName();
-
-        $cooperation->save();
-    }
+//            todo WM: opschonen
+//    private function storeLogo($attachment, $cooperation)
+//    {
+//        $this->authorize('manage', Cooperation::class);
+//
+//        if (!$attachment->isValid()) {
+//            abort('422', 'Error uploading file');
+//        }
+//
+//        $filename = $attachment->store('cooperation'
+//            . DIRECTORY_SEPARATOR . 'logo', 'cooperation');
+//
+//        $cooperation->logo_filename = $filename;
+//        $cooperation->logo_name = $attachment->getClientOriginalName();
+//
+//        $cooperation->save();
+//    }
 
     public function syncAllWithLaposta(Cooperation $cooperation){
         $LapostaHelper = new LapostaHelper();

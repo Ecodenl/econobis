@@ -18,7 +18,7 @@
 
 
 To contribute to this project you must assign copyright of your contribution to Econobis B.V. 
-To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/proxy/alfresco-noauth/api/internal/shared/node/rQdefja0Tz-F16GjPb_fNw/content/Econobis%20and%20Hoomdossier%20Individual%20Contributor%20Assignment%20Agreement.pdf?c=force&noCache=1597329388415&a=true)
+To do this, include the following filled-in copyright assignment form in your patch: [Individual contributor assignment agreement](https://alfresco.econobis.nl/share/page/site/projectgroep-econobis/document-details?nodeRef=workspace://SpacesStore/beaaae10-302a-4f8e-aceb-1040360ba4b7)
 
 Econobis B.V. is 100% daughter of Coöperatieve Vereniging Energie Coöperaties op Orde UA. More information can be viewed on [www.econobis.nl](https://www.econobis.nl/).
 

@@ -369,8 +369,6 @@ class ExternalWebformController extends Controller
         }
 
         if ($this->address) {
-            // hier verwerken van vrije velden adressen
-
             $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
@@ -842,7 +840,11 @@ class ExternalWebformController extends Controller
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
 //                    $this->addPhoneNumberToContact($data, $contact);
 //                    $this->addContactNotesToContact($data, $contact);
@@ -882,7 +884,11 @@ class ExternalWebformController extends Controller
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
@@ -897,7 +903,11 @@ class ExternalWebformController extends Controller
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Contact 'bewoner' " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres 'bewoner'.\n";

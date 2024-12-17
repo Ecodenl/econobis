@@ -44,7 +44,7 @@ class DocumentController extends Controller
     public function peek(){
         $this->authorize('view', Document::class);
 
-        $documents = Document::select('id', 'filename');
+        $documents = Document::select('id', 'filename', 'created_at');
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
         if($teamDocumentCreatedFromIds){
             $documents->whereIn('document_created_from_id', $teamDocumentCreatedFromIds);
@@ -58,7 +58,7 @@ class DocumentController extends Controller
 
         }
 
-        return $documents->get();
+        return $documents->orderByDesc('created_at')->get();
     }
 
     public function defaultEmailDocumentsPeek(){

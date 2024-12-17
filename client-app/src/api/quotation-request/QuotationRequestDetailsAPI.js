@@ -29,6 +29,19 @@ export default {
             });
     },
 
+    showUpdateOpportunityStatus: quotationRequest => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/${quotationRequest.id}/show-update-opportunity-status`;
+
+        return axiosInstance
+            .post(requestUrl, quotationRequest)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     newQuotationRequest: quotationRequest => {
         const requestUrl = `${URL_QUOTATION_REQUEST}`;
 

@@ -212,11 +212,13 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+        if($this->contact) {
+            $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
 
-        $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-        $order = $this->addOrderToContact($this->contact, $data['order']);
-        $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+            $order = $this->addOrderToContact($this->contact, $data['order']);
+            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+        }
 
         // evt nog Hoomdossier aanmaken indien van toepassing
         if ($createHoomDossier) {
@@ -253,7 +255,9 @@ class ExternalWebformController extends Controller
             }
         }
 
-        $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        if($data['quotation_request_visit']['status_id']){
+            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        }
 
         // evt nog processWorkflowCreateOpportunity uitvoeren
         if ($this->processWorkflowCreateOpportunity) {
@@ -296,6 +300,25 @@ class ExternalWebformController extends Controller
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
         $this->checkMaxRequests($webform);
+
+        // Add opportunity to exitsting intake
+        if ($data['intake']['intake_id']) {
+            $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
+        }
+        // Add quotationrequest to exitsting opportunity
+        if ($data['opportunity']['opportunity_id']) {
+            $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
+        }
+
+        // Update quotationrequest
+        if ($data['quotation_request']['quotation_request_id']) {
+            $this->updateQuotationRequest($data['quotation_request'], $webform);
+        }
+
+        // after adding to existing intake and/or opportuntiy we are done
+        if ($data['intake']['intake_id'] || $data['opportunity']['opportunity_id'] || $data['quotation_request']['quotation_request_id']) {
+            return;
+        }
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], (isset($data['free_field_contact']) ? $data['free_field_contact'] : null), $webform);
 
@@ -401,20 +424,6 @@ class ExternalWebformController extends Controller
                 $this->log("Er is geen adres meegegeven, evt. intake en/of woondossier en/of vrij velden konden niet worden aangemaakt/bijgewerkt.");
             }
         }
-
-        // Add opportunity to exitsting intake
-        if ($data['intake']['intake_id']) {
-            $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
-        }
-        // Add quotationrequest to exitsting opportunity
-        if ($data['opportunity']['opportunity_id']) {
-            $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
-        }
-        // Update quotationrequest
-        if ($data['quotation_request']['quotation_request_id']) {
-            $this->updateQuotationRequest($data['quotation_request'], $webform);
-        }
-
 
         // Bewaar intake en housingfile voor verdere acties later hiermee
         $this->contact = $contact;
@@ -1526,6 +1535,7 @@ class ExternalWebformController extends Controller
                     'created_with' => 'webform',
                     'owner_id' => $ownerAndResponsibleUser->id,
                 ]);
+                $this->log('Contactpersoon met id ' . $contactPerson->id . ' aangemaakt.');
 
                 $person = Person::create([
                     'contact_id' => $contactPerson->id,
@@ -1573,6 +1583,21 @@ class ExternalWebformController extends Controller
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
 
+        $lastName = $data['last_name'];
+        if (!$lastName) {
+            $emailParts = explode('@', $data['email_address']);
+            $lastName = $emailParts[0];
+            if ($lastName) {
+                $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+            } else {
+                $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+            }
+        }
+
+        if (!$data['first_name'] && !$lastName) {
+            $this->error('Geen voornaam en geen achternaam. Nieuw contact kan niet aangemaakt worden.');
+        }
+
         $iban = $this->checkIban($data['iban'], 'persoon.');
         $contactNew = Contact::create([
             'type_id' => 'person',
@@ -1589,6 +1614,7 @@ class ExternalWebformController extends Controller
             'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
             'owner_id' => $ownerAndResponsibleUser->id,
         ]);
+        $this->log('Contact met id ' . $contactNew->id . ' aangemaakt.');
         $this->newContactCreated = true;
 
         $lastName = $data['last_name'];
@@ -1607,6 +1633,7 @@ class ExternalWebformController extends Controller
             'last_name_prefix' => $data['last_name_prefix'],
             'date_of_birth' => $data['date_of_birth'] ?: null,
         ]);
+        $this->log('Persoon met id ' . $person->id . ' aangemaakt.');
 
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contactNew->id);

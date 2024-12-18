@@ -34,18 +34,6 @@ return new class extends Migration
             $table->foreign('updated_by_id')->references('id')->on('users');
 
             $table->timestamps();
-
-
-
-
-
-
-            $table->dateTime('end_at')->nullable();
-            $table->string('name');
-            $table->boolean('is_active')->default(false);
-            $table->text('description')->nullable();
-            $table->string('url_page_ref');
-
         });
     }
 

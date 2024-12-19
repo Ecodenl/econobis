@@ -13,7 +13,7 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('dongles', function (Blueprint $table) {
+        Schema::create('address_dongles', function (Blueprint $table) {
             $table->increments('id');
 
             $table->unsignedInteger('address_id');

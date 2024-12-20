@@ -13,6 +13,7 @@ import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 import FreeFields from '../../../../components/freeFields/FreeFields';
+import Dongles from './address-dongles/AddressDetailsFormAddressDongle';
 
 class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
@@ -75,12 +76,14 @@ class ContactDetailsFormAddressItem extends Component {
         if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary === true) {
             this.setState({ showEdit: true });
             this.props.setAddressEnergySupplierNewOrEditOpen(true);
+            this.props.setAddressDongleNewOrEditOpen(true);
         }
     };
 
     closeEdit = () => {
         this.setState({ showEdit: false });
         this.props.setAddressEnergySupplierNewOrEditOpen(false);
+        this.props.setAddressDongleNewOrEditOpen(false);
     };
 
     openAddressEnergySupplier = () => {
@@ -90,6 +93,7 @@ class ContactDetailsFormAddressItem extends Component {
     closeAddressEnergySupplier = () => {
         this.setState({ showAddressEnergySupplier: false });
         this.props.setAddressEnergySupplierNewOrEditOpen(false);
+        this.props.setAddressDongleNewOrEditOpen(false);
     };
 
     cancelEdit = () => {
@@ -125,7 +129,8 @@ class ContactDetailsFormAddressItem extends Component {
         if (
             name === 'typeId' &&
             value === 'old' &&
-            this.state.address.usedInActiveParticipationInSceOrPcrProject && this.state.address.primary
+            this.state.address.usedInActiveParticipationInSceOrPcrProject &&
+            this.state.address.primary
         ) {
             this.setState({
                 showModal: true,
@@ -318,6 +323,12 @@ class ContactDetailsFormAddressItem extends Component {
                             cancelEdit={this.cancelEdit}
                         />
                         <FreeFields table={'addresses'} recordId={this.props.address.id} />
+                        <Dongles
+                            address={this.state.address}
+                            setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
+                            closeAddressDongle={this.closeAddressDongle}
+                            addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
+                        />
                     </>
                 )}
                 {this.state.showAddressEnergySupplier && (

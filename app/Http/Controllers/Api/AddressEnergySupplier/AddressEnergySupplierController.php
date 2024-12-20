@@ -7,7 +7,7 @@ use App\Helpers\Delete\Models\DeleteAddressEnergySupplier;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
+use App\Http\Resources\AddressEnergySupplier\FullAddressDongle;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -137,7 +137,7 @@ class AddressEnergySupplierController extends ApiController
         }else{
             $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
         }
-        return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
+        return ['addressEnergySupplier' => FullAddressDongle::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
     }
 
     public function update(RequestInput $requestInput, AddressEnergySupplier $addressEnergySupplier)
@@ -212,7 +212,7 @@ class AddressEnergySupplierController extends ApiController
         }else{
             $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
         }
-        return ['addressEnergySupplier' => FullAddressEnergySupplier::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
+        return ['addressEnergySupplier' => FullAddressDongle::make($addressEnergySupplier), 'responseParticipations' => $responseParticipations];
     }
 
     public function destroy(AddressEnergySupplier $addressEnergySupplier)

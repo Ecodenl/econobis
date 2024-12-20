@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources\Address;
 
+use App\Http\Resources\AddressDongle\FullAddressDongle;
 use App\Http\Resources\AddressEnergySupplier\FullAddressEnergySupplier;
 use App\Http\Resources\Contact\FullContact;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
@@ -10,6 +11,7 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Illuminate\Support\Facades\Log;
 
 class FullAddress extends JsonResource
 {
@@ -36,7 +38,7 @@ class FullAddress extends JsonResource
         } else {
             $memberSinceGasAndElectricityDisabledBefore = $this->member_since_gas_and_electricity_disabled_before;
         }
-
+Log::info(json_encode($this->addressDongles));
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,
@@ -64,6 +66,7 @@ class FullAddress extends JsonResource
             'intake' => FullIntake::make($this->whenLoaded('intake')),
             'contact' => FullContact::make($this->whenLoaded('contact')),
             'addressEnergySuppliers' => FullAddressEnergySupplier::collection($this->whenLoaded('addressEnergySuppliers')),
+            'addressDongles' => FullAddressDongle::collection($this->whenLoaded('addressDongles')),
 //            'usedInActiveParticipation' =>$this->used_in_active_participation,
             'usedInActiveParticipationInSceOrPcrProject' =>$this->used_in_active_participation_in_sce_or_pcr_project,
             'usedInActiveParticipationNotInSceOrPcrProject' =>$this->used_in_active_participation_not_in_sce_or_pcr_project,

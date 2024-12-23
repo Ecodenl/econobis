@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('emails', function (Blueprint $table) {
-            $table->index(['folder', 'mailbox_id', 'deleted_at', 'subject', 'status', 'date_sent'], 'idx_emails_advanced');
+            $table->index(['folder', 'mailbox_id', 'deleted_at', 'from', \DB::raw('subject(191)'), 'status', 'date_sent'], 'idx_emails_advanced');
         });
 
         Schema::table('contact_email', function (Blueprint $table) {
@@ -44,6 +44,15 @@ return new class extends Migration
         Schema::table('email_attachments', function (Blueprint $table) {
             $table->index(['email_id', 'id', 'cid'], 'idx_email_attachments');
         });
+
+        DB::statement('ANALYZE TABLE emails');
+        DB::statement('ANALYZE TABLE contact_email');
+        DB::statement('ANALYZE TABLE contact_email_manual');
+        DB::statement('ANALYZE TABLE contacts');
+        DB::statement('ANALYZE TABLE mailboxes');
+        DB::statement('ANALYZE TABLE users');
+        DB::statement('ANALYZE TABLE teams');
+        DB::statement('ANALYZE TABLE email_attachments');
     }
 
     /**
@@ -53,19 +62,6 @@ return new class extends Migration
      */
     public function down()
     {
-//        Schema::table('emails', function (Blueprint $table) {
-//            $table->dropIndex('idx_emails_folder_mailbox_deleted_sent');
-//        });
-//        Schema::table('contacts', function (Blueprint $table) {
-//            $table->dropIndex('idx_contacts_fullname_deleted');
-//        });
-//        Schema::table('contact_email', function (Blueprint $table) {
-//            $table->dropIndex('idx_contact_email');
-//        });
-//        Schema::table('contact_email_manual', function (Blueprint $table) {
-//            $table->dropIndex('idx_contact_email_manual');
-//        });
-
         Schema::table('emails', function (Blueprint $table) {
             $table->dropIndex('idx_emails_advanced');
         });

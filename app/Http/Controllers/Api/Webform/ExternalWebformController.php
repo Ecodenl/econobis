@@ -212,7 +212,7 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        if($this->contact){
+        if($this->contact) {
             $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
 
             $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);

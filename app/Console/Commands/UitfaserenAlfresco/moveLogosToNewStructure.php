@@ -1,37 +1,60 @@
 <?php
 
-use App\Eco\Administration\Administration;
+namespace App\Console\Commands\UitfaserenAlfresco;
 
-use Illuminate\Database\Migrations\Migration;
+use App\Eco\Administration\Administration;
+use App\Eco\Schedule\CommandRun;
+use Illuminate\Console\Command;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
-
-return new class extends Migration
+class moveLogosToNewStructure extends Command
 {
     /**
-     * Run the migrations.
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'script:moveLogosToNewStructure';
+    protected bool $hasErrors = false;
+
+    /**
+     * Create a new command instance.
      *
      * @return void
      */
-    public function up()
+    public function __construct()
     {
-        // Code hier plakken
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $commandRun = new CommandRun();
+        $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
+        $commandRun->schedule_run_id = 0;
+        $commandRun->scheduled_commands_command_ref = $this->signature;
+        $commandRun->start_at = Carbon::now();
+        $commandRun->end_at = null;
+        $commandRun->finished = false;
+        $commandRun->created_in_shared = false;
+        $commandRun->save();
+
         $this->moveLogosToNewStructure();
+
+        $commandRun->end_at = Carbon::now();
+        if($this->hasErrors === false){
+            $commandRun->finished = true;
+        }
+        $commandRun->save();
+
     }
 
-    /**
-     * Reverse the migrations.
-     *
-     * @return void
-     */
-    public function down()
-    {
-        Log::warning("Het terugdraaien van deze migratie is niet geïmplementeerd.");
-    }
-
-    /**
-     * @return void
-     */
     private function moveLogosToNewStructure(): void
     {
         Log::info("Start met het verplaatsen van logo's...");
@@ -42,7 +65,8 @@ return new class extends Migration
 
         // Controleer of de oude root-map bestaat
         if (!is_dir($oldRoot)) {
-            Log::warning("Oude root-map bestaat niet: {$oldRoot}");
+            Log::error("Oude root-map bestaat niet: {$oldRoot}");
+            $this->hasErrors = true;
             return;
         }
 
@@ -54,6 +78,12 @@ return new class extends Migration
 
             // Bepaal het relatieve pad
             $logosPath = 'administration_' . $administration->id . '/logos';
+
+            if (!is_dir($oldRoot . '/' . $logosPath)) {
+                Log::error("Oude root-map bestaat niet: {$oldRoot}/{$logosPath}");
+                $this->hasErrors = true;
+                return;
+            }
 
             // Verwerk alle bestanden in de huidige directory
             $files = Storage::disk('administrations')->files($logosPath);
@@ -77,6 +107,7 @@ return new class extends Migration
                     Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
                 } catch (\Exception $e) {
                     Log::error("Fout bij het verplaatsen van bestand {$file}: " . $e->getMessage());
+                    $this->hasErrors = true;
                 }
             }
 
@@ -91,4 +122,6 @@ return new class extends Migration
         Log::info("Verplaatsen van logo's voltooid!");
     }
 
-};
+
+}
+

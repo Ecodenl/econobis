@@ -53,34 +53,52 @@ return [
             'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'administration-logos'),
         ],
         // hebben we deze wellicht nog nodig?
-//        'documents-temp' => [
+        'documents-temp' => [
+            'driver' => 'local',
+            'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'documents-temp'),
+        ],
+
+//        'documents' => [
 //            'driver' => 'local',
-//            'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'documents-temp'),
+//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'documents'),
 //        ],
-
-        'documents' => [
-            'driver' => 'local',
-            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'documents'),
-        ],
-
-        'mail_attachments' => [
-            'driver' => 'local',
-            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
-        ],
-
-        'administrations' => [
-            'driver' => 'local',
-            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
-        ],
-
+//        'mail_attachments' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'mails'),
+//        ],
+//
+//        'administrations' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
+//        ],
 //        'cooperation' => [
 //            'driver' => 'local',
 //            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
 //        ],
+//        'public' => [
+//            'driver' => 'local',
+//            'root' => storage_path('app/public'),
+//            'url' => env('APP_URL').'/storage',
+//            'visibility' => 'public',
+//        ],
+        'documents' => [
+            'driver' => 'local',
+            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/documents',
+        ],
+
+        'mail_attachments' => [
+            'driver' => 'local',
+            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/mails',
+        ],
+
+        'administrations' => [
+            'driver' => 'local',
+            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/administrations',
+        ],
 
         'public' => [
             'driver' => 'local',
-            'root' => storage_path('app/public'),
+            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/public',
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

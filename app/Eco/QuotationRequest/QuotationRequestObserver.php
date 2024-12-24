@@ -10,6 +10,7 @@ namespace App\Eco\QuotationRequest;
 
 use App\Eco\Campaign\CampaignWorkflow;
 use App\Eco\Opportunity\OpportunityAction;
+use App\Helpers\Opportunity\OpportunityHelper;
 use App\Helpers\Workflow\QuotationRequestWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -225,6 +226,10 @@ class QuotationRequestObserver
             $quotationRequestActionsLog->new_status_id = $quotationRequest->status_id;
             $quotationRequestActionsLog->save();
 
+            // update opportunitystatus
+            $opportunityHelper = new OpportunityHelper($quotationRequest);
+            $opportunityHelper->updateOpportunityStatus();
+
             // ProcesWorkflowEmail doen we alleen vanuit econobis. Indien deze status wijziging dus voorkomt uit portal, dan niet.
             // In dat geval is er namelijk al een ander proces die email verstuurd bij bepaalde datum zetting die dan weer auutomatisch een status wijziging tot gevolg heeft.
             if (!Auth::isPortalUser()) {
@@ -234,6 +239,7 @@ class QuotationRequestObserver
                     $quotationRequestflowHelper->processWorkflowEmail($campaignWorkflow);
                 }
             }
+
         }
     }
 

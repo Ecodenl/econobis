@@ -83,22 +83,22 @@ return [
 //        ],
         'documents' => [
             'driver' => 'local',
-            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/documents',
+            'root' => '/mnt/bigstorage/econobis/' . env('APP_COOP_NAME') . '/documents',
         ],
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/mails',
+            'root' => '/mnt/bigstorage/econobis/' . env('APP_COOP_NAME') . '/mails',
         ],
 
         'administrations' => [
             'driver' => 'local',
-            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/administrations',
+            'root' => '/mnt/bigstorage/econobis/' . env('APP_COOP_NAME') . '/administrations',
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => '/mnt/bigstorage/econobis' . env('APP_COOP_NAME') . '/public',
+            'root' => '/mnt/bigstorage/econobis/' . env('APP_COOP_NAME') . '/public',
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

@@ -83,22 +83,22 @@ return [
 //        ],
         'documents' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
+            'root' => base_path('/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
         ],
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/mails'),
+            'root' => base_path('/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/mails'),
         ],
 
         'administrations' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/administrations'),
+            'root' => base_path('/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/administrations'),
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/public'),
+            'root' => base_path('/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],

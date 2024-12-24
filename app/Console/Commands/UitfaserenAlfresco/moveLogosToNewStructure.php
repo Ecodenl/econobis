@@ -15,7 +15,7 @@ class moveLogosToNewStructure extends Command
      *
      * @var string
      */
-    protected $signature = 'script:moveLogosToNewStructure';
+    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure';
     protected bool $hasErrors = false;
 
     /**
@@ -35,6 +35,8 @@ class moveLogosToNewStructure extends Command
      */
     public function handle()
     {
+        Log::info('test');
+        Log::info(Storage::disk('documents')->get('test'));
         $commandRun = new CommandRun();
         $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
         $commandRun->schedule_run_id = 0;

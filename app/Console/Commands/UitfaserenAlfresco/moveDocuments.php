@@ -10,14 +10,14 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-class moveDocumentFromAlfresco extends Command
+class moveDocuments extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'script:moveDocumentFromAlfresco';
+    protected $signature = 'uitfaserenAlfresco:moveDocuments';
     protected bool $hasErrors = false;
 
     /**

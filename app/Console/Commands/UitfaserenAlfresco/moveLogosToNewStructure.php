@@ -35,8 +35,8 @@ class moveLogosToNewStructure extends Command
      */
     public function handle()
     {
-        Log::info('test');
-        Log::info(Storage::disk('documents')->get('test'));
+        Log::info("Start met het verplaatsen van logo's...");
+
         $commandRun = new CommandRun();
         $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
         $commandRun->schedule_run_id = 0;
@@ -55,12 +55,11 @@ class moveLogosToNewStructure extends Command
         }
         $commandRun->save();
 
+        Log::info("Verplaatsen van logo's voltooid!");
     }
 
     private function moveLogosToNewStructure(): void
     {
-        Log::info("Start met het verplaatsen van logo's...");
-
         // Definieer de absolute paden
         $oldRoot = storage_path('app/administrations');
         $newRoot = storage_path('app-intern/administration-logos');
@@ -121,7 +120,6 @@ class moveLogosToNewStructure extends Command
             }
         }
 
-        Log::info("Verplaatsen van logo's voltooid!");
     }
 
 

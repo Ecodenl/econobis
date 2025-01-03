@@ -4,6 +4,22 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | INSTALLATIE instructies voor lokaal
+    |--------------------------------------------------------------------------
+    |
+    |  1) Maak een director aan: D:\framework\bigstorage\econobis
+    |       via Homestead.yaml is deze dan lokaal gemapt aan:
+    |        folders:
+    |            - map: D:/framework
+    |              to: /home/vagrant/code
+    |  2) Maak symlink:
+    |       Ga naar cd ~/code/econobis
+    |       ln -s ~/code/bigstorage/econobis bigstorage
+    |
+    */
+
+    /*
+    |--------------------------------------------------------------------------
     | Default Filesystem Disk
     |--------------------------------------------------------------------------
     |
@@ -48,11 +64,12 @@ return [
             'root' => storage_path('app'),
         ],
 
+//        Deze logo's zaten in storage/app/administrations, Deze zijn nu verplaatst naar storage/app-intern/administration-logos.
         'administration-logos' => [
             'driver' => 'local',
             'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'administration-logos'),
         ],
-        // hebben we deze wellicht nog nodig?
+        // hebben we deze wellicht nog nodig? Een aparte temp directory dus ?
         'documents-temp' => [
             'driver' => 'local',
             'root' => storage_path('app-intern' . DIRECTORY_SEPARATOR . 'documents-temp'),
@@ -71,37 +88,38 @@ return [
 //            'driver' => 'local',
 //            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'administrations'),
 //        ],
+//        Hierin zaten alleen logo's maar werden nergens gebruikt. Deze disk configuratie voorlopig opgeheven
 //        'cooperation' => [
 //            'driver' => 'local',
 //            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
 //        ],
-//        'public' => [
-//            'driver' => 'local',
-//            'root' => storage_path('app/public'),
-//            'url' => env('APP_URL').'/storage',
-//            'visibility' => 'public',
-//        ],
         'documents' => [
             'driver' => 'local',
-            'root' => '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/documents',
+            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
         ],
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/mails',
+            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/mails'),
         ],
 
         'administrations' => [
             'driver' => 'local',
-            'root' => '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/administrations',
+            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/administrations'),
         ],
 
         'public' => [
             'driver' => 'local',
-            'root' => '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME') . '/app/public',
+            'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
         ],
+//        'public' => [
+//            'driver' => 'local',
+//            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/public'),
+//            'url' => env('APP_URL').'/storage',
+//            'visibility' => 'public',
+//        ],
 
         // lokaal is public_path iets in trant van '/home/vagrant/code/econobis/public/'
         // afhankelijk van hoe je vagrant/homestead hebt ingericht.

@@ -73,7 +73,6 @@ class moveLogosToNewStructure extends Command
         // Voeg proef controle toe
         if ($proef) {
             Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
-            return;
         }
 
         // Controleer of de oude root-map bestaat
@@ -98,8 +97,12 @@ class moveLogosToNewStructure extends Command
                 return;
             }
 
+            Log::info("Logospath administratie: {$logosPath}");
+
             // Verwerk alle bestanden in de huidige directory
             $files = Storage::disk('administrations')->files($logosPath);
+
+            Log::info("Aantal files: " . count($files));
 
             foreach ($files as $file) {
                 try {
@@ -114,8 +117,12 @@ class moveLogosToNewStructure extends Command
                         Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
                     }
 
-                    // Verplaats het bestand
-                    rename($oldFilePath, $newFilePath);
+                    if ($proef) {
+                        Log::info("Proef: zou verplaatsen van {$oldFilePath} naar {$newFilePath}");
+                    } else {
+                        // Verplaats het bestand
+                        rename($oldFilePath, $newFilePath);
+                    }
 
                     Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
                 } catch (\Exception $e) {
@@ -127,7 +134,9 @@ class moveLogosToNewStructure extends Command
             // Controleer of de oude /logos directory leeg is en verwijder deze
             $oldLogosDirectory = $oldRoot . DIRECTORY_SEPARATOR . $logosPath;
             if (is_dir($oldLogosDirectory) && count(scandir($oldLogosDirectory)) === 2) {
-                rmdir($oldLogosDirectory);
+                if (!$proef) {
+                    rmdir($oldLogosDirectory);
+                }
                 Log::info("Lege /logos directory verwijderd: {$oldLogosDirectory}");
             }
         }

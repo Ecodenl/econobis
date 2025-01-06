@@ -52,10 +52,16 @@ class moveStorageAppToNewStructure extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
+        if(config('app.env') === 'local'){
+            $bigStoragePath = '/home/vagrant/code/econobis/bigstorage/' . config('app.APP_COOP_NAME');
+        } else {
+            $bigStoragePath = '/home/econobis/domains/econobis.nl/bigstorage/' . config('app.APP_COOP_NAME');
+        }
+
         // Move storage/app directories met absolute paden
-        $this->moveToNewStructure(storage_path('app/administrations'), base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/administrations'), $proef);
-        $this->moveToNewStructure(storage_path('app/documents'), base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'), $proef);
-        $this->moveToNewStructure(storage_path('app/mails'), base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/mails'), $proef);
+        $this->moveToNewStructure(storage_path('app/administrations'), $bigStoragePath . '/app/administrations', $proef);
+        $this->moveToNewStructure(storage_path('app/documents'), $bigStoragePath . '/app/documents', $proef);
+        $this->moveToNewStructure(storage_path('app/mails'), $bigStoragePath . '/app/mails', $proef);
 
         $commandRun->end_at = Carbon::now();
         if($this->hasErrors === false){

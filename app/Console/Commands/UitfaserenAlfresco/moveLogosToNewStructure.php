@@ -7,38 +7,23 @@ use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
-class moveLogosToNewStructure extends Command
+class MoveLogosToNewStructure extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
     protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true : Voer de operatie uit als test zonder bestanden te verplaatsen}';
     protected bool $hasErrors = false;
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
         Log::info("Start met het verplaatsen van logo's...");
 
-        $proef = $this->option('proef') == 'true';
+        $proef = $this->option('proef') === 'true';
         if ($proef) {
             Log::info("Proef modus ingeschakeld: Geen bestanden worden daadwerkelijk verplaatst.");
         }
@@ -56,7 +41,7 @@ class moveLogosToNewStructure extends Command
         $this->moveLogosToNewStructure($proef);
 
         $commandRun->end_at = Carbon::now();
-        if($this->hasErrors === false){
+        if (!$this->hasErrors) {
             $commandRun->finished = true;
         }
         $commandRun->save();
@@ -64,85 +49,92 @@ class moveLogosToNewStructure extends Command
         Log::info("Verplaatsen van logo's voltooid!");
     }
 
-    private function moveLogosToNewStructure($proef): void
+    private function moveLogosToNewStructure(bool $proef): void
     {
-        // Definieer de absolute paden
         $oldRoot = storage_path('app/administrations');
         $newRoot = storage_path('app-intern/administration-logos');
 
-        // Voeg proef controle toe
-        if ($proef) {
-            Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
+        if (!File::exists($newRoot)) {
+            if ($proef) {
+                Log::info("Proef: zou nieuwe root directory aanmaken: {$newRoot}");
+            } else {
+                File::makeDirectory($newRoot, 0755, true);
+                Log::info("Nieuwe root directory aangemaakt: {$newRoot}");
+            }
         }
 
-        // Controleer of de oude root-map bestaat
-        if (!is_dir($oldRoot)) {
+        if (!File::isDirectory($oldRoot)) {
             Log::error("Oude root-map bestaat niet: {$oldRoot}");
             $this->hasErrors = true;
             return;
         }
 
-        // Haal alle administraties op
         $administrations = Administration::all();
 
         foreach ($administrations as $administration) {
             Log::info("Verplaatst logo's voor administratie ID: {$administration->id}");
 
-            // Bepaal het relatieve pad
             $logosPath = 'administration_' . $administration->id . '/logos';
+            $fullOldLogosPath = $oldRoot . '/' . $logosPath;
 
-            if (!is_dir($oldRoot . '/' . $logosPath)) {
-                Log::error("Oude root-map bestaat niet: {$oldRoot}/{$logosPath}");
+            if (!File::isDirectory($fullOldLogosPath)) {
+                Log::error("Oude logos directory bestaat niet: {$fullOldLogosPath}");
                 $this->hasErrors = true;
-                return;
+                continue;
             }
 
-            Log::info("Logospath administratie: {$logosPath}");
-
-            // Verwerk alle bestanden in de huidige directory
-            $files = Storage::disk('administrations')->files($logosPath);
-
-            Log::info("Aantal files: " . count($files));
+            $files = File::files($fullOldLogosPath);
 
             foreach ($files as $file) {
                 try {
-                    // Bepaal de oude en nieuwe paden
-                    $oldFilePath = $oldRoot . DIRECTORY_SEPARATOR . $file;
-                    $newFilePath = $newRoot . DIRECTORY_SEPARATOR . $file;
+                    $relativeFilePath = str_replace($oldRoot . '/', '', $file->getPathname());
+                    $oldFilePath = $file->getPathname();
+                    $newFilePath = $newRoot . '/' . $relativeFilePath;
 
-                    // Zorg dat de doelmap bestaat
                     $newDirPath = dirname($newFilePath);
-                    if (!is_dir($newDirPath)) {
-                        mkdir($newDirPath, 0755, true); // Recursief mappen aanmaken
-                        Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
+                    if (!File::exists($newDirPath)) {
+                        if ($proef) {
+                            Log::info("Proef: zou nieuwe directory aanmaken: {$newDirPath}");
+                        } else {
+                            File::makeDirectory($newDirPath, 0755, true);
+                            Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
+                        }
                     }
 
                     if ($proef) {
                         Log::info("Proef: zou verplaatsen van {$oldFilePath} naar {$newFilePath}");
                     } else {
-                        // Verplaats het bestand
-                        rename($oldFilePath, $newFilePath);
+                        File::move($oldFilePath, $newFilePath);
+                        Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
                     }
-
-                    Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
                 } catch (\Exception $e) {
-                    Log::error("Fout bij het verplaatsen van bestand {$file}: " . $e->getMessage());
+                    Log::error("Fout bij het verplaatsen van bestand {$file->getFilename()}: " . $e->getMessage());
                     $this->hasErrors = true;
+                    continue;
                 }
             }
 
-            // Controleer of de oude /logos directory leeg is en verwijder deze
-            $oldLogosDirectory = $oldRoot . DIRECTORY_SEPARATOR . $logosPath;
-            if (is_dir($oldLogosDirectory) && count(scandir($oldLogosDirectory)) === 2) {
-                if (!$proef) {
-                    rmdir($oldLogosDirectory);
-                }
-                Log::info("Lege /logos directory verwijderd: {$oldLogosDirectory}");
-            }
+            $this->deleteDirectoryIfEmpty($fullOldLogosPath, $proef);
         }
-
     }
 
+    private function isDirectoryEmpty(string $directory): bool
+    {
+        return (count(scandir($directory)) === 2); // '.' en '..'
+    }
 
+    private function deleteDirectoryIfEmpty(string $directory, bool $proef): void
+    {
+        if ($this->isDirectoryEmpty($directory)) {
+            if ($proef) {
+                Log::info("Proef: zou lege directory verwijderen: {$directory}");
+            } else {
+                if (rmdir($directory)) {
+                    Log::info("Lege directory verwijderd: {$directory}");
+                } else {
+                    Log::error("Kon lege directory niet verwijderen: {$directory}");
+                }
+            }
+        }
+    }
 }
-

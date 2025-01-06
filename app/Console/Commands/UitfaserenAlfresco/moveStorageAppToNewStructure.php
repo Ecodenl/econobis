@@ -6,6 +6,7 @@ use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\File;
 
 class moveStorageAppToNewStructure extends Command
 {
@@ -76,7 +77,7 @@ class moveStorageAppToNewStructure extends Command
         // Voeg proef controle toe
         if ($proef) {
             Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
-            return;
+//            return;
         }
 
         // Controleer of de oude root-map bestaat
@@ -87,40 +88,73 @@ class moveStorageAppToNewStructure extends Command
         }
 
         try {
-            // Zorg dat de doelmap niet al bestaat
-            if (is_dir($newRoot)) {
-                throw new \Exception("Doelmap bestaat al: {$newRoot}");
+            // Zorg dat de doelmap bestaat
+            if (!is_dir($newRoot)) {
+                if (!$proef) {
+                    mkdir($newRoot, 0755, true);
+                    Log::info("Nieuwe directory aangemaakt: {$newRoot}");
+                } else {
+                    Log::info("Proef: zou directory aanmaken: {$newRoot}");
+                }
             }
 
-            // Zorg dat de parent-directory van de doelmap bestaat
-            $newDirPath = dirname($newRoot);
-            if (!is_dir($newDirPath)) {
-                mkdir($newDirPath, 0755, true); // Recursief mappen aanmaken
-                Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
+            // Recursief kopiëren
+            $files = File::allFiles($oldRoot);
+            foreach ($files as $file) {
+                $relativePath = $file->getRelativePathname();
+                $newPath = $newRoot . '/' . $relativePath;
+
+                $newDirPath = dirname($newPath);
+                if (!is_dir($newDirPath)) {
+                    if (!$proef) {
+                        mkdir(dirname($newPath), 0755, true);
+                        Log::info("Directory aangemaakt: {$newDirPath}");
+                    } else {
+                        Log::info("Proef: zou directory aanmaken: {$newDirPath}");
+                    }
+                }
+
+                if (!$proef) {
+                    copy($file->getRealPath(), $newPath);
+                    unlink($file->getRealPath());
+                    Log::info("Bestand verplaatst: {$file->getRealPath()} -> {$newPath}");
+                } else {
+                    Log::info("Proef: zou bestand verplaatsen: {$file->getRealPath()} -> {$newPath}");
+                }
+
             }
 
-            // Verplaats het directory
-            rename($oldRoot, $newRoot);
+            Log::info("Bestanden succesvol gekopieerd van {$oldRoot} naar {$newRoot}");
 
-            Log::info("Bestanden succesvol verplaatst van {$oldRoot} naar {$newRoot}");
+            // Optioneel: bronmap verwijderen
+//            File::deleteDirectory($oldRoot);
+
         } catch (\Exception $e) {
-            Log::error("Fout bij het verplaatsen van {$oldRoot} naar {$newRoot}: " . $e->getMessage());
+            Log::error("Fout bij het kopiëren van {$oldRoot} naar {$newRoot}: " . $e->getMessage());
             $this->hasErrors = true;
         }
 
         // Controleer of de oude directory leeg is en verwijder deze
-        if (is_dir($oldRoot)) {
-            $files = array_diff(scandir($oldRoot), ['.', '..']);
-            if (empty($files)) {
-                rmdir($oldRoot);
-                Log::info("Lege storage/app directory verwijderd: {$oldRoot}");
-            } else {
-                Log::warning("Oude directory niet leeg na poging tot verplaatsen: {$oldRoot}");
-            }
+        if (!$proef && is_dir($oldRoot)) {
+            $this->safeDeleteDirectory($oldRoot);
+            Log::info("Bronmap verwijderd: {$oldRoot}");
+        } elseif ($proef) {
+            Log::info("Proef: zou bronmap verwijderen: {$oldRoot}");
         }
-
     }
 
-
+    private function safeDeleteDirectory(string $path): void
+    {
+        $files = array_diff(scandir($path), ['.', '..']);
+        foreach ($files as $file) {
+            $filePath = $path . '/' . $file;
+            if (is_dir($filePath)) {
+                $this->safeDeleteDirectory($filePath); // Recursief verwijderen
+            } else {
+                unlink($filePath);
+            }
+        }
+        rmdir($path); // Verwijder de lege map
+    }
 }
 

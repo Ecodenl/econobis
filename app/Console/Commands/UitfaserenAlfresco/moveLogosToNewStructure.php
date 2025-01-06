@@ -8,6 +8,7 @@ use Illuminate\Console\Command;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+
 class moveLogosToNewStructure extends Command
 {
     /**
@@ -15,7 +16,7 @@ class moveLogosToNewStructure extends Command
      *
      * @var string
      */
-    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure';
+    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true : Voer de operatie uit als test zonder bestanden te verplaatsen}';
     protected bool $hasErrors = false;
 
     /**
@@ -37,6 +38,11 @@ class moveLogosToNewStructure extends Command
     {
         Log::info("Start met het verplaatsen van logo's...");
 
+        $proef = $this->option('proef') == 'true';
+        if ($proef) {
+            Log::info("Proef modus ingeschakeld: Geen bestanden worden daadwerkelijk verplaatst.");
+        }
+
         $commandRun = new CommandRun();
         $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
         $commandRun->schedule_run_id = 0;
@@ -47,7 +53,7 @@ class moveLogosToNewStructure extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        $this->moveLogosToNewStructure();
+        $this->moveLogosToNewStructure($proef);
 
         $commandRun->end_at = Carbon::now();
         if($this->hasErrors === false){
@@ -58,11 +64,17 @@ class moveLogosToNewStructure extends Command
         Log::info("Verplaatsen van logo's voltooid!");
     }
 
-    private function moveLogosToNewStructure(): void
+    private function moveLogosToNewStructure($proef): void
     {
         // Definieer de absolute paden
         $oldRoot = storage_path('app/administrations');
         $newRoot = storage_path('app-intern/administration-logos');
+
+        // Voeg proef controle toe
+        if ($proef) {
+            Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
+            return;
+        }
 
         // Controleer of de oude root-map bestaat
         if (!is_dir($oldRoot)) {

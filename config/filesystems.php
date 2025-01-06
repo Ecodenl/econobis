@@ -93,19 +93,30 @@ return [
 //            'driver' => 'local',
 //            'root' => storage_path('app' . DIRECTORY_SEPARATOR . 'cooperation'),
 //        ],
+
+//        'documents' => [
+//            'driver' => 'local',
+//            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
+//        ],
         'documents' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/documents'),
+            'root' => (env('APP_ENV') === 'local'
+                ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
+                : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name'))  . '/app/documents',
         ],
 
         'mail_attachments' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/mails'),
+            'root' => (env('APP_ENV') === 'local'
+                ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
+                : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')) . '/app/mails',
         ],
 
         'administrations' => [
             'driver' => 'local',
-            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/administrations'),
+            'root' => (env('APP_ENV') === 'local'
+                    ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
+                    : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name'))  . '/app/administrations',
         ],
 
         'public' => [
@@ -116,7 +127,9 @@ return [
         ],
 //        'public' => [
 //            'driver' => 'local',
-//            'root' => base_path('bigstorage/' . env('APP_COOP_NAME') . '/app/public'),
+//            'root' => (env('APP_ENV') === 'local'
+//                    ? '/home/vagrant/code/econobis/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name')
+//                   : '/home/econobis/domains/econobis.nl/bigstorage/' . env('APP_COOP_NAME', 'missing_coop_name'))  . '/app/public',
 //            'url' => env('APP_URL').'/storage',
 //            'visibility' => 'public',
 //        ],

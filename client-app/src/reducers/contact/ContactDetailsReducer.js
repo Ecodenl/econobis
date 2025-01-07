@@ -213,6 +213,16 @@ export default function(state = {}, action) {
                     };
                 }),
             };
+        case 'DELETE_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressDongles: address.addressDongles.filter(addressDongle => addressDongle.id !== action.id),
+                    };
+                }),
+            };
 
         case 'UPDATE_HOOM_ACCOUNT_ID':
             return { ...state, hoomAccountId: action.hoomAccountId };

@@ -26,7 +26,6 @@ class ContactDetailsFormAddress extends Component {
             showNew: !currentShowNew,
         });
         this.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
-        this.setAddressDongleNewOrEditOpen(!currentShowNew);
     };
 
     setAddressEnergySupplierNewOrEditOpen = falseTrue => {

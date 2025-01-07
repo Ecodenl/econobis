@@ -156,6 +156,13 @@ export const newStateAddressEnergySupplier = addressEnergySupplier => {
     };
 };
 
+export const newStateAddressDongle = addressDongle => {
+    return {
+        type: 'NEW_ADDRESS_DONGLE',
+        addressDongle,
+    };
+};
+
 export const updateStateAddressEnergySupplier = addressEnergySupplier => {
     return {
         type: 'UPDATE_ADDRESS_ENERGY_SUPPLIER',
@@ -166,6 +173,13 @@ export const updateStateAddressEnergySupplier = addressEnergySupplier => {
 export const deleteAddressEnergySupplier = id => {
     return {
         type: 'DELETE_ADDRESS_ENERGY_SUPPLIER',
+        id,
+    };
+};
+
+export const deleteAddressDongle = id => {
+    return {
+        type: 'DELETE_ADDRESS_DONGLE',
         id,
     };
 };

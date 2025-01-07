@@ -203,6 +203,9 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
+        Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
+        Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
+
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');

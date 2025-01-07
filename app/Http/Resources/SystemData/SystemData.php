@@ -136,6 +136,32 @@ class SystemData extends JsonResource
             $usersExtraAdministration = null;
         }
 
+        $dongleTypeReadOut = collect([
+            (object) [
+                'id' => '1',
+                'name' => 'P1'
+            ],
+            (object) [
+                'id' => '2',
+                'name' => 'P2'
+            ]
+        ]);
+
+        $dongleTypeDongle = collect([
+            (object) [
+                'id' => '1',
+                'name' => 'Smartstuff type A'
+            ],
+            (object) [
+                'id' => '2',
+                'name' => 'Smartstuff type B'
+            ],
+            (object) [
+                'id' => '0',
+                'name' => 'Ander merk'
+            ]
+        ]);
+
         /*
          * Energie leveranciers 2018-11-28 Op aanvraag René
          *
@@ -186,6 +212,8 @@ class SystemData extends JsonResource
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
+            'dongleTypeReadOut' => $dongleTypeReadOut,
+            'dongleTypeDongle' => $dongleTypeDongle,
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),

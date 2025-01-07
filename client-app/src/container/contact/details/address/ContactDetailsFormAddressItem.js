@@ -76,14 +76,12 @@ class ContactDetailsFormAddressItem extends Component {
         if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary === true) {
             this.setState({ showEdit: true });
             this.props.setAddressEnergySupplierNewOrEditOpen(true);
-            this.props.setAddressDongleNewOrEditOpen(true);
         }
     };
 
     closeEdit = () => {
         this.setState({ showEdit: false });
         this.props.setAddressEnergySupplierNewOrEditOpen(false);
-        this.props.setAddressDongleNewOrEditOpen(false);
     };
 
     openAddressEnergySupplier = () => {
@@ -93,7 +91,6 @@ class ContactDetailsFormAddressItem extends Component {
     closeAddressEnergySupplier = () => {
         this.setState({ showAddressEnergySupplier: false });
         this.props.setAddressEnergySupplierNewOrEditOpen(false);
-        this.props.setAddressDongleNewOrEditOpen(false);
     };
 
     cancelEdit = () => {

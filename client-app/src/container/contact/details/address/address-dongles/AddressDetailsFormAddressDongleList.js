@@ -1,5 +1,4 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
 import AddressDetailsFormAddressDongleItem from './AddressDetailsFormAddressDongleItem';
 
@@ -8,8 +7,8 @@ const AddressDetailsFormAddressDongleList = props => {
         <div>
             <div className="row border header">
                 <div className="col-sm-3">Type uitlezing</div>
-                <div className="col-sm-6">Startdatum</div>
-                <div className="col-sm-3" />
+                <div className="col-sm-8">Startdatum</div>
+                <div className="col-sm-1" />
             </div>
             {props.address.addressDongles.length > 0 ? (
                 props.address.addressDongles.map(addressDongle => {

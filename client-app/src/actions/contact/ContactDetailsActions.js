@@ -170,6 +170,13 @@ export const updateStateAddressEnergySupplier = addressEnergySupplier => {
     };
 };
 
+export const updateStateAddressDongle = addressDongle => {
+    return {
+        type: 'UPDATE_ADDRESS_DONGLE',
+        addressDongle,
+    };
+};
+
 export const deleteAddressEnergySupplier = id => {
     return {
         type: 'DELETE_ADDRESS_ENERGY_SUPPLIER',

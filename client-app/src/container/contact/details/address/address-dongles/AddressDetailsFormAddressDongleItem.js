@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 import validator from 'validator';
 
 import { setError } from '../../../../../actions/general/ErrorActions';
-import { fetchContactDetails } from '../../../../../actions/contact/ContactDetailsActions';
+import { fetchContactDetails, updateStateAddressDongle } from '../../../../../actions/contact/ContactDetailsActions';
 import AddressDetailsFormAddressDongleView from './AddressDetailsFormAddressDongleView';
 import AddressDetailsFormAddressDongleDelete from './AddressDetailsFormAddressDongleDelete';
 import { isEqual } from 'lodash';
+import AddressDetailsFormAddressDongleEdit from './AddressDetailsFormAddressDongleEdit';
+import AddressDongleAPI from '../../../../../api/contact/AddressDongleAPI';
 
 class AddressDetailsFormAddressDongleItem extends Component {
     constructor(props) {
@@ -108,9 +110,34 @@ class AddressDetailsFormAddressDongleItem extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
+        const { addressDongle } = this.state;
+
         let errors = {};
+        let hasErrors = false;
 
         this.setState({ ...this.state, errors: errors });
+
+        // If no errors send form
+        if (!hasErrors) {
+            this.doUpdateAddressDongle(addressDongle);
+        }
+    };
+
+    doUpdateAddressDongle = addressDongle => {
+        AddressDongleAPI.updateAddressDongle(addressDongle)
+            .then(payload => {
+                this.props.updateStateAddressDongle(payload.data.addressDongle);
+
+                this.closeEdit();
+                this.reloadContact();
+            })
+            .catch(error => {
+                if (error.response) {
+                    this.props.setError(error.response.status, error.response.data.message);
+                } else {
+                    console.log(error);
+                }
+            });
     };
 
     render() {
@@ -126,6 +153,18 @@ class AddressDetailsFormAddressDongleItem extends Component {
                     addressDongle={this.state.addressDongle}
                     addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
                 />
+                {this.props.permissions.updateContactAddress &&
+                    this.state.showEdit &&
+                    (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
+                        <AddressDetailsFormAddressDongleEdit
+                            addressDongle={this.state.addressDongle}
+                            errors={this.state.errors}
+                            handleInputChange={this.handleInputChange}
+                            handleInputChangeDate={this.handleInputChangeDate}
+                            handleSubmit={this.handleSubmit}
+                            cancelEdit={this.cancelEdit}
+                        />
+                    )}
                 {this.props.permissions.deleteContactAddress && this.state.showDelete && (
                     <AddressDetailsFormAddressDongleDelete
                         closeDeleteItemModal={this.toggleDelete}
@@ -146,6 +185,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+    updateStateAddressDongle: addressDongle => {
+        dispatch(updateStateAddressDongle(addressDongle));
+    },
     fetchContactDetails: id => {
         dispatch(fetchContactDetails(id));
     },

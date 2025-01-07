@@ -213,6 +213,26 @@ export default function(state = {}, action) {
                     };
                 }),
             };
+
+        case 'UPDATE_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: address.addressDongles.map(addressDongle =>
+                                  addressDongle.id === action.addressDongle.id
+                                      ? {
+                                            ...action.addressDongle,
+                                        }
+                                      : addressDongle
+                              ),
+                          }
+                        : address
+                ),
+            };
+
         case 'DELETE_ADDRESS_DONGLE':
             return {
                 ...state,

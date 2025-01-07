@@ -15,7 +15,6 @@ export default {
     // },
 
     newAddressDongle: addressDongle => {
-        console.log('ab');
         const requestUrl = `${URL_ADDRESS_DONGLE}`;
 
         return axiosInstance.post(requestUrl, addressDongle);

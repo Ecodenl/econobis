@@ -204,6 +204,7 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
         Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
+        Route::post('/address-dongle/{addressDongle}', 'AddressDongle\AddressDongleController@update');
         Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
 
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');

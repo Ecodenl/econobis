@@ -3,16 +3,18 @@
 namespace App\Eco\AddressDongle;
 
 use App\Eco\Address\Address;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Crypt;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class AddressDongle extends Model
 {
+    protected $table = 'address_dongles';
+
+    protected $fillable = ['type_read_out','mac_number','type_dongle','energie_id','date_signed','date_start','date_end'];
+
     use RevisionableTrait;
 
-    protected $guarded = ['id'];
+//    protected $guarded = ['id'];
 
     public function getTypeReadOutNameAttribute()
     {

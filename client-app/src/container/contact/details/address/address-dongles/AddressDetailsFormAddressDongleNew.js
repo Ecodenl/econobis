@@ -61,7 +61,6 @@ class AddressDetailsFormAddressDongleNew extends Component {
     }
 
     handleSubmit = event => {
-        console.log('ae');
         event.preventDefault();
 
         const { addressDongle } = this.state;
@@ -78,7 +77,6 @@ class AddressDetailsFormAddressDongleNew extends Component {
     };
 
     doNewAddressDongle = addressDongle => {
-        console.log('aa');
         AddressDongleAPI.newAddressDongle(addressDongle)
             .then(payload => {
                 this.props.newStateAddressDongle(payload.data.addressDongle);

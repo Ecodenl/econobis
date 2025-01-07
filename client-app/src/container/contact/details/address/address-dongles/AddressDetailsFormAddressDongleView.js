@@ -5,6 +5,7 @@ moment.locale('nl');
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
+import { pencil } from 'react-icons-kit/fa/pencil';
 
 const AddressDetailsFormAddressDongleView = props => {
     const { typeReadOutName, dateStart } = props.addressDongle;
@@ -22,6 +23,11 @@ const AddressDetailsFormAddressDongleView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.addressDongleNewOrEditOpen == false ? (
                     <>
+                        {/*{props.permissions.updateContactAddress ? (*/}
+                        <a role="button" onClick={props.openEdit} title="Wijzigen Dongel">
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                        </a>
+                        {/*) : ( '' )}*/}
                         {/*{props.permissions.deleteContactAddress ? (*/}
                         <a role="button" onClick={props.toggleDelete} title="Verwijderen dongel">
                             <Icon className="mybtn-danger" size={14} icon={trash} />

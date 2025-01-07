@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\File;
 
 class MoveLogosToNewStructure extends Command
 {
-    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true : Voer de operatie uit als test zonder bestanden te verplaatsen}';
+    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true} {--withLog=false}';
     protected bool $hasErrors = false;
 
     public function __construct()
@@ -21,10 +21,12 @@ class MoveLogosToNewStructure extends Command
 
     public function handle()
     {
-        Log::info("Start met het verplaatsen van logo's...");
-
         $proef = $this->option('proef') === 'true';
-        if ($proef) {
+        $withLog = $this->option('withLog') === 'true';
+
+        Log::info("Start met het verplaatsen van logo's " . ($proef ? '(PROEF) ' : '') . "...");
+
+        if ($withLog && $proef) {
             Log::info("Proef modus ingeschakeld: Geen bestanden worden daadwerkelijk verplaatst.");
         }
 
@@ -38,7 +40,7 @@ class MoveLogosToNewStructure extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        $this->moveLogosToNewStructure($proef);
+        $this->moveLogosToNewStructure($proef, $withLog);
 
         $commandRun->end_at = Carbon::now();
         if (!$this->hasErrors) {
@@ -46,20 +48,24 @@ class MoveLogosToNewStructure extends Command
         }
         $commandRun->save();
 
-        Log::info("Verplaatsen van logo's voltooid!");
+        Log::info("Verplaatsen van logo's " . ($proef ? '(PROEF) ' : '') . "voltooid!");
     }
 
-    private function moveLogosToNewStructure(bool $proef): void
+    private function moveLogosToNewStructure(bool $proef, bool $withLog): void
     {
         $oldRoot = storage_path('app/administrations');
         $newRoot = storage_path('app-intern/administration-logos');
 
         if (!File::exists($newRoot)) {
             if ($proef) {
-                Log::info("Proef: zou nieuwe root directory aanmaken: {$newRoot}");
+                if ($withLog) {
+                    Log::info("Proef: zou nieuwe root directory aanmaken: {$newRoot}");
+                }
             } else {
                 File::makeDirectory($newRoot, 0755, true);
-                Log::info("Nieuwe root directory aangemaakt: {$newRoot}");
+                if ($withLog) {
+                    Log::info("Nieuwe root directory aangemaakt: {$newRoot}");
+                }
             }
         }
 
@@ -72,7 +78,9 @@ class MoveLogosToNewStructure extends Command
         $administrations = Administration::all();
 
         foreach ($administrations as $administration) {
-            Log::info("Verplaatst logo's voor administratie ID: {$administration->id}");
+            if ($withLog) {
+                Log::info("Verplaatst logo's voor administratie ID: {$administration->id}");
+            }
 
             $logosPath = 'administration_' . $administration->id . '/logos';
             $fullOldLogosPath = $oldRoot . '/' . $logosPath;
@@ -94,18 +102,26 @@ class MoveLogosToNewStructure extends Command
                     $newDirPath = dirname($newFilePath);
                     if (!File::exists($newDirPath)) {
                         if ($proef) {
-                            Log::info("Proef: zou nieuwe directory aanmaken: {$newDirPath}");
+                            if ($withLog) {
+                                Log::info("Proef: zou nieuwe directory aanmaken: {$newDirPath}");
+                            }
                         } else {
                             File::makeDirectory($newDirPath, 0755, true);
-                            Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
+                            if ($withLog) {
+                                Log::info("Nieuwe directory aangemaakt: {$newDirPath}");
+                            }
                         }
                     }
 
                     if ($proef) {
-                        Log::info("Proef: zou verplaatsen van {$oldFilePath} naar {$newFilePath}");
+                        if ($withLog) {
+                            Log::info("Proef: zou verplaatsen van {$oldFilePath} naar {$newFilePath}");
+                        }
                     } else {
                         File::move($oldFilePath, $newFilePath);
-                        Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
+                        if ($withLog) {
+                            Log::info("Bestand succesvol verplaatst: {$oldFilePath} -> {$newFilePath}");
+                        }
                     }
                 } catch (\Exception $e) {
                     Log::error("Fout bij het verplaatsen van bestand {$file->getFilename()}: " . $e->getMessage());
@@ -114,7 +130,26 @@ class MoveLogosToNewStructure extends Command
                 }
             }
 
-            $this->deleteDirectoryIfEmpty($fullOldLogosPath, $proef);
+            $this->deleteDirectoryIfEmpty($fullOldLogosPath, $proef, $withLog);
+        }
+    }
+
+    private function deleteDirectoryIfEmpty(string $directory, bool $proef, bool $withLog): void
+    {
+        if ($this->isDirectoryEmpty($directory)) {
+            if ($proef) {
+                if ($withLog) {
+                    Log::info("Proef: zou lege directory verwijderen: {$directory}");
+                }
+            } else {
+                if (rmdir($directory)) {
+                    if ($withLog) {
+                        Log::info("Lege directory verwijderd: {$directory}");
+                    }
+                } else {
+                    Log::error("Kon lege directory niet verwijderen: {$directory}");
+                }
+            }
         }
     }
 
@@ -123,18 +158,4 @@ class MoveLogosToNewStructure extends Command
         return (count(scandir($directory)) === 2); // '.' en '..'
     }
 
-    private function deleteDirectoryIfEmpty(string $directory, bool $proef): void
-    {
-        if ($this->isDirectoryEmpty($directory)) {
-            if ($proef) {
-                Log::info("Proef: zou lege directory verwijderen: {$directory}");
-            } else {
-                if (rmdir($directory)) {
-                    Log::info("Lege directory verwijderd: {$directory}");
-                } else {
-                    Log::error("Kon lege directory niet verwijderen: {$directory}");
-                }
-            }
-        }
-    }
 }

@@ -10,35 +10,22 @@ use Illuminate\Support\Facades\File;
 
 class moveStorageAppToNewStructure extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'uitfaserenAlfresco:moveStorageAppToNewStructure {--proef=true : Voer de operatie uit als test zonder bestanden te verplaatsen}';
+    protected $signature = 'uitfaserenAlfresco:moveStorageAppToNewStructure {--proef=true} {--withLog=false}';
     protected bool $hasErrors = false;
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
-        Log::info("Start met het verplaatsen van storage/app bestanden...");
+        $proef = $this->option('proef') === 'true';
+        $withLog = $this->option('withLog') === 'true';
 
-        $proef = $this->option('proef') == 'true';
-        if ($proef) {
+        Log::info("Start met het verplaatsen van storage/app bestanden " . ($proef ? '(PROEF) ' : '') . "...");
+
+        if ($withLog && $proef) {
             Log::info("Proef modus ingeschakeld: Geen bestanden worden daadwerkelijk verplaatst.");
         }
 
@@ -59,9 +46,9 @@ class moveStorageAppToNewStructure extends Command
         }
 
         // Move storage/app directories met absolute paden
-        $this->moveToNewStructure(storage_path('app/administrations'), $bigStoragePath . '/app/administrations', $proef);
-        $this->moveToNewStructure(storage_path('app/documents'), $bigStoragePath . '/app/documents', $proef);
-        $this->moveToNewStructure(storage_path('app/mails'), $bigStoragePath . '/app/mails', $proef);
+        $this->moveToNewStructure(storage_path('app/administrations'), $bigStoragePath . '/app/administrations', $proef, $withLog);
+        $this->moveToNewStructure(storage_path('app/documents'), $bigStoragePath . '/app/documents', $proef, $withLog);
+        $this->moveToNewStructure(storage_path('app/mails'), $bigStoragePath . '/app/mails', $proef, $withLog);
 
         $commandRun->end_at = Carbon::now();
         if($this->hasErrors === false){
@@ -69,15 +56,16 @@ class moveStorageAppToNewStructure extends Command
         }
         $commandRun->save();
 
-        Log::info("Verplaatsen van storage/app bestanden voltooid!");
+        Log::info("Verplaatsen van storage/app bestanden " . ($proef ? '(PROEF) ' : '') . "voltooid!");
     }
 
-    private function moveToNewStructure($oldRoot, $newRoot, $proef): void
+    private function moveToNewStructure($oldRoot, $newRoot, $proef, $withLog): void
     {
         // Voeg proef controle toe
         if ($proef) {
-            Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
-//            return;
+            if ($withLog) {
+                Log::info("Proef: zou verplaatsen van {$oldRoot} naar {$newRoot}");
+            }
         }
 
         // Controleer of de oude root-map bestaat
@@ -92,9 +80,13 @@ class moveStorageAppToNewStructure extends Command
             if (!is_dir($newRoot)) {
                 if (!$proef) {
                     mkdir($newRoot, 0755, true);
-                    Log::info("Nieuwe directory aangemaakt: {$newRoot}");
+                    if ($withLog) {
+                        Log::info("Nieuwe directory aangemaakt: {$newRoot}");
+                    }
                 } else {
-                    Log::info("Proef: zou directory aanmaken: {$newRoot}");
+                    if ($withLog) {
+                        Log::info("Proef: zou directory aanmaken: {$newRoot}");
+                    }
                 }
             }
 
@@ -108,23 +100,33 @@ class moveStorageAppToNewStructure extends Command
                 if (!is_dir($newDirPath)) {
                     if (!$proef) {
                         mkdir(dirname($newPath), 0755, true);
-                        Log::info("Directory aangemaakt: {$newDirPath}");
+                        if ($withLog) {
+                            Log::info("Directory aangemaakt: {$newDirPath}");
+                        }
                     } else {
-                        Log::info("Proef: zou directory aanmaken: {$newDirPath}");
+                        if ($withLog) {
+                            Log::info("Proef: zou directory aanmaken: {$newDirPath}");
+                        }
                     }
                 }
 
                 if (!$proef) {
                     copy($file->getRealPath(), $newPath);
                     unlink($file->getRealPath());
-                    Log::info("Bestand verplaatst: {$file->getRealPath()} -> {$newPath}");
+                    if ($withLog) {
+                        Log::info("Bestand verplaatst: {$file->getRealPath()} -> {$newPath}");
+                    }
                 } else {
-                    Log::info("Proef: zou bestand verplaatsen: {$file->getRealPath()} -> {$newPath}");
+                    if ($withLog) {
+                        Log::info("Proef: zou bestand verplaatsen: {$file->getRealPath()} -> {$newPath}");
+                    }
                 }
 
             }
 
-            Log::info("Bestanden succesvol gekopieerd van {$oldRoot} naar {$newRoot}");
+            if ($withLog) {
+                Log::info("Bestanden succesvol gekopieerd van {$oldRoot} naar {$newRoot}");
+            }
 
             // Optioneel: bronmap verwijderen
 //            File::deleteDirectory($oldRoot);
@@ -136,25 +138,36 @@ class moveStorageAppToNewStructure extends Command
 
         // Controleer of de oude directory leeg is en verwijder deze
         if (!$proef && is_dir($oldRoot)) {
-            $this->safeDeleteDirectory($oldRoot);
-            Log::info("Bronmap verwijderd: {$oldRoot}");
+            $this->safeDeleteDirectory($oldRoot, $withLog);
         } elseif ($proef) {
-            Log::info("Proef: zou bronmap verwijderen: {$oldRoot}");
+            if ($withLog) {
+                Log::info("Proef: zou bronmap verwijderen: {$oldRoot}");
+            }
         }
     }
 
-    private function safeDeleteDirectory(string $path): void
+    private function safeDeleteDirectory(string $path, bool $withLog): void
     {
         $files = array_diff(scandir($path), ['.', '..']);
         foreach ($files as $file) {
             $filePath = $path . '/' . $file;
             if (is_dir($filePath)) {
-                $this->safeDeleteDirectory($filePath); // Recursief verwijderen
+                $this->safeDeleteDirectory($filePath, $withLog); // Recursief verwijderen
             } else {
                 unlink($filePath);
+                if ($withLog) {
+                    Log::info("File verwijderd: {$filePath}");
+                }
             }
         }
-        rmdir($path); // Verwijder de lege map
+        if (rmdir($path)) {
+            if ($withLog) {
+                Log::info("Lege directory verwijderd: {$path}");
+            }
+        } else {
+            Log::error("Kon lege directory niet verwijderen: {$path}");
+        }
+
     }
 }
 

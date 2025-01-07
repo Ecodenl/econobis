@@ -15,38 +15,23 @@ use Illuminate\Support\Str;
 
 class moveDocuments extends Command
 {
-    /**
-     * The name and signature of the console command.
-     *
-     * @var string
-     */
-    protected $signature = 'uitfaserenAlfresco:moveDocuments  {--deleteAlfresco=false}';
+    protected $signature = 'uitfaserenAlfresco:moveDocuments  {--deleteAlfresco=false} {--withLog=false}';
     protected $mailTo = 'wim.mosman@xaris.nl';
-    protected bool $doDelete = false;
     protected bool $hasErrors = false;
     protected $errors = [];
     protected $description = 'Move documents from Alfreso to Bigstorage';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return mixed
-     */
     public function handle()
     {
-        // met of zonder delete?
-        $this->doDelete = $this->option('deleteAlfresco') == 'true';
-        Log::info('Start ' . $this->description . ($this->doDelete ? ' MET DELETE!' : '') );
+        $doDelete = $this->option('deleteAlfresco') == 'true';
+        $withLog = $this->option('withLog') === 'true';
+
+        Log::info('Start ' . $this->description . ($doDelete ? ' MET DELETE!' : '') );
 
         $commandRun = new CommandRun();
         $commandRun->app_cooperation_name = config('app.APP_COOP_NAME');
@@ -58,10 +43,10 @@ class moveDocuments extends Command
         $commandRun->created_in_shared = false;
         $commandRun->save();
 
-        $this->moveDocumentFromAlfresco();
+        $this->moveDocumentFromAlfresco($withLog);
         // geen errors bij moven, en doDelete
-        if($this->hasErrors === false && $this->doDelete){
-            $this->deleteDocumentFromAlfresco();
+        if($this->hasErrors === false && $doDelete){
+            $this->deleteDocumentFromAlfresco($withLog);
         }
 
         $commandRun->end_at = Carbon::now();
@@ -71,14 +56,14 @@ class moveDocuments extends Command
         $commandRun->save();
 
         if($this->hasErrors === true){
-            $this->sendMail();
+            $this->sendMail($doDelete);
             Log::info('Fouten bij verplaatsen documenten, mail gestuurd');
         }
 
-        Log::info('Einde ' . $this->description . ($this->doDelete ? ' MET DELETE!' : '') );
+        Log::info('Einde ' . $this->description . ($doDelete ? ' MET DELETE!' : '') );
     }
 
-    private function moveDocumentFromAlfresco(): void
+    private function moveDocumentFromAlfresco(bool $withLog): void
     {
         // Haal alle documents op waar file_path_and_name nog null is en alfresco_node_id is niet null
         $documents = Document::whereNull('file_path_and_name')
@@ -86,11 +71,13 @@ class moveDocuments extends Command
             ->get();
 
         foreach ($documents as $document) {
-            Log::info("Kopieren document uit Alfresco naar Storage map voor document: {$document->id}");
+            if ($withLog) {
+                Log::info("Kopieren document uit Alfresco naar Storage map voor document: {$document->id}");
+            }
 
             // ophalen document uit Alfresco
             try {
-                \DB::transaction(function () use ($document) {
+                \DB::transaction(function () use ($document, $withLog) {
 
                     $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
                     $documentContent =  $alfrescoHelper->downloadFile($document->alfresco_node_id);
@@ -111,7 +98,9 @@ class moveDocuments extends Command
                     $document->file_path_and_name = $filePathAndName;
                     $document->save();
 
-                    Log::info("Kopieren van bestand {$document->filename} voltooid! Filepath and name: {$filePathAndName}" );
+                    if ($withLog) {
+                        Log::info("Kopieren van bestand {$document->filename} voltooid! Filepath and name: {$filePathAndName}");
+                    }
                 });
 
             } catch (\Exception $e) {
@@ -122,7 +111,7 @@ class moveDocuments extends Command
         }
 
     }
-    private function deleteDocumentFromAlfresco(): void
+    private function deleteDocumentFromAlfresco(bool $withLog): void
     {
         // Haal alle documents op waar file_path_and_name niet null is en alfresco_node_id is ook niet null
         $documents = Document::whereNotNull('file_path_and_name')
@@ -131,11 +120,13 @@ class moveDocuments extends Command
             ->get();
 
         foreach ($documents as $document) {
-            Log::info("Verwijder document uit Alfresco voor document: {$document->id}");
+            if ($withLog) {
+                Log::info("Verwijder document uit Alfresco voor document: {$document->id}");
+            }
 
             // ophalen document uit Alfresco
             try {
-                \DB::transaction(function () use ($document) {
+                \DB::transaction(function () use ($document, $withLog) {
 
                     $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
                     $documentContent = $alfrescoHelper->deleteFile($document->alfresco_node_id);
@@ -152,7 +143,9 @@ class moveDocuments extends Command
                     $document->alfresco_node_id = 'Removed: ' . $document->alfresco_node_id;
                     $document->save();
 
-                    Log::info("Verwijderen van bestand {$document->filename} voltooid! Alfresco: {$document->alfresco_node_id}" );
+                    if ($withLog) {
+                        Log::info("Verwijderen van bestand {$document->filename} voltooid! Alfresco: {$document->alfresco_node_id}");
+                    }
                 });
 
             } catch (\Exception $e) {
@@ -164,12 +157,12 @@ class moveDocuments extends Command
 
     }
 
-    private function sendMail()
+    private function sendMail($doDelete)
     {
         $subject = $this->description . ' (' . count($this->errors) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $errorsHtml = "";
-        if($this->doDelete){
+        if($doDelete){
             $errorsHtml .= "<p>MET DELETE!</p>";
         }
 

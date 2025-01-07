@@ -10,7 +10,7 @@ namespace App\Http\Controllers\Api\Hoomdossier;
 
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
-use App\Helpers\Alfresco\AlfrescoHelper;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
@@ -61,8 +61,6 @@ class EndPointPdfController extends EndPointHoomDossierController
         $fileName = 'Hoomdossier-rapportage-' . $this->housingFile->id . '.pdf';
         $this->log('Filename rapportage: ' . $fileName);
 
-        $tmpFileName = Str::random(9) . '-' . $fileName;
-
         $document = new Document();
         $document->description = 'Hoomdossier rapportage';
         $document->document_type = 'upload';
@@ -84,29 +82,16 @@ class EndPointPdfController extends EndPointHoomDossierController
         $document->save();
 
         $contents = base64_decode( $dataContent->pdf->contents );
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
 
-        $this->log('FilePath_tmp: ' . $filePath_tmp);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+        $uniqueName = Str::random(40) . '.pdf';
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Woningdossier rapportage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Woningdossier rapportage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $document->file_path_and_name = $filePathAndName;
+        $document->alfresco_node_id = null;
+        $this->log('Woningdossier rapportage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
         $document->save();
 

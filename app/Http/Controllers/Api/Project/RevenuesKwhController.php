@@ -13,7 +13,6 @@ use App\Eco\Occupation\OccupationContact;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\RevenuesKwh\RevenueDistributionKwh;
 use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\CSV\RevenueDistributionKwhCSVHelper;
 use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
@@ -36,6 +35,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class RevenuesKwhController extends ApiController
 {
@@ -348,7 +348,7 @@ class RevenuesKwhController extends ApiController
         $energySupplierHtml
             = TemplateVariableHelper::stripRemainingVariableTags($energySupplierHtml);
 
-        $pdf = PDF::loadView('documents.generic', [
+        $pdfContent = PDF::loadView('documents.generic', [
             'html' => $energySupplierHtml,
         ])->output();
 
@@ -364,26 +364,16 @@ class RevenuesKwhController extends ApiController
 
         $document->save();
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/'
-            . $document->filename));
-        file_put_contents($filePath, $pdf);
+        $uniqueName = Str::random(40) . '.pdf';
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $pdfContent);
 
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                $document->filename, $document->getDocumentGroup()->name);
-
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-        }else{
-            $document->alfresco_node_id = null;
-        }
+        $document->file_path_and_name = $filePathAndName;
+        $document->alfresco_node_id = null;
         $document->save();
 
-        //delete file on server, still saved on alfresco.
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            Storage::disk('documents')->delete($document->filename);
-        }
     }
 
     public function destroy(RevenuesKwh $revenuesKwh)
@@ -745,7 +735,7 @@ class RevenuesKwhController extends ApiController
 
                 $revenueHtml
                     = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
-                $pdf = PDF::loadView('documents.generic', [
+                $pdfContent = PDF::loadView('documents.generic', [
                     'html' => $revenueHtml,
                 ])->output();
 
@@ -764,37 +754,27 @@ class RevenuesKwhController extends ApiController
                     $document->template_id = $documentTemplate->id;
                     $document->show_on_portal = $showOnPortal;
 
-                    $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
+                    $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
                         . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
-
                     //max length name 25
-                    $filename = substr($filename, 0, 25);
-
-                    $document->filename = $filename
+                    $fileName = substr($fileName, 0, 25);
+                    $fileName = $fileName
                         . substr($document->getDocumentGroup()->name, 0, 1)
                         . (Document::where('document_group', 'revenue')->count()
                             + 1) . '_' . $time->format('Ymd') . '.pdf';
 
+                    $document->filename = $fileName;
+
                     $document->save();
 
-                    $filePath = (storage_path('app' . DIRECTORY_SEPARATOR
-                        . 'documents/' . $document->filename));
-                    file_put_contents($filePath, $pdf);
+                    $uniqueName = Str::random(40) . '.pdf';
+                    $filePathAndName = "{$document->document_group}/" .
+                        Carbon::parse($document->created_at)->year .
+                        "/{$uniqueName}";
+                    Storage::disk('documents')->put($filePathAndName, $pdfContent);
 
-                    if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'),
-                            \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-                        $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                            $document->filename, $document->getDocumentGroup()->name);
-                        if ($alfrescoResponse == null) {
-                            throw new \Exception('Fout bij maken rapport document in Alfresco.');
-                        }
-                        $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                    } else {
-                        $document->alfresco_node_id = null;
-                    }
+                    $document->file_path_and_name = $filePathAndName;
+                    $document->alfresco_node_id = null;
 
                     $document->save();
                 } catch (\Exception $e) {
@@ -880,12 +860,7 @@ class RevenuesKwhController extends ApiController
                 Log::error( 'Fout bij verzenden email naar **onbekend emailadres** (' . $contact->full_name . ')' );
                 array_push($messages, 'Fout bij verzenden email naar **onbekend emailadres** (' . $contact->full_name . ')' );
             }
-
-            //delete file on server, still saved on alfresco.
-            if($document && \Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
-            }
-        }
+       }
         if(count($messages) > 0)
         {
             return ['messages' => $messages];

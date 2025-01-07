@@ -74,7 +74,6 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -2428,7 +2427,6 @@ class ExternalWebformController extends Controller
 
     protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
         $fileName = basename($intakeOpportunityAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Intake kans bijlage';
@@ -2451,27 +2449,14 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+        $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Intake kans bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $document->file_path_and_name = $filePathAndName;
 
         $document->save();
     }
@@ -2483,7 +2468,6 @@ class ExternalWebformController extends Controller
 
         if(in_array($fileType, $allowedFileTypes)) {
             $fileName = basename($contactAttachmentUrl);
-            $tmpFileName = Str::random(9) . '-' . $fileName;
 
             $document = new Document();
             $document->description = 'Contact bijlage';
@@ -2500,27 +2484,12 @@ class ExternalWebformController extends Controller
             $document->save();
 
             $contents = file_get_contents($contactAttachmentUrl);
-            $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-            $pos = strrpos($tmpFileName, '/');
-            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
-
-            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-                //delete file on server, still saved on alfresco.
-                Storage::disk('documents')->delete($tmpFileName);
-                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-            } else {
-                $document->filename = $tmpFileName;
-                $document->alfresco_node_id = null;
-                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-            }
+            $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+            $filePathAndName = "{$document->document_group}/" .
+                Carbon::parse($document->created_at)->year .
+                "/{$uniqueName}";
+            Storage::disk('documents')->put($filePathAndName, $contents);
+            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
             $document->save();
         } else {
@@ -4073,7 +4042,6 @@ class ExternalWebformController extends Controller
         $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
 
         $fileName = basename($quotationRequestAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Kansactie bijlage';
@@ -4092,27 +4060,12 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($quotationRequestAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
-
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Kansactie bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
         $document->save();
     }

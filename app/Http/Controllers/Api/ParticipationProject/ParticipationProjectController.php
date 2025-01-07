@@ -997,6 +997,7 @@ class ParticipationProjectController extends ApiController
 
                 $document->file_path_and_name = $filePathAndName;
                 $document->alfresco_node_id = null;
+                $document->save();
 
             } catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );

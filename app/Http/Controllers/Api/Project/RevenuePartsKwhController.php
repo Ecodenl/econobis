@@ -263,9 +263,6 @@ class RevenuePartsKwhController extends ApiController
                     Carbon::parse($document->created_at)->year .
                     "/{$uniqueName}";
 
-                $document->file_path_and_name = $filePathAndName;
-                $document->alfresco_node_id = null;
-
                 switch ($energySupplier->file_format_id){
                     case 1:
                         $writer = new Xls($excel);
@@ -276,6 +273,8 @@ class RevenuePartsKwhController extends ApiController
                 }
                 $writer->save(Storage::disk('documents')->path($filePathAndName));
 
+                $document->file_path_and_name = $filePathAndName;
+                $document->alfresco_node_id = null;
                 $document->save();
             }
 
@@ -754,7 +753,6 @@ class RevenuePartsKwhController extends ApiController
 
                     $document->file_path_and_name = $filePathAndName;
                     $document->alfresco_node_id = null;
-
                     $document->save();
                 } catch (\Exception $e) {
                     Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')');

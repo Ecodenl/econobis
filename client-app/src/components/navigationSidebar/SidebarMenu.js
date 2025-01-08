@@ -255,6 +255,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                    {permissions.menuDongles && (
+                        <Nav id="dongles">
+                            <NavText>
+                                <Link className="sidebar-link" to="dongels">
+                                    Dongels
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 

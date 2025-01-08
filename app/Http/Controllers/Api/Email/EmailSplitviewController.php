@@ -49,7 +49,7 @@ class EmailSplitviewController extends Controller
                     'sentByUserName' => $mail->sentByUser ? $mail->sentByUser->present()->fullName() : '',
                 ];
             }),
-            'total' => $query->count()
+            'total' => 0 // tijdelijk even geen $query->count() doen i.v.m. performance
         ]);
     }
 

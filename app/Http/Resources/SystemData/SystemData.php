@@ -3,6 +3,7 @@
 namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
@@ -90,6 +91,7 @@ use App\Http\Resources\Industry\FullIndustry;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
+use App\Http\Resources\AddressDongle\FullAddressDongle;
 use App\Http\Resources\Occupation\FullOccupation;
 use App\Http\Resources\Occupation\PrimaryOccupation;
 use App\Http\Resources\Opportunity\OpportunityEvaluationStatusResource;
@@ -248,6 +250,7 @@ class SystemData extends JsonResource
             'mailgunDomain' => MailgunDomain::select(['id', 'domain'])->get(),
             'measureCategories' => MeasureCategory::select(['id', 'name'])->orderBy('name')->get(),
             'measures' => MeasurePeek::collection(Measure::orderBy('name')->get()),
+            'addressDongles' => FullAddressDongle::collection(AddressDongle::orderBy('id')->get()),
             'occupations' => FullOccupation::collection(Occupation::orderBy('primary_occupation')->get()),
             'opportunityActions' => GenericResource::collection(OpportunityAction::all()),
             'opportunityEvaluationStatuses' => OpportunityEvaluationStatusResource::collection(OpportunityEvaluationStatus::all()),

@@ -61,6 +61,7 @@ import { fetchMailgunDomainsSaga } from './mailgun-domains/MailgunDomainsSaga';
 import * as MailgunDomainDetailsSaga from './mailgun-domains/MailgunDomainDetailsSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
+import { fetchAddressDonglesSaga } from './address-dongle/AddressDonglesSaga';
 import { deleteOpportunitySaga, fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { deleteOrderSaga, fetchOrdersSaga } from './order/OrdersSaga';
@@ -210,6 +211,8 @@ export default function* watchSagas() {
     // Measure
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
+    // Dongle
+    yield takeLatest('FETCH_ADDRESS_DONGLES', fetchAddressDonglesSaga);
     // Opportunity
     yield takeLatest('DELETE_OPPORTUNITY', deleteOpportunitySaga);
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);

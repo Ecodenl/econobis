@@ -326,6 +326,8 @@ Route::namespace('Api')
         Route::get('measure-category/jory', 'Measure\MeasureCategoryController@jory');
         Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
 
+        Route::get('address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
+
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');
         Route::get('mailbox/logged-in/only-active', 'Mailbox\MailboxController@loggedInUserOnlyActive');

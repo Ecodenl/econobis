@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources\AddressDongle;
 
-use App\Http\Resources\Address\FullAddress;
 use App\Http\Resources\User\FullUser;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -20,11 +19,13 @@ class FullAddressDongle extends JsonResource
         return [
             'id' => $this->id,
             'addressId' => $this->address_id,
-            'address' => FullAddress::make($this->whenLoaded('address')),
+            'fullAddress' => $this->address,
+            'fullContactName' => $this->address ? $this->address->contact()->value('full_name') : '',
             'typeReadOut' => $this->type_read_out,
             'typeReadOutName' => $this->type_read_out_name,
             'macNumber' => $this->mac_number,
             'typeDongle' => $this->type_dongle,
+            'typeDongleName' => $this->type_dongle_name,
             'energieId' => $this->energie_id,
             'dateSigned' => $this->date_signed ? Carbon::parse($this->date_signed)->format('Y-m-d') : '',
             'dateStart' => $this->date_start ? Carbon::parse($this->date_start)->format('Y-m-d') : '',

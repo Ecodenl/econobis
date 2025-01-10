@@ -320,12 +320,15 @@ class ContactDetailsFormAddressItem extends Component {
                             cancelEdit={this.cancelEdit}
                         />
                         <FreeFields table={'addresses'} recordId={this.props.address.id} />
-                        <Dongles
-                            address={this.state.address}
-                            setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
-                            closeAddressDongle={this.closeAddressDongle}
-                            addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
-                        />
+
+                        {this.props.permissions.manageDongles && this.props.useDongleRegistration == true && (
+                            <Dongles
+                                address={this.state.address}
+                                setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
+                                closeAddressDongle={this.closeAddressDongle}
+                                addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
+                            />
+                        )}
                     </>
                 )}
                 {this.state.showAddressEnergySupplier && (
@@ -364,6 +367,7 @@ class ContactDetailsFormAddressItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        useDongleRegistration: state.systemData.cooperation.use_dongle_registration,
     };
 };
 const mapDispatchToProps = dispatch => ({

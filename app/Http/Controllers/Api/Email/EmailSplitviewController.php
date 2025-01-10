@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+//use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class EmailSplitviewController extends Controller
@@ -29,6 +30,10 @@ class EmailSplitviewController extends Controller
             'mailbox',
             'sentByUser',
         ]);
+//        \DB::enableQueryLog();
+//        Log::info($query->count());
+//        Log::info(\DB::getQueryLog());
+
 
         return response()->json([
             'items' => $mails->map(function (Email $mail) {

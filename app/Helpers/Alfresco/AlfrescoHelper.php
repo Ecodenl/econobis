@@ -331,17 +331,29 @@ class AlfrescoHelper
         if ($err) {
             try {
                 $err = json_decode($err);
-                Log::error('Alfresco deleting error' . $err);
+                $error = 'Alfresco deleting error: ' . $err;
             } catch (\Exception $e) {
-                Log::error('Alfresco deleting error couldn\'t decode');
+                $error = 'Alfresco deleting error couldn\'t decode';
             }
+
+            Log::error($error);
+            return [
+                'succes' => false,
+                'message' => $error
+            ];
+
         } else {
 
             $decoded_response = json_decode($response, true);
 
             //catch alfresco errors
             if ($decoded_response && isset( $decoded_response['error'])) {
-                Log::error('Alfresco error' . $decoded_response['error']);
+                Log::error('Alfresco error: ');
+                Log::error($decoded_response['error']);
+                return [
+                    'succes' => false,
+                    'message' => $decoded_response['error']['briefSummary']
+                ];
             } //else success
             else {
                 return [

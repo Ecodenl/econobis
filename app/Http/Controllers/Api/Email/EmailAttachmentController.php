@@ -8,7 +8,7 @@ use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class EmailAttachmentController extends Controller
@@ -16,6 +16,9 @@ class EmailAttachmentController extends Controller
     public function download(EmailAttachment $emailAttachment)
     {
         $this->authorize('manage', $emailAttachment->email);
+
+//        Log::info('test wim filepath mail_attachments');
+//        Log::info(Storage::disk('mail_attachments')->path($emailAttachment->filename));
 
         return Storage::disk('mail_attachments')->download($emailAttachment->filename, $emailAttachment->name);
 

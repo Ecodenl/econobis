@@ -260,7 +260,7 @@ class SepaHelper
      */
     public function downloadSepa(Sepa $sepa){
 
-        $filePath = Storage::disk('administrations')
+        $filePath = Storage::disk('administration-logos')
             ->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');
@@ -272,7 +272,8 @@ class SepaHelper
      */
     public function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

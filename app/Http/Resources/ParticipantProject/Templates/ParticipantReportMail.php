@@ -38,12 +38,12 @@ class ParticipantReportMail extends Mailable
      */
     public function build()
     {
-        if($this->document){
+        if($this->document && $this->document->file_path_and_name !== null){
             $this->subject($this->email->subject)
                 ->view('emails.generic')
                 ->text('emails.genericText')
-                ->attach(Storage::disk('documents')->path($this->document->filename), [
-                    'as' => $this->document->name
+                ->attach(Storage::disk('documents')->path($this->document->file_path_and_name), [
+                    'as' => $this->document->filename
                 ]);
         } else {
             $this->subject($this->email->subject)

@@ -19,7 +19,15 @@ class AddDonglePermissions extends Migration
             'guard_name' => 'api',
         ]);
 
+        Permission::create([
+            'name' => 'manage_dongles',
+            'guard_name' => 'api',
+        ]);
+
         $superuserRole = Role::findByName('Key user');
+        $superuserRole->syncPermissions(Permission::all());
+
+        $superuserRole = Role::findByName('Energie adviseur');
         $superuserRole->syncPermissions(Permission::all());
     }
 
@@ -30,7 +38,6 @@ class AddDonglePermissions extends Migration
      */
     public function down()
     {
-        $superuserRole = Role::findByName('Key user');
-        $superuserRole->syncPermissions(Permission::all());
+
     }
 }

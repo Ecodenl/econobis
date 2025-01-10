@@ -44,6 +44,7 @@ class FullDocument extends JsonResource
             'htmlBody' => $this->html_body,
             'freeText1' => $this->free_text_1,
             'freeText2' => $this->free_text_2,
+            'onAlfresco' => $this->file_path_and_name == null && $this->alfresco_node_id != null,
             'filename' => $this->filename,
             'contactId' => $this->contact_id,
             'contact' => FullContact::make($this->whenLoaded('contact')),

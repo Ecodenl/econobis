@@ -45,7 +45,11 @@ class DocumentViewForm extends Component {
         } else if (isEmpty(this.props.documentDetails)) {
             loadingText = 'Geen document gevonden!';
         } else if (!this.state.file) {
-            loadingText = 'Document van Alfresco halen.';
+            if (this.props.documentDetails.onAlfresco) {
+                loadingText = 'Document van Alfresco halen.';
+            } else {
+                loadingText = 'Document ophalen.';
+            }
         } else {
             loading = false;
         }

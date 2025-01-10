@@ -23,6 +23,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CreateAllInvoicesPost implements ShouldQueue
 {
@@ -122,11 +123,16 @@ class CreateAllInvoicesPost implements ShouldQueue
         $path = 'administration_' . $validatedInvoice->administration->id
             . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
 
         $merger = new Merger;
         foreach ($createdPdfs as $createdPdf){
-            $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
+//            todo WM: opschonen
+//            $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
+            $addFilePath = Storage::disk('administrations')->path($createdPdf);
+            $merger->addFile($addFilePath);
         }
         $createdPdf = $merger->merge();
         file_put_contents($filePath, $createdPdf);

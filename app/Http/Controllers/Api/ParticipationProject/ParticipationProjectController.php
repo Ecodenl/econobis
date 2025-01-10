@@ -30,7 +30,6 @@ use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Delete\Models\DeleteRevenue;
 use App\Helpers\Excel\ParticipantExcelHelper;
@@ -62,6 +61,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ParticipationProjectController extends ApiController
 {
@@ -961,8 +961,7 @@ class ParticipationProjectController extends ApiController
 
             $revenueHtml = TemplateVariableHelper::stripRemainingVariableTags($revenueHtml);
 
-            //if preview there is 1 participantId so we return
-            $pdf = PDF::loadView('documents.generic', [
+            $pdfContent = PDF::loadView('documents.generic', [
                 'html' => $revenueHtml,
             ])->output();
 
@@ -982,28 +981,24 @@ class ParticipationProjectController extends ApiController
                 $document->template_id = $documentTemplate->id;
                 $document->show_on_portal = $showOnPortal;
 
-                $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
-                //max length name 25
-                $filename = substr($filename, 0, 25);
-
-                $document->filename = $filename  . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
-
-                $document->save();
-
-                $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents' . DIRECTORY_SEPARATOR . $document->filename));
-
-                file_put_contents($filePath, $pdf);
-
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                    $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                    $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-                    $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-                }else{
-                    $document->alfresco_node_id = null;
-                }
+                $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_' . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
+                //max length name 25 tot nu toe
+                $fileName = substr($fileName, 0, 25);
+                $fileName = $fileName . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', 'revenue')->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+                $document->filename = $fileName;
 
                 $document->save();
+
+                $uniqueName = Str::random(40) . '.pdf';
+                $filePathAndName = "{$document->document_group}/" .
+                    \Carbon\Carbon::parse($document->created_at)->year .
+                    "/{$uniqueName}";
+                Storage::disk('documents')->put($filePathAndName, $pdfContent);
+
+                $document->file_path_and_name = $filePathAndName;
+                $document->alfresco_node_id = null;
+                $document->save();
+
             } catch (\Exception $e) {
                 Log::error('Fout bij maken rapport document voor ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')' );
                 Log::error($e->getMessage());
@@ -1061,12 +1056,6 @@ class ParticipationProjectController extends ApiController
                 $messages[] = 'Fout bij verzenden email naar ' . ($primaryEmailAddress ? $primaryEmailAddress->email : '**onbekend emailadres**') . ' (' . $contact->full_name . ')';
             }
 
-            //delete file on server, still saved on alfresco.
-            if($document){
-                if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                    Storage::disk('documents')->delete($document->filename);
-                }
-            }
         }
         if(count($messages) > 0)
         {

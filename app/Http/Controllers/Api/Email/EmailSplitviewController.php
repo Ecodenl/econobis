@@ -7,6 +7,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+//use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class EmailSplitviewController extends Controller
@@ -20,7 +21,11 @@ class EmailSplitviewController extends Controller
             ->getJoryBuilder()
             ->buildQuery();
 
+//        \DB::enableQueryLog();
+//        Log::info($query->count());
         $mails = $query->get();
+
+//        Log::info(\DB::getQueryLog());
 
         $mails->load([
             'attachmentsWithoutCids',
@@ -49,7 +54,8 @@ class EmailSplitviewController extends Controller
                     'sentByUserName' => $mail->sentByUser ? $mail->sentByUser->present()->fullName() : '',
                 ];
             }),
-            'total' => 0 // tijdelijk even geen $query->count() doen i.v.m. performance
+//            'total' => 0 // tijdelijk even geen $query->count() doen i.v.m. performance
+            'total' => $query->count()
         ]);
     }
 

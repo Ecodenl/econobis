@@ -68,6 +68,7 @@ class moveDocuments extends Command
         // Haal alle documents op waar file_path_and_name nog null is en alfresco_node_id is niet null
         $documents = Document::whereNull('file_path_and_name')
             ->whereNotNull('alfresco_node_id')
+            ->where('alfresco_node_id', 'NOT LIKE', 'Error:%')
             ->get();
 
         foreach ($documents as $document) {
@@ -104,6 +105,9 @@ class moveDocuments extends Command
                 });
 
             } catch (\Exception $e) {
+                $document->alfresco_node_id = 'Error: ' . $document->alfresco_node_id;
+                $document->save();
+
                 Log::error("Fout bij het Kopieren van document {$document->id}: " . $e->getMessage());
                 $this->errors[] = "Fout bij het Kopieren van document {$document->id}: " . $e->getMessage();
                 $this->hasErrors = true;
@@ -117,6 +121,7 @@ class moveDocuments extends Command
         $documents = Document::whereNotNull('file_path_and_name')
             ->whereNotNull('alfresco_node_id')
             ->where('alfresco_node_id', 'NOT LIKE', 'Removed:%')
+            ->where('alfresco_node_id', 'NOT LIKE', 'Error:%')
             ->get();
 
         foreach ($documents as $document) {

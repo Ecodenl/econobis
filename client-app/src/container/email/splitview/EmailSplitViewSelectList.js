@@ -145,10 +145,10 @@ export default function EmailSplitViewSelectList({
             return;
         }
 
-        // if (emails.length >= emailCount) {
+        // if (emails.length == 0) {
         //     return;
         // }
-        if (emails.length == 0) {
+        if (emails.length >= emailCount) {
             return;
         }
 
@@ -199,8 +199,8 @@ export default function EmailSplitViewSelectList({
                             <th>
                                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <div>
-                                        {/*{getTitle()} ({emailCount})*/}
-                                        {getTitle()} ({emails.length})
+                                        {/*{getTitle()} ({emails.length})*/}
+                                        {getTitle()} ({emailCount})
                                     </div>
                                 </div>
                             </th>

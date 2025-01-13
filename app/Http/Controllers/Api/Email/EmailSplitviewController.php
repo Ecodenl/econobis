@@ -21,7 +21,11 @@ class EmailSplitviewController extends Controller
             ->getJoryBuilder()
             ->buildQuery();
 
+//        \DB::enableQueryLog();
+//        Log::info($query->count());
         $mails = $query->get();
+
+//        Log::info(\DB::getQueryLog());
 
         $mails->load([
             'attachmentsWithoutCids',
@@ -30,10 +34,6 @@ class EmailSplitviewController extends Controller
             'mailbox',
             'sentByUser',
         ]);
-//        \DB::enableQueryLog();
-//        Log::info($query->count());
-//        Log::info(\DB::getQueryLog());
-
 
         return response()->json([
             'items' => $mails->map(function (Email $mail) {
@@ -54,7 +54,8 @@ class EmailSplitviewController extends Controller
                     'sentByUserName' => $mail->sentByUser ? $mail->sentByUser->present()->fullName() : '',
                 ];
             }),
-            'total' => 0 // tijdelijk even geen $query->count() doen i.v.m. performance
+//            'total' => 0 // tijdelijk even geen $query->count() doen i.v.m. performance
+            'total' => $query->count()
         ]);
     }
 

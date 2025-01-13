@@ -47,7 +47,9 @@ class FinancialOverviewHelper
 
         $img = '';
         if ($financialOverviewContact->financialOverview->administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($financialOverviewContact->financialOverview->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -144,7 +146,9 @@ class FinancialOverviewHelper
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
 
         $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
@@ -282,7 +286,8 @@ class FinancialOverviewHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

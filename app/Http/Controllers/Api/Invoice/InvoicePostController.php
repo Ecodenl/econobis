@@ -32,8 +32,7 @@ class InvoicePostController extends Controller
     }
 
     public function downloadInvoicePost(InvoicePost $invoicePost){
-        $filePath = Storage::disk('administrations')
-            ->path($invoicePost->filename);
+        $filePath = Storage::disk('administrations')->path($invoicePost->filename);
         header('X-Filename:' . $invoicePost->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $invoicePost->name, ['Content-Type: application/xml']);

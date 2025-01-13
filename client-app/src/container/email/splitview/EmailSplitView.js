@@ -38,12 +38,14 @@ export default function EmailSplitView({ router }) {
     }, []);
 
     useEffect(() => {
+        // if (!isEmailDetailsModalOpen && emails.length > 0) {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
     }, [isEmailDetailsModalOpen]);
 
     useEffect(() => {
+        // if (!isEmailSendModalOpen && emails.length > 0) {
         if (!isEmailSendModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }

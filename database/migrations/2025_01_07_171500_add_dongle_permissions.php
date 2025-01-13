@@ -13,22 +13,11 @@ class AddDonglePermissions extends Migration
      */
     public function up()
     {
-
-        Permission::create([
-            'name' => 'menu_dongles',
-            'guard_name' => 'api',
-        ]);
-
-        Permission::create([
-            'name' => 'manage_dongles',
-            'guard_name' => 'api',
-        ]);
-
         $superuserRole = Role::findByName('Key user');
         $superuserRole->syncPermissions(Permission::all());
 
-        $superuserRole = Role::findByName('Energie adviseur');
-        $superuserRole->syncPermissions(Permission::all());
+        $energyAdvisor = Role::findByName('Energie adviseur');
+        $energyAdvisor->givePermissionTo(['menu_dongles','manage_dongles']);
     }
 
     /**

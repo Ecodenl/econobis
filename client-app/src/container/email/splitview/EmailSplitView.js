@@ -310,7 +310,11 @@ export default function EmailSplitView({ router }) {
             <div className="row">
                 <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
-                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters} />
+                        <EmailSplitViewFiltersPanel
+                            filters={filters}
+                            setFilters={setFilters}
+                            activeMailboxes={activeMailboxes}
+                        />
                     </form>
                 </div>
             </div>

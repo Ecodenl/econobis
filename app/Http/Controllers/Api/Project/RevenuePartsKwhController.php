@@ -259,9 +259,9 @@ class RevenuePartsKwhController extends ApiController
                 $document->save();
 
                 $uniqueName = Str::random(40) . $fileFormat;
-                $filePathAndName = "{$document->document_group}/" .
-                    Carbon::parse($document->created_at)->year .
-                    "/{$uniqueName}";
+                $filePath = "{$document->document_group}/" .
+                    Carbon::parse($document->created_at)->year;
+                $filePathAndName = "$filePath/{$uniqueName}";
 
                 switch ($energySupplier->file_format_id){
                     case 1:
@@ -271,6 +271,15 @@ class RevenuePartsKwhController extends ApiController
                         $writer = new Xlsx($excel);
                         break;
                 }
+
+                $storageDir = Storage::disk('documents')
+                    ->path($filePath);
+
+                //Check if storage map exists
+                if (!is_dir($storageDir)) {
+                    mkdir($storageDir, 0777, true);
+                }
+
                 $writer->save(Storage::disk('documents')->path($filePathAndName));
 
                 $document->file_path_and_name = $filePathAndName;

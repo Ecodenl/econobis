@@ -6,8 +6,12 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
     const statuses = useSelector(state => state.systemData.emailStatuses);
     const teams = useSelector(state => state.systemData.teams);
     const users = useSelector(state => state.systemData.users);
-    const [responsibleUserId, setResponsibleUserId] = useState('');
-    const [responsibleTeamId, setResponsibleTeamId] = useState('');
+    const [responsibleUserId, setResponsibleUserId] = useState(
+        filters.responsibleUserId ? filters.responsibleUserId : ''
+    );
+    const [responsibleTeamId, setResponsibleTeamId] = useState(
+        filters.responsibleTeamId ? filters.responsibleTeamId : ''
+    );
 
     const setResponsibleValue = val => {
         setResponsibleUserId('');

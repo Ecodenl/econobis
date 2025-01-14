@@ -237,6 +237,7 @@ class MailFetcherMsOauth
             'cc' => $ccs,
             'bcc' => $bccs,
             'subject' => $subject,
+            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
             'html_body' => $textHtml,
             'date_sent' => $sentDateTime,
             'folder' => 'inbox',

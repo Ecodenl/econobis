@@ -100,7 +100,7 @@ class ProcessSendingEmail implements ShouldQueue
     protected function markEmailAsSent($updatedEmail)
     {
         $this->email->subject = $updatedEmail->subject;
-        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
+        $this->email->subject_for_filter = trim(mb_substr($updatedEmail->subject ?? '', 0, 150));
         $this->email->html_body = $updatedEmail->html_body;
         $this->email->sent_by_user_id = $this->user->id;
         $this->email->date_sent = new Carbon();

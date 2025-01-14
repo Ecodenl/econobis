@@ -304,6 +304,7 @@ class SendEmailsWithVariablesDeprecated implements ShouldQueue {
         }
 
         $email->subject = $mergedSubject;
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->html_body = $mergedHtmlBody;
         $email->date_sent = new Carbon();
         $email->folder = 'sent';

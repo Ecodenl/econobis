@@ -64,6 +64,8 @@ class EmailSendController extends Controller
         $email->from = $email->mailbox->email;
         $email->manualContacts()->sync($manualContactIds);
 
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
+
         $email->inlineImagesService()->convertInlineImagesToCid();
 
         $email->save();

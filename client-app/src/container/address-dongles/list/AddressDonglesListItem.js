@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
+import GetNameByIdHelper from '../../../helpers/GetNameByIdHelper';
 
 class AddressDonglesListItem extends Component {
     constructor(props) {
@@ -54,7 +55,9 @@ class AddressDonglesListItem extends Component {
                 </td>
                 <td>{fullAddress.postal_code}</td>
                 <td>{fullAddress.city}</td>
-                <td>{typeReadOut}</td>
+                <td>
+                    <GetNameByIdHelper id={typeReadOut} items={this.props.typesReadOut} />
+                </td>
                 <td>{dateStart}</td>
                 <td>{dateEnd}</td>
                 <td>{typeDongleName}</td>
@@ -67,6 +70,7 @@ class AddressDonglesListItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        typesReadOut: state.systemData.dongleTypeReadOut,
     };
 };
 

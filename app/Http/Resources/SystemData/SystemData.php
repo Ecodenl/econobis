@@ -4,6 +4,7 @@ namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
 use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
@@ -138,16 +139,18 @@ class SystemData extends JsonResource
             $usersExtraAdministration = null;
         }
 
-        $dongleTypeReadOut = collect([
-            (object) [
-                'id' => '1',
-                'name' => 'P1'
-            ],
-            (object) [
-                'id' => '2',
-                'name' => 'P2'
-            ]
-        ]);
+//        $dongleTypeReadOut => FullEnumWithIdAndName::collection(AddressDongle::collection()),
+
+//        $dongleTypeReadOut = collect([
+//            (object) [
+//                'id' => '1',
+//                'name' => 'P1'
+//            ],
+//            (object) [
+//                'id' => '2',
+//                'name' => 'P2'
+//            ]
+//        ]);
 
         $dongleTypeDongle = collect([
             (object) [
@@ -205,6 +208,7 @@ class SystemData extends JsonResource
             'hasSolarPanelsSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'has-solar-panels')->get(),
 
             'addressTypes' => FullEnumWithIdAndName::collection(AddressType::collection()),
+            'dongleTypeReadOut' => FullEnumWithIdAndName::collection(AddressDongleTypeReadOut::collection()),
             'administrationsPeek' => AdministrationPeek::collection(Administration::orderBy('id')->get()),
             'appName' => config('app.name'),
             'baseProjectCodeRefs' => FullEnumWithIdAndName::collection(BaseProjectCodeRef::collection()),
@@ -214,7 +218,7 @@ class SystemData extends JsonResource
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
-            'dongleTypeReadOut' => $dongleTypeReadOut,
+//            'dongleTypeReadOut' => $dongleTypeReadOut,
             'dongleTypeDongle' => $dongleTypeDongle,
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),

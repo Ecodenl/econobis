@@ -6,9 +6,10 @@ moment.locale('nl');
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+import GetNameByIdHelper from '../../../../../helpers/GetNameByIdHelper';
 
 const AddressDetailsFormAddressDongleView = props => {
-    const { typeReadOutName, dateStart } = props.addressDongle;
+    const { typeReadOut, dateStart } = props.addressDongle;
     console.log('addressDongleNewOrEditOpen: ' + props.addressDongleNewOrEditOpen);
     return (
         <div
@@ -17,7 +18,9 @@ const AddressDetailsFormAddressDongleView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div onClick={props.openEdit}>
-                <div className="col-sm-3">{typeReadOutName ? typeReadOutName : ''}</div>
+                <div className="col-sm-3">
+                    <GetNameByIdHelper id={typeReadOut} items={props.typesReadOut} />
+                </div>
                 <div className="col-sm-8">{dateStart ? moment(dateStart).format('L') : 'Onbekend'}</div>
             </div>
             <div className="col-sm-1">
@@ -47,6 +50,7 @@ const AddressDetailsFormAddressDongleView = props => {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        typesReadOut: state.systemData.dongleTypeReadOut,
     };
 };
 

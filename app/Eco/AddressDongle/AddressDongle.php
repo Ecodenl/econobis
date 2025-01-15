@@ -14,25 +14,6 @@ class AddressDongle extends Model
 
     use RevisionableTrait;
 
-//    protected $guarded = ['id'];
-
-    public function getTypeReadOutNameAttribute()
-    {
-        switch ($this->type_read_out) {
-            case 1:
-                $name = "P1";
-                break;
-            case 2:
-                $name = "P2";
-                break;
-            default:
-                $name = "onbekend";
-                break;
-        }
-
-        return $name;
-    }
-
     public function getTypeDongleNameAttribute()
     {
         switch ($this->type_dongle) {

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import InputSelectGroup from '../../../components/form/InputSelectGroup';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 export default function EmailSplitViewFiltersPanel({ filters, setFilters, activeMailboxes }) {
     const statuses = useSelector(state => state.systemData.emailStatuses);
@@ -47,11 +48,11 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
     };
 
     const getResponsibleValue = () => {
-        if (responsibleUserId) {
-            return 'user' + responsibleUserId;
+        if (filters.responsibleUserId) {
+            return 'user' + filters.responsibleUserId;
         }
-        if (responsibleTeamId) {
-            return 'team' + responsibleTeamId;
+        if (filters.responsibleTeamId) {
+            return 'team' + filters.responsibleTeamId;
         }
 
         return ''; // Geen
@@ -75,7 +76,24 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                         Gekoppeld contact
                                     </th>
                                     <th className="" width="15%">
-                                        Onderwerp
+                                        Onderwerp{' '}
+                                        <span>
+                                            <FaInfoCircle
+                                                color={'white'}
+                                                size={'15px'}
+                                                data-tip={
+                                                    'Er wordt hier alleen gezocht in de eerste 150 tekens van het onderwerp.'
+                                                }
+                                                data-for={`tooltip-subject-filter`}
+                                            />
+                                            <ReactTooltip
+                                                id={`tooltip-subject-filter`}
+                                                effect="float"
+                                                place="right"
+                                                multiline={true}
+                                                aria-haspopup="true"
+                                            />
+                                        </span>
                                     </th>
                                     <th className="" width="7%">
                                         Van
@@ -93,7 +111,22 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                         Mailbox
                                     </th>
                                     <th className="" width="10%">
-                                        Aan
+                                        Aan{' '}
+                                        <span>
+                                            <FaInfoCircle
+                                                color={'white'}
+                                                size={'15px'}
+                                                data-tip={'Bij veel emails kan deze filter lang duren.'}
+                                                data-for={`tooltip-to-filter`}
+                                            />
+                                            <ReactTooltip
+                                                id={`tooltip-to-filter`}
+                                                effect="float"
+                                                place="right"
+                                                multiline={true}
+                                                aria-haspopup="true"
+                                            />
+                                        </span>
                                     </th>
                                     <th className="" width="5%">
                                         Bijlage

@@ -24,7 +24,6 @@ class EmailSplitviewController extends Controller
 //        \DB::enableQueryLog();
 //        Log::info($query->count());
         $mails = $query->get();
-
 //        Log::info(\DB::getQueryLog());
 
         $mails->load([

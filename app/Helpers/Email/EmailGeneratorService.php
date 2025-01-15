@@ -18,6 +18,7 @@ class EmailGeneratorService
         $email->cc = [];
         $email->reply_type_id = 'reply';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->fill($attributes);
         $email->save();
 
@@ -42,6 +43,7 @@ class EmailGeneratorService
         $email->cc = $this->matchEmailAddressesToIds($cc->toArray());
         $email->reply_type_id = 'reply-all';
         $email->subject = 'Re: ' . $this->email->subject;
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->fill($attributes);
         $email->save();
 
@@ -59,6 +61,7 @@ class EmailGeneratorService
         $email->bcc = [];
         $email->reply_type_id = 'forward';
         $email->subject = 'Fwd: ' . $this->email->subject;
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->fill($attributes);
         $email->save();
 

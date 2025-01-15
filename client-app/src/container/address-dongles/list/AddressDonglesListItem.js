@@ -32,16 +32,7 @@ class AddressDonglesListItem extends Component {
     }
 
     render() {
-        const {
-            id,
-            fullContactName,
-            fullAddress,
-            typeReadOut,
-            dateStart,
-            dateEnd,
-            typeDongleName,
-            energieId,
-        } = this.props;
+        const { id, fullContactName, fullAddress, typeReadOut, dateStart, dateEnd, typeDongle, energieId } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -60,7 +51,9 @@ class AddressDonglesListItem extends Component {
                 </td>
                 <td>{dateStart}</td>
                 <td>{dateEnd}</td>
-                <td>{typeDongleName}</td>
+                <td>
+                    <GetNameByIdHelper id={typeDongle} items={this.props.typesDongle} />
+                </td>
                 <td>{energieId}</td>
             </tr>
         );
@@ -71,6 +64,7 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         typesReadOut: state.systemData.dongleTypeReadOut,
+        typesDongle: state.systemData.dongleTypeDongle,
     };
 };
 

@@ -14,26 +14,6 @@ class AddressDongle extends Model
 
     use RevisionableTrait;
 
-    public function getTypeDongleNameAttribute()
-    {
-        switch ($this->type_dongle) {
-            case 1:
-                $name = "Smartstuff type A";
-                break;
-            case 2:
-                $name = "Smartstuff type B";
-                break;
-            case 3:
-                $name = "Ander merk";
-                break;
-            default:
-                $name = "onbekend";
-                break;
-        }
-
-        return $name;
-    }
-
     public function address()
     {
         return $this->belongsTo(Address::class);

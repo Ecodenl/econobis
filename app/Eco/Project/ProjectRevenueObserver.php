@@ -33,6 +33,9 @@ class ProjectRevenueObserver
             }
             $project = $projectRevenue->project;
 
+            // Op moment dat ProjectRevenue op Definitief wordt gezet dan project (default) date_entry op null zetten.
+            $project->date_entry = null;
+
             // Skip for revenueParticipant
             if($projectRevenue->category->code_ref == 'revenueParticipant') {
                 return;

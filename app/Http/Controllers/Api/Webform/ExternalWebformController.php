@@ -2753,8 +2753,8 @@ class ExternalWebformController extends Controller
                         'measure_date' => $measureDate,
                         'answer' => $measureAnswer,
                         'status_id' => $measureStatusId,
-                        'floor_id' => $measureFloorId,
-                        'side_id' => $measureSidesid,
+                        'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                        'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                         'type_brand' => $measureTypeBrand,
                         'campaign_id' => $housingFileSpecificationCampaignId,
                     ]);
@@ -2821,8 +2821,8 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                             'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
@@ -2832,8 +2832,8 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                             'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);

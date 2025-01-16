@@ -1018,6 +1018,16 @@ class RevenueFormEdit extends Component {
                                 ? 'Als je deze datum invult, zal de aflossing definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'
                                 : 'Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'}
                         </p>
+                        {this.props.revenue.project.dateEntry !== null ? (
+                            <p>
+                                <span style={{ color: 'red' }}>
+                                    Standaard ingangsdatum mutaties (
+                                    {moment(this.props.revenue.project.dateEntry).format('DD-MM-YYYY')}) bij dit project
+                                    zal komen te vervallen.
+                                </span>
+                                <br />
+                            </p>
+                        ) : null}
                         {(!payPercentage || payPercentage == 0) &&
                         (!payAmount || payAmount == 0) &&
                         (!revenue || revenue == 0) &&

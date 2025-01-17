@@ -239,7 +239,7 @@ class SepaHelper
         $name = 'incasso-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-        Storage::put('administrations/' . $path, $xml);
+        Storage::disk('administrations')->put($path, $xml);
 
         $sepa->filename = $path;
         $sepa->name = $name;
@@ -260,7 +260,7 @@ class SepaHelper
      */
     public function downloadSepa(Sepa $sepa){
 
-        $filePath = Storage::disk('administration-logos')
+        $filePath = Storage::disk('administrations')
             ->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');

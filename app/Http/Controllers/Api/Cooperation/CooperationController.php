@@ -73,6 +73,7 @@ class CooperationController extends ApiController
         }
         $cooperation->save();
 
+//            todo WM: opschonen
 //        // Store attachment when given
 //        if($request->file('attachment')){
 //            $this->checkStorageDir($cooperation->id);
@@ -129,6 +130,7 @@ class CooperationController extends ApiController
             $cooperation->save();
         }
 
+//            todo WM: opschonen
         // Store attachment when given
 //        if($request->file('attachment')){
 //            $this->checkStorageDir($cooperation->id);

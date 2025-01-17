@@ -2491,6 +2491,8 @@ class ExternalWebformController extends Controller
             Storage::disk('documents')->put($filePathAndName, $contents);
             $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
+            $document->file_path_and_name = $filePathAndName;
+
             $document->save();
         } else {
             $this->log('Contact bijlage is van een niet toegestaan formaat: ' . implode(',', $allowedFileTypes));
@@ -4066,6 +4068,8 @@ class ExternalWebformController extends Controller
             "/{$uniqueName}";
         Storage::disk('documents')->put($filePathAndName, $contents);
         $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
+
+        $document->file_path_and_name = $filePathAndName;
 
         $document->save();
     }

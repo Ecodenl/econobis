@@ -246,7 +246,7 @@ class SepaPaymentHelper
         $name = 'betaal-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-        Storage::put('administrations/' . $path, $xml);
+        Storage::disk('administrations')->put($path, $xml);
 
         $sepa->filename = $path;
         $sepa->name = $name;

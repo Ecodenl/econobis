@@ -503,7 +503,7 @@ class InvoiceHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administration-logos')
+        $storageDir = Storage::disk('administrations')
             ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
 
         if (!is_dir($storageDir)) {

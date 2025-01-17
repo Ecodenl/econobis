@@ -258,7 +258,7 @@ class RevenuePartsKwhController extends ApiController
 
                 $document->save();
 
-                $uniqueName = Str::random(40) . $fileFormat;
+                $uniqueName = Str::uuid() . $fileFormat;
                 $filePath = "{$document->document_group}/" .
                     Carbon::parse($document->created_at)->year;
                 $filePathAndName = "$filePath/{$uniqueName}";
@@ -754,7 +754,7 @@ class RevenuePartsKwhController extends ApiController
 
                     $document->save();
 
-                    $uniqueName = Str::random(40) . '.pdf';
+                    $uniqueName = Str::uuid() . '.pdf';
                     $filePathAndName = "{$document->document_group}/" .
                         Carbon::parse($document->created_at)->year .
                         "/{$uniqueName}";

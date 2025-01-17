@@ -2449,7 +2449,7 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
         $filePathAndName = "{$document->document_group}/" .
             Carbon::parse($document->created_at)->year .
             "/{$uniqueName}";
@@ -2484,7 +2484,7 @@ class ExternalWebformController extends Controller
             $document->save();
 
             $contents = file_get_contents($contactAttachmentUrl);
-            $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
             $filePathAndName = "{$document->document_group}/" .
                 Carbon::parse($document->created_at)->year .
                 "/{$uniqueName}";
@@ -4062,7 +4062,7 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($quotationRequestAttachmentUrl);
-        $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
         $filePathAndName = "{$document->document_group}/" .
             Carbon::parse($document->created_at)->year .
             "/{$uniqueName}";

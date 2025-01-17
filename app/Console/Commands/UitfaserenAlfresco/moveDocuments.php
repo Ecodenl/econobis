@@ -90,7 +90,7 @@ class moveDocuments extends Command
                         throw new \Exception("Alfresco error: {$briefSummary}");
                     }
 
-                    $uniqueName = Str::random(40) . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+                    $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
                     $filePathAndName = "{$document->document_group}/" .
                         Carbon::parse($document->created_at)->year .
                         "/{$uniqueName}";

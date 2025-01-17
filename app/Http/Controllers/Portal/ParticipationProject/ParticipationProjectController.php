@@ -271,7 +271,7 @@ class ParticipationProjectController extends Controller
         $document->filename = $fileName;
         $document->save();
 
-        $uniqueName = Str::random(40) . '.pdf';
+        $uniqueName = Str::uuid() . '.pdf';
         $filePathAndName = "{$document->document_group}/" .
             Carbon::parse($document->created_at)->year .
             "/{$uniqueName}";

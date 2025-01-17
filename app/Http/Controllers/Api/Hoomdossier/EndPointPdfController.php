@@ -83,7 +83,7 @@ class EndPointPdfController extends EndPointHoomDossierController
 
         $contents = base64_decode( $dataContent->pdf->contents );
 
-        $uniqueName = Str::random(40) . '.pdf';
+        $uniqueName = Str::uuid() . '.pdf';
         $filePathAndName = "{$document->document_group}/" .
             Carbon::parse($document->created_at)->year .
             "/{$uniqueName}";

@@ -166,7 +166,7 @@ class DocumentController extends Controller
                 . '_'
                 .  $time->format('Ymd')
                 . '.pdf';
-            $uniqueName = Str::random(40) . '.pdf';
+            $uniqueName = Str::uuid() . '.pdf';
             $filePathAndName = "{$document->document_group}/" .
                 Carbon::parse($document->created_at)->year .
                 "/{$uniqueName}";
@@ -184,7 +184,7 @@ class DocumentController extends Controller
                 abort('422', 'Error uploading file');
             }
 
-            $uniqueName = Str::random(40) . '.' . $file->getClientOriginalExtension();
+            $uniqueName = Str::uuid() . '.' . $file->getClientOriginalExtension();
             $filePath = Storage::disk('documents')->putFileAs(
                 "{$document->document_group}/" . Carbon::now()->year,
                 $file,

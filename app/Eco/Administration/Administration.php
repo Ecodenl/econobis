@@ -436,7 +436,7 @@ class Administration extends Model
     public function getLastYearFinancialOverviewDefinitiveAttribute()
     {
         $financialOverview = $this->financialOverviews()->where('definitive', true)->get()->sortByDesc('year')->first();
-        return $financialOverview ? $financialOverview->year : null;
+        return $financialOverview ? (int) $financialOverview->year : null;
     }
 
     public function getPendingInvoicesPresentAttribute() {

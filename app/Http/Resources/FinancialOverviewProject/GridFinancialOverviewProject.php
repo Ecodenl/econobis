@@ -20,6 +20,7 @@ class GridFinancialOverviewProject extends JsonResource
             'projectName' => $this->project->name,
             'projectTypeId' => $this->project->project_type_id,
             'projectType' => $this->project->projectType->name,
+            'projectDateEntry' => $this->project->date_entry,
             'statusId' => $this->status_id,
             'status' => $this->status,
             'definitive' => $this->definitive,

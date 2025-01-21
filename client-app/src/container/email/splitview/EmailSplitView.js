@@ -24,7 +24,7 @@ export default function EmailSplitView({ router }) {
     const [emailCount, setEmailCount] = useState(0);
     const [selectedEmailId, setSelectedEmailId] = useState(null);
     const [isRefreshingData, setIsRefreshingData] = useState(false);
-    const [isFetchingMoreEmails, setIsFetchingMoreEmails] = useState(false);
+    const [isFetchingEmails, setIsFetchingEmails] = useState(false);
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
@@ -38,12 +38,14 @@ export default function EmailSplitView({ router }) {
     }, []);
 
     useEffect(() => {
+        // if (!isEmailDetailsModalOpen && emails.length > 0) {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
     }, [isEmailDetailsModalOpen]);
 
     useEffect(() => {
+        // if (!isEmailSendModalOpen && emails.length > 0) {
         if (!isEmailSendModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
@@ -79,6 +81,7 @@ export default function EmailSplitView({ router }) {
 
         storeFiltersToStorage(filters);
 
+        setIsFetchingEmails(true);
         EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,
@@ -87,15 +90,16 @@ export default function EmailSplitView({ router }) {
         }).then(response => {
             setEmails(response.data.items);
             setEmailCount(response.data.total);
+            setIsFetchingEmails(false);
         });
     }, [filters.fetch]);
 
     const fetchMoreEmails = () => {
-        if (isFetchingMoreEmails) {
+        if (isFetchingEmails) {
             return;
         }
 
-        setIsFetchingMoreEmails(true);
+        isFetchingEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,
@@ -103,11 +107,16 @@ export default function EmailSplitView({ router }) {
             sorts: getSorts(),
         }).then(response => {
             setEmails([...emails, ...response.data.items]);
-            setIsFetchingMoreEmails(false);
+            setIsFetchingEmails(false);
         });
     };
 
     const refetchCurrentEmails = () => {
+        if (isFetchingEmails) {
+            return;
+        }
+
+        setIsFetchingEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: Math.max(emails.length, perPage),
@@ -116,6 +125,7 @@ export default function EmailSplitView({ router }) {
         }).then(response => {
             setEmails(response.data.items);
             setEmailCount(response.data.total);
+            setIsFetchingEmails(false);
         });
     };
     const fetchActiveMailboxes = doRefreshData => {
@@ -308,21 +318,29 @@ export default function EmailSplitView({ router }) {
             <div className="row">
                 <div className="col-md-12">
                     <form onKeyUp={handleFilterKeyUp}>
-                        <EmailSplitViewFiltersPanel filters={filters} setFilters={setFilters} />
+                        <EmailSplitViewFiltersPanel
+                            filters={filters}
+                            setFilters={setFilters}
+                            activeMailboxes={activeMailboxes}
+                        />
                     </form>
                 </div>
             </div>
             <div className="row">
                 <div className="col-md-4 margin-10-top" style={{ paddingRight: '0px' }}>
-                    {hasFilters() && (
-                        <div className="panel panel-default">
-                            <div className="panel-body panel-small">
+                    {isFetchingEmails ? (
+                        <div className="alert alert-info" role="alert">
+                            Let op: bezig met ophalen/bijwerken lijst met emails...
+                        </div>
+                    ) : (
+                        hasFilters() && (
+                            <div className="alert alert-info" role="alert">
                                 Let op: filters actief &nbsp;
                                 <a role="button" onClick={resetFilters}>
                                     <Icon size={16} icon={undo} />
                                 </a>
                             </div>
-                        </div>
+                        )
                     )}
                     <EmailSplitViewSelectList
                         emails={emails}

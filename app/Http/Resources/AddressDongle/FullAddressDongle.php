@@ -26,7 +26,7 @@ class FullAddressDongle extends JsonResource
             'macNumber' => $this->mac_number,
             'typeDongle' => $this->type_dongle,
             'typeDongleName' => $this->type_dongle_name,
-            'energieId' => $this->energie_id,
+            'energyId' => $this->energy_id,
             'dateSigned' => $this->date_signed ? Carbon::parse($this->date_signed)->format('Y-m-d') : '',
             'dateStart' => $this->date_start ? Carbon::parse($this->date_start)->format('Y-m-d') : '',
             'dateEnd' => $this->date_end ? Carbon::parse($this->date_end)->format('Y-m-d') : '',

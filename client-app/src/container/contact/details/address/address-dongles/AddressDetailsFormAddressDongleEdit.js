@@ -12,7 +12,7 @@ import ViewText from '../../../../../components/form/ViewText';
 moment.locale('nl');
 
 const AddressDetailsFormAddressDongleEdit = props => {
-    const { typeReadOut, dateSigned, macNumber, dateStart, typeDongle, dateEnd, energieId } = props.addressDongle;
+    const { typeReadOut, dateSigned, macNumber, dateStart, typeDongle, dateEnd, energyId } = props.addressDongle;
 
     return (
         <div>
@@ -73,8 +73,8 @@ const AddressDetailsFormAddressDongleEdit = props => {
                         <div className="row">
                             <InputText
                                 label="Koppeling Energie ID"
-                                name="energieId"
-                                value={energieId}
+                                name="energyId"
+                                value={energyId}
                                 onChangeAction={props.handleInputChange}
                                 required={'required'}
                             />

@@ -25,7 +25,7 @@ class AddressDetailsFormAddressDongleNew extends Component {
                 dateStart: '',
                 typeDongle: '',
                 dateEnd: '',
-                energieId: '',
+                energyId: '',
             },
             errors: {
                 dongleId: false,
@@ -101,7 +101,7 @@ class AddressDetailsFormAddressDongleNew extends Component {
             dateStart,
             typeDongle,
             dateEnd,
-            energieId,
+            energyId,
         } = this.state.addressDongle;
 
         return (
@@ -164,8 +164,8 @@ class AddressDetailsFormAddressDongleNew extends Component {
                         <div className="row">
                             <InputText
                                 label="Koppeling Energie ID"
-                                name="energieId"
-                                value={energieId}
+                                name="energyId"
+                                value={energyId}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                             />

@@ -32,7 +32,7 @@ class AddressDonglesListItem extends Component {
     }
 
     render() {
-        const { id, fullContactName, fullAddress, typeReadOut, dateStart, dateEnd, typeDongle, energieId } = this.props;
+        const { id, fullContactName, fullAddress, typeReadOut, dateStart, dateEnd, typeDongle, energyId } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -54,7 +54,7 @@ class AddressDonglesListItem extends Component {
                 <td>
                     <GetNameByIdHelper id={typeDongle} items={this.props.typesDongle} />
                 </td>
-                <td>{energieId}</td>
+                <td>{energyId}</td>
             </tr>
         );
     }

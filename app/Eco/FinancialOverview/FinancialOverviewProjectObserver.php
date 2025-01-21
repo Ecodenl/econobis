@@ -25,7 +25,7 @@ class FinancialOverviewProjectObserver
     {
         if($financialOverviewProject->isDirty('definitive')) {
             $financialOverviewId = $financialOverviewProject->financial_overview_id;
-            // if all financial overview projects of financial overview are set to definitive, than set financial overview also to definitive and vice versa
+            // if all financial overview projects of financial overview are set to definitive, then set financial overview also to definitive and vice versa
             $numberOfFOProjectsNotDefinitive = FinancialOverviewProject::where('financial_overview_id', $financialOverviewId)
                 ->where('definitive', false)->count();
 
@@ -33,6 +33,11 @@ class FinancialOverviewProjectObserver
             $financialOverview = FinancialOverview::find($financialOverviewId);
             $financialOverview->definitive = $financialOverviewDefinitive;
             $financialOverview->save();
+            // if all financial overview project is set to definitive, then set (default) date_entry to null)
+            if($financialOverviewProject->definitive){
+                $financialOverviewProject->project->date_entry = null;
+                $financialOverviewProject->project->save();
+            }
         }
     }
     public function deleted(FinancialOverviewProject $financialOverviewProject)

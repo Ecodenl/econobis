@@ -4,8 +4,9 @@ import { connect } from 'react-redux';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
-
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
+import AddressDonglesListHead from './AddressDonglesListHead';
+import AddressDonglesListFilter from './AddressDonglesListFilter';
 import AddressDonglesListItem from './AddressDonglesListItem';
 
 class AddressDonglesList extends Component {
@@ -13,57 +14,87 @@ class AddressDonglesList extends Component {
         super(props);
     }
 
+    // On key Enter filter form will submit
+    handleKeyUp = e => {
+        if (e.keyCode === 13) {
+            this.props.onSubmitFilter();
+        }
+    };
+
     render() {
+        let { data = [], meta = {}, hasError, isLoading } = this.props.addressDongles;
         let loadingText = '';
         let loading = true;
 
-        if (this.props.hasError) {
+        if (hasError) {
             loadingText = 'Fout bij het ophalen van dongles.';
-        } else if (this.props.isLoading) {
+        } else if (isLoading) {
             loadingText = 'Gegevens aan het laden.';
-        } else if (this.props.addressDongles.length === 0) {
+        } else if (data.length === 0) {
             loadingText = 'Geen dongels gevonden!';
         } else {
             loading = false;
         }
-        console.log(this.props);
+
         return (
-            <div>
+            <form onKeyUp={this.handleKeyUp}>
                 <DataTable>
                     <DataTableHead>
-                        <tr className="thead-title-quaternary">
-                            <DataTableHeadTitle title={'Contact'} width={'15%'} />
-                            <DataTableHeadTitle title={'Adres'} width={'15%'} />
-                            <DataTableHeadTitle title={'Postcode'} width={'10%'} />
-                            <DataTableHeadTitle title={'Woonplaats'} width={'10%'} />
-                            <DataTableHeadTitle title={'Type uitlezing'} width={'10%'} />
-                            <DataTableHeadTitle title={'Start datum'} width={'10%'} />
-                            <DataTableHeadTitle title={'Eind datum'} width={'10%'} />
-                            <DataTableHeadTitle title={'Type dongel'} width={'10%'} />
-                            <DataTableHeadTitle title={'Energie ID koppeling'} width={'10%'} />
-                        </tr>
+                        <AddressDonglesListHead
+                            refreshAddressDonglesData={() => this.props.refreshAddressDonglesData()}
+                            showCheckboxList={this.props.showCheckboxList}
+                            toggleCheckedAll={this.props.toggleCheckedAll}
+                        />
+                        {!this.props.showCheckboxList ? (
+                            <AddressDonglesListFilter
+                                onSubmitFilter={this.props.onSubmitFilter}
+                                showCheckboxList={this.props.showCheckboxList}
+                            />
+                        ) : (
+                            <tr className="thead-filter">
+                                <th colSpan={10}>
+                                    <div className="alert alert-success">
+                                        Geselecteerde dongels: {this.props.numberSelectedNumberTotal}
+                                    </div>
+                                </th>
+                            </tr>
+                        )}
                     </DataTableHead>
-
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={9}>{loadingText}</td>
+                                <td colSpan={10}>{loadingText}</td>
                             </tr>
                         ) : (
-                            this.props.addressDongles.map(addressDongle => (
-                                <AddressDonglesListItem key={addressDongle.id} {...addressDongle} />
-                            ))
+                            data.map(addressDongle => {
+                                return (
+                                    <AddressDonglesListItem
+                                        key={addressDongle.id}
+                                        {...addressDongle}
+                                        showCheckboxList={this.props.showCheckboxList}
+                                        checkedAll={this.props.checkedAll}
+                                        toggleAddressDongleCheck={this.props.toggleAddressDongleCheck}
+                                        addressDongleIds={this.props.addressDongleIds}
+                                    />
+                                );
+                            })
                         )}
                     </DataTableBody>
                 </DataTable>
-            </div>
+                <div className="col-md-4 col-md-offset-4">
+                    <DataTablePagination
+                        onPageChangeAction={this.props.handlePageClick}
+                        totalRecords={meta.total}
+                        initialPage={this.props.addressDonglesPagination.page}
+                    />
+                </div>
+            </form>
         );
     }
 }
 
 const mapStateToProps = state => {
     return {
-        addressDongles: state.systemData.addressDongles,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
     };

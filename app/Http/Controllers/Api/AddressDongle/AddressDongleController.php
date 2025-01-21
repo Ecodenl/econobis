@@ -17,7 +17,7 @@ class AddressDongleController extends ApiController
     {
         $addressDongles = $requestQuery->get();
 
-        $addressDongles->load(['address']);
+        $addressDongles->load(['address', 'address.contact']);
 
         $addressDongleIdsTotal = $requestQuery->getQueryNoPagination()->get()->pluck('id');
 

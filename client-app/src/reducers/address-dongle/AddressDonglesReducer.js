@@ -1,10 +1,15 @@
-export default function(state = [], action) {
-    switch (action.type) {
-        case 'FETCH_ADDRESS_DONGLES_SUCCESS':
-            return [...action.addressDongles];
-        case 'CLEAR_ADDRESS_DONGLES':
-            return (state.addressDongles = []);
-        default:
-            return state;
-    }
-}
+import { combineReducers } from 'redux';
+
+import AddressDonglesListReducer from './AddressDonglesListReducer';
+import AddressDonglesFiltersReducer from './AddressDonglesFiltersReducer';
+import AddressDonglesSortsReducer from './AddressDonglesSortsReducer';
+import AddressDonglesPaginationReducer from './AddressDonglesPaginationReducer';
+
+const addressDonglesReducer = combineReducers({
+    list: AddressDonglesListReducer,
+    filters: AddressDonglesFiltersReducer,
+    sorts: AddressDonglesSortsReducer,
+    pagination: AddressDonglesPaginationReducer,
+});
+
+export default addressDonglesReducer;

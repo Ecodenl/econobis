@@ -8,7 +8,6 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
 import moment from 'moment/moment';
-import ViewText from '../../../../../components/form/ViewText';
 moment.locale('nl');
 
 const AddressDetailsFormAddressDongleEdit = props => {

@@ -11,7 +11,7 @@ use App\Http\Resources\HousingFile\FullHousingFile;
 use App\Http\Resources\Intake\FullIntake;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Log;
 
 class FullAddress extends JsonResource
 {
@@ -38,7 +38,7 @@ class FullAddress extends JsonResource
         } else {
             $memberSinceGasAndElectricityDisabledBefore = $this->member_since_gas_and_electricity_disabled_before;
         }
-Log::info(json_encode($this->addressDongles));
+//Log::info(json_encode($this->addressDongles));
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,

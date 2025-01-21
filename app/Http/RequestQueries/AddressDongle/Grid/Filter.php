@@ -19,22 +19,24 @@ class Filter extends RequestFilter
         'fullName',
         'postalCode',
         'city',
-        'macNumber',
-        'typeDongle',
-        'energyId',
-        'dateSigned',
+        'typeReadOut',
         'dateStart',
         'dateEnd',
+        'typeDongle',
+        'energyId',
+//        'macNumber',
+//        'dateSigned',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
-        'macNumber' => 'mac_number',
-        'typeDongle' => 'type_dongle',
-        'energyId' => 'energy_id',
-        'dateSigned' => 'date_signed',
+        'typeReadOut' => 'type_read_out',
         'dateStart' => 'date_start',
         'dateEnd' => 'date_end',
+        'typeDongle' => 'type_dongle',
+        'energyId' => 'energy_id',
+//        'macNumber' => 'mac_number',
+//        'dateSigned' => 'date_signed',
     ];
 
     protected $joins = [
@@ -88,16 +90,6 @@ class Filter extends RequestFilter
         return false;
     }
 
-    protected function applyDateSignedStartFilter($query, $type, $data)
-    {
-        $query->where('date_signed', '>=', Carbon::parse($data)->startOfDay());
-        return false;
-    }
-    protected function applyDateSignedEndFilter($query, $type, $data)
-    {
-        $query->where('date_signed', '<=', Carbon::parse($data)->startOfDay());
-        return false;
-    }
     protected function applyDateStartStartFilter($query, $type, $data)
     {
         $query->where('date_start', '>=', Carbon::parse($data)->startOfDay());
@@ -118,4 +110,14 @@ class Filter extends RequestFilter
         $query->where('date_end', '<=', Carbon::parse($data)->startOfDay());
         return false;
     }
+//    protected function applyDateSignedStartFilter($query, $type, $data)
+//    {
+//        $query->where('date_signed', '>=', Carbon::parse($data)->startOfDay());
+//        return false;
+//    }
+//    protected function applyDateSignedEndFilter($query, $type, $data)
+//    {
+//        $query->where('date_signed', '<=', Carbon::parse($data)->startOfDay());
+//        return false;
+//    }
 }

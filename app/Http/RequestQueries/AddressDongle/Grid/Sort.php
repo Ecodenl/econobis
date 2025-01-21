@@ -19,12 +19,13 @@ class Sort extends RequestSort
         'fullName',
         'postalCode',
         'city',
-        'macNumber',
-        'typeDongle',
-        'energyId',
-        'dateSigned',
+        'typeReadOut',
         'dateStart',
         'dateEnd',
+        'typeDongle',
+        'energyId',
+//        'macNumber',
+//        'dateSigned',
     ];
 
     protected $mapping = [
@@ -32,12 +33,13 @@ class Sort extends RequestSort
         'address' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
-        'macNumber' => 'mac_number',
-        'typeDongle' => 'type_dongle',
-        'energyId' => 'energy_id',
-        'dateSigned' => 'date_signed',
+        'typeReadOut' => 'type_read_out',
         'dateStart' => 'date_start',
         'dateEnd' => 'date_end',
+        'typeDongle' => 'type_dongle',
+        'energyId' => 'energy_id',
+//        'macNumber' => 'mac_number',
+//        'dateSigned' => 'date_signed',
     ];
 
     protected $joins = [

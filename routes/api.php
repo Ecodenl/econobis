@@ -203,6 +203,8 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
+        Route::get('/address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
+
         Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
         Route::post('/address-dongle/{addressDongle}', 'AddressDongle\AddressDongleController@update');
         Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
@@ -325,8 +327,6 @@ Route::namespace('Api')
 
         Route::get('measure-category/jory', 'Measure\MeasureCategoryController@jory');
         Route::post('measure-category/{measureCategory}', 'Measure\MeasureCategoryController@update');
-
-        Route::get('address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
 
         Route::get('mailbox/grid', 'Mailbox\MailboxController@grid');
         Route::get('mailbox/peek', 'Mailbox\MailboxController@peek');

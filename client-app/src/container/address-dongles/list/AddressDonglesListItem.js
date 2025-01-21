@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 import GetNameByIdHelper from '../../../helpers/GetNameByIdHelper';
+import moment from 'moment/moment';
 
 class AddressDonglesListItem extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            showMore: false,
             showActionButtons: false,
             highlightRow: '',
         };
@@ -27,12 +28,20 @@ class AddressDonglesListItem extends Component {
         });
     }
 
-    openItem(id) {
-        // hashHistory.push(`maatregel/${id}`);
-    }
-
     render() {
-        const { id, fullContactName, fullAddress, typeReadOut, dateStart, dateEnd, typeDongle, energyId } = this.props;
+        const {
+            id,
+            fullName,
+            fullAddress,
+            postalCode,
+            city,
+            typeReadOut,
+            dateStart,
+            dateEnd,
+            typeDongle,
+            energyId,
+            showCheckboxList,
+        } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -40,21 +49,32 @@ class AddressDonglesListItem extends Component {
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
-                <td>{fullContactName}</td>
-                <td>
-                    {fullAddress.street} {fullAddress.number} {fullAddress.addition}
-                </td>
-                <td>{fullAddress.postal_code}</td>
-                <td>{fullAddress.city}</td>
+                {showCheckboxList ? (
+                    <td>
+                        <div>
+                            <input
+                                type="checkbox"
+                                name={id}
+                                onChange={this.props.toggleAddressDongleCheck}
+                                checked={this.props.addressDongleIds ? this.props.addressDongleIds.includes(id) : false}
+                            />
+                        </div>
+                    </td>
+                ) : null}
+                <td>{fullName}</td>
+                <td>{fullAddress}</td>
+                <td>{postalCode}</td>
+                <td>{city}</td>
                 <td>
                     <GetNameByIdHelper id={typeReadOut} items={this.props.typesReadOut} />
                 </td>
-                <td>{dateStart}</td>
-                <td>{dateEnd}</td>
+                <td>{dateStart ? moment(dateStart).format('DD-MM-Y') : ''}</td>
+                <td>{dateEnd ? moment(dateEnd).format('DD-MM-Y') : ''}</td>
                 <td>
                     <GetNameByIdHelper id={typeDongle} items={this.props.typesDongle} />
                 </td>
                 <td>{energyId}</td>
+                <td>&nbsp;</td>
             </tr>
         );
     }

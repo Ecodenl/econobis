@@ -10,7 +10,7 @@ import GetNameByIdHelper from '../../../../../helpers/GetNameByIdHelper';
 
 const AddressDetailsFormAddressDongleView = props => {
     const { typeReadOut, dateStart } = props.addressDongle;
-    console.log('addressDongleNewOrEditOpen: ' + props.addressDongleNewOrEditOpen);
+
     return (
         <div
             className={`row border ${props.highlightLine}`}

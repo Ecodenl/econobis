@@ -99,7 +99,7 @@ export default function EmailSplitView({ router }) {
             return;
         }
 
-        isFetchingEmails(true);
+        setIsFetchingEmails(true);
         return EmailSplitviewAPI.fetchSelectList({
             filter: getFilter(),
             limit: perPage,

@@ -19,9 +19,9 @@ return new class extends Migration
             $table->unsignedInteger('address_id');
             $table->foreign('address_id')->references('id')->on('addresses');
 
-            $table->integer('type_read_out'); #TODO hoe wil je de verschillende types bijhouden, tabel lijkt mij wat overbodig?
+            $table->integer('type_read_out');
             $table->string('mac_number')->nullable(); #TODO in de documentatie staat number, maar een mac adres kan ook andere karakters dan nummers hebben volgens mij?
-            $table->integer('type_dongle'); #TODO hoe wil je de verschillende types bijhouden, tabel lijkt mij wat overbodig?
+            $table->integer('type_dongle');
             $table->integer('energy_id');
             $table->dateTime('date_signed');
             $table->dateTime('date_start');

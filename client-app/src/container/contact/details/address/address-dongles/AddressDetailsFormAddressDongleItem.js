@@ -72,7 +72,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
             ...this.state,
             addressDongle: { ...this.props.addressDongle },
         });
-        this.closeEdit();
+        this.setState({ showEdit: false });
     };
 
     toggleDelete = () => {

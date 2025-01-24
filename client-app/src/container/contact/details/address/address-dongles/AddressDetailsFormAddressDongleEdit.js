@@ -13,6 +13,8 @@ moment.locale('nl');
 const AddressDetailsFormAddressDongleEdit = props => {
     const { typeReadOut, dateSigned, macNumber, dateStart, typeDongle, dateEnd, energyId } = props.addressDongle;
 
+    const typesDongle = props.typeDongle.filter(typeDongle => typeDongle.typeReadOut == typeReadOut);
+
     return (
         <div>
             <form className="form-horizontal" onSubmit={props.handleSubmit}>
@@ -26,6 +28,7 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 options={props.typeReadOut}
                                 value={typeReadOut}
                                 onChangeAction={props.handleInputChange}
+                                required={'required'}
                             />
                             <InputDate
                                 label={'Datum ondertekening'}
@@ -42,30 +45,36 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 name="macNumber"
                                 value={macNumber}
                                 onChangeAction={props.handleInputChange}
-                                required={'required'}
                             />
                             <InputDate
                                 label={'Start datum'}
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={props.handleInputChangeDate}
+                                required={'required'}
                             />
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={'Type dongel'}
-                                id="typeDongle"
-                                name={'typeDongle'}
-                                options={props.typeDongle}
-                                value={typeDongle}
-                                onChangeAction={props.handleInputChange}
-                            />
+                            {typesDongle != '' ? (
+                                <InputSelect
+                                    label={'Type dongel'}
+                                    id="typeDongle"
+                                    name={'typeDongle'}
+                                    options={typesDongle}
+                                    value={typeDongle}
+                                    onChangeAction={props.handleInputChange}
+                                    required={'required'}
+                                />
+                            ) : (
+                                <div class="form-group col-sm-6 ">&nbsp;</div>
+                            )}
                             <InputDate
                                 label={'Eind datum'}
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
+                                required={'required'}
                             />
                         </div>
 

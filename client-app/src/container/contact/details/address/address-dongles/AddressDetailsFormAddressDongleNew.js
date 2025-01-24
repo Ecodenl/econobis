@@ -104,6 +104,8 @@ class AddressDetailsFormAddressDongleNew extends Component {
             energyId,
         } = this.state.addressDongle;
 
+        const typesDongle = this.props.typeDongle.filter(typeDongle => typeDongle.typeReadOut == typeReadOut);
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -145,14 +147,18 @@ class AddressDetailsFormAddressDongleNew extends Component {
                         </div>
 
                         <div className="row">
-                            <InputSelect
-                                label={'Type dongel'}
-                                id="typeDongle"
-                                name={'typeDongle'}
-                                options={this.props.typeDongle}
-                                value={typeDongle}
-                                onChangeAction={this.handleInputChange}
-                            />
+                            {typesDongle != '' ? (
+                                <InputSelect
+                                    label={'Type dongel'}
+                                    id="typeDongle"
+                                    name={'typeDongle'}
+                                    options={typesDongle}
+                                    value={typeDongle}
+                                    onChangeAction={this.handleInputChange}
+                                />
+                            ) : (
+                                <div class="form-group col-sm-6 ">&nbsp;</div>
+                            )}
                             <InputDate
                                 label={'Eind datum'}
                                 name="dateEnd"

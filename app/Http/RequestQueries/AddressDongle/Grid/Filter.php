@@ -20,27 +20,19 @@ class Filter extends RequestFilter
         'postalCode',
         'city',
         'typeReadOut',
-        'dateStart',
         'dateStartStart',
         'dateStartEnd',
-        'dateEnd',
         'dateEndStart',
         'dateEndEnd',
         'typeDongle',
         'energyId',
-//        'macNumber',
-//        'dateSigned',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'typeReadOut' => 'type_read_out',
-        'dateStart' => 'date_start',
-        'dateEnd' => 'date_end',
         'typeDongle' => 'type_dongle',
         'energyId' => 'energy_id',
-//        'macNumber' => 'mac_number',
-//        'dateSigned' => 'date_signed',
     ];
 
     protected $joins = [
@@ -114,14 +106,4 @@ class Filter extends RequestFilter
         $query->where('date_end', '<=', Carbon::parse($data)->startOfDay());
         return false;
     }
-//    protected function applyDateSignedStartFilter($query, $type, $data)
-//    {
-//        $query->where('date_signed', '>=', Carbon::parse($data)->startOfDay());
-//        return false;
-//    }
-//    protected function applyDateSignedEndFilter($query, $type, $data)
-//    {
-//        $query->where('date_signed', '<=', Carbon::parse($data)->startOfDay());
-//        return false;
-//    }
 }

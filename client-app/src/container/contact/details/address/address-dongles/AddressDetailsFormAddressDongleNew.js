@@ -136,7 +136,6 @@ class AddressDetailsFormAddressDongleNew extends Component {
                                 name="macNumber"
                                 value={macNumber}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                             />
                             <InputDate
                                 label={'Start datum'}
@@ -173,7 +172,6 @@ class AddressDetailsFormAddressDongleNew extends Component {
                                 name="energyId"
                                 value={energyId}
                                 onChangeAction={this.handleInputChange}
-                                required={'required'}
                             />
                         </div>
                         <div className="pull-right btn-group" role="group">

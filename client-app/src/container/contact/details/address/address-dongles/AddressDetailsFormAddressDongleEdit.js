@@ -28,7 +28,6 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 options={props.typeReadOut}
                                 value={typeReadOut}
                                 onChangeAction={props.handleInputChange}
-                                required={'required'}
                             />
                             <InputDate
                                 label={'Datum ondertekening'}
@@ -51,7 +50,6 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 name="dateStart"
                                 value={dateStart}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={'required'}
                             />
                         </div>
 
@@ -64,7 +62,6 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                     options={typesDongle}
                                     value={typeDongle}
                                     onChangeAction={props.handleInputChange}
-                                    required={'required'}
                                 />
                             ) : (
                                 <div class="form-group col-sm-6 ">&nbsp;</div>
@@ -74,7 +71,6 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 name="dateEnd"
                                 value={dateEnd}
                                 onChangeAction={props.handleInputChangeDate}
-                                required={'required'}
                             />
                         </div>
 
@@ -84,7 +80,6 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 name="energyId"
                                 value={energyId}
                                 onChangeAction={props.handleInputChange}
-                                required={'required'}
                             />
                         </div>
 

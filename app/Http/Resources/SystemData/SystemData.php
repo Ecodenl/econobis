@@ -189,7 +189,7 @@ class SystemData extends JsonResource
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
             'dongleTypeReadOut' => FullEnumWithIdAndName::collection(AddressDongleTypeReadOut::collection()),
-            'dongleTypeDongle' => FullEnumWithIdAndName::collection(AddressDongleTypeDongle::collection()),
+            'dongleTypeDongle' => GenericResource::collection(AddressDongleTypeDongle::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),

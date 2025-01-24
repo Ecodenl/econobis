@@ -31,8 +31,8 @@ class Filter extends RequestFilter
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'typeReadOut' => 'type_read_out',
-        'typeDongle' => 'type_dongle',
         'energyId' => 'energy_id',
+        'typeDongle' => 'type_dongle',
     ];
 
     protected $joins = [
@@ -104,6 +104,11 @@ class Filter extends RequestFilter
     protected function applyDateEndEndFilter($query, $type, $data)
     {
         $query->where('date_end', '<=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyTypeDongleFilter($query, $type, $data)
+    {
+        $query->where('type_dongle', 'LIKE', '%' . $data . '%');
         return false;
     }
 }

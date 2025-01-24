@@ -31,7 +31,7 @@ class ContactController extends Controller
         $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 
-        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.currentAddressEnergySupplierElectricity', 'addresses.currentAddressEnergySupplierElectricity.energySupplier', 'addresses.currentAddressEnergySupplierGas', 'addresses.currentAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load(['addresses.addressDongles', 'addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.currentAddressEnergySupplierElectricity', 'addresses.currentAddressEnergySupplierElectricity.energySupplier', 'addresses.currentAddressEnergySupplierGas', 'addresses.currentAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);

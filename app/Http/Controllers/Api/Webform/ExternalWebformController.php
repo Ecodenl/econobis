@@ -13,6 +13,9 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressEnergyConsumptionElectricity;
 use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
@@ -79,6 +82,7 @@ use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
+use App\Http\Controllers\Api\AddressDongle\AddressDongleController;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\Contact\ContactController;
 use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
@@ -396,6 +400,8 @@ class ExternalWebformController extends Controller
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
+            $this->addDongleToAddress($this->address, $data['dongle']);
+
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['quotation_request'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
 
@@ -530,6 +536,15 @@ class ExternalWebformController extends Controller
 //                'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 'energieleverancier_status' => 'energy_supply_status_id',
 //                'energieleverancier_huidig' => 'is_current_supplier',
+            ],
+            'dongle' => [
+                'dongel_type_uitlezing' => 'dongle_type_read_out',
+                'dongel_mac_nummer' => 'dongle_mac_number',
+                'dongel_type_dongle' => 'dongle_type_dongle',
+                'dongel_koppeling_energie_id' => 'dongle_energy_id',
+                'dongel_datum_ondertekening' => 'dongle_date_signed',
+                'dongel_start_datum' => 'dongle_date_start',
+                'dongel_eind_datum' => 'dongle_date_end',
             ],
             'participation' => [
                 // ParticipantProject
@@ -2063,6 +2078,40 @@ class ExternalWebformController extends Controller
         }
 
         return true;
+    }
+
+    protected function addDongleToAddress(Address $address, $data)
+    {
+        $AddressDongleTypeReadOuts = AddressDongleTypeReadOut::collection();
+        $AddressDongleTypeReadOut = $AddressDongleTypeReadOuts->get($data['dongle_type_read_out']);
+
+        if (!$AddressDongleTypeReadOut) {
+            $this->error('Ongeldige waarde voor type uitlezing meegegeven.');
+        }
+
+        $dongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle'])->where('type_read_out', $data['dongle_type_read_out'])->first();
+        if (!$dongleTypeDongle) {
+            $this->error('Ongeldige waarde voor type dongel meegegeven.'); //TODO: uitsplitsen op foute waarde of foute waarde voor deze dongle_type_read_out?
+        }
+
+        $addressDongleData = [
+            'address_id' => $address->id,
+            'type_read_out' => $data['dongle_type_read_out'],
+            'mac_number' => $data['dongle_mac_number']?: null,
+            'type_dongle' => $data['dongle_type_dongle'],
+            'energy_id' => $data['dongle_energy_id']?: null,
+            'date_signed' => $data['dongle_date_signed']?: null,
+            'date_start' => $data['dongle_date_start']?: null,
+            'date_end' => $data['dongle_date_end']?: null,
+//            'created_by_id' => $data['dongle_created_by_id']?: null,
+//            'updated_by_id' => $data['dongle_updated_by_id']?: null,
+        ];
+        $addressDongle = new AddressDongle();
+        $addressDongle->fill($addressDongleData);
+        $addressDongle->save();
+
+        $this->log('Koppeling met dongel gemaakt.');
+
     }
 
     protected function addEnergySupplierToAddress(Address $address, $data)

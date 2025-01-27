@@ -22,10 +22,10 @@ return new class extends Migration
             $table->integer('type_read_out');
             $table->string('mac_number')->nullable(); #TODO in de documentatie staat number, maar een mac adres kan ook andere karakters dan nummers hebben volgens mij?
             $table->integer('type_dongle');
-            $table->integer('energy_id');
-            $table->dateTime('date_signed');
-            $table->dateTime('date_start');
-            $table->dateTime('date_end');
+            $table->integer('energy_id')->nullable();
+            $table->date('date_signed')->nullable();
+            $table->date('date_start')->nullable();
+            $table->date('date_end')->nullable();
 
             $table->unsignedInteger('created_by_id');
             $table->foreign('created_by_id')->references('id')->on('users');

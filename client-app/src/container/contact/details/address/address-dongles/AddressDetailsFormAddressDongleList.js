@@ -10,7 +10,7 @@ const AddressDetailsFormAddressDongleList = props => {
                 <div className="col-sm-8">Startdatum</div>
                 <div className="col-sm-1" />
             </div>
-            {props.address.addressDongles.length > 0 ? (
+            {props.address.addressDongles && props.address.addressDongles.length > 0 ? (
                 props.address.addressDongles.map(addressDongle => {
                     return (
                         <AddressDetailsFormAddressDongleItem

@@ -400,7 +400,7 @@ class ExternalWebformController extends Controller
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
-            $this->addDongleToAddress($this->address, $data['dongle']);
+            $this->addDongleToAddress($this->address, $data['dongle'], $webform);
 
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['quotation_request'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
@@ -2080,7 +2080,7 @@ class ExternalWebformController extends Controller
         return true;
     }
 
-    protected function addDongleToAddress(Address $address, $data)
+    protected function addDongleToAddress(Address $address, $data, Webform $webform)
     {
         $AddressDongleTypeReadOuts = AddressDongleTypeReadOut::collection();
         $AddressDongleTypeReadOut = $AddressDongleTypeReadOuts->get($data['dongle_type_read_out']);
@@ -2094,6 +2094,23 @@ class ExternalWebformController extends Controller
             $this->error('Ongeldige waarde voor type dongel meegegeven.'); //TODO: uitsplitsen op foute waarde of foute waarde voor deze dongle_type_read_out?
         }
 
+        // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+        // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+        $responsibleUser = User::find($webform->responsible_user_id);
+        if($responsibleUser){
+            Auth::setUser($responsibleUser);
+            $this->log('Kans verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+        }else{
+            $responsibleTeam = Team::find($webform->responsible_team_id);
+            if($responsibleTeam && $responsibleTeam->users ){
+                $teamFirstUser = $responsibleTeam->users->first();
+                Auth::setUser($teamFirstUser);
+                $this->log('Kans verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+            }else{
+                $this->log('Kans verantwoordelijke gebruiker : onbekend');
+            }
+        }
+
         $addressDongleData = [
             'address_id' => $address->id,
             'type_read_out' => $data['dongle_type_read_out'],
@@ -2103,8 +2120,6 @@ class ExternalWebformController extends Controller
             'date_signed' => $data['dongle_date_signed']?: null,
             'date_start' => $data['dongle_date_start']?: null,
             'date_end' => $data['dongle_date_end']?: null,
-//            'created_by_id' => $data['dongle_created_by_id']?: null,
-//            'updated_by_id' => $data['dongle_updated_by_id']?: null,
         ];
         $addressDongle = new AddressDongle();
         $addressDongle->fill($addressDongleData);

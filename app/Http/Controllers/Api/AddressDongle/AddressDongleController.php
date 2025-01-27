@@ -46,8 +46,6 @@ class AddressDongleController extends ApiController
         $addressDongle = new AddressDongle();
 
         $addressDongle->fill($data);
-        $addressDongle->created_by_id = Auth::id();
-        $addressDongle->updated_by_id = Auth::id();
 
         Log::info($addressDongle);
 

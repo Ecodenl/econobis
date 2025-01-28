@@ -65,8 +65,8 @@ class checkFloatingAttachmentFiles extends Command
     private function checkForFloatingAttachmentFiles(Mailbox $mailbox, string $inOfOutbox)
     {
         $directory = 'mailbox_' . $mailbox->id . DIRECTORY_SEPARATOR . $inOfOutbox;
-
-        foreach (Storage::files('mails/' . $directory) as $filename) {
+//        foreach (Storage::files('mails/' . $directory) as $filename) {
+        foreach (Storage::disk('mail_attachments')->files($directory) as $filename) {
             // mails/mailbox_2/inbox/2313a1edada0aad3d6900067ca74c85f.bin
             //       mailbox_2\inbox\2313a1edada0aad3d6900067ca74c85f.bin
             // mails/mailbox_2/outbox/F07Q7aqYtWAM5JIzjJES9EKzVCIyCRVwZqaDMf8o.pdf

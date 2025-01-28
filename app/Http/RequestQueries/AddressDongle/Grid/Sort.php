@@ -33,10 +33,10 @@ class Sort extends RequestSort
         'address' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
-        'typeReadOut' => 'type_read_out',
+        'typeReadOut' => 'type_read_out.name',
         'dateStart' => 'date_start',
         'dateEnd' => 'date_end',
-        'typeDongle' => 'type_dongle',
+        'typeDongle' => 'address_dongle_types.name',
         'energyId' => 'energy_id',
 //        'macNumber' => 'mac_number',
 //        'dateSigned' => 'date_signed',
@@ -47,6 +47,7 @@ class Sort extends RequestSort
         'address' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
+        'typeDongle' => 'typeDongle',
     ];
 
 //    protected function applyMeasureNameSort($query, $data)

@@ -18,4 +18,8 @@ class AddressDongle extends Model
     {
         return $this->belongsTo(Address::class);
     }
+    public function typeDongle()
+    {
+        return $this->belongsTo(AddressDongleTypeDongle::class);
+    }
 }

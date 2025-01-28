@@ -1,19 +1,20 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: Beheerder
- * Date: 06-10-2017
- * Time: 15:19
- */
 
 namespace App\Eco\AddressDongle;
 
-use JosKolenberg\Enum\EnumWithIdAndName;
+use Illuminate\Database\Eloquent\Model;
+use Venturecraft\Revisionable\RevisionableTrait;
 
-class AddressDongleTypeReadOut extends EnumWithIdAndName
+class AddressDongleTypeReadOut extends Model
 {
+    use RevisionableTrait;
 
-    static $all;
+    protected $table = 'address_dongle_read_out_types';
+
+    public function addressDongles()
+    {
+        return $this->hasMany(AddressDongle::class);
+    }
 
     protected static function seed()
     {

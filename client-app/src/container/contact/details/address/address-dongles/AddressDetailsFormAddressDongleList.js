@@ -6,8 +6,10 @@ const AddressDetailsFormAddressDongleList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-3">Type uitlezing</div>
-                <div className="col-sm-8">Startdatum</div>
+                <div className="col-sm-2">Type uitlezing</div>
+                <div className="col-sm-3">Type Dongle</div>
+                <div className="col-sm-3">Startdatum</div>
+                <div className="col-sm-3">Einddatum</div>
                 <div className="col-sm-1" />
             </div>
             {props.address.addressDongles && props.address.addressDongles.length > 0 ? (

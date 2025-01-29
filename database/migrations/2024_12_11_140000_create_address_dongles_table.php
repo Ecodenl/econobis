@@ -27,7 +27,7 @@ return new class extends Migration
         DB::table('address_dongle_read_out_types')->insert([
                 ['name' => 'Onbekend', 'order' => 1, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
                 ['name' => 'P1', 'order' => 2, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-                ['name' => 'P2', 'order' => 3, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
+                ['name' => 'P4', 'order' => 3, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
             ]
         );
 
@@ -62,7 +62,7 @@ return new class extends Migration
 
             $table->string('mac_number')->nullable(); #TODO in de documentatie staat number, maar een mac adres kan ook andere karakters dan nummers hebben volgens mij?
 
-            $table->unsignedInteger('type_dongle_id');
+            $table->unsignedInteger('type_dongle_id')->nullable();
             $table->foreign('type_dongle_id')->references('id')->on('address_dongle_types');
 
             $table->integer('energy_id')->nullable();

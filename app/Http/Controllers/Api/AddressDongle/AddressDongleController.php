@@ -36,11 +36,11 @@ class AddressDongleController extends ApiController
             ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('typeReadOutId')->alias('type_read_out_id')->next()
             ->string('macNumber')->whenMissing(null)->onEmpty(null)->alias('mac_number')->next()
-            ->integer('typeDongleId')->alias('type_dongle_id')->next()
-            ->integer('energyId')->alias('energy_id')->next()
-            ->date('dateSigned')->alias('date_signed')->next()
-            ->date('dateStart')->alias('date_start')->next()
-            ->date('dateEnd')->alias('date_end')->next()
+            ->integer('typeDongleId')->whenMissing(null)->onEmpty(null)->alias('type_dongle_id')->next()
+            ->integer('energyId')->whenMissing(null)->onEmpty(null)->alias('energy_id')->next()
+            ->date('dateSigned')->whenMissing(null)->onEmpty(null)->alias('date_signed')->next()
+            ->date('dateStart')->whenMissing(null)->onEmpty(null)->alias('date_start')->next()
+            ->date('dateEnd')->whenMissing(null)->onEmpty(null)->alias('date_end')->next()
             ->get();
 
         $addressDongle = new AddressDongle();
@@ -62,11 +62,11 @@ class AddressDongleController extends ApiController
         $data = $requestInput
             ->integer('typeReadOutId')->alias('type_read_out_id')->next()
             ->string('macNumber')->whenMissing(null)->onEmpty(null)->alias('mac_number')->next()
-            ->integer('typeDongleId')->alias('type_dongle_id')->next()
-            ->integer('energyId')->alias('energy_id')->next()
-            ->date('dateSigned')->alias('date_signed')->next()
-            ->date('dateStart')->alias('date_start')->next()
-            ->date('dateEnd')->alias('date_end')->next()
+            ->integer('typeDongleId')->whenMissing(null)->onEmpty(null)->alias('type_dongle_id')->next()
+            ->integer('energyId')->whenMissing(null)->onEmpty(null)->alias('energy_id')->next()
+            ->date('dateSigned')->whenMissing(null)->onEmpty(null)->alias('date_signed')->next()
+            ->date('dateStart')->whenMissing(null)->onEmpty(null)->alias('date_start')->next()
+            ->date('dateEnd')->whenMissing(null)->onEmpty(null)->alias('date_end')->next()
             ->get();
 
         $addressDongle->fill($data);

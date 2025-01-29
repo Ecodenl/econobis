@@ -38,7 +38,7 @@ class FullAddress extends JsonResource
         } else {
             $memberSinceGasAndElectricityDisabledBefore = $this->member_since_gas_and_electricity_disabled_before;
         }
-//Log::info(json_encode($this->addressDongles));
+
         return [
             'id' => $this->id,
             'contactId' => $this->contact_id,

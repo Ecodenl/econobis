@@ -6,10 +6,9 @@ moment.locale('nl');
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
-import GetNameByIdHelper from '../../../../../helpers/GetNameByIdHelper';
 
 const AddressDetailsFormAddressDongleView = props => {
-    const { typeReadOutId, dateStart } = props.addressDongle;
+    const { typeReadOutName, typeDongleName, dateStart, dateEnd } = props.addressDongle;
 
     return (
         <div
@@ -18,10 +17,10 @@ const AddressDetailsFormAddressDongleView = props => {
             onMouseLeave={() => props.onLineLeave()}
         >
             <div onClick={props.openEdit}>
-                <div className="col-sm-3">
-                    <GetNameByIdHelper id={typeReadOutId} items={props.typesReadOut} />
-                </div>
-                <div className="col-sm-8">{dateStart ? moment(dateStart).format('L') : 'Onbekend'}</div>
+                <div className="col-sm-2">{typeReadOutName}</div>
+                <div className="col-sm-3">{typeDongleName}</div>
+                <div className="col-sm-3">{dateStart ? moment(dateStart).format('L') : 'Onbekend'}</div>
+                <div className="col-sm-3">{dateEnd ? moment(dateEnd).format('L') : 'Onbekend'}</div>
             </div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.addressDongleNewOrEditOpen == false ? (
@@ -50,7 +49,6 @@ const AddressDetailsFormAddressDongleView = props => {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        typesReadOut: state.systemData.dongleTypeReadOuts,
     };
 };
 

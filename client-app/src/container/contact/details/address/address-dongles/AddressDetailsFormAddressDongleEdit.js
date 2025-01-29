@@ -27,7 +27,7 @@ const AddressDetailsFormAddressDongleEdit = props => {
                                 name={'typeReadOutId'}
                                 options={props.typesReadOut}
                                 value={typeReadOutId}
-                                onChangeAction={props.handleInputChange}
+                                onChangeAction={props.handleInputChangeReadOutId}
                             />
                             <InputDate
                                 label={'Datum ondertekening'}

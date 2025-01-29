@@ -97,6 +97,21 @@ class AddressDetailsFormAddressDongleItem extends Component {
         });
     };
 
+    handleInputChangeReadOutId = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            addressDongle: {
+                ...this.state.addressDongle,
+                [name]: value,
+                typeDongleId: null,
+            },
+        });
+    };
+
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,
@@ -161,6 +176,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
                             errors={this.state.errors}
                             handleInputChange={this.handleInputChange}
                             handleInputChangeDate={this.handleInputChangeDate}
+                            handleInputChangeReadOutId={this.handleInputChangeReadOutId}
                             handleSubmit={this.handleSubmit}
                             cancelEdit={this.cancelEdit}
                         />

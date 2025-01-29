@@ -2081,16 +2081,18 @@ class ExternalWebformController extends Controller
 
     protected function addDongleToAddress(Address $address, $data, Webform $webform)
     {
-        $AddressDongleTypeReadOuts = AddressDongleTypeReadOut::collection();
-        $AddressDongleTypeReadOut = $AddressDongleTypeReadOuts->get($data['dongle_type_read_out_id']);
-
-        if (!$AddressDongleTypeReadOut) {
-            $this->error('Ongeldige waarde voor type uitlezing meegegeven.');
+        $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($data['dongle_type_read_out_id']);
+        if (!$addressDongleTypeReadOut) {
+            $this->error('Ongeldige waarde voor type dongel meegegeven.');
         }
 
-        $dongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
-        if (!$dongleTypeDongle) {
-            $this->error('Ongeldige waarde voor type dongel meegegeven.'); //TODO: uitsplitsen op foute waarde of foute waarde voor deze dongle_type_read_out?
+        $hasTypeDongle = AddressDongleTypeDongle::where('type_read_out_id', $data['dongle_type_read_out_id'])->exists();
+        // todo WM: check of we hier ook nog een isset check moeten doen?
+        if($hasTypeDongle && $data['dongle_type_dongle_id']){
+            $addressDongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
+            if (!$addressDongleTypeDongle) {
+                $this->error('Ongeldige waarde voor type dongel meegegeven.');
+            }
         }
 
         // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id

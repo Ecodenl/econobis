@@ -537,9 +537,9 @@ class ExternalWebformController extends Controller
 //                'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'dongle' => [
-                'dongel_type_uitlezing' => 'dongle_type_read_out_id',
+                'dongel_type_uitlezing_id' => 'dongle_type_read_out_id',
                 'dongel_mac_nummer' => 'dongle_mac_number',
-                'dongel_type_dongel' => 'dongle_type_dongle_id',
+                'dongel_type_dongel_id' => 'dongle_type_dongle_id',
                 'dongel_koppeling_energie_id' => 'dongle_energy_id',
                 'dongel_datum_ondertekening' => 'dongle_date_signed',
                 'dongel_start_datum' => 'dongle_date_start',
@@ -2093,9 +2093,15 @@ class ExternalWebformController extends Controller
             if (!$addressDongleTypeDongle) {
                 $this->error('Ongeldige waarde voor type dongel meegegeven.');
             }
+        } else {
+            $data['dongle_type_dongle_id'] = '';
         }
 
-        // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+        if($data['dongle_energy_id'] && !is_numeric($data['dongle_energy_id'])) {
+            $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
+        }
+
+            // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
         // Die moeten we eerst even setten als we dus hier vanuit webform komen.
         $responsibleUser = User::find($webform->responsible_user_id);
         if($responsibleUser){
@@ -2116,7 +2122,7 @@ class ExternalWebformController extends Controller
             'address_id' => $address->id,
             'type_read_out_id' => $data['dongle_type_read_out_id'],
             'mac_number' => $data['dongle_mac_number']?: null,
-            'type_dongle_id' => $data['dongle_type_dongle_id'],
+            'type_dongle_id' => $data['dongle_type_dongle_id']?: null,
             'energy_id' => $data['dongle_energy_id']?: null,
             'date_signed' => $data['dongle_date_signed']?: null,
             'date_start' => $data['dongle_date_start']?: null,

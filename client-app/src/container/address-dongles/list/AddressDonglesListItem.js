@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import GetNameByIdHelper from '../../../helpers/GetNameByIdHelper';
 import moment from 'moment/moment';
 
 class AddressDonglesListItem extends Component {
@@ -35,10 +34,10 @@ class AddressDonglesListItem extends Component {
             fullAddress,
             postalCode,
             city,
-            typeReadOut,
+            typeReadOutName,
             dateStart,
             dateEnd,
-            typeDongle,
+            typeDongleName,
             energyId,
             showCheckboxList,
         } = this.props;
@@ -65,14 +64,10 @@ class AddressDonglesListItem extends Component {
                 <td>{fullAddress}</td>
                 <td>{postalCode}</td>
                 <td>{city}</td>
-                <td>
-                    <GetNameByIdHelper id={typeReadOut} items={this.props.typesReadOut} />
-                </td>
+                <td>{typeReadOutName}</td>
                 <td>{dateStart ? moment(dateStart).format('DD-MM-Y') : ''}</td>
                 <td>{dateEnd ? moment(dateEnd).format('DD-MM-Y') : ''}</td>
-                <td>
-                    <GetNameByIdHelper id={typeDongle} items={this.props.typesDongle} />
-                </td>
+                <td>{typeDongleName}</td>
                 <td>{energyId}</td>
                 <td>&nbsp;</td>
             </tr>
@@ -83,8 +78,8 @@ class AddressDonglesListItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        typesReadOut: state.systemData.dongleTypeReadOut,
-        typesDongle: state.systemData.dongleTypeDongle,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
+        typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

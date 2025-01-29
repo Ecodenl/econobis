@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -23,10 +24,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('address_dongle_read_out_types')->insert(
-            ['name' => 'Onbekend', 'order' => 1, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'P1', 'order' => 2, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['name' => 'P2', 'order' => 3, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
+        DB::table('address_dongle_read_out_types')->insert([
+                ['name' => 'Onbekend', 'order' => 1, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+                ['name' => 'P1', 'order' => 2, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+                ['name' => 'P2', 'order' => 3, 'is_active' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
+            ]
         );
 
         Schema::create('address_dongle_types', function (Blueprint $table) {
@@ -42,10 +44,11 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('address_dongle_types')->insert(
-            ['type_read_out_id'=> 2, 'name' => 'Smartstuff type A', 'order' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['type_read_out_id'=> 2, 'name' => 'Smartstuff type B', 'order' => 2, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
-            ['type_read_out_id'=> 2, 'name' => 'Ander merk', 'order' => 3, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
+        DB::table('address_dongle_types')->insert([
+                ['type_read_out_id'=> 2, 'name' => 'Smartstuff type A', 'order' => 1, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+                ['type_read_out_id'=> 2, 'name' => 'Smartstuff type B', 'order' => 2, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()],
+                ['type_read_out_id'=> 2, 'name' => 'Ander merk', 'order' => 3, 'created_at' => Carbon::now(), 'updated_at' => Carbon::now()]
+            ]
         );
 
         Schema::create('address_dongles', function (Blueprint $table) {

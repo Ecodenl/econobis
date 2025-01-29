@@ -537,9 +537,9 @@ class ExternalWebformController extends Controller
 //                'energieleverancier_huidig' => 'is_current_supplier',
             ],
             'dongle' => [
-                'dongel_type_uitlezing' => 'dongle_type_read_out',
+                'dongel_type_uitlezing' => 'dongle_type_read_out_id',
                 'dongel_mac_nummer' => 'dongle_mac_number',
-                'dongel_type_dongle' => 'dongle_type_dongle',
+                'dongel_type_dongel' => 'dongle_type_dongle_id',
                 'dongel_koppeling_energie_id' => 'dongle_energy_id',
                 'dongel_datum_ondertekening' => 'dongle_date_signed',
                 'dongel_start_datum' => 'dongle_date_start',
@@ -2082,13 +2082,13 @@ class ExternalWebformController extends Controller
     protected function addDongleToAddress(Address $address, $data, Webform $webform)
     {
         $AddressDongleTypeReadOuts = AddressDongleTypeReadOut::collection();
-        $AddressDongleTypeReadOut = $AddressDongleTypeReadOuts->get($data['dongle_type_read_out']);
+        $AddressDongleTypeReadOut = $AddressDongleTypeReadOuts->get($data['dongle_type_read_out_id']);
 
         if (!$AddressDongleTypeReadOut) {
             $this->error('Ongeldige waarde voor type uitlezing meegegeven.');
         }
 
-        $dongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle'])->where('type_read_out', $data['dongle_type_read_out'])->first();
+        $dongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
         if (!$dongleTypeDongle) {
             $this->error('Ongeldige waarde voor type dongel meegegeven.'); //TODO: uitsplitsen op foute waarde of foute waarde voor deze dongle_type_read_out?
         }
@@ -2112,9 +2112,9 @@ class ExternalWebformController extends Controller
 
         $addressDongleData = [
             'address_id' => $address->id,
-            'type_read_out' => $data['dongle_type_read_out'],
+            'type_read_out_id' => $data['dongle_type_read_out_id'],
             'mac_number' => $data['dongle_mac_number']?: null,
-            'type_dongle' => $data['dongle_type_dongle'],
+            'type_dongle_id' => $data['dongle_type_dongle_id'],
             'energy_id' => $data['dongle_energy_id']?: null,
             'date_signed' => $data['dongle_date_signed']?: null,
             'date_start' => $data['dongle_date_start']?: null,

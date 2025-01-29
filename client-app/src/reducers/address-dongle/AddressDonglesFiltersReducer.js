@@ -15,8 +15,8 @@ const filtersReducerDefaultState = {
         field: 'city',
         data: '',
     },
-    typeReadOut: {
-        field: 'typeReadOut',
+    typeReadOutId: {
+        field: 'typeReadOutId',
         data: '',
     },
     dateStartStart: {
@@ -35,8 +35,8 @@ const filtersReducerDefaultState = {
         field: 'dateEndEnd',
         data: '',
     },
-    typeDongle: {
-        field: 'typeDongle',
+    typeDongleId: {
+        field: 'typeDongleId',
         data: '',
     },
     energyId: {
@@ -91,12 +91,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.city,
                 },
             };
-        case 'SET_FILTER_ADDRESS_DONGLE_TYPE_READ_OUT':
+        case 'SET_FILTER_ADDRESS_DONGLE_TYPE_READ_OUT_ID':
             return {
                 ...state,
-                typeReadOut: {
-                    ...state.typeReadOut,
-                    data: action.typeReadOut,
+                typeReadOutId: {
+                    ...state.typeReadOutId,
+                    data: action.typeReadOutId,
                 },
             };
         case 'SET_FILTER_ADDRESS_DONGLE_DATE_START_START':
@@ -131,12 +131,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.dateEndEnd,
                 },
             };
-        case 'SET_FILTER_ADDRESS_DONGLE_TYPE_DONGLE':
+        case 'SET_FILTER_ADDRESS_DONGLE_TYPE_DONGLE_ID':
             return {
                 ...state,
-                typeDongle: {
-                    ...state.typeDongle,
-                    data: action.typeDongle,
+                typeDongleId: {
+                    ...state.typeDongleId,
+                    data: action.typeDongleId,
                 },
             };
         case 'SET_FILTER_ADDRESS_DONGLE_ENERGY_ID':

@@ -16,12 +16,4 @@ class AddressDongleTypeReadOut extends Model
         return $this->hasMany(AddressDongle::class);
     }
 
-    protected static function seed()
-    {
-        return [
-            new static('1', 'Onbekend'),
-            new static('2', 'P1'),
-            new static('3', 'P4'),
-        ];
-    }
 }

@@ -20,9 +20,9 @@ export const setFilterAddressDongleCity = city => ({
     city,
 });
 
-export const setFilterAddressDongleTypeReadOut = typeReadOut => ({
-    type: 'SET_FILTER_ADDRESS_DONGLE_TYPE_READ_OUT',
-    typeReadOut,
+export const setFilterAddressDongleTypeReadOutId = typeReadOutId => ({
+    type: 'SET_FILTER_ADDRESS_DONGLE_TYPE_READ_OUT_ID',
+    typeReadOutId,
 });
 
 export const setFilterAddressDongleDateStartStart = dateStartStart => ({
@@ -45,9 +45,9 @@ export const setFilterAddressDongleDateEndEnd = dateEndEnd => ({
     dateEndEnd,
 });
 
-export const setFilterAddressDongleTypeDongle = typeDongle => ({
-    type: 'SET_FILTER_ADDRESS_DONGLE_TYPE_DONGLE',
-    typeDongle,
+export const setFilterAddressDongleTypeDongleId = typeDongleId => ({
+    type: 'SET_FILTER_ADDRESS_DONGLE_TYPE_DONGLE_ID',
+    typeDongleId,
 });
 
 export const setFilterAddressDongleEnergyId = energyId => ({

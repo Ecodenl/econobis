@@ -25,9 +25,14 @@ class Joiner extends RequestJoiner
         $query->join('contacts', 'contactAddress.contact_id', '=', 'contacts.id');
     }
 
+    protected function applyTypeDongleReadOutJoin($query)
+    {
+        $query->join('address_dongle_read_out_types', 'type_read_out_id', '=', 'address_read_out_types.id');
+    }
+
     protected function applyTypeDongleJoin($query)
     {
-        $query->join('address_dongle_types', 'type_dongle', '=', 'address_dongle_types.id');
+        $query->join('address_dongle_types', 'type_dongle_id', '=', 'address_dongle_types.id');
     }
 
 }

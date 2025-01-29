@@ -11,9 +11,9 @@ import moment from 'moment/moment';
 moment.locale('nl');
 
 const AddressDetailsFormAddressDongleEdit = props => {
-    const { typeReadOut, dateSigned, macNumber, dateStart, typeDongle, dateEnd, energyId } = props.addressDongle;
+    const { typeReadOutId, dateSigned, macNumber, dateStart, typeDongleId, dateEnd, energyId } = props.addressDongle;
 
-    const typesDongle = props.typeDongle.filter(typeDongle => typeDongle.typeReadOut == typeReadOut);
+    const typesDongle = props.typesDongle.filter(typeDongle => typeDongle.typeReadOutId == typeReadOutId);
 
     return (
         <div>
@@ -23,10 +23,10 @@ const AddressDetailsFormAddressDongleEdit = props => {
                         <div className="row">
                             <InputSelect
                                 label={'Type uitlezing'}
-                                id="typeReadOut"
-                                name={'typeReadOut'}
-                                options={props.typeReadOut}
-                                value={typeReadOut}
+                                id="typeReadOutId"
+                                name={'typeReadOutId'}
+                                options={props.typesReadOut}
+                                value={typeReadOutId}
                                 onChangeAction={props.handleInputChange}
                             />
                             <InputDate
@@ -57,10 +57,10 @@ const AddressDetailsFormAddressDongleEdit = props => {
                             {typesDongle != '' ? (
                                 <InputSelect
                                     label={'Type dongel'}
-                                    id="typeDongle"
-                                    name={'typeDongle'}
+                                    id="typeDongleId"
+                                    name={'typeDongleId'}
                                     options={typesDongle}
-                                    value={typeDongle}
+                                    value={typeDongleId}
                                     onChangeAction={props.handleInputChange}
                                 />
                             ) : (
@@ -105,8 +105,8 @@ const AddressDetailsFormAddressDongleEdit = props => {
 
 const mapStateToProps = state => {
     return {
-        typeReadOut: state.systemData.dongleTypeReadOut,
-        typeDongle: state.systemData.dongleTypeDongle,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
+        typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

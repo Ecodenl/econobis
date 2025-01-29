@@ -19,20 +19,20 @@ class Filter extends RequestFilter
         'fullName',
         'postalCode',
         'city',
-        'typeReadOut',
+        'typeReadOutId',
         'dateStartStart',
         'dateStartEnd',
         'dateEndStart',
         'dateEndEnd',
-        'typeDongle',
+        'typeDongleId',
         'energyId',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
-        'typeReadOut' => 'type_read_out',
+        'typeReadOutId' => 'type_read_out_id',
         'energyId' => 'energy_id',
-        'typeDongle' => 'type_dongle',
+        'typeDongleId' => 'type_dongle_id',
     ];
 
     protected $joins = [
@@ -104,11 +104,6 @@ class Filter extends RequestFilter
     protected function applyDateEndEndFilter($query, $type, $data)
     {
         $query->where('date_end', '<=', Carbon::parse($data)->startOfDay());
-        return false;
-    }
-    protected function applyTypeDongleFilter($query, $type, $data)
-    {
-        $query->where('type_dongle', 'LIKE', '%' . $data . '%');
         return false;
     }
 }

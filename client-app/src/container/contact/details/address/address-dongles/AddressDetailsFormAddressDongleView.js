@@ -9,7 +9,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import GetNameByIdHelper from '../../../../../helpers/GetNameByIdHelper';
 
 const AddressDetailsFormAddressDongleView = props => {
-    const { typeReadOut, dateStart } = props.addressDongle;
+    const { typeReadOutId, dateStart } = props.addressDongle;
 
     return (
         <div
@@ -19,7 +19,7 @@ const AddressDetailsFormAddressDongleView = props => {
         >
             <div onClick={props.openEdit}>
                 <div className="col-sm-3">
-                    <GetNameByIdHelper id={typeReadOut} items={props.typesReadOut} />
+                    <GetNameByIdHelper id={typeReadOutId} items={props.typesReadOut} />
                 </div>
                 <div className="col-sm-8">{dateStart ? moment(dateStart).format('L') : 'Onbekend'}</div>
             </div>
@@ -50,7 +50,7 @@ const AddressDetailsFormAddressDongleView = props => {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        typesReadOut: state.systemData.dongleTypeReadOut,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
     };
 };
 

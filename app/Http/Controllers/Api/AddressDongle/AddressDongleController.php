@@ -17,7 +17,7 @@ class AddressDongleController extends ApiController
     {
         $addressDongles = $requestQuery->get();
 
-        $addressDongles->load(['address', 'address.contact']);
+        $addressDongles->load(['address', 'address.contact', 'dongleType', 'dongleReadOutType']);
 
         $addressDongleIdsTotal = $requestQuery->getQueryNoPagination()->get()->pluck('id');
 
@@ -34,9 +34,9 @@ class AddressDongleController extends ApiController
     {
         $data = $requestInput
             ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
-            ->integer('typeReadOut')->alias('type_read_out')->next()
+            ->integer('typeReadOutId')->alias('type_read_out_id')->next()
             ->string('macNumber')->whenMissing(null)->onEmpty(null)->alias('mac_number')->next()
-            ->integer('typeDongle')->alias('type_dongle')->next()
+            ->integer('typeDongleId')->alias('type_dongle_id')->next()
             ->integer('energyId')->alias('energy_id')->next()
             ->date('dateSigned')->alias('date_signed')->next()
             ->date('dateStart')->alias('date_start')->next()
@@ -46,9 +46,7 @@ class AddressDongleController extends ApiController
         $addressDongle = new AddressDongle();
 
         $addressDongle->fill($data);
-
-        Log::info($addressDongle);
-
+// todo WM: moet hier nog wat mee?
 //        $this->authorize('create', $addressDongle);
 
         $addressDongle->save();
@@ -58,12 +56,13 @@ class AddressDongleController extends ApiController
 
     public function update(RequestInput $requestInput, AddressDongle $addressDongle)
     {
+// todo WM: moet hier nog wat mee?
 //        $this->authorize('update', $addressDongle);
 
         $data = $requestInput
-            ->integer('typeReadOut')->alias('type_read_out')->next()
+            ->integer('typeReadOutId')->alias('type_read_out_id')->next()
             ->string('macNumber')->whenMissing(null)->onEmpty(null)->alias('mac_number')->next()
-            ->integer('typeDongle')->alias('type_dongle')->next()
+            ->integer('typeDongleId')->alias('type_dongle_id')->next()
             ->integer('energyId')->alias('energy_id')->next()
             ->date('dateSigned')->alias('date_signed')->next()
             ->date('dateStart')->alias('date_start')->next()
@@ -79,6 +78,7 @@ class AddressDongleController extends ApiController
 
     public function destroy(AddressDongle $addressDongle)
     {
+// todo WM: moet hier nog wat mee?
 //        $this->authorize('delete', $addressDongle);
 
         $addressDongle->delete();

@@ -33,7 +33,7 @@ const AddressDonglesListHead = props => {
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'7%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
-                sortColumn={'typeReadOut'}
+                sortColumn={'typeReadOutId'}
                 title={'Type uitlezing'}
                 width={'10%'}
                 setSorts={setSorts}
@@ -46,7 +46,7 @@ const AddressDonglesListHead = props => {
             />
             <DataTableHeadTitleAndSort sortColumn={'dateEnd'} title={'Eind datum'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
-                sortColumn={'typeDongle'}
+                sortColumn={'typeDongleId'}
                 title={'Type dongel'}
                 width={'10%'}
                 setSorts={setSorts}

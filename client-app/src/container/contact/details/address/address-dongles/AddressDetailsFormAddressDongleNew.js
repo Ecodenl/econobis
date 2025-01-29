@@ -11,6 +11,7 @@ import InputSelect from '../../../../../components/form/InputSelect';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import InputDate from '../../../../../components/form/InputDate';
+import validator from 'validator';
 
 class AddressDetailsFormAddressDongleNew extends Component {
     constructor(props) {
@@ -28,8 +29,7 @@ class AddressDetailsFormAddressDongleNew extends Component {
                 energyId: '',
             },
             errors: {
-                dongleId: false,
-                energySupplyTypeId: false,
+                typeReadOutId: false,
             },
         };
 
@@ -46,6 +46,21 @@ class AddressDetailsFormAddressDongleNew extends Component {
             addressDongle: {
                 ...this.state.addressDongle,
                 [name]: value,
+            },
+        });
+    };
+
+    handleInputChangeReadOutId = event => {
+        const target = event.target;
+        const value = target.type === 'checkbox' ? target.checked : target.value;
+        const name = target.name;
+
+        this.setState({
+            ...this.state,
+            addressDongle: {
+                ...this.state.addressDongle,
+                [name]: value,
+                typeDongleId: '',
             },
         });
     };
@@ -67,6 +82,11 @@ class AddressDetailsFormAddressDongleNew extends Component {
 
         let errors = {};
         let hasErrors = false;
+
+        if (validator.isEmpty(addressDongle.typeReadOutId + '')) {
+            errors.typeReadOutId = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -104,7 +124,7 @@ class AddressDetailsFormAddressDongleNew extends Component {
             energyId,
         } = this.state.addressDongle;
 
-        const typesDongle = this.props.typeDongles.filter(typeDongle => typeDongle.typeReadOutId == typeReadOutId);
+        const typesDongle = this.props.typesDongle.filter(typeDongle => typeDongle.typeReadOutId == typeReadOutId);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -119,7 +139,9 @@ class AddressDetailsFormAddressDongleNew extends Component {
                                 name={'typeReadOutId'}
                                 options={this.props.typesReadOut}
                                 value={typeReadOutId}
-                                onChangeAction={this.handleInputChange}
+                                required={'required'}
+                                onChangeAction={this.handleInputChangeReadOutId}
+                                error={this.state.errors.typeReadOutId}
                             />
                             <InputDate
                                 label={'Datum ondertekening'}

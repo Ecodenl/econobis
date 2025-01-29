@@ -25,7 +25,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
             },
             address: { ...props.address },
             errors: {
-                endDate: false,
+                typeReadOutId: false,
             },
         };
 
@@ -107,7 +107,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
             addressDongle: {
                 ...this.state.addressDongle,
                 [name]: value,
-                typeDongleId: null,
+                typeDongleId: '',
             },
         });
     };
@@ -129,6 +129,11 @@ class AddressDetailsFormAddressDongleItem extends Component {
 
         let errors = {};
         let hasErrors = false;
+
+        if (validator.isEmpty(addressDongle.typeReadOutId + '')) {
+            errors.typeReadOutId = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors });
 

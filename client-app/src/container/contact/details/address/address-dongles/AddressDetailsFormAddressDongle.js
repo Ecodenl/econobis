@@ -40,13 +40,6 @@ class AddressDetailsFormAddressDongle extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <AddressDetailsFormAddressDongleList
-                            address={this.props.address}
-                            setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
-                            addressDongleNewOrEditOpen={this.state.addressDongleNewOrEditOpen}
-                        />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
                         {this.props.permissions.createContactAddress && this.state.showNewDongle && (
                             <AddressDetailsFormAddressDongleNew
                                 contactId={this.props.address.contactId}
@@ -54,6 +47,13 @@ class AddressDetailsFormAddressDongle extends Component {
                                 toggleShowNewDongle={this.toggleShowNewDongle}
                             />
                         )}
+                    </div>
+                    <div className={`col-md-12 ${this.state.showNewDongle ? ' margin-10-top' : ''}`}>
+                        <AddressDetailsFormAddressDongleList
+                            address={this.props.address}
+                            setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
+                            addressDongleNewOrEditOpen={this.state.addressDongleNewOrEditOpen}
+                        />
                     </div>
                 </PanelBody>
             </Panel>

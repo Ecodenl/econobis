@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { setError } from '../../../../../actions/general/ErrorActions';
 import AddressDongleAPI from '../../../../../api/contact/AddressDongleAPI';
 import { newStateAddressDongle } from '../../../../../actions/contact/ContactDetailsActions';
-import { fetchContactDetails } from '../../../../../actions/contact/ContactDetailsActions';
 import InputText from '../../../../../components/form/InputText';
 import ButtonText from '../../../../../components/button/ButtonText';
 import InputSelect from '../../../../../components/form/InputSelect';
@@ -100,9 +99,7 @@ class AddressDetailsFormAddressDongleNew extends Component {
         AddressDongleAPI.newAddressDongle(addressDongle)
             .then(payload => {
                 this.props.newStateAddressDongle(payload.data.addressDongle);
-
                 this.props.toggleShowNewDongle();
-                this.props.fetchContactDetails(this.props.contactId);
             })
             .catch(error => {
                 if (error.response) {
@@ -226,9 +223,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => ({
     newStateAddressDongle: addressDongle => {
         dispatch(newStateAddressDongle(addressDongle));
-    },
-    fetchContactDetails: id => {
-        dispatch(fetchContactDetails(id));
     },
     setError: (http_code, message) => {
         dispatch(setError(http_code, message));

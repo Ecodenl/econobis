@@ -8,7 +8,6 @@ const AddressDetailsFormAddressDongleDelete = props => {
     const confirmAction = () => {
         props.deleteAddressDongle(props.id);
         props.closeDeleteItemModal();
-        props.reloadContact();
     };
 
     return (

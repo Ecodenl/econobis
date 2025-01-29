@@ -214,6 +214,24 @@ export default function(state = {}, action) {
                 }),
             };
 
+        case 'NEW_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: [
+                                  ...address.addressDongles,
+                                  {
+                                      ...action.addressDongle,
+                                  },
+                              ],
+                          }
+                        : address
+                ),
+            };
+
         case 'UPDATE_ADDRESS_DONGLE':
             return {
                 ...state,

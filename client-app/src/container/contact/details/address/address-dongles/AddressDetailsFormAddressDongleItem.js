@@ -63,7 +63,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
     };
 
     closeEdit = () => {
-        this.setState({ showEdit: true });
+        this.setState({ showEdit: false });
         this.props.setAddressDongleNewOrEditOpen(false);
     };
 
@@ -77,10 +77,6 @@ class AddressDetailsFormAddressDongleItem extends Component {
 
     toggleDelete = () => {
         this.setState({ showDelete: !this.state.showDelete });
-    };
-
-    reloadContact = () => {
-        this.props.fetchContactDetails(this.props.address.contactId);
     };
 
     handleInputChange = event => {
@@ -147,9 +143,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
         AddressDongleAPI.updateAddressDongle(addressDongle)
             .then(payload => {
                 this.props.updateStateAddressDongle(payload.data.addressDongle);
-
                 this.closeEdit();
-                this.reloadContact();
             })
             .catch(error => {
                 if (error.response) {
@@ -189,7 +183,6 @@ class AddressDetailsFormAddressDongleItem extends Component {
                 {this.props.permissions.deleteContactAddress && this.state.showDelete && (
                     <AddressDetailsFormAddressDongleDelete
                         closeDeleteItemModal={this.toggleDelete}
-                        reloadContact={this.reloadContact}
                         address={this.state.address}
                         {...this.state.addressDongle}
                     />

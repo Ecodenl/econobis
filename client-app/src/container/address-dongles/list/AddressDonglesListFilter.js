@@ -9,12 +9,12 @@ import {
     setFilterAddressDongleAddress,
     setFilterAddressDonglePostalCode,
     setFilterAddressDongleCity,
-    setFilterAddressDongleTypeReadOut,
+    setFilterAddressDongleTypeReadOutId,
     setFilterAddressDongleDateStartStart,
     setFilterAddressDongleDateStartEnd,
     setFilterAddressDongleDateEndStart,
     setFilterAddressDongleDateEndEnd,
-    setFilterAddressDongleTypeDongle,
+    setFilterAddressDongleTypeDongleId,
     setFilterAddressDongleEnergyId,
     // setFilterAddressDongleMacNumber,
     // setFilterAddressDongleDateSignedStart,
@@ -55,8 +55,8 @@ const AddressDonglesListFilter = props => {
         }, 100);
     };
 
-    const onTypeReadOutChange = e => {
-        props.setFilterAddressDongleTypeReadOut(e.target.value);
+    const onTypeReadOutIdChange = e => {
+        props.setFilterAddressDongleTypeReadOutId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -92,8 +92,8 @@ const AddressDonglesListFilter = props => {
         }
     };
 
-    const onTypeDongleChange = e => {
-        props.setFilterAddressDongleTypeDongle(e.target.value);
+    const onTypeDongleIdChange = e => {
+        props.setFilterAddressDongleTypeDongleId(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -143,12 +143,20 @@ const AddressDonglesListFilter = props => {
                 />
             </th>
             <th>
-                <input
-                    type="text"
+                <select
                     className="form-control input-sm"
-                    value={props.filters.typeReadOut.data}
-                    onChange={onTypeReadOutChange}
-                />
+                    value={props.filters.typeReadOutId.data}
+                    onChange={onTypeReadOutIdChange}
+                >
+                    <option />
+                    {props.typesReadOut.map(typeReadOut => {
+                        return (
+                            <option key={typeReadOut.id} value={typeReadOut.id}>
+                                {typeReadOut.name}
+                            </option>
+                        );
+                    })}
+                </select>
             </th>
             <DataTableFilterDateStartEndTwoRows
                 startDate={props.filters.dateStartStart.data && props.filters.dateStartStart.data}
@@ -163,12 +171,20 @@ const AddressDonglesListFilter = props => {
                 onChangeActionEnd={onDateEndEndChange}
             />
             <th>
-                <input
-                    type="text"
+                <select
                     className="form-control input-sm"
-                    value={props.filters.typeDongle.data}
-                    onChange={onTypeDongleChange}
-                />
+                    value={props.filters.typeDongleId.data}
+                    onChange={onTypeDongleIdChange}
+                >
+                    <option />
+                    {props.typesDongle.map(typeDongle => {
+                        return (
+                            <option key={typeDongle.id} value={typeDongle.id}>
+                                {typeDongle.name}
+                            </option>
+                        );
+                    })}
+                </select>
             </th>
             <th>
                 <input
@@ -186,6 +202,8 @@ const AddressDonglesListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.addressDongles.filters,
+    typesReadOut: state.systemData.dongleTypeReadOuts,
+    typesDongle: state.systemData.dongleTypeDongles,
 });
 
 const mapDispatchToProps = dispatch => {
@@ -196,12 +214,12 @@ const mapDispatchToProps = dispatch => {
             setFilterAddressDongleAddress,
             setFilterAddressDonglePostalCode,
             setFilterAddressDongleCity,
-            setFilterAddressDongleTypeReadOut,
+            setFilterAddressDongleTypeReadOutId,
             setFilterAddressDongleDateStartStart,
             setFilterAddressDongleDateStartEnd,
             setFilterAddressDongleDateEndStart,
             setFilterAddressDongleDateEndEnd,
-            setFilterAddressDongleTypeDongle,
+            setFilterAddressDongleTypeDongleId,
             setFilterAddressDongleEnergyId,
         },
         dispatch

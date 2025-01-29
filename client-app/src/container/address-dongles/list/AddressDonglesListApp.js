@@ -18,6 +18,8 @@ import PanelBody from '../../../components/panel/PanelBody';
 // import moment from 'moment/moment';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
+const recordsPerPage = 20;
+
 class AddressDonglesListApp extends Component {
     constructor(props) {
         super(props);
@@ -47,7 +49,7 @@ class AddressDonglesListApp extends Component {
             const extraFilters = this.state.extraFilters;
             const filters = filterHelper(this.props.addressDonglesFilters);
             const sorts = this.props.addressDonglesSorts;
-            const pagination = { limit: 20, offset: this.props.addressDonglesPagination.offset };
+            const pagination = { limit: recordsPerPage, offset: this.props.addressDonglesPagination.offset };
 
             this.props.fetchAddressDongles(filters, extraFilters, sorts, pagination);
         }, 100);
@@ -94,7 +96,7 @@ class AddressDonglesListApp extends Component {
 
     handlePageClick(data) {
         let page = data.selected;
-        let offset = Math.ceil(page * 20);
+        let offset = Math.ceil(page * recordsPerPage);
 
         this.props.setAddressDonglesPagination({ page, offset });
 

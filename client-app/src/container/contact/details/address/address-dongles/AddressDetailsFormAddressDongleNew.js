@@ -19,11 +19,11 @@ class AddressDetailsFormAddressDongleNew extends Component {
         this.state = {
             addressDongle: {
                 addressId: this.props.addressId,
-                typeReadOut: '',
+                typeReadOutId: '',
                 dateSigned: '',
                 macNumber: '',
                 dateStart: '',
-                typeDongle: '',
+                typeDongleId: '',
                 dateEnd: '',
                 energyId: '',
             },
@@ -95,16 +95,16 @@ class AddressDetailsFormAddressDongleNew extends Component {
 
     render() {
         const {
-            typeReadOut,
+            typeReadOutId,
             dateSigned,
             macNumber,
             dateStart,
-            typeDongle,
+            typeDongleId,
             dateEnd,
             energyId,
         } = this.state.addressDongle;
 
-        const typesDongle = this.props.typeDongle.filter(typeDongle => typeDongle.typeReadOut == typeReadOut);
+        const typesDongle = this.props.typeDongles.filter(typeDongle => typeDongle.typeReadOutId == typeReadOutId);
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -115,10 +115,10 @@ class AddressDetailsFormAddressDongleNew extends Component {
                         <div className="row">
                             <InputSelect
                                 label={'Type uitlezing'}
-                                id="typeReadOut"
-                                name={'typeReadOut'}
-                                options={this.props.typeReadOut}
-                                value={typeReadOut}
+                                id="typeReadOutId"
+                                name={'typeReadOutId'}
+                                options={this.props.typesReadOut}
+                                value={typeReadOutId}
                                 onChangeAction={this.handleInputChange}
                             />
                             <InputDate
@@ -149,10 +149,10 @@ class AddressDetailsFormAddressDongleNew extends Component {
                             {typesDongle != '' ? (
                                 <InputSelect
                                     label={'Type dongel'}
-                                    id="typeDongle"
-                                    name={'typeDongle'}
+                                    id="typeDongleId"
+                                    name={'typeDongleId'}
                                     options={typesDongle}
-                                    value={typeDongle}
+                                    value={typeDongleId}
                                     onChangeAction={this.handleInputChange}
                                 />
                             ) : (
@@ -196,8 +196,8 @@ class AddressDetailsFormAddressDongleNew extends Component {
 
 const mapStateToProps = state => {
     return {
-        typeReadOut: state.systemData.dongleTypeReadOut,
-        typeDongle: state.systemData.dongleTypeDongle,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
+        typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

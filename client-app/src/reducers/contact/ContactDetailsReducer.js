@@ -222,10 +222,8 @@ export default function(state = {}, action) {
                         ? {
                               ...address,
                               addressDongles: [
-                                  ...address.addressDongles,
-                                  {
-                                      ...action.addressDongle,
-                                  },
+                                  action.addressDongle, // Nieuwe entry eerst
+                                  ...(address.addressDongles || []), // Bestaande array daarna
                               ],
                           }
                         : address

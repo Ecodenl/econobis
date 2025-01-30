@@ -452,7 +452,7 @@ const Routes = () => {
                     <Route path="maatregelen" component={MeasuresListApp} />
                     <Route path="maatregel/:id" component={MeasureDetailsApp} />
                     /* Dongles */
-                    <Route path="dongels" component={PermissionHelper(AddressDonglesListApp, 'manageDongles')} />
+                    <Route path="dongels" component={PermissionHelper(AddressDonglesListApp, 'menuDongles')} />
                     /* Mailboxes */
                     <Route path="mailbox/nieuw" component={MailboxNewApp} />
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />

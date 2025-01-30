@@ -30,18 +30,18 @@ const AddressDetailsFormAddressDongleView = props => {
             <div className="col-sm-1">
                 {props.showActionButtons && props.addressDongleNewOrEditOpen == false ? (
                     <>
-                        {/*{props.permissions.updateContactAddress ? (*/}
-                        <a role="button" onClick={props.openEdit} title="Wijzigen Dongel">
-                            <Icon className="mybtn-success" size={14} icon={pencil} />
-                        </a>
-                        {/*) : ( '' )}*/}
-                        {/*{props.permissions.deleteContactAddress ? (*/}
-                        <a role="button" onClick={props.toggleDelete} title="Verwijderen dongel">
-                            <Icon className="mybtn-danger" size={14} icon={trash} />
-                        </a>
-                        {/*) : (*/}
-                        {/*    ''*/}
-                        {/*)}*/}
+                        {props.permissions.manageDongles ? (
+                            <>
+                                <a role="button" onClick={props.openEdit} title="Wijzigen Dongel">
+                                    <Icon className="mybtn-success" size={14} icon={pencil} />
+                                </a>
+                                <a role="button" onClick={props.toggleDelete} title="Verwijderen dongel">
+                                    <Icon className="mybtn-danger" size={14} icon={trash} />
+                                </a>
+                            </>
+                        ) : (
+                            ''
+                        )}
                     </>
                 ) : (
                     ''

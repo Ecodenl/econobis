@@ -167,20 +167,18 @@ class AddressDetailsFormAddressDongleItem extends Component {
                     addressDongle={this.state.addressDongle}
                     addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
                 />
-                {this.props.permissions.updateContactAddress &&
-                    this.state.showEdit &&
-                    (this.props.permissions.updatePerson || this.props.permissions.updateOrganisation) && (
-                        <AddressDetailsFormAddressDongleEdit
-                            addressDongle={this.state.addressDongle}
-                            errors={this.state.errors}
-                            handleInputChange={this.handleInputChange}
-                            handleInputChangeDate={this.handleInputChangeDate}
-                            handleInputChangeReadOutId={this.handleInputChangeReadOutId}
-                            handleSubmit={this.handleSubmit}
-                            cancelEdit={this.cancelEdit}
-                        />
-                    )}
-                {this.props.permissions.deleteContactAddress && this.state.showDelete && (
+                {this.props.permissions.manageDongles && this.state.showEdit && (
+                    <AddressDetailsFormAddressDongleEdit
+                        addressDongle={this.state.addressDongle}
+                        errors={this.state.errors}
+                        handleInputChange={this.handleInputChange}
+                        handleInputChangeDate={this.handleInputChangeDate}
+                        handleInputChangeReadOutId={this.handleInputChangeReadOutId}
+                        handleSubmit={this.handleSubmit}
+                        cancelEdit={this.cancelEdit}
+                    />
+                )}
+                {this.props.permissions.manageDongles && this.state.showDelete && (
                     <AddressDetailsFormAddressDongleDelete
                         closeDeleteItemModal={this.toggleDelete}
                         address={this.state.address}

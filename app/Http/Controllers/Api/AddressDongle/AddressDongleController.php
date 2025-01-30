@@ -15,6 +15,8 @@ class AddressDongleController extends ApiController
 {
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', AddressDongle::class);
+
         $addressDongles = $requestQuery->get();
 
         $addressDongles->load(['address', 'address.contact', 'dongleType', 'dongleReadOutType']);
@@ -32,6 +34,8 @@ class AddressDongleController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
+        $this->authorize('manage', AddressDongle::class);
+
         $data = $requestInput
             ->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('typeReadOutId')->alias('type_read_out_id')->next()
@@ -46,8 +50,6 @@ class AddressDongleController extends ApiController
         $addressDongle = new AddressDongle();
 
         $addressDongle->fill($data);
-// todo WM: moet hier nog wat mee?
-//        $this->authorize('create', $addressDongle);
 
         $addressDongle->save();
 
@@ -56,8 +58,7 @@ class AddressDongleController extends ApiController
 
     public function update(RequestInput $requestInput, AddressDongle $addressDongle)
     {
-// todo WM: moet hier nog wat mee?
-//        $this->authorize('update', $addressDongle);
+        $this->authorize('manage', AddressDongle::class);
 
         $data = $requestInput
             ->integer('typeReadOutId')->alias('type_read_out_id')->next()
@@ -78,8 +79,7 @@ class AddressDongleController extends ApiController
 
     public function destroy(AddressDongle $addressDongle)
     {
-// todo WM: moet hier nog wat mee?
-//        $this->authorize('delete', $addressDongle);
+        $this->authorize('manage', AddressDongle::class);
 
         $addressDongle->delete();
     }

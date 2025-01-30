@@ -32,15 +32,15 @@ class AddressDetailsFormAddressDongle extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Monitoring</span>
-                    {/*{this.props.permissions.createContactAddressDongle && (*/}
-                    <a role="button" className="pull-right" onClick={this.toggleShowNewDongle}>
-                        <Icon size={14} icon={plus} />
-                    </a>
-                    {/*)}*/}
+                    {this.props.permissions.manageDongles && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNewDongle}>
+                            <Icon size={14} icon={plus} />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        {this.props.permissions.createContactAddress && this.state.showNewDongle && (
+                        {this.props.permissions.manageDongles && this.state.showNewDongle && (
                             <AddressDetailsFormAddressDongleNew
                                 contactId={this.props.address.contactId}
                                 addressId={this.props.address.id}

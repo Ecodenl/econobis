@@ -10,6 +10,12 @@ class AddressDongle extends Model
 {
     protected $table = 'address_dongles';
 
+    protected $casts = [
+        'date_signed' => 'date',
+        'date_start' => 'date',
+        'date_end' => 'date',
+    ];
+
     protected $fillable = ['address_id', 'type_read_out_id','mac_number','type_dongle_id','energy_id','date_signed','date_start','date_end'];
 
     use RevisionableTrait;

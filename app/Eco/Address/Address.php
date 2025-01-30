@@ -40,6 +40,13 @@ class Address extends Model
         return $this->hasMany(AddressDongle::class)->orderByDesc('id');
     }
 
+    public function lastAddressDongle()
+    {
+        // latestOfMany is default op basis van created_at, als je dit bijv. op basis van 'id' wil, dan kan je dit veld meegeven in latestOfMany:
+        //       return $this->hasOne(AddressDongle::class)->latestOfMany('id');
+        return $this->hasOne(AddressDongle::class)->latestOfMany();
+    }
+
     // currentAddressEnergySupplierElectricity: only for Electricity ! (type 2 or 3)
     public function currentAddressEnergySupplierElectricity()
     {

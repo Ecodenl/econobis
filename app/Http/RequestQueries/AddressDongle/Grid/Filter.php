@@ -11,11 +11,12 @@ namespace App\Http\RequestQueries\AddressDongle\Grid;
 
 use App\Helpers\RequestQuery\RequestFilter;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
 
 class Filter extends RequestFilter
 {
     protected $fields = [
-        'address',
+        'streetAndNumber',
         'fullName',
         'postalCode',
         'city',
@@ -37,7 +38,7 @@ class Filter extends RequestFilter
 
     protected $joins = [
         'fullName' => 'contact',
-        'address' => 'address',
+        'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
     ];
@@ -47,17 +48,11 @@ class Filter extends RequestFilter
         'status' => 'eq',
     ];
 
-    protected function applyAddressFilter($query, $type, $data) {
-        // Elke term moet in een van de naam velden voor komen.
-        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
-        $terms = explode(' ', $data);
+    protected function applyStreetAndNumberFilter($query, $type, $data)
+    {
+        $data = str_replace(' ', '', $data);
 
-        foreach ($terms as $term){
-            $query->where(function($query) use ($term) {
-                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
-                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
-            });
-        }
+        $query->whereRaw('concat(IFNULL(addresses.street,\'\'), IFNULL(addresses.number,\'\'),  IFNULL(addresses.addition,\'\')) LIKE ' . DB::connection()->getPdo()->quote('%' . $data . '%'));
 
         return false;
     }

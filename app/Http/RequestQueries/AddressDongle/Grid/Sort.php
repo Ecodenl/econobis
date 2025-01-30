@@ -15,7 +15,7 @@ class Sort extends RequestSort
 {
 
     protected $fields = [
-        'address',
+        'streetAndNumber',
         'fullName',
         'postalCode',
         'city',
@@ -30,7 +30,6 @@ class Sort extends RequestSort
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
-        'address' => 'addresses.street',
         'postalCode' => 'addresses.postal_code',
         'city' => 'addresses.city',
         'typeReadOutName' => 'address_dongle_read_out_types.name',
@@ -44,24 +43,18 @@ class Sort extends RequestSort
 
     protected $joins = [
         'fullName' => 'contact',
-        'address' => 'address',
+        'streetAndNumber' => 'address',
         'postalCode' => 'address',
         'city' => 'address',
         'typeReadOutName' => 'dongleReadOutType',
         'typeDongleName' => 'dongleType',
     ];
 
-//    protected function applyMeasureNameSort($query, $data)
-//    {
-//        $query->orderByRaw("
-//        CASE
-//            WHEN measures.name_custom IS NOT NULL AND measures.name_custom != ''
-//                THEN measures.name_custom
-//            ELSE measures.name
-//        END
-//    " . ($data === 'asc' ? ' ASC' : ' DESC'));
-//
-//        return false;
-//    }
+    protected function applyStreetAndNumberSort($query, $data)
+    {
+        $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
 
 }

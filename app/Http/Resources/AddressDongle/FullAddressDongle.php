@@ -18,9 +18,9 @@ class FullAddressDongle extends JsonResource
     {
         return [
             'id' => $this->id,
-            'addressId' => $this->address_id,
-            'fullAddress' => $this->address,
-            'fullContactName' => $this->address ? $this->address->contact()->value('full_name') : '',
+//            'addressId' => $this->address_id,
+//            'fullAddress' => $this->address,
+//            'fullContactName' => $this->address ? $this->address->contact()->value('full_name') : '',
             'typeReadOutId' => $this->type_read_out_id,
             'typeReadOutName' => $this?->dongleReadOutType ? $this->dongleReadOutType->name : '',
             'macNumber' => $this->mac_number,

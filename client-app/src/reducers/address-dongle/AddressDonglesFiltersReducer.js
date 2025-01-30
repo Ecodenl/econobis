@@ -3,8 +3,8 @@ const filtersReducerDefaultState = {
         field: 'fullName',
         data: '',
     },
-    address: {
-        field: 'address',
+    streetAndNumber: {
+        field: 'streetAndNumber',
         data: '',
     },
     postalCode: {
@@ -67,12 +67,12 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.fullName,
                 },
             };
-        case 'SET_FILTER_ADDRESS_DONGLE_ADDRESS':
+        case 'SET_FILTER_ADDRESS_DONGLE_STREET_AND_NUMBER':
             return {
                 ...state,
-                address: {
-                    ...state.address,
-                    data: action.address,
+                streetAndNumber: {
+                    ...state.streetAndNumber,
+                    data: action.streetAndNumber,
                 },
             };
         case 'SET_FILTER_ADDRESS_DONGLE_POSTAL_CODE':

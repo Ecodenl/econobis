@@ -5,9 +5,9 @@ export const setFilterAddressDongleFullName = fullName => ({
     fullName,
 });
 
-export const setFilterAddressDongleAddress = address => ({
-    type: 'SET_FILTER_ADDRESS_DONGLE_ADDRESS',
-    address,
+export const setFilterAddressDongleStreetAndNumber = streetAndNumber => ({
+    type: 'SET_FILTER_ADDRESS_DONGLE_STREET_AND_NUMBER',
+    streetAndNumber,
 });
 
 export const setFilterAddressDonglePostalCode = postalCode => ({

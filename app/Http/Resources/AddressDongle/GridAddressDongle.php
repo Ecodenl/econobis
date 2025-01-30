@@ -19,7 +19,7 @@ class GridAddressDongle extends JsonResource
     {
         return [
                'id' => $this->id,
-               'fullAddress' => $this->address ? $this->address->present()->streetAndNumber() : '',
+               'streetAndNumber' => $this->address?->present()?->streetAndNumber ?: '',
                'postalCode' => $this->address ? $this->address->postal_code : '',
                'city' => $this->address ? $this->address->city : '',
                'fullName' => $this->address ? $this->address->contact()->value('full_name') : '',

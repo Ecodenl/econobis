@@ -29,7 +29,12 @@ const AddressDonglesListHead = props => {
                 width={props.showCheckboxList ? '10%' : '13%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'10%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort
+                sortColumn={'streetAndNumber'}
+                title={'Adres'}
+                width={'10%'}
+                setSorts={setSorts}
+            />
             <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'7%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'city'} title={'Woonplaats'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort

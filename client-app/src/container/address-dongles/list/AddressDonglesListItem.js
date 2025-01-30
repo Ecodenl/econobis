@@ -31,7 +31,7 @@ class AddressDonglesListItem extends Component {
         const {
             id,
             fullName,
-            fullAddress,
+            streetAndNumber,
             postalCode,
             city,
             typeReadOutName,
@@ -61,7 +61,7 @@ class AddressDonglesListItem extends Component {
                     </td>
                 ) : null}
                 <td>{fullName}</td>
-                <td>{fullAddress}</td>
+                <td>{streetAndNumber}</td>
                 <td>{postalCode}</td>
                 <td>{city}</td>
                 <td>{typeReadOutName}</td>

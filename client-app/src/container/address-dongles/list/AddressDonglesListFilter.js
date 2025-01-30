@@ -6,7 +6,7 @@ import moment from 'moment';
 import {
     clearFilterAddressDongles,
     setFilterAddressDongleFullName,
-    setFilterAddressDongleAddress,
+    setFilterAddressDongleStreetAndNumber,
     setFilterAddressDonglePostalCode,
     setFilterAddressDongleCity,
     setFilterAddressDongleTypeReadOutId,
@@ -31,8 +31,8 @@ const AddressDonglesListFilter = props => {
         }, 100);
     };
 
-    const onAddressChange = e => {
-        props.setFilterAddressDongleAddress(e.target.value);
+    const onStreetAndNumberChange = e => {
+        props.setFilterAddressDongleStreetAndNumber(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -122,8 +122,8 @@ const AddressDonglesListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
-                    value={props.filters.address.data}
-                    onChange={onAddressChange}
+                    value={props.filters.streetAndNumber.data}
+                    onChange={onStreetAndNumberChange}
                 />
             </th>
             <th>
@@ -211,7 +211,7 @@ const mapDispatchToProps = dispatch => {
         {
             clearFilterAddressDongles,
             setFilterAddressDongleFullName,
-            setFilterAddressDongleAddress,
+            setFilterAddressDongleStreetAndNumber,
             setFilterAddressDonglePostalCode,
             setFilterAddressDongleCity,
             setFilterAddressDongleTypeReadOutId,

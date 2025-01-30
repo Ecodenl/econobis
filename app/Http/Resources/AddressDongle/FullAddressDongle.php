@@ -18,7 +18,7 @@ class FullAddressDongle extends JsonResource
     {
         return [
             'id' => $this->id,
-//            'addressId' => $this->address_id,
+            'addressId' => $this->address_id, // wordt in contactDetailsReducer gebruikt om address dongels goed bij te houden in state !!!
 //            'fullAddress' => $this->address,
 //            'fullContactName' => $this->address ? $this->address->contact()->value('full_name') : '',
             'typeReadOutId' => $this->type_read_out_id,

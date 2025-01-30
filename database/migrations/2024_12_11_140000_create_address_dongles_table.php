@@ -88,5 +88,7 @@ return new class extends Migration
     public function down()
     {
         Schema::dropIfExists('address_dongles');
+        Schema::dropIfExists('address_dongle_types');
+        Schema::dropIfExists('address_dongle_read_out_types');
     }
 };

@@ -78,8 +78,8 @@ class AddressDonglesListItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        typesReadOut: state.systemData.dongleTypeReadOuts,
-        typesDongle: state.systemData.dongleTypeDongles,
+        // typesReadOut: state.systemData.dongleTypeReadOuts,
+        // typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

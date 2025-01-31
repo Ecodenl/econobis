@@ -1,5 +1,6 @@
 import { combineReducers } from 'redux';
 
+import addressDonglesReducer from './address-dongle/AddressDonglesReducer';
 import administrationsReducer from './administration/AdministrationsReducer';
 import administrationDetailsReducer from './administration/AdministrationDetailsReducer';
 import auditTrailReducer from './audit-trail/AuditTrailReducer';
@@ -86,6 +87,9 @@ const rootReducer = combineReducers({
 
     //Audit trail
     auditTrail: auditTrailReducer,
+
+    // Address dongles
+    addressDongles: addressDonglesReducer,
 
     //Administrations
     administrations: administrationsReducer,

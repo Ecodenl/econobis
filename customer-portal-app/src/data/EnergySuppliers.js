@@ -11,7 +11,7 @@ export default [
     { id: 28, name: 'De Groene Stroomfabriek' },
     { id: 59, name: 'De Vrije Energie Producent' },
     { id: 25, name: 'Delta Energie' },
-    { id: 50, name: 'DGB Energie' },
+    { id: 50, name: 'Kikker Energie/DGB Energie' },
     { id: 51, name: 'Discount Energie' },
     { id: 46, name: 'Dorpstroom' },
     { id: 53, name: 'DVEP Energie' },

@@ -34,6 +34,7 @@ const INITIAL_STATE = {
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,
+        useDongleRegistration: false,
         requireTwoFactorAuthentication: false,
         inspectionPlannedEmailTemplateId: '',
         inspectionRecordedEmailTemplateId: '',

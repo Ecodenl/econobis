@@ -136,6 +136,7 @@ const MeasureCategoriesListApp = React.lazy(() =>
 const MeasureCategoryDetailsApp = React.lazy(() =>
     import('./container/measure-categories/details/MeasureCategoryDetailsApp')
 );
+const AddressDonglesListApp = React.lazy(() => import('./container/address-dongles/list/AddressDonglesListApp'));
 const NotFoundedPage = React.lazy(() => import('./container/global/NotFoundedPage'));
 const OpportunitiesListApp = React.lazy(() => import('./container/opportunities/list/OpportunitiesListApp'));
 const OpportunityDetailsApp = React.lazy(() => import('./container/opportunities/details/OpportunityDetailsApp'));
@@ -456,6 +457,8 @@ const Routes = () => {
                     /* Measures */
                     <Route path="maatregelen" component={MeasuresListApp} />
                     <Route path="maatregel/:id" component={MeasureDetailsApp} />
+                    /* Dongles */
+                    <Route path="dongels" component={PermissionHelper(AddressDonglesListApp, 'menuDongles')} />
                     /* Mailboxes */
                     <Route path="mailbox/nieuw" component={MailboxNewApp} />
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />

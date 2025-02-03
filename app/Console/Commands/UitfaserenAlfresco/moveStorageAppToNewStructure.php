@@ -2,11 +2,12 @@
 
 namespace App\Console\Commands\UitfaserenAlfresco;
 
+use App\Eco\Mailbox\Mailbox;
 use App\Eco\Schedule\CommandRun;
-use Illuminate\Console\Command;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class moveStorageAppToNewStructure extends Command
 {
@@ -48,7 +49,14 @@ class moveStorageAppToNewStructure extends Command
         // Move storage/app directories met absolute paden
         $this->moveToNewStructure(storage_path('app/administrations'), $bigStoragePath . '/app/administrations', $proef, $withLog);
         $this->moveToNewStructure(storage_path('app/documents'), $bigStoragePath . '/app/documents', $proef, $withLog);
-        $this->moveToNewStructure(storage_path('app/mails'), $bigStoragePath . '/app/mails', $proef, $withLog);
+//        $this->moveToNewStructure(storage_path('app/mails'), $bigStoragePath . '/app/mails', $proef, $withLog);
+
+        foreach (Mailbox::all() as $mailbox) {
+            $directoryInbox = 'app/mails/mailbox_' . $mailbox->id . '/inbox';
+            $this->moveToNewStructure(storage_path($directoryInbox), ($bigStoragePath . '/' . $directoryInbox), $proef, $withLog);
+            $directoryOutbox = 'app/mails/mailbox_' . $mailbox->id . '/outbox';
+            $this->moveToNewStructure(storage_path($directoryOutbox), ($bigStoragePath . '/' . $directoryOutbox), $proef, $withLog);
+        }
 
         $commandRun->end_at = Carbon::now();
         if($this->hasErrors === false){
@@ -125,7 +133,9 @@ class moveStorageAppToNewStructure extends Command
             }
 
             if ($withLog) {
-                Log::info("Bestanden succesvol gekopieerd van {$oldRoot} naar {$newRoot}");
+                if (!$proef) {
+                    Log::info("Bestanden succesvol gekopieerd van {$oldRoot} naar {$newRoot}");
+                }
             }
 
             // Optioneel: bronmap verwijderen

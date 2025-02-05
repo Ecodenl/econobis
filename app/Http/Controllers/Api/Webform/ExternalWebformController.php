@@ -2081,58 +2081,65 @@ class ExternalWebformController extends Controller
 
     protected function addDongleToAddress(Address $address, $data, Webform $webform)
     {
-        $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($data['dongle_type_read_out_id']);
-        if (!$addressDongleTypeReadOut) {
-            $this->error('Ongeldige waarde voor type dongel meegegeven.');
-        }
+        if ($data['dongle_type_read_out_id'] != '') {
+            $this->log('Er zijn dongel gegevens meegegeven');
 
-        $hasTypeDongle = AddressDongleTypeDongle::where('type_read_out_id', $data['dongle_type_read_out_id'])->exists();
-        // todo WM: check of we hier ook nog een isset check moeten doen?
-        if($hasTypeDongle && $data['dongle_type_dongle_id']){
-            $addressDongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
-            if (!$addressDongleTypeDongle) {
+            $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($data['dongle_type_read_out_id']);
+            if (!$addressDongleTypeReadOut) {
                 $this->error('Ongeldige waarde voor type dongel meegegeven.');
             }
-        } else {
-            $data['dongle_type_dongle_id'] = '';
-        }
 
-        if($data['dongle_energy_id'] && !is_numeric($data['dongle_energy_id'])) {
-            $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
-        }
-
-            // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
-        // Die moeten we eerst even setten als we dus hier vanuit webform komen.
-        $responsibleUser = User::find($webform->responsible_user_id);
-        if($responsibleUser){
-            Auth::setUser($responsibleUser);
-            $this->log('Kans verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
-        }else{
-            $responsibleTeam = Team::find($webform->responsible_team_id);
-            if($responsibleTeam && $responsibleTeam->users ){
-                $teamFirstUser = $responsibleTeam->users->first();
-                Auth::setUser($teamFirstUser);
-                $this->log('Kans verantwoordelijke gebruiker : ' . $teamFirstUser->id);
-            }else{
-                $this->log('Kans verantwoordelijke gebruiker : onbekend');
+            $hasTypeDongle = AddressDongleTypeDongle::where('type_read_out_id', $data['dongle_type_read_out_id'])->exists();
+            // todo WM: check of we hier ook nog een isset check moeten doen?
+            if($hasTypeDongle && $data['dongle_type_dongle_id']){
+                $addressDongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
+                if (!$addressDongleTypeDongle) {
+                    $this->error('Ongeldige waarde voor type dongel meegegeven.');
+                }
+            } else {
+                $data['dongle_type_dongle_id'] = '';
             }
+
+            if($data['dongle_energy_id'] && !is_numeric($data['dongle_energy_id'])) {
+                $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
+            }
+
+                // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Dongel verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Dongel verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Dongel verantwoordelijke gebruiker : onbekend');
+                }
+            }
+
+            $addressDongleData = [
+                'address_id' => $address->id,
+                'type_read_out_id' => $data['dongle_type_read_out_id'],
+                'mac_number' => $data['dongle_mac_number']?: null,
+                'type_dongle_id' => $data['dongle_type_dongle_id']?: null,
+                'energy_id' => $data['dongle_energy_id']?: null,
+                'date_signed' => $data['dongle_date_signed']?: null,
+                'date_start' => $data['dongle_date_start']?: null,
+                'date_end' => $data['dongle_date_end']?: null,
+            ];
+            $addressDongle = new AddressDongle();
+            $addressDongle->fill($addressDongleData);
+            $addressDongle->save();
+
+            $this->log('Koppeling met dongel gemaakt.');
+
+        } else {
+            $this->log('Er zijn geen dongel gegevens meegegeven.');
         }
-
-        $addressDongleData = [
-            'address_id' => $address->id,
-            'type_read_out_id' => $data['dongle_type_read_out_id'],
-            'mac_number' => $data['dongle_mac_number']?: null,
-            'type_dongle_id' => $data['dongle_type_dongle_id']?: null,
-            'energy_id' => $data['dongle_energy_id']?: null,
-            'date_signed' => $data['dongle_date_signed']?: null,
-            'date_start' => $data['dongle_date_start']?: null,
-            'date_end' => $data['dongle_date_end']?: null,
-        ];
-        $addressDongle = new AddressDongle();
-        $addressDongle->fill($addressDongleData);
-        $addressDongle->save();
-
-        $this->log('Koppeling met dongel gemaakt.');
 
     }
 

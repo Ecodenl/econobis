@@ -22,7 +22,7 @@
     "react-google-recaptcha-v3": "^1.4.0",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.7.0",
-    "react-pdf": "^6.2.2",
+    "react-pdf": "^7.7.3",
     "react-router-dom": "5.2.0",
     "react-scripts": "^5.0.1",
     "react-spinners": "^0.13.8",

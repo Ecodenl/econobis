@@ -1,20 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Button } from 'react-bootstrap';
 
-// oud
-// const {Document, Page} = supportsPdfViewer ? require('react-pdf/dist/esm/entry.webpack') : {};
-// pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
-
-//nieuw
-// ChatGPT: The error occurs because recent versions of react-pdf have changed their package structure and no longer
-// export react-pdf/dist/esm/entry.webpack. Instead, you should import react-pdf directly from the main package.
 import { Document, Page, pdfjs } from 'react-pdf';
-// pdfjs.GlobalWorkerOptions.workerSrc = `//unpkg.com/pdfjs-dist@${pdfjs.version}/build/pdf.worker.min.js`;
 pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
-
-//customer portal app
-// import { Document, Page, pdfjs } from 'react-pdf/dist/esm/entry.webpack';
-// pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
 
 /**
  * Import pdf library dynamically based on support

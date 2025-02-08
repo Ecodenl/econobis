@@ -12,7 +12,7 @@ module.exports = merge(common, {
     output: {
         path: path.join(__dirname, '../public/js'),
         filename: '[name].[chunkhash].js',
-        publicPath: path.resolve(__dirname, 'js/'),
+        publicPath: './js/',
     },
     plugins: [
         new HtmlWebpackPlugin({

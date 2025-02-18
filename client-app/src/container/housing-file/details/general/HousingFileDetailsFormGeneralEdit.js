@@ -42,6 +42,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             heatSource,
             waterComfort,
             revenueSolarPanels,
+            wozValue,
         } = props.housingFileDetails;
 
         this.state = {
@@ -81,6 +82,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 heatSource: heatSource ? heatSource.hoomStatusValue : '',
                 waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
                 revenueSolarPanels: revenueSolarPanels ? revenueSolarPanels : '',
+                wozValue: wozValue ? wozValue : '',
             },
         };
     }
@@ -196,6 +198,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             heatSource,
             waterComfort,
             revenueSolarPanels,
+            wozValue,
         } = this.state.housingFile;
         const showFields = this.props.housingFileHoomLinksToShowInEconobis;
 
@@ -465,6 +468,15 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={remarkCoach}
                         onChangeAction={this.handleInputChange}
                         disabled={hasHoomDossierLink}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label={'WOZ waarde'}
+                        name="wozValue"
+                        value={wozValue}
+                        onChangeAction={this.handleInputChange}
                     />
                 </div>
 

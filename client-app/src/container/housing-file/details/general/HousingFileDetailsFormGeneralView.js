@@ -31,6 +31,7 @@ const HousingFileDetailsFormGeneralView = props => {
         heatSource,
         waterComfort,
         revenueSolarPanels,
+        wozValue,
     } = props.housingFileDetails;
 
     const showFields = props.housingFileHoomLinksToShowInEconobis;
@@ -141,6 +142,16 @@ const HousingFileDetailsFormGeneralView = props => {
                 </div>
                 <div className="col-sm-9" id="remarkCoach">
                     {remarkCoach}
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remarkCoach" className="col-sm-12">
+                        WOZ waarde
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remarkCoach">
+                    {wozValue}
                 </div>
             </div>
         </div>

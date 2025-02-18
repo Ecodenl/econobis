@@ -74,6 +74,7 @@ class FullHousingFile extends JsonResource
                 'relatedDocuments' => $this->relatedDocuments,
                 'housingFileSpecifications' => FullHousingFileSpecification::collection($this->whenLoaded('housingFileSpecifications')),
                 'housingFileHousingStatuses' => FullHousingFileHousingStatus::collection($this->whenLoaded('housingFileHousingStatuses')),
+                'wozValue' => $this->woz_value
             ];
     }
 }

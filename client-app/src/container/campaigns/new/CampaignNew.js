@@ -8,6 +8,7 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import InputText from '../../../components/form/InputText';
+import InputToggle from '../../../components/form/InputToggle';
 
 const CampaignNew = props => {
     const {
@@ -19,6 +20,8 @@ const CampaignNew = props => {
         measureCategoryIdsSelected,
         opportunityActionIdsSelected,
         typeId,
+        subsidyPossible,
+        wozLimit,
     } = props.campaign;
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -113,6 +116,29 @@ const CampaignNew = props => {
                     error={props.errors.type}
                 />
             </div>
+
+            <div className="row">
+                <InputToggle
+                    label="Subsidie mogelijk"
+                    divSize={'col-sm-6'}
+                    name="subsidyPossible"
+                    value={subsidyPossible}
+                    required={'required'}
+                    onChangeAction={props.handleInputChange}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    label={'WOZ grens '}
+                    size={'col-sm-6'}
+                    name={'wozLimit'}
+                    value={wozLimit}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.wozLimit}
+                />
+            </div>
+
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText

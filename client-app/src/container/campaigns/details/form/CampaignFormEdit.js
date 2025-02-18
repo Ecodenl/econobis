@@ -10,6 +10,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import CampaignDetailsAPI from '../../../../api/campaign/CampaignDetailsAPI';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
+import InputToggle from '../../../../components/form/InputToggle';
 
 moment.locale('nl');
 
@@ -91,6 +92,11 @@ function CampaignFormEdit({
             errorsObj.type = true;
             hasErrors = true;
         }
+
+        // if (!validator.isInt(formState.wozLimit)) {
+        //     errorsObj.wozLimit = true;
+        //     hasErrors = true;
+        // }
 
         setErrors(errorsObj);
 
@@ -201,6 +207,29 @@ function CampaignFormEdit({
                     error={errors.type}
                 />
             </div>
+
+            <div className="row">
+                <InputToggle
+                    label="Subsidie mogelijk"
+                    divSize={'col-sm-6'}
+                    name="subsidyPossible"
+                    value={formState.subsidyPossible}
+                    required={'required'}
+                    onChangeAction={handleInputChange}
+                />
+            </div>
+
+            <div className="row">
+                <InputText
+                    label={'WOZ grens'}
+                    size={'col-sm-6'}
+                    name={'wozLimit'}
+                    value={formState.wozLimit}
+                    onChangeAction={handleInputChange}
+                    error={errors.wozLimit}
+                />
+            </div>
+
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">
                     <ButtonText buttonClassName={'btn-default'} buttonText={'Annuleren'} onClickAction={switchToView} />

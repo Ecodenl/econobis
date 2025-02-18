@@ -119,6 +119,8 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->boolean('subsidyPossible')->validate('required')->alias('subsidy_possible')->next()
+            ->integer('wozLimit')->alias('woz_limit')->next()
             ->get();
 
         $campaign = new Campaign();
@@ -157,6 +159,8 @@ class CampaignController extends ApiController
             ->string('endDate')->validate('nullable|date')->onEmpty(null)->alias('end_date')->next()
             ->integer('statusId')->validate('exists:campaign_status,id')->onEmpty(null)->alias('status_id')->next()
             ->integer('typeId')->validate('required|exists:campaign_types,id')->alias('type_id')->next()
+            ->boolean('subsidyPossible')->alias('subsidy_possible')->next()
+            ->integer('wozLimit')->alias('woz_limit')->next()
             ->get();
 
         $measureCategoryIds = explode(',', $request->measureCategoryIds);

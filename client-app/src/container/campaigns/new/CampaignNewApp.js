@@ -27,10 +27,13 @@ class CampaignNewApp extends Component {
                 measureCategoryIdsSelected: [],
                 opportunityActionIds: '',
                 opportunityActionIdsSelected: [],
+                subsidyPossible: false,
+                wozLimit: '',
             },
             errors: {
                 name: false,
                 type: false,
+                wozLimit: false,
             },
         };
     }
@@ -100,6 +103,11 @@ class CampaignNewApp extends Component {
             errors.type = true;
             hasErrors = true;
         }
+
+        // if (!validator.isInt(campaign.wozLimit)) {
+        //     errors.wozLimit = true;
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors });
 

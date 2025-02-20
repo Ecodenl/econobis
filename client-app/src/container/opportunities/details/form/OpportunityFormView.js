@@ -15,6 +15,8 @@ const OpportunityFormView = props => {
         measureCategory,
         measures,
         amount,
+        belowWozLimit,
+        exceptionDebtRelief,
     } = props.opportunity;
 
     return (
@@ -68,6 +70,17 @@ const OpportunityFormView = props => {
                 <ViewText
                     label={'Datum evaluatie'}
                     value={evaluationAgreedDate ? moment(evaluationAgreedDate).format('L') : ''}
+                />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText
+                    label={'Onder WOZ grens'}
+                    value={belowWozLimit === 1 ? 'ja' : belowWozLimit === 0 ? 'Nee' : 'geen'}
+                />
+                <ViewText
+                    label={'Uitzondering schuldhulpsanering '}
+                    value={exceptionDebtRelief === 1 ? 'ja' : exceptionDebtRelief === 0 ? 'Nee' : 'geen'}
                 />
             </div>
         </div>

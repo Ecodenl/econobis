@@ -104,9 +104,11 @@ class OpportunityController extends ApiController
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
-            ->boolean('belowWozLimit')->onEmpty(null)->alias('below_woz_limit')->next()
-            ->boolean('exceptionDebtRelief')->onEmpty(null)->alias('exception_debt_relief')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->next()
             ->get();
+
+        $data['exception_debt_relief'] = $data['exception_debt_relief'] == "" ? null : $data['exception_debt_relief'];
 
         $opportunity = new Opportunity();
         $opportunity->fill($data);
@@ -137,9 +139,11 @@ class OpportunityController extends ApiController
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
-            ->boolean('belowWozLimit')->onEmpty(null)->alias('below_woz_limit')->next()
-            ->boolean('exceptionDebtRelief')->onEmpty(null)->alias('exception_debt_relief')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->next()
             ->get();
+
+        $data['exception_debt_relief'] = $data['exception_debt_relief'] == "" ? null : $data['exception_debt_relief'];
 
         $opportunity->fill($data);
         $opportunity->save();

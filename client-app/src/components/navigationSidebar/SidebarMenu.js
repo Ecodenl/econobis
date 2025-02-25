@@ -721,7 +721,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
-        useDongleRegistration: state.systemData.cooperation.use_dongle_registration,
+        useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
     };
 };
 

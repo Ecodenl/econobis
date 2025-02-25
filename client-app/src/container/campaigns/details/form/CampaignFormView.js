@@ -75,9 +75,11 @@ const CampaignFormView = ({
                 <ViewText_3_9 label={'Subsidie mogelijk'} value={subsidyPossible ? 'Ja' : 'Nee'} />
             </div>
 
-            <div className="row" onClick={switchToEdit}>
-                <ViewText_3_9 label={'Woz grens'} value={wozLimit} />
-            </div>
+            {subsidyPossible != false ? (
+                <div className="row" onClick={switchToEdit}>
+                    <ViewText_3_9 label={'Woz grens'} value={wozLimit} />
+                </div>
+            ) : null}
         </div>
     );
 };

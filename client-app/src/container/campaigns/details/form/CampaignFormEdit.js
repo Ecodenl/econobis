@@ -218,17 +218,18 @@ function CampaignFormEdit({
                     onChangeAction={handleInputChange}
                 />
             </div>
-
-            <div className="row">
-                <InputText
-                    label={'WOZ grens'}
-                    size={'col-sm-6'}
-                    name={'wozLimit'}
-                    value={formState.wozLimit}
-                    onChangeAction={handleInputChange}
-                    error={errors.wozLimit}
-                />
-            </div>
+            {formState.subsidyPossible != false ? (
+                <div className="row">
+                    <InputText
+                        label={'WOZ grens'}
+                        size={'col-sm-6'}
+                        name={'wozLimit'}
+                        value={formState.wozLimit}
+                        onChangeAction={handleInputChange}
+                        error={errors.wozLimit}
+                    />
+                </div>
+            ) : null}
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

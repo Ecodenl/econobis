@@ -128,16 +128,18 @@ const CampaignNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <InputText
-                    label={'WOZ grens '}
-                    size={'col-sm-6'}
-                    name={'wozLimit'}
-                    value={wozLimit}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.wozLimit}
-                />
-            </div>
+            {subsidyPossible != false ? (
+                <div className="row">
+                    <InputText
+                        label={'WOZ grens '}
+                        size={'col-sm-6'}
+                        name={'wozLimit'}
+                        value={wozLimit}
+                        onChangeAction={props.handleInputChange}
+                        error={props.errors.wozLimit}
+                    />
+                </div>
+            ) : null}
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

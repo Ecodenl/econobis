@@ -48,6 +48,7 @@ export default [
     { id: 74, name: 'NextEnergy' },
     { id: 61, name: 'Nieuw Hollands Energiebedrijf' },
     { id: 38, name: 'NieuweStroom' },
+    { id: 80, name: 'Noordstroom' },
     { id: 1, name: 'OM' },
     { id: 18, name: 'Overig' },
     { id: 14, name: 'Oxxio' },

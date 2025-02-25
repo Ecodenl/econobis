@@ -41,9 +41,9 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Email'} value={formData.email} />
                         <ViewText label={'Website'} value={formData.website} />
                     </div>
-                    <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
-                    </div>
+                    {/*<div className="row">*/}
+                    {/*    <ViewText label={'Logo'} value={formData.logoName} />*/}
+                    {/*</div>*/}
                 </PanelBody>
             </Panel>
             <Panel>

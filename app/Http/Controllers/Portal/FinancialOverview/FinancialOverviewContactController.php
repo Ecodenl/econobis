@@ -34,8 +34,7 @@ class FinancialOverviewContactController extends Controller
         }
 
         if ($financialOverviewContact->filename) {
-            $filePath = Storage::disk('administrations')
-                ->path($financialOverviewContact->filename);
+            $filePath = Storage::disk('administrations')->path($financialOverviewContact->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $financialOverviewContact->name);
         } else {

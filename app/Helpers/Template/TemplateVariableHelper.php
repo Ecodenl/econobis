@@ -20,6 +20,7 @@ use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateVariableHelper
 {
@@ -2233,7 +2234,9 @@ class TemplateVariableHelper
             case 'logo':
                 $img = '';
                 if ($model->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+//                    todo WM: opschonen
+//                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+                    $path = Storage::disk('administration-logos')->path($model->logo_filename);
                     $logo = file_get_contents($path);
 
                     $src = 'data:' . mime_content_type($path)

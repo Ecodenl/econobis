@@ -272,26 +272,28 @@ class OpportunityFormEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputSelect
-                        label={'Onder WOZ grens'}
-                        size={'col-sm-6'}
-                        name={'belowWozLimit'}
-                        options={this.state.yesNoOptions}
-                        value={'' + belowWozLimit}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.belowWozLimit}
-                    />
-                    <InputSelect
-                        label={'Uitzondering schuldhulpsanering'}
-                        size={'col-sm-6'}
-                        name={'exceptionDebtRelief'}
-                        options={this.state.yesNoOptions}
-                        value={'' + exceptionDebtRelief}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.exceptionDebtRelief}
-                    />
-                </div>
+                {intake.campaign.subsidyPossible != false ? (
+                    <div className="row">
+                        <InputSelect
+                            label={'Onder WOZ grens'}
+                            size={'col-sm-6'}
+                            name={'belowWozLimit'}
+                            options={this.state.yesNoOptions}
+                            value={'' + belowWozLimit}
+                            onChangeAction={this.handleInputChange}
+                            error={this.state.errors.belowWozLimit}
+                        />
+                        <InputSelect
+                            label={'Uitzondering schuldhulpsanering'}
+                            size={'col-sm-6'}
+                            name={'exceptionDebtRelief'}
+                            options={this.state.yesNoOptions}
+                            value={'' + exceptionDebtRelief}
+                            onChangeAction={this.handleInputChange}
+                            error={this.state.errors.exceptionDebtRelief}
+                        />
+                    </div>
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

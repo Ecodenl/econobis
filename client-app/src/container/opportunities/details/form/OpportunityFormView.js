@@ -73,16 +73,18 @@ const OpportunityFormView = props => {
                 />
             </div>
 
-            <div className="row" onClick={props.switchToEdit}>
-                <ViewText
-                    label={'Onder WOZ grens'}
-                    value={belowWozLimit === 1 ? 'ja' : belowWozLimit === 0 ? 'Nee' : 'geen'}
-                />
-                <ViewText
-                    label={'Uitzondering schuldhulpsanering '}
-                    value={exceptionDebtRelief === 1 ? 'ja' : exceptionDebtRelief === 0 ? 'Nee' : 'geen'}
-                />
-            </div>
+            {intake.campaign.subsidyPossible != false ? (
+                <div className="row" onClick={props.switchToEdit}>
+                    <ViewText
+                        label={'Onder WOZ grens'}
+                        value={belowWozLimit === 1 ? 'ja' : belowWozLimit === 0 ? 'Nee' : 'geen'}
+                    />
+                    <ViewText
+                        label={'Uitzondering schuldhulpsanering '}
+                        value={exceptionDebtRelief === 1 ? 'ja' : exceptionDebtRelief === 0 ? 'Nee' : 'geen'}
+                    />
+                </div>
+            ) : null}
         </div>
     );
 };

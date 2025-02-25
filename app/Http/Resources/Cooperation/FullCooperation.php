@@ -42,6 +42,7 @@ class FullCooperation extends JsonResource
             'hoomMailbox' => ['name' => $this->hoomMailbox ? $this->hoomMailbox->name : ''],
             'useLaposta' => $this->use_laposta,
             'useExportAddressConsumption' => $this->use_export_address_consumption,
+            'useDongleRegistration' => $this->use_dongle_registration,
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
             'lapostaKey' => $this->laposta_key,
             'createdAt' => $this->created_at,

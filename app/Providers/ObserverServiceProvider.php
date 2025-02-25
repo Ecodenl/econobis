@@ -42,6 +42,8 @@ use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationObserver;
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressObserver;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDongleObserver;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactObserver;
 use App\Eco\ContactGroup\ContactGroup;
@@ -98,6 +100,7 @@ class ObserverServiceProvider extends ServiceProvider
         Person::observe(PersonObserver::class);
         Organisation::observe(OrganisationObserver::class);
         Address::observe(AddressObserver::class);
+        AddressDongle::observe(AddressDongleObserver::class);
         EmailAddress::observe(EmailAddressObserver::class);
         PhoneNumber::observe(PhoneNumberObserver::class);
         Contact::observe(ContactObserver::class);

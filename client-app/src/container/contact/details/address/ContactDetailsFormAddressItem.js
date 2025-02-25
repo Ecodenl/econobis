@@ -367,7 +367,7 @@ class ContactDetailsFormAddressItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        useDongleRegistration: state.systemData.cooperation.use_dongle_registration,
+        useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
     };
 };
 const mapDispatchToProps = dispatch => ({

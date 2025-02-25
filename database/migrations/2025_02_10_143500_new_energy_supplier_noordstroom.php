@@ -20,7 +20,7 @@ class NewEnergySupplierNoordstroom  extends Migration
                 'name' => 'Noordstroom',
                 'doesPCR' => 1,
                 'excelTemplateId' => 2,
-                'abbreviation' => 'NS'
+                'abbreviation' => 'NST'
             ],
         ];
 

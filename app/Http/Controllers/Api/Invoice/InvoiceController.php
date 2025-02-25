@@ -340,8 +340,7 @@ class InvoiceController extends ApiController
 
         InvoiceHelper::sendNotification($invoice, Auth::id());
 
-        $filePath = Storage::disk('administrations')
-            ->path($invoice->document->filename);
+        $filePath = Storage::disk('administrations')->path($invoice->document->filename);
         header('Access-Control-Expose-Headers: X-Filename');
         header('X-Filename:' . $invoice->document->name);
 
@@ -370,9 +369,7 @@ class InvoiceController extends ApiController
             InvoiceHelper::sendNotification($invoice, Auth::id());
 
             if ($invoice->document) {
-                $filePath = Storage::disk('administrations')
-                    ->path($invoice->document->filename);
-
+                $filePath = Storage::disk('administrations')->path($invoice->document->filename);
                 $merger->addFile($filePath);
             }
         }
@@ -511,8 +508,7 @@ class InvoiceController extends ApiController
         $this->authorize('manage', Invoice::class);
 
         if ($invoice->document) {
-            $filePath = Storage::disk('administrations')
-                ->path($invoice->document->filename);
+            $filePath = Storage::disk('administrations')->path($invoice->document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $invoice->document->name);
         } else {

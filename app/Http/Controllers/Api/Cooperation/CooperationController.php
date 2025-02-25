@@ -66,6 +66,7 @@ class CooperationController extends ApiController
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
+        $cooperation->use_dongle_registration = $request->boolean('useDongleRegistration');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         if($cooperation->email_report_table_problems == '') {
@@ -116,6 +117,7 @@ class CooperationController extends ApiController
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
+        $cooperation->use_dongle_registration = $request->boolean('useDongleRegistration');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         if($cooperation->email_report_table_problems == '') {

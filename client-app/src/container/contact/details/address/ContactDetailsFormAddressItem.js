@@ -13,6 +13,7 @@ import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 import FreeFields from '../../../../components/freeFields/FreeFields';
+import Dongles from './address-dongles/AddressDetailsFormAddressDongle';
 
 class ContactDetailsFormAddressItem extends Component {
     constructor(props) {
@@ -125,7 +126,8 @@ class ContactDetailsFormAddressItem extends Component {
         if (
             name === 'typeId' &&
             value === 'old' &&
-            this.state.address.usedInActiveParticipationInSceOrPcrProject && this.state.address.primary
+            this.state.address.usedInActiveParticipationInSceOrPcrProject &&
+            this.state.address.primary
         ) {
             this.setState({
                 showModal: true,
@@ -318,6 +320,15 @@ class ContactDetailsFormAddressItem extends Component {
                             cancelEdit={this.cancelEdit}
                         />
                         <FreeFields table={'addresses'} recordId={this.props.address.id} />
+
+                        {this.props.permissions.manageDongles && this.props.useDongleRegistration == true && (
+                            <Dongles
+                                address={this.state.address}
+                                setAddressDongleNewOrEditOpen={this.props.setAddressDongleNewOrEditOpen}
+                                closeAddressDongle={this.closeAddressDongle}
+                                addressDongleNewOrEditOpen={this.props.addressDongleNewOrEditOpen}
+                            />
+                        )}
                     </>
                 )}
                 {this.state.showAddressEnergySupplier && (
@@ -356,6 +367,7 @@ class ContactDetailsFormAddressItem extends Component {
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        useDongleRegistration: state.systemData.cooperation.use_dongle_registration,
     };
 };
 const mapDispatchToProps = dispatch => ({

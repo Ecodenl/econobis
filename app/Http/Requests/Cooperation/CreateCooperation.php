@@ -47,6 +47,7 @@ class CreateCooperation extends FormRequest
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
+            'useDongleRegistration' => [''],
             'requireTwoFactorAuthentication' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],

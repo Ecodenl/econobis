@@ -23,7 +23,7 @@ const QuotationRequestsListToolbar = props => {
                                 <a onClick={() => props.getCSV()}>Kansacties</a>
                             </li>
                             <li>
-                                <a>Spuk rapport LAI</a>
+                                <a onClick={() => props.getSpuk('lai')}>Spuk rapport LAI</a>
                             </li>
                         </ul>
                     </span>

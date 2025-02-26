@@ -29,6 +29,8 @@ class OppportunitiesNewApp extends Component {
                 evaluationAgreedDate: '',
                 desiredDate: '',
                 amount: '',
+                exceptionDebtRelief: '',
+                belowWozLimit: '',
             },
             errors: {
                 statusId: false,

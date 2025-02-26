@@ -20,10 +20,23 @@ const OpportunityNew = props => {
         measureIds,
         measureIdsSelected,
         amount,
+        belowWozLimit,
+        exceptionDebtRelief,
     } = props.opportunity;
 
     const measuresMatchToCategory = MeasuresOfCategory(props.measures, measureCategoryId);
     const measureCategory = props.measureCategories.find(measureCategory => measureCategory.id == measureCategoryId);
+
+    const yesNoOptions = [
+        {
+            id: '0',
+            name: 'Nee',
+        },
+        {
+            id: '1',
+            name: 'Ja',
+        },
+    ];
 
     return (
         <form className="form-horizontal col-md-12" onSubmit={props.handleSubmit}>
@@ -117,6 +130,27 @@ const OpportunityNew = props => {
                     name="evaluationAgreedDate"
                     value={evaluationAgreedDate}
                     onChangeAction={props.handleInputChangeDate}
+                />
+            </div>
+
+            <div className="row">
+                <InputSelect
+                    label={'Onder WOZ grens'}
+                    size={'col-sm-6'}
+                    name={'belowWozLimit'}
+                    options={yesNoOptions}
+                    value={belowWozLimit}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.belowWozLimit}
+                />
+                <InputSelect
+                    label={'Uitzondering schuldhulpsanering'}
+                    size={'col-sm-6'}
+                    name={'exceptionDebtRelief'}
+                    options={yesNoOptions}
+                    value={exceptionDebtRelief}
+                    onChangeAction={props.handleInputChange}
+                    error={props.errors.exceptionDebtRelief}
                 />
             </div>
 

@@ -21,7 +21,7 @@ class SeedSpukMeasureCategoriesTable extends Migration
             ],
         ];
 
-        $id = 1;
+        $id = 5;
         foreach ($categorizedMeasures as $category => $measures) {
             // Get the category
             $catId = DB::table('measure_categories')->where('name', $category)->first()->id;

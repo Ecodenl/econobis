@@ -20,6 +20,7 @@ use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateVariableHelper
 {
@@ -157,6 +158,9 @@ class TemplateVariableHelper
     }
 
     public static function getContactVar($model, $varname){
+
+        $model->load('person', 'organisation', 'contactPerson', 'primaryAddress', 'primaryEmailAddress', 'primaryphoneNumber');
+
         switch ($varname) {
             case 'nummer':
                 return $model->number;
@@ -349,6 +353,19 @@ class TemplateVariableHelper
             case 'plaats_voor_URL':
             case 'woonplaats_voor_URL':
                 return rawurlencode($model?->primaryAddress?->city);
+
+            case 'dongel_type_uitlezing':
+                return $model?->primaryAddress?->lastAddressDongle?->dongleReadOutType?->name ?: '';
+            case 'dongel_type_dongel':
+                return $model?->primaryAddress?->lastAddressDongle?->dongleType?->name ?: '';
+            case 'dongel_mac_nummer':
+                return $model?->primaryAddress?->lastAddressDongle?->mac_number ?: '';
+            case 'dongel_datum_ondertekening':
+                return $model?->primaryAddress?->lastAddressDongle?->date_signed?->format('d-m-Y');
+            case 'dongel_datum_start':
+                return $model?->primaryAddress?->lastAddressDongle?->date_start?->format('d-m-Y');
+            case 'dongel_datum_eind':
+                return $model?->primaryAddress?->lastAddressDongle?->date_end?->format('d-m-Y');
 
             default:
                 return '';
@@ -2217,7 +2234,9 @@ class TemplateVariableHelper
             case 'logo':
                 $img = '';
                 if ($model->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+//                    todo WM: opschonen
+//                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+                    $path = Storage::disk('administration-logos')->path($model->logo_filename);
                     $logo = file_get_contents($path);
 
                     $src = 'data:' . mime_content_type($path)

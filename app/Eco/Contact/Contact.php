@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
@@ -376,6 +377,11 @@ class Contact extends Model
     public function addressEnergySuppliers()
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
+    }
+
+    public function addressDongles()
+    {
+        return $this->hasManyThrough(AddressDongle::class, Address::class)->orderBy('address_dongles.id', 'desc');
     }
 
     public function currentAddressEnergySuppliers()

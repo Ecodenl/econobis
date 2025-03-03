@@ -41,9 +41,9 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Email'} value={formData.email} />
                         <ViewText label={'Website'} value={formData.website} />
                     </div>
-                    <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
-                    </div>
+                    {/*<div className="row">*/}
+                    {/*    <ViewText label={'Logo'} value={formData.logoName} />*/}
+                    {/*</div>*/}
                 </PanelBody>
             </Panel>
             <Panel>
@@ -192,7 +192,9 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
                     </div>
                 </PanelBody>
+            </Panel>
 
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
@@ -201,8 +203,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText
                             label={'Gebruik export energieverbruik tarieven en verbruik'}
                             value={formData.useExportAddressConsumption ? 'Ja' : 'Nee'}
-                            size={'col-sm-5'}
                             name={'useExportAddressConsumption'}
+                            className={'col-sm-6'}
                             textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
 Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waardes:<br/>
 {verbruik_gas_begindatum}<br/>
@@ -227,6 +229,13 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                        />
+
+                        <ViewText
+                            label={'Gebruik dongel registratie functionaliteit'}
+                            value={formData.useDongleRegistration ? 'Ja' : 'Nee'}
+                            name={'useDongleRegistration'}
+                            className={'col-sm-6'}
                         />
                     </div>
                 </PanelBody>

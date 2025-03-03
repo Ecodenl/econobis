@@ -11,7 +11,7 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
-import CooperationUploadLogo from './UploadLogo';
+// import CooperationUploadLogo from './UploadLogo';
 import InputToggle from '../../../components/form/InputToggle';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
@@ -27,8 +27,8 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [showUploadLogo, setShowUploadLogo] = useState(false);
-    const [attachment, setAttachment] = useState(null);
+    // const [showUploadLogo, setShowUploadLogo] = useState(false);
+    // const [attachment, setAttachment] = useState(null);
     const [showActivateTwoFactorWarning, setShowActivateTwoFactorWarning] = useState(false);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur } = useFormik({
@@ -80,9 +80,9 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             formData.append(key, value);
         }
 
-        if (attachment) {
-            formData.append('attachment', attachment);
-        }
+        // if (attachment) {
+        //     formData.append('attachment', attachment);
+        // }
 
         // Send form data
         let request = null;
@@ -108,9 +108,9 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
         }
     }
 
-    function toggleShowUploadLogo() {
-        setShowUploadLogo(!showUploadLogo);
-    }
+    // function toggleShowUploadLogo() {
+    //     setShowUploadLogo(!showUploadLogo);
+    // }
 
     return (
         <div>
@@ -198,26 +198,26 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 errorMessage={errors.website}
                             />
                         </div>
-                        <div className="row">
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment ? attachment.name : values.logoName}
-                                        onClick={toggleShowUploadLogo}
-                                        onChange={() => {}}
-                                    />
-                                </div>
-                            </div>
-                            {showUploadLogo ? (
-                                <CooperationUploadLogo
-                                    addAttachment={setAttachment}
-                                    toggleShowUploadLogo={toggleShowUploadLogo}
-                                />
-                            ) : null}
-                        </div>
+                        {/*<div className="row">*/}
+                        {/*    <div className="form-group col-sm-6">*/}
+                        {/*        <label className="col-sm-6">Kies logo</label>*/}
+                        {/*        <div className="col-sm-6">*/}
+                        {/*            <input*/}
+                        {/*                type="text"*/}
+                        {/*                className="form-control input-sm col-sm-6"*/}
+                        {/*                value={attachment ? attachment.name : values.logoName}*/}
+                        {/*                onClick={toggleShowUploadLogo}*/}
+                        {/*                onChange={() => {}}*/}
+                        {/*            />*/}
+                        {/*        </div>*/}
+                        {/*    </div>*/}
+                        {/*    {showUploadLogo ? (*/}
+                        {/*        <CooperationUploadLogo*/}
+                        {/*            addAttachment={setAttachment}*/}
+                        {/*            toggleShowUploadLogo={toggleShowUploadLogo}*/}
+                        {/*        />*/}
+                        {/*    ) : null}*/}
+                        {/*</div>*/}
                     </PanelBody>
                 </Panel>
                 <Panel>
@@ -551,6 +551,14 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_variabele_kosten_laag}<br/>
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
+                            />
+
+                            <InputToggle
+                                label="Gebruik dongel registratie functionaliteit"
+                                name={'useDongleRegistration'}
+                                value={values.useDongleRegistration}
+                                onChangeAction={e => setFieldValue('useDongleRegistration', e.target.checked)}
+                                size={'col-sm-5'}
                             />
                         </div>
                     </PanelBody>

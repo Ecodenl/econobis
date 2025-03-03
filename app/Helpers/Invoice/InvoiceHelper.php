@@ -406,7 +406,9 @@ class InvoiceHelper
 
         $img = '';
         if ($invoice->administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $invoice->administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($invoice->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -482,8 +484,9 @@ class InvoiceHelper
         $path = 'administration_' . $invoice->administration->id
             . DIRECTORY_SEPARATOR . 'invoices' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
-
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
         $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $invoiceDocument = new InvoiceDocument();
@@ -500,7 +503,8 @@ class InvoiceHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'invoices');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

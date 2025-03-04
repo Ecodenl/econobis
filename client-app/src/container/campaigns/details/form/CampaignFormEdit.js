@@ -93,10 +93,12 @@ function CampaignFormEdit({
             hasErrors = true;
         }
 
-        formState.wozLimit = formState.wozLimit.replace(/,(\d{2})$/, '.$1');
-        if (!validator.isFloat(formState.wozLimit) || formState.wozLimit <= 0) {
-            errorsObj.wozLimit = true;
-            hasErrors = true;
+        if (formState.subsidyPossible == 1) {
+            formState.wozLimit = formState.wozLimit.replace(/,(\d{2})$/, '.$1');
+            if (!validator.isFloat(formState.wozLimit) || formState.wozLimit <= 0) {
+                errorsObj.wozLimit = true;
+                hasErrors = true;
+            }
         }
 
         setErrors(errorsObj);

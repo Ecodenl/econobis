@@ -104,10 +104,11 @@ class CampaignNewApp extends Component {
             hasErrors = true;
         }
 
-        // if (!validator.isInt(campaign.wozLimit)) {
-        //     errors.wozLimit = true;
-        //     hasErrors = true;
-        // }
+        campaign.wozLimit = campaign.wozLimit.replace(/,(\d{2})$/, '.$1');
+        if (!validator.isFloat(campaign.wozLimit) || campaign.wozLimit <= 0) {
+            errors.wozLimit = true;
+            hasErrors = true;
+        }
 
         this.setState({ ...this.state, errors: errors });
 

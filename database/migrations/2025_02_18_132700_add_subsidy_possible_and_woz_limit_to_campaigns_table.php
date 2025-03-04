@@ -15,7 +15,7 @@ class AddSubsidyPossibleAndWozLimitToCampaignsTable extends Migration
     {
         Schema::table('campaigns', function (Blueprint $table) {
             $table->boolean('subsidy_possible')->default(false);
-            $table->integer('woz_limit')->nullable();
+            $table->double('woz_limit')->nullable();
         });
 
     }

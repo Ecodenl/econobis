@@ -93,10 +93,11 @@ function CampaignFormEdit({
             hasErrors = true;
         }
 
-        // if (!validator.isInt(formState.wozLimit)) {
-        //     errorsObj.wozLimit = true;
-        //     hasErrors = true;
-        // }
+        formState.wozLimit = formState.wozLimit.replace(/,(\d{2})$/, '.$1');
+        if (!validator.isFloat(formState.wozLimit) || formState.wozLimit <= 0) {
+            errorsObj.wozLimit = true;
+            hasErrors = true;
+        }
 
         setErrors(errorsObj);
 

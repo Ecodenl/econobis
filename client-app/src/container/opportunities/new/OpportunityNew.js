@@ -133,26 +133,28 @@ const OpportunityNew = props => {
                 />
             </div>
 
-            <div className="row">
-                <InputSelect
-                    label={'Onder WOZ grens'}
-                    size={'col-sm-6'}
-                    name={'belowWozLimit'}
-                    options={yesNoOptions}
-                    value={belowWozLimit}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.belowWozLimit}
-                />
-                <InputSelect
-                    label={'Uitzondering schuldhulpsanering'}
-                    size={'col-sm-6'}
-                    name={'exceptionDebtRelief'}
-                    options={yesNoOptions}
-                    value={exceptionDebtRelief}
-                    onChangeAction={props.handleInputChange}
-                    error={props.errors.exceptionDebtRelief}
-                />
-            </div>
+            {props.intake.campaign && props.intake.campaign.subsidyPossible != false ? (
+                <div className="row">
+                    <InputSelect
+                        label={'Onder WOZ grens'}
+                        size={'col-sm-6'}
+                        name={'belowWozLimit'}
+                        options={yesNoOptions}
+                        value={belowWozLimit}
+                        onChangeAction={props.handleInputChange}
+                        error={props.errors.belowWozLimit}
+                    />
+                    <InputSelect
+                        label={'Uitzondering schuldhulpsanering'}
+                        size={'col-sm-6'}
+                        name={'exceptionDebtRelief'}
+                        options={yesNoOptions}
+                        value={exceptionDebtRelief}
+                        onChangeAction={props.handleInputChange}
+                        error={props.errors.exceptionDebtRelief}
+                    />
+                </div>
+            ) : null}
 
             <PanelFooter>
                 <div className="pull-right btn-group" role="group">

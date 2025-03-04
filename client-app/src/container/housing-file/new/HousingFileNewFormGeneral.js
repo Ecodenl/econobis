@@ -29,6 +29,7 @@ class HousingFileNewFormGeneral extends Component {
                 energyLabelStatusId: '',
                 isMonument: false,
                 numberOfResidents: 0,
+                wozValue: '',
             },
         };
     }
@@ -70,6 +71,7 @@ class HousingFileNewFormGeneral extends Component {
             energyLabelStatusId,
             isMonument,
             numberOfResidents,
+            wozValue,
         } = this.state.housingFile;
         const { addresses = [], fullName } = this.props.contactDetails;
 
@@ -199,6 +201,15 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Koophuis'}
                         name={'isHouseForSale'}
                         value={isHouseForSale}
+                        onChangeAction={this.handleInputChange}
+                    />
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label={'WOZ waarde'}
+                        name="wozValue"
+                        value={wozValue}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

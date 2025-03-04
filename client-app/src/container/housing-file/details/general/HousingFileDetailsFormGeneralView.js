@@ -4,6 +4,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const HousingFileDetailsFormGeneralView = props => {
     const {
@@ -151,7 +152,7 @@ const HousingFileDetailsFormGeneralView = props => {
                     </label>
                 </div>
                 <div className="col-sm-9" id="remarkCoach">
-                    {wozValue}
+                    {MoneyPresenter(wozValue)}
                 </div>
             </div>
         </div>

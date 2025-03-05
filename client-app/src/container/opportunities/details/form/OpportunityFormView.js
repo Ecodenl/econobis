@@ -77,11 +77,11 @@ const OpportunityFormView = props => {
                 <div className="row" onClick={props.switchToEdit}>
                     <ViewText
                         label={'Onder WOZ grens'}
-                        value={belowWozLimit === 1 ? 'ja' : belowWozLimit === 0 ? 'Nee' : 'geen'}
+                        value={belowWozLimit === 1 ? 'Ja' : belowWozLimit === 0 ? 'Nee' : 'Geen'}
                     />
                     <ViewText
                         label={'Uitzondering schuldhulpsanering '}
-                        value={exceptionDebtRelief === 1 ? 'ja' : exceptionDebtRelief === 0 ? 'Nee' : 'geen'}
+                        value={exceptionDebtRelief === 1 ? 'Ja' : exceptionDebtRelief === 0 ? 'Nee' : 'Geen'}
                     />
                 </div>
             ) : null}

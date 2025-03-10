@@ -31,6 +31,9 @@ class HousingFileNewFormGeneral extends Component {
                 numberOfResidents: 0,
                 wozValue: '',
             },
+            errors: {
+                wozValue: false,
+            },
         };
     }
 
@@ -53,9 +56,26 @@ class HousingFileNewFormGeneral extends Component {
 
         const { housingFile } = this.state;
 
-        HousingFileDetailsAPI.newHousingFile(housingFile).then(payload => {
-            hashHistory.push(`/woningdossier/${payload.data.id}`);
-        });
+        let errors = {};
+        let hasErrors = false;
+
+        // Check of waarde leeg is
+        if (housingFile.wozValue === '') {
+            housingFile.wozValue = null;
+        } else if (!isNaN(parseFloat(housingFile.wozValue)) && parseFloat(housingFile.wozValue) < 0) {
+            errors.wozValue = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(housingFile.wozValue))) {
+            errors.wozValue = true; // Ongeldige invoer
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors: errors });
+
+        !hasErrors &&
+            HousingFileDetailsAPI.newHousingFile(housingFile).then(payload => {
+                hashHistory.push(`/woningdossier/${payload.data.id}`);
+            });
     };
 
     render() {
@@ -210,7 +230,9 @@ class HousingFileNewFormGeneral extends Component {
                         label={'WOZ waarde'}
                         name="wozValue"
                         value={wozValue}
+                        allowZero={true}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.wozValue}
                     />
                 </div>
 

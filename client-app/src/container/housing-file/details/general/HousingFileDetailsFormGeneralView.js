@@ -152,7 +152,7 @@ const HousingFileDetailsFormGeneralView = props => {
                     </label>
                 </div>
                 <div className="col-sm-9" id="remarkCoach">
-                    {MoneyPresenter(wozValue)}
+                    {wozValue !== null ? MoneyPresenter(wozValue) : 'Onbekend'}
                 </div>
             </div>
         </div>

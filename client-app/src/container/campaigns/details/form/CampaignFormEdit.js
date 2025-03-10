@@ -93,12 +93,15 @@ function CampaignFormEdit({
             hasErrors = true;
         }
 
-        if (formState.subsidyPossible == 1) {
-            formState.wozLimit = formState.wozLimit.replace(/,(\d{2})$/, '.$1');
-            if (!validator.isFloat(formState.wozLimit) || formState.wozLimit <= 0) {
-                errorsObj.wozLimit = true;
-                hasErrors = true;
-            }
+        // Check of waarde leeg is
+        if (!formState.subsidyPossible) {
+            formState.wozLimit = null;
+        } else if (!isNaN(parseFloat(formState.wozLimit)) && parseFloat(formState.wozLimit) < 0) {
+            errorsObj.wozLimit = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(formState.wozLimit))) {
+            errorsObj.wozLimit = true; // Ongeldige invoer
+            hasErrors = true;
         }
 
         setErrors(errorsObj);
@@ -221,14 +224,16 @@ function CampaignFormEdit({
                     onChangeAction={handleInputChange}
                 />
             </div>
-            {formState.subsidyPossible != false ? (
+            {formState.subsidyPossible ? (
                 <div className="row">
                     <InputText
                         label={'WOZ grens'}
                         size={'col-sm-6'}
                         name={'wozLimit'}
                         value={formState.wozLimit}
+                        allowZero={true}
                         onChangeAction={handleInputChange}
+                        required={'required'}
                         error={errors.wozLimit}
                     />
                 </div>

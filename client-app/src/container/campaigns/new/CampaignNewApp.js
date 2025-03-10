@@ -104,9 +104,14 @@ class CampaignNewApp extends Component {
             hasErrors = true;
         }
 
-        campaign.wozLimit = campaign.wozLimit.replace(/,(\d{2})$/, '.$1');
-        if (!validator.isFloat(campaign.wozLimit) || campaign.wozLimit <= 0) {
+        // Check of waarde leeg is
+        if (!campaign.subsidyPossible) {
+            campaign.wozLimit = null;
+        } else if (!isNaN(parseFloat(campaign.wozLimit)) && parseFloat(campaign.wozLimit) < 0) {
             errors.wozLimit = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(campaign.wozLimit))) {
+            errors.wozLimit = true; // Ongeldige invoer
             hasErrors = true;
         }
 

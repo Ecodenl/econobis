@@ -128,14 +128,16 @@ const CampaignNew = props => {
                 />
             </div>
 
-            {subsidyPossible != false ? (
+            {subsidyPossible ? (
                 <div className="row">
                     <InputText
                         label={'WOZ grens '}
                         size={'col-sm-6'}
                         name={'wozLimit'}
                         value={wozLimit}
+                        allowZero={true}
                         onChangeAction={props.handleInputChange}
+                        required={'required'}
                         error={props.errors.wozLimit}
                     />
                 </div>

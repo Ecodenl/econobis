@@ -82,7 +82,10 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 heatSource: heatSource ? heatSource.hoomStatusValue : '',
                 waterComfort: waterComfort ? waterComfort.hoomStatusValue : '',
                 revenueSolarPanels: revenueSolarPanels ? revenueSolarPanels : '',
-                wozValue: wozValue ? wozValue : '',
+                wozValue: wozValue !== null ? wozValue : '',
+            },
+            errors: {
+                wozValue: false,
             },
         };
     }
@@ -165,10 +168,27 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
         const { housingFile } = this.state;
 
-        HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
-            this.props.fetchHousingFileDetails(housingFile.id);
-            this.props.switchToView();
-        });
+        let errors = {};
+        let hasErrors = false;
+
+        // Check of waarde leeg is
+        if (housingFile.wozValue === '') {
+            housingFile.wozValue = null;
+        } else if (!isNaN(parseFloat(housingFile.wozValue)) && parseFloat(housingFile.wozValue) < 0) {
+            errors.wozValue = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(housingFile.wozValue))) {
+            errors.wozValue = true; // Ongeldige invoer
+            hasErrors = true;
+        }
+
+        this.setState({ ...this.state, errors: errors });
+
+        !hasErrors &&
+            HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
+                this.props.fetchHousingFileDetails(housingFile.id);
+                this.props.switchToView();
+            });
     };
 
     render() {
@@ -476,7 +496,9 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         label={'WOZ waarde'}
                         name="wozValue"
                         value={wozValue}
+                        allowZero={true}
                         onChangeAction={this.handleInputChange}
+                        error={this.state.errors.wozValue}
                     />
                 </div>
 

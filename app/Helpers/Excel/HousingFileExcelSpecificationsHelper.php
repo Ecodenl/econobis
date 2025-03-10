@@ -46,7 +46,7 @@ class HousingFileExcelSpecificationsHelper
         $headerData[] = 'Besparing gas';
         $headerData[] = 'Besparing elektriciteit';
         $headerData[] = 'CO2 besparing';
-        $headerData[] = 'Aanmaak datum';
+        $headerData[] = 'Datum aangemaakt';
 
         $completeData[] = $headerData;
 

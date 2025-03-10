@@ -30,6 +30,7 @@ import CoachInspectList from './container/inspect/list';
 import CoachInspectDetails from './container/inspect/details';
 import AvailabilityDetails from './container/availability/index';
 import DocumentPreview from './container/inspect/details/document';
+import FreeFieldsPageDetails from './container/free-fields-page/details';
 
 function App() {
     return (
@@ -68,6 +69,7 @@ function App() {
                             <ProtectedRoute path="/schouwen/:id" component={CoachInspectDetails} />
                             <ProtectedRoute path="/schouwen" component={CoachInspectList} />
                             <ProtectedRoute path="/beschikbaarheid" component={AvailabilityDetails} />
+                            <ProtectedRoute path="/vrije-velden/:urlPageRef" component={FreeFieldsPageDetails} />
                             <PublicRoute path="/login" component={Login} />
                             <PublicRoute path="/two-factor/confirm" component={TwoFactorConfirm} />
                             <PublicRoute path="/two-factor/recover" component={TwoFactorRecover} />

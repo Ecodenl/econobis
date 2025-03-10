@@ -53,9 +53,13 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 
-        Route::get('/contact/{contact}/contact-free-fields', 'Contact\ContactController@getValuesForPortal');
+        Route::get('/contact/{contact}/contact-free-fields', 'Contact\ContactController@getContactFreeFields');
+        Route::get('/contact/{contact}/contact-portal-free-fields', 'Contact\ContactController@getContactPortalFreeFields');
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
+
+        Route::get('/portal-free-fields-page/{contact}/{urlPageRef}', 'PortalFreeFieldsPage\PortalFreeFieldsPageController@show');
+        Route::post('/portal-free-fields-page-values/{contact}/update', 'Contact\ContactController@updatePortalFreeFieldsPageValues');
 
         Route::get('me/quotation-request', 'QuotationRequest\QuotationRequestController@index');
         Route::get('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@view');

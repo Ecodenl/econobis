@@ -4,16 +4,16 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             {
                 f: 'folder',
                 d: folder,
-            }
-        ]
-    }
+            },
+        ],
+    };
 
     if (values.subject) {
         filter.and.push({
-            f: 'subject',
+            f: 'subjectForFilter',
             o: 'like',
             d: `%${values.subject}%`,
-        })
+        });
     }
 
     if (values.from) {
@@ -21,7 +21,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'from',
             o: 'like',
             d: `%${values.from}%`,
-        })
+        });
     }
 
     if (values.contact) {
@@ -37,45 +37,35 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
                     o: 'like',
                     d: `%${values.contact}%`,
                 },
-            ]
-        })
+            ],
+        });
     }
 
     if (values.mailbox) {
         filter.and.push({
-            f: 'mailbox.name',
-            o: 'like',
-            d: `%${values.mailbox}%`,
-        })
+            f: 'mailboxId',
+            d: values.mailbox,
+        });
     }
 
     if (values.status) {
         filter.and.push({
             f: 'status',
             d: values.status,
-        })
+        });
     }
 
-    if (values.responsible) {
+    if (values.responsibleUserId && values.responsibleUserId !== 1) {
         filter.and.push({
-            or: [
-                {
-                    f: 'responsibleUser.firstName',
-                    o: 'like',
-                    d: `%${values.responsible}%`,
-                },
-                {
-                    f: 'responsibleUser.lastName',
-                    o: 'like',
-                    d: `%${values.responsible}%`,
-                },
-                {
-                    f: 'responsibleTeam.name',
-                    o: 'like',
-                    d: `%${values.responsible}%`,
-                },
-            ]
-        })
+            f: 'responsibleUserId',
+            d: values.responsibleUserId,
+        });
+    }
+    if (values.responsibleTeamId && values.responsibleTeamId !== 1) {
+        filter.and.push({
+            f: 'responsibleTeamId',
+            d: values.responsibleTeamId,
+        });
     }
 
     if (values.to) {
@@ -83,7 +73,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'to',
             o: 'like',
             d: `%${values.to}%`,
-        })
+        });
     }
 
     if (values.attachment) {
@@ -91,7 +81,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'attachmentsWithoutCids.id',
             o: '>',
             d: 0,
-        })
+        });
     }
 
     if (values.attachment) {
@@ -99,7 +89,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'attachmentsWithoutCids.id',
             o: '>',
             d: 0,
-        })
+        });
     }
 
     if (values.dateSentStart) {
@@ -107,7 +97,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'dateSent',
             o: '>=',
             d: values.dateSentStart,
-        })
+        });
     }
 
     if (values.dateSentEnd) {
@@ -115,7 +105,7 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
             f: 'dateSent',
             o: '<=',
             d: values.dateSentEnd + ' 23:59:59',
-        })
+        });
     }
 
     if (contactId) {
@@ -129,14 +119,14 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
                     f: 'manualContacts.contactId',
                     d: contactId,
                 },
-            ]
-        })
+            ],
+        });
     }
 
     if (eigen) {
         filter.and.push({
             f: 'eigenOpenstaand',
-        })
+        });
     }
 
     return filter;
@@ -150,7 +140,7 @@ export function getFiltersFromStorage() {
     let filters = localStorage.getItem('emailFilters');
 
     if (!filters) {
-        return {...defaultFilters};
+        return { ...defaultFilters };
     }
 
     return {
@@ -163,11 +153,12 @@ export const defaultFilters = {
     from: '',
     contact: '',
     subject: '',
-    mailbox: '',
+    mailboxId: '',
     status: '',
-    responsible: '',
+    responsibleUserId: '',
+    responsibleTeamId: '',
     to: '',
     attachment: '',
     dateSentStart: '',
     dateSentEnd: '',
-}
+};

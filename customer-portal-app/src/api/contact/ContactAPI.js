@@ -85,10 +85,17 @@ export default {
                             },
                         },
                         occupationsActive: {
-                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
+                            fld: [
+                                'id',
+                                'occupationId',
+                                'primaryContactId',
+                                'contactId',
+                                'primary',
+                                'allowManageInPortal',
+                            ],
                             rlt: {
                                 occupation: {
-                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
                                 },
                                 primaryContact: {
                                     fld: ['id', 'fullNameFnf'],
@@ -187,6 +194,16 @@ export default {
         const requestUrl = `/contact/${contactId}/contact-free-fields`;
 
         return axiosInstance.get(requestUrl);
+    },
+
+    fetchContactPortalFreeFields: function(contactId, urlPageRef) {
+        const requestUrl = `/contact/${contactId}/contact-portal-free-fields`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                urlPageRef: urlPageRef,
+            },
+        });
     },
 
     fetchContactProjects: function(contactId) {

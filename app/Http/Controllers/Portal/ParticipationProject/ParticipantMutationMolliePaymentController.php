@@ -58,7 +58,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
             $participantMutation->status_id = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
             $participantMutation->date_payment = Carbon::now()->format('Y-m-d');
-            $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now();
+            if($participantMutation->date_entry === null){
+                $participantMutation->date_entry = $participantMutation->participation->project->date_entry ?: Carbon::now()->format('Y-m-d');
+            }
             $participantMutation->save();
 
             (new ParticipantMutationController())->recalculateParticipantMutation($participantMutation);

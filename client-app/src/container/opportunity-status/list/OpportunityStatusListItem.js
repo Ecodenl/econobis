@@ -34,8 +34,7 @@ class OpportunityStatusListItem extends Component {
     }
 
     render() {
-        // todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
-        const { id, name, usesWf, numberOfDaysToSendEmail, permissions } = this.props;
+        const { id, name, usesWf, permissions } = this.props;
 
         return (
             <tr
@@ -46,8 +45,6 @@ class OpportunityStatusListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{usesWf ? 'Ja' : 'Nee'}</td>
-                {/*todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail*/}
-                {/*<td>{usesWf ? (numberOfDaysToSendEmail === 0 ? 'Direct' : numberOfDaysToSendEmail) : ''}</td>*/}
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

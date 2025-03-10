@@ -22,12 +22,20 @@ const HousingFileSpecificationsListToolbar = props => {
                                 onClickAction={props.toggleShowExtraFilters}
                                 title="Extra filters"
                             />
-                            <ButtonIcon
-                                iconName={'download'}
-                                onClickAction={props.getExcelSpecifications}
-                                title={'Download woningdossiers specificaties'}
-                            />
                         </>
+                    )}
+                    {!props.showCheckboxList && meta.total <= 15000 ? (
+                        <ButtonIcon
+                            iconName="download"
+                            onClickAction={props.getExcelSpecifications}
+                            title="Download woningdossiers specificaties"
+                        />
+                    ) : (
+                        <ButtonIcon
+                            iconName="download"
+                            disabled={true}
+                            title="Download woningdossiers specificaties, niet mogelijk voor meer dan 15.000 regels"
+                        />
                     )}
 
                     {props.permissions.manageHousingFile && (

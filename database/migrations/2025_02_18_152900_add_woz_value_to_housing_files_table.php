@@ -14,7 +14,7 @@ class AddWozValueToHousingFilesTable extends Migration
     public function up()
     {
         Schema::table('housing_files', function (Blueprint $table) {
-            $table->integer('woz_value')->nullable();
+            $table->double('woz_value')->nullable()->after('amount_electricity');
         });
 
     }

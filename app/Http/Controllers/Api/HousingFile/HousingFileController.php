@@ -160,7 +160,7 @@ class HousingFileController extends ApiController
             ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
             ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
             ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
-            ->integer('wozValue')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('woz_value')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
             ->get();
 
 
@@ -206,7 +206,7 @@ class HousingFileController extends ApiController
 //            ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
 //            ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
 //            ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
-            ->integer('wozValue')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('woz_value')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
             ->get();
 
         $housingFile->fill($data);

@@ -167,6 +167,19 @@ class HousingFileController extends ApiController
         $housingFile = new HousingFile($data);
         $housingFile->save();
 
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($housingFile->woz_value !== null) {
+            foreach ($housingFile->address->intakes as $intake) {
+                foreach ($intake->opportunities as $opportunity) {
+                    if ($opportunity->below_woz_limit === null && $opportunity->intake->campaign->subsidy_possible) {
+                        $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                        $opportunity->save();
+                    }
+                }
+            }
+        }
+
         return $this->show($housingFile);
     }
 

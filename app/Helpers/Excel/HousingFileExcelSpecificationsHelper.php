@@ -47,6 +47,7 @@ class HousingFileExcelSpecificationsHelper
         $headerData[] = 'Besparing elektriciteit';
         $headerData[] = 'CO2 besparing';
         $headerData[] = 'Datum aangemaakt';
+        $headerData[] = 'Datum bijgewerkt';
 
         $completeData[] = $headerData;
 
@@ -76,6 +77,7 @@ class HousingFileExcelSpecificationsHelper
                 $rowData[14] = $housingFileSpecification->savings_electricity; //'Savings elektriciteit'
                 $rowData[15] = $housingFileSpecification->co2_savings; //'Savings Co2 '
                 $rowData[16] = $housingFileSpecification->created_at;
+                $rowData[17] = $housingFileSpecification->updated_at;
 
                 $completeData[] = $rowData;
             }
@@ -87,13 +89,13 @@ class HousingFileExcelSpecificationsHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'R'; $col++) {
+        for ($col = 'A'; $col !== 'S'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:R1')
+        $sheet->getStyle('A1:S1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

@@ -35,7 +35,7 @@ class Sort extends RequestSort
         'measureCategoryName' => 'measure_categories.name',
         'status' => 'housing_file_specification_statuses.name',
         'measureDate' => 'measure_date',
-        'createdAt' => 'created_at',
+        'createdAt' => 'housing_file_specifications.created_at',
         'typeBrand' => 'type_brand'
     ];
 

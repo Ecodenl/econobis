@@ -42,7 +42,7 @@ class Filter extends RequestFilter
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
-        'statusId' => 'status_id',
+        'statusId' => 'housing_file_specifications.status_id',
         'floorId' => 'floor_id',
         'sideId' => 'side_id',
         'typeBrand' => 'type_brand',
@@ -135,12 +135,12 @@ class Filter extends RequestFilter
 
     protected function applyCreatedAtStartFilter($query, $type, $data)
     {
-        $query->where('created_at', '>=', Carbon::parse($data)->startOfDay());
+        $query->where('housing_file_specifications.created_at', '>=', Carbon::parse($data)->startOfDay());
         return false;
     }
     protected function applyCreatedAtEndFilter($query, $type, $data)
     {
-        $query->where('created_at', '<=', Carbon::parse($data)->endOfDay());
+        $query->where('housing_file_specifications.created_at', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
 

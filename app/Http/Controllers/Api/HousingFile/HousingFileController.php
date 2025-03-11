@@ -184,7 +184,7 @@ class HousingFileController extends ApiController
     }
 
 
-    public function update(RequestInput $requestInput, HousingFile $housingFile)
+    public function update(Request $request,RequestInput $requestInput, HousingFile $housingFile)
     {
         $this->authorize('manage', HousingFile::class);
 
@@ -224,6 +224,29 @@ class HousingFileController extends ApiController
 
         $housingFile->fill($data);
         $housingFile->save();
+
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($request->get('updateAllOpportunityBelowWozLimit')) {
+            foreach ($housingFile->address->intakes as $intake) {
+                if($request->get('updateAllOpportunityBelowWozLimit') === 'yes') {
+                    $opportunities = $intake->opportunities;
+                } elseif($request->get('updateAllOpportunityBelowWozLimit') === 'no') {
+                    $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                        return is_null($opportunity->below_woz_limit);
+                    });
+                }
+
+                if($opportunities) {
+                    foreach ($opportunities as $opportunity) {
+                        if ($opportunity->intake->campaign->subsidy_possible) {
+                            $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                            $opportunity->save();
+                        }
+                    }
+                }
+            }
+        }
 
         return $this->show($housingFile);
     }

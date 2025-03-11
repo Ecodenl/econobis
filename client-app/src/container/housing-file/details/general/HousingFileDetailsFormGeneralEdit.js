@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, useState } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
@@ -11,6 +11,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import InputToggle from '../../../../components/form/InputToggle';
 import ViewText from '../../../../components/form/ViewText';
 import InputTextArea from '../../../../components/form/InputTextArea';
+import Modal from '../../../../components/modal/Modal';
 
 class HousingFileDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -163,7 +164,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
         });
     };
 
-    handleSubmit = event => {
+    handlePreSubmit = event => {
         event.preventDefault();
 
         const { housingFile } = this.state;
@@ -184,11 +185,32 @@ class HousingFileDetailsFormGeneralEdit extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        !hasErrors &&
-            HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
-                this.props.fetchHousingFileDetails(housingFile.id);
-                this.props.switchToView();
-            });
+        //optionally show the modal for:
+        //if the woz_value changed show pop-up to ask which opportunities to re-calculate the below_woz_limit of
+        //(all, or just the ones without below_woz_limit)
+        if (!hasErrors && this.props.housingFileDetails.wozValue != housingFile.wozValue) {
+            this.setState({ showModal: true });
+        } else if (!hasErrors) {
+            this.handleSubmit();
+        }
+    };
+
+    modalConfirmActionYes = event => {
+        this.handleSubmit('yes');
+    };
+
+    modalConfirmActionNo = event => {
+        this.handleSubmit('no');
+    };
+
+    handleSubmit = updateAllOpportunityBelowWozLimit => {
+        const { housingFile } = this.state;
+        housingFile.updateAllOpportunityBelowWozLimit = updateAllOpportunityBelowWozLimit;
+
+        HousingFileDetailsAPI.updateHousingFile(housingFile).then(() => {
+            this.props.fetchHousingFileDetails(housingFile.id);
+            this.props.switchToView();
+        });
     };
 
     render() {
@@ -223,7 +245,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
         const showFields = this.props.housingFileHoomLinksToShowInEconobis;
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
+            <form className="form-horizontal" onSubmit={this.handlePreSubmit}>
                 <div className="row">
                     <InputText
                         label={'Contact'}
@@ -509,9 +531,24 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             buttonText={'Sluiten'}
                             onClickAction={this.props.switchToView}
                         />
-                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                        <ButtonText buttonText={'Opslaan'} onClickAction={this.handlePreSubmit} />
                     </div>
                 </div>
+
+                {this.state.showModal && (
+                    <Modal
+                        title="Herberekening 'onder de WOZ grens' voor gekoppelde kansen"
+                        closeModal={this.modalConfirmActionNo}
+                        showConfirmAction={this.state.modalShowConfirmAction}
+                        confirmAction={this.modalConfirmActionYes}
+                        buttonCancelText="nee"
+                        buttonConfirmText="ja"
+                    >
+                        U heeft de WOZ waarde van dit wonigdossier aangepast, wilt u de bepaling of een kans onder de
+                        WOZ grens ligt van alle gekoppelde kansen herberekenen (Ja) of alleen van de kansen waar dit nog
+                        niet eerder is bepaald (Nee).
+                    </Modal>
+                )}
             </form>
         );
     }

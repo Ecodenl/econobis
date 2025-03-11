@@ -7,6 +7,8 @@ import ButtonText from '../../../components/button/ButtonText';
 const HousingFileSpecificationsListToolbar = props => {
     const { meta = {} } = props.housingFileSpecifications;
 
+    const maxRecordsForDownload = 15000;
+
     return (
         <div className="row">
             <div className="col-md-4">
@@ -24,7 +26,7 @@ const HousingFileSpecificationsListToolbar = props => {
                             />
                         </>
                     )}
-                    {!props.showCheckboxList && meta.total <= 15000 ? (
+                    {!props.showCheckboxList && meta.total <= maxRecordsForDownload ? (
                         <ButtonIcon
                             iconName="download"
                             onClickAction={props.getExcelSpecifications}
@@ -34,7 +36,11 @@ const HousingFileSpecificationsListToolbar = props => {
                         <ButtonIcon
                             iconName="download"
                             disabled={true}
-                            title="Download woningdossiers specificaties, niet mogelijk voor meer dan 15.000 regels"
+                            title={
+                                'Download woningdossiers specificaties, niet mogelijk voor meer dan ' +
+                                maxRecordsForDownload.toLocaleString('nl-NL') +
+                                ' regels'
+                            }
                         />
                     )}
 

@@ -31,7 +31,7 @@ class GridHousingFileSpecification extends JsonResource
                'measureName' => $this->measure ? $this->measure->name : '',
                'status' => GenericResource::make($this->whenLoaded('status')),
                'measureDate' => $this->measure_date,
-                'createdAt' => $this->created_at,
+               'createdAt' => $this->created_at,
                'answer' => $this->answer,
                'floor' => GenericResource::make($this->whenLoaded('floor')),
                'side' => GenericResource::make($this->whenLoaded('side')),

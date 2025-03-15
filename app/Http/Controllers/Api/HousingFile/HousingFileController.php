@@ -171,8 +171,12 @@ class HousingFileController extends ApiController
         //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
         if($housingFile->woz_value !== null) {
             foreach ($housingFile->address->intakes as $intake) {
-                foreach ($intake->opportunities as $opportunity) {
-                    if ($opportunity->below_woz_limit === null && $opportunity->intake->campaign->subsidy_possible) {
+                $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                    return is_null($opportunity->below_woz_limit);
+                });
+
+                foreach ($opportunities as $opportunity) {
+                    if ($opportunity->intake->campaign->subsidy_possible) {
                         $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
                         $opportunity->save();
                     }

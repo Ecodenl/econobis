@@ -62,12 +62,12 @@ class OpportunityController extends ApiController
             'intake.contact',
             'intake.campaign',
             'intake.address',
+            'intake.address.housingFile',
             'intake.campaign.opportunityActions',
             'tasks',
             'notes',
             'documents',
             'measures',
-            'intake.address.housingFile',
         ]);
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');

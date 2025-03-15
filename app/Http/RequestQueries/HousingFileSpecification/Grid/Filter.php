@@ -24,6 +24,8 @@ class Filter extends RequestFilter
         'statusId',
         'measureDateStart',
         'measureDateEnd',
+        'createdAtStart',
+        'createdAtEnd',
         'answer',
         'floorId',
         'sideId',
@@ -40,7 +42,7 @@ class Filter extends RequestFilter
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'measureCategoryName' => 'measure_categories.name',
-        'statusId' => 'status_id',
+        'statusId' => 'housing_file_specifications.status_id',
         'floorId' => 'floor_id',
         'sideId' => 'side_id',
         'typeBrand' => 'type_brand',
@@ -130,6 +132,18 @@ class Filter extends RequestFilter
         $query->where('measure_date', '<=', Carbon::parse($data)->endOfDay());
         return false;
     }
+
+    protected function applyCreatedAtStartFilter($query, $type, $data)
+    {
+        $query->where('housing_file_specifications.created_at', '>=', Carbon::parse($data)->startOfDay());
+        return false;
+    }
+    protected function applyCreatedAtEndFilter($query, $type, $data)
+    {
+        $query->where('housing_file_specifications.created_at', '<=', Carbon::parse($data)->endOfDay());
+        return false;
+    }
+
     protected function applySavingsGasFromFilter($query, $type, $data)
     {
         $query->where('savings_gas', '>=', (float)$data);

@@ -15,6 +15,8 @@ import {
     setFilterHousingFileSpecificationStatus,
     setFilterHousingFileSpecificationMeasureDateStart,
     setFilterHousingFileSpecificationMeasureDateEnd,
+    setFilterHousingFileSpecificationCreatedAtStart,
+    setFilterHousingFileSpecificationCreatedAtEnd,
 } from '../../../actions/housing-file-specification/HousingFileSpecificationsFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
 
@@ -98,6 +100,21 @@ const HousingFileSpecificationsListFilter = props => {
         }
     };
 
+    const onCreatedAtStartChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterHousingFileSpecificationCreatedAtStart('');
+        } else {
+            props.setFilterHousingFileSpecificationCreatedAtStart(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+    const onCreatedAtEndChange = selectedDay => {
+        if (selectedDay === undefined) {
+            props.setFilterHousingFileSpecificationCreatedAtEnd('');
+        } else {
+            props.setFilterHousingFileSpecificationCreatedAtEnd(moment(selectedDay).format('Y-MM-DD'));
+        }
+    };
+
     return (
         <tr className="thead-filter">
             <th>
@@ -174,7 +191,12 @@ const HousingFileSpecificationsListFilter = props => {
                     onChange={onTypeBrandChange}
                 />
             </th>
-
+            <DataTableFilterDateStartEndTwoRows
+                startDate={props.filters.createdAtStart.data && props.filters.createdAtStart.data}
+                endDate={props.filters.createdAtEnd.data && props.filters.createdAtEnd.data}
+                onChangeActionStart={onCreatedAtStartChange}
+                onChangeActionEnd={onCreatedAtEndChange}
+            />
             <th />
         </tr>
     );
@@ -199,6 +221,8 @@ const mapDispatchToProps = dispatch => {
             setFilterHousingFileSpecificationStatus,
             setFilterHousingFileSpecificationMeasureDateStart,
             setFilterHousingFileSpecificationMeasureDateEnd,
+            setFilterHousingFileSpecificationCreatedAtStart,
+            setFilterHousingFileSpecificationCreatedAtEnd,
         },
         dispatch
     );

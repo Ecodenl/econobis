@@ -178,6 +178,7 @@ class ContactController extends ApiController
         Auth::setUser($portalUser);
 
     }
+
     public function previewDocument(Contact $contact, Project $project, Request $request)
     {
         $documentTemplateAgreementId = $project ? $project->document_template_agreement_id : 0;

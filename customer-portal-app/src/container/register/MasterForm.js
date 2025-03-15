@@ -4,6 +4,9 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 
 function MasterForm({
+    currentStep,
+    goToNextStep,
+    goToPreviousStep,
     portalSettings,
     project,
     participantId,
@@ -15,16 +18,6 @@ function MasterForm({
     handleSubmitContactValues,
     setSucces,
 }) {
-    const [currentStep, setStep] = React.useState(1);
-
-    function previous() {
-        setStep(currentStep <= 2 ? 1 : currentStep - 1);
-    }
-
-    function next() {
-        setStep(currentStep >= 4 ? 5 : currentStep + 1);
-    }
-
     return (
         <>
             {currentStep <= 4 ? (
@@ -46,8 +39,8 @@ function MasterForm({
             <Steps
                 portalSettings={portalSettings}
                 currentStep={currentStep}
-                previous={previous}
-                next={next}
+                previous={goToPreviousStep}
+                next={goToNextStep}
                 project={project}
                 participantId={participantId}
                 registerType={registerType}

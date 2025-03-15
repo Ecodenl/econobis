@@ -16,6 +16,7 @@ import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 import { Alert } from 'react-bootstrap';
 import ErrorPage from '../../components/general/ErrorPage';
 import moment from 'moment';
+import ParticipantProjectAPI from '../../api/participant-project/ParticipantProjectAPI';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -41,21 +42,24 @@ function RegisterProject({ match, currentSelectedContact }) {
 
     const [registerValues, setRegisterValues] = useState(initialRegisterValues);
 
-    const [currentSelectedContactId, setCurrentSelectedContactId] = useState(null);
     const [registerType, setRegisterType] = useState(null);
     const [projectId, setProjectId] = useState(null);
     const [participantId, setParticipantId] = useState(null);
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading1, setIsLoading1] = useState(true);
+    const [isLoading2, setIsLoading2] = useState(true);
+    const [isLoading3, setIsLoading3] = useState(true);
     const [hasError, setHasError] = useState(false);
     const [errorMessage, setErrorMessage] = useState(null);
     const [isSucces, setSucces] = useState(false);
     const [contactProjectData, setContactProjectData] = useState({});
 
+    const [currentStep, setStep] = useState(1);
+
     useEffect(() => {
-        if (match?.params) {
+        if (match.params) {
             const { registerType, id: projectId, participantId } = match.params;
             setRegisterType(registerType || null);
             setProjectId(projectId || null);
@@ -66,16 +70,23 @@ function RegisterProject({ match, currentSelectedContact }) {
             setParticipantId(null);
         }
 
-        setCurrentSelectedContactId(currentSelectedContact?.id || null);
-    }, [match, currentSelectedContact]);
-
-    useEffect(() => {
-        if (projectId && currentSelectedContactId) {
+        if (projectId && currentSelectedContact?.id) {
+            callFetchPortalSettings();
             fetchContactAndProject();
         }
-    }, [registerType, projectId, participantId, currentSelectedContactId]);
+    }, [match, currentSelectedContact]);
+
+    function goToPreviousStep() {
+        setStep(currentStep <= 2 ? 1 : currentStep - 1);
+    }
+
+    function goToNextStep() {
+        setStep(currentStep >= 4 ? 5 : currentStep + 1);
+    }
 
     function callFetchPortalSettings() {
+        setIsLoading1(true);
+
         const keys =
             '?keys[]=portalName' +
             '&keys[]=portalWebsite' +
@@ -88,19 +99,19 @@ function RegisterProject({ match, currentSelectedContact }) {
         PortalSettingsAPI.fetchPortalSettings(keys)
             .then(payload => {
                 setPortalSettings({ ...payload.data });
+                setIsLoading1(false);
             })
             .catch(error => {
                 setHasError(true);
                 setErrorMessage('Fout bij ophalen gegevens');
+                setIsLoading1(false);
             });
     }
 
     function fetchContactAndProject() {
         setHasError(false);
         setErrorMessage(null);
-        setLoading(true);
-
-        callFetchPortalSettings();
+        setIsLoading2(true);
 
         axios
             .all([
@@ -155,15 +166,34 @@ function RegisterProject({ match, currentSelectedContact }) {
                             });
                         }
                     }
-                    setLoading(false);
+                    setIsLoading2(false);
                 })
             )
             .catch(error => {
                 // console.log('error');
                 // console.log(error);
-                setLoading(false);
                 setHasError(true);
+                setErrorMessage('Fout bij ophalen gegevens');
+                setIsLoading2(false);
             });
+
+        if (registerType === 'verhogen' && participantId) {
+            setIsLoading3(true);
+            ParticipantProjectAPI.show(participantId)
+                .then(payload => {
+                    if (!payload.data.data.basicInformation.allowIncreaseParticipations) {
+                        setHasError(true);
+                        setErrorMessage('Verhogen niet mogelijk op dit moment');
+                    }
+                    setIsLoading3(false);
+                })
+                .catch(() => {
+                    // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Fout bij ophalen gegevens');
+                    setIsLoading3(false);
+                });
+        }
     }
 
     function handleSubmitRegisterValues(values) {
@@ -174,19 +204,21 @@ function RegisterProject({ match, currentSelectedContact }) {
         const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
-                setLoading(true);
+                setIsLoading2(true);
                 ContactAPI.fetchContact(currentSelectedContact.id)
                     .then(payload => {
                         const contactData = rebaseContact(payload.data.data);
 
                         setContact(contactData);
-                        setLoading(false);
+                        setIsLoading2(false);
+
                         nextStep();
                     })
                     .catch(error => {
                         // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setLoading(false);
                         setHasError(true);
+                        setErrorMessage('Fout bij ophalen gegevens');
+                        setIsLoading2(false);
                     });
             })
             .catch(error => {
@@ -196,13 +228,14 @@ function RegisterProject({ match, currentSelectedContact }) {
                 });
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
                 setHasError(true);
+                setErrorMessage('Fout bij opslaan gegevens');
             });
     }
 
     return (
         <div className={'content-section'}>
             <div className="content-container w-container">
-                {isLoading ? (
+                {isLoading1 || isLoading2 || isLoading3 ? (
                     <LoadingView />
                 ) : hasError ? (
                     <ErrorPage message={errorMessage} />
@@ -299,6 +332,9 @@ function RegisterProject({ match, currentSelectedContact }) {
                                 </>
                             )}
                             <MasterForm
+                                currentStep={currentStep}
+                                goToNextStep={goToNextStep}
+                                goToPreviousStep={goToPreviousStep}
                                 portalSettings={portalSettings}
                                 project={project}
                                 participantId={participantId}

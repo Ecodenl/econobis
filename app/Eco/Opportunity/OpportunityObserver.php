@@ -13,7 +13,6 @@ use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class OpportunityObserver
 {
@@ -35,8 +34,6 @@ class OpportunityObserver
             $opportunity->created_by_id = $userId;
             $opportunity->updated_by_id = $userId;
         }
-
-        Log::info($userId);
     }
 
     public function created(Opportunity $opportunity)
@@ -56,8 +53,6 @@ class OpportunityObserver
         } else {
             $opportunity->updated_by_id = $userId;
         }
-
-        Log::info($userId);
     }
 
     public function saving(Opportunity $opportunity)

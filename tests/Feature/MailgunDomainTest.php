@@ -161,7 +161,7 @@ class MailgunDomainTest extends TestCase
     public function it_cannot_update_a_mailgun_domain_without_permission()
     {
         $user = User::find(1);
-        $keyUserRole = Role::findByName('Key user');
+        $keyUserRole = Role::findByName('Beheerder');
         $user->removeRole($keyUserRole);
         $this->actingAs($user)
             ->json('POST', '/api/mailgun-domain/2', [
@@ -174,7 +174,7 @@ class MailgunDomainTest extends TestCase
     public function it_cannot_store_a_new_mailgun_domain_without_permission()
     {
         $user = User::find(1);
-        $keyUserRole = Role::findByName('Key user');
+        $keyUserRole = Role::findByName('Beheerder');
         $user->removeRole($keyUserRole);
         $this->actingAs($user)
             ->json('POST', '/api/mailgun-domain', [

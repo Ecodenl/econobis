@@ -12,7 +12,7 @@ import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSche
 
 function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
-    console.log(initialQuotationRequest.opportunity.intake.contact);
+
     return (
         <>
             <Formik

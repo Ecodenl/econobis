@@ -68,8 +68,7 @@ class HousingFileSpecificationController extends ApiController
                 $measure = Measure::find($housingFileSpecification->measure_id);
 
                 //first we check for existing Intakes that meet the criteria, if so we will use the last created intake
-                $intake = Intake::
-                    where('campaign_id', $campaign->id)
+                $intake = Intake::where('campaign_id', $campaign->id)
                         ->where('contact_id', $housingFile->address->contact->id)
                         ->where('address_id', $housingFile->address->id)
                         ->orderBy('created_at', 'DESC')->first();

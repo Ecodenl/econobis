@@ -1415,7 +1415,7 @@ class TemplateVariableHelper
                             $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal part.</th>";
                             break;
                         case 'obligation':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal obligaties</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie aantal obligaties</th>";
                             break;
                     };
                 $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Opbrengst</th>";

@@ -136,7 +136,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Key user'),
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
     };
 };
 

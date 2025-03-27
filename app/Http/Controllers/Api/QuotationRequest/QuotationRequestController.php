@@ -16,7 +16,7 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
-use App\Helpers\CSV\QuotationRequestSpukLaiHelper;
+use App\Helpers\Excel\QuotationRequestExcelHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Helpers\Opportunity\OpportunityHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -134,14 +134,14 @@ class QuotationRequestController extends ApiController
         return $quotationRequestCSVHelper->downloadCSV();
     }
 
-    public function spuk(RequestQuery $requestQuery, $type)
+    public function spuklaiExcel(RequestQuery $requestQuery, $type)
     {
         set_time_limit(0);
         $quotationRequests = $requestQuery->getQueryNoPagination()->get();
 
-        $quotationRequestSpukLaiHelper = new QuotationRequestSpukLaiHelper($quotationRequests);
+        $quotationRequestExcelHelper = new QuotationRequestExcelHelper($quotationRequests);
 
-        return $quotationRequestSpukLaiHelper->downloadCSV();
+        return $quotationRequestExcelHelper->downloadSpukLaiExcel();
     }
 
     /**

@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import Icon from 'react-icons-kit';
 import { check } from 'react-icons-kit/fa/check';
-import { download } from 'react-icons-kit/fa/download';
+import ButtonText from '../../../components/button/ButtonText';
+// import { download } from 'react-icons-kit/fa/download';
 
 const QuotationRequestsListToolbar = props => {
     const { meta = {} } = props.quotationRequests;
@@ -14,19 +15,7 @@ const QuotationRequestsListToolbar = props => {
             <div className="col-md-4">
                 <div className="btn-group" role="group">
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetQuotationRequestFilters} />
-                    <span>
-                        <button className="btn btn-success btn-sm" data-toggle="dropdown">
-                            <Icon size={15} icon={download} />
-                        </button>
-                        <ul className="dropdown-menu">
-                            <li>
-                                <a onClick={() => props.getCSV()}>Kansacties</a>
-                            </li>
-                            <li>
-                                <a onClick={() => props.getSpuk('lai')}>Spuk rapport LAI</a>
-                            </li>
-                        </ul>
-                    </span>
+                    <ButtonIcon iconName={'download'} onClickAction={props.getCSV} title={'Download kansacties'} />
                     {props.opportunityActionType === 'all' ? (
                         <>
                             <button className="btn btn-success btn-sm" data-toggle="dropdown">
@@ -60,6 +49,10 @@ const QuotationRequestsListToolbar = props => {
                             title="Geen selectie maken"
                         />
                     )}
+                </div>
+                &nbsp;
+                <div className="btn-group" role="group">
+                    <ButtonText buttonText={'Spuk rapport LAI'} onClickAction={() => props.getSpuklaiExcel('lai')} />
                 </div>
             </div>
             <div className="col-md-4">

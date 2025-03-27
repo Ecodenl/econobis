@@ -473,7 +473,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
-        Route::get('/quotation-request/spuk/{type}', 'QuotationRequest\QuotationRequestController@spuk');
+        Route::get('/quotation-request/spuklaiExcel/{type}', 'QuotationRequest\QuotationRequestController@spuklaiExcel');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');

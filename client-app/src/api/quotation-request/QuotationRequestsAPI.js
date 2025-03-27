@@ -63,14 +63,15 @@ export default {
         });
     },
 
-    getSpuk: ({ filters, sorts, type }) => {
-        const requestUrl = `${URL_API}/api/quotation-request/spuk/` + type;
+    getSpuklaiExcel: ({ filters, sorts, type }) => {
+        const requestUrl = `${URL_API}/api/quotation-request/spuklaiExcel/` + type;
 
         return axiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
             },
+            responseType: 'blob',
         });
     },
 };

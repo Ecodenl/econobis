@@ -377,6 +377,19 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     ) : null}
                 </div>
                 <div className="row">
+                    {showFields.some(showField => showField.econobisFieldName === 'woz_value') ? (
+                        <InputText
+                            label={'WOZ waarde'}
+                            name="wozValue"
+                            value={wozValue}
+                            allowZero={true}
+                            onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
+                            error={this.state.errors.wozValue}
+                        />
+                    ) : null}
+                </div>
+                <div className="row">
                     {showFields.some(showField => showField.econobisFieldName === 'wall_surface') ? (
                         <InputText
                             label={'Geveloppervlakte'}
@@ -513,17 +526,6 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                <div className="row">
-                    <InputText
-                        label={'WOZ waarde'}
-                        name="wozValue"
-                        value={wozValue}
-                        allowZero={true}
-                        onChangeAction={this.handleInputChange}
-                        error={this.state.errors.wozValue}
-                    />
-                </div>
-
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -541,12 +543,14 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         closeModal={this.modalConfirmActionNo}
                         showConfirmAction={this.state.modalShowConfirmAction}
                         confirmAction={this.modalConfirmActionYes}
-                        buttonCancelText="nee"
-                        buttonConfirmText="ja"
+                        buttonCancelText="Nee (alleen nog niet bepaalde herberekenen)"
+                        buttonConfirmText="Ja (alles herberekenen)"
                     >
-                        U heeft de WOZ waarde van dit wonigdossier aangepast, wilt u de bepaling of een kans onder de
-                        WOZ grens ligt van alle gekoppelde kansen herberekenen (Ja) of alleen van de kansen waar dit nog
-                        niet eerder is bepaald (Nee).
+                        U heeft de WOZ waarde van dit woningdossier aangepast.
+                        <br />
+                        Wilt u bij alle gekoppelde kansen de bepaling of waarde onder de WOZ grens ligt (zoals
+                        vastgelegd in campagne) herberekenen (Ja) of alleen van de kansen waar dit nog niet eerder is
+                        bepaald (Nee).
                     </Modal>
                 )}
             </form>

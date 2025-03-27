@@ -80,7 +80,9 @@ const OpportunityFormView = props => {
                         <ViewText label={'Campagne WOZ grens'} value={MoneyPresenter(intake.campaign.wozLimit)} />
                         <ViewText
                             label={'WOZ waarde woningdossier'}
-                            value={MoneyPresenter(intake.address.housingFile.wozValue)}
+                            value={
+                                intake?.address?.housingFile ? MoneyPresenter(intake.address.housingFile.wozValue) : ''
+                            }
                         />
                     </div>
                     <div className="row" onClick={props.switchToEdit}>

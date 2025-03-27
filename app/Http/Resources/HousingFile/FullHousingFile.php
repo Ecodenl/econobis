@@ -64,6 +64,7 @@ class FullHousingFile extends JsonResource
                 'boilerSettingComfortHeat' => GenericResource::make($this->whenLoaded('boilerSettingComfortHeat')),
                 'amountGas' => $this->amount_gas,
                 'amountElectricity' => $this->amount_electricity,
+                'wozValue' => $this->woz_value,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'updatedBy' => FullUser::make($this->whenLoaded('updatedBy')),
                 'createdAt' => $this->created_at,
@@ -74,7 +75,6 @@ class FullHousingFile extends JsonResource
                 'relatedDocuments' => $this->relatedDocuments,
                 'housingFileSpecifications' => FullHousingFileSpecification::collection($this->whenLoaded('housingFileSpecifications')),
                 'housingFileHousingStatuses' => FullHousingFileHousingStatus::collection($this->whenLoaded('housingFileHousingStatuses')),
-                'wozValue' => $this->woz_value
             ];
     }
 }

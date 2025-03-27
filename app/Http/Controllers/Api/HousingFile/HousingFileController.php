@@ -215,6 +215,7 @@ class HousingFileController extends ApiController
             ->string('cookType')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('cook_type')->next()
             ->string('heatSource')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('heat_source')->next()
             ->string('waterComfort')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('water_comfort')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
 //            ->string('pitchedRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_heating')->next()
 //            ->string('flatRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_heating')->next()
 //            ->string('hr3pGlassFrameCurrentGlass')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('hr3p_glass_frame_current_glass')->next()
@@ -223,7 +224,6 @@ class HousingFileController extends ApiController
 //            ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
 //            ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
 //            ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
-            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
             ->get();
 
         $housingFile->fill($data);

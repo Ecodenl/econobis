@@ -41,19 +41,17 @@ class OppportunitiesNewApp extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then(payload => {
-            this.setState({
-                ...this.state,
+            this.setState(prevState => ({
                 intake: payload,
                 opportunity: {
-                    ...this.state.opportunity,
+                    ...prevState.opportunity,
                     intakeId: payload.id,
                 },
-            });
+            }));
         });
     }
-
     handleInputChangeDate(value, name) {
         this.setState({
             ...this.state,

@@ -9,6 +9,8 @@ import InputText from '../../../components/form/InputText';
 import InputTextArea from '../../../components/form/InputTextArea';
 import MeasuresOfCategory from '../../../selectors/MeasuresOfCategory';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
+import ViewText from '../../../components/form/ViewText';
+import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 const OpportunityNew = props => {
     const {
@@ -134,26 +136,43 @@ const OpportunityNew = props => {
             </div>
 
             {props.intake.campaign && props.intake.campaign.subsidyPossible != false ? (
-                <div className="row">
-                    <InputSelect
-                        label={'Onder WOZ grens'}
-                        size={'col-sm-6'}
-                        name={'belowWozLimit'}
-                        options={yesNoOptions}
-                        value={belowWozLimit}
-                        onChangeAction={props.handleInputChange}
-                        error={props.errors.belowWozLimit}
-                    />
-                    <InputSelect
-                        label={'Uitzondering schuldhulpsanering'}
-                        size={'col-sm-6'}
-                        name={'exceptionDebtRelief'}
-                        options={yesNoOptions}
-                        value={exceptionDebtRelief}
-                        onChangeAction={props.handleInputChange}
-                        error={props.errors.exceptionDebtRelief}
-                    />
-                </div>
+                <>
+                    <div className="row">
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Campagne WOZ grens'}
+                            value={MoneyPresenter(props.intake.campaign.wozLimit)}
+                        />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'WOZ waarde woningdossier'}
+                            value={
+                                intake?.address?.housingFile ? MoneyPresenter(intake.address.housingFile.wozValue) : ''
+                            }
+                        />
+                    </div>
+
+                    <div className="row">
+                        <InputSelect
+                            label={'Onder WOZ grens'}
+                            size={'col-sm-6'}
+                            name={'belowWozLimit'}
+                            options={yesNoOptions}
+                            value={belowWozLimit}
+                            onChangeAction={props.handleInputChange}
+                            error={props.errors.belowWozLimit}
+                        />
+                        <InputSelect
+                            label={'Uitzondering schuldhulpsanering'}
+                            size={'col-sm-6'}
+                            name={'exceptionDebtRelief'}
+                            options={yesNoOptions}
+                            value={exceptionDebtRelief}
+                            onChangeAction={props.handleInputChange}
+                            error={props.errors.exceptionDebtRelief}
+                        />
+                    </div>
+                </>
             ) : null}
 
             <PanelFooter>

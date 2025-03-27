@@ -15,6 +15,8 @@ import InputTextArea from '../../../../components/form/InputTextArea';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import moment from 'moment';
+import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 moment.locale('nl');
 
 class OpportunityFormEdit extends Component {
@@ -273,26 +275,44 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 {intake.campaign.subsidyPossible != false ? (
-                    <div className="row">
-                        <InputSelect
-                            label={'Onder WOZ grens'}
-                            size={'col-sm-6'}
-                            name={'belowWozLimit'}
-                            options={this.state.yesNoOptions}
-                            value={'' + belowWozLimit}
-                            onChangeAction={this.handleInputChange}
-                            error={this.state.errors.belowWozLimit}
-                        />
-                        <InputSelect
-                            label={'Uitzondering schuldhulpsanering'}
-                            size={'col-sm-6'}
-                            name={'exceptionDebtRelief'}
-                            options={this.state.yesNoOptions}
-                            value={'' + exceptionDebtRelief}
-                            onChangeAction={this.handleInputChange}
-                            error={this.state.errors.exceptionDebtRelief}
-                        />
-                    </div>
+                    <>
+                        <div className="row">
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'Campagne WOZ grens'}
+                                value={MoneyPresenter(intake.campaign.wozLimit)}
+                            />
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'WOZ waarde woningdossier'}
+                                value={
+                                    intake?.address?.housingFile
+                                        ? MoneyPresenter(intake.address.housingFile.wozValue)
+                                        : ''
+                                }
+                            />
+                        </div>
+                        <div className="row">
+                            <InputSelect
+                                label={'Onder WOZ grens'}
+                                size={'col-sm-6'}
+                                name={'belowWozLimit'}
+                                options={this.state.yesNoOptions}
+                                value={'' + belowWozLimit}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.belowWozLimit}
+                            />
+                            <InputSelect
+                                label={'Uitzondering schuldhulpsanering'}
+                                size={'col-sm-6'}
+                                name={'exceptionDebtRelief'}
+                                options={this.state.yesNoOptions}
+                                value={'' + exceptionDebtRelief}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.exceptionDebtRelief}
+                            />
+                        </div>
+                    </>
                 ) : null}
 
                 <PanelFooter>

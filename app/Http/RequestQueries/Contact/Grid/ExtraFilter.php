@@ -21,6 +21,7 @@ class ExtraFilter extends RequestExtraFilter
     protected $fields = [
         'name',
         'postalCode',
+        'city',
         'country',
         'createdAt',
         'currentObligations',
@@ -66,6 +67,8 @@ class ExtraFilter extends RequestExtraFilter
         'addressDongleDateStart',
         'addressDongleDateEnd',
         'addressDongleHasEnergyId',
+        'hasEmailAddress',
+        'hasPhoneNumber',
     ];
 
     protected $mapping = [
@@ -237,6 +240,32 @@ class ExtraFilter extends RequestExtraFilter
                 $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
                     $data = str_replace(' ', '', $data);
                     RequestFilter::applyFilter($query, 'postal_code', $type, $data);
+                });
+                break;
+        }
+    }
+
+    protected function applyCityFilter($query, $type, $data)
+    {
+        switch($type) {
+            case 'nct':
+            case 'neq':
+            case 'nbw':
+            case 'new':
+            case 'nl':
+            case 'is0':
+                $query->where(function ($query) use ($type, $data) {
+                    $query->whereDoesntHave('primaryAddress')
+                        ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
+                            $data = str_replace(' ', '', $data);
+                            RequestFilter::applyFilter($query, 'city', $type, $data);
+                        });
+                });
+                break;
+            default:
+                $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
+                    $data = str_replace(' ', '', $data);
+                    RequestFilter::applyFilter($query, 'city', $type, $data);
                 });
                 break;
         }
@@ -1204,6 +1233,22 @@ class ExtraFilter extends RequestExtraFilter
             $query->whereNotNull('hoom_account_id');
         }else{
             $query->whereNull('hoom_account_id');
+        }
+    }
+    protected function applyHasEmailAddressFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereHas('emailAddresses');
+        }else{
+            $query->whereDoesntHave('emailAddresses');
+        }
+    }
+    protected function applyHasPhoneNumberFilter($query, $type, $data)
+    {
+        if($data){
+            $query->whereHas('phoneNumbers');
+        }else{
+            $query->whereDoesntHave('phoneNumbers');
         }
     }
 

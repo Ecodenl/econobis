@@ -86,6 +86,11 @@ const HousingFileDetailsFormGeneralView = props => {
                 ) : null}
             </div>
             <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'woz_value') ? (
+                    <ViewText label="WOZ waarde" value={wozValue !== null ? MoneyPresenter(wozValue) : 'Onbekend'} />
+                ) : null}
+            </div>
+            <div className="row">
                 {showFields.some(showField => showField.econobisFieldName === 'wall_surface') ? (
                     <ViewText label="Geveloppervlakte" value={wallSurface && wallSurface} />
                 ) : null}
@@ -143,16 +148,6 @@ const HousingFileDetailsFormGeneralView = props => {
                 </div>
                 <div className="col-sm-9" id="remarkCoach">
                     {remarkCoach}
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-sm-3">
-                    <label htmlFor="remarkCoach" className="col-sm-12">
-                        WOZ waarde
-                    </label>
-                </div>
-                <div className="col-sm-9" id="remarkCoach">
-                    {wozValue !== null ? MoneyPresenter(wozValue) : 'Onbekend'}
                 </div>
             </div>
         </div>

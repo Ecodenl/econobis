@@ -63,8 +63,8 @@ export default {
         });
     },
 
-    getSpuklaiExcel: ({ filters, sorts, type }) => {
-        const requestUrl = `${URL_API}/api/quotation-request/spuklaiExcel/` + type;
+    getExcel: ({ filters, sorts, type }) => {
+        const requestUrl = `${URL_API}/api/quotation-request/excel/` + type;
 
         return axiosInstance.get(requestUrl, {
             params: {

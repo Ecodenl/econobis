@@ -52,7 +52,7 @@ const QuotationRequestsListToolbar = props => {
                 </div>
                 &nbsp;
                 <div className="btn-group" role="group">
-                    <ButtonText buttonText={'Spuk rapport LAI'} onClickAction={() => props.getSpuklaiExcel('lai')} />
+                    <ButtonText buttonText={'Spuk rapport LAI'} onClickAction={() => props.getExcel('spuk-lai')} />
                 </div>
             </div>
             <div className="col-md-4">

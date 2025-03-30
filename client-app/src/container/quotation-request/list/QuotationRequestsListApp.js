@@ -66,14 +66,14 @@ function QuotationRequestsListApp() {
             });
     }
 
-    function getSpuklaiExcel(type) {
+    function getExcel(type) {
         dispatch(blockUI());
         const filters = filterHelper(quotationRequestsFilters);
         const sorts = quotationRequestsSorts;
 
-        QuotationRequestAPI.getSpuklaiExcel({ filters, sorts, type })
+        QuotationRequestAPI.getExcel({ filters, sorts, type })
             .then(payload => {
-                fileDownload(payload.data, 'spuk-' + type + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                fileDownload(payload.data, type + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
                 dispatch(unblockUI());
             })
             .catch(error => {
@@ -116,7 +116,7 @@ function QuotationRequestsListApp() {
                     <QuotationRequestsListToolbar
                         resetQuotationRequestFilters={resetQuotationRequestFilters}
                         getCSV={getCSV}
-                        getSpuklaiExcel={getSpuklaiExcel}
+                        getExcel={getExcel}
                         opportunityActionType={opportunityActionType}
                         setOpportunityActionType={setOpportunityActionType}
                     />

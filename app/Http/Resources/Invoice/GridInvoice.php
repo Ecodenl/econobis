@@ -50,6 +50,7 @@ class GridInvoice extends JsonResource
             'dateReminder2' => $this->date_reminder_2,
             'dateReminder3' => $this->date_reminder_3,
             'dateExhortation' => $this->date_exhortation,
+            'numberOfInvoiceReminders' => $this->number_of_invoice_reminders,
 
             'paymentTypeId' => $this->payment_type_id,
             'paymentType' =>  FullEnumWithIdAndName::make($this->getPaymentType()),

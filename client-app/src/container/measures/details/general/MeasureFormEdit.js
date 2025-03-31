@@ -17,13 +17,14 @@ class MeasureFormEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, description, visible } = props.measureDetails;
+        const { id, description, visible, nameCustom } = props.measureDetails;
 
         this.state = {
             measure: {
                 id,
                 description: description ? description : '',
                 visible: visible ? visible : false,
+                nameCustom: nameCustom ? nameCustom : '',
             },
         };
     }
@@ -54,8 +55,11 @@ class MeasureFormEdit extends Component {
     };
 
     render() {
-        const { description, visible } = this.state.measure;
-        const { name, number, measureCategory = {} } = this.props.measureDetails;
+        const { description, visible, nameCustom } = this.state.measure;
+        const { keyUserRole = {}, measureDetails = {} } = this.props;
+        const { nameDefault, number, measureCategory = {} } = measureDetails;
+
+        const hasKeyUserRole = keyUserRole && Boolean(keyUserRole.hasRole) === true;
 
         return (
             <form className="form-horizontal col-md-12" onSubmit={this.handleSubmit}>
@@ -69,12 +73,11 @@ class MeasureFormEdit extends Component {
                     />
                     <InputText label={'Nummer'} name={'number'} value={number} readOnly={true} />
                 </div>
-
                 <div className="row">
                     <InputText
                         label={'Maatregel specifiek'}
-                        name={'name'}
-                        value={name}
+                        name={'nameDefault'}
+                        value={nameDefault}
                         onChangeAction={() => {}}
                         readOnly={true}
                     />
@@ -87,6 +90,16 @@ class MeasureFormEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <InputText
+                        label={'Naam aangepast'}
+                        name={'nameCustom'}
+                        value={nameCustom}
+                        onChangeAction={this.handleInputChange}
+                        readOnly={hasKeyUserRole ? false : true}
+                    />
+                </div>
+
+                <div className="row">
                     <InputTextArea
                         label={'Beschrijving'}
                         name={'description'}
@@ -94,7 +107,6 @@ class MeasureFormEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
-
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
                         <ButtonText
@@ -124,6 +136,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = state => {
     return {
         measureDetails: state.measureDetails,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Key user'),
     };
 };
 

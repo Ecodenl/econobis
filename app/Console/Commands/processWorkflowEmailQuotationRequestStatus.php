@@ -24,7 +24,7 @@ class processWorkflowEmailQuotationRequestStatus extends Command
      *
      * @var string
      */
-    protected $description = "Workflow email versturen na X aantal dagen op bepaalde status.";
+    protected $description = "Workflow email versturen na X aantal dagen bij bepaalde status.";
 
     /**
      * Create a new command instance.
@@ -61,18 +61,23 @@ class processWorkflowEmailQuotationRequestStatus extends Command
                 $query->where('uses_wf', true);
             })->get();
         foreach ($campaignWorkflowsToProces as $campaignWorkflow) {
-            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
+//            Log::info("Proces: Workflow email voor campagne '" . $campaignWorkflow->campaign->name . "' voor status '" . $campaignWorkflow->quotationRequestStatus->name . "' met aantal dagen na datum status: " . $campaignWorkflow->number_of_days_to_send_email);
             $campaignId = $campaignWorkflow->campaign_id;
 
+            $checkDatePlannedToSend = Carbon::now()->toDateString();
             $quotationRequestsToProcess = QuotationRequest::where('status_id', $campaignWorkflow->quotation_request_status_id)
-                ->where('date_planned_to_send_wf_email_status','=', Carbon::now()->startOfDay()->toDateString())
+                ->whereDate('date_planned_to_send_wf_email_status','=', $checkDatePlannedToSend)
                 ->whereHas('opportunity', function ($query) use ($campaignId) {
                     $query->whereHas('intake', function ($query) use ($campaignId) {
                         $query->where('campaign_id', $campaignId);
                     });
                 })->get();
+
+//            Log::info('Check Date for send Emails: ' . $checkDatePlannedToSend);
+//            Log::info('Quotation Requests to Process: ' . $quotationRequestsToProcess->count());
+
             foreach ($quotationRequestsToProcess as $quotationRequest) {
-                Log::info("processWorkflowEmail voor " . $quotationRequest->id);
+//                Log::info("processWorkflowEmail voor " . $quotationRequest->id);
                 $quotationRequestWorkflowHelper = new QuotationRequestWorkflowHelper($quotationRequest);
                 $quotationRequestWorkflowHelper->processWorkflowEmail($campaignWorkflow);
             }
@@ -82,6 +87,6 @@ class processWorkflowEmailQuotationRequestStatus extends Command
         $commandRun->finished = true;
         $commandRun->save();
 
-        Log::info("Emails verstuurd kansacties met bepaalde status.");
+        Log::info("Emails kansacties verstuurd bij bepaalde status.");
     }
 }

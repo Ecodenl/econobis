@@ -28,6 +28,20 @@ class ContactsListExtraFilters extends Component {
                     name: 'Ja',
                 },
             ],
+            allNoYesOptions: [
+                {
+                    id: 0,
+                    name: '--Willekeurige waarde--',
+                },
+                {
+                    id: 1,
+                    name: 'Nee',
+                },
+                {
+                    id: 2,
+                    name: 'Ja',
+                },
+            ],
         };
 
         this.fetchFilterFreeFieldsFieldsContact();
@@ -78,7 +92,8 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'intakeMeasureCategory' ||
             filters[filterNumber].field === 'housingFileFieldName' ||
             filters[filterNumber].field === 'contactFreeFieldsFieldName' ||
-            filters[filterNumber].field === 'addressFreeFieldsFieldName'
+            filters[filterNumber].field === 'addressFreeFieldsFieldName' ||
+            filters[filterNumber].field === 'addressDongleTypeReadOut'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -230,6 +245,43 @@ class ContactsListExtraFilters extends Component {
                 data: '',
                 connectedTo: data + filterNumber,
                 freeFieldFormatType: '',
+            });
+
+            amountOfFilters = filters.length;
+        } else if (data === 'addressDongleTypeReadOut') {
+            filters[filterNumber] = {
+                field: 'addressDongleTypeReadOut',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'addressDongleTypeDongle',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 2, 0, {
+                field: 'addressDongleDateStart',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 3, 0, {
+                field: 'addressDongleDateEnd',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 4, 0, {
+                field: 'addressDongleHasEnergyId',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
             });
 
             amountOfFilters = filters.length;
@@ -518,6 +570,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
             },
+            addressDongleTypeReadOut: {
+                name: 'Dongel type uitlezing',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.typesReadOut,
+            },
         };
 
         // Options only if product is set
@@ -600,6 +657,28 @@ class ContactsListExtraFilters extends Component {
             },
         };
 
+        // Options only if product is set
+        const customAddressDongleTypeReadOutFields = {
+            addressDongleTypeDongle: {
+                name: 'Type dongel',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.typesDongle,
+            },
+            addressDongleDateStart: {
+                name: 'Start datum',
+                type: 'date',
+            },
+            addressDongleDateEnd: {
+                name: 'Eind datum',
+                type: 'date',
+            },
+            addressDongleHasEnergyId: {
+                name: 'Heeft energie ID koppeling',
+                type: 'allNoYes',
+                dropDownOptions: this.state.allNoYesOptions,
+            },
+        };
+
         return (
             <Modal
                 title="Extra filters"
@@ -668,6 +747,7 @@ class ContactsListExtraFilters extends Component {
                                             ...customHousingFileFields,
                                             ...customContactFreeFieldsFields,
                                             ...customAddressFreeFieldsFields,
+                                            ...customAddressDongleTypeReadOutFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
@@ -707,6 +787,8 @@ const mapStateToProps = state => {
         quotationRequestStatus: state.systemData.quotationRequestStatus,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
         housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
+        typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

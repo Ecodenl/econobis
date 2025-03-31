@@ -21,7 +21,6 @@ use PhpTwinfield\Office;
 use PhpTwinfield\Secure\OpenIdConnectAuthentication;
 use PhpTwinfield\Secure\Provider\OAuthProvider;
 use PhpTwinfield\Exception as PhpTwinfieldException;
-use PhpTwinfield\Exception;
 use PhpTwinfield\Services\FinderService;
 
 class TwinfieldCustomerHelper
@@ -125,13 +124,13 @@ class TwinfieldCustomerHelper
     private function getContactsToBeChecked()
     {
         return Contact::whereHas('invoices', function ($query) {
-            $query->where('administration_id', $this->administration->id)
-                ->whereNull('twinfield_number')
-                ->whereIn('status_id', ['sent', 'paid'])
-                ->where('date_sent', '>=', $this->fromInvoiceDateSent);
+            $query->where('invoices.administration_id', $this->administration->id)
+                ->whereNull('invoices.twinfield_number')
+                ->whereIn('invoices.status_id', ['sent', 'paid'])
+                ->where('invoices.date_sent', '>=', $this->fromInvoiceDateSent);
         })
             ->whereDoesntHave('twinfieldNumbers', function ($query) {
-                $query->where('administration_id', $this->administration->id);
+                $query->where('administration_contact_twinfield.administration_id', $this->administration->id);
             })
             ->get();
     }
@@ -234,7 +233,7 @@ class TwinfieldCustomerHelper
                 $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
                 $this->logGeneral($contact, $message, true, true);
                 array_push($this->messages, $message);
-            } catch (PhpTwinfieldException $e) {
+            } catch (\Exception $e) {
                 $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
                 $this->logGeneral($contact, $message, true, true);
                 array_push($this->messages, $message);
@@ -282,7 +281,7 @@ class TwinfieldCustomerHelper
                     $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
                     $this->logGeneral($contact, $message, true, true);
                     array_push($this->messages, $message);
-                } catch (PhpTwinfieldException $e) {
+                } catch (\Exception $e) {
                     $message = 'Synchronisatie contact ' . $contact->number . ' gaf de volgende foutmelding: ' . $e->getMessage();
                     $this->logGeneral($contact, $message, true, true);
                     array_push($this->messages, $message);
@@ -304,7 +303,7 @@ class TwinfieldCustomerHelper
             $message = 'Synchronisatie contact ' . $contact->number . ' (twinfieldcode: ' . $code . ') gaf de volgende twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
             $this->logGeneral($contact, $message, true, true);
             array_push($this->messages, $message);
-        } catch (PhpTwinfieldException $e) {
+        } catch (\Exception $e) {
             $message = 'Synchronisatie contact ' . $contact->number . ' (twinfieldcode: ' . $code . ') gaf de volgende foutmelding: ' . $e->getMessage();
             $this->logGeneral($contact, $message, true, true);
             array_push($this->messages, $message);

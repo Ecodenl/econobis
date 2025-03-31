@@ -2,6 +2,8 @@
 
 namespace App\Eco\ContactGroup;
 
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
 use App\Eco\FreeFields\FreeFieldsField;
@@ -58,6 +60,16 @@ class DynamicContactGroupFilter extends Model
             // Booleans omzetten
             $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo','hoomdossierExists'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
+
+            // Yes/No/Empty omzetten
+            $yesNoWithEmptyFields = ['addressDongleHasEnergyId'];
+            if (in_array($this->field, $yesNoWithEmptyFields)){
+                return $this->data == '1'
+                    ? 'Nee'
+                    : ($this->data == '2'
+                        ? 'Ja'
+                        : '');
+            }
 
             // opportunityMeasureCategory omzetten
             if ($this->field == 'opportunityMeasureCategory'){
@@ -227,6 +239,23 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $sharedArea = SharedArea::find($this->data);
                     return $sharedArea ? $sharedArea->area_name : '';
+                }
+                return '';
+            }
+
+            // addressDongleTypeReadOut omzetten
+            if ($this->field == 'addressDongleTypeReadOut'){
+                if($this->data){
+                    $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($this->data);
+                    return $addressDongleTypeReadOut ? $addressDongleTypeReadOut->name : '';
+                }
+                return '';
+            }
+            // addressDongleTypeDongle omzetten
+            if ($this->field == 'addressDongleTypeDongle'){
+                if($this->data){
+                    $addressDongleTypDongle = AddressDongleTypeDongle::find($this->data);
+                    return $addressDongleTypDongle ? $addressDongleTypDongle->name : '';
                 }
                 return '';
             }

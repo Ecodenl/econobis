@@ -33,7 +33,34 @@ class ContactController extends Controller
         $this->authorize('view', $contact);
         $this->checkContactTeamAutorized($contact);
 
-        $contact->load(['addresses.addressEnergySuppliers.energySupplier', 'addresses.addressEnergySuppliers.energySupplyType', 'addresses.addressEnergySuppliers.energySupplyStatus', 'addresses.currentAddressEnergySupplierElectricity', 'addresses.currentAddressEnergySupplierElectricity.energySupplier', 'addresses.currentAddressEnergySupplierGas', 'addresses.currentAddressEnergySupplierGas.energySupplier', 'addresses.country', 'emailAddresses', 'phoneNumbers', 'createdBy', 'updatedBy', 'owner', 'portalUser', 'tasks', 'notes', 'financialOverviewContactsSend', 'documents', 'opportunities', 'participations', 'orders', 'invoices']);
+        $contact->load([
+            'emailAddresses',
+            'phoneNumbers',
+            'createdBy',
+            'updatedBy',
+            'owner',
+            'portalUser',
+            'tasks',
+            'notes',
+            'financialOverviewContactsSend',
+            'documents',
+            'opportunities',
+            'participations',
+            'orders',
+            'invoices'
+        ]);
+        $contact->addresses->load([
+            'addressDongles',
+            'addressEnergySuppliers',
+            'addressEnergySuppliers.energySupplier',
+            'addressEnergySuppliers.energySupplyType',
+            'addressEnergySuppliers.energySupplyStatus',
+            'country',
+            'currentAddressEnergySupplierElectricity',
+            'currentAddressEnergySupplierElectricity.energySupplier',
+            'currentAddressEnergySupplierGas',
+            'currentAddressEnergySupplierGas.energySupplier',
+        ]);
         $contact->contactNotes->load(['createdBy', 'updatedBy']);
         $contact->occupations->load(['occupation', 'primaryContact', 'contact']);
         $contact->primaryOccupations->load(['occupation', 'primaryContact', 'contact']);
@@ -173,9 +200,9 @@ class ContactController extends Controller
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         if ($teamContactIds){
-            $query = Contact::select('id', 'full_name', 'number')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->whereIn('contacts.id', $teamContactIds)->orderBy('full_name');
         }else{
-            $query = Contact::select('id', 'full_name', 'number')->orderBy('full_name');
+            $query = Contact::select('id', 'full_name', 'number', 'type_id')->orderBy('full_name');
         }
 
         if($inspectionPersonType !== null AND $inspectionPersonType !== "null") {

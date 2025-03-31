@@ -194,33 +194,21 @@ class QuotationRequestController
             abort(403, 'Geen toegang tot dit document.');
         }
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
+
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
             header('X-Filename:' . $document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             return response()->download($filePath, $document->filename);
+
+            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+        } elseif ($document->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                $filePath = Storage::disk('documents')
-                    ->path($document->filename);
-                header('X-Filename:' . $document->filename);
-                header('Access-Control-Expose-Headers: X-Filename');
-                return response()->download($filePath, $document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        // hier verwachten we alleen nog documenten opgslagen in Alfresco. Indien geen alfresco_node_id bekend, dan valt er ook niets op te halen.
-        if ($document->alfresco_node_id == null) {
-            return null;
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
     public function deleteDocument(QuotationRequest $quotationRequest, Document $document)
@@ -282,7 +270,8 @@ class QuotationRequestController
             $document->file_path_and_name = $file_tmp;
             $document->save();
 
-            Storage::disk('documents')->path($file_tmp);
+//            todo WM: deze regel kan weg, doet niets.
+//            Storage::disk('documents')->path($file_tmp);
         }
     }
 
@@ -342,6 +331,7 @@ class QuotationRequestController
                 'name' => $quotationRequest->status->name,
                 'codeRef' => $quotationRequest->status->code_ref,
             ],
+            'measureNames' => $quotationRequest->measureNames,
             'quotationAmount' => $quotationRequest->quotation_amount,
             'costAdjustment' => $quotationRequest->cost_adjustment,
             'awardAmount' => $quotationRequest->award_amount,

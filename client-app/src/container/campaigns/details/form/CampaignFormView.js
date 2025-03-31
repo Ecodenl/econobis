@@ -2,11 +2,24 @@ import React from 'react';
 import moment from 'moment';
 import ViewText from '../../../../components/form/ViewText';
 import ViewText_3_9 from '../../../../components/form/ViewText_3_9';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 moment.locale('nl');
 
 const CampaignFormView = ({
-    campaign: { name, number, description, startDate, endDate, status, measureCategories, opportunityActions, type },
+    campaign: {
+        name,
+        number,
+        description,
+        startDate,
+        endDate,
+        status,
+        measureCategories,
+        opportunityActions,
+        type,
+        wozLimit,
+        subsidyPossible,
+    },
     switchToEdit,
 }) => {
     return (
@@ -58,6 +71,16 @@ const CampaignFormView = ({
             <div className="row" onClick={switchToEdit}>
                 <ViewText label={'Type'} value={type?.name || ''} />
             </div>
+
+            <div className="row" onClick={switchToEdit}>
+                <ViewText_3_9 label={'Subsidie mogelijk'} value={subsidyPossible ? 'Ja' : 'Nee'} />
+            </div>
+
+            {subsidyPossible != false ? (
+                <div className="row" onClick={switchToEdit}>
+                    <ViewText_3_9 label={'Woz grens'} value={MoneyPresenter(wozLimit)} />
+                </div>
+            ) : null}
         </div>
     );
 };

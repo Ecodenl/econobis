@@ -66,6 +66,21 @@ function QuotationRequestsListApp() {
             });
     }
 
+    function getExcel(type) {
+        dispatch(blockUI());
+        const filters = filterHelper(quotationRequestsFilters);
+        const sorts = quotationRequestsSorts;
+
+        QuotationRequestAPI.getExcel({ filters, sorts, type })
+            .then(payload => {
+                fileDownload(payload.data, type + '-' + moment().format('YYYY-MM-DD HH:mm:ss') + '.xlsx');
+                dispatch(unblockUI());
+            })
+            .catch(error => {
+                dispatch(unblockUI());
+            });
+    }
+
     function fetchQuotationRequestsData() {
         let filters = filterHelper(quotationRequestsFilters);
         if (opportunityActionId > 0) {
@@ -101,6 +116,7 @@ function QuotationRequestsListApp() {
                     <QuotationRequestsListToolbar
                         resetQuotationRequestFilters={resetQuotationRequestFilters}
                         getCSV={getCSV}
+                        getExcel={getExcel}
                         opportunityActionType={opportunityActionType}
                         setOpportunityActionType={setOpportunityActionType}
                     />

@@ -27,14 +27,14 @@ export default {
             });
     },
 
-    peekQuotationRequestsForContacts: (contactIds) => {
+    peekQuotationRequestsForContacts: contactIds => {
         const requestUrl = `${URL_API}/api/quotation-request/peek`;
 
         return axiosInstance
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;
@@ -60,6 +60,18 @@ export default {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
             },
+        });
+    },
+
+    getExcel: ({ filters, sorts, type }) => {
+        const requestUrl = `${URL_API}/api/quotation-request/excel/` + type;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+            responseType: 'blob',
         });
     },
 };

@@ -27,10 +27,13 @@ class CampaignNewApp extends Component {
                 measureCategoryIdsSelected: [],
                 opportunityActionIds: '',
                 opportunityActionIdsSelected: [],
+                subsidyPossible: false,
+                wozLimit: '',
             },
             errors: {
                 name: false,
                 type: false,
+                wozLimit: false,
             },
         };
     }
@@ -98,6 +101,17 @@ class CampaignNewApp extends Component {
 
         if (validator.isEmpty('' + campaign.typeId)) {
             errors.type = true;
+            hasErrors = true;
+        }
+
+        // Check of waarde leeg is
+        if (!campaign.subsidyPossible) {
+            campaign.wozLimit = null;
+        } else if (!isNaN(parseFloat(campaign.wozLimit)) && parseFloat(campaign.wozLimit) < 0) {
+            errors.wozLimit = true;
+            hasErrors = true;
+        } else if (isNaN(parseFloat(campaign.wozLimit))) {
+            errors.wozLimit = true; // Ongeldige invoer
             hasErrors = true;
         }
 

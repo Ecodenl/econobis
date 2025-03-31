@@ -59,6 +59,10 @@ class UpdateCooperation extends FormRequest
             'fontFamilyDefault' => [''],
             'fontSizeDefault' => [''],
             'fontColorDefault' => [''],
+            'showExternalUrlForContacts' => [''],
+            'externalUrlContacts' => [''],
+            'externalUrlContactsButtonText' => [''],
+            'externalUrlContactsOnNewPage' => [''],
         ];
     }
 }

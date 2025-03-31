@@ -15,6 +15,8 @@ import InputTextArea from '../../../../components/form/InputTextArea';
 import InputMultiSelect from '../../../../components/form/InputMultiSelect';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import moment from 'moment';
+import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 moment.locale('nl');
 
 class OpportunityFormEdit extends Component {
@@ -30,10 +32,23 @@ class OpportunityFormEdit extends Component {
             status,
             datePlannedToSendWfEmailStatus,
             amount,
+            belowWozLimit,
+            exceptionDebtRelief,
         } = props.opportunity;
-
+        console.log('belowWozLimit ' + belowWozLimit);
+        console.log('exceptionDebtRelief ' + exceptionDebtRelief);
         this.state = {
             status: props.status.filter(item => item.active == 1),
+            yesNoOptions: [
+                {
+                    id: '0',
+                    name: 'Nee',
+                },
+                {
+                    id: '1',
+                    name: 'Ja',
+                },
+            ],
             opportunity: {
                 id,
                 measureIds: measures && measures.map(measure => measure.id).join(','),
@@ -47,6 +62,8 @@ class OpportunityFormEdit extends Component {
                 evaluationAgreedDate: evaluationAgreedDate ? evaluationAgreedDate : '',
                 desiredDate: desiredDate ? desiredDate : '',
                 amount: amount ? amount : '',
+                belowWozLimit: belowWozLimit,
+                exceptionDebtRelief: exceptionDebtRelief,
                 // evaluationIsRealised: props.opportunity ? props.opportunity.evaluationIsRealised : 1,
                 // evaluationIsStatisfied: props.opportunity ? props.opportunity.evaluationIsStatisfied : 1,
                 // evaluationWouldRecommendOrganisation: props.opportunity
@@ -154,7 +171,10 @@ class OpportunityFormEdit extends Component {
             measureIds,
             measureIdsSelected,
             amount,
+            belowWozLimit,
+            exceptionDebtRelief,
         } = this.state.opportunity;
+        console.log(this.state.opportunity);
         const { intake, measureCategory } = this.props.opportunity;
         const measuresMatchToCategory = MeasuresOfCategory(this.props.measures, measureCategory.id);
 
@@ -253,6 +273,47 @@ class OpportunityFormEdit extends Component {
                         onChangeAction={this.handleInputChangeDate}
                     />
                 </div>
+
+                {intake.campaign.subsidyPossible != false ? (
+                    <>
+                        <div className="row">
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'Campagne WOZ grens'}
+                                value={MoneyPresenter(intake.campaign.wozLimit)}
+                            />
+                            <ViewText
+                                className={'form-group col-sm-6'}
+                                label={'WOZ waarde woningdossier'}
+                                value={
+                                    intake?.address?.housingFile
+                                        ? MoneyPresenter(intake.address.housingFile.wozValue)
+                                        : ''
+                                }
+                            />
+                        </div>
+                        <div className="row">
+                            <InputSelect
+                                label={'Onder WOZ grens'}
+                                size={'col-sm-6'}
+                                name={'belowWozLimit'}
+                                options={this.state.yesNoOptions}
+                                value={'' + belowWozLimit}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.belowWozLimit}
+                            />
+                            <InputSelect
+                                label={'Uitzondering schuldhulpsanering'}
+                                size={'col-sm-6'}
+                                name={'exceptionDebtRelief'}
+                                options={this.state.yesNoOptions}
+                                value={'' + exceptionDebtRelief}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.exceptionDebtRelief}
+                            />
+                        </div>
+                    </>
+                ) : null}
 
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">

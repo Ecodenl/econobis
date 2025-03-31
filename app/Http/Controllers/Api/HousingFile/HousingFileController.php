@@ -160,17 +160,35 @@ class HousingFileController extends ApiController
             ->string('boilerSettingComfortHeat')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('boiler_setting_comfort_heat')->next()
             ->string('amountGas')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_gas')->next()
             ->string('amountElectricity')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('amount_electricity')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
             ->get();
 
 
         $housingFile = new HousingFile($data);
         $housingFile->save();
 
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($housingFile->woz_value !== null) {
+            foreach ($housingFile->address->intakes as $intake) {
+                $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                    return is_null($opportunity->below_woz_limit);
+                });
+
+                foreach ($opportunities as $opportunity) {
+                    if ($opportunity->intake->campaign->subsidy_possible) {
+                        $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                        $opportunity->save();
+                    }
+                }
+            }
+        }
+
         return $this->show($housingFile);
     }
 
 
-    public function update(RequestInput $requestInput, HousingFile $housingFile)
+    public function update(Request $request,RequestInput $requestInput, HousingFile $housingFile)
     {
         $this->authorize('manage', HousingFile::class);
 
@@ -197,6 +215,7 @@ class HousingFileController extends ApiController
             ->string('cookType')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('cook_type')->next()
             ->string('heatSource')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('heat_source')->next()
             ->string('waterComfort')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('water_comfort')->next()
+            ->double('wozValue')->validate('nullable')->whenMissing(null)->alias('woz_value')->next()
 //            ->string('pitchedRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('pitched_roof_heating')->next()
 //            ->string('flatRoofHeating')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('flat_roof_heating')->next()
 //            ->string('hr3pGlassFrameCurrentGlass')->validate('nullable')->onEmpty(null)->whenMissing(null)->alias('hr3p_glass_frame_current_glass')->next()
@@ -209,6 +228,29 @@ class HousingFileController extends ApiController
 
         $housingFile->fill($data);
         $housingFile->save();
+
+        //if applicable we will set the below_woz_limit to true or false for all opportunities indirectly related to this housingfile where the below_woz_limit is still not set (null)
+        //only if the woz_value for this housingfile is lower or the same as the campaign woz_limit
+        if($request->get('updateAllOpportunityBelowWozLimit')) {
+            foreach ($housingFile->address->intakes as $intake) {
+                if($request->get('updateAllOpportunityBelowWozLimit') === 'yes') {
+                    $opportunities = $intake->opportunities;
+                } elseif($request->get('updateAllOpportunityBelowWozLimit') === 'no') {
+                    $opportunities = $intake->opportunities->filter(function ($opportunity) {
+                        return is_null($opportunity->below_woz_limit);
+                    });
+                }
+
+                if($opportunities) {
+                    foreach ($opportunities as $opportunity) {
+                        if ($opportunity->intake->campaign->subsidy_possible) {
+                            $opportunity->below_woz_limit = ($housingFile->woz_value <= $opportunity->intake->campaign->woz_limit);
+                            $opportunity->save();
+                        }
+                    }
+                }
+            }
+        }
 
         return $this->show($housingFile);
     }

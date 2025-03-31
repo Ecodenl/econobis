@@ -61,20 +61,18 @@ function RegisterProject({ match, currentSelectedContact }) {
     useEffect(() => {
         if (match.params) {
             const { registerType, id: projectId, participantId } = match.params;
-            setRegisterType(registerType || null);
-            setProjectId(projectId || null);
-            setParticipantId(participantId || null);
-        } else {
-            setRegisterType(null);
-            setProjectId(null);
-            setParticipantId(null);
+            setRegisterType(registerType);
+            setProjectId(projectId);
+            setParticipantId(participantId);
         }
+    }, [match]);
 
+    useEffect(() => {
         if (projectId && currentSelectedContact?.id) {
             callFetchPortalSettings();
             fetchContactAndProject();
         }
-    }, [match, currentSelectedContact]);
+    }, [projectId, currentSelectedContact]);
 
     function goToPreviousStep() {
         setStep(currentStep <= 2 ? 1 : currentStep - 1);

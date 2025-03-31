@@ -61,6 +61,11 @@ class ExtraFilter extends RequestExtraFilter
         'addressFreeFieldsFieldName',
         'addressFreeFieldsFieldValue',
         'hoomdossierExists',
+        'addressDongleTypeReadOut',
+        'addressDongleTypeDongle',
+        'addressDongleDateStart',
+        'addressDongleDateEnd',
+        'addressDongleHasEnergyId',
     ];
 
     protected $mapping = [
@@ -169,8 +174,7 @@ class ExtraFilter extends RequestExtraFilter
             }
             return;
         }
-
-        // Ook Uitzondering voor freefields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        // Ook Uitzondering voor contactFreeFields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
         if($filter['field'] == 'contactFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
@@ -181,6 +185,7 @@ class ExtraFilter extends RequestExtraFilter
             }
             return;
         }
+        // Ook Uitzondering voor addressFreeFields filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
         if($filter['field'] == 'addressFreeFieldsFieldName'){
             if($filterType === 'or'){
                 $query->orWhere(function ($query) use ($filter) {
@@ -188,6 +193,17 @@ class ExtraFilter extends RequestExtraFilter
                 });
             }else{
                 $this->applyFreeFieldsFilter($query, $filter['data'], $filter['connectName'], 'addresses');
+            }
+            return;
+        }
+        // Uitzondering voor addressDongleTypeReadOut filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'addressDongleTypeReadOut'){
+            if($filterType === 'or'){
+                $query->orWhere(function ($query) use ($filter) {
+                    $this->applyAddressDongleTypeReadOutFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
+                });
+            }else{
+                $this->applyAddressDongleTypeReadOutFilter($query, $filter['type'], $filter['data'], $filter['connectName']);
             }
             return;
         }
@@ -1317,5 +1333,118 @@ class ExtraFilter extends RequestExtraFilter
 //        $sql = vsprintf($sql, $query->getBindings());
 //        Log::info($sql);
 
+    }
+
+    protected function applyAddressDongleTypeReadOutFilter($query, $type, $data, $connectName)
+    {
+
+        $addressDongleTypeDongleFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'addressDongleTypeDongle');
+        }));
+        $addressDongleTypeDongleFilter = $addressDongleTypeDongleFilter ? $addressDongleTypeDongleFilter[0] : null;
+
+        $addressDongleDateStartFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'addressDongleDateStart');
+        }));
+        $addressDongleDateStartFilter = $addressDongleDateStartFilter ? $addressDongleDateStartFilter[0] : null;
+
+        $addressDongleDateEndFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'addressDongleDateEnd');
+        }));
+        $addressDongleDateEndFilter = $addressDongleDateEndFilter ? $addressDongleDateEndFilter[0] : null;
+
+        $addressDongleHasEnergyIdFilter = array_values(array_filter($this->filters, function($element) use($connectName){
+            return ($element['connectedTo'] == $connectName && $element['field'] == 'addressDongleHasEnergyId');
+        }));
+        $addressDongleHasEnergyIdFilter = $addressDongleHasEnergyIdFilter ? $addressDongleHasEnergyIdFilter[0] : null;
+
+        if(empty($data))
+        {
+            switch($type) {
+                case 'eq':
+                    $query->whereHas('addressDongles', function ($query) use ($data, $addressDongleTypeDongleFilter, $addressDongleDateStartFilter, $addressDongleDateEndFilter, $addressDongleHasEnergyIdFilter) {
+                        // Eventueel extra filters toepassen
+                        if($addressDongleTypeDongleFilter['data'] || $addressDongleTypeDongleFilter['type'] == 'nl' || $addressDongleTypeDongleFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.type_dongle_id', $addressDongleTypeDongleFilter['type'], $addressDongleTypeDongleFilter['data']);
+                        }
+                        if($addressDongleDateStartFilter['data'] || $addressDongleDateStartFilter['type'] == 'nl' || $addressDongleDateStartFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.date_start', $addressDongleDateStartFilter['type'], $addressDongleDateStartFilter['data']);
+                        }
+                        if($addressDongleDateEndFilter['data'] || $addressDongleDateEndFilter['type'] == 'nl' || $addressDongleDateEndFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.date_end', $addressDongleDateEndFilter['type'], $addressDongleDateEndFilter['data']);
+                        }
+                        // Heeft energie Id koppeling?
+                        // Data 0 = geen selectie
+                        //      1 = Nee
+                        //      2 = Ja
+                        if($addressDongleHasEnergyIdFilter['data'] ==  1){
+                            $query->whereNull('address_dongles.energy_id');
+                        }
+                        if($addressDongleHasEnergyIdFilter['data'] ==  2){
+                            $query->whereNotNull('address_dongles.energy_id');
+                        }
+//        Log::info('------------');
+//        Log::info('Query extrafilter dongles 1!');
+//        Log::info('------------');
+//        Log::info('addressDongleHasEnergyIdFilter type: ' . $addressDongleHasEnergyIdFilter['type']);
+//        Log::info('addressDongleHasEnergyIdFilter data: ' . $addressDongleHasEnergyIdFilter['data']);
+//        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//        $sql = vsprintf($sql, $query->getBindings());
+//        Log::info($sql);
+
+                    });
+                    break;
+                default:
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('addressDongles');
+                    });
+                    break;
+            }
+
+        }else{
+            switch($type) {
+                case 'neq':
+                    $query->where(function ($query) use ($type, $data) {
+                        $query->whereDoesntHave('addressDongles', function ($query) use ($data) {
+                            $query->where('product_id', $data);
+                        });
+                    });
+                    break;
+                default:
+                    $query->whereHas('addressDongles', function ($query) use ($data, $addressDongleTypeDongleFilter, $addressDongleDateStartFilter, $addressDongleDateEndFilter, $addressDongleHasEnergyIdFilter) {
+                        $query->where('address_dongles.type_read_out_id', $data);
+
+                        // Eventueel extra filters toepassen
+                        if($addressDongleTypeDongleFilter['data'] || $addressDongleTypeDongleFilter['type'] == 'nl' || $addressDongleTypeDongleFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.type_dongle_id', $addressDongleTypeDongleFilter['type'], $addressDongleTypeDongleFilter['data']);
+                        }
+                        if($addressDongleDateStartFilter['data'] || $addressDongleDateStartFilter['type'] == 'nl' || $addressDongleDateStartFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.date_start', $addressDongleDateStartFilter['type'], $addressDongleDateStartFilter['data']);
+                        }
+                        if($addressDongleDateEndFilter['data'] || $addressDongleDateEndFilter['type'] == 'nl' || $addressDongleDateEndFilter['type'] == 'nnl'){
+                            static::applyFilter($query, 'address_dongles.date_end', $addressDongleDateEndFilter['type'], $addressDongleDateEndFilter['data']);
+                        }
+                        // Heeft energie Id koppeling?
+                        // Data 0 = geen selectie
+                        //      1 = Nee
+                        //      2 = Ja
+                        if($addressDongleHasEnergyIdFilter['data'] ==  1){
+                            $query->whereNull('address_dongles.energy_id');
+                        }
+                        if($addressDongleHasEnergyIdFilter['data'] ==  2){
+                            $query->whereNotNull('address_dongles.energy_id');
+                        }
+//        Log::info('------------');
+//        Log::info('Query extrafilter dongles 2!');
+//        Log::info('------------');
+//        Log::info('addressDongleHasEnergyIdFilter type: ' . $addressDongleHasEnergyIdFilter['type']);
+//        Log::info('addressDongleHasEnergyIdFilter data: ' . $addressDongleHasEnergyIdFilter['data']);
+//        $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//        $sql = vsprintf($sql, $query->getBindings());
+//        Log::info($sql);
+                    });
+                    break;
+            }
+        }
     }
 }

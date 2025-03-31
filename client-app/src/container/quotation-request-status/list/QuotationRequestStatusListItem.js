@@ -34,8 +34,7 @@ class QuotationRequestStatusListItem extends Component {
     }
 
     render() {
-        // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
-        const { id, name, usesWf, numberOfDaysToSendEmail, permissions, opportunityActionName } = this.props;
+        const { id, name, usesWf, sendEmailReminder, permissions, opportunityActionName } = this.props;
         return (
             <tr
                 className={this.state.highlightRow}
@@ -47,8 +46,7 @@ class QuotationRequestStatusListItem extends Component {
                     {opportunityActionName} - {name}
                 </td>
                 <td>{usesWf ? 'Ja' : 'Nee'}</td>
-                {/*todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail*/}
-                {/*<td>{usesWf ? (numberOfDaysToSendEmail === 0 ? 'Direct' : numberOfDaysToSendEmail) : ''}</td>*/}
+                <td>{sendEmailReminder ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

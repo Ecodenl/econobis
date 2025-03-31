@@ -212,6 +212,12 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
+        Route::get('/address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
+
+        Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
+        Route::post('/address-dongle/{addressDongle}', 'AddressDongle\AddressDongleController@update');
+        Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
+
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');
@@ -479,6 +485,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::post('/quotation-request/{quotationRequest}/show-update-opportunity-status', 'QuotationRequest\QuotationRequestController@showUpdateOpportunityStatus');
         Route::post('/quotation-request/bulk-delete', 'QuotationRequest\QuotationRequestController@bulkDelete');
         Route::post('/quotation-request/bulk-update', 'QuotationRequest\QuotationRequestController@bulkUpdate');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
@@ -745,6 +752,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
+        // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
@@ -757,6 +765,18 @@ Route::namespace('Api')
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');
+
+        // Free fields portal pages
+        Route::get('portal-free-fields-pages/grid', 'PortalFreeFields\PortalFreeFieldsPagesController@grid');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@delete');
+        Route::post('portal-free-fields-page', 'PortalFreeFields\PortalFreeFieldsPagesController@store');
+        Route::get('portal-free-fields-page/{portalFreeFieldsPage}', 'PortalFreeFields\PortalFreeFieldsPagesController@show');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/update', 'PortalFreeFields\PortalFreeFieldsPagesController@update');
+        Route::get('portal-free-fields-page/free-fields-contacts/{portalFreeFieldsPage}/peek-contacts', 'PortalFreeFields\PortalFreeFieldsPagesController@peekContacts');
+
+        Route::post('portal-free-fields-page-field', 'PortalFreeFields\PortalFreeFieldsPagesController@storePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}', 'PortalFreeFields\PortalFreeFieldsPagesController@updatePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@destroyPortalFreeFieldsField');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

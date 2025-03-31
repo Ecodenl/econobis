@@ -103,6 +103,9 @@ class DocumentNewApp extends Component {
                 description: '',
                 documentGroup: '',
                 templateId: '',
+                allowChangeHtmlBody: false,
+                htmlBody: '',
+                initialHtmlBody: '',
                 freeText1: '',
                 freeText2: '',
                 sentById: '',
@@ -131,10 +134,12 @@ class DocumentNewApp extends Component {
         };
 
         this.handleInputChange = this.handleInputChange.bind(this);
+        this.handleTextChange = this.handleTextChange.bind(this);
         this.handleSubmit = this.handleSubmit.bind(this);
         this.onDropAccepted = this.onDropAccepted.bind(this);
         this.onDropRejected = this.onDropRejected.bind(this);
         this.handleDocumentGroupChange = this.handleDocumentGroupChange.bind(this);
+        this.handleDocumentTemplateChange = this.handleDocumentTemplateChange.bind(this);
         this.handleProjectChange = this.handleProjectChange.bind(this);
         this.setSearchTermContact = this.setSearchTermContact.bind(this);
         this.setLoadingContact = this.setLoadingContact.bind(this);
@@ -244,7 +249,6 @@ class DocumentNewApp extends Component {
     }
 
     callFetchContact() {
-        // console.log(this.state.document.contactId);
         ContactDetailsAPI.getContactDetails(this.state.document.contactId).then(payload => {
             if (payload) {
                 this.setState({
@@ -321,16 +325,16 @@ class DocumentNewApp extends Component {
         });
     }
 
-    handleDocumentGroupChange(event) {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
-
+    handleDocumentGroupChange(selectedOption) {
         this.setState({
             ...this.state,
             document: {
                 ...this.state.document,
-                [name]: value,
+                documentGroup: selectedOption,
+                templateId: '',
+                allowChangeHtmlBody: false,
+                htmlBody: '',
+                initialHtmlBody: '',
             },
         });
 
@@ -338,7 +342,7 @@ class DocumentNewApp extends Component {
             let templates = [];
 
             payload.forEach(function(template) {
-                if (template.group == value) {
+                if (template.group == selectedOption) {
                     templates.push({ id: template.id, name: template.name });
                 }
             });
@@ -346,6 +350,44 @@ class DocumentNewApp extends Component {
             this.setState({
                 templates: templates,
             });
+        });
+    }
+
+    handleDocumentTemplateChange(selectedOption) {
+        DocumentTemplateAPI.fetchDocumentTemplate(selectedOption)
+            .then(payload => {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        templateId: selectedOption,
+                        allowChangeHtmlBody: payload.allowChangeHtmlBody,
+                        htmlBody: payload.htmlBody ? payload.htmlBody : this.state.document.htmlBody,
+                        initialHtmlBody: payload.htmlBody ? payload.htmlBody : this.state.document.htmlBody,
+                    },
+                });
+            })
+            .catch($error => {
+                this.setState({
+                    ...this.state,
+                    document: {
+                        ...this.state.document,
+                        templateId: selectedOption,
+                        allowChangeHtmlBody: false,
+                        htmlBody: '',
+                        initialHtmlBody: '',
+                    },
+                });
+            });
+    }
+
+    handleTextChange(htmlBody) {
+        this.setState({
+            ...this.state,
+            document: {
+                ...this.state.document,
+                htmlBody: htmlBody,
+            },
         });
     }
 
@@ -397,6 +439,7 @@ class DocumentNewApp extends Component {
             description,
             documentGroup,
             templateId,
+            htmlBody,
             freeText1,
             freeText2,
             filename,
@@ -479,6 +522,7 @@ class DocumentNewApp extends Component {
             data.append('description', description);
             data.append('documentGroup', documentGroup);
             data.append('templateId', templateId);
+            data.append('htmlBody', htmlBody);
             data.append('freeText1', freeText1);
             data.append('freeText2', freeText2);
             data.append('filename', filename);
@@ -533,6 +577,8 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -545,6 +591,8 @@ class DocumentNewApp extends Component {
                                 handleSubmit={this.handleSubmit}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -557,9 +605,11 @@ class DocumentNewApp extends Component {
                                 errors={this.state.errors}
                                 errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
+                                handleProjectChange={this.handleProjectChange}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
-                                handleProjectChange={this.handleProjectChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                             />
@@ -581,9 +631,11 @@ class DocumentNewApp extends Component {
                                 errors={this.state.errors}
                                 errorMessage={this.state.errorMessage}
                                 handleSubmit={this.handleSubmit}
+                                handleProjectChange={this.handleProjectChange}
                                 handleDocumentGroupChange={this.handleDocumentGroupChange}
                                 handleInputChange={this.handleInputChange}
-                                handleProjectChange={this.handleProjectChange}
+                                handleTextChange={this.handleTextChange}
+                                handleDocumentTemplateChange={this.handleDocumentTemplateChange}
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                                 handleInputChangeContactId={this.handleInputChangeContactId}

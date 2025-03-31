@@ -200,6 +200,7 @@ class MailFetcher
             'cc' => array_keys($emailData->cc),
             'bcc' => array_keys($emailData->bcc),
             'subject' => $subject,
+            'subject_for_filter' => trim(mb_substr($subject ?? '', 0, 150)),
             'html_body' => $textHtml,
             'date_sent' => $dateSent,
             'folder' => 'inbox',

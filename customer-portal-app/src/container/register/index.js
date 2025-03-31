@@ -193,6 +193,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                     setErrorMessage('Fout bij ophalen gegevens');
                     setIsLoading3(false);
                 });
+        } else {
+            setIsLoading3(false);
         }
     }
 

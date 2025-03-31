@@ -294,47 +294,45 @@ class ContactsListToolbar extends Component {
                     )}
                 </div>
                 {!dataControleType &&
-                    !showCheckboxList &&
-                    !showCheckboxListMerge &&
-                    this.props.cooperationExternalUrlContacts &&
-                    this.props.cooperationExternalUrlContacts.show_external_url_for_contacts && (
-                        <div className="row">
-                            <div className="col-md-12" style={{ marginTop: '10px' }}>
-                                <>
-                                    &nbsp;
-                                    <div className="btn-group" role="group">
-                                        <a
-                                            role="button"
-                                            className={'btn btn-success btn-sm'}
-                                            href={
-                                                this.props.cooperationExternalUrlContacts.external_url_contacts
-                                                    ? this.props.cooperationExternalUrlContacts.external_url_contacts
-                                                    : ''
-                                            }
-                                            title={
-                                                this.props.cooperationExternalUrlContacts
-                                                    .external_url_contacts_button_text
-                                                    ? this.props.cooperationExternalUrlContacts
-                                                          .external_url_contacts_button_text
-                                                    : 'EXterne link'
-                                            }
-                                            target={
-                                                this.props.cooperationExternalUrlContacts
-                                                    .external_url_contacts_on_new_page
-                                                    ? '_blank'
-                                                    : '_self'
-                                            }
-                                        >
-                                            {this.props.cooperationExternalUrlContacts.external_url_contacts_button_text
+                !showCheckboxList &&
+                !showCheckboxListMerge &&
+                this.props.cooperationExternalUrlContacts &&
+                this.props.cooperationExternalUrlContacts.show_external_url_for_contacts ? (
+                    <div className="row">
+                        <div className="col-md-12" style={{ marginTop: '10px' }}>
+                            <>
+                                &nbsp;
+                                <div className="btn-group" role="group">
+                                    <a
+                                        role="button"
+                                        className={'btn btn-success btn-sm'}
+                                        href={
+                                            this.props.cooperationExternalUrlContacts.external_url_contacts
+                                                ? this.props.cooperationExternalUrlContacts.external_url_contacts
+                                                : ''
+                                        }
+                                        title={
+                                            this.props.cooperationExternalUrlContacts.external_url_contacts_button_text
                                                 ? this.props.cooperationExternalUrlContacts
                                                       .external_url_contacts_button_text
-                                                : 'EXterne link'}
-                                        </a>
-                                    </div>
-                                </>
-                            </div>
+                                                : 'EXterne link'
+                                        }
+                                        target={
+                                            this.props.cooperationExternalUrlContacts.external_url_contacts_on_new_page
+                                                ? '_blank'
+                                                : '_self'
+                                        }
+                                    >
+                                        {this.props.cooperationExternalUrlContacts.external_url_contacts_button_text
+                                            ? this.props.cooperationExternalUrlContacts
+                                                  .external_url_contacts_button_text
+                                            : 'EXterne link'}
+                                    </a>
+                                </div>
+                            </>
                         </div>
-                    )}
+                    </div>
+                ) : null}
             </>
         );
     }

@@ -17,10 +17,12 @@ class GridContact extends JsonResource
         $address = $this->primaryAddress;
         $emailAddress = $this->primaryEmailAddress;
         $phoneNumber = $this->primaryPhoneNumber;
+        $organisation = $this->organisation;
 
         return [
             'id' => $this->id,
             'number' => $this->number,
+            'iban' => $this->iban,
             'typeId' => $this->type_id,
             'typeName' => $this->present()->type,
             'fullName' => $this->full_name,
@@ -32,6 +34,8 @@ class GridContact extends JsonResource
             'phoneNumber' => optional($phoneNumber)->number,
             'statusName' => $this->present()->status,
             'createdAt' => $this->created_at,
+            'vatNumber' => optional($organisation)->vat_number,
+            'chamberOfCommerceNumber' => optional($organisation)->chamber_of_commerce_number,
         ];
     }
 }

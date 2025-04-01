@@ -243,11 +243,11 @@ class OrderProductsFormNew extends Component {
 
         if (value) {
             let product = this.props.products.find(product => product.id == value);
-            priceNumberOfDecimals = product.currentPrice.priceNumberOfDecimals;
-            price = product.currentPrice.price;
-            priceInclVat = product.currentPrice.priceInclVat;
-            vatPercentage = product.currentPrice.vatPercentage;
-            productInputInclVat = product.currentPrice.inputInclVat;
+            priceNumberOfDecimals = product.currentPrice ? product.currentPrice.priceNumberOfDecimals : 2;
+            price = product.currentPrice ? product.currentPrice.price : 0;
+            priceInclVat = product.currentPrice ? product.currentPrice.priceInclVat : 0;
+            vatPercentage = product.currentPrice ? product.currentPrice.vatPercentage : 0;
+            productInputInclVat = product.currentPrice ? product.currentPrice.inputInclVat : false;
             costCenterId = product.costCenterId;
             if (!costCenterId) {
                 costCenterId = '';
@@ -305,6 +305,8 @@ class OrderProductsFormNew extends Component {
                     costCenterId: costCenterId,
                     description: description,
                     dateEnd: dateEnd,
+                    variablePrice:
+                        productHasVariablePrice === 'variable' ? this.state.orderProduct.variablePrice : null,
                     [name]: value,
                 },
             },
@@ -456,7 +458,8 @@ class OrderProductsFormNew extends Component {
                                     label={'Prijs excl. BTW'}
                                     name={'variablePrice'}
                                     type={'number'}
-                                    value={this.state.price}
+                                    // value={this.state.price}
+                                    value={this.state.orderProduct.variablePrice}
                                     onChangeAction={this.handleInputChangeVariablePrice}
                                     onBlurAction={this.handleBlurVariablePrice}
                                     error={this.state.errors.variablePrice}

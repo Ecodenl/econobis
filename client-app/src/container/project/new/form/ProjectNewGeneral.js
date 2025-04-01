@@ -347,12 +347,6 @@ const ProjectFormNewGeneral = ({
                     value={dateStart}
                     onChangeAction={handleInputChangeDate}
                 />
-                <InputToggle
-                    label={'Deelname aan groep verplicht'}
-                    name={'isMembershipRequired'}
-                    value={isMembershipRequired}
-                    onChangeAction={handleInputChange}
-                />
             </div>
 
             <div className="row">
@@ -362,21 +356,28 @@ const ProjectFormNewGeneral = ({
                     value={dateEnd}
                     onChangeAction={handleInputChangeDate}
                 />
-                {isMembershipRequired == true && (
-                    <div className={'row'}>
-                        <InputMultiSelect
-                            label={'Onderdeel van groep'}
-                            name={'contactGroupsIds'}
-                            options={contactGroups}
-                            value={contactGroupIdsSelected}
-                            onChangeAction={handleContactGroupIds}
-                            error={errors.contactGroupIds}
-                            errorMessage={errorMessages.contactGroupIds}
-                            required={'required'}
-                        />
-                    </div>
-                )}
+                <InputToggle
+                    label={'Deelname aan groep verplicht'}
+                    name={'isMembershipRequired'}
+                    value={isMembershipRequired}
+                    onChangeAction={handleInputChange}
+                />
             </div>
+            {isMembershipRequired == true && (
+                <div className="row">
+                    <InputMultiSelect
+                        label={'Onderdeel van groep'}
+                        name={'contactGroupsIds'}
+                        size={'col-sm-8'}
+                        options={contactGroups}
+                        value={contactGroupIdsSelected}
+                        onChangeAction={handleContactGroupIds}
+                        error={errors.contactGroupIds}
+                        errorMessage={errorMessages.contactGroupIds}
+                        required={'required'}
+                    />
+                </div>
+            )}
             {isMembershipRequired ? (
                 <>
                     <div className="row">

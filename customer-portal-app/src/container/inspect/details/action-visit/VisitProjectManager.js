@@ -1,6 +1,6 @@
 import React from 'react';
 
-function VisitProjectManager() {
+function VisitProjectManager({ redirectBack, initialQuotationRequest, handleSubmit }) {
     return (
         <>
             <p>Voor projectleider verwachten we geen bezoek kansactie</p>

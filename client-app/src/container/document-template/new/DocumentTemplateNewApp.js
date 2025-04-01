@@ -27,6 +27,7 @@ class DocumentTemplateNewApp extends Component {
                 characteristic: '',
                 initialHtmlBody: '',
                 htmlBody: '',
+                allowChangeHtmlBody: false,
                 baseTemplateId: '',
                 headerTemplateId: '',
                 footerTemplateId: '',

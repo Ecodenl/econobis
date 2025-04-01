@@ -94,12 +94,14 @@ class ContactsList extends Component {
                                 showCheckbox={this.props.showCheckboxList}
                                 showCheckboxMerge={this.props.showCheckboxListMerge}
                                 fetchContactsData={() => this.props.fetchContactsData()}
+                                dataControleType={this.props.dataControleType}
                             />
                             <ContactsListFilter
                                 showCheckbox={this.props.showCheckboxList}
                                 showCheckboxMerge={this.props.showCheckboxListMerge}
                                 selectAllCheckboxes={() => this.props.selectAllCheckboxes()}
                                 onSubmitFilter={this.props.onSubmitFilter}
+                                dataControleType={this.props.dataControleType}
                             />
                         </DataTableHead>
                         <DataTableBody>
@@ -116,6 +118,7 @@ class ContactsList extends Component {
                                             showCheckbox={this.props.showCheckboxList}
                                             showCheckboxMerge={this.props.showCheckboxListMerge}
                                             checkedAllCheckboxes={this.props.checkedAllCheckboxes}
+                                            dataControleType={this.props.dataControleType}
                                             showDeleteItemModal={this.showDeleteItemModal}
                                             keepSelected={contact.id === contactKeep}
                                             removeSelected={contact.id === contactRemove}

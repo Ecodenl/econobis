@@ -14,7 +14,7 @@ import { hashHistory } from 'react-router';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
-import { getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution, previewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import { setError } from '../../../../../../actions/general/ErrorActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import moment from 'moment-business-days';
@@ -406,6 +406,7 @@ class RevenueDistributionForm extends Component {
             this.state.description
         )
             .then(payload => {
+                this.props.fetchRevenue(this.props.projectRevenue.id);
                 document.body.style.cursor = 'default';
                 this.setState({
                     showSuccessMessage: true,
@@ -708,6 +709,9 @@ const mapStateToProps = state => {
 };
 
 const mapDispatchToProps = dispatch => ({
+    fetchRevenue: id => {
+        dispatch(fetchRevenue(id));
+    },
     previewReport: id => {
         dispatch(previewReport(id));
     },

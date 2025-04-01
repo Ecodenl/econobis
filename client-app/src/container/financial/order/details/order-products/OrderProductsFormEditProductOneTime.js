@@ -19,9 +19,11 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         this.state = {
             errorMessage: false,
-            orderPrice: props.product.currentPrice.inputInclVat
-                ? props.product.currentPrice.priceInclVat
-                : props.product.currentPrice.price,
+            orderPrice: props.product.currentPrice
+                ? props.product.currentPrice.inputInclVat
+                    ? props.product.currentPrice.priceInclVat
+                    : props.product.currentPrice.price
+                : 0,
             totalPrice: '',
             orderProduct: {
                 id: props.orderProduct.id,
@@ -110,18 +112,21 @@ class OrderProductsFormNewProductOneTime extends Component {
     };
 
     updateOrderPrice = () => {
-        let inputInclVat = this.state.product.currentPrice.inputInclVat
-            ? this.state.product.currentPrice.inputInclVat
-            : false;
+        let inputInclVat =
+            this.state.product.currentPrice && this.state.product.currentPrice.inputInclVat
+                ? this.state.product.currentPrice.inputInclVat
+                : false;
         let price = 0;
         if (inputInclVat) {
-            price = validator.isFloat(this.state.product.currentPrice.priceInclVat + '')
-                ? this.state.product.currentPrice.priceInclVat
-                : 0;
+            price =
+                this.state.product.currentPrice && validator.isFloat(this.state.product.currentPrice.priceInclVat + '')
+                    ? this.state.product.currentPrice.priceInclVat
+                    : 0;
         } else {
-            price = validator.isFloat(this.state.product.currentPrice.price + '')
-                ? this.state.product.currentPrice.price
-                : 0;
+            price =
+                this.state.product.currentPrice && validator.isFloat(this.state.product.currentPrice.price + '')
+                    ? this.state.product.currentPrice.price
+                    : 0;
         }
 
         let amount = validator.isFloat(this.state.orderProduct.amount + '') ? this.state.orderProduct.amount : 0;
@@ -140,9 +145,10 @@ class OrderProductsFormNewProductOneTime extends Component {
             totalPrice = price * amount * ((100 - percentageReduction) / 100) - amountReduction;
         }
         if (!inputInclVat) {
-            let vatPercentage = validator.isFloat(this.state.product.currentPrice.vatPercentage + '')
-                ? this.state.product.currentPrice.vatPercentage
-                : 0;
+            let vatPercentage =
+                this.state.product.currentPrice && validator.isFloat(this.state.product.currentPrice.vatPercentage + '')
+                    ? this.state.product.currentPrice.vatPercentage
+                    : 0;
             const vatFactor = (parseFloat(100) + parseFloat(vatPercentage)) / 100;
             totalPrice = totalPrice * vatFactor;
         }
@@ -197,9 +203,14 @@ class OrderProductsFormNewProductOneTime extends Component {
 
         let ledgerOptions = this.props.ledgers.filter(ledger => {
             if (!ledger.vatCode) {
-                return ledger.vatCode === this.state.product.currentPrice.vatPercentage;
+                return (
+                    this.state.product.currentPrice && ledger.vatCode === this.state.product.currentPrice.vatPercentage
+                );
             } else {
-                return ledger.vatCode.percentage === this.state.product.currentPrice.vatPercentage;
+                return (
+                    this.state.product.currentPrice &&
+                    ledger.vatCode.percentage === this.state.product.currentPrice.vatPercentage
+                );
             }
         });
 
@@ -277,14 +288,18 @@ class OrderProductsFormNewProductOneTime extends Component {
                             />
                             <InputText
                                 label={
-                                    this.state.product.currentPrice.inputInclVat ? 'Prijs incl. BTW' : 'Prijs excl. BTW'
+                                    this.state.product.currentPrice && this.state.product.currentPrice.inputInclVat
+                                        ? 'Prijs incl. BTW'
+                                        : 'Prijs excl. BTW'
                                 }
                                 name={'orderPrice'}
                                 value={
                                     '€ ' +
                                     this.state.orderPrice.toLocaleString('nl', {
                                         minimumFractionDigits: 2,
-                                        maximumFractionDigits: this.state.product.currentPrice.priceNumberOfDecimals,
+                                        maximumFractionDigits: this.state.product.currentPrice
+                                            ? this.state.product.currentPrice.priceNumberOfDecimals
+                                            : 0,
                                     })
                                 }
                                 readOnly={true}

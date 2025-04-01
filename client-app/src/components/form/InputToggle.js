@@ -33,7 +33,8 @@ const InputToggle = props => {
                     id={id}
                     name={name}
                     onChange={onChangeAction}
-                    defaultChecked={value}
+                    // defaultChecked={value}
+                    checked={value}
                     disabled={disabled}
                     data-item-id={itemId ?? ''}
                 />

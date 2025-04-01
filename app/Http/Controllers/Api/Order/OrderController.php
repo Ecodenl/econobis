@@ -39,16 +39,25 @@ class OrderController extends ApiController
     {
         $this->authorize('view', Order::class);
 
-        if($request['showOrdersWithoutOrderlines'] === "true") {
-            $orders = $requestQuery->get();
-            $orderIdsTotal = $requestQuery->totalIds();
-        } else {
-            $orders = $requestQuery->getQuery()->has('orderProducts')->get();
-            $orderIdsTotal = $requestQuery->getQuery()->has('orderProducts')->pluck('id');
+        $orders = $requestQuery->get();
+
+        $onlyOrdersWithOrderProducts = $request['showOnlyOrdersWithOrderProducts'] == 'true';
+
+        $orders->load(['contact', 'orderProducts']);
+
+        $selectedOrders = Order::whereIn('id', $requestQuery->totalIds())->get();
+        $selectedOrders->load(['contact', 'orderProducts']);
+
+        if($onlyOrdersWithOrderProducts) {
+            $orders = $orders->reject(function ($order) {
+                return ($order->orderProducts->isEmpty() ? true : false);
+            });
+            $selectedOrders = $selectedOrders->reject(function ($order) {
+                return ($order->orderProducts->isEmpty() ? true : false);
+            });
         }
 
-
-        $orders->load(['contact']);
+        $orderIdsTotal = $selectedOrders->pluck("id");
 
         return GridOrder::collection($orders)
             ->additional(['meta' => [
@@ -68,6 +77,20 @@ class OrderController extends ApiController
         $orderCSVHelper = new OrderCSVHelper($orders);
 
         $csv = $orderCSVHelper->downloadCSV();
+
+        return $csv;
+    }
+
+    public function csvWithProducts(RequestQuery $requestQuery)
+    {
+        $this->authorize('view', Order::class);
+
+        set_time_limit(0);
+        $orders = $requestQuery->getQueryNoPagination()->get();
+
+        $orderCSVHelper = new OrderCSVHelper($orders);
+
+        $csv = $orderCSVHelper->downloadCSVWithProducts();
 
         return $csv;
     }

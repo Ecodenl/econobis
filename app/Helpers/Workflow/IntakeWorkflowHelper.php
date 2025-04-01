@@ -71,28 +71,28 @@ class IntakeWorkflowHelper
 
     private function processWorkflowCreateQuotationRequest()
     {
-        $quotationRequestStatus = QuotationRequestStatus::orderBy('order')->first();
-        if (!$quotationRequestStatus) {
-            return false;
-        }
         if (!$this->measureCategory->organisation_id_wf_create_quotation_request || $this->measureCategory->organisation_id_wf_create_quotation_request == 0 ) {
             return false;
         }
         $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
+        $quotationRequestStatus = QuotationRequestStatus::where('opportunity_action_id', $offerteverzoekAction->id)->where('code_ref', 'default')->first();
+        if (!$quotationRequestStatus) {
+            return false;
+        }
 
         $contactOrganistation = Organisation::find($this->measureCategory->organisation_id_wf_create_quotation_request);
         if(!$contactOrganistation){
             return false;
         }
         $quotationRequest = new QuotationRequest();
-        $quotationRequest->contact_id = $contactOrganistation->id;
+        $quotationRequest->contact_id = $contactOrganistation->contact_id;
         $quotationRequest->opportunity_id = $this->opportunity->id;
         $quotationRequest->opportunity_action_id = $offerteverzoekAction->id;
         $quotationRequest->date_recorded = null;
         $quotationRequest->date_released = null;
         $quotationRequest->status_id = $quotationRequestStatus->id;
         $quotationRequest->date_planned_to_send_wf_email_status = null;
-        $quotationRequest->quotation_text = $opportunity = '';
+        $quotationRequest->quotation_text = '';
         $quotationRequest->quotation_amount = 0;
         $quotationRequest->save();
 
@@ -138,6 +138,13 @@ class IntakeWorkflowHelper
         if($this->intake) {
             $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'intake', $this->intake);
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'intake', $this->intake);
+            if ($this->intake->campaign) {
+                $subject = TemplateVariableHelper::replaceTemplateVariables($subject, 'campagne',
+                    $this->intake->campaign);
+                $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'campagne',
+                    $this->intake->campaign);
+            }
+
         }
         if($this->opportunity) {
             $htmlBody = TemplateVariableHelper::replaceTemplateVariables($htmlBody, 'kans', $this->opportunity);

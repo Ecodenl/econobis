@@ -41,6 +41,7 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
     useEffect(() => {
         if (isAuth) {
             if (
+                !location.pathname.includes('/vrije-velden/') &&
                 !location.pathname.includes('/project/') &&
                 !location.pathname.includes('/project-deelname/') &&
                 !location.pathname.includes('/inschrijven/') &&

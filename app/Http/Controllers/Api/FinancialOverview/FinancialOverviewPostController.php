@@ -32,8 +32,7 @@ class FinancialOverviewPostController extends Controller
     }
 
     public function downloadFinancialOverviewPost(FinancialOverviewPost $financialOverviewPost){
-        $filePath = Storage::disk('administrations')
-            ->path($financialOverviewPost->filename);
+        $filePath = Storage::disk('administrations')->path($financialOverviewPost->filename);
         header('X-Filename:' . $financialOverviewPost->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $financialOverviewPost->name, ['Content-Type: application/xml']);

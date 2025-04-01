@@ -13,6 +13,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Intake\Intake;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Portal\PortalUser;
 use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
@@ -120,6 +121,10 @@ class Document extends Model
         return $this->belongsTo(ParticipantProject::class, 'participation_project_id', 'id');
     }
 
+    public function createdByPortalUser(){
+        return $this->belongsTo(PortalUser::class, 'created_by_portal_user_id', 'id');
+    }
+
     public function newEloquentBuilder($query)
     {
         return new DocumentBuilder($query);
@@ -127,16 +132,17 @@ class Document extends Model
 
     public function getFileContents()
     {
-        if(config('app.ALFRESCO_COOP_USERNAME') === 'local') {
-            if($this->alfresco_node_id){
-                return null;
-            }
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($this->file_path_and_name != null) {
+            return Storage::disk('documents')->get($this->file_path_and_name);
 
-            return Storage::disk('documents')->get($this->filename);
+        // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+        } elseif ($this->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            return $alfrescoHelper->downloadFile($this->alfresco_node_id);
         }
 
-        $alfrescoHelper = new AlfrescoHelper(config('app.ALFRESCO_COOP_USERNAME'), config('app.ALFRESCO_COOP_PASSWORD'));
+        return null;
 
-        return $alfrescoHelper->downloadFile($this->alfresco_node_id);
     }
 }

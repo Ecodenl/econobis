@@ -91,8 +91,8 @@ class FinancialOverviewDetailsApp extends Component {
                 return (
                     <div className="row">
                         <div className="col-md-9 margin-10-top text-center">
-                            Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe
-                            te voegen aan deze administratie via instellingen > administraties
+                            Je hebt geen recht om deze administratie in te zien. Vraag je administrator/beheerder jou
+                            toe te voegen aan deze administratie via instellingen > administraties
                         </div>
                     </div>
                 );

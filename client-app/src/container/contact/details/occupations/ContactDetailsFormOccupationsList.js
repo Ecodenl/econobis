@@ -11,8 +11,11 @@ const ContactDetailsFormOccupationsList = props => {
                 <div className="col-sm-2">Verbinding</div>
                 <div className="col-sm-2">Begindatum</div>
                 <div className="col-sm-2">Einddatum</div>
-                <div className="col-sm-2">
+                <div className="col-sm-1">
                     <span className="pull-right">Primair</span>
+                </div>
+                <div className="col-sm-1">
+                    <span className="pull-right">Beheer in Portaal</span>
                 </div>
                 <div className="col-sm-1" />
             </div>

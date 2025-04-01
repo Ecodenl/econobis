@@ -34,6 +34,8 @@ const ContactDetailsFormAddressList = props => {
                             numberOfAddressesNotOld={numberOfAddressesNotOld}
                             setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
                             addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
+                            setAddressDongleNewOrEditOpen={props.setAddressDongleNewOrEditOpen}
+                            addressDongleNewOrEditOpen={props.addressDongleNewOrEditOpen}
                         />
                     );
                 })

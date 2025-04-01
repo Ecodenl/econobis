@@ -34,23 +34,30 @@ const HousingFileSpecificationsListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategoryName'}
                 title={'Categorie'}
-                width={'15%'}
+                width={'10%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureName'}
                 title={'Specificatie'}
-                width={'15%'}
+                width={'14%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'status'} title={'Status'} width={'10%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureDate'}
                 title={'Datum realisatie'}
-                width={'10%'}
+                width={'8%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'typeBrand'} title={'Type/merk'} width={'10%'} setSorts={setSorts} />
+
+            <DataTableHeadTitleAndSort
+                sortColumn={'createdAt'}
+                title={'Datum aangemaakt'}
+                width={'8%'}
+                setSorts={setSorts}
+            />
 
             <th width="5%" />
         </tr>

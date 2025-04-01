@@ -1,24 +1,34 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
 import InputSelect from '../../../../components/form/InputSelect';
+import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
+import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
+import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
+function DocumentNewFormCreateDocument(props) {
+    const [htmlBody, setValueHtmlBody] = useState('');
 
-const DocumentNewFormCreateDocument = ({
-    document,
-    templates,
-    errors,
-    errorMessage,
-    handleInputChange,
-    handleDocumentGroupChange,
-    documentGroups,
-    users,
-}) => {
-    const { documentGroup, templateId, freeText1, freeText2, filename, sentById } = document;
+    let {
+        document,
+        templates,
+        errors,
+        errorMessage,
+        handleInputChange,
+        handleTextChange,
+        handleDocumentGroupChange,
+        handleDocumentTemplateChange,
+        documentGroups,
+    } = props;
+    const { documentGroup, templateId, allowChangeHtmlBody, initialHtmlBody, freeText1, freeText2 } = document;
+
+    useEffect(() => {
+        handleTextChange(htmlBody);
+    }, [htmlBody]);
 
     return (
-        <div>
+        <>
             <div className="row">
-                <InputSelect
+                <InputReactSelectLong
                     label="Documentgroep"
                     name={'documentGroup'}
                     value={documentGroup}
@@ -28,17 +38,34 @@ const DocumentNewFormCreateDocument = ({
                     error={errors.documentGroup}
                     errorMessage={errorMessage.documentGroup}
                 />
-                <InputSelect
-                    label="Template"
+            </div>
+            <div className="row">
+                <InputReactSelectLong
+                    label={'Template'}
                     name={'templateId'}
                     value={templateId}
                     options={templates}
-                    onChangeAction={handleInputChange}
+                    onChangeAction={handleDocumentTemplateChange}
                     required={'required'}
                     error={errors.templateId}
                     errorMessage={errorMessage.templateId}
                 />
             </div>
+            <div className="row">
+                <div className="form-group col-sm-12">
+                    <div className="row">
+                        {allowChangeHtmlBody ? (
+                            <InputTinyMCEUpdateable
+                                label={'Template inhoud'}
+                                initialValue={initialHtmlBody}
+                                value={htmlBody != '' ? htmlBody : initialHtmlBody}
+                                onChangeAction={(newValueHtmlBody, editor) => setValueHtmlBody(newValueHtmlBody)}
+                            />
+                        ) : null}
+                    </div>
+                </div>
+            </div>
+
             <div className="row">
                 <div className="form-group col-sm-12">
                     <div className="row">
@@ -73,24 +100,13 @@ const DocumentNewFormCreateDocument = ({
                     </div>
                 </div>
             </div>
-            {/*<div className="row">*/}
-            {/*    <InputSelect*/}
-            {/*        label="Afzender"*/}
-            {/*        name={'sentById'}*/}
-            {/*        value={sentById}*/}
-            {/*        options={users}*/}
-            {/*        optionName={'fullName'}*/}
-            {/*        onChangeAction={handleInputChange}*/}
-            {/*    />*/}
-            {/*</div>*/}
-        </div>
+        </>
     );
-};
+}
 
 const mapStateToProps = state => {
     return {
         documentGroups: state.systemData.documentGroups,
-        users: state.systemData.users,
     };
 };
 

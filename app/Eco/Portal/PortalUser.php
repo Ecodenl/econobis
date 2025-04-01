@@ -3,6 +3,7 @@
 namespace App\Eco\Portal;
 
 use App\Eco;
+use App\Eco\Document\Document;
 use App\Notifications\Portal\MailAccountActivated;
 use App\Notifications\Portal\MailResetPasswordToken;
 use Carbon\Carbon;
@@ -42,6 +43,11 @@ class PortalUser extends Authenticatable
     public function contact()
     {
         return $this->belongsTo(Eco\Contact\Contact::class);
+    }
+
+    public function documentsCreated()
+    {
+        return $this->hasMany(Document::class, 'created_by_portal_user_id')->orderBy('documents.id', 'desc');
     }
 
     public function twoFactorTokens()

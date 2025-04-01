@@ -109,6 +109,10 @@ class QuotationRequest extends Model
             ->orWhere('id', $this->external_party_id)->orderBy('full_name')->get();
     }
 
+    public function getMeasureNamesAttribute()
+    {
+        return $this->opportunity->measures ? implode(', ', $this->opportunity->measures->pluck('name')->toArray()) : '';
+    }
     public function newEloquentBuilder($query)
     {
         return new QuotationRequestBuilder($query);
@@ -146,6 +150,7 @@ class QuotationRequest extends Model
                 $email->cc = [];
                 $email->bcc = [];
                 $email->subject = $mail['template']->subject;
+                $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
                 $email->folder = 'concept';
                 $email->quotation_request_id = $this->id;
                 $email->html_body

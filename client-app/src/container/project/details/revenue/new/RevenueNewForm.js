@@ -73,32 +73,48 @@ const RevenueNew = props => {
             {category.codeRef === 'revenueEuro' ? (
                 <div className="row">
                     {projectTypeCodeRef !== 'loan' ? (
-                        <InputSelect
-                            label={'Type opbrengst verdeling'}
-                            name={'distributionTypeId'}
-                            options={props.projectRevenueDistributionTypes}
-                            emptyOption={false}
-                            value={distributionTypeId}
-                            onChangeAction={props.handleInputChange}
-                            error={props.errors.distributionTypeId}
+                        <>
+                            <InputSelect
+                                label={'Type opbrengst verdeling'}
+                                name={'distributionTypeId'}
+                                options={props.projectRevenueDistributionTypes}
+                                emptyOption={false}
+                                value={distributionTypeId}
+                                onChangeAction={props.handleInputChange}
+                                error={props.errors.distributionTypeId}
+                            />
+                            {distributionTypeId === 'inPossessionOf' ? (
+                                <InputDate
+                                    label={'Peildatum'}
+                                    name={'dateReference'}
+                                    value={dateReference}
+                                    onChangeAction={props.handleInputChangeDate}
+                                    required={'required'}
+                                    error={props.errors.dateReference}
+                                />
+                            ) : null}
+                        </>
+                    ) : (
+                        <ViewText
+                            label={'Type Lening'}
+                            value={props.project.projectLoanType ? props.project.projectLoanType.name : ''}
+                            className={'form-group col-sm-6'}
                         />
-                    ) : null}
-                    {distributionTypeId === 'inPossessionOf' ? (
-                        <InputDate
-                            label={'Peildatum'}
-                            name={'dateReference'}
-                            value={dateReference}
-                            onChangeAction={props.handleInputChangeDate}
-                            required={'required'}
-                            error={props.errors.dateReference}
-                        />
-                    ) : null}
+                    )}
                 </div>
             ) : null}
 
             {category.codeRef === 'redemptionEuro' ? (
                 <div className="row">
-                    {distributionTypeId === 'inPossessionOf' ? (
+                    {projectTypeCodeRef === 'loan' ? (
+                        <ViewText
+                            label={'Type Lening'}
+                            value={props.project.projectLoanType ? props.project.projectLoanType.name : ''}
+                            className={'form-group col-sm-6'}
+                        />
+                    ) : null}
+                    {distributionTypeId === 'inPossessionOf' &&
+                    (projectTypeCodeRef !== 'loan' || props.project.projectLoanType.codeRef === 'annuitair') ? (
                         <InputDate
                             label={'Peildatum'}
                             name={'dateReference'}

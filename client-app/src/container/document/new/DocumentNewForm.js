@@ -25,9 +25,11 @@ const DocumentNewForm = ({
     errors,
     errorMessage,
     handleSubmit,
-    handleInputChange,
-    handleProjectChange,
     handleDocumentGroupChange,
+    handleInputChange,
+    handleTextChange,
+    handleProjectChange,
+    handleDocumentTemplateChange,
     onDropAccepted,
     onDropRejected,
     handleInputChangeContactId,
@@ -71,8 +73,10 @@ const DocumentNewForm = ({
                             errors={errors}
                             errorMessage={errorMessage}
                             handleInputChange={handleInputChange}
+                            handleTextChange={handleTextChange}
                             templates={templates}
                             handleDocumentGroupChange={handleDocumentGroupChange}
+                            handleDocumentTemplateChange={handleDocumentTemplateChange}
                         />
                     ) : (
                         <DocumentNewFormUpload

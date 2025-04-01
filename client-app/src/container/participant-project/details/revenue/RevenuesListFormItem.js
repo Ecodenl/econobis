@@ -9,9 +9,6 @@ class RevenuesListFormItem extends Component {
         this.state = {
             showActionButtons: false,
             highlightLine: '',
-            revenue: {
-                ...props.revenue,
-            },
         };
     }
 
@@ -37,7 +34,7 @@ class RevenuesListFormItem extends Component {
                     showActionButtons={this.state.showActionButtons}
                     onLineEnter={this.onLineEnter}
                     onLineLeave={this.onLineLeave}
-                    revenue={this.state.revenue}
+                    revenue={this.props.revenue}
                 />
             </div>
         );

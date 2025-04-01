@@ -65,7 +65,7 @@ class HousingFileSpecificationsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={9}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(housingFileSpecification => {

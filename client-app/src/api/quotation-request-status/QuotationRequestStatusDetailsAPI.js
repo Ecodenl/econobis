@@ -2,10 +2,8 @@ import axiosInstance from '../default-setup/AxiosInstance';
 
 const URL_QUOTATION_REQUEST_STATUS = `quotation-request-status`;
 
-// todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
 const defaultFields = {
-    fld: ['id', 'name', 'usesWf', 'emailTemplateIdWf', 'numberOfDaysToSendEmail', 'order', 'mailCcToCoachWf'],
-    rlt: { emailTemplateWorkflow: [] },
+    fld: ['id', 'name', 'usesWf', 'order', 'sendEmailReminder'],
 };
 
 export default {

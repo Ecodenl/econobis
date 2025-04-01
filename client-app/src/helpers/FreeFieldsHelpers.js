@@ -45,12 +45,13 @@ export function checkFieldRecord(record) {
         //check if the value complies with the mask
         if (value != null && !validator.isEmpty('' + value) && mask != null && !validator.isEmpty('' + mask)) {
             //explode the mask
+            let valueAsString = value.toString(); //we cannot do split() on an integer
             let explodedMask = mask.split('');
-            let explodedValue = value.split('');
+            let explodedValue = valueAsString.split('');
             let i = 0;
 
             //if mask contains no ? and value and mask are not the same length we can skip all this and return false
-            if (!mask.includes('?') && mask.length != value.length) {
+            if (!mask.includes('?') && mask.length != valueAsString.length) {
                 return false;
             }
 

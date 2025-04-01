@@ -20,7 +20,6 @@ use App\Eco\ParticipantProject\ParticipantProjectPayoutType;
 use App\Eco\Project\Project;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -40,6 +39,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ParticipationProjectController extends Controller
 {
@@ -55,8 +55,16 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
-        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactOrganisationIds = $portalUser->contact->occupations
+            ->where('type_id', 'organisation')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations
+            ->where('type_id', 'person')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
         $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
         $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
@@ -90,8 +98,16 @@ class ParticipationProjectController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
-        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactOrganisationIds = $portalUser->contact->occupations
+            ->where('type_id', 'organisation')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations
+            ->where('type_id', 'person')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
         $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
         $authorizedForContact = in_array($participantProject->contact_id, $allowedContactIds);
@@ -220,7 +236,7 @@ class ParticipationProjectController extends Controller
         $emailTemplateAgreementId = $project ? $project->email_template_agreement_id : 0;
 
         $emailTemplate = EmailTemplate::find($emailTemplateAgreementId);
-        $pdf = PDF::loadView('documents.generic', [
+        $pdfContent = PDF::loadView('documents.generic', [
             'html' => $documentBody,
         ])->output();
 
@@ -243,31 +259,27 @@ class ParticipationProjectController extends Controller
         $document->participation_project_id = $participation->id;
         $document->template_id = $documentTemplate->id;
 
-        $filename = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
+        $fileName = str_replace(' ', '', $this->translateToValidCharacterSet($project->code)) . '_'
             . str_replace(' ', '', $this->translateToValidCharacterSet($contact->full_name));
-
         //max length name 25
-        $filename = substr($filename, 0, 25);
-
-        $document->filename = $filename
+        $fileName = substr($fileName, 0, 25);
+        $fileName = $fileName
             . substr($document->getDocumentGroup()->name, 0, 1)
             . (Document::where('document_group', 'registration')->count()
                 + 1) . '_' . $time->format('Ymd') . '.pdf';
+
+        $document->filename = $fileName;
         $document->save();
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR
-            . 'documents/' . $document->filename));
-        file_put_contents($filePath, $pdf);
+        $uniqueName = Str::uuid() . '.pdf';
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $pdfContent);
 
-        if(Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(Config::get('app.ALFRESCO_COOP_USERNAME'),
-                Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath,
-                $document->filename, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            $document->save();
-        }
+        $document->file_path_and_name = $filePathAndName;
+        $document->alfresco_node_id = null;
+        $document->save();
 
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
         // Voor zekerheid hierna weer even Auth user herstellen met portal user
@@ -354,11 +366,6 @@ class ParticipationProjectController extends Controller
 
             $email->send(new ParticipantReportMail($email, $fromEmail, $fromName,
                 $htmlBodyWithContactVariables, $document, $emailTemplate->default_attachment_document_id));
-        }
-
-        //delete file on server, still saved on alfresco.
-        if(Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            Storage::disk('documents')->delete($document->filename);
         }
 
     }

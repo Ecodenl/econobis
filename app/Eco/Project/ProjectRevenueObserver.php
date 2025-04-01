@@ -22,8 +22,19 @@ class ProjectRevenueObserver
 
     public function saving(ProjectRevenue $projectRevenue)
     {
-        if($projectRevenue->confirmed == 1) {
+        if($projectRevenue->isDirty('confirmed') && $projectRevenue->confirmed == 1) {
+            if($projectRevenue->status == 'concept'){
+                $projectRevenue->status = 'confirmed';
+                // Bijwerken distribution statusssen bij op definitief zetten.
+                foreach ($projectRevenue->distribution as $distribution){
+                    $distribution->status = 'confirmed';
+                    $distribution->save();
+                }
+            }
             $project = $projectRevenue->project;
+
+            // Op moment dat ProjectRevenue op Definitief wordt gezet dan project (default) date_entry op null zetten.
+            $project->date_entry = null;
 
             // Skip for revenueParticipant
             if($projectRevenue->category->code_ref == 'revenueParticipant') {

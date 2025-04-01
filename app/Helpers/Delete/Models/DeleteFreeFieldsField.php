@@ -55,6 +55,9 @@ class DeleteFreeFieldsField implements DeleteInterface
      */
     public function canDelete()
     {
+        if($this->freeFieldsField->portalFreeFieldsFields->count() == 1){
+            array_push($this->errorMessage, "Er zijn nog koppelingen in vrije velden portaal pagina.");
+        }
 
     }
 

@@ -14,7 +14,7 @@ function FreeFieldsView({ freeFieldsFieldRecords, switchToEdit }) {
                             return (
                                 <ViewText
                                     label={record.fieldName}
-                                    value={record.fieldRecordValueBoolean == true ? 'Ja' : 'Nee'}
+                                    value={Boolean(record.fieldRecordValueBoolean) ? 'Ja' : 'Nee'}
                                 />
                             );
                             break;

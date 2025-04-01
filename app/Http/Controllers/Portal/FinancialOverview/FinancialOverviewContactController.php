@@ -16,8 +16,16 @@ class FinancialOverviewContactController extends Controller
         if (!Auth::isPortalUser() || !$portalUser->contact) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
-        $allowedContactOrganisationIds = $portalUser->contact->occupations->where('type_id', 'organisation')->where('primary', true)->pluck('primary_contact_id')->toArray();
-        $allowedContactPersonIds = $portalUser->contact->occupations->where('type_id', 'person')->where('occupation_for_portal', true)->pluck('primary_contact_id')->toArray();
+        $allowedContactOrganisationIds = $portalUser->contact->occupations
+            ->where('type_id', 'organisation')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
+        $allowedContactPersonIds = $portalUser->contact->occupations
+            ->where('type_id', 'person')
+            ->where('allow_manage_in_portal', true)  // Uses the field from occupation_contact
+            ->pluck('primary_contact_id')
+            ->toArray();
         $allowedContactIds = array_merge($allowedContactOrganisationIds, $allowedContactPersonIds);
 
         $authorizedForContact = in_array($financialOverviewContact->contact_id, $allowedContactIds);
@@ -26,8 +34,7 @@ class FinancialOverviewContactController extends Controller
         }
 
         if ($financialOverviewContact->filename) {
-            $filePath = Storage::disk('administrations')
-                ->path($financialOverviewContact->filename);
+            $filePath = Storage::disk('administrations')->path($financialOverviewContact->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             header('X-Filename:' . $financialOverviewContact->name);
         } else {

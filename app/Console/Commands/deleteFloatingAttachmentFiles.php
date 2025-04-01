@@ -66,7 +66,8 @@ class deleteFloatingAttachmentFiles extends Command
     {
         $directory = 'mailbox_'.$mailbox->id.'/'.$inOfOutbox;
 
-        foreach (Storage::files('mails/' . $directory) as $filename) {
+//        foreach (Storage::files('mails/' . $directory) as $filename) {
+        foreach (Storage::disk('mail_attachments')->files($directory) as $filename) {
             $filenameInMailbox = str_replace("mails/", "", $filename);
             if(DIRECTORY_SEPARATOR == "\\"){
                 $filenameInMailbox = str_replace("/inbox/", "\\inbox\\", $filenameInMailbox);
@@ -74,7 +75,7 @@ class deleteFloatingAttachmentFiles extends Command
             }
             $checkAttachement = EmailAttachment::where('filename', $filenameInMailbox)->exists();
             if (!$checkAttachement) {
-                Storage::delete($filename);
+                Storage::disk('mail_attachments')->delete($filename);
                 Log::info("Mailbox: " . $mailbox->id . " - Directory: " . $directory . " - Filenaam: " . $filenameInMailbox . " verwijderd.");
             }
         }

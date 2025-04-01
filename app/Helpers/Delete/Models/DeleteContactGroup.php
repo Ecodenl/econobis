@@ -8,6 +8,9 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\PortalSettingsDashboard\PortalSettingsDashboardWidget;
+use App\Eco\Project\Project;
 use App\Helpers\Delete\DeleteInterface;
 use App\Helpers\Laposta\LapostaListHelper;
 use App\Helpers\Settings\PortalSettings;
@@ -59,29 +62,96 @@ class DeleteContactGroup implements DeleteInterface
      */
     public function canDelete()
     {
+        //TODO: onderstaande zaken verder nakijken
+        // contact_group_participation
+        // contact_groups_pivot
+
+
         // Group can not be deleted if it is used in portalsettings
         $defaultContactGroupMemberId = PortalSettings::get('defaultContactGroupMemberId');
         $defaultContactGroupNoMemberId = PortalSettings::get('defaultContactGroupNoMemberId');
         if($this->contactGroup->id == $defaultContactGroupMemberId || $this->contactGroup->id == $defaultContactGroupNoMemberId){
             array_push($this->errorMessage, "Deze groep wordt nog gebruikt in algemene portal instellingen.");
         }
+
+        $usedInProjects = Project::where('question_about_membership_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Ledengroep");
+        }
+
+        $usedInProjects = Project::where('member_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Contacten die keuze 1 maken toevoegen aan");
+        }
+
+        $usedInProjects = Project::where('no_member_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInProjects as $usedInProject){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in project " . $usedInProject->code . " - Contacten die keuze 2 maken toevoegen aan");
+        }
+
+        $usedInTeams = $this->contactGroup->teams()->get();
+        foreach ($usedInTeams as $usedInTeam){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in team " . $usedInTeam->name);
+        }
+
+        $usedInCooperation = cooperation::where('hoom_group_id', $this->contactGroup->id)->count();
+        if ($usedInCooperation > 0){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de cooperatie als Hoom groep");
+        }
+
+        $usedInPortalSettingsDashboardWidgets = PortalSettingsDashboardWidget::where('show_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInPortalSettingsDashboardWidgets as $usedInPortalSettingsDashboardWidget){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de dashboard widget " . $usedInPortalSettingsDashboardWidget->title . " - Zichtbaar voor groep");
+        }
+
+        $usedInPortalSettingsDashboardWidgets = PortalSettingsDashboardWidget::where('hide_group_id', $this->contactGroup->id)->get();
+        foreach ($usedInPortalSettingsDashboardWidgets as $usedInPortalSettingsDashboardWidget){
+            array_push($this->errorMessage, "Deze groep wordt nog gebruikt in de dashboard widget " . $usedInPortalSettingsDashboardWidget->title . " - Verborgen voor groep");
+        }
+
+        $isParentGroupForGroups = $this->contactGroup->contactGroups()->get();
+        foreach ($isParentGroupForGroups as $isParentGroupForGroup){
+            array_push($this->errorMessage, "Deze groep heeft nog een sub groep " . $isParentGroupForGroup->name);
+        }
+
+        $isSubGroupFromGroups = $this->contactGroup->parent_groups_array;
+        if($isSubGroupFromGroups) {
+            foreach ($isSubGroupFromGroups as $key => $value) {
+                array_push($this->errorMessage, "Deze groep is onderdeel van de volgende groep " . $value);
+            }
+        }
+
+        $isParentGroupForGroupsExcepted = $this->contactGroup->contactGroupsExcepted()->get();
+        foreach ($isParentGroupForGroupsExcepted as $isParentGroupForGroupExcepted){
+            array_push($this->errorMessage, "Deze groep heeft nog een uitgezonderde sub groep " . $isParentGroupForGroupExcepted->name);
+        }
+
+        $isSubGroupFromGroupsExcepted = $this->contactGroup->parent_groups_excepted_array;
+        if($isSubGroupFromGroupsExcepted) {
+            foreach ($isSubGroupFromGroupsExcepted as $key => $value) {
+                array_push($this->errorMessage, "Deze groep is uitgezonderd onderdeel van de volgende groep " . $value);
+            }
+        }
     }
+
 
     /** Deletes models recursive
      *
      */
     public function deleteModels()
     {
-        foreach ($this->contactGroup->tasks as $task){
-            $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
-        }
+
     }
 
     /** The relations which should be dissociated
      */
     public function dissociateRelations()
     {
+        foreach ($this->contactGroup->tasks as $task){
+            $task->contactGroup()->dissociate();
+            $task->save();
+        }
+
         foreach ($this->contactGroup->documents as $document){
             $document->contactGroup()->dissociate();
             $document->save();

@@ -3,7 +3,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import { Field, Form, Formik } from 'formik';
 import FormLabel from 'react-bootstrap/FormLabel';
-import * as Yup from 'yup';
 import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
@@ -47,6 +46,8 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -77,6 +78,13 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                                     />
                                     {/*<FormLabel className={'field-label'}>Omschrijving</FormLabel>*/}
                                     {/*{initialQuotationRequest.quotationText}*/}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"

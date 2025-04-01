@@ -47,10 +47,10 @@ export const setPhoneNumberFilter = phoneNumber => ({
 });
 
 // SET_IBAN_FILTER
-export const setIbanFilter = iban => ({
-    type: 'SET_IBAN_FILTER',
-    iban,
-});
+// export const setIbanFilter = iban => ({
+//     type: 'SET_IBAN_FILTER',
+//     iban,
+// });
 
 // SET_VAT_NUMBER_FILTER
 export const setVatNumberFilter = vatNumber => ({

@@ -27,6 +27,7 @@ class Cooperation extends Model
         'deleted_at' => 'date',
         'require_two_factor_authentication' => 'bool',
         'create_contacts_for_report_table' => 'bool',
+        'use_dongle_registration' => 'bool',
     ];
 
     protected $encryptable = [
@@ -56,6 +57,11 @@ class Cooperation extends Model
     public function emailTemplate()
     {
         return $this->belongsTo(EmailTemplate::class, 'hoom_email_template_id');
+    }
+
+    public function hoomMailbox()
+    {
+        return $this->belongsTo(Mailbox::class, 'hoom_mailbox_id');
     }
 
     // todo WM: opschonen inspection* velden

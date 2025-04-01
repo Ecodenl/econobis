@@ -20,6 +20,7 @@ class ProjectResourceForParticipation extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 'typeCodeRef' => $this->projectType->code_ref,
+                'loanTypeCodeRef' => $this->projectLoanType ? $this->projectLoanType->code_ref : null,
                 'administrationId' => $this->administration ? $this->administration->id : null,
                 'administrationName' => $this->administration ? $this->administration->name : null,
                 'dateEntry' => $this->date_entry,

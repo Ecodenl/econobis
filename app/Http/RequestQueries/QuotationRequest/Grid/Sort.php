@@ -49,4 +49,11 @@ class Sort extends RequestSort
         'measure' => 'measure',
         'campaign' => 'campaign',
     ];
+
+    protected function applyAddressSort($query, $data)
+    {
+        $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
 }

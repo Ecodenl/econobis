@@ -39,6 +39,7 @@ class StoreConceptEmail
             $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
         }
         $email->subject = !empty($subject) ? $subject : 'Econobis';
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
 
         $email->mailbox_id = $this->mailbox->id;
         $email->from = $this->mailbox->email;

@@ -33,6 +33,11 @@ const QuotationRequestsListToolbar = props => {
                                         Budgetaanvraag selectie maken
                                     </a>
                                 </li>
+                                <li>
+                                    <a onClick={() => props.setOpportunityActionType('redirection')}>
+                                        Doorverwijzing selectie maken
+                                    </a>
+                                </li>
                             </ul>
                         </>
                     ) : (

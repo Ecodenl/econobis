@@ -28,6 +28,20 @@ class ContactsListExtraFilters extends Component {
                     name: 'Ja',
                 },
             ],
+            allNoYesOptions: [
+                {
+                    id: 0,
+                    name: '--Willekeurige waarde--',
+                },
+                {
+                    id: 1,
+                    name: 'Nee',
+                },
+                {
+                    id: 2,
+                    name: 'Ja',
+                },
+            ],
         };
 
         this.fetchFilterFreeFieldsFieldsContact();
@@ -78,7 +92,8 @@ class ContactsListExtraFilters extends Component {
             filters[filterNumber].field === 'intakeMeasureCategory' ||
             filters[filterNumber].field === 'housingFileFieldName' ||
             filters[filterNumber].field === 'contactFreeFieldsFieldName' ||
-            filters[filterNumber].field === 'addressFreeFieldsFieldName'
+            filters[filterNumber].field === 'addressFreeFieldsFieldName' ||
+            filters[filterNumber].field === 'addressDongleTypeReadOut'
         ) {
             filters = filters.filter(filter => filter.connectedTo !== filters[filterNumber].connectName);
             delete filters[filterNumber].connectName;
@@ -230,6 +245,43 @@ class ContactsListExtraFilters extends Component {
                 data: '',
                 connectedTo: data + filterNumber,
                 freeFieldFormatType: '',
+            });
+
+            amountOfFilters = filters.length;
+        } else if (data === 'addressDongleTypeReadOut') {
+            filters[filterNumber] = {
+                field: 'addressDongleTypeReadOut',
+                type: 'eq',
+                data: '',
+                connectName: data + filterNumber,
+            };
+
+            filters.splice(filterNumber + 1, 0, {
+                field: 'addressDongleTypeDongle',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 2, 0, {
+                field: 'addressDongleDateStart',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 3, 0, {
+                field: 'addressDongleDateEnd',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
+            });
+
+            filters.splice(filterNumber + 4, 0, {
+                field: 'addressDongleHasEnergyId',
+                type: 'eq',
+                data: '',
+                connectedTo: data + filterNumber,
             });
 
             amountOfFilters = filters.length;
@@ -390,30 +442,36 @@ class ContactsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'numberOrString',
             },
+            sharedArea: {
+                name: 'Buurt',
+                type: 'searchWithAsync',
+            },
+            city: {
+                name: 'Woonplaats',
+                type: 'stringWithoutNull',
+            },
             country: {
                 name: 'Land',
                 type: 'dropdown',
                 dropDownOptions: this.props.countries,
             },
+            hasEmailAddress: {
+                name: 'Heeft emailadres',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            hasPhoneNumber: {
+                name: 'Heeft telefoonnummer',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            dateOfBirth: {
+                name: 'Geboortedatum',
+                type: 'date',
+            },
             createdAt: {
                 name: 'Gemaakt op',
                 type: 'date',
-            },
-            currentObligations: {
-                name: 'Huidig aantal obligaties',
-                type: 'number',
-            },
-            currentParticipations: {
-                name: 'Huidig aantal participaties',
-                type: 'number',
-            },
-            currentPostalcodeLinkCapital: {
-                name: 'Huidig aantal postcoderoos',
-                type: 'number',
-            },
-            currentLoan: {
-                name: 'Huidig bedrag lening',
-                type: 'number',
             },
             staticContactGroup: {
                 name: 'Statische groep',
@@ -435,6 +493,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.campaigns,
             },
+            intakeMeasureCategory: {
+                name: 'Intake interesse',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.measureCategories,
+            },
             opportunityMeasureCategory: {
                 name: 'Kans maatregel categorie',
                 type: 'dropdownHas',
@@ -450,40 +513,6 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.quotationRequestStatus,
             },
-            intakeMeasureCategory: {
-                name: 'Intake interesse',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.measureCategories,
-            },
-            product: {
-                name: 'Product',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.products,
-            },
-            dateOfBirth: {
-                name: 'Geboortedatum',
-                type: 'date',
-            },
-            energySupplier: {
-                name: 'Huidige Energie leverancier',
-                type: 'dropdown',
-                dropDownOptions: this.props.energySuppliers,
-            },
-            energySupplierType: {
-                name: 'Type huidige energie leverancier',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.energySupplierTypes,
-            },
-            didAgreeAvg: {
-                name: 'Akkoord privacybeleid',
-                type: 'boolean',
-                dropDownOptions: this.state.yesNoOptions,
-            },
-            portalUser: {
-                name: 'Portal gebruiker actief',
-                type: 'boolean',
-                dropDownOptions: this.state.yesNoOptions,
-            },
             housingFileExists: {
                 name: 'Woningdossier aanwezig',
                 type: 'boolean',
@@ -493,6 +522,11 @@ class ContactsListExtraFilters extends Component {
                 name: 'Woningdossier kenmerk',
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
+            },
+            hoomdossierExists: {
+                name: 'Hoomdossier aangemaakt',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
             },
             contactFreeFieldsFieldName: {
                 name: 'Vrij veld contact',
@@ -504,19 +538,56 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownFreeFieldsFields',
                 dropDownOptions: this.state.addressFreeFieldsFields ? this.state.addressFreeFieldsFields : [],
             },
+            product: {
+                name: 'Product',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.products,
+            },
+            energySupplier: {
+                name: 'Huidige Energie leverancier',
+                type: 'dropdown',
+                dropDownOptions: this.props.energySuppliers,
+            },
+            energySupplierType: {
+                name: 'Type huidige energie leverancier',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.energySupplierTypes,
+            },
+            currentObligations: {
+                name: 'Huidig aantal obligaties',
+                type: 'number',
+            },
+            currentParticipations: {
+                name: 'Huidig aantal participaties',
+                type: 'number',
+            },
+            currentPostalcodeLinkCapital: {
+                name: 'Huidig aantal postcoderoos',
+                type: 'number',
+            },
+            currentLoan: {
+                name: 'Huidig bedrag lening',
+                type: 'number',
+            },
+            portalUser: {
+                name: 'Portal gebruiker actief',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.inspectionPersonTypes,
             },
-            sharedArea: {
-                name: 'Buurt',
-                type: 'searchWithAsync',
-            },
-            hoomdossierExists: {
-                name: 'Hoomdossier aangemaakt',
+            didAgreeAvg: {
+                name: 'Akkoord privacybeleid',
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
+            },
+            addressDongleTypeReadOut: {
+                name: 'Dongel type uitlezing',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.typesReadOut,
             },
         };
 
@@ -600,6 +671,28 @@ class ContactsListExtraFilters extends Component {
             },
         };
 
+        // Options only if product is set
+        const customAddressDongleTypeReadOutFields = {
+            addressDongleTypeDongle: {
+                name: 'Type dongel',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.typesDongle,
+            },
+            addressDongleDateStart: {
+                name: 'Start datum',
+                type: 'date',
+            },
+            addressDongleDateEnd: {
+                name: 'Eind datum',
+                type: 'date',
+            },
+            addressDongleHasEnergyId: {
+                name: 'Heeft energie ID koppeling',
+                type: 'allNoYes',
+                dropDownOptions: this.state.allNoYesOptions,
+            },
+        };
+
         return (
             <Modal
                 title="Extra filters"
@@ -668,6 +761,7 @@ class ContactsListExtraFilters extends Component {
                                             ...customHousingFileFields,
                                             ...customContactFreeFieldsFields,
                                             ...customAddressFreeFieldsFields,
+                                            ...customAddressDongleTypeReadOutFields,
                                         }}
                                         handleFilterFieldChange={this.handleFilterFieldChange}
                                         deleteFilterRow={this.deleteFilterRow}
@@ -707,6 +801,8 @@ const mapStateToProps = state => {
         quotationRequestStatus: state.systemData.quotationRequestStatus,
         inspectionPersonTypes: state.systemData.inspectionPersonTypes,
         housingFileHoomLinks: state.systemData.housingFileHoomLinks,
+        typesReadOut: state.systemData.dongleTypeReadOuts,
+        typesDongle: state.systemData.dongleTypeDongles,
     };
 };
 

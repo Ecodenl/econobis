@@ -93,27 +93,10 @@ class RevenueNewApp extends Component {
 
             let revenue = this.state.revenue;
 
-            // if (category.codeRef === 'redemptionEuro') {
-            //     const payoutTypeId = this.props.participantProjectPayoutTypes.find(
-            //         participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
-            //     ).id;
-            //     revenue.payoutTypeId = payoutTypeId;
-            //     revenue.distributionTypeId = 'inPossessionOf';
-            // } else if (payload.projectType.codeRef !== 'loan') {
-            //     revenue.distributionTypeId = 'inPossessionOf';
-            // } else if (payload.projectType.codeRef === 'obligation') {
-            //     const payoutTypeId = this.props.participantProjectPayoutTypes.find(
-            //         participantProjectPayoutType => participantProjectPayoutType.codeRef === 'account'
-            //     ).id;
-            //     revenue.payoutTypeId = payoutTypeId;
-            // }
-
-            // set distributionTypeId to 'inPossessionOf' if 'redemptionEuro'
-            if (category.codeRef === 'redemptionEuro') {
-                revenue.distributionTypeId = 'inPossessionOf';
-            }
-            // set distributionTypeId default to 'inPossessionOf' if not 'redemptionEuro' and not 'loan' (distribution type for 'revenueEuro' and 'loan' is always set per participationProject)
-            if (category.codeRef !== 'redemptionEuro' && payload.projectType.codeRef !== 'loan') {
+            // set distributionTypeId default to 'howLongInPossession' if 'revenueEuro' and 'loan'
+            if (category.codeRef === 'revenueEuro' && payload.projectType.codeRef === 'loan') {
+                revenue.distributionTypeId = 'howLongInPossession';
+            } else {
                 revenue.distributionTypeId = 'inPossessionOf';
             }
 
@@ -248,6 +231,14 @@ class RevenueNewApp extends Component {
         const category = this.props.projectRevenueCategories.find(
             projectRevenueCategorie => projectRevenueCategorie.id == revenue.categoryId
         );
+
+        // Indien lening en type lineair, dan datereference gelijk aan begindatum zetten
+        if (
+            this.state.project.projectType.codeRef === 'loan' &&
+            this.state.project.projectLoanType.codeRef === 'lineair'
+        ) {
+            revenue.dateReference = revenue.dateBegin;
+        }
 
         let errors = {};
         let errorMessage = {};

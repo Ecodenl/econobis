@@ -78,6 +78,7 @@ class SendSingleMail
         $email = $this->email->fresh(); // We don't want any side effects on the original email object
 
         $email->subject = $this->getNewSubject($email->subject);
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->html_body = $this->getNewHtmlBody($email->html_body);
 
         return $email;

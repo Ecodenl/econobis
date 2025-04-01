@@ -34,6 +34,8 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -64,6 +66,13 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -97,7 +106,7 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -105,7 +114,7 @@ function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, h
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 readOnly={true}
                                             />
                                         )}

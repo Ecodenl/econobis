@@ -291,16 +291,18 @@ const AdministrationDetailsFormGeneralView = props => {
                                 />
                             </div>
                             <div className="row">
-                                <ViewText
-                                    label={'Synchroniseer betalingen vanaf'}
-                                    value={
-                                        dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''
-                                    }
-                                    name={'dateSyncTwinfieldPayments'}
-                                    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op
-                                        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog
-                                        niet betaalde nota.`}
-                                />
+                                {/*todo WM: opschonen*/}
+                                {/*<ViewText*/}
+                                {/*    label={'Synchroniseer betalingen vanaf'}*/}
+                                {/*    value={*/}
+                                {/*        dateSyncTwinfieldPayments ? moment(dateSyncTwinfieldPayments).format('L') : ''*/}
+                                {/*    }*/}
+                                {/*    name={'dateSyncTwinfieldPayments'}*/}
+                                {/*    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op*/}
+                                {/*        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog*/}
+                                {/*        niet betaalde nota.`}*/}
+                                {/*/>*/}
+                                <div className={'col-sm-6'} />
                                 <ViewText
                                     label={'Oudste nota datum met status niet betaald'}
                                     value={oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''}

@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\AdministrationPolicy;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDonglePolicy;
 use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
-use App\Eco\FreeFields\FreeFieldsField;
-use App\Eco\FreeFields\FreeFieldsPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
 use App\Eco\Contact\Contact;
@@ -32,6 +32,8 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplatePolicy;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewPolicy;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\HousingFile\HousingFileLog;
@@ -123,6 +125,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Organisation::class => OrganisationPolicy::class,
         Address::class => AddressPolicy::class,
+        AddressDongle::class => AddressDonglePolicy::class,
         AddressEnergySupplier::class => AddressEnergySupplierPolicy::class,
         Contact::class => ContactPolicy::class,
         ContactNote::class => ContactNotePolicy::class,

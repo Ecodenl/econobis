@@ -126,8 +126,10 @@ class MutationFormNew extends Component {
         const status = this.props.participantMutationStatuses.find(
             participantMutationStatus => participantMutationStatus.id == participationMutation.statusId
         );
-        const statusCodeRef = status ? status.codeRef : null;
+        const participationsDefinitive = this.props.participationsDefinitive;
+        const amountDefinitive = this.props.amountDefinitive;
 
+        const statusCodeRef = status ? status.codeRef : null;
         const projectTypeCodeRef = this.props.project ? this.props.project.typeCodeRef : null;
 
         const validatedForm = MutationNewValidateForm(
@@ -137,7 +139,9 @@ class MutationFormNew extends Component {
             hasErrors,
             statusCodeRef,
             mutationTypeCodeRef,
-            projectTypeCodeRef
+            projectTypeCodeRef,
+            participationsDefinitive,
+            amountDefinitive
         );
 
         this.setState({ ...this.state, errors: validatedForm.errors, errorMessage: validatedForm.errorMessage });
@@ -188,6 +192,9 @@ class MutationFormNew extends Component {
             participantMutationStatuses,
             participantBelongsToMembershipGroup,
             participantChoiceMembership,
+            hasLoanFirstDeposit,
+            participationsDefinitive,
+            amountDefinitive,
         } = this.props;
 
         const {
@@ -212,12 +219,30 @@ class MutationFormNew extends Component {
         );
         const statusCodeRef = status ? status.codeRef : null;
 
-        const participantMutationTypesOptions = participantMutationTypes.filter(
-            participantMutationType =>
-                participantMutationType.codeRef === 'first_deposit' ||
-                participantMutationType.codeRef === 'deposit' ||
-                participantMutationType.codeRef === 'withDrawal'
-        );
+        // const participantMutationTypesOptions = participantMutationTypes.filter(
+        //     participantMutationType =>
+        //         participantMutationType.codeRef === 'first_deposit' ||
+        //         participantMutationType.codeRef === 'deposit' ||
+        //         participantMutationType.codeRef === 'withDrawal'
+        // );
+
+        const participantMutationTypesOptions = participantMutationTypes.filter(participantMutationType => {
+            if (projectTypeCodeRef === 'loan') {
+                if (hasLoanFirstDeposit === null) {
+                    return participantMutationType.codeRef === 'first_deposit';
+                } else if (hasLoanFirstDeposit === 'final') {
+                    return (
+                        participantMutationType.codeRef === 'deposit' ||
+                        participantMutationType.codeRef === 'withDrawal'
+                    );
+                }
+            } else {
+                return (
+                    participantMutationType.codeRef === 'first_deposit' ||
+                    participantMutationType.codeRef === 'withDrawal'
+                );
+            }
+        });
 
         const { amountInterest, amountOption, amountGranted, amountFinal } = this.state.participationMutation;
 
@@ -368,6 +393,8 @@ class MutationFormNew extends Component {
                                     handleInputChangeDate={this.handleInputChangeDate}
                                     projectTypeCodeRef={projectTypeCodeRef}
                                     projectDateInterestBearingKwh={projectDateInterestBearingKwh}
+                                    participationsDefinitive={participationsDefinitive}
+                                    amountDefinitive={amountDefinitive}
                                 />
                             ) : null}
 
@@ -416,6 +443,9 @@ const mapStateToProps = state => {
         participantMutationTypes: state.systemData.participantMutationTypes,
         participantMutationStatuses: state.systemData.participantMutationStatuses,
         id: state.participantProjectDetails.id,
+        hasLoanFirstDeposit: state.participantProjectDetails?.hasLoanFirstDeposit,
+        participationsDefinitive: state.participantProjectDetails?.participationsDefinitive,
+        amountDefinitive: state.participantProjectDetails?.amountDefinitive,
         project: state.participantProjectDetails.project,
         participantBelongsToMembershipGroup: state.participantProjectDetails.participantBelongsToMembershipGroup,
         participantChoiceMembership: state.participantProjectDetails.participantChoiceMembership,

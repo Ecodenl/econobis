@@ -42,6 +42,12 @@ class PortalUserController extends ApiController
         if($contact)
         {
             $this->authorize('delete', $portalUser);
+
+            foreach ($portalUser->documentsCreated as $document){
+                $document->createdByPortalUser()->dissociate();
+                $document->save();
+            }
+
             $portalUser->delete();
 
             $contact->portal_registration_code = Str::random(32);

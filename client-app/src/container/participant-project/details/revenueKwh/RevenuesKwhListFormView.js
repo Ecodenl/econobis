@@ -16,10 +16,33 @@ const RevenuesKwhListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
-    const { id, confirmed, dateBegin, dateEnd, status } = revenueKwhDetails;
+    const { revenueId, dateBegin, dateEnd, status, statusRevenue } = revenueKwhDetails;
 
-    const statusText = status => {
+    const statusName = status => {
         switch (status) {
+            case 'new':
+                return 'Nieuw';
+            case 'concept':
+                return 'Concept';
+            case 'concept-to-update':
+                return 'Concept (bijwerken noodzakelijk)';
+            case 'confirmed':
+                return 'Definitief';
+            case 'in-progress':
+                return 'Bezig...';
+            case 'in-progress-update':
+                return 'Bezig met bijwerken...';
+            case 'in-progress-report':
+                return 'Bezig met rapportage...';
+            case 'in-progress-process':
+                return 'Bezig met verdelen...';
+            case 'processed':
+                return 'Verwerkt';
+        }
+        return '';
+    };
+    const statusRevenueName = statusRevenue => {
+        switch (statusRevenue) {
             case 'new':
                 return 'Nieuw';
             case 'concept':
@@ -55,10 +78,11 @@ const RevenuesKwhListFormView = ({
                 {' t/m '}
                 {dateEnd ? moment(dateEnd).format('L') : 'onbekend'}
             </div>
-            <div className="col-sm-2">{status ? statusText(status) : ''}</div>
+            <div className="col-sm-1">{statusName(status)}</div>
+            <div className="col-sm-1">{statusRevenueName(statusRevenue)}</div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.menuProjects ? (
-                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst-kwh/${id}`)}>
+                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst-kwh/${revenueId}`)}>
                         <Icon className="mybtn-success" size={14} icon={eye} />
                     </a>
                 ) : (

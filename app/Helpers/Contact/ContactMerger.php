@@ -5,6 +5,7 @@ namespace App\Helpers\Contact;
 use App\Eco\Address\Address;
 use App\Eco\Contact\Contact;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ContactMerger
 {
@@ -69,7 +70,30 @@ class ContactMerger
         if ($toGroupInspectionPersontype && $fromGroupInspectionPersontype && $toGroupInspectionPersontype->inspection_person_type_id !== $fromGroupInspectionPersontype->inspection_person_type_id) {
             throw new ContactMergeException('Contacten hebben beide een verschillende rol in "rol in buurtaanpak", een contact mag maar één unieke rol hebben.');
         }
+
+        $toFreeFieldsFieldRecords = $this->toContact->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $this->fromContact->freeFieldsFieldRecords;
+        foreach ($fromFreeFieldsFieldRecords as $fromRecord) {
+            // Find matching record in $toFreeFieldsFieldRecords by field_id
+            $toRecord = $toFreeFieldsFieldRecords->firstWhere('field_id', $fromRecord->field_id);
+
+            if ($toRecord) {
+                // Get the format type based on the field_id
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
+
+                // Determine which field to check for conflicts based on the format_type
+                $fromValue = $this->getFieldValue($fromRecord, $formatType);
+                $toValue = $this->getFieldValue($toRecord, $formatType);
+
+                // Check for conflicts if both values are set and not equal
+                if (!is_null($fromValue) && !is_null($toValue) && $fromValue !== $toValue) {
+                    throw new ContactMergeException("Contacten hebben een verschil in vrije veld waarde {$fromRecord->freeFieldsField->field_name}");
+                }
+
+            }
+        }
     }
+
 
     private function doMerge()
     {
@@ -84,6 +108,7 @@ class ContactMerger
             $this->mergeOrganisation();
         }
 
+        $this->mergeFreeFieldsContact();
         $this->mergeAddresses();
         $this->mergePhoneNumbers();
         $this->mergeGenericBelongsToManyRelation('emails');
@@ -208,6 +233,14 @@ class ContactMerger
         $fromOrganisation->delete();
     }
 
+    private function mergeFreeFieldsContact()
+    {
+        $toFreeFieldsFieldRecords = $this->toContact->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $this->fromContact->freeFieldsFieldRecords;
+
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'contacts');
+    }
+
     private function mergeAddresses()
     {
         $contactAlreadyHasPrimaryAddress = $this->toContact->primaryAddress()->exists();
@@ -215,6 +248,7 @@ class ContactMerger
         foreach ($this->fromContact->addresses as $address) {
             $existingAddress = $this->toContact->addresses->where('postal_code', $address->postal_code)
                 ->where('number', $address->number)
+                ->where('addition', $address->addition)
                 ->first();
 
             if ($existingAddress) {
@@ -244,6 +278,8 @@ class ContactMerger
          * Gegevens van ene adres overzetten naar andere, en het oude adres verwijderen.
          * (tabel housing_file_measure_taken heeft ook address_id maar lijkt niet te worden gebruikt)
          */
+
+        $this->mergeFreeFieldsAddress($toAddress, $fromAddress );
         foreach ($fromAddress->intakes as $intake) {
             $intake->address_id = $toAddress->id;
             $intake->save();
@@ -265,6 +301,11 @@ class ContactMerger
             $addressEnergySupplier->save();
         }
 
+        foreach ($fromAddress->addressDongles as $addressDongle) {
+            $addressDongle->address_id = $toAddress->id;
+            $addressDongle->save();
+        }
+
         foreach ($fromAddress->addressEnergyConsumptionGasPeriods as $addressEnergyConsumptionGasPeriod) {
             $addressEnergyConsumptionGasPeriod->address_id = $toAddress->id;
             $addressEnergyConsumptionGasPeriod->save();
@@ -275,7 +316,19 @@ class ContactMerger
             $addressEnergyConsumptionElectricityPeriod->save();
         }
 
+        //todo WM: hier nog mergen van free fields
+//        foreach ($fromAddress->freeFieldsFieldRecords as $freeFieldsFieldRecord) {
+//        }
+
         $fromAddress->delete();
+    }
+
+    private function mergeFreeFieldsAddress(Address $toAddress, Address $fromAddress)
+    {
+        $toFreeFieldsFieldRecords = $toAddress->freeFieldsFieldRecords;
+        $fromFreeFieldsFieldRecords = $fromAddress->freeFieldsFieldRecords;
+
+        $this->mergeFreeFieldsRecords($fromFreeFieldsFieldRecords, $toFreeFieldsFieldRecords, 'addresses');
     }
 
     private function mergeGenericHasManyRelation(string $relationName)
@@ -379,6 +432,96 @@ class ContactMerger
                 // In dat geval verwijderen we het record, aangezien deze toch dubbel is.
                 $occupationContact->delete();
             }
+        }
+    }
+
+    /**
+     * @param mixed $fromFreeFieldsFieldRecords
+     * @param mixed $toFreeFieldsFieldRecords
+     * @return void
+     */
+    private function mergeFreeFieldsRecords(mixed $fromFreeFieldsFieldRecords, mixed $toFreeFieldsFieldRecords, string $tableName): void
+    {
+        foreach ($fromFreeFieldsFieldRecords as $fromRecord) {
+            // Find matching record in $toFreeFieldsFieldRecords by field_id
+            $toRecord = $toFreeFieldsFieldRecords->firstWhere('field_id', $fromRecord->field_id);
+
+            if ($toRecord) {
+                // Get the format type based on the field_id
+                $formatType = $fromRecord->freeFieldsField->freeFieldsFieldFormat->format_type;
+
+                // Determine which field to check for conflicts based on the format_type
+                $fromValue = $this->getFieldValue($fromRecord, $formatType);
+                $toValue = $this->getFieldValue($toRecord, $formatType);
+
+                // Check for conflicts if both values are set and not equal, if so, than keep value of toRecord.
+                if (!is_null($fromValue) && !is_null($toValue) && $fromValue !== $toValue) {
+                    Log::info("Skipping conflict in free field ({$tableName}) with from table_record_id {$fromRecord->table_record_id} and field_id {$fromRecord->field_id}. Keeping to table_record_id {$toRecord->table_record_id} value: {$toValue}");
+                    continue;
+                }
+                // Update $toRecord if it exists and the value is empty
+                if (is_null($toValue) && !is_null($fromValue)) {
+                    $this->setFieldValue($toRecord, $formatType, $fromValue);
+                    $toRecord->save();
+                }
+            } else {
+                // Add the $fromRecord to $toFreeFieldsFieldRecords if field_id doesn't exist
+                $newRecord = $fromRecord->replicate();
+                $newRecord->table_record_id = $this->toContact->id; // Link to the new contact ID
+                $newRecord->save();
+
+                // Add the new record to the collection
+                $toFreeFieldsFieldRecords->push($newRecord);
+            }
+            $fromRecord->delete();
+        }
+    }
+    private function getFieldValue($record, $formatType)
+    {
+        switch ($formatType) {
+            case 'boolean':
+                // Convert integers 0 and 1 to booleans; return null for other values
+                if ($record->field_value_boolean === 0 || $record->field_value_boolean === 1) {
+                    return (bool) $record->field_value_boolean;
+                }
+                return null; // Return null if the value is not 0 or 1
+            case 'text_short':
+            case 'text_long':
+                return $record->field_value_text ?: null;
+            case 'int':
+                return $record->field_value_int ?: null;
+            case 'double_2_dec':
+            case 'amount_euro':
+                return $record->field_value_double ?: null;
+            case 'date':
+            case 'datetime':
+                return $record->field_value_datetime ?: null;
+            default:
+                return null;
+        }
+    }
+
+    private function setFieldValue($record, $formatType, $value)
+    {
+        switch ($formatType) {
+            case 'boolean':
+                $record->field_value_boolean = $value;
+                break;
+            case 'text_short':
+            case 'text_long':
+                $record->field_value_text = $value;
+                break;
+            case 'int':
+                $record->field_value_int = $value;
+                break;
+            case 'double_2_dec':
+            case 'amount_euro':
+                $record->field_value_double = $value;
+                break;
+            case 'date':
+            case 'datetime':
+                $record->field_value_datetime = $value;
+                break;
         }
     }
 }

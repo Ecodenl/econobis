@@ -22,6 +22,7 @@ import ContactListAddAreaToExtraFilter from '../../container/contact/list/Contac
 import DataTableCustomFilterSelectDropdownFreeFieldsFields from './DataTableCustomFilterSelectDropdownFreeFieldsFields';
 import DataTableCustomFilterSelectFreeFieldsField from './DataTableCustomFilterSelectFreeFieldsField';
 import DataTableFreeFieldsFieldFilter from './DataTableFreeFieldsFieldFilter';
+import DataTableCustomFilterSelectAllNoYes from './DataTableCustomFilterSelectAllNoYes';
 
 moment.locale('nl');
 
@@ -66,6 +67,14 @@ const DataTableCustomFilter = props => {
         if (key === 'housingFileFieldValue') return;
         if (key === 'contactFreeFieldsFieldValue') return;
         if (key === 'addressFreeFieldsFieldValue') return;
+        if (
+            key === 'addressDongleTypeDongle' ||
+            key === 'addressDongleDateStart' ||
+            key === 'addressDongleDateEnd' ||
+            key === 'addressDongleHasEnergyId'
+        )
+            return;
+
         if (props.contactType === 'organisation' && key === 'portalUser') return;
 
         return (
@@ -85,6 +94,12 @@ const DataTableCustomFilter = props => {
     const isCustomHousingFileField = field === 'housingFileFieldValue';
     const isCustomContactFreeFieldsField = field === 'contactFreeFieldsFieldValue';
     const isCustomAddressFreeFieldsField = field === 'addressFreeFieldsFieldValue';
+    const isCustomAddressDongleTypeReadOutField =
+        field === 'addressDongleTypeDongle' ||
+        field === 'addressDongleDateStart' ||
+        field === 'addressDongleDateEnd' ||
+        field === 'addressDongleHasEnergyId';
+
     const fieldType = props.fields[props.filter.field].type;
     const optionName = props.fields[props.filter.field].optionName
         ? props.fields[props.filter.field].optionName
@@ -117,7 +132,8 @@ const DataTableCustomFilter = props => {
                 isCustomIntakeField ||
                 isCustomHousingFileField ||
                 isCustomContactFreeFieldsField ||
-                isCustomAddressFreeFieldsField ? (
+                isCustomAddressFreeFieldsField ||
+                isCustomAddressDongleTypeReadOutField ? (
                     <select disabled={true} className="form-control input-sm" name={'field'} value={field}>
                         <option key={0} value={field}>
                             {fields[field].name}
@@ -166,6 +182,13 @@ const DataTableCustomFilter = props => {
                 )}
                 {fieldType === 'boolean' && (
                     <DataTableCustomFilterSelectBoolean
+                        handleInputChange={handleInputChange}
+                        type={type}
+                        readOnly={props.filter.readOnly}
+                    />
+                )}
+                {fieldType === 'allNoYes' && (
+                    <DataTableCustomFilterSelectAllNoYes
                         handleInputChange={handleInputChange}
                         type={type}
                         readOnly={props.filter.readOnly}
@@ -277,7 +300,7 @@ const DataTableCustomFilter = props => {
                                     })}
                                 </select>
                             )}
-                            {fieldType === 'boolean' && (
+                            {(fieldType === 'boolean' || fieldType === 'allNoYes') && (
                                 <select
                                     className={`form-control input-sm`}
                                     id="data"
@@ -404,6 +427,7 @@ const DataTableCustomFilter = props => {
             isCustomHousingFileField ||
             isCustomContactFreeFieldsField ||
             isCustomAddressFreeFieldsField ||
+            isCustomAddressDongleTypeReadOutField ||
             props.filter.readOnly ? (
                 <td />
             ) : (

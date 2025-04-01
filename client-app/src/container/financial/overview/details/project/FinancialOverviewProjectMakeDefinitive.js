@@ -1,6 +1,7 @@
 import React from 'react';
 
 import Modal from '../../../../../components/modal/Modal';
+import moment from 'moment';
 
 const FinancialOverviewProjectMakeDefinitive = props => {
     let allowMakeDefinitive = false;
@@ -21,6 +22,17 @@ const FinancialOverviewProjectMakeDefinitive = props => {
                 Maak project <strong> {`${props.financialOverviewProject.projectName}`} </strong> definitief in
                 waardestaat.
             </p>
+            {props.financialOverviewProject.projectDateEntry !== null ? (
+                <p className={'text-danger'}>
+                    <strong>
+                        Standaard ingangsdatum mutaties (
+                        {moment(props.financialOverviewProject.projectDateEntry).format('DD-MM-YYYY')}) bij dit project
+                        zal komen te vervallen.
+                    </strong>
+                    <br />
+                </p>
+            ) : null}
+
             {props.totalFinancialOverviewProjectsInProgress === 0 &&
             props.totalFinancialOverviewProjectsConcept === 1 ? (
                 <p className={'text-danger'}>

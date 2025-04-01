@@ -510,6 +510,7 @@ class EmailController extends Controller
             ->get();
 
         $email->fill($data);
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
 
         $email->inlineImagesService()->convertInlineImagesToCid();
 
@@ -575,12 +576,15 @@ class EmailController extends Controller
 
         $folder = $request->input('folder');
 
-        if($folder != 'inbox' && $folder != 'sent' && $folder != 'removed'){
+        if($folder != 'inbox' && $folder != 'concept' && $folder != 'sent' && $folder != 'removed'){
             abort(406, 'Map niet toegestaan.');
         }
         if($folder == 'removed'){
             $email->removedBy()->associate(Auth::user());
             $email->date_removed = new Carbon();
+            $email->to = $email->getToRecipients()->getEmailAdresses()->toArray();
+            $email->cc = $email->getCcRecipients()->getEmailAdresses()->toArray();
+            $email->bcc = $email->getBccRecipients()->getEmailAdresses()->toArray();
         }
         if($folder != 'removed'){
             $email->removedBy()->dissociate();

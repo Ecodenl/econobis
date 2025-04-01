@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -44,7 +45,7 @@ class DocumentController extends Controller
     public function peek(){
         $this->authorize('view', Document::class);
 
-        $documents = Document::select('id', 'filename');
+        $documents = Document::select('id', 'filename', 'created_at');
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
         if($teamDocumentCreatedFromIds){
             $documents->whereIn('document_created_from_id', $teamDocumentCreatedFromIds);
@@ -58,7 +59,7 @@ class DocumentController extends Controller
 
         }
 
-        return $documents->get();
+        return $documents->orderByDesc('created_at')->get();
     }
 
     public function defaultEmailDocumentsPeek(){
@@ -70,7 +71,30 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
-        $document->load('administration', 'task', 'order', 'contact', 'intake', 'contactGroup', 'sentBy', 'createdBy', 'documentCreatedFrom', 'template', 'opportunity.measureCategory', 'opportunity.status', 'project', 'participant.contact', 'participant.project');
+        $document->load(
+            'administration',
+            'task',
+            'order',
+            'administration',
+            'contact',
+            'intake',
+            'contactGroup',
+            'opportunity',
+            'quotationRequest',
+            'housingFile',
+            'campaign',
+            'measure',
+            'sentBy',
+            'createdBy',
+            'documentCreatedFrom',
+            'template',
+            'opportunity.measureCategory',
+            'opportunity.status',
+            'order',
+            'project',
+            'participant',
+            'participant.contact',
+            'participant.project');
 
         return FullDocument::make($document);
     }
@@ -85,6 +109,8 @@ class DocumentController extends Controller
             ->string('documentType')->validate('required')->alias('document_type')->next()
             ->string('documentGroup')->validate('required')->alias('document_group')->next()
             ->string('filename')->next()
+            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
+            ->string('htmlBody')->whenMissing(null)->onEmpty(null)->alias('html_body')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
@@ -92,7 +118,6 @@ class DocumentController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
-            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
@@ -115,8 +140,7 @@ class DocumentController extends Controller
 
         if($data['document_type'] == 'internal'){
 
-            $pdf = $this->create($document);
-
+            $pdfContent = $this->create($document);
             $time = Carbon::now();
 
             $name = '';
@@ -136,52 +160,42 @@ class DocumentController extends Controller
             //max length name 25
             $name = substr($name, 0, 25);
 
-            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', $document->getDocumentGroup())->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+            $fileName = $name
+                . substr($document->getDocumentGroup()->name, 0, 1)
+                . (Document::where('document_group', $document->getDocumentGroup())->count() + 1)
+                . '_'
+                .  $time->format('Ymd')
+                . '.pdf';
+            $uniqueName = Str::uuid() . '.pdf';
+            $filePathAndName = "{$document->document_group}/" .
+                Carbon::parse($document->created_at)->year .
+                "/{$uniqueName}";
+            Storage::disk('documents')->put($filePathAndName, $pdfContent);
+
+            $document->file_path_and_name = $filePathAndName;
+            $document->filename = $fileName;
+            $document->alfresco_node_id = null;
             $document->save();
 
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
-            file_put_contents($filePath, $pdf);
+        } else {
 
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            }else{
-                $document->alfresco_node_id = null;
-            }
-
-            $document->save();
-
-            //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
-            }
-        }else{
             $file = $request->file('attachment');
-
-            if($file == null || !$file->isValid()) abort('422', 'Error uploading file');
-
-
-            $file_tmp = $file->store('', 'documents');
-            $filePath_tmp = Storage::disk('documents')->path($file_tmp);
-
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            } else {
-                $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-                $pos = strrpos($tmpFileName, '/');
-                $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
-                Storage::disk('documents')->copy($tmpFileName,$file->getClientOriginalName() );
-                $document->alfresco_node_id = null;
+            if($file == null || !$file->isValid()) {
+                abort('422', 'Error uploading file');
             }
 
+            $uniqueName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $filePath = Storage::disk('documents')->putFileAs(
+                "{$document->document_group}/" . Carbon::now()->year,
+                $file,
+                $uniqueName
+            );
+
+            $document->file_path_and_name = $filePath;
             $document->filename = $file->getClientOriginalName();
+            $document->alfresco_node_id = null;
             $document->save();
 
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($file_tmp);
         }
 
         return FullDocument::make($document->fresh());
@@ -193,9 +207,7 @@ class DocumentController extends Controller
 
         $data = $requestInput
             ->string('description')->next()
-            ->integer('documentCreatedFromId')->alias('document_created_from_id')->next()
-            ->string('documentType')->validate('required')->alias('document_type')->next()
-            ->string('documentGroup')->validate('required')->alias('document_group')->next()
+            ->string('htmlBody')->whenMissing(null)->onEmpty(null)->alias('html_body')->next()
             ->string('freeText1')->alias('free_text_1')->next()
             ->string('freeText2')->alias('free_text_2')->next()
             ->integer('contactId')->validate('exists:contacts,id')->onEmpty(null)->alias('contact_id')->next()
@@ -203,7 +215,6 @@ class DocumentController extends Controller
             ->integer('contactGroupId')->validate('exists:contact_groups,id')->onEmpty(null)->alias('contact_group_id')->next()
             ->integer('opportunityId')->validate('exists:opportunities,id')->onEmpty(null)->alias('opportunity_id')->next()
             ->integer('sentById')->validate('exists:users,id')->onEmpty(null)->alias('sent_by_id')->next()
-            ->integer('templateId')->validate('exists:document_templates,id')->onEmpty(null)->alias('template_id')->next()
             ->integer('campaignId')->validate('exists:campaigns,id')->onEmpty(null)->alias('campaign_id')->next()
             ->integer('housingFileId')->validate('exists:housing_files,id')->onEmpty(null)->alias('housing_file_id')->next()
             ->integer('quotationRequestId')->validate('exists:quotation_requests,id')->onEmpty(null)->alias('quotation_request_id')->next()
@@ -250,20 +261,28 @@ class DocumentController extends Controller
         $document->load('template.footer', 'template.baseTemplate', 'template.header');
 
         if($document->template) {
-            $html = $document->template->header
-                ? $document->template->header->html_body : '';
 
-            if ($document->template->baseTemplate) {
-                $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body,
-                    $document->template->html_body, $document->free_text_1,
-                    $document->free_text_2);
-            } else {
-                $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body,
+            if($document->html_body && $document->html_body != ''){
+                $html = TemplateVariableHelper::replaceTemplateFreeTextVariables($document->html_body,
                     $document->free_text_1, $document->free_text_2);
-            }
 
-            $html .= $document->template->footer
-                ? $document->template->footer->html_body : '';
+            } else {
+                $html = $document->template->header
+                    ? $document->template->header->html_body : '';
+
+                if ($document->template->baseTemplate) {
+                    $html .= TemplateVariableHelper::replaceTemplateTagVariable($document->template->baseTemplate->html_body,
+                        $document->template->html_body, $document->free_text_1,
+                        $document->free_text_2);
+                } else {
+                    $html .= TemplateVariableHelper::replaceTemplateFreeTextVariables($document->template->html_body,
+                        $document->free_text_1, $document->free_text_2);
+                }
+
+                $html .= $document->template->footer
+                    ? $document->template->footer->html_body : '';
+
+            }
 
             $html
                 = TemplateVariableHelper::replaceDocumentTemplateVariables($document,
@@ -284,49 +303,36 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
+
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
             header('X-Filename:' . $document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             return response()->download($filePath, $document->filename);
+
+            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+        } elseif ($document->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if($document->alfresco_node_id == null){
-                $filePath = Storage::disk('documents')
-                    ->path($document->filename);
-                header('X-Filename:' . $document->filename);
-                header('Access-Control-Expose-Headers: X-Filename');
-                return response()->download($filePath, $document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
     public function downLoadRawDocument(Document $document)
     {
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
             return Storage::disk('documents')->get($document->file_path_and_name);
+
+            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+        } elseif ($document->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                return Storage::disk('documents')->get($document->filename);
-            } else {
-                return null;
-            }
-        }
-
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
     protected function translateToValidCharacterSet($field){

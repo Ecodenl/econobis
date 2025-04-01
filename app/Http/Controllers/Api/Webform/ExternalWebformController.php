@@ -13,9 +13,13 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressEnergyConsumptionElectricity;
 use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
@@ -33,6 +37,7 @@ use App\Eco\HousingFile\BuildingType;
 use App\Eco\HousingFile\EnergyLabel;
 use App\Eco\HousingFile\EnergyLabelStatus;
 use App\Eco\HousingFile\HousingFile;
+use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
@@ -41,8 +46,10 @@ use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
+use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderCollectionFrequency;
@@ -60,6 +67,7 @@ use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
+use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskProperty;
 use App\Eco\Task\TaskPropertyValue;
@@ -69,7 +77,6 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -81,8 +88,10 @@ use App\Http\Controllers\Controller;
 use App\Notifications\WebformRequestProcessed;
 use Carbon\Carbon;
 use CMPayments\IBAN;
+use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
@@ -205,11 +214,13 @@ class ExternalWebformController extends Controller
             return Response::json($this->logs, 500);
         }
 
-        $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
+        if($this->contact) {
+            $this->log('Aanroep succesvol afgerond tot nu toe. Eventueel verwerken van deelname, order, taak en aanmaak Hoomdossier volgen nog.');
 
-        $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
-        $order = $this->addOrderToContact($this->contact, $data['order']);
-        $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+            $participation = $this->addParticipationToContact($this->contact, $data['participation'], $this->webform);
+            $order = $this->addOrderToContact($this->contact, $data['order']);
+            $this->addTaskToContact($this->contact, $data['responsible_ids'], $data['task'], $this->webform, $this->intake, $this->housingFile, $participation, $order);
+        }
 
         // evt nog Hoomdossier aanmaken indien van toepassing
         if ($createHoomDossier) {
@@ -246,7 +257,9 @@ class ExternalWebformController extends Controller
             }
         }
 
-        $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        if($data['quotation_request_visit']['status_id']){
+            $this->updateLatestQuotationRequestVisitStatus($data['quotation_request_visit']);
+        }
 
         // evt nog processWorkflowCreateOpportunity uitvoeren
         if ($this->processWorkflowCreateOpportunity) {
@@ -289,6 +302,25 @@ class ExternalWebformController extends Controller
             $this->log('Webform met id ' . $webform->id . ' gevonden bij code ' . $apiKey . '.');
         }
         $this->checkMaxRequests($webform);
+
+        // Add opportunity to exitsting intake
+        if ($data['intake']['intake_id']) {
+            $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
+        }
+        // Add quotationrequest to exitsting opportunity
+        if ($data['opportunity']['opportunity_id']) {
+            $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
+        }
+
+        // Update quotationrequest
+        if ($data['quotation_request']['quotation_request_id']) {
+            $this->updateQuotationRequest($data['quotation_request'], $webform);
+        }
+
+        // after adding to existing intake and/or opportuntiy we are done
+        if ($data['intake']['intake_id'] || $data['opportunity']['opportunity_id'] || $data['quotation_request']['quotation_request_id']) {
+            return;
+        }
 
         $contact = $this->updateOrCreateContact($data['responsible_ids'], $data['contact'], (isset($data['free_field_contact']) ? $data['free_field_contact'] : null), $webform);
 
@@ -362,13 +394,13 @@ class ExternalWebformController extends Controller
         }
 
         if ($this->address) {
-            // hier verwerken van vrije velden adressen
-
             $this->addEnergySupplierToAddress($this->address, $data['energy_supplier']);
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
-            $intake = $this->addIntakeToAddress($this->address, $data['intake'], $webform);
+            $this->addDongleToAddress($this->address, $data['dongle'], $webform);
+
+            $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['quotation_request'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
 
             //freeFieldsFieldRecords address updaten
@@ -413,6 +445,7 @@ class ExternalWebformController extends Controller
             ],
             'contact' => [
                 // Contact
+                'contact_nummer' => 'number',
                 'titel_id' => 'title_id',
                 'voorletters' => 'initials',
                 'voornaam' => 'first_name',
@@ -461,6 +494,9 @@ class ExternalWebformController extends Controller
                 'bijlage' => 'contact_attachment',
                 'bijlage2' => 'contact_attachment_2',
                 'bijlage3' => 'contact_attachment_3',
+                // Verbinding
+                'verbinding_met_contact_id' => 'occupation_contact_id',
+                'verbinding_type_id' => 'occupation_id',
             ],
             'address_energy_consumption_gas' => [
                 // Address energy consumption gas
@@ -499,6 +535,15 @@ class ExternalWebformController extends Controller
                 'energieleverancier_status' => 'energy_supply_status_id',
 //                'energieleverancier_huidig' => 'is_current_supplier',
             ],
+            'dongle' => [
+                'dongel_type_uitlezing_id' => 'dongle_type_read_out_id',
+                'dongel_mac_nummer' => 'dongle_mac_number',
+                'dongel_type_dongel_id' => 'dongle_type_dongle_id',
+                'dongel_koppeling_energie_id' => 'dongle_energy_id',
+                'dongel_datum_ondertekening' => 'dongle_date_signed',
+                'dongel_start_datum' => 'dongle_date_start',
+                'dongel_eind_datum' => 'dongle_date_end',
+            ],
             'participation' => [
                 // ParticipantProject
                 'deelname_project_id' => 'project_id',
@@ -522,6 +567,7 @@ class ExternalWebformController extends Controller
             'order' => [
                 // Order / OrderProduct
                 'order_product_id' => 'product_id',
+                'order_variabele_prijs' => 'variable_price',
                 'order_aantal' => 'amount',
                 'order_iban' => 'iban',
                 'order_iban_tnv' => 'iban_attn',
@@ -537,6 +583,7 @@ class ExternalWebformController extends Controller
             ],
             'intake' => [
                 // Intake
+                'intake_id' => 'intake_id',
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_maatregel_id' => 'measure_id',
@@ -549,6 +596,42 @@ class ExternalWebformController extends Controller
                 'intake_kans_bijlage2' => 'intake_opportunity_attachment_2',
                 'intake_kans_bijlage3' => 'intake_opportunity_attachment_3',
             ],
+            'opportunity' => [
+                'kans_id' => 'opportunity_id',
+            ],
+            'quotation_request' => [
+                'kansactie_id' => 'quotation_request_id',
+                'kansactie_aanmaken' => 'opportunity_action_type_code_ref',
+//                'kansactie_type' => 'opportunity_action_type',
+                'kansactie_org_of_coach' => 'coach_or_organisation_id',
+                'kansactie_omschrijving' => 'quotation_text',
+                'kansactie_status' => 'status_code_ref',
+                'kansactie_datum_afspraak' => 'date_planned',
+                'kansactie_datum_afgehandeld' => 'date_recorded',
+                'kansactie_opmerking_coach' => 'coach_or_organisation_note',
+                'kansactie_opmerking_projectleider' => 'projectmanager_note',
+                'kansactie_opmerking_externe_partij' => 'externalparty_note',
+                'kansactie_opmerking_bewoner' => 'client_note',
+                'kansactie_budgetaanvraag_bedrag' => 'quotation_amount',
+                'kansactie_budgetaanvraag_kosten_aanpassing' => 'cost_adjustment',
+                'kansactie_bijlage' => 'quotation_request_attachment',
+                'kansactie_bijlage2' => 'quotation_request_attachment_2',
+                'kansactie_bijlage3' => 'quotation_request_attachment_3',
+
+                'kansactie_datum_afspraakpoging_1' => 'date_planned_attempt1',
+                'kansactie_datum_afspraakpoging_2' => 'date_planned_attempt2',
+                'kansactie_datum_afspraakpoging_3' => 'date_planned_attempt3',
+                'kansactie_datum_uitgebracht' => 'date_released',
+                'kansactie_datum_akkoord_bewoner' => 'date_approved_client',
+                'kansactie_datum_akkoord_projectleider' => 'date_approved_project_manager',
+                'kansactie_datum_akkoord_toekenning' => 'date_approved_external',
+                'kansactie_datum_toekenning_in_behandeling' => 'date_under_review',
+                'kansactie_datum_uitgevoerd' => 'date_executed',
+                'kansactie_bedrag_toekenning' => 'award_amount',
+                'kansactie_datum_vaststelling_in_behandeling' => 'date_under_review_determination',
+                'kansactie_datum_akkoord_vaststelling' => 'date_approved_determination',
+                'kansactie_bedrag_vaststelling' => 'amount_determination',
+            ],
             'housing_file' => [
                 // HousingFile
                 'woondossier_woningtype_id' => 'building_type_id',
@@ -559,8 +642,9 @@ class ExternalWebformController extends Controller
                 'woondossier_energielabel_id' => 'energy_label_id',
                 'woondossier_aantal_bouwlagen' => 'floors',
                 'woondossier_status_energielabel_id' => 'energy_label_status_id',
-                'woondossier_momument' => 'is_monument',
+                'woondossier_monument' => 'is_monument',
                 'woondossier_maatregelen_ids' => 'measure_ids',
+                'woondossier_maatregelen_campagne_id' => 'measure_campaign_id',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
                 'woondossier_maatregelen_antwoorden' => 'measure_answers',
                 'woondossier_maatregelen_status_ids' => 'measure_status_ids',
@@ -571,6 +655,9 @@ class ExternalWebformController extends Controller
                 'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
                 'woondossier_opmerking' => 'remark',
                 'woondossier_opmerking_coach' => 'remark_coach',
+                'woondossier_verbruik_elektriciteit' => 'amount_electricity',
+                'woondossier_verbruik_gas' => 'amount_gas',
+                'woondossier_stooktemperatuur' => 'boiler_setting_comfort_heat',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -633,9 +720,19 @@ class ExternalWebformController extends Controller
         }
 
         // Sanitize
+
+        $data['intake']['intake_id'] = $this->decryptValue($data['intake']['intake_id'], 'intake_id');
+        $data['opportunity']['opportunity_id'] = $this->decryptValue($data['opportunity']['opportunity_id'], 'kans_id');
+        $data['quotation_request']['quotation_request_id'] = $this->decryptValue($data['quotation_request']['quotation_request_id'], 'kansactie_id');
+
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
+        $data['quotation_request']['quotation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['quotation_amount'])));
+        $data['quotation_request']['cost_adjustment'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['cost_adjustment'])));
+        $data['quotation_request']['award_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['award_amount'])));
+        $data['quotation_request']['amount_determination'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['amount_determination'])));
+
         $data['address_energy_consumption_gas']['proposed_variable_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_variable_rate'])));
         $data['address_energy_consumption_gas']['proposed_fixed_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_fixed_rate'])));
         $data['address_energy_consumption_gas']['total_variable_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_variable_costs'])));
@@ -651,6 +748,17 @@ class ExternalWebformController extends Controller
         $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
 
         $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
+
+        if($data['order']['variable_price']) {
+            $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+        }
+
+        if($data['housing_file']['amount_electricity']) {
+            $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+        }
+        if($data['housing_file']['amount_gas']) {
+            $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+        }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
         if(!isset($data['contact']['address_number']) || strlen($data['contact']['address_number']) == 0){
@@ -703,9 +811,18 @@ class ExternalWebformController extends Controller
 
         $this->log('Forceer nieuw contact : ' . $data['force_new_contact']);
 
+        $this->contactActie = "???";
+
+        // forceer nieuw contact
         if($data['force_new_contact'] == 1) {
             $contact = null;
             $this->contactActie = "NCG";
+        // bepaal contact bij contact_nummer indien meegegeven
+        } elseif ($data['number'] != '') {
+            $contact = $this->getContactByNumber($data);
+            if(!$contact) return null;
+            $this->contactActie = "UPC";
+        // bepaal contact bij adres en/of email
         } else {
             $contact = $this->getContactByAddressAndEmail($data);
         }
@@ -745,7 +862,11 @@ class ExternalWebformController extends Controller
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
 //                    $this->addPhoneNumberToContact($data, $contact);
 //                    $this->addContactNotesToContact($data, $contact);
@@ -756,6 +877,7 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw adres toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
                     $note .= "Adres type : " . AddressType::get($addressTypeId)->name . "\n";
@@ -777,13 +899,18 @@ class ExternalWebformController extends Controller
                     $this->addPhoneNumberToContact($data, $contact);
                     $this->addContactNotesToContact($data, $contact);
                     $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+                    $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
                     $address = $contact->addresses()
                         ->where('postal_code', $data['address_postal_code'])
                         ->where('number', $data['address_number'])
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Nieuw e-mailadres  " . $data['email_address'] . " toegevoegd aan contact " . $contact->full_name . " (".$contact->number.").\n";
@@ -798,7 +925,11 @@ class ExternalWebformController extends Controller
                         ->where('addition', $data['address_addition'])
                         ->first();
                     if($address){
+                        $this->log('Adres gevonden bij meegegeven postcode/huisnummer: ' . $data['address_postal_code'] . ' ' . $data['address_number'] . '-' . $data['address_addition']);
                         $this->address = $address;
+                    } elseif ($contact->primaryAddress) {
+                        $this->log('Geen adres postcode/huisnummer meegegeven of gevonden, verder met primair adres bij contact met postcode/huisnummer: ' . $contact->primaryAddress->postal_code . ' ' . $contact->primaryAddress->number . '-' . $contact->primaryAddress->addition );
+                        $this->address = $contact->primaryAddress;
                     }
                     $note = "Webformulier " . $webform->name . ".\n\n";
                     $note .= "Contact 'bewoner' " . $contact->full_name . " (".$contact->number.") bijgewerkt op adres 'bewoner'.\n";
@@ -861,10 +992,29 @@ class ExternalWebformController extends Controller
         throw new WebformException($string, $statusCode);
     }
 
+    protected function getContactByNumber(array $dataContact)
+    {
+        $contact = null;
+        if ($dataContact['number']) {
+
+            $fetchContact = Contact::where('number', $dataContact['number']);
+            if (!$fetchContact->exists()) {
+                $this->error('Geen contact gevonden voor contact_nummer (' . $dataContact['number'] . ').');
+            } elseif ($fetchContact->count() > 1) {
+                $this->error("Meerdere contacten gevonden met nummer " . $dataContact['number'] . " gevonden.");
+            } else {
+                $contact = $fetchContact->first();
+                $this->log("Contact met nummer " . $contact->number . " (" . $contact->full_name. ", id: " . $contact->id . ") gevonden.");
+            }
+
+        } else {
+            $this->log('Er is geen kans_id meegegeven, kansactie bij kans niet aanmaken.');
+        }
+        return $contact;
+    }
+
     protected function getContactByAddressAndEmail(array $data)
     {
-        $this->contactActie = "???";
-
         if ($data['organisation_name']) {
             $contactTypeId = 'organisation';
         }else{
@@ -1398,6 +1548,7 @@ class ExternalWebformController extends Controller
                     'created_with' => 'webform',
                     'owner_id' => $ownerAndResponsibleUser->id,
                 ]);
+                $this->log('Contactpersoon met id ' . $contactPerson->id . ' aangemaakt.');
 
                 $person = Person::create([
                     'contact_id' => $contactPerson->id,
@@ -1420,6 +1571,7 @@ class ExternalWebformController extends Controller
                 // Overige gegevens aan person hangen
                 $this->addEmailToContact($data, $contactPerson);
                 $this->addContactToGroupContactperson($data, $contactPerson, $ownerAndResponsibleUser);
+                $this->addContactToOccupations($data, $contactPerson, $ownerAndResponsibleUser);
 
                 $this->log('Persoon met id ' . $person->id
                     . ' aangemaakt en gekoppeld aan organisatie als medewerker.');
@@ -1433,11 +1585,31 @@ class ExternalWebformController extends Controller
             $this->addContactNotesToContact($data, $contactOrganisation);
             $this->addContactToGroup($data, $contactOrganisation, $ownerAndResponsibleUser);
 
+            //freeFieldsFieldRecords updaten
+            $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+            $this->setFreeFieldsFieldRecords($contactOrganisation, $dataFreeFieldContacts, $tableId);
+
+
             return $contactOrganisation;
         }
 
         // Als we hier komen is er geen bedrijfsnaam meegegeven, dan maken we alleen een persoon aan
         $this->log('Er is geen organisatienaam meegegeven; persoon aanmaken.');
+
+        $lastName = $data['last_name'];
+        if (!$lastName) {
+            $emailParts = explode('@', $data['email_address']);
+            $lastName = $emailParts[0];
+            if ($lastName) {
+                $this->log('Geen achternaam meegegeven, achternaam ' . $lastName . ' uit emailadres gehaald.');
+            } else {
+                $this->log('Geen achternaam meegegeven, ook geen achternaam uit emailadres kunnen halen.');
+            }
+        }
+
+        if (!$data['first_name'] && !$lastName) {
+            $this->error('Geen voornaam en geen achternaam. Nieuw contact kan niet aangemaakt worden.');
+        }
 
         $iban = $this->checkIban($data['iban'], 'persoon.');
         $contactNew = Contact::create([
@@ -1455,6 +1627,7 @@ class ExternalWebformController extends Controller
             'collect_mandate_collection_schema' => $data['is_collect_mandate'] ? 'core' : '',
             'owner_id' => $ownerAndResponsibleUser->id,
         ]);
+        $this->log('Contact met id ' . $contactNew->id . ' aangemaakt.');
         $this->newContactCreated = true;
 
         $lastName = $data['last_name'];
@@ -1473,6 +1646,7 @@ class ExternalWebformController extends Controller
             'last_name_prefix' => $data['last_name_prefix'],
             'date_of_birth' => $data['date_of_birth'] ?: null,
         ]);
+        $this->log('Persoon met id ' . $person->id . ' aangemaakt.');
 
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contactNew->id);
@@ -1483,6 +1657,7 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -1580,6 +1755,11 @@ class ExternalWebformController extends Controller
             $this->addPhoneNumberToContact($data, $contact);
             $this->addContactNotesToContact($data, $contact);
             $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+            $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
+
+            //freeFieldsFieldRecords updaten
+            $tableId = FreeFieldsTable::where('table', 'contacts')->first()->id;
+            $this->setFreeFieldsFieldRecords($contact, $dataFreeFieldContacts, $tableId);
 
             return $contact;
         }
@@ -1628,7 +1808,7 @@ class ExternalWebformController extends Controller
             $contactPersonUpdateArray['last_name'] = $data['last_name'];
 
         } else {
-            if(!$data['initials']){
+            if($data['initials']){
                 $contactPersonUpdateArray['initials'] = $data['initials'];
             }
 
@@ -1656,6 +1836,7 @@ class ExternalWebformController extends Controller
         $this->addPhoneNumberToContact($data, $contact);
         $this->addContactNotesToContact($data, $contact);
         $this->addContactToGroup($data, $contact, $ownerAndResponsibleUser);
+        $this->addContactToOccupations($data, $contact, $ownerAndResponsibleUser);
 
         // Indien contact bijlage url meegegeven deze als document opslaan
         if($data['contact_attachment']){
@@ -1897,6 +2078,70 @@ class ExternalWebformController extends Controller
         return true;
     }
 
+    protected function addDongleToAddress(Address $address, $data, Webform $webform)
+    {
+        if ($data['dongle_type_read_out_id'] != '') {
+            $this->log('Er zijn dongel gegevens meegegeven');
+
+            $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($data['dongle_type_read_out_id']);
+            if (!$addressDongleTypeReadOut) {
+                $this->error('Ongeldige waarde voor type dongel meegegeven.');
+            }
+
+            $hasTypeDongle = AddressDongleTypeDongle::where('type_read_out_id', $data['dongle_type_read_out_id'])->exists();
+            // todo WM: check of we hier ook nog een isset check moeten doen?
+            if($hasTypeDongle && $data['dongle_type_dongle_id']){
+                $addressDongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
+                if (!$addressDongleTypeDongle) {
+                    $this->error('Ongeldige waarde voor type dongel meegegeven.');
+                }
+            } else {
+                $data['dongle_type_dongle_id'] = '';
+            }
+
+            if($data['dongle_energy_id'] && !is_numeric($data['dongle_energy_id'])) {
+                $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
+            }
+
+                // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Dongel verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Dongel verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Dongel verantwoordelijke gebruiker : onbekend');
+                }
+            }
+
+            $addressDongleData = [
+                'address_id' => $address->id,
+                'type_read_out_id' => $data['dongle_type_read_out_id'],
+                'mac_number' => $data['dongle_mac_number']?: null,
+                'type_dongle_id' => $data['dongle_type_dongle_id']?: null,
+                'energy_id' => $data['dongle_energy_id']?: null,
+                'date_signed' => $data['dongle_date_signed']?: null,
+                'date_start' => $data['dongle_date_start']?: null,
+                'date_end' => $data['dongle_date_end']?: null,
+            ];
+            $addressDongle = new AddressDongle();
+            $addressDongle->fill($addressDongleData);
+            $addressDongle->save();
+
+            $this->log('Koppeling met dongel gemaakt.');
+
+        } else {
+            $this->log('Er zijn geen dongel gegevens meegegeven.');
+        }
+
+    }
+
     protected function addEnergySupplierToAddress(Address $address, $data)
     {
         if ($data['energy_supplier_id'] != '') {
@@ -2074,9 +2319,9 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addIntakeToAddress(Address $address, array $data, Webform $webform)
+    protected function addIntakeToAddress(Address $address, array $dataIntake, array $dataQuotationRequest, Webform $webform)
     {
-        if ($data['campaign_id']) {
+        if (!$dataIntake['intake_id'] && $dataIntake['campaign_id']) {
 
             // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
@@ -2096,32 +2341,32 @@ class ExternalWebformController extends Controller
             }
 
             $this->log('Er is een campagne meegegeven, intake aanmaken.');
-            $campaign = Campaign::find($data['campaign_id']);
+            $campaign = Campaign::find($dataIntake['campaign_id']);
             if (!$campaign) $this->error('Er is een ongeldige waarde voor campagne meegegeven.');
 
-            $intakeStatus = IntakeStatus::find($data['status_id']);
+            $intakeStatus = IntakeStatus::find($dataIntake['status_id']);
             if (!$intakeStatus) {
                 $this->log('Er is geen bekende waarde voor intake status meegegeven, default naar "open"');
                 $intakeStatus = IntakeStatus::find(1);
             }
 
-            $reasons = IntakeReason::whereIn('id', explode(',', $data['reason_ids']))->get();
-            $sources = IntakeSource::whereIn('id', explode(',', $data['source_ids']))->get();
-            $intakeMeasures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
-            $measure = Measure::find($data['measure_id']);
+            $reasons = IntakeReason::whereIn('id', explode(',', $dataIntake['reason_ids']))->get();
+            $sources = IntakeSource::whereIn('id', explode(',', $dataIntake['source_ids']))->get();
+            $intakeMeasures = Measure::whereIn('id', explode(',', $dataIntake['measure_ids']))->get();
+            $measure = Measure::find($dataIntake['measure_id']);
             if ($intakeMeasures && count($intakeMeasures)>0 ){
                 $measureCategories = MeasureCategory::whereIn('id', array_unique($intakeMeasures->pluck('measure_category_id')->toArray() ) )->get();
             } elseif ($measure) {
                 $measureCategories = MeasureCategory::where('id', $measure->measure_category_id)->get();
             } else {
-                $measureCategories = MeasureCategory::whereIn('id', explode(',', $data['measure_categorie_ids']))->get();
+                $measureCategories = MeasureCategory::whereIn('id', explode(',', $dataIntake['measure_categorie_ids']))->get();
             }
 
             $intake = Intake::make([
                 'contact_id' => $address->contact->id,
                 'intake_status_id' => $intakeStatus->id,
                 'campaign_id' => $campaign->id,
-                'note' => $data['note'],
+                'note' => $dataIntake['note'],
             ]);
             $intake->address_id = $address->id;
             $intake->save();
@@ -2142,7 +2387,7 @@ class ExternalWebformController extends Controller
             $saveOpportunity = null;
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
-                $opportunity = $this->addOpportunity($intakeMeasure, $intake);
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataQuotationRequest, $webform);
                 if($firstOpportunity){
                     $saveOpportunity = clone $opportunity;
                     $firstOpportunity = false;
@@ -2156,7 +2401,7 @@ class ExternalWebformController extends Controller
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
-                $opportunity = $this->addOpportunity($measure, $intake);
+                $opportunity = $this->addOpportunity($measure, $intake, $dataQuotationRequest, $webform);
                 if($firstOpportunity){
                     $saveOpportunity = clone $opportunity;
                 }
@@ -2180,25 +2425,86 @@ class ExternalWebformController extends Controller
             }
 
             // Indien kans bijlage url meegegeven deze als document opslaan
-            if($data['intake_opportunity_attachment']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment']);
+            if($dataIntake['intake_opportunity_attachment']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment']);
             }
-            if($data['intake_opportunity_attachment_2']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_2']);
+            if($dataIntake['intake_opportunity_attachment_2']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_2']);
             }
-            if($data['intake_opportunity_attachment_3']){
-                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $data['intake_opportunity_attachment_3']);
+            if($dataIntake['intake_opportunity_attachment_3']){
+                $this->addIntakeOpportunityAttachment($intake, $saveOpportunity, $dataIntake['intake_opportunity_attachment_3']);
             }
 
             return $intake;
         } else {
-            $this->log('Er is geen campagne meegegeven, intake niet aanmaken.');
+            $this->log('Er is intake_id meegegeven of geen campagne meegegeven, intake niet nieuw aanmaken.');
+        }
+    }
+
+    protected function addOpportunityToExistingIntake(array $dataIntake, array $dataQuotationRequest, Webform $webform)
+    {
+        if ($dataIntake['intake_id']) {
+
+            $intake = Intake::find($dataIntake['intake_id']);
+            if (!$intake) {
+                $this->error('Er is een ongeldige waarde voor intake_id (' . (isset($dataIntake['intake_id']) ? $dataIntake['intake_id'] : "") . ') meegegeven.');
+            } else {
+                $this->log("Intake met id " . $intake->id . " gevonden.");
+            }
+
+            // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Kans verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Kans verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Kans verantwoordelijke gebruiker : onbekend');
+                }
+            }
+
+            $intakeMeasures = Measure::whereIn('id', explode(',', $dataIntake['measure_ids']))->get();
+            if ($intakeMeasures && count($intakeMeasures)>0 ){
+                $measureCategories = MeasureCategory::whereIn('id', array_unique($intakeMeasures->pluck('measure_category_id')->toArray() ) )->get();
+            }
+
+            $intake->measuresRequested()->syncWithoutDetaching($measureCategories->pluck('id'));
+            $this->log("Intake gekoppeld aan interesses: " . $measureCategories->implode('name', ', '));
+
+            // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
+            foreach ($intakeMeasures as $intakeMeasure) {
+                $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataQuotationRequest, $webform);
+            }
+        } else {
+            $this->log('Er is geen intake_id meegegeven, kans(en) bij intake niet aanmaken.');
+        }
+    }
+    protected function addQuotationRequestToExistingOpportunity(array $dataOpportunity, array $dataQuotationRequest, Webform $webform)
+    {
+        if ($dataOpportunity['opportunity_id']) {
+
+            $opportunity = Opportunity::find($dataOpportunity['opportunity_id']);
+            if (!$opportunity) {
+                $this->error('Er is een ongeldige waarde voor kans_id (' . $dataOpportunity['opportunity_id'] . ') meegegeven.');
+            } else {
+                $this->log("Kans met id " . $opportunity->id . " gevonden.");
+            }
+            $this->addQuotationRequestToOpportunity($dataQuotationRequest, $opportunity, $webform);
+
+        } else {
+            $this->log('Er is geen kans_id meegegeven, kansactie bij kans niet aanmaken.');
         }
     }
 
     protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
         $fileName = basename($intakeOpportunityAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Intake kans bijlage';
@@ -2221,27 +2527,14 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Intake kans bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $document->file_path_and_name = $filePathAndName;
 
         $document->save();
     }
@@ -2253,10 +2546,9 @@ class ExternalWebformController extends Controller
 
         if(in_array($fileType, $allowedFileTypes)) {
             $fileName = basename($contactAttachmentUrl);
-            $tmpFileName = Str::random(9) . '-' . $fileName;
 
             $document = new Document();
-            $document->description = 'contact bijlage';
+            $document->description = 'Contact bijlage';
             $document->document_type = 'upload';
             $document->document_group = 'general';
             $document->filename = $fileName;
@@ -2270,27 +2562,14 @@ class ExternalWebformController extends Controller
             $document->save();
 
             $contents = file_get_contents($contactAttachmentUrl);
-            $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-            $pos = strrpos($tmpFileName, '/');
-            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+            $filePathAndName = "{$document->document_group}/" .
+                Carbon::parse($document->created_at)->year .
+                "/{$uniqueName}";
+            Storage::disk('documents')->put($filePathAndName, $contents);
+            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-                //delete file on server, still saved on alfresco.
-                Storage::disk('documents')->delete($tmpFileName);
-                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-            } else {
-                $document->filename = $tmpFileName;
-                $document->alfresco_node_id = null;
-                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-            }
+            $document->file_path_and_name = $filePathAndName;
 
             $document->save();
         } else {
@@ -2302,7 +2581,7 @@ class ExternalWebformController extends Controller
      * @param $measure
      * @param $intake
      */
-    protected function addOpportunity($measure, $intake)
+    protected function addOpportunity($measure, $intake, array $dataQuotationRequest, Webform $webform)
     {
         $statusOpportunity = OpportunityStatus::where('code_ref', 'active')->first()->id;
         $opportunity = null;
@@ -2317,6 +2596,9 @@ class ExternalWebformController extends Controller
             ]);
             $opportunity->measures()->sync($measure->id);
             $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name . "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
+
+            $this->addQuotationRequestToOpportunity($dataQuotationRequest, $opportunity, $webform);
+
         } else {
             $this->log('Er is geen kans status "Actief" gevonden, kans niet aangemaakt.');
         }
@@ -2335,6 +2617,7 @@ class ExternalWebformController extends Controller
             && $data['energy_label_status_id'] == ''
             && $data['is_monument'] == ''
             && $data['measure_ids'] == ''
+            && $data['measure_campaign_id'] == ''
             && $data['measure_dates'] == ''
             && $data['measure_answers'] == ''
             && $data['measure_status_ids'] == ''
@@ -2345,6 +2628,9 @@ class ExternalWebformController extends Controller
             && $data['revenue_solar_panels'] == ''
             && $data['remark'] == ''
             && $data['remark_coach'] == ''
+            && $data['amount_electricity'] == ''
+            && $data['amount_gas'] == ''
+            && $data['boiler_setting_comfort_heat'] == ''
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2390,10 +2676,28 @@ class ExternalWebformController extends Controller
             $eneryLabelStatus = null;
         }
 
+        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
+        if (!$boilerSettingComfortHeat) {
+            $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
+            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', 'unsure')->first();
+        }
+
         $rofeType = RoofType::find($data['roof_type_id']);
         if (!$rofeType) {
             $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
             $rofeType = null;
+        }
+
+        $housingFileSpecificationCampaignId = null;
+        if ($data['measure_campaign_id']) {
+            $housingFileSpecificationCampaign = Campaign::find($data['measure_campaign_id']);
+            if ($housingFileSpecificationCampaign && $housingFileSpecificationCampaign->status_id !== Campaign::STATUS_CLOSED) {
+                $this->log('housingFileSpecificationCampaign->id: ' . $housingFileSpecificationCampaign->id );
+                $housingFileSpecificationCampaignId = $housingFileSpecificationCampaign->id;
+            }
+        }
+        if ($housingFileSpecificationCampaignId === null) {
+            $this->log('Er is geen bekende waarde voor de campagne meegegeven, default naar "geen"');
         }
 
 //        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
@@ -2460,6 +2764,9 @@ class ExternalWebformController extends Controller
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
                 'remark_coach' => $data['remark_coach'],
+                'amount_electricity' => $data['amount_electricity'],
+                'amount_gas' => $data['amount_gas'],
+                'boiler_setting_comfort_heat' => $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null,
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2495,9 +2802,10 @@ class ExternalWebformController extends Controller
                         'measure_date' => $measureDate,
                         'answer' => $measureAnswer,
                         'status_id' => $measureStatusId,
-                        'floor_id' => $measureFloorId,
-                        'side_id' => $measureSidesid,
+                        'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                        'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                         'type_brand' => $measureTypeBrand,
+                        'campaign_id' => $housingFileSpecificationCampaignId,
                     ]);
 //                    $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                 }
@@ -2522,6 +2830,9 @@ class ExternalWebformController extends Controller
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
             $housingFile->remark_coach = $data['remark_coach'];
+            $housingFile->amount_electricity = $data['amount_electricity'];
+            $housingFile->amount_gas = $data['amount_gas'];
+            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null;
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
@@ -2559,21 +2870,23 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
+                            'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
-//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
+//                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                     } else {
                         $housingFileSpecification->update([
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
+                            'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
-//                        $this->log("Woondossier met id " . $housingFile->id . " en maatregel met id " . $measure->id . " gewijzigd voor specification id: " . $housingFileSpecification->id . ".");
+//                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " gewijzigd voor id: " . $housingFileSpecification->id . ".");
                     }
                 }
             } else {
@@ -2901,6 +3214,59 @@ class ExternalWebformController extends Controller
         }
     }
 
+    protected function addContactToOccupations(array $data, Contact $contact, $ownerAndResponsibleUser)
+    {
+
+        if (!$data['occupation_contact_id'] || !$data['occupation_id']) {
+            $this->log('Er is geen contact voor verbinding en/of verbinding type meegegeven, geen verbinding maken.');
+            return;
+        }
+
+        $this->log('Er is een verbinding met contact en verbinding type meegegeven, verbinding maken.');
+
+        $occupationContact = Contact::where('id', $data['occupation_contact_id'])->first();
+        if (!$occupationContact) {
+            $this->log('Contact voor verbinding met id ' . $data['occupation_contact_id'] . ' is niet gevonden, geen verbinding gemaakt.');
+            return;
+        }
+
+        $occuptation = Occupation::where('id', $data['occupation_id'])->first();
+        if (!$occuptation) {
+            $this->log('Verbinding type met id ' . $data['occupation_id'] . ' is niet gevonden, geen verbinding gemaakt.');
+            return;
+        }
+
+        // indien contact organisatie is en verbinding met contact is persoon, dan switchen primary en secondary contact
+        if ($contact->type_id == ContactType::ORGANISATION && $occupationContact->type_id == ContactType::PERSON) {
+            $primaryContact = $contact;
+            $secondaryContact = $occupationContact;
+        } else {
+            $primaryContact = $occupationContact;
+            $secondaryContact = $contact;
+        }
+
+
+        $occuptationContactExists = OccupationContact::where('occupation_id', $occuptation->id)
+            ->where('primary_contact_id', $primaryContact->id)
+            ->where('contact_id', $secondaryContact->id)
+            ->exists();
+        if ($occuptationContactExists) {
+            $this->log('Verbinding type '. $occuptation->primary_occupation . ' voor contact ' . $primaryContact->full_name . ' met contact ' . $secondaryContact->full_name_fnf. ' bestaat al.');
+            return;
+        }
+
+        // Nieuwe verbinding maken
+        OccupationContact::create([
+            'occupation_id' => $occuptation->id,
+            'primary_contact_id' => $primaryContact->id,
+            'contact_id' => $secondaryContact->id,
+            'primary' => false,
+        ]);
+
+        $this->log('Verbinding type '. $occuptation->primary_occupation . ' voor contact ' . $primaryContact->full_name . ' met contact ' . $secondaryContact->full_name_fnf. ' gemaakt.');
+
+    }
+
     protected function doProcessEmailNewContactToGroup(array $data)
     {
         $contactToEmailNewContactGroup = Contact::find($this->contactIdToEmailNewContactToGroup);
@@ -3165,9 +3531,21 @@ class ExternalWebformController extends Controller
             $product = Product::find($data['product_id']);
 
             if (!$product) {
-                $this->log('Product met is ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
+                $this->log('Product met id ' . $data['product_id'] . ' is niet gevonden, geen order aangemaakt.');
                 $this->addTaskError('Ongeldige product code meegegeven bij verzenden webformulier.');
                 return null;
+            }
+
+            $orderVariablePrice = null;
+            if ($product->currentPrice && $product->currentPrice->has_variable_price) {
+                if($data['variable_price']) {
+                    $orderVariablePrice = $data['variable_price'];
+                } else {
+                    $this->log('Product met id ' . $data['product_id'] . ' is een product met variabele prijs maar variabele prijs is niet meegegeven, variabele prijs is op 0.00 gezet.');
+                    $orderVariablePrice = 0.00;
+                }
+            } elseif($data['variable_price']) {
+                $this->log('Product met id ' . $data['product_id'] . ' is een product zonder variabele prijs, meegegeven variabele prijs wordt niet gebruikt');
             }
 
             $statusId = $data['status_id'];
@@ -3238,6 +3616,7 @@ class ExternalWebformController extends Controller
                 'order_id' => $order->id,
                 'amount' => $amount,
                 'date_start' => $dateStart,
+                'variable_price' => $orderVariablePrice,
                 'date_period_start_first_invoice' => $datePeriodStartFirstInvoice,
             ]);
 
@@ -3431,5 +3810,403 @@ class ExternalWebformController extends Controller
         $latestQuotationRequestVisit->save();
 
         $this->log('Kansactie bezoek gevonden voor contact, coach en campagne. Status bijgewerkt van ' . $oldStatus->name . ' naar ' . $latestQuotationRequestVisit->status()->first()->name);
+    }
+
+    /**
+     * @param mixed $value
+     * @param $contact_id
+     * @return int|mixed
+     */
+    private function decryptValue(mixed $value, $fieldName): mixed
+    {
+        $decryptedValue = $value;
+        try {
+            if($value) {
+                $decryptedValue = Crypt::decrypt($value);
+            }
+        } catch (DecryptException $e) {
+            $this->log('Veld ' . $fieldName . ' bevat geen correcte waarde');
+//            $decryptedValue = $value;
+            $decryptedValue = '';
+        }
+
+        return $decryptedValue;
+    }
+
+    /**
+     * @param array $dataQuotationRequest
+     * @param $opportunity
+     * @param Webform $webform
+     * @return void
+     * @throws WebformException
+     */
+    private function addQuotationRequestToOpportunity(array $dataQuotationRequest, $opportunity, Webform $webform): void
+    {
+        if(!$dataQuotationRequest['opportunity_action_type_code_ref']){
+            $this->log("Geen kansactie_aanmaken meegegeven.");
+        } else {
+
+            // geen coach of organisatie
+            $coachOrOrganisation = $this->getCoachOrOrganisation($dataQuotationRequest['coach_or_organisation_id'], $opportunity);
+
+            $opportunityAction = OpportunityAction::where('code_ref', $dataQuotationRequest['opportunity_action_type_code_ref'])->first();
+            if (!$opportunityAction) $this->error('Er is een ongeldige waarde voor kansactie_aanmaken (' . $dataQuotationRequest['opportunity_action_type_code_ref'] . ') meegegeven.');
+
+            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $opportunityAction->id)->first();
+            if (!$quotationRequestStatus) {
+                $quotationRequestStatus = QuotationRequestStatus::where('code_ref', 'default')->where('opportunity_action_id', $opportunityAction->id)->first();
+                $this->log('Er is geen bekende waarde voor kansactie_aanmaken status meegegeven bij kansactie_type ' . $opportunityAction->name . ', default naar: ' . $quotationRequestStatus->name);
+            }
+
+            // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $this->setAuthUserForObservers($webform);
+
+            // Default dates, amounts and notes to null
+            $datePlannedAttempt1 = null;          // visit                                      / redirection
+            $datePlannedAttempt2 = null;          // visit                                      / redirection
+            $datePlannedAttempt3 = null;          // visit                                      / redirection
+            $datePlanned = null;                  // visit / quotation-request / susidy-request
+            $dateRecorded = null;                 // visit / quotation-request / susidy-request
+            $dateReleased = null;                 //         quotation-request / susidy-request
+            $dateApprovedClient = null;           //         quotation-request / susidy-request
+            $dateApprovedProjectManager = null;   //         quotation-request / susidy-request
+            $dateApprovedExternal = null;         //                             susidy-request
+            $dateUnderReview = null;              //                             susidy-request
+            $dateExecuted = null;                 //         quotation-request / susidy-request / redirection
+            $dateUnderReviewDetermination = null; //                             susidy-request
+            $dateApprovedDetermination = null;    //                             susidy-request
+
+            $quotationAmount =  null;             // quotation-request / susidy-request
+            $costAdjustment = null;               //                             susidy-request
+            $awardAmount = null;                  //                             susidy-request
+            $amountDetermination = null;          //                             susidy-request
+
+            $coachOrOrganisationNote = null;      // visit / quotation-request / susidy-request
+            $projectmanagerNote = null;           //         quotation-request / susidy-request
+            $externalpartyNote = null;            //         quotation-request / susidy-request / redirection
+            $clientNote = null;                   //         quotation-request / susidy-request
+
+            switch ($opportunityAction->code_ref) {
+                case 'visit':
+                    $datePlannedAttempt1 = $dataQuotationRequest['date_planned_attempt1'] ? Carbon::make($dataQuotationRequest['date_planned_attempt1']) : null;
+                    $datePlannedAttempt2 = $dataQuotationRequest['date_planned_attempt2'] ? Carbon::make($dataQuotationRequest['date_planned_attempt2']) : null;
+                    $datePlannedAttempt3 = $dataQuotationRequest['date_planned_attempt3'] ? Carbon::make($dataQuotationRequest['date_planned_attempt3']) : null;
+                    $datePlanned = $dataQuotationRequest['date_planned'] ? Carbon::make($dataQuotationRequest['date_planned']) : null;
+                    $dateRecorded = $dataQuotationRequest['date_recorded'] ? Carbon::make($dataQuotationRequest['date_recorded']) : null;
+
+                    $coachOrOrganisationNote = $dataQuotationRequest['coach_or_organisation_note'] ?: null;
+                    break;
+                case 'quotation-request':
+                    $datePlanned = $dataQuotationRequest['date_planned'] ? Carbon::make($dataQuotationRequest['date_planned']) : null;
+                    $dateRecorded = $dataQuotationRequest['date_recorded'] ? Carbon::make($dataQuotationRequest['date_recorded']) : null;
+                    $dateReleased = $dataQuotationRequest['date_released'] ? Carbon::make($dataQuotationRequest['date_released']) : null;
+                    $dateApprovedClient = $dataQuotationRequest['date_approved_client'] ? Carbon::make($dataQuotationRequest['date_approved_client']) : null;
+                    $dateApprovedProjectManager = $dataQuotationRequest['date_approved_project_manager'] ? Carbon::make($dataQuotationRequest['date_approved_project_manager']) : null;
+                    $dateExecuted = $dataQuotationRequest['date_executed'] ? Carbon::make($dataQuotationRequest['date_executed']) : null;
+
+                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;;
+
+                    $coachOrOrganisationNote = $dataQuotationRequest['coach_or_organisation_note'] ?: null;
+                    $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;
+                    $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
+                    $clientNote = $dataQuotationRequest['client_note'] ?: null;
+                    break;
+                case 'subsidy-request':
+                    $datePlanned = $dataQuotationRequest['date_planned'] ? Carbon::make($dataQuotationRequest['date_planned']) : null;
+                    $dateRecorded = $dataQuotationRequest['date_recorded'] ? Carbon::make($dataQuotationRequest['date_recorded']) : null;
+                    $dateReleased = $dataQuotationRequest['date_released'] ? Carbon::make($dataQuotationRequest['date_released']) : null;
+                    $dateApprovedClient = $dataQuotationRequest['date_approved_client'] ? Carbon::make($dataQuotationRequest['date_approved_client']) : null;
+                    $dateApprovedProjectManager = $dataQuotationRequest['date_approved_project_manager'] ? Carbon::make($dataQuotationRequest['date_approved_project_manager']) : null;
+                    $dateApprovedExternal = $dataQuotationRequest['date_approved_external'] ? Carbon::make($dataQuotationRequest['date_approved_external']) : null;
+                    $dateUnderReview = $dataQuotationRequest['date_under_review'] ? Carbon::make($dataQuotationRequest['date_under_review']) : null;
+                    $dateExecuted = $dataQuotationRequest['date_executed'] ? Carbon::make($dataQuotationRequest['date_executed']) : null;
+                    $dateUnderReviewDetermination = $dataQuotationRequest['date_under_review_determination'] ? Carbon::make($dataQuotationRequest['date_under_review_determination']) : null;
+                    $dateApprovedDetermination = $dataQuotationRequest['date_approved_determination'] ? Carbon::make($dataQuotationRequest['date_approved_determination']) : null;
+
+                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
+                    $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
+                    $awardAmount = $dataQuotationRequest['award_amount'] ?: null;
+                    $amountDetermination = $dataQuotationRequest['amount_determination'] ?: null;
+
+                    $coachOrOrganisationNote = $dataQuotationRequest['coach_or_organisation_note'] ?: null;
+                    $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;
+                    $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
+                    $clientNote = $dataQuotationRequest['client_note'] ?: null;
+                    break;
+                case 'redirection':
+                    $datePlannedAttempt1 = $dataQuotationRequest['date_planned_attempt1'] ? Carbon::make($dataQuotationRequest['date_planned_attempt1']) : null;
+                    $datePlannedAttempt2 = $dataQuotationRequest['date_planned_attempt2'] ? Carbon::make($dataQuotationRequest['date_planned_attempt2']) : null;
+                    $datePlannedAttempt3 = $dataQuotationRequest['date_planned_attempt3'] ? Carbon::make($dataQuotationRequest['date_planned_attempt3']) : null;
+                    $dateExecuted = $dataQuotationRequest['date_executed'] ? Carbon::make($dataQuotationRequest['date_executed']) : null;
+
+                    $externalpartyNote = $dataQuotationRequest['externalparty_note'] ?: null;
+                    break;
+            }
+
+            $quotationRequest = QuotationRequest::create([
+                'contact_id' => $coachOrOrganisation ? $coachOrOrganisation->id : null,
+                'opportunity_id' => $opportunity->id,
+                'opportunity_action_id' => $opportunityAction->id,
+                'status_id' => $quotationRequestStatus->id,
+                'quotation_text' => $dataQuotationRequest['quotation_text'],
+                'date_planned_attempt1' => $datePlannedAttempt1,
+                'date_planned_attempt2' => $datePlannedAttempt2,
+                'date_planned_attempt3' => $datePlannedAttempt3,
+                'date_planned' => $datePlanned,
+                'date_recorded' => $dateRecorded,
+                'date_released' => $dateReleased,
+                'date_approved_client' => $dateApprovedClient,
+                'date_approved_project_manager' => $dateApprovedProjectManager,
+                'date_approved_external' => $dateApprovedExternal,
+                'date_under_review' => $dateUnderReview,
+                'date_executed' => $dateExecuted,
+                'date_under_review_determination' => $dateUnderReviewDetermination,
+                'date_approved_determination' => $dateApprovedDetermination,
+
+                'quotation_amount' => $quotationAmount,
+                'cost_adjustment' => $costAdjustment,
+                'award_amount' => $awardAmount,
+                'amount_determination' => $amountDetermination,
+                'coach_or_organisation_note' => $coachOrOrganisationNote,
+                'projectmanager_note' => $projectmanagerNote,
+                'externalparty_note' => $externalpartyNote,
+                'client_note' => $clientNote,
+            ]);
+
+            // Indien kansactie bijlage url meegegeven deze als document opslaan
+            if($dataQuotationRequest['quotation_request_attachment']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+            }
+            if($dataQuotationRequest['quotation_request_attachment_2']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+            }
+            if($dataQuotationRequest['quotation_request_attachment_3']){
+                $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+            }
+
+            $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
+
+        }
+    }
+
+    /**
+     * @param array $dataQuotationRequest
+     * @param $opportunity
+     * @param Webform $webform
+     * @return void
+     * @throws WebformException
+     */
+    private function updateQuotationRequest(array $dataQuotationRequest, Webform $webform): void
+    {
+
+        if ($dataQuotationRequest['quotation_request_id']) {
+
+            $fetchQuotationRequest = QuotationRequest::where('id', $dataQuotationRequest['quotation_request_id']);
+            if (!$fetchQuotationRequest->exists()) {
+                $this->error('Geen kansactie gevonden voor kansactie id (' . $dataQuotationRequest['quotation_request_id'] . ').');
+                return;
+            } elseif ($fetchQuotationRequest->count() > 1) {
+                $this->error("Meerdere kansacties gevonden met id " . $dataQuotationRequest['quotation_request_id'] . " gevonden.");
+                return;
+            } else {
+                $quotationRequest = $fetchQuotationRequest->first();
+                $this->log("Kansactie met id " . $quotationRequest->id .  " gevonden.");
+            }
+
+        } else {
+            $this->log('Er is geen kansactie_id meegegeven, kansactie bij kans niet bijwerken.');
+            return;
+        }
+
+        // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
+        // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+        $this->setAuthUserForObservers($webform);
+
+        $coachOrOrganisation = null;
+        if($dataQuotationRequest['coach_or_organisation_id']) {
+            $coachOrOrganisation = $this->getCoachOrOrganisation($dataQuotationRequest['coach_or_organisation_id'], $quotationRequest->opportunity);
+            if ($coachOrOrganisation !== null) {
+                $quotationRequest->contact_id = $coachOrOrganisation->id;
+            }
+        }
+        // When quotation_text filled in
+        if($dataQuotationRequest['quotation_text']) {
+            $quotationRequest->quotation_text = $dataQuotationRequest['quotation_text'];
+        }
+
+        if ($dataQuotationRequest['date_planned_attempt1']) {
+            $quotationRequest->date_planned_attempt1 = Carbon::make($dataQuotationRequest['date_planned_attempt1']);;
+        }
+        if ($dataQuotationRequest['date_planned_attempt2']) {
+            $quotationRequest->date_planned_attempt2 = Carbon::make($dataQuotationRequest['date_planned_attempt2']);;
+        }
+        if ($dataQuotationRequest['date_planned_attempt3']) {
+            $quotationRequest->date_planned_attempt1 = Carbon::make($dataQuotationRequest['date_planned_attempt3']);;
+        }
+        if ($dataQuotationRequest['date_planned']) {
+            $quotationRequest->date_planned = Carbon::make($dataQuotationRequest['date_planned']);;
+        }
+        if ($dataQuotationRequest['date_recorded']) {
+            $quotationRequest->date_recorded = Carbon::make($dataQuotationRequest['date_recorded']);;
+        }
+        if ($dataQuotationRequest['date_released']) {
+            $quotationRequest->date_released = Carbon::make($dataQuotationRequest['date_released']);;
+        }
+        if ($dataQuotationRequest['date_approved_client']) {
+            $quotationRequest->date_approved_client = Carbon::make($dataQuotationRequest['date_approved_client']);;
+        }
+        if ($dataQuotationRequest['date_approved_project_manager']) {
+            $quotationRequest->date_approved_project_manager = Carbon::make($dataQuotationRequest['date_approved_project_manager']);;
+        }
+        if ($dataQuotationRequest['date_approved_external']) {
+            $quotationRequest->date_approved_external = Carbon::make($dataQuotationRequest['date_approved_external']);;
+        }
+        if ($dataQuotationRequest['date_under_review']) {
+            $quotationRequest->date_under_review = Carbon::make($dataQuotationRequest['date_under_review']);;
+        }
+        if ($dataQuotationRequest['date_executed']) {
+            $quotationRequest->date_executed = Carbon::make($dataQuotationRequest['date_executed']);;
+        }
+        if ($dataQuotationRequest['date_under_review_determination']) {
+            $quotationRequest->date_under_review_determination = Carbon::make($dataQuotationRequest['date_under_review_determination']);;
+        }
+        if ($dataQuotationRequest['date_approved_determination']) {
+            $quotationRequest->date_approved_determination = Carbon::make($dataQuotationRequest['date_approved_determination']);;
+        }
+
+        if ($dataQuotationRequest['quotation_amount']) {
+            $quotationRequest->quotation_amount = $dataQuotationRequest['quotation_amount'];
+        }
+        if ($dataQuotationRequest['cost_adjustment']) {
+            $quotationRequest->cost_adjustment = $dataQuotationRequest['cost_adjustment'];
+        }
+        if ($dataQuotationRequest['award_amount']) {
+            $quotationRequest->award_amount = $dataQuotationRequest['award_amount'];
+        }
+        if ($dataQuotationRequest['amount_determination']) {
+            $quotationRequest->amount_determination = $dataQuotationRequest['amount_determination'];
+        }
+
+        if ($dataQuotationRequest['coach_or_organisation_note']) {
+            $quotationRequest->coach_or_organisation_note = $dataQuotationRequest['coach_or_organisation_note'];
+        }
+        if ($dataQuotationRequest['projectmanager_note']) {
+            $quotationRequest->projectmanager_note = $dataQuotationRequest['projectmanager_note'];
+        }
+        if ($dataQuotationRequest['externalparty_note']) {
+            $quotationRequest->externalparty_note = $dataQuotationRequest['externalparty_note'];
+        }
+        if ($dataQuotationRequest['client_note']) {
+            $quotationRequest->client_note = $dataQuotationRequest['client_note'];
+        }
+
+        $quotationRequest->save();
+
+        // Indien kansactie bijlage url meegegeven deze als document opslaan
+        if($dataQuotationRequest['quotation_request_attachment']){
+            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment']);
+        }
+        if($dataQuotationRequest['quotation_request_attachment_2']){
+            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_2']);
+        }
+        if($dataQuotationRequest['quotation_request_attachment_3']){
+            $this->addQuotationRequestAttachment($quotationRequest, $dataQuotationRequest['quotation_request_attachment_3']);
+        }
+
+        $this->log("Kansactie " . $quotationRequest->opportunityAction->name . " met id " . $quotationRequest->id . " bijgewerkt bij kans: " . $quotationRequest->opportunity->number . ") en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
+    }
+
+    protected function addQuotationRequestAttachment($quotationRequest, $quotationRequestAttachmentUrl) {
+        $documentCreatedFromId = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->id;
+        $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
+
+        $fileName = basename($quotationRequestAttachmentUrl);
+
+        $document = new Document();
+        $document->description = 'Kansactie bijlage';
+        $document->document_type = 'upload';
+        $document->document_group = 'general';
+        $document->filename = $fileName;
+        $document->document_created_from_id = $documentCreatedFromId;
+        $document->contact_id = $quotationRequest->opportunity->intake->contact_id;
+        $document->opportunity_id = $quotationRequest->opportunity_id;
+        $document->intake_id = $quotationRequest->opportunity->intake_id;
+        $document->campaign_id = $quotationRequest->opportunity->intake->campaign_id;
+        $document->quotation_request_id = $quotationRequest->id;
+
+        $document->document_created_from_id = $documentCreatedFromId;
+
+        $document->save();
+
+        $contents = file_get_contents($quotationRequestAttachmentUrl);
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
+
+        $document->file_path_and_name = $filePathAndName;
+
+        $document->save();
+    }
+
+    /**
+     * @param $coach_or_organisation_id
+     * @param $opportunity
+     * @return null
+     * @throws WebformException
+     */
+    private function getCoachOrOrganisation($coach_or_organisation_id, $opportunity)
+    {
+        // geen coach of organisatie
+        $coachOrOrganisation = null;
+        if (!$coach_or_organisation_id) {
+            $this->log("Geen Coach of Organisatie meegegeven.");
+            // wel coach of organisatie meegegeven, dan moet hij bestaan als betrokken coach of organisatie bij campagne (via kans->intake->campagne)
+        } else {
+            $coachOrOrganisation = Contact::find($coach_or_organisation_id);
+            if (!$coachOrOrganisation) {
+                $this->error('Meegegeven kansactie_org_of_coach (' . $coach_or_organisation_id . ') niet gevonden als contact.');
+            } else {
+                $this->log("Coach of Organisatie met id " . $coachOrOrganisation->id . " gevonden.");
+            }
+            //check of coach of organisatie gebruikt mag worden voor deze kans(actie)
+            if ($coachOrOrganisation->isCoach()) {
+                if (!$coachOrOrganisation->coachCampaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
+                    $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $coach_or_organisation_id . ') is geen betrokken coach bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
+                };
+            } elseif ($coachOrOrganisation->isOrganisation()) {
+                if (!$coachOrOrganisation->organisation->campaigns()->wherePivot('campaign_id', $opportunity->intake->campaign_id)->exists()) {
+                    $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $coach_or_organisation_id . ') is geen betrokken organisatie bij campagne ' . $opportunity->intake->campaign->name . ' (' . $opportunity->intake->campaign->id . ').');
+                };
+            } else {
+                $this->error('Meegegeven waarde voor kansactie_org_of_coach (' . $coach_or_organisation_id . ') is geen coach of organisatie.');
+            }
+        }
+        return $coachOrOrganisation;
+    }
+
+    /**
+     * @param Webform $webform
+     * @return void
+     */
+    private function setAuthUserForObservers(Webform $webform): void
+    {
+        $responsibleUser = User::find($webform->responsible_user_id);
+        if ($responsibleUser) {
+            Auth::setUser($responsibleUser);
+            $this->log('Kansactie verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+        } else {
+            $responsibleTeam = Team::find($webform->responsible_team_id);
+            if ($responsibleTeam && $responsibleTeam->users) {
+                $teamFirstUser = $responsibleTeam->users->first();
+                Auth::setUser($teamFirstUser);
+                $this->log('Kansactie verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+            } else {
+                $this->log('Kansactie verantwoordelijke gebruiker : onbekend');
+            }
+        }
     }
 }

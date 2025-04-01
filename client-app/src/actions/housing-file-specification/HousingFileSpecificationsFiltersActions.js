@@ -45,6 +45,16 @@ export const setFilterHousingFileSpecificationMeasureDateEnd = measureDateEnd =>
     measureDateEnd,
 });
 
+export const setFilterHousingFileSpecificationCreatedAtStart = createdAtStart => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CREATED_AT_START',
+    createdAtStart,
+});
+
+export const setFilterHousingFileSpecificationCreatedAtEnd = createdAtEnd => ({
+    type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_CREATED_AT_END',
+    createdAtEnd,
+});
+
 export const setFilterHousingFileSpecificationAnswer = answer => ({
     type: 'SET_FILTER_HOUSING_FILE_SPECIFICATION_ANSWER',
     answer,

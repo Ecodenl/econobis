@@ -18,6 +18,7 @@ const MutationFormEdit = ({
     handleSubmit,
     handleInputChange,
     handleInputChangeDate,
+    participationId,
     projectTypeCodeRef,
     projectTransactionCostsCodeRef,
     projectCurrentBookWorth,
@@ -78,6 +79,7 @@ const MutationFormEdit = ({
                 <Panel className={'panel-grey'}>
                     {type.codeRef === 'first_deposit' || type.codeRef === 'deposit' ? (
                         <MutationFormEditDeposit
+                            participationId={participationId}
                             readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}
                             participantMutationFromProps={participantMutationFromProps}
@@ -100,6 +102,7 @@ const MutationFormEdit = ({
                     ) : null}
                     {type.codeRef === 'withDrawal' ? (
                         <MutationFormEditWithDrawal
+                            participationId={participationId}
                             readOnly={readOnly}
                             participantMutationFromState={participantMutationFromState}
                             participantMutationFromProps={participantMutationFromProps}
@@ -141,6 +144,7 @@ const MutationFormEdit = ({
 
 const mapStateToProps = state => {
     return {
+        participationId: state.participantProjectDetails?.id,
         projectTypeCodeRef: state.participantProjectDetails.project?.typeCodeRef,
         projectTransactionCostsCodeRef: state.participantProjectDetails.project?.transactionCostsCodeRef,
         projectCurrentBookWorth: state.participantProjectDetails.project?.currentBookWorth,

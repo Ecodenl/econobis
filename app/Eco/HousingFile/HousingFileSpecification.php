@@ -2,6 +2,7 @@
 
 namespace App\Eco\HousingFile;
 
+use App\Eco\Campaign\Campaign;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\User\User;
@@ -73,5 +74,8 @@ class HousingFileSpecification extends Model
         return $this->opportunities()->exists();
     }
 
-
+    public function campaign()
+    {
+        return $this->belongsTo(Campaign::class);
+    }
 }

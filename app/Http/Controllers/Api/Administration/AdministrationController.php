@@ -308,7 +308,8 @@ class AdministrationController extends ApiController
 
     public function checkStorageDir($administration_id){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos');
+        $storageDir = Storage::disk('administration-logos')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'logos');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
@@ -323,7 +324,7 @@ class AdministrationController extends ApiController
         }
 
         $filename = $attachment->store('administration_' . $administration->id
-            . DIRECTORY_SEPARATOR . 'logos', 'administrations');
+            . DIRECTORY_SEPARATOR . 'logos', 'administration-logos');
 
         $administration->logo_filename = $filename;
 
@@ -357,8 +358,7 @@ class AdministrationController extends ApiController
     }
 
     public function downloadSepa(Sepa $sepa){
-        $filePath = Storage::disk('administrations')
-            ->path($sepa->filename);
+        $filePath = Storage::disk('administrations')->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('Access-Control-Expose-Headers: X-Filename');
         return response()->download($filePath, $sepa->name, ['Content-Type: application/xml']);
@@ -381,10 +381,10 @@ class AdministrationController extends ApiController
 
     public function syncSentInvoicesFromTwinfield(RequestInput $requestInput, Administration $administration){
 
-        $fromDateSent = $requestInput
-            ->string('fromDateSent')->onEmpty(null)->next()
+        $inputData = $requestInput
+            ->string('fromDateSent')->onEmpty(null)->whenMissing(null)->next()
             ->get();
-        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $fromDateSent);
+        $twinfieldInvoicePaymentHelper = new TwinfieldInvoicePaymentHelper($administration, $inputData['fromDateSent'], null);
         return $twinfieldInvoicePaymentHelper->processTwinfieldInvoicePayment();
     }
 
@@ -392,7 +392,9 @@ class AdministrationController extends ApiController
     {
         $logoFilenameSrc = '';
         if ($administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($administration->logo_filename);
             $logo = file_get_contents($path);
             $logoFilenameSrc = 'data:' . mime_content_type($path)
                 . ';charset=binary;base64,' . base64_encode($logo);

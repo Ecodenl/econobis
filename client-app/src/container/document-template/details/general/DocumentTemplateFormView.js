@@ -15,6 +15,7 @@ const DocumentTemplateFormView = props => {
         name,
         number,
         htmlBody,
+        allowChangeHtmlBody,
         characteristic,
         roles,
         documentGroup,
@@ -47,6 +48,10 @@ const DocumentTemplateFormView = props => {
 
             <div className="row" onClick={props.switchToEdit}>
                 <ViewHtmlAsText label={'Tekst'} value={htmlBody} switchToEdit={props.switchToEdit} />
+            </div>
+
+            <div className="row" onClick={props.switchToEdit}>
+                <ViewText label={'Tekst wijzigbaar bij document'} value={allowChangeHtmlBody ? 'Ja' : 'Nee'} />
             </div>
 
             {documentTemplateType.id == 'general' && (

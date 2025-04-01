@@ -10,7 +10,8 @@ const RevenuesListFormList = ({ revenues, projectTypeCodeRef }) => {
                 <div className="col-sm-4">Project</div>
                 <div className="col-sm-2">Soort</div>
                 <div className="col-sm-3">Periode</div>
-                <div className="col-sm-2">Status</div>
+                <div className="col-sm-1">Status Deelname</div>
+                <div className="col-sm-1">Status Tot.opbr.</div>
                 <div className="col-sm-1" />
             </div>
             {revenues.length > 0 ? (

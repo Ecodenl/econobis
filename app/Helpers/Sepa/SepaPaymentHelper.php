@@ -246,7 +246,7 @@ class SepaPaymentHelper
         $name = 'betaal-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-        Storage::put('administrations/' . $path, $xml);
+        Storage::disk('administrations')->put($path, $xml);
 
         $sepa->filename = $path;
         $sepa->name = $name;
@@ -268,8 +268,7 @@ class SepaPaymentHelper
      */
     public function downloadSepa(Sepa $sepa){
 
-        $filePath = Storage::disk('administrations')
-            ->path($sepa->filename);
+        $filePath = Storage::disk('administrations')->path($sepa->filename);
         header('X-Filename:' . $sepa->name);
         header('administrationId:' . $sepa->administration_id);
         header('Access-Control-Expose-Headers: X-Filename, administrationId');
@@ -281,7 +280,8 @@ class SepaPaymentHelper
      */
     public function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

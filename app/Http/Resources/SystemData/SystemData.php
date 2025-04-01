@@ -3,6 +3,8 @@
 namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
@@ -66,6 +68,7 @@ use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
 use App\Eco\Product\ProductPaymentType;
 use App\Eco\Project\BaseProjectCodeRef;
+use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueCategory;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\Project\ProjectRevenueType;
@@ -185,10 +188,13 @@ class SystemData extends JsonResource
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
+            'dongleTypeReadOuts' => GenericResource::collection(AddressDongleTypeReadOut::all()),
+            'dongleTypeDongles' => GenericResource::collection(AddressDongleTypeDongle::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
-            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication'])->first(),
+            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication', 'use_dongle_registration'])->first(),
+            'cooperationExternalUrlContacts' => Cooperation::select(['id', 'show_external_url_for_contacts', 'external_url_contacts', 'external_url_contacts_button_text', 'external_url_contacts_on_new_page'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
@@ -240,13 +246,14 @@ class SystemData extends JsonResource
             'productInvoiceFrequencies' => FullEnumWithIdAndName::collection(ProductInvoiceFrequency::collection()),
             'productPaymentTypes' => FullEnumWithIdAndName::collection(ProductPaymentType::collection()),
             'products' => FullProduct::collection(Product::orderBy('name')->get()),
+            'projectLoanTypes' => GenericResource::collection(ProjectLoanType::all()),
             'projectRevenueCategories' => GenericResource::collection(ProjectRevenueCategory::all()),
             'projectRevenueDistributionTypes' => FullEnumWithIdAndName::collection(ProjectRevenueDistributionType::collection()),
             'projectRevenueTypes' => GenericResource::collection(ProjectRevenueType::all()),
             'projectStatus' => GenericResource::collection(ProjectStatus::orderBy('order')->get()),
             'projectTypes' => GenericResource::collection(ProjectType::all()),
             'projectTypesActive' => GenericResource::collection(ProjectType::where('is_active', true)->get()),
-            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('name')->get()),
+            'quotationRequestStatus' => FullQuotationRequestStatus::collection(QuotationRequestStatus::orderBy('opportunity_action_id')->orderBy('order')->get()),
             'roles' => Role::select(['id', 'name'])->get()->toArray(),
             'roofTypes' => FullEnumWithIdAndName::collection(RoofType::all()),
             'staticContactGroups' => ContactGroup::select(['id', 'name'])->where('type_id', 'static')->get(),

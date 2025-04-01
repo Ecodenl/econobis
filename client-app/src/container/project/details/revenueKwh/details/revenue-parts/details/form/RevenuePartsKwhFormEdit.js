@@ -638,6 +638,14 @@ class RevenuePartsKwhFormEdit extends Component {
                                             de totale opbrengst verdeling definitief worden gemaakt.
                                         </p>
                                     )}
+                                    {this?.props?.revenuesKwh?.project &&
+                                    this.props.revenuesKwh.project.dateEntry !== null ? (
+                                        <p className={'text-danger'}>
+                                            Standaard ingangsdatum mutaties (
+                                            {moment(this.props.revenuesKwh.project.dateEntry).format('DD-MM-YYYY')}) bij
+                                            dit project zal komen te vervallen.
+                                        </p>
+                                    ) : null}
                                 </Modal>
                             )}
                         </>

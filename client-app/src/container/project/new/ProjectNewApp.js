@@ -89,6 +89,7 @@ class ProjectNewApp extends Component {
                 hideWhenNotMatchingPostalCheck: true,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
+                loanTypeId: '',
                 amountOfLoanNeeded: null,
                 minAmountLoan: null,
                 maxAmountLoan: null,
@@ -124,6 +125,7 @@ class ProjectNewApp extends Component {
                 administrationId: false,
                 contactGroupIds: false,
                 dateEntry: false,
+                loanTypeId: false,
             },
             errorMessages: {
                 name: '',
@@ -140,6 +142,7 @@ class ProjectNewApp extends Component {
                 administrationId: '',
                 contactGroupIds: '',
                 dateEntry: '',
+                loanTypeId: '',
             },
             loading: false,
         };
@@ -377,6 +380,15 @@ class ProjectNewApp extends Component {
             }
         }
 
+        // If loan then loanTypeId required.
+        if (projectType && projectType.codeRef === 'loan') {
+            if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
+                errors.loanTypeId = true;
+                errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
+                hasErrors = true;
+            }
+        }
+
         // If isMemberShipRequired is false, set contactGroupIds to empty string
         if (!project.isMembershipRequired) {
             project.contactGroupIds = '';
@@ -468,6 +480,7 @@ class ProjectNewApp extends Component {
             hideWhenNotMatchingPostalCheck,
             contactGroupIds,
             contactGroupIdsSelected,
+            loanTypeId,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -551,6 +564,8 @@ class ProjectNewApp extends Component {
 
                                     {projectType && projectType.codeRef === 'loan' ? (
                                         <ProjectFormDefaultLoan
+                                            loanTypeId={loanTypeId}
+                                            projectLoanTypes={this.props.projectLoanTypes}
                                             amountOfLoanNeeded={amountOfLoanNeeded}
                                             minAmountLoan={minAmountLoan}
                                             maxAmountLoan={maxAmountLoan}
@@ -559,6 +574,8 @@ class ProjectNewApp extends Component {
                                             amountOptioned={amountOptioned}
                                             amountInteressed={amountInteressed}
                                             handleInputChange={this.handleInputChange}
+                                            errors={this.state.errors}
+                                            errorMessages={this.state.errorMessages}
                                         />
                                     ) : null}
 
@@ -656,6 +673,7 @@ const mapStateToProps = state => {
     return {
         administrations: state.meDetails.administrations,
         projectTypesActive: state.systemData.projectTypesActive,
+        projectLoanTypes: state.systemData.projectLoanTypes,
     };
 };
 

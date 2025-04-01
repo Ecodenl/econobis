@@ -289,6 +289,7 @@ class QuotationRequestController
                 'intake' => [
                     'contact' => [
                         'id' => $quotationRequest->opportunity->intake->contact->id,
+                        'number' => $quotationRequest->opportunity->intake->contact->number,
                         'fullName' => $quotationRequest->opportunity->intake->contact->full_name,
                         'primaryphoneNumber' => optional($quotationRequest->opportunity->intake->contact->primaryphoneNumber)->number,
                         'primaryEmailAddress' => optional($quotationRequest->opportunity->intake->contact->primaryEmailAddress)->email,

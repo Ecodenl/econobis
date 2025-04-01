@@ -36,8 +36,8 @@ class UpdateCooperation extends FormRequest
             'ibanAttn' => [''],
             'email' => ['email'],
             'website' => [''],
-            'logoFilename' => [''],
-            'logoName' => [''],
+//            'logoFilename' => [''],
+//            'logoName' => [''],
             'hoomLink' => [''],
             'hoomConnectCoachLink' => [''],
             'hoomKey' => [''],
@@ -48,6 +48,7 @@ class UpdateCooperation extends FormRequest
             'useLaposta' => [''],
             'lapostaKey' => [''],
             'useExportAddressConsumption' => [''],
+            'useDongleRegistration' => [''],
             'requireTwoFactorAuthentication' => [''],
             'inspectionPlannedEmailTemplateId' => [''],
             'inspectionPlannedMailboxId' => [''],
@@ -58,6 +59,10 @@ class UpdateCooperation extends FormRequest
             'fontFamilyDefault' => [''],
             'fontSizeDefault' => [''],
             'fontColorDefault' => [''],
+            'showExternalUrlForContacts' => [''],
+            'externalUrlContacts' => [''],
+            'externalUrlContactsButtonText' => [''],
+            'externalUrlContactsOnNewPage' => [''],
         ];
     }
 }

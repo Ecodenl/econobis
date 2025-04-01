@@ -13,6 +13,7 @@ import { fetchCampaignsSaga } from './campaign/CampaignsSaga';
 import {
     deleteAddressSaga,
     deleteAddressEnergySupplierSaga,
+    deleteAddressDongleSaga,
     deleteContactNoteSaga,
     deleteEmailAddressSaga,
     deletePhoneNumberSaga,
@@ -60,6 +61,7 @@ import { fetchMailgunDomainsSaga } from './mailgun-domains/MailgunDomainsSaga';
 import * as MailgunDomainDetailsSaga from './mailgun-domains/MailgunDomainDetailsSaga';
 import { fetchMeasuresSaga } from './measure/MeasuresSaga';
 import { fetchMeasureSaga } from './measure/MeasureDetailsSaga';
+import { fetchAddressDonglesSaga } from './address-dongle/AddressDonglesSaga';
 import { deleteOpportunitySaga, fetchOpportunitiesSaga } from './opportunity/OpportunitiesSaga';
 import { fetchOpportunitySaga } from './opportunity/OpportunityDetailsSaga';
 import { deleteOrderSaga, fetchOrdersSaga } from './order/OrdersSaga';
@@ -161,6 +163,7 @@ export default function* watchSagas() {
     yield takeLatest('DELETE_PORTAL_USER', deletePortalUserSaga);
     yield takeLatest('DELETE_CONTACT_NOTE', deleteContactNoteSaga);
     yield takeLatest('DELETE_ADDRESS_ENERGY_SUPPLIER', deleteAddressEnergySupplierSaga);
+    yield takeLatest('DELETE_ADDRESS_DONGLE', deleteAddressDongleSaga);
     // Contact group
     yield takeLatest('FETCH_CONTACT_GROUPS', fetchContactGroupsSaga);
     yield takeLatest('DELETE_CONTACT_GROUP', deleteContactGroupSaga);
@@ -208,6 +211,8 @@ export default function* watchSagas() {
     // Measure
     yield takeLatest('FETCH_MEASURES', fetchMeasuresSaga);
     yield takeLatest('FETCH_MEASURE', fetchMeasureSaga);
+    // Dongle
+    yield takeLatest('FETCH_ADDRESS_DONGLES', fetchAddressDonglesSaga);
     // Opportunity
     yield takeLatest('DELETE_OPPORTUNITY', deleteOpportunitySaga);
     yield takeLatest('FETCH_OPPORTUNITIES', fetchOpportunitiesSaga);

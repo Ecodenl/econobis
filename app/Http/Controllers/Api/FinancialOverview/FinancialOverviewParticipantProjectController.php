@@ -63,7 +63,8 @@ class FinancialOverviewParticipantProjectController extends Controller
     protected function createFinancialOverviewParticipantProjects(ParticipantProject $participant, Carbon $startDate, Carbon $endDate, FinancialOverviewProject $financialOverviewProject)
     {
         $startValue = $this->calculateParticipationsValue($participant, $startDate, $startDate);
-        $endValue = $this->calculateParticipationsValue($participant, $endDate, $endDate->addDay());
+        $cloneEndDate = clone $endDate;
+        $endValue = $this->calculateParticipationsValue($participant, $endDate, $cloneEndDate->addDay());
 
         if ($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
             || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0) {

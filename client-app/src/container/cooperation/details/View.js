@@ -41,9 +41,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Email'} value={formData.email} />
                         <ViewText label={'Website'} value={formData.website} />
                     </div>
-                    <div className="row">
-                        <ViewText label={'Logo'} value={formData.logoName} />
-                    </div>
                 </PanelBody>
             </Panel>
             <Panel>
@@ -106,45 +103,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     </div>
                 </PanelBody>
             </Panel>
-            {/*todo WM: opschonen inspection* velden*/}
-            {/*<Panel>*/}
-            {/*    <PanelHeader>*/}
-            {/*        <span className="h5 text-bold">Buurtaanpak</span>*/}
-            {/*    </PanelHeader>*/}
-            {/*    <PanelBody>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText*/}
-            {/*                label={'Buurtaanpak afspraak e-mail template'}*/}
-            {/*                value={*/}
-            {/*                    formData.inspectionPlannedEmailTemplate && formData.inspectionPlannedEmailTemplate.name*/}
-            {/*                }*/}
-            {/*            />*/}
-            {/*            <ViewText*/}
-            {/*                label={'Mailbox buurtaanpak e-mail bevestigingen'}*/}
-            {/*                value={formData.inspectionPlannedMailbox && formData.inspectionPlannedMailbox.name}*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText*/}
-            {/*                label={'Buurtaanpak opname e-mail template'}*/}
-            {/*                value={*/}
-            {/*                    formData.inspectionRecordedEmailTemplate &&*/}
-            {/*                    formData.inspectionRecordedEmailTemplate.name*/}
-            {/*                }*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText*/}
-            {/*                label={'Buurtaanpak uitgebracht e-mail template'}*/}
-            {/*                value={*/}
-            {/*                    formData.inspectionReleasedEmailTemplate &&*/}
-            {/*                    formData.inspectionReleasedEmailTemplate.name*/}
-            {/*                }*/}
-            {/*            />*/}
-            {/*        </div>*/}
-            {/*    </PanelBody>*/}
-            {/*</Panel>*/}
-
             {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
                 <Panel>
                     <PanelHeader>
@@ -192,7 +150,9 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
                     </div>
                 </PanelBody>
+            </Panel>
 
+            <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
@@ -201,8 +161,8 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         <ViewText
                             label={'Gebruik export energieverbruik tarieven en verbruik'}
                             value={formData.useExportAddressConsumption ? 'Ja' : 'Nee'}
-                            size={'col-sm-5'}
                             name={'useExportAddressConsumption'}
+                            size={'col-sm-5'}
                             textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina een download te maken van energie verbruik en tarief voorstellen.<br/>
 Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waardes:<br/>
 {verbruik_gas_begindatum}<br/>
@@ -228,7 +188,46 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                         />
+
+                        <ViewText
+                            label={'Gebruik dongel registratie functionaliteit'}
+                            value={formData.useDongleRegistration ? 'Ja' : 'Nee'}
+                            name={'useDongleRegistration'}
+                        />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruik URL externe contacten pagina'}
+                            value={formData.showExternalUrlForContacts ? 'Ja' : 'Nee'}
+                            name={'showExternalUrlForContacts'}
+                            size={'col-sm-5'}
+                            textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina via een button naar een externe
+                             contactpagina te gaan zoals econobisbuurtaanpak.nl`}
+                        />
+                    </div>
+                    {formData.showExternalUrlForContacts ? (
+                        <>
+                            <div className="row">
+                                <ViewText
+                                    label={'Externe contacten pagina URL'}
+                                    value={formData.externalUrlContacts}
+                                    name={'externalUrlContacts'}
+                                />
+                                <ViewText
+                                    label={'Externe contacten pagina button tekst'}
+                                    value={formData.externalUrlContactsButtonText}
+                                    name={'externalUrlContactsButtonText'}
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    label={'Externe URL openen in een nieuw venster?'}
+                                    value={formData.externalUrlContactsOnNewPage ? 'Ja' : 'Nee'}
+                                    name={'externalUrlContactsOnNewPage'}
+                                />
+                            </div>
+                        </>
+                    ) : null}
                 </PanelBody>
             </Panel>
         </section>

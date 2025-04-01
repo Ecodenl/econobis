@@ -2,6 +2,7 @@
 
 namespace App\Eco\Address;
 
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
@@ -33,6 +34,17 @@ class Address extends Model
     public function addressEnergySuppliers()
     {
         return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('member_since')->orderByDesc('id');
+    }
+    public function addressDongles()
+    {
+        return $this->hasMany(AddressDongle::class)->orderByDesc('id');
+    }
+
+    public function lastAddressDongle()
+    {
+        // latestOfMany is default op basis van created_at, als je dit bijv. op basis van 'id' wil, dan kan je dit veld meegeven in latestOfMany:
+        //       return $this->hasOne(AddressDongle::class)->latestOfMany('id');
+        return $this->hasOne(AddressDongle::class)->latestOfMany();
     }
 
     // currentAddressEnergySupplierElectricity: only for Electricity ! (type 2 or 3)

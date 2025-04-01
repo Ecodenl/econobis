@@ -55,6 +55,10 @@ class CreateCooperation extends FormRequest
             'inspectionReleasedEmailTemplateId' => [''],
             'createContactsForReportTable' => [''],
             'emailReportTableProblems' => ['email'],
+            'showExternalUrlForContacts' => [''],
+            'externalUrlContacts' => [''],
+            'externalUrlContactsButtonText' => [''],
+            'externalUrlContactsOnNewPage' => [''],
         ];
     }
 }

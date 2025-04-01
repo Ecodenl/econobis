@@ -510,6 +510,7 @@ class EmailController extends Controller
             ->get();
 
         $email->fill($data);
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
 
         $email->inlineImagesService()->convertInlineImagesToCid();
 

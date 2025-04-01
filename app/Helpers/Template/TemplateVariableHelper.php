@@ -20,6 +20,7 @@ use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Storage;
 
 class TemplateVariableHelper
 {
@@ -157,6 +158,9 @@ class TemplateVariableHelper
     }
 
     public static function getContactVar($model, $varname){
+
+        $model->load('person', 'organisation', 'contactPerson', 'primaryAddress', 'primaryEmailAddress', 'primaryphoneNumber');
+
         switch ($varname) {
             case 'nummer':
                 return $model->number;
@@ -334,6 +338,8 @@ class TemplateVariableHelper
                 } else {
                     return '';
                 }
+            case 'telefoonnummer_voor_URL':
+                return rawurlencode($model?->primaryPhoneNumber?->number);
             case 'email_voor_URL':
                 return rawurlencode($model?->primaryEmailAddress?->email);
             case 'straatnaam_voor_URL':
@@ -349,6 +355,19 @@ class TemplateVariableHelper
             case 'plaats_voor_URL':
             case 'woonplaats_voor_URL':
                 return rawurlencode($model?->primaryAddress?->city);
+
+            case 'dongel_type_uitlezing':
+                return $model?->primaryAddress?->lastAddressDongle?->dongleReadOutType?->name ?: '';
+            case 'dongel_type_dongel':
+                return $model?->primaryAddress?->lastAddressDongle?->dongleType?->name ?: '';
+            case 'dongel_mac_nummer':
+                return $model?->primaryAddress?->lastAddressDongle?->mac_number ?: '';
+            case 'dongel_datum_ondertekening':
+                return $model?->primaryAddress?->lastAddressDongle?->date_signed?->format('d-m-Y');
+            case 'dongel_datum_start':
+                return $model?->primaryAddress?->lastAddressDongle?->date_start?->format('d-m-Y');
+            case 'dongel_datum_eind':
+                return $model?->primaryAddress?->lastAddressDongle?->date_end?->format('d-m-Y');
 
             default:
                 return '';
@@ -1390,15 +1409,15 @@ class TemplateVariableHelper
                     <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Ingangsdatum</th>";
                     switch ($projectTypeCodeRef) {
                         case 'loan':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Lening rekening</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie Lening rekening</th>";
                             break;
                         case 'capital':
                         case 'postalcode_link_capital':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Kapitaal rekening</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie Kapitaal rekening</th>";
                             $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal part.</th>";
                             break;
                         case 'obligation':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal obligaties</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie aantal obligaties</th>";
                             break;
                     };
                 $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Opbrengst</th>";
@@ -1921,6 +1940,8 @@ class TemplateVariableHelper
                 } else {
                     return '';
                 }
+            case 'contact_telefoonnummer_voor_URL':
+                return rawurlencode($contact?->primaryPhoneNumber?->number);
             case 'contact_email_voor_URL':
             case 'verzoek_voor_email_voor_URL':
                 return rawurlencode($contact?->primaryEmailAddress?->email);
@@ -1940,7 +1961,8 @@ class TemplateVariableHelper
             case 'contact_woonplaats_voor_URL':
             case 'verzoek_voor_plaats_voor_URL':
                 return rawurlencode($contact?->primaryAddress?->city);
-
+            case 'contact_nummer_voor_URL':
+                return rawurlencode($contact?->number);
             case 'contact_naam':
             case 'verzoek_voor_naam':
                 return $contact?->full_name_fnf;
@@ -2217,7 +2239,9 @@ class TemplateVariableHelper
             case 'logo':
                 $img = '';
                 if ($model->logo_filename) {
-                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+//                    todo WM: opschonen
+//                    $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $model->logo_filename);
+                    $path = Storage::disk('administration-logos')->path($model->logo_filename);
                     $logo = file_get_contents($path);
 
                     $src = 'data:' . mime_content_type($path)

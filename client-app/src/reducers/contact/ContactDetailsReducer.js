@@ -214,6 +214,52 @@ export default function(state = {}, action) {
                 }),
             };
 
+        case 'NEW_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: [
+                                  action.addressDongle, // Nieuwe entry eerst
+                                  ...(address.addressDongles || []), // Bestaande array daarna
+                              ],
+                          }
+                        : address
+                ),
+            };
+
+        case 'UPDATE_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address =>
+                    address.id === action.addressDongle.addressId
+                        ? {
+                              ...address,
+                              addressDongles: address.addressDongles.map(addressDongle =>
+                                  addressDongle.id === action.addressDongle.id
+                                      ? {
+                                            ...action.addressDongle,
+                                        }
+                                      : addressDongle
+                              ),
+                          }
+                        : address
+                ),
+            };
+
+        case 'DELETE_ADDRESS_DONGLE':
+            return {
+                ...state,
+                addresses: state.addresses.map(address => {
+                    return {
+                        ...address,
+                        addressDongles: address.addressDongles.filter(addressDongle => addressDongle.id !== action.id),
+                    };
+                }),
+            };
+
         case 'UPDATE_HOOM_ACCOUNT_ID':
             return { ...state, hoomAccountId: action.hoomAccountId };
         default:

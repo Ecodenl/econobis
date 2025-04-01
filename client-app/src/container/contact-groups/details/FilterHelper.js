@@ -148,6 +148,20 @@ export default (type, field) => {
                     return 'Gemaakt op';
                 case 'hoomdossierExists':
                     return 'Hoomdossier aangemaakt';
+                case 'hasEmailAddress':
+                    return 'Heeft emailadres';
+                case 'hasPhoneNumber':
+                    return 'Heeft telefoonnummer';
+                case 'addressDongleTypeReadOut':
+                    return 'Dongle Type uitlezing';
+                case 'addressDongleTypeDongle':
+                    return 'Dongle - Type dongel';
+                case 'addressDongleDateStart':
+                    return 'Dongle - Start datum';
+                case 'addressDongleDateEnd':
+                    return 'Dongle - Eind datum';
+                case 'addressDongleHasEnergyId':
+                    return 'Dongle - Heeft energie ID koppeling';
             }
             break;
         case 'comperator':

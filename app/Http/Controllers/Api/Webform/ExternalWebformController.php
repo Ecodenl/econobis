@@ -13,6 +13,9 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressEnergyConsumptionElectricity;
 use App\Eco\Address\AddressEnergyConsumptionGas;
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Contact\Contact;
@@ -74,7 +77,6 @@ use App\Eco\Title\Title;
 use App\Eco\User\User;
 use App\Eco\Webform\Webform;
 use App\Helpers\Address\AddressHelper;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Workflow\IntakeWorkflowHelper;
@@ -396,6 +398,8 @@ class ExternalWebformController extends Controller
             $this->addEnergyConsumptionGasToAddress($this->address, $data['address_energy_consumption_gas']);
             $this->addEnergyConsumptionElectricityToAddress($this->address, $data['address_energy_consumption_electricity']);
 
+            $this->addDongleToAddress($this->address, $data['dongle'], $webform);
+
             $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['quotation_request'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
 
@@ -530,6 +534,15 @@ class ExternalWebformController extends Controller
 //                'energieleverancier_ean_code_elektra' => 'ean_electricity',
                 'energieleverancier_status' => 'energy_supply_status_id',
 //                'energieleverancier_huidig' => 'is_current_supplier',
+            ],
+            'dongle' => [
+                'dongel_type_uitlezing_id' => 'dongle_type_read_out_id',
+                'dongel_mac_nummer' => 'dongle_mac_number',
+                'dongel_type_dongel_id' => 'dongle_type_dongle_id',
+                'dongel_koppeling_energie_id' => 'dongle_energy_id',
+                'dongel_datum_ondertekening' => 'dongle_date_signed',
+                'dongel_start_datum' => 'dongle_date_start',
+                'dongel_eind_datum' => 'dongle_date_end',
             ],
             'participation' => [
                 // ParticipantProject
@@ -2065,6 +2078,70 @@ class ExternalWebformController extends Controller
         return true;
     }
 
+    protected function addDongleToAddress(Address $address, $data, Webform $webform)
+    {
+        if ($data['dongle_type_read_out_id'] != '') {
+            $this->log('Er zijn dongel gegevens meegegeven');
+
+            $addressDongleTypeReadOut = AddressDongleTypeReadOut::find($data['dongle_type_read_out_id']);
+            if (!$addressDongleTypeReadOut) {
+                $this->error('Ongeldige waarde voor type dongel meegegeven.');
+            }
+
+            $hasTypeDongle = AddressDongleTypeDongle::where('type_read_out_id', $data['dongle_type_read_out_id'])->exists();
+            // todo WM: check of we hier ook nog een isset check moeten doen?
+            if($hasTypeDongle && $data['dongle_type_dongle_id']){
+                $addressDongleTypeDongle = AddressDongleTypeDongle::where('id', $data['dongle_type_dongle_id'])->where('type_read_out_id', $data['dongle_type_read_out_id'])->first();
+                if (!$addressDongleTypeDongle) {
+                    $this->error('Ongeldige waarde voor type dongel meegegeven.');
+                }
+            } else {
+                $data['dongle_type_dongle_id'] = '';
+            }
+
+            if($data['dongle_energy_id'] && !is_numeric($data['dongle_energy_id'])) {
+                $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
+            }
+
+                // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Die moeten we eerst even setten als we dus hier vanuit webform komen.
+            $responsibleUser = User::find($webform->responsible_user_id);
+            if($responsibleUser){
+                Auth::setUser($responsibleUser);
+                $this->log('Dongel verantwoordelijke gebruiker : ' . $webform->responsible_user_id);
+            }else{
+                $responsibleTeam = Team::find($webform->responsible_team_id);
+                if($responsibleTeam && $responsibleTeam->users ){
+                    $teamFirstUser = $responsibleTeam->users->first();
+                    Auth::setUser($teamFirstUser);
+                    $this->log('Dongel verantwoordelijke gebruiker : ' . $teamFirstUser->id);
+                }else{
+                    $this->log('Dongel verantwoordelijke gebruiker : onbekend');
+                }
+            }
+
+            $addressDongleData = [
+                'address_id' => $address->id,
+                'type_read_out_id' => $data['dongle_type_read_out_id'],
+                'mac_number' => $data['dongle_mac_number']?: null,
+                'type_dongle_id' => $data['dongle_type_dongle_id']?: null,
+                'energy_id' => $data['dongle_energy_id']?: null,
+                'date_signed' => $data['dongle_date_signed']?: null,
+                'date_start' => $data['dongle_date_start']?: null,
+                'date_end' => $data['dongle_date_end']?: null,
+            ];
+            $addressDongle = new AddressDongle();
+            $addressDongle->fill($addressDongleData);
+            $addressDongle->save();
+
+            $this->log('Koppeling met dongel gemaakt.');
+
+        } else {
+            $this->log('Er zijn geen dongel gegevens meegegeven.');
+        }
+
+    }
+
     protected function addEnergySupplierToAddress(Address $address, $data)
     {
         if ($data['energy_supplier_id'] != '') {
@@ -2428,7 +2505,6 @@ class ExternalWebformController extends Controller
 
     protected function addIntakeOpportunityAttachment($intake, $opportunity, $intakeOpportunityAttachmentUrl) {
         $fileName = basename($intakeOpportunityAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Intake kans bijlage';
@@ -2451,27 +2527,14 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($intakeOpportunityAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Intake kans bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Intake kans bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $document->file_path_and_name = $filePathAndName;
 
         $document->save();
     }
@@ -2483,7 +2546,6 @@ class ExternalWebformController extends Controller
 
         if(in_array($fileType, $allowedFileTypes)) {
             $fileName = basename($contactAttachmentUrl);
-            $tmpFileName = Str::random(9) . '-' . $fileName;
 
             $document = new Document();
             $document->description = 'Contact bijlage';
@@ -2500,27 +2562,14 @@ class ExternalWebformController extends Controller
             $document->save();
 
             $contents = file_get_contents($contactAttachmentUrl);
-            $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-            $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-            $pos = strrpos($tmpFileName, '/');
-            $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+            $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+            $filePathAndName = "{$document->document_group}/" .
+                Carbon::parse($document->created_at)->year .
+                "/{$uniqueName}";
+            Storage::disk('documents')->put($filePathAndName, $contents);
+            $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-            Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-            if (\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-                //delete file on server, still saved on alfresco.
-                Storage::disk('documents')->delete($tmpFileName);
-                $this->log('Contact bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-            } else {
-                $document->filename = $tmpFileName;
-                $document->alfresco_node_id = null;
-                $this->log('contact bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-            }
+            $document->file_path_and_name = $filePathAndName;
 
             $document->save();
         } else {
@@ -2753,8 +2802,8 @@ class ExternalWebformController extends Controller
                         'measure_date' => $measureDate,
                         'answer' => $measureAnswer,
                         'status_id' => $measureStatusId,
-                        'floor_id' => $measureFloorId,
-                        'side_id' => $measureSidesid,
+                        'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                        'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                         'type_brand' => $measureTypeBrand,
                         'campaign_id' => $housingFileSpecificationCampaignId,
                     ]);
@@ -2821,8 +2870,8 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                             'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
@@ -2832,8 +2881,8 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId,
-                            'side_id' => $measureSidesid,
+                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
+                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                             'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
@@ -4073,7 +4122,6 @@ class ExternalWebformController extends Controller
         $documentCreatedFromName = DocumentCreatedFrom::where('code_ref', 'quotationrequest')->first()->name;
 
         $fileName = basename($quotationRequestAttachmentUrl);
-        $tmpFileName = Str::random(9) . '-' . $fileName;
 
         $document = new Document();
         $document->description = 'Kansactie bijlage';
@@ -4092,27 +4140,14 @@ class ExternalWebformController extends Controller
         $document->save();
 
         $contents = file_get_contents($quotationRequestAttachmentUrl);
-        $filePath_tmp = Storage::disk('documents')->path($tmpFileName);
-        $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-        $pos = strrpos($tmpFileName, '/');
-        $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
+        $uniqueName = Str::uuid() . '.' . pathinfo($document->filename, PATHINFO_EXTENSION);;
+        $filePathAndName = "{$document->document_group}/" .
+            Carbon::parse($document->created_at)->year .
+            "/{$uniqueName}";
+        Storage::disk('documents')->put($filePathAndName, $contents);
+        $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Bigstorage');
 
-        Storage::disk('documents')->put(DIRECTORY_SEPARATOR . $tmpFileName, $contents);
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $fileName, $document->getDocumentGroup()->name);
-            $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($tmpFileName);
-            $this->log('Kansactie bijlage ' . $fileName . ' opgeslagen als ' . $documentCreatedFromName . ' document in Alfresco');
-
-        } else {
-            $document->filename = $tmpFileName;
-            $document->alfresco_node_id = null;
-            $this->log('Kansactie bijlage ' . $tmpFileName . ' opgeslagen als ' . $documentCreatedFromName . ' document lokaal in documents storage map');
-        }
+        $document->file_path_and_name = $filePathAndName;
 
         $document->save();
     }

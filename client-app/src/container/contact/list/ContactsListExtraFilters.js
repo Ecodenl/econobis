@@ -442,30 +442,36 @@ class ContactsListExtraFilters extends Component {
                 name: 'Postcode',
                 type: 'numberOrString',
             },
+            sharedArea: {
+                name: 'Buurt',
+                type: 'searchWithAsync',
+            },
+            city: {
+                name: 'Woonplaats',
+                type: 'stringWithoutNull',
+            },
             country: {
                 name: 'Land',
                 type: 'dropdown',
                 dropDownOptions: this.props.countries,
             },
+            hasEmailAddress: {
+                name: 'Heeft emailadres',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            hasPhoneNumber: {
+                name: 'Heeft telefoonnummer',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
+            dateOfBirth: {
+                name: 'Geboortedatum',
+                type: 'date',
+            },
             createdAt: {
                 name: 'Gemaakt op',
                 type: 'date',
-            },
-            currentObligations: {
-                name: 'Huidig aantal obligaties',
-                type: 'number',
-            },
-            currentParticipations: {
-                name: 'Huidig aantal participaties',
-                type: 'number',
-            },
-            currentPostalcodeLinkCapital: {
-                name: 'Huidig aantal postcoderoos',
-                type: 'number',
-            },
-            currentLoan: {
-                name: 'Huidig bedrag lening',
-                type: 'number',
             },
             staticContactGroup: {
                 name: 'Statische groep',
@@ -487,6 +493,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.campaigns,
             },
+            intakeMeasureCategory: {
+                name: 'Intake interesse',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.measureCategories,
+            },
             opportunityMeasureCategory: {
                 name: 'Kans maatregel categorie',
                 type: 'dropdownHas',
@@ -502,40 +513,6 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.quotationRequestStatus,
             },
-            intakeMeasureCategory: {
-                name: 'Intake interesse',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.measureCategories,
-            },
-            product: {
-                name: 'Product',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.products,
-            },
-            dateOfBirth: {
-                name: 'Geboortedatum',
-                type: 'date',
-            },
-            energySupplier: {
-                name: 'Huidige Energie leverancier',
-                type: 'dropdown',
-                dropDownOptions: this.props.energySuppliers,
-            },
-            energySupplierType: {
-                name: 'Type huidige energie leverancier',
-                type: 'dropdownHas',
-                dropDownOptions: this.props.energySupplierTypes,
-            },
-            didAgreeAvg: {
-                name: 'Akkoord privacybeleid',
-                type: 'boolean',
-                dropDownOptions: this.state.yesNoOptions,
-            },
-            portalUser: {
-                name: 'Portal gebruiker actief',
-                type: 'boolean',
-                dropDownOptions: this.state.yesNoOptions,
-            },
             housingFileExists: {
                 name: 'Woningdossier aanwezig',
                 type: 'boolean',
@@ -545,6 +522,11 @@ class ContactsListExtraFilters extends Component {
                 name: 'Woningdossier kenmerk',
                 type: 'dropdownHousingFileFields',
                 dropDownOptions: this.props.housingFileHoomLinks,
+            },
+            hoomdossierExists: {
+                name: 'Hoomdossier aangemaakt',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
             },
             contactFreeFieldsFieldName: {
                 name: 'Vrij veld contact',
@@ -556,17 +538,49 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownFreeFieldsFields',
                 dropDownOptions: this.state.addressFreeFieldsFields ? this.state.addressFreeFieldsFields : [],
             },
+            product: {
+                name: 'Product',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.products,
+            },
+            energySupplier: {
+                name: 'Huidige Energie leverancier',
+                type: 'dropdown',
+                dropDownOptions: this.props.energySuppliers,
+            },
+            energySupplierType: {
+                name: 'Type huidige energie leverancier',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.energySupplierTypes,
+            },
+            currentObligations: {
+                name: 'Huidig aantal obligaties',
+                type: 'number',
+            },
+            currentParticipations: {
+                name: 'Huidig aantal participaties',
+                type: 'number',
+            },
+            currentPostalcodeLinkCapital: {
+                name: 'Huidig aantal postcoderoos',
+                type: 'number',
+            },
+            currentLoan: {
+                name: 'Huidig bedrag lening',
+                type: 'number',
+            },
+            portalUser: {
+                name: 'Portal gebruiker actief',
+                type: 'boolean',
+                dropDownOptions: this.state.yesNoOptions,
+            },
             inspectionPersonType: {
                 name: 'Rol in buurtaanpak',
                 type: 'dropdownHas',
                 dropDownOptions: this.props.inspectionPersonTypes,
             },
-            sharedArea: {
-                name: 'Buurt',
-                type: 'searchWithAsync',
-            },
-            hoomdossierExists: {
-                name: 'Hoomdossier aangemaakt',
+            didAgreeAvg: {
+                name: 'Akkoord privacybeleid',
                 type: 'boolean',
                 dropDownOptions: this.state.yesNoOptions,
             },

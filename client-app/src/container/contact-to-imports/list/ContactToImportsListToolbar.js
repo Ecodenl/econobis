@@ -15,6 +15,7 @@ function ContactToImportsListToolbar({
     selectAllUpdate,
     actionSelectAllNew,
     actionSelectAllUpdate,
+    updateContactMatches,
 }) {
     return (
         <div className="row">
@@ -39,6 +40,7 @@ function ContactToImportsListToolbar({
                             />
                         </>
                     ) : null}
+                    <ButtonText buttonText={'Actualiseren matches'} onClickAction={updateContactMatches} />
                 </div>
             </div>
             <div className="col-md-4">

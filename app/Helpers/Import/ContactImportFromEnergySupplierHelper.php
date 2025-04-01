@@ -10,7 +10,10 @@
 namespace App\Helpers\Import;
 
 
+use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactForImport;
 use App\Eco\Contact\ContactToImport;
+use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -18,9 +21,18 @@ use Illuminate\Support\Str;
 
 class ContactImportFromEnergySupplierHelper
 {
-    public function validateImport($file, $file_headers)
+    private $firstNameHeaderId = 0;
+    private $lastNameHeaderId = 0;
+
+    public function validateImport($file, $supplierCodeRef, $file_headers)
     {
+
+        $supplierCodeRef = explode(';', $supplierCodeRef);
         $file_headers = explode(';', $file_headers);
+        if( $supplierCodeRef === 'OM'){
+            $this->firstNameHeaderId = 2;
+            $this->lastNameHeaderId = 3;
+        }
 
         if (!$file) {
             return [
@@ -50,11 +62,12 @@ class ContactImportFromEnergySupplierHelper
 
         $validationLines = [];
 
+        // todo: check op line met meer dan 1024 tekens?
         while ($line = fgetcsv($csv, 1024, ";")) {
             $lineNumber++;
             if ($lineNumber === 1) {
                 //bom weg
-                $line[0] = $str = str_replace("\xEF\xBB\xBF",'',$line[0]);
+                $line[0] = str_replace("\xEF\xBB\xBF", '', $line[0]);
                 $errorValidationHeader = $this->validateHeaders($line, $file_headers);
                 if ($errorValidationHeader) {
                     return [$errorValidationHeader];
@@ -74,13 +87,13 @@ class ContactImportFromEnergySupplierHelper
 
     public function validateHeaders($line, $file_headers)
     {
-        foreach ($line as $k => $lineField){
+        foreach ($line as $k => $lineField) {
             // when encoding isn't UTF-8 encode lineField to utf8.
-            $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
-            if(false === $encodingLineField){
+            $encodingLineField = mb_detect_encoding($lineField, 'UTF-8', true);
+            if (false === $encodingLineField) {
                 $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
-            if(mb_detect_encoding($line[$k]) === false){
+            if (mb_detect_encoding($line[$k]) === false) {
                 return [
                     'field' => 'Bestand',
                     'value' => 'Fout gecodeerd',
@@ -136,7 +149,7 @@ class ContactImportFromEnergySupplierHelper
         $message = [];
         $prio = 3;
 
-        if(sizeof($line) < sizeof($file_headers)) {
+        if (sizeof($line) < sizeof($file_headers)) {
             return [
                 'field' => '',
                 'value' => '',
@@ -146,7 +159,7 @@ class ContactImportFromEnergySupplierHelper
             ];
         }
 
-        if(sizeof($line) > sizeof($file_headers)) {
+        if (sizeof($line) > sizeof($file_headers)) {
             return [
                 'field' => '',
                 'value' => '',
@@ -158,8 +171,8 @@ class ContactImportFromEnergySupplierHelper
 
         foreach ($line as $k => $lineField) {
             // when encoding isn't UTF-8 encode lineField to utf8.
-            $encodingLineField= mb_detect_encoding( $lineField, 'UTF-8', true);
-            if(false === $encodingLineField){
+            $encodingLineField = mb_detect_encoding($lineField, 'UTF-8', true);
+            if (false === $encodingLineField) {
                 $line[$k] = mb_convert_encoding($lineField, 'UTF-8', mb_list_encodings());
             }
             if (mb_detect_encoding($line[$k]) === false) {
@@ -169,6 +182,18 @@ class ContactImportFromEnergySupplierHelper
                 $prio = 1;
             }
         }
+
+        //voornaam of achternaam verplicht
+        if ($this->firstNameHeaderId != 0
+            && $this->lastNameHeaderId != 0
+            && !$line[$this->firstNameHeaderId]
+            && !$line[$this->lastNameHeaderId]) {
+            array_push($field, $file_headers[$this->firstNameHeaderId]);
+            array_push($value, $line[$this->firstNameHeaderId]);
+            array_push($message, 'Voornaam of achternaam is een verplicht veld.');
+            $prio = 1;
+        };
+
 
         return [
             'field' => implode(', ', $field),
@@ -184,111 +209,164 @@ class ContactImportFromEnergySupplierHelper
     {
         $csv = fopen($file, 'r');
 
-        ContactToImport::truncate();
+        ContactToImport::query()->delete();
 
-        $warninglinesArray = explode(',',$warninglines);
+        $warninglinesArray = explode(',', $warninglines);
 
         $counter = 1;
 
-        $header = true;
+        //bom weg
+        $firstLine = fgets($csv); // Read the first line
+        $bom = pack('H*', 'EFBBBF'); // UTF-8 BOM
+        // Remove the BOM if it's present at the start of the first line
+        if (strpos($firstLine, $bom) === 0) {
+            $firstLine = substr($firstLine, 3); // Strip the BOM
+        }
+
+        // Convert the first line to CSV array if needed
+//        $headerLine = str_getcsv($firstLine, ";");
+//        Log::info('headerline');
+//        Log::info($headerLine);
+
+        // todo: check op line met meer dan 1024 tekens?
         while ($line = fgetcsv($csv, 1024, ";")) {
+//            Log::info('line details');
+//            Log::info($line);
             if (!in_array($counter, $warninglinesArray)) {
-//                Log::info('line');
                 foreach ($line as $k => $field) {
+//                    Log::info('Key: ' . $k);
+//                    Log::info('Field: ' . $field);
                     // when encoding isn't UTF-8 encode lineField to utf8.
                     $encodingLineField = mb_detect_encoding($field, 'UTF-8', true);
                     if (false === $encodingLineField) {
                         $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
                     }
                 };
-                if ($header) {
-                    $header = false;
-                } else {
-                    try {
-                        DB::beginTransaction();
-                        $contactToImport = new ContactToImport();
+                try {
+                    DB::beginTransaction();
+                    $contactToImport = new ContactToImport();
 
-                        $address = $this->splitAddress($line[12]);
-//                        Log::info('address', $address);
-                        $lastName = $this->splitName($line[3]);
-//                        Log::info('lastName', $lastName);
+                    $contactType = $line[4] ?: 'Particulier';
+                    $contactToImport->contact_type = $contactType;
 
-                        if ($line[2]) {
-                            $contactToImport->first_name = $line[2];
-                        } else {
-                            $contactToImport->first_name = '';
-                        }
+                    $address = $this->splitAddress($line[12]);
+//                        Log::info('address');
+//                        Log::info($address);
 
-                        if ($lastName['last_name']) {
-                            $contactToImport->last_name = $lastName['last_name'];
-                        }
+//                    if ($line[2]) {
+//                        $contactToImport->first_name = $line[2];
+//                    } else {
+//                        $contactToImport->first_name = '';
+//                    }
 
-                        if ($lastName['last_name_prefix']) {
-                            $contactToImport->last_name_prefix = $lastName['last_name_prefix'];
-                        }
-
-                        if ($line[12]) {
-                            $contactToImport->address = $line[12];
-                        }
-                        if ($address['street']) {
-                            $contactToImport->street = $address['street'];
-                        }
-                        if ($address['housenumber']) {
-                            $contactToImport->housenumber = $address['housenumber'];
-                        }
-                        if ($address['addition']) {
-                            $contactToImport->addition = $address['addition'];
-                        }
-                        if ($line[13]) {
-                            $contactToImport->postal_code = $line[13];
-                        }
-                        if ($line[14]) {
-                            $contactToImport->city = $line[14];
-                        }
-                        if ($line[28]) {
-                            $contactToImport->email_contact = $line[28];
-                        } else {
-                            $contactToImport->email_contact = '';
-                        }
-                        if ($line[30]) {
-                            $contactToImport->phone_number = $line[30];
-                        } else {
-                            $contactToImport->phone_number = '';
-                        }
-                        if ($line[7]) {
-                            $contactToImport->ean = $line[7];
-                        }
-                        if ($line[9]) {
-                            $contactToImport->ean_type = $line[9];
-                        }
-                        if ($line[6]) {
-                            $contactToImport->es_number = $line[6];
-                        }
-
-                        if ($line[14]) {
-                            $contactToImport->member_since = $line[17];
-                        }
-
-                        if ($line[18]) {
-                            $contactToImport->end_date = $line[18];
-                        }
-
-                        $contactToImport->status = 'new';
-
-                        $contactToImport->supplier_code_ref = $suppliercodeRef;
-
-                        $contactToImport->save();
-
-                        DB::commit();
-                    } catch (\PDOException $e) {
-                        DB::rollBack();
-                        Log::error('Error contactToImport import: ' . $e->getMessage());
-                        abort(501, 'Er is helaas een fout opgetreden.');
+                    $klantVoornaam = $line[2] ?: '';
+//                    Log::info('klantVoorNaam in: ' . $klantVoornaam);
+                    if ($contactType === 'Zakelijk') {
+                        $firstNameArray = [
+                            'initials' => '',
+                            'first_name' => '',
+                        ];
+                    } else {
+                        $firstNameArray = $this->splitFirstName($klantVoornaam);
                     }
+//                    Log::info('klantVoorNaam in: ' . $line[3] . ', initials uit: ' . $firstNameArray['initials'] . ', first_Name uit: ' . $firstNameArray['first_name']);
+                    if ($firstNameArray['initials']) {
+                        $contactToImport->initials = $firstNameArray['initials'];
+                    }
+                    if ($firstNameArray['first_name']) {
+                        $contactToImport->first_name = $firstNameArray['first_name'];
+                    }
+
+                    $klantAchternaam = $line[3] ?: '';
+//                    Log::info('klantAchternaam in: ' . $klantAchternaam);
+                    if ($contactType === 'Zakelijk') {
+                        $lastNameArray = [
+                            'last_name_prefix' => '',
+                            'last_name' => $klantAchternaam,
+                        ];
+                    } else {
+                        $lastNameArray = $this->splitLastName($klantAchternaam);
+                    }
+//                        Log::info('klantAchternaam in: ' . $line[3] . ', last_name_prefix uit: ' . $lastNameArray['last_name_prefix'] . ', last_name uit: ' . $lastNameArray['last_name']);
+
+                    if ($lastNameArray['last_name']) {
+                        $contactToImport->last_name = $lastNameArray['last_name'];
+                    }
+                    if ($lastNameArray['last_name_prefix']) {
+                        $contactToImport->last_name_prefix = $lastNameArray['last_name_prefix'];
+                    }
+
+                    if ($line[12]) {
+                        $contactToImport->address = $line[12];
+                    }
+                    if ($address['street']) {
+                        $contactToImport->street = $address['street'];
+                    }
+                    if ($address['housenumber']) {
+                        $contactToImport->housenumber = $address['housenumber'];
+                    }
+                    if ($address['addition']) {
+                        $contactToImport->addition = $address['addition'];
+                    }
+                    if ($line[13]) {
+                        $contactToImport->postal_code = $line[13];
+                    }
+                    if ($line[14]) {
+                        $contactToImport->city = $line[14];
+                    }
+                    if ($line[28]) {
+                        $contactToImport->email_contact = $line[28];
+                    } else {
+                        $contactToImport->email_contact = '';
+                    }
+                    if ($line[30]) {
+                        $contactToImport->phone_number = $line[30];
+                    } else {
+                        $contactToImport->phone_number = '';
+                    }
+                    if ($line[7]) {
+                        $contactToImport->ean = $line[7];
+                    }
+                    if ($line[9]) {
+                        $contactToImport->ean_type = $line[9];
+                    }
+                    if ($line[6]) {
+                        $contactToImport->es_number = $line[6];
+                    }
+
+                    if ($line[14]) {
+                        $contactToImport->member_since = $line[17];
+                    }
+
+                    if ($line[18]) {
+                        $contactToImport->end_date = $line[18];
+                    }
+
+                    $contactToImport->status = 'new';
+
+                    $contactToImport->supplier_code_ref = $suppliercodeRef;
+
+                    $contactToImport->save();
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error('Error contactToImport import: ' . $e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
                 }
             }
             $counter++;
         }
+
+        self::processContactMatches();
+
+        return 'succes';
+    }
+
+    public function updateContactMatches()
+    {
+        self::processContactMatches();
+
         return 'succes';
     }
 
@@ -299,7 +377,8 @@ class ContactImportFromEnergySupplierHelper
         $splits = explode(' ', $eanAdres);
         $teller = count($splits);
         $teller = $teller - 1;
-//        Log::info('splits', $splits);
+//        Log::info('splits');
+//        Log::info($splits);
         $straatNaam = '';
         $huisnummer = '';
         $toevoeging = '';
@@ -307,7 +386,7 @@ class ContactImportFromEnergySupplierHelper
         while ($teller > 0) {
             $string = $splits[$teller];
 //            Log::info('string: ' . $string);
-            $substring = substr($string, 0, 1);
+//            $substring = substr($string, 0, 1);
             if (1 === preg_match('~[0-9]~', substr($string, 0, 1))) {
                 $teller2 = 1;
                 $length = Str::length($string);
@@ -349,38 +428,549 @@ class ContactImportFromEnergySupplierHelper
         return ['street' => $straatNaam, 'housenumber' => $huisnummer, 'addition' => $toevoegingTemp];
     }
 
-    //todo: deze code komt van Marco, nog nakijken of alles goed gaat
-    private function splitName($klantNaam)
-    {
-        $naamGesplitst = explode(' ', $klantNaam);
-        $prefixTotaal = '';
-        $indexAchternaam = 0;
+    private function splitFirstName($klantVoornaam) {
 
-        $last_name_prefixes = LastNamePrefix::pluck('name');
+        // Find the position of the last point
+        $containsPoint = str_contains($klantVoornaam, '.');
 
-        for ($index = 0; $index < count($naamGesplitst) - 1; $index++) {
-            foreach ($last_name_prefixes as $prefix) {
-                if ($naamGesplitst[$index] == $prefix) {
-                    $prefixTotaal .= ' ' . $naamGesplitst[$index];
-                    $indexAchternaam = $index;
-                }
-            }
+        // If no point is found, set initials as an empty string and first_name as the first_name
+        if ($containsPoint === false) {
+//            Log::info('If no space is found, set prefix as an empty string and last_name as the full name');
+            return [
+                'initials' => '',
+                'first_name' => $klantVoornaam
+            ];
         }
 
-        $achterNaam = '';
-        if ($prefixTotaal == '') { //if ($indexAchternaam == "0") {
-            $achterNaam = $naamGesplitst[0];
+        // If point found, set first_name as initials and first_name as an empty string
+        return [
+            'initials' => $klantVoornaam,
+            'first_name' => ''
+        ];
+
+    }
+
+    private function splitLastName($klantAchternaam) {
+
+        // Find the position of the last space
+        $lastSpacePosition = strrpos($klantAchternaam, ' ');
+
+        // If no space is found, set prefix as an empty string and last_name as the full name
+        if ($lastSpacePosition === false) {
+//            Log::info('If no space is found, set prefix as an empty string and last_name as the full name');
+            return [
+                'last_name_prefix' => '',
+                'last_name' => $klantAchternaam
+            ];
+        }
+
+        // Split the string into potential prefix and last_name based on the last space
+        $potentialPrefix = substr($klantAchternaam, 0, $lastSpacePosition); // Everything before the last space
+        $last_name = substr($klantAchternaam, $lastSpacePosition + 1); // Everything after the last space
+
+        // Check if the potential prefix exists in the LastNamePrefix table
+        $prefixExists = LastNamePrefix::where('name', $potentialPrefix)->exists();
+
+        if ($prefixExists) {
+            // If prefix exists in the database, return the split prefix and last_name
+//            Log::info('If prefix exists in the database, return the split prefix and last_name');
+            return [
+                'last_name_prefix' => $potentialPrefix,
+                'last_name' => $last_name
+            ];
         } else {
-            for ($index = ($indexAchternaam + 1); $index < count($naamGesplitst); $index++) {
-                if ($achterNaam == '') {
-                    $achterNaam .= $naamGesplitst[$index];
-                } else {
-                    $achterNaam .= " " . $naamGesplitst[$index];
-                }
-            }
+            // If no valid prefix is found, the entire name is treated as last_name
+//            Log::info('If no valid prefix is found, the entire name is treated as last_name');
+            return [
+                'last_name_prefix' => '',
+                'last_name' => $klantAchternaam
+            ];
         }
 
-        return ['last_name' => $achterNaam, 'last_name_prefix' => $prefixTotaal];
+    }
+
+    public static function processContactMatches(): void
+    {
+        // Truncate the ContactForImport table to start fresh
+        ContactForImport::query()->delete();
+
+        // Process ContactToImport in chunks of 100 (or a number that suits your memory constraints)
+        ContactToImport::chunk(100, function ($contactToImports) {
+            foreach ($contactToImports as $contactToImport) {
+                self::processSingleContactToImport($contactToImport);
+            }
+        });
+    }
+
+    public static function processSingleContactToImport(ContactToImport $contactToImport): void
+    {
+
+        // Pre-fetch energy suppliers
+        $energySuppliers = EnergySupplier::pluck('id', 'abbreviation');
+
+        $energySupplierId = $energySuppliers[$contactToImport->supplier_code_ref] ?? null;
+        if (!$energySupplierId) {
+            return;
+        }
+
+        $matchConditions = [
+            'supplierFullMatch' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($energySupplierId, $contactToImport) {
+                    $query->where('energy_supplier_id', $energySupplierId);
+                    $query->where(function ($query2) use ($contactToImport) {
+                        $query2->where('es_number', $contactToImport->es_number)
+                            ->orWhere('es_number', '')
+                            ->orWhereNull('es_number');
+                    });
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'supplierIgnoreName' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
+                    $query->where('es_number', $contactToImport->es_number);
+                })
+// naam afwijkend: geen check nodig volgens mij, want indien niet afwijkend dan is ie al gematcht als 'supplierFullMatch'
+//                ->where(function ($query) use($contactToImport) {
+//                    if($contactToImport->contact_type === 'Zakelijk' ){
+//                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+//                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+//                        });
+//
+//                    } else {
+//                        $query->whereHas('person', function ($query) use ($contactToImport) {
+//                            if ($contactToImport->initials != null) {
+//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                            } else {
+//                                $query->where('first_name', $contactToImport->first_name);
+//                            }
+//                            $query->where('last_name', $contactToImport->last_name);
+//                            if ($contactToImport->last_name_prefix != null) {
+//                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+//                            }
+//                        });
+//                    }
+//                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'supplierIgnoreAddress' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
+                    $query->where('es_number', $contactToImport->es_number);
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+// adres afwijkend: geen check nodig volgens mij, want indien niet afwijkend dan is ie al gematcht als 'supplierFullMatch'
+//                    ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+//                        $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+//                        $query->where('number', $contactToImport->housenumber);
+//                        if($contactToImport->addition === null) {
+//                            $query->where('addition', '');
+//                        } else {
+//                            $query->where('addition', $contactToImport->addition);
+//                        }
+//                    })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'supplierIgnoreEmail' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
+                    $query->where('es_number', $contactToImport->es_number);
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                }),
+// email afwijkend: geen check nodig volgens mij, want indien niet afwijkend dan is ie al gematcht als 'supplierFullMatch'
+//                ->where(function ($query2) use ($contactToImport) {
+//                    $query2->whereDoesntHave('emailAddresses', function ($query) use ($contactToImport) {
+//                        $query->where('email', $contactToImport->email_contact);
+//                    })
+//                        ->orWhereDoesntHave('emailAddresses');
+//                }),
+            'supplierIgnoreNameAndEmail' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
+                    $query->where('es_number', $contactToImport->es_number);
+                })
+// naam afwijkend: geen check nodig volgens mij, want indien niet afwijkend dan is ie al gematcht als 'supplierFullMatch' of 'supplierIgnoreEmail'
+//                ->where(function ($query) use($contactToImport) {
+//                    if($contactToImport->contact_type === 'Zakelijk' ){
+//                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+//                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+//                        });
+//
+//                    } else {
+//                        $query->whereHas('person', function ($query) use ($contactToImport) {
+//                            if ($contactToImport->initials != null) {
+//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                            } else {
+//                                $query->where('first_name', $contactToImport->first_name);
+//                            }
+//                            $query->where('last_name', $contactToImport->last_name);
+//                            if ($contactToImport->last_name_prefix != null) {
+//                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+//                            }
+//                        });
+//                    }
+//                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                }),
+// naam afwijkend: geen check nodig volgens mij, want indien niet afwijkend dan is ie al gematcht als 'supplierFullMatch' of 'supplierIgnoreName'
+//                ->where(function ($query2) use ($contactToImport) {
+//                    $query2->whereDoesntHave('emailAddresses', function ($query) use ($contactToImport) {
+//                        $query->where('email', $contactToImport->email_contact);
+//                    })
+//                        ->orWhereDoesntHave('emailAddresses');
+//                }),
+            'supplierIgnoreEsNumber' => fn($query) => $query
+                ->whereHas('currentAddressEnergySuppliers', function ($query) use ($contactToImport) {
+                    $query->where('es_number', '!=', $contactToImport->es_number);
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'contactMatch' => fn($query) => $query
+                ->where(function ($query2) use ($contactToImport) {
+                    $query2->whereHas('currentAddressEnergySuppliers', function ($query3) use ($contactToImport) {
+                        $query3->where('energy_supplier_id', '!=', $contactToImport->es_number);
+                    })
+                        ->orWhereDoesntHave('currentAddressEnergySuppliers');
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'contactIgnoreAddress' => fn($query) => $query
+                ->where(function ($query2) use ($contactToImport) {
+                    $query2->whereHas('currentAddressEnergySuppliers', function ($query3) use ($contactToImport) {
+                        $query3->where('energy_supplier_id', '!=', $contactToImport->es_number);
+                    })
+                        ->orWhereDoesntHave('currentAddressEnergySuppliers');
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+// todo: adres afwijkend
+//                    ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+//                        $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+//                        $query->where('number', $contactToImport->housenumber);
+//                        if($contactToImport->addition === null) {
+//                            $query->where('addition', '');
+//                        } else {
+//                            $query->where('addition', $contactToImport->addition);
+//                        }
+//                    })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+            'contactIgnoreEmail' => fn($query) => $query
+                ->where(function ($query2) use ($contactToImport) {
+                    $query2->whereHas('currentAddressEnergySuppliers', function ($query3) use ($contactToImport) {
+                        $query3->where('energy_supplier_id', '!=', $contactToImport->es_number);
+                    })
+                        ->orWhereDoesntHave('currentAddressEnergySuppliers');
+                })
+                ->where(function ($query) use($contactToImport) {
+                    if($contactToImport->contact_type === 'Zakelijk' ){
+                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+                        });
+
+                    } else {
+                        $query->whereHas('person', function ($query) use ($contactToImport) {
+                            if ($contactToImport->initials != null) {
+                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                            } else {
+                                $query->where('first_name', $contactToImport->first_name);
+                            }
+                            $query->where('last_name', $contactToImport->last_name);
+                            if ($contactToImport->last_name_prefix != null) {
+                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+                            }
+                        });
+                    }
+                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->where(function ($query2) use ($contactToImport) {
+                    $query2->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                        $query->where('email', $contactToImport->email_contact);
+                    })
+                        ->orWhereDoesntHave('emailAddresses');
+                }),
+            'contactIgnoreName' => fn($query) => $query
+                ->where(function ($query2) use ($contactToImport) {
+                    $query2->whereHas('currentAddressEnergySuppliers', function ($query3) use ($contactToImport) {
+                        $query3->where('energy_supplier_id', '!=', $contactToImport->es_number);
+                    })
+                        ->orWhereDoesntHave('currentAddressEnergySuppliers');
+                })
+// todo: naam afwijkend
+//                ->where(function ($query) use($contactToImport) {
+//                    if($contactToImport->contact_type === 'Zakelijk' ){
+//                        $query->whereHas('organisation', function ($query2) use ($contactToImport) {
+//                            $query2->where('name', $contactToImport->last_name);
+//                                ->orWhere('statutory_name', $contactToImport->last_name);
+//                        });
+//
+//                    } else {
+//                        $query->whereHas('person', function ($query) use ($contactToImport) {
+//                            if ($contactToImport->initials != null) {
+//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                            } else {
+//                                $query->where('first_name', $contactToImport->first_name);
+//                            }
+//                            $query->where('last_name', $contactToImport->last_name);
+//                            if ($contactToImport->last_name_prefix != null) {
+//                                $query->where('last_name_prefix', $contactToImport->last_name_prefix);
+//                            }
+//                        });
+//                    }
+//                })
+                ->whereHas('addressesWithoutOld', function ($query) use ($contactToImport, $energySupplierId) {
+                    $query->where('postal_code', str_replace(' ', '', $contactToImport->postal_code));
+                    $query->where('number', $contactToImport->housenumber);
+                    if ($contactToImport->addition === null) {
+                        $query->where('addition', '');
+                    } else {
+                        $query->where('addition', $contactToImport->addition);
+                    }
+                })
+                ->whereHas('emailAddresses', function ($query) use ($contactToImport) {
+                    $query->where('email', $contactToImport->email_contact);
+                }),
+        ];
+
+        $matchCases = [
+            'supplierFullMatch' => ['matchDescription' => 'Klant', 'matchColor' => '#00FF00'],
+            'supplierIgnoreName' => ['matchDescription' => 'Klant minus naam', 'matchColor' => '#FF8000'],
+            'supplierIgnoreAddress' => ['matchDescription' => 'Klant minus adres', 'matchColor' => '#00FF00'],
+            'supplierIgnoreEmail' => ['matchDescription' => 'Klant minus email', 'matchColor' => '#FFFF00'],
+            'supplierIgnoreNameAndEmail' => ['matchDescription' => 'Klant minus naam/email', 'matchColor' => '#FF8000'],
+            'supplierIgnoreEsNumber' => ['matchDescription' => 'Klant minus klantnummer', 'matchColor' => '#80FF00'],
+            'contactMatch' => ['matchDescription' => 'Contact', 'matchColor' => 'repeating-linear-gradient(45deg,#00FF00,#ECECEC 2px,#00FF00 4px)'],
+            'contactIgnoreAddress' => ['matchDescription' => 'Contact minus adres', 'matchColor' => 'repeating-linear-gradient(45deg,#80FF00,#ECECEC 2px,#80FF00 4px)'],
+            'contactIgnoreEmail' => ['matchDescription' => 'Contact minus e-mail', 'matchColor' => 'repeating-linear-gradient(45deg,#FFFF00,#ECECEC 2px,#FFFF00 4px)'],
+            'contactIgnoreName' => ['matchDescription' => 'Contact minus naam', 'matchColor' => 'repeating-linear-gradient(45deg,#FF8000,#ECECEC 2px,#FF8000 4px)'],
+        ];
+
+        // Collect the records to insert
+        $insertRecords = [];
+        $uniqueContactIds = [];  // Use an associative array for better performance
+
+        foreach ($matchConditions as $matchCode => $matchCondition) {
+// todo wm: opschonen
+//            if($contactToImport->contact_type === 'Zakelijk'){
+//            if($contactToImport->id === 73){
+//                Log::info("debug query " . $matchCode);
+//                $testQuery = Contact::where($matchCondition);
+//                $sql = str_replace(array('?'), array('\'%s\''), $testQuery->toSql());
+//                $sql = vsprintf($sql, $testQuery->getBindings());
+//                Log::info($sql);
+//            }
+
+            // Pluck only the 'id' of matching contacts
+            $contactIds = Contact::where($matchCondition)->pluck('id');
+
+            foreach ($contactIds as $contactId) {
+                if (!isset($uniqueContactIds[$contactId])) {
+                    $uniqueContactIds[$contactId] = true;
+
+                    $insertRecords[] = [
+                        'contact_to_import_id' => $contactToImport->id,
+                        'contact_id' => $contactId,
+                        'match_code' => $matchCode,
+                        'match_description' => $matchCases[$matchCode]['matchDescription'],
+                        'match_color' => $matchCases[$matchCode]['matchColor'],
+                    ];
+                }
+            }
+
+        }
+
+        // Bulk insert the records
+        if (!empty($insertRecords)) {
+            ContactForImport::insert($insertRecords);
+        }
+
     }
 
 }

@@ -198,7 +198,11 @@ class ContactsListToolbar extends Component {
                             // />
 
                             <div className="nav navbar-nav btn-group" role="group">
-                                <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                <button
+                                    className="btn btn-success btn-sm"
+                                    data-toggle="dropdown"
+                                    title="Importeer contacten / energieklanten"
+                                >
                                     <Icon size={14} icon={upload} />
                                 </button>
                                 <ul className="dropdown-menu">

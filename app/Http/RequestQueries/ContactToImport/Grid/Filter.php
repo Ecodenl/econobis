@@ -15,6 +15,7 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'status',
+        'initials',
         'firstName',
         'lastName',
         'street',
@@ -25,6 +26,7 @@ class Filter extends RequestFilter
 
     protected $mapping = [
         'status' => 'contact_to_imports.status',
+        'initials' => 'contact_to_imports.initials',
         'firstName' => 'contact_to_imports.first_name',
         'lastName' => 'contact_to_imports.last_name',
         'street' => 'contact_to_imports.street',

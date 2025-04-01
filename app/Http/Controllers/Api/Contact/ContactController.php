@@ -102,7 +102,7 @@ class ContactController extends Controller
         set_time_limit(180);
 
         $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
-        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplier'));
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplierCodeRef'), $request->input('fileHeader'));
     }
 
     public function importFromEnergySupplier(Request $request){
@@ -110,6 +110,13 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
         return $contactImportFromEnergySupplierHelper->import($request->file('attachment'), $request->input('suppliercodeRef'), $request->input('warninglines'));
+    }
+
+    public function updateContactMatches(){
+        $this->authorize('import', Contact::class);
+        set_time_limit(300);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->updateContactMatches();
     }
 
     public function contactToImportsSuppliers (){

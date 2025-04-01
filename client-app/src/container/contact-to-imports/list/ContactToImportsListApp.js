@@ -280,6 +280,9 @@ function ContactToImportsListApp() {
             filters.push({ field: 'status', data: 'new' });
         }
 
+        if (filter.initials) {
+            filters.push({ field: 'initials', data: filter.initials });
+        }
         if (filter.firstName) {
             filters.push({ field: 'firstName', data: filter.firstName });
         }
@@ -360,6 +363,26 @@ function ContactToImportsListApp() {
                 alert('Er is iets misgegaan met aanmaken contacten vanuit import.');
             });
     }
+    function updateContactMatches() {
+        setLoading(true);
+        ContactToImportsAPI.updateContactMatches()
+            .then(payload => {
+                setTimeout(() => {
+                    setSelectAllNew(false);
+                    setSelectAllUpdate(false);
+                    setCheckedAllNew(false);
+                    setSelectedImportsNew([]);
+                    setCheckedAllUpdate(false);
+                    setSelectedContactsUpdate([]);
+                    fetchContactToImports();
+                }, 200);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+                alert('Er is iets misgegaan met actualiseren matches vanuit import.');
+            });
+    }
     function updateContactsFromImport() {
         ContactToImportsAPI.updateContactsFromImport(selectedContactsUpdate)
             .then(payload => {
@@ -392,6 +415,7 @@ function ContactToImportsListApp() {
                         selectAllUpdate={selectAllUpdate}
                         actionSelectAllNew={actionSelectAllNew}
                         actionSelectAllUpdate={actionSelectAllUpdate}
+                        updateContactMatches={updateContactMatches}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">

@@ -97,7 +97,8 @@ class ContactImportFormGeneral extends Component {
         const data = new FormData();
 
         data.append('attachment', this.state.attachment);
-        data.append('supplier', this.state.supplier.file_header);
+        data.append('supplierCodeRef', this.state.supplier.code_ref);
+        data.append('fileHeader', this.state.supplier.file_header);
 
         ContactsAPI.validateImportFromEnergySupplier(data).then(payload => {
             const hasError = payload.data.find(item => {

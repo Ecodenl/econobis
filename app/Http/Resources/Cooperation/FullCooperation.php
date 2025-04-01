@@ -66,6 +66,10 @@ class FullCooperation extends JsonResource
             'fontFamilyDefault' => $this->font_family_default,
             'fontSizeDefault' => $this->font_size_default,
             'fontColorDefault' => $this->font_color_default,
+            'showExternalUrlForContacts' => $this->show_external_url_for_contacts,
+            'externalUrlContacts' => $this->external_url_contacts,
+            'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
+            'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
         ];
     }
 }

@@ -58,7 +58,7 @@ class DynamicContactGroupFilter extends Model
             if (preg_match("/^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[1-2][0-9]|3[0-1])$/", $this->data))  return Carbon::parse($this->data)->format('d-m-Y');
 
             // Booleans omzetten
-            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo','hoomdossierExists'];
+            $yesNoFields = ['didAcceptAgreement', 'didAgreeAvg', 'portalUser', 'housingFileExists','didUnderstandInfo','hoomdossierExists','hasEmailAddress','hasPhoneNumber'];
             if (in_array($this->field, $yesNoFields)) return $this->data ? 'Ja' : 'Nee';
 
             // Yes/No/Empty omzetten

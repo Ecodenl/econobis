@@ -55,7 +55,7 @@ const mapStateToProps = state => {
         participantProject: state.participantProjectDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Key user'),
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
     };
 };
 

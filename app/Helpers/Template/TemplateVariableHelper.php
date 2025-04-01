@@ -338,6 +338,8 @@ class TemplateVariableHelper
                 } else {
                     return '';
                 }
+            case 'telefoonnummer_voor_URL':
+                return rawurlencode($model?->primaryPhoneNumber?->number);
             case 'email_voor_URL':
                 return rawurlencode($model?->primaryEmailAddress?->email);
             case 'straatnaam_voor_URL':
@@ -1407,15 +1409,15 @@ class TemplateVariableHelper
                     <th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Ingangsdatum</th>";
                     switch ($projectTypeCodeRef) {
                         case 'loan':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Lening rekening</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie Lening rekening</th>";
                             break;
                         case 'capital':
                         case 'postalcode_link_capital':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Kapitaal rekening</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie Kapitaal rekening</th>";
                             $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal part.</th>";
                             break;
                         case 'obligation':
-                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Aantal obligaties</th>";
+                            $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Mutatie aantal obligaties</th>";
                             break;
                     };
                 $html .= "<th style='border: 1px solid #000000; text-align: left; padding: 8px; background-color: #dddddd;'>Opbrengst</th>";
@@ -1938,6 +1940,8 @@ class TemplateVariableHelper
                 } else {
                     return '';
                 }
+            case 'contact_telefoonnummer_voor_URL':
+                return rawurlencode($contact?->primaryPhoneNumber?->number);
             case 'contact_email_voor_URL':
             case 'verzoek_voor_email_voor_URL':
                 return rawurlencode($contact?->primaryEmailAddress?->email);
@@ -1957,7 +1961,8 @@ class TemplateVariableHelper
             case 'contact_woonplaats_voor_URL':
             case 'verzoek_voor_plaats_voor_URL':
                 return rawurlencode($contact?->primaryAddress?->city);
-
+            case 'contact_nummer_voor_URL':
+                return rawurlencode($contact?->number);
             case 'contact_naam':
             case 'verzoek_voor_naam':
                 return $contact?->full_name_fnf;

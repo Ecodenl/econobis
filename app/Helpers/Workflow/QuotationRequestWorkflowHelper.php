@@ -196,6 +196,7 @@ class QuotationRequestWorkflowHelper
         $email->cc = ($cc != '') ? [$cc] : [];
         $email->bcc = [];
         $email->subject = $subject;
+        $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
         $email->folder = 'sent';
         if($this->quotationRequest) {
             $email->quotation_request_id = $this->quotationRequest->id;

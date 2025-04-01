@@ -203,6 +203,12 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
+        Route::get('/address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
+
+        Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
+        Route::post('/address-dongle/{addressDongle}', 'AddressDongle\AddressDongleController@update');
+        Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
+
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');
@@ -470,6 +476,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::post('/quotation-request/{quotationRequest}/show-update-opportunity-status', 'QuotationRequest\QuotationRequestController@showUpdateOpportunityStatus');
         Route::post('/quotation-request/bulk-delete', 'QuotationRequest\QuotationRequestController@bulkDelete');
         Route::post('/quotation-request/bulk-update', 'QuotationRequest\QuotationRequestController@bulkUpdate');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');

@@ -3,6 +3,8 @@
 namespace App\Http\Resources\SystemData;
 
 use App\Eco\Address\AddressType;
+use App\Eco\AddressDongle\AddressDongleTypeReadOut;
+use App\Eco\AddressDongle\AddressDongleTypeDongle;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\CampaignStatus;
 use App\Eco\Campaign\CampaignType;
@@ -186,10 +188,13 @@ class SystemData extends JsonResource
             'energySupplierStatuses' => GenericResource::collection(EnergySupplierStatus::all()),
             'energySupplierTypes' => GenericResource::collection(EnergySupplierType::all()),
             'staticContactGroups' => ContactGroup::whereTeamContactGroupIds(Auth::user())->select(['id', 'name'])->where('type_id', 'static')->get(),
+            'dongleTypeReadOuts' => GenericResource::collection(AddressDongleTypeReadOut::all()),
+            'dongleTypeDongles' => GenericResource::collection(AddressDongleTypeDongle::all()),
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
-            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication'])->first(),
+            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication', 'use_dongle_registration'])->first(),
+            'cooperationExternalUrlContacts' => Cooperation::select(['id', 'show_external_url_for_contacts', 'external_url_contacts', 'external_url_contacts_button_text', 'external_url_contacts_on_new_page'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),

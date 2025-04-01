@@ -295,6 +295,11 @@ class ContactMerger
             $addressEnergySupplier->save();
         }
 
+        foreach ($fromAddress->addressDongles as $addressDongle) {
+            $addressDongle->address_id = $toAddress->id;
+            $addressDongle->save();
+        }
+
         foreach ($fromAddress->addressEnergyConsumptionGasPeriods as $addressEnergyConsumptionGasPeriod) {
             $addressEnergyConsumptionGasPeriod->address_id = $toAddress->id;
             $addressEnergyConsumptionGasPeriod->save();

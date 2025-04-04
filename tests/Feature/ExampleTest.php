@@ -4,9 +4,7 @@ namespace Tests\Feature;
 
 use App\Eco\User\User;
 use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role;
 use Tests\TestCase;
-use PHPUnit\Framework\Assert as PHPUnit;
 
 class ExampleTest extends TestCase
 {

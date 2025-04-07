@@ -212,7 +212,7 @@ class AuthServiceProvider extends ServiceProvider
          * een portal gebruiker is ingelogd.
          */
         TokenGuard::macro('isPortalUser', function () {
-            return Auth::user() instanceof \App\Models\PortalUser;
+            return Auth::user() instanceof PortalUser;
         });
 
         /**
@@ -220,6 +220,8 @@ class AuthServiceProvider extends ServiceProvider
          * het een gebruiker van Econobis zelf is.
          */
         TokenGuard::macro('isAppUser', function () {
-            return Auth::user() instanceof \App\Models\User;
-        });    }
+            return Auth::user() instanceof User;
+        });
+
+    }
 }

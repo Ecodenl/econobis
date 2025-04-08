@@ -89,6 +89,7 @@ class ProjectNewApp extends Component {
                 hideWhenNotMatchingPostalCheck: true,
                 contactGroupIds: '',
                 contactGroupIdsSelected: [],
+                loanTypeId: '',
                 amountOfLoanNeeded: null,
                 minAmountLoan: null,
                 maxAmountLoan: null,
@@ -112,13 +113,36 @@ class ProjectNewApp extends Component {
                 name: false,
                 code: false,
                 projectTypeId: false,
-                baseProjectCodeRef: false,
                 projectStatusId: false,
-                ownedById: false,
+                baseProjectCodeRef: false,
+                postalCodeLink: false,
+                postalcodeLink: false,
+                addressNumberSeries: false,
+                description: false,
                 postalCode: false,
                 // countryId: false,
+                ownedById: false,
+                administrationId: false,
                 contactGroupIds: false,
                 dateEntry: false,
+                loanTypeId: false,
+            },
+            errorMessages: {
+                name: '',
+                code: '',
+                projectTypeId: '',
+                projectStatusId: '',
+                baseProjectCodeRef: '',
+                postalcodeLink: '',
+                addressNumberSeries: '',
+                description: '',
+                postalCode: '',
+                // countryId: '',
+                ownedById: '',
+                administrationId: '',
+                contactGroupIds: '',
+                dateEntry: '',
+                loanTypeId: '',
             },
             loading: false,
         };
@@ -156,8 +180,10 @@ class ProjectNewApp extends Component {
         projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
 
         let isSceProject = this.state.project.isSceProject;
+        let checkPostalcodeLink = this.state.project.checkPostalcodeLink;
         if (projectType && projectType.codeRef === 'postalcode_link_capital') {
             isSceProject = false;
+            checkPostalcodeLink = true;
         }
 
         this.setState({
@@ -165,6 +191,7 @@ class ProjectNewApp extends Component {
             project: {
                 ...this.state.project,
                 isSceProject: isSceProject,
+                checkPostalcodeLink: checkPostalcodeLink,
                 projectTypeId: projectTypeId,
             },
         });
@@ -212,20 +239,24 @@ class ProjectNewApp extends Component {
         const { project } = this.state;
 
         let errors = {};
+        let errorMessages = {};
         let hasErrors = false;
 
         if (validator.isEmpty(project.name)) {
             errors.name = true;
+            errorMessages.name = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.code)) {
             errors.code = true;
+            errorMessages.code = 'Verplicht';
             hasErrors = true;
         }
 
         if (!project.projectTypeId) {
             errors.projectTypeId = true;
+            errorMessages.projectTypeId = 'Verplicht';
             hasErrors = true;
         }
         let projectType;
@@ -236,21 +267,25 @@ class ProjectNewApp extends Component {
             (project.baseProjectCodeRef == null || validator.isEmpty(project.baseProjectCodeRef))
         ) {
             errors.baseProjectCodeRef = true;
+            errorMessages.baseProjectCodeRef = 'Verplicht';
             hasErrors = true;
         }
 
         if (!project.projectStatusId) {
             errors.projectStatusId = true;
+            errorMessages.projectStatusId = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.ownedById)) {
             errors.ownedById = true;
+            errorMessages.ownedById = 'Verplicht';
             hasErrors = true;
         }
 
         if (validator.isEmpty('' + project.administrationId)) {
             errors.administrationId = true;
+            errorMessages.administrationId = 'Verplicht';
             hasErrors = true;
         }
 
@@ -270,16 +305,20 @@ class ProjectNewApp extends Component {
         //     if (!postalCodeValid) {
         //         errors.postalCode = true;
         //         errors.countryId = true;
+        //         errorMessages.postalCode = 'Ongeldige postcode voor dit land';
+        //         errorMessages.countryId = 'Ongeldige postcode voor dit land';
         //         hasErrors = true;
         //     }
         // }
         if (!validator.isEmpty('' + project.postalCode) && !validator.isPostalCode(project.postalCode, 'any')) {
             errors.postalCode = true;
+            errorMessages.postalCode = 'Ongeldige postcode';
             hasErrors = true;
         }
 
         if (project.isMembershipRequired && validator.isEmpty(project.contactGroupIds)) {
             errors.contactGroupIds = true;
+            errorMessages.contactGroupIds = 'Verplicht';
             hasErrors = true;
         }
 
@@ -289,7 +328,65 @@ class ProjectNewApp extends Component {
             project.dateEntry < this.state.disableBeforeEntryDate
         ) {
             errors.dateEntry = true;
+            errorMessages.dateEntry =
+                'Ongeldige ingangsdatum, mag niet liggen voor ' +
+                moment(this.state.disableBeforeEntryDate).format('DD-MM-YYYY');
             hasErrors = true;
+        }
+
+        // If isSceProject is false, init related fields.
+        if (!project.isSceProject) {
+            project.baseProjectCodeRef = null;
+            project.checkDoubleAddresses = false;
+            project.addressNumberSeries = '';
+            project.hideWhenNotMatchingPostalCheck = true;
+            if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
+                project.checkPostalcodeLink = false;
+                project.postalcodeLink = '';
+            }
+        }
+
+        // todo WM: zelfde controle postalcodeLink / addressNumberSeries zit nu ook in ProjectNewGeneral
+        if (projectType) {
+            if (
+                (project.checkPostalcodeLink || projectType.codeRef === 'postalcode_link_capital') &&
+                (!project.postalcodeLink || validator.isEmpty('' + project.postalcodeLink))
+            ) {
+                errors.postalcodeLink = true;
+                errorMessages.postalcodeLink = 'Verplicht als controle postcoderoosgebied aan staat.';
+                hasErrors = true;
+            } else if (project.postalcodeLink) {
+                let regExpPostalcodeLink = new RegExp('^[0-9a-zA-Z,]*$');
+                if (!regExpPostalcodeLink.exec(project.postalcodeLink)) {
+                    errors.postalcodeLink = true;
+                    errorMessages.postalcodeLink = 'Ongeldige invoer, klik (i) voor uitleg.';
+                    hasErrors = true;
+                }
+            }
+        }
+        if (
+            project.postalcodeLink &&
+            (project.postalcodeLink.replace(/\D/g, '').length !== 4 ||
+                project.postalcodeLink.replace(/[0-9]/g, '').trim().length !== 2)
+        ) {
+            project.addressNumberSeries = '';
+        }
+        if (project.addressNumberSeries) {
+            let regExpAddressNumberSeries = new RegExp('^[0-9a-zA-Z,:-]*$');
+            if (!regExpAddressNumberSeries.exec(project.addressNumberSeries)) {
+                errors.addressNumberSeries = true;
+                errorMessages.addressNumberSeries = 'Ongeldige invoer, klik (i) voor uitleg.';
+                hasErrors = true;
+            }
+        }
+
+        // If loan then loanTypeId required.
+        if (projectType && projectType.codeRef === 'loan') {
+            if (project.loanTypeId === null || validator.isEmpty('' + project.loanTypeId)) {
+                errors.loanTypeId = true;
+                errorMessages.loanTypeId = 'Type lening is verplicht bij Type project Lening.';
+                hasErrors = true;
+            }
         }
 
         // If isMemberShipRequired is false, set contactGroupIds to empty string
@@ -308,19 +405,7 @@ class ProjectNewApp extends Component {
             project.baseProjectCodeRef = null;
         }
 
-        // If isSceProject is false, init related fields.
-        if (!project.isSceProject) {
-            project.baseProjectCodeRef = null;
-            project.checkDoubleAddresses = false;
-            project.addressNumberSeries = null;
-            project.hideWhenNotMatchingPostalCheck = true;
-            if (projectType && projectType.codeRef !== 'postalcode_link_capital') {
-                project.postalcodeLink = null;
-                project.checkPostalcodeLink = false;
-            }
-        }
-
-        this.setState({ ...this.state, errors: errors });
+        this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         if (!hasErrors) {
             this.setState({ loading: true });
@@ -395,6 +480,7 @@ class ProjectNewApp extends Component {
             hideWhenNotMatchingPostalCheck,
             contactGroupIds,
             contactGroupIdsSelected,
+            loanTypeId,
             amountOfLoanNeeded,
             minAmountLoan,
             maxAmountLoan,
@@ -409,6 +495,7 @@ class ProjectNewApp extends Component {
         } = this.state.project;
 
         const projectType = this.props.projectTypesActive.find(projectType => projectType.id == projectTypeId);
+        const projectTypeCodeRef = projectType ? projectType.codeRef : null;
 
         const requiredParticipants = RequiredParticipantsHelper(baseProjectCodeRef, powerKwAvailable);
 
@@ -435,6 +522,7 @@ class ProjectNewApp extends Component {
                                         description={description}
                                         projectStatusId={projectStatusId}
                                         projectTypeId={projectTypeId}
+                                        projectTypeCodeRef={projectTypeCodeRef}
                                         useSceProject={useSceProject}
                                         isSceProject={isSceProject}
                                         postalcodeLink={postalcodeLink}
@@ -469,12 +557,15 @@ class ProjectNewApp extends Component {
                                         handleInputChangeDate={this.handleInputChangeDate}
                                         handleContactGroupIds={this.handleContactGroupIds}
                                         errors={this.state.errors}
+                                        errorMessages={this.state.errorMessages}
                                         contactGroups={this.state.contactGroups}
                                         disableBeforeEntryDate={this.state.disableBeforeEntryDate}
                                     />
 
                                     {projectType && projectType.codeRef === 'loan' ? (
                                         <ProjectFormDefaultLoan
+                                            loanTypeId={loanTypeId}
+                                            projectLoanTypes={this.props.projectLoanTypes}
                                             amountOfLoanNeeded={amountOfLoanNeeded}
                                             minAmountLoan={minAmountLoan}
                                             maxAmountLoan={maxAmountLoan}
@@ -483,6 +574,8 @@ class ProjectNewApp extends Component {
                                             amountOptioned={amountOptioned}
                                             amountInteressed={amountInteressed}
                                             handleInputChange={this.handleInputChange}
+                                            errors={this.state.errors}
+                                            errorMessages={this.state.errorMessages}
                                         />
                                     ) : null}
 
@@ -580,6 +673,7 @@ const mapStateToProps = state => {
     return {
         administrations: state.meDetails.administrations,
         projectTypesActive: state.systemData.projectTypesActive,
+        projectLoanTypes: state.systemData.projectLoanTypes,
     };
 };
 

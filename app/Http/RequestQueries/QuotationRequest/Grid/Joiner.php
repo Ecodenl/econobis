@@ -30,7 +30,10 @@ class Joiner extends RequestJoiner
     {
         $query->join('opportunities AS opportunities1', 'quotation_requests.opportunity_id', '=', 'opportunities1.id');
         $query->join('intakes as intakes2',  'opportunities1.intake_id', '=', 'intakes2.id');
-        $query->join('addresses',  'intakes2.address_id', '=', 'addresses.id');
+        $query->leftJoin('addresses', function ($join) {
+            $join->on('addresses.id', '=', 'intakes2.address_id')
+                ->whereNull('addresses.deleted_at');
+        });
     }
 
     protected function applyMeasureJoin($query)

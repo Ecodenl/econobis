@@ -9,7 +9,7 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 
-function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
+function VisitCoach({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const validationSchema = Yup.object().shape({});
 
     return (
@@ -25,6 +25,8 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -55,6 +57,13 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -157,7 +166,7 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -169,7 +178,7 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                                                 touched={touched}
                                                 onChangeAction={setFieldValue}
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 step="900"
                                             />
                                         )}
@@ -186,13 +195,7 @@ function VisitCoach({ history, initialQuotationRequest, handleSubmit }) {
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

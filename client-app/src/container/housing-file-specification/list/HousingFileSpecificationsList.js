@@ -54,7 +54,7 @@ class HousingFileSpecificationsList extends Component {
                             />
                         ) : (
                             <tr className="thead-filter">
-                                <th colSpan={10}>
+                                <th colSpan={11}>
                                     <div className="alert alert-success">
                                         Geselecteerde specificaties: {this.props.numberSelectedNumberTotal}
                                     </div>
@@ -65,7 +65,7 @@ class HousingFileSpecificationsList extends Component {
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={9}>{loadingText}</td>
+                                <td colSpan={11}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(housingFileSpecification => {

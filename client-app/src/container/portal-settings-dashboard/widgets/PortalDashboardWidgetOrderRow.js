@@ -124,7 +124,7 @@ const PortalDashboardWidgetOrderRow = ({
                                             display: 'inline-block',
                                             padding: '1px',
                                             borderRadius: '1px',
-                                            height: '100%',
+                                            height: 'auto',
                                             width: '100px',
                                             boxShadow: '0 0 0 1px #fff inset',
                                         }}

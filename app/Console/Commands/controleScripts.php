@@ -54,6 +54,9 @@ class controleScripts extends Command
         Artisan::call('participants:checkFirstStartingDate');
         Artisan::call('participants:checkTerminationDate');
 //        Artisan::call('project:checkWrongProjectDataForLastProjectRevenue');
+        Artisan::call('project:checkWrongProjectPCRSettings');
+        Artisan::call('email:checkSoftDeletedEmailAddressesInEmails');
+        Artisan::call('participation:checkWrongDateFirstDepositMutationsLoan');
 
         $commandRun->end_at = Carbon::now();
         $commandRun->finished = true;

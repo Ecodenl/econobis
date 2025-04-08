@@ -4,18 +4,22 @@ import LoadingView from '../../../components/general/LoadingView';
 import QuotationRequestAPI from '../../../api/quotation-request/QuotationRequestAPI';
 import InspectDetailsDocumentTable from './document-table';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
-import VisitCoach from './action-visit/VisitCoach';
-import VisitProjectManager from './action-visit/VisitProjectManager';
-import VisitExternalParty from './action-visit/VisitExternalParty';
-import SubsidyRequestExternalParty from './action-subsidy-request/SubsidyRequestExternalParty';
-import SubsidyRequestProjectManager from './action-subsidy-request/SubsidyRequestProjectManager';
 import QuotationRequestExternalParty from './action-quotation-request/QuotationRequestExternalParty';
 import QuotationRequestCoach from './action-quotation-request/QuotationRequestCoach';
-import SubsidyRequestCoach from './action-subsidy-request/SubsidyRequestCoach';
-import QuotationRequestProjectManager from './action-quotation-request/QuotationRequestProjectManager';
 import QuotationRequestOccupant from './action-quotation-request/QuotationRequestOccupant';
+import QuotationRequestProjectManager from './action-quotation-request/QuotationRequestProjectManager';
+import RedirectionCoach from './action-redirection/RedirectionCoach';
+import RedirectionExternalParty from './action-redirection/RedirectionExternalParty';
+import RedirectionOccupant from './action-redirection/RedirectionOccupant';
+import RedirectionProjectManager from './action-redirection/RedirectionProjectManager';
+import SubsidyRequestCoach from './action-subsidy-request/SubsidyRequestCoach';
+import SubsidyRequestExternalParty from './action-subsidy-request/SubsidyRequestExternalParty';
 import SubsidyRequestOccupant from './action-subsidy-request/SubsidyRequestOccupant';
+import SubsidyRequestProjectManager from './action-subsidy-request/SubsidyRequestProjectManager';
+import VisitCoach from './action-visit/VisitCoach';
+import VisitExternalParty from './action-visit/VisitExternalParty';
 import VisitOccupant from './action-visit/VisitOccupant';
+import VisitProjectManager from './action-visit/VisitProjectManager';
 
 function InspectDetails({ match, history, user }) {
     const [isLoading, setLoading] = useState(true);
@@ -53,7 +57,7 @@ function InspectDetails({ match, history, user }) {
                 ? values.amountDetermination.toString().replace(',', '.')
                 : '',
         }).then(response => {
-            history.push('/schouwen');
+            redirectBack();
         });
     };
 
@@ -61,6 +65,14 @@ function InspectDetails({ match, history, user }) {
         event.preventDefault();
         history.push(`/schouwen/${match.params.id}/document/${documentId}`);
     };
+
+    function redirectBack() {
+        if (match.params.campaignId) {
+            history.push(`/schouwen/campagne/${match.params.campaignId}`);
+        } else {
+            history.push('/schouwen');
+        }
+    }
 
     useEffect(() => {
         QuotationRequestAPI.fetchById(match.params.id).then(response => {
@@ -91,25 +103,25 @@ function InspectDetails({ match, history, user }) {
                                     {user.inspectionPersonTypeId === 'coach' ||
                                     (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                         <QuotationRequestCoach
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <QuotationRequestExternalParty
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <QuotationRequestProjectManager
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.isOccupant === true ? (
                                         <QuotationRequestOccupant
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
@@ -120,25 +132,25 @@ function InspectDetails({ match, history, user }) {
                                     {user.inspectionPersonTypeId === 'coach' ||
                                     (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                         <SubsidyRequestCoach
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <SubsidyRequestExternalParty
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <SubsidyRequestProjectManager
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.isOccupant === true ? (
                                         <SubsidyRequestOccupant
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
@@ -149,25 +161,54 @@ function InspectDetails({ match, history, user }) {
                                     {user.inspectionPersonTypeId === 'coach' ||
                                     (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
                                         <VisitCoach
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'externalparty' ? (
                                         <VisitExternalParty
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.inspectionPersonTypeId === 'projectmanager' ? (
                                         <VisitProjectManager
-                                            history={history}
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
                                     ) : user.isOccupant === true ? (
                                         <VisitOccupant
-                                            history={history}
+                                            redirectBack={redirectBack}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : null}
+                                </>
+                            ) : initialQuotationRequest.opportunityAction.codeRef === 'redirection' ? (
+                                <>
+                                    {user.inspectionPersonTypeId === 'coach' ||
+                                    (!user.inspectionPersonTypeId && user.isOrganisationContact === true) ? (
+                                        <RedirectionCoach
+                                            redirectBack={redirectBack}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'externalparty' ? (
+                                        <RedirectionExternalParty
+                                            redirectBack={redirectBack}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.inspectionPersonTypeId === 'projectmanager' ? (
+                                        <RedirectionProjectManager
+                                            redirectBack={redirectBack}
+                                            initialQuotationRequest={initialQuotationRequest}
+                                            handleSubmit={handleSubmit}
+                                        />
+                                    ) : user.isOccupant === true ? (
+                                        <RedirectionOccupant
+                                            redirectBack={redirectBack}
                                             initialQuotationRequest={initialQuotationRequest}
                                             handleSubmit={handleSubmit}
                                         />
@@ -179,6 +220,9 @@ function InspectDetails({ match, history, user }) {
                                 user.inspectionPersonTypeId !== 'projectmanager' &&
                                 user.inspectionPersonTypeId !== 'externalparty') ||
                             (initialQuotationRequest.opportunityAction.codeRef === 'quotation-request' &&
+                                user.inspectionPersonTypeId !== 'externalparty') ||
+                            (initialQuotationRequest.opportunityAction.codeRef === 'redirection' &&
+                                user.inspectionPersonTypeId !== 'projectmanager' &&
                                 user.inspectionPersonTypeId !== 'externalparty') ||
                             initialQuotationRequest.opportunityAction.codeRef === 'subsidy-request' ? (
                                 <InspectDetailsDocumentTable

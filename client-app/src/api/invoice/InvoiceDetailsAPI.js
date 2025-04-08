@@ -128,6 +128,14 @@ export default {
             });
     },
 
+    syncOneInvoiceFromTwinfield: (administrationId, invoiceId) => {
+        const requestUrl = `${URL_INVOICE}/${invoiceId}/sync-one-invoice-from-twinfield`;
+
+        return axiosInstance.post(requestUrl, {
+            administrationId: administrationId,
+        });
+    },
+
     sendAll: (invoiceIds, dateCollection) => {
         const requestUrl = `${URL_INVOICE}/send-all`;
 
@@ -144,8 +152,8 @@ export default {
         return response;
     },
 
-    sendAllPost: (invoiceIds, dateCollection) => {
-        const requestUrl = `${URL_INVOICE}/send-all-post`;
+    sendAllPost: (administrationId, invoiceIds, dateCollection) => {
+        const requestUrl = `${URL_INVOICE}/${administrationId}/send-all-post`;
 
         document.body.style.cursor = 'wait';
         let response = axiosInstance.post(

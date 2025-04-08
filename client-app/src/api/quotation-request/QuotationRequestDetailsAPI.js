@@ -29,6 +29,19 @@ export default {
             });
     },
 
+    showUpdateOpportunityStatus: quotationRequest => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/${quotationRequest.id}/show-update-opportunity-status`;
+
+        return axiosInstance
+            .post(requestUrl, quotationRequest)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     newQuotationRequest: quotationRequest => {
         const requestUrl = `${URL_QUOTATION_REQUEST}`;
 
@@ -57,5 +70,17 @@ export default {
         const requestUrl = `${URL_QUOTATION_REQUEST}/${id}/delete`;
 
         return axiosInstance.post(requestUrl);
+    },
+
+    deleteBulkQuotationRequests: ids => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-delete`;
+
+        return axiosInstance.post(requestUrl, { ids: ids });
+    },
+
+    updateBulkQuotationRequests: (ids, values) => {
+        const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-update`;
+
+        return axiosInstance.post(requestUrl, { ids: ids, ...values });
     },
 };

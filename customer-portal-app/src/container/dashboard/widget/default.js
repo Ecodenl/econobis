@@ -123,7 +123,7 @@ export const SwitchContactDashboardWidget = function({
                     className="card-text"
                     style={{ display: 'flex', justifyContent: 'space-between', overflowX: 'auto' }}
                 >
-                    {user.occupations && user.occupations.length > 0 ? (
+                    {user.occupationsActive && user.occupationsActive.length > 0 ? (
                         <>
                             <Button
                                 className="w-button btn btn-primary btn-sm"
@@ -137,11 +137,8 @@ export const SwitchContactDashboardWidget = function({
                             >
                                 {user.fullNameFnf}
                             </Button>
-                            {user.occupations.map(occupationContact =>
-                                (occupationContact.primaryContact.typeId === 'organisation' &&
-                                    occupationContact.primary) ||
-                                (occupationContact.primaryContact.typeId === 'person' &&
-                                    occupationContact.occupation.occupationForPortal) ? (
+                            {user.occupationsActive.map(occupationContact =>
+                                occupationContact.allowManageInPortal ? (
                                     <Button
                                         className="w-button btn btn-primary btn-sm"
                                         key={'user-' + occupationContact.primaryContact.id}

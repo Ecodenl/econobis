@@ -6,7 +6,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const CampaignDetailsWorkflowView = ({
-    campaignWorkflow: { id, status, emailTemplateWorkflow, numberOfDaysToSendEmail, isActive },
+    campaignWorkflow: { id, status, emailTemplateWorkflow, emailTemplateReminder, numberOfDaysToSendEmail, isActive },
     highlightLine,
     onLineEnter,
     onLineLeave,
@@ -24,20 +24,21 @@ const CampaignDetailsWorkflowView = ({
                 <div className="col-sm-2">{numberOfDaysToSendEmail ? numberOfDaysToSendEmail : 'Direct'}</div>
                 <div className="col-sm-1">{status.usesWf ? 'Ja' : 'Nee'}</div>
                 <div className="col-sm-1">{isActive ? 'Ja' : 'Nee'}</div>
-                <div className="col-sm-1">
-                    {showActionButtons && permissions.manageMarketing ? (
-                        <>
-                            <a role="button" onClick={openEdit}>
-                                <Icon className="mybtn-success" size={14} icon={pencil} />
-                            </a>
-                            <a role="button" onClick={toggleDelete}>
-                                <Icon className="mybtn-danger" size={14} icon={trash} />
-                            </a>
-                        </>
-                    ) : (
-                        ''
-                    )}
-                </div>
+            </div>
+
+            <div className="col-sm-1">
+                {showActionButtons && permissions.manageMarketing ? (
+                    <>
+                        <a role="button" onClick={openEdit}>
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                        </a>
+                        <a role="button" onClick={toggleDelete}>
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
+                        </a>
+                    </>
+                ) : (
+                    ''
+                )}
             </div>
         </div>
     );

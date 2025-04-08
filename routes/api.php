@@ -85,6 +85,8 @@ Route::namespace('Api')
         Route::get('/intake/excel', 'Intake\IntakeController@excel');
         Route::get('/contact/{contact}/intake', 'Intake\IntakeController@getStore');
         Route::post('/contact/intake', 'Intake\IntakeController@store');
+        Route::post('/intake/bulk-delete', 'Intake\IntakeController@bulkDelete');
+        Route::post('/intake/bulk-update', 'Intake\IntakeController@bulkUpdate');
         Route::get('/intake/{intake}', 'Intake\IntakeController@showWithCustomCampaigns');
         Route::post('/intake/{intake}/update', 'Intake\IntakeController@update');
         Route::post('/intake/{intake}/delete', 'Intake\IntakeController@destroy');
@@ -201,8 +203,15 @@ Route::namespace('Api')
         Route::post('/address-energy-supplier-validate', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierFormNew');
         Route::post('/address-energy-supplier-validate/{addressEnergySupplier}', 'AddressEnergySupplier\AddressEnergySupplierController@validateAddressEnergySupplierForm');
 
+        Route::get('/address-dongle/grid', 'AddressDongle\AddressDongleController@grid');
+
+        Route::post('/address-dongle', 'AddressDongle\AddressDongleController@store');
+        Route::post('/address-dongle/{addressDongle}', 'AddressDongle\AddressDongleController@update');
+        Route::post('/address-dongle/{addressDongle}/delete', 'AddressDongle\AddressDongleController@destroy');
+
         Route::get('contact-group/grid', 'ContactGroup\ContactGroupController@grid');
         Route::get('contact-group/peek', 'ContactGroup\ContactGroupController@peek');
+        Route::get('contact-group/peek/{active?}', 'ContactGroup\ContactGroupController@peek');
         Route::get('contact-group/peek/static/{active?}', 'ContactGroup\ContactGroupController@peekStatic');
         Route::get('contact-group/excel/group-report', 'ContactGroup\ContactGroupController@excelGroupReport');
         Route::get('contact-group/{contactGroup}', 'ContactGroup\ContactGroupController@show');
@@ -250,6 +259,8 @@ Route::namespace('Api')
         Route::get('opportunity/chart-data', 'Opportunity\OpportunityController@chartData');
         Route::get('opportunity/{opportunity}', 'Opportunity\OpportunityController@show');
         Route::post('opportunity/', 'Opportunity\OpportunityController@store');
+        Route::post('opportunity/bulk-delete', 'Opportunity\OpportunityController@bulkDelete');
+        Route::post('opportunity/bulk-update', 'Opportunity\OpportunityController@bulkUpdate');
         Route::post('opportunity/evaluation/{opportunity}', 'Opportunity\OpportunityController@updateEvaluation');
         Route::post('opportunity/{opportunity}', 'Opportunity\OpportunityController@update');
         Route::post('opportunity/{opportunity}/delete', 'Opportunity\OpportunityController@destroy');
@@ -263,6 +274,8 @@ Route::namespace('Api')
         Route::get('task/amount-active', 'Task\TaskController@getAmountOfActiveTasks');
         Route::get('task/{task}', 'Task\TaskController@show');
         Route::post('task', 'Task\TaskController@store');
+        Route::post('task/bulk-delete', 'Task\TaskController@bulkDelete');
+        Route::post('task/bulk-update', 'Task\TaskController@bulkUpdate');
         Route::post('task/{task}', 'Task\TaskController@update');
         Route::post('task/{task}/duplicate', 'Task\TaskController@duplicate');
         Route::post('task/{task}/delete', 'Task\TaskController@destroy');
@@ -463,6 +476,9 @@ Route::namespace('Api')
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');
+        Route::post('/quotation-request/{quotationRequest}/show-update-opportunity-status', 'QuotationRequest\QuotationRequestController@showUpdateOpportunityStatus');
+        Route::post('/quotation-request/bulk-delete', 'QuotationRequest\QuotationRequestController@bulkDelete');
+        Route::post('/quotation-request/bulk-update', 'QuotationRequest\QuotationRequestController@bulkUpdate');
         Route::get('/quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@show');
         Route::post('/quotation-request/{quotationRequest}/update', 'QuotationRequest\QuotationRequestController@update');
         Route::post('/quotation-request/{quotationRequest}/delete', 'QuotationRequest\QuotationRequestController@destroy');
@@ -503,6 +519,7 @@ Route::namespace('Api')
         Route::get('project/participant/peek', 'ParticipationProject\ParticipationProjectController@peek');
         Route::get('project/participant/save-as-group', 'ParticipationProject\ParticipationProjectController@saveAsGroup');
         Route::get('project/participant/{participantProject}/peek-members', 'ParticipationProject\ParticipationProjectController@peekContactsMembershipRequired');
+        Route::get('project/participant/{participantProject}/additional-info-for-terminating-or-change-entry-date', 'ParticipationProject\ParticipationProjectController@getAdditionalInfoForTerminatingOrChangeEntryDate');
         Route::get('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
         Route::post('project/participant', 'ParticipationProject\ParticipationProjectController@store');
         Route::post('project/participant/transfer', 'ParticipationProject\ParticipationProjectController@transfer');
@@ -520,7 +537,7 @@ Route::namespace('Api')
         Route::post('project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@update');
         Route::post('project/participant/{participantProject}/delete', 'ParticipationProject\ParticipationProjectController@destroy');
         Route::post('project/participant/{participantProject}/terminate', 'ParticipationProject\ParticipationProjectController@terminate');
-        Route::post('project/participant/{participantProject}/terminate-obligation', 'ParticipationProject\ParticipationProjectController@terminateObligation');
+        Route::post('project/participant/{participantProject}/terminate-loan-or-obligation', 'ParticipationProject\ParticipationProjectController@terminateLoanOrObligation');
         Route::post('project/participant/{participantProject}/undo-terminate', 'ParticipationProject\ParticipationProjectController@undoTerminate');
 
         Route::get('project/grid', 'Project\ProjectController@grid');
@@ -572,6 +589,7 @@ Route::namespace('Api')
 
         Route::get('order/grid', 'Order\OrderController@grid');
         Route::get('order/csv', 'Order\OrderController@csv');
+        Route::get('order/csvwithproducts', 'Order\OrderController@csvWithProducts');
         Route::get('order/peek', 'Order\OrderController@peek');
         Route::get('order/amount-collection', 'Order\OrderController@getAmountCollection');
         Route::get('order/{order}', 'Order\OrderController@show');
@@ -591,11 +609,12 @@ Route::namespace('Api')
 
         Route::get('invoice/grid', 'Invoice\InvoiceController@grid');
         Route::get('invoice/csv', 'Invoice\InvoiceController@csv');
+        Route::get('invoice/csvwithproducts', 'Invoice\InvoiceController@csvWithProducts');
         Route::get('invoice/peek', 'Invoice\InvoiceController@peek');
         Route::post('invoice/sending', 'Invoice\InvoiceController@getInvoicesForSending');
         Route::post('invoice/send-all', 'Invoice\InvoiceController@sendAll');
         Route::get('invoice/amount-unpaid', 'Invoice\InvoiceController@getAmountUnpaid');
-        Route::post('invoice/send-all-post', 'Invoice\InvoiceController@sendAllPost');
+        Route::post('invoice/{administration}/send-all-post', 'Invoice\InvoiceController@sendAllPost');
         Route::post('invoice/create-sepa-for-invoice-ids', 'Invoice\InvoiceController@createSepaForInvoiceIds');
         Route::get('invoice/from-twinfield', 'Invoice\InvoiceController@showFromTwinfield');
         Route::get('invoice/{invoice}', 'Invoice\InvoiceController@show');
@@ -612,13 +631,18 @@ Route::namespace('Api')
         Route::post('invoice/{invoice}', 'Invoice\InvoiceController@update');
         Route::post('invoice/{invoice}/delete', 'Invoice\InvoiceController@destroy');
         Route::post('invoice/{invoice}/irrecoverable', 'Invoice\InvoiceController@setIrrecoverable');
+        Route::post('invoice/{invoice}/sync-one-invoice-from-twinfield', 'Invoice\InvoiceController@syncOneInvoiceFromTwinfield');
         Route::post('invoice/{invoice}/send', 'Invoice\InvoiceController@send');
-        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
+//        Route::post('invoice/{invoice}/send-post', 'Invoice\InvoiceController@sendPost');
         Route::post('invoice/{invoice}/send-notification', 'Invoice\InvoiceController@sendNotification');
         Route::post('invoice/{invoice}/send-notification-post', 'Invoice\InvoiceController@sendNotificationPost');
         Route::post('invoice/{invoice}/payment/new', 'Invoice\InvoiceController@newPayment');
         Route::post('invoice/{invoicePayment}/payment/update', 'Invoice\InvoiceController@updatePayment');
         Route::post('invoice/payment/{invoicePayment}/delete', 'Invoice\InvoiceController@deletePayment');
+
+        Route::get('invoice-post/grid', 'Invoice\InvoicePostController@grid');
+        Route::get('invoice-post/{invoicePost}/download', 'Invoice\InvoicePostController@downloadInvoicePost');
+        Route::post('invoice-post/{invoicePost}/delete', 'Invoice\InvoicePostController@deleteInvoicePost');
 
         Route::get('payment-invoice/grid', 'PaymentInvoice\PaymentInvoiceController@grid');
         Route::post('payment-invoice/{paymentInvoice}/not-paid', 'PaymentInvoice\PaymentInvoiceController@setNotPaid');
@@ -719,6 +743,7 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
 
+        // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');
         Route::get('free-fields-field/grid', 'FreeFields\FreeFieldsFieldController@grid');
         Route::post('free-fields-field/{freeFieldsField}/delete', 'FreeFields\FreeFieldsFieldController@delete');
@@ -731,6 +756,18 @@ Route::namespace('Api')
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');
+
+        // Free fields portal pages
+        Route::get('portal-free-fields-pages/grid', 'PortalFreeFields\PortalFreeFieldsPagesController@grid');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@delete');
+        Route::post('portal-free-fields-page', 'PortalFreeFields\PortalFreeFieldsPagesController@store');
+        Route::get('portal-free-fields-page/{portalFreeFieldsPage}', 'PortalFreeFields\PortalFreeFieldsPagesController@show');
+        Route::post('portal-free-fields-page/{portalFreeFieldsPage}/update', 'PortalFreeFields\PortalFreeFieldsPagesController@update');
+        Route::get('portal-free-fields-page/free-fields-contacts/{portalFreeFieldsPage}/peek-contacts', 'PortalFreeFields\PortalFreeFieldsPagesController@peekContacts');
+
+        Route::post('portal-free-fields-page-field', 'PortalFreeFields\PortalFreeFieldsPagesController@storePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}', 'PortalFreeFields\PortalFreeFieldsPagesController@updatePortalFreeFieldsField');
+        Route::post('portal-free-fields-page-field/{portalFreeFieldsField}/delete', 'PortalFreeFields\PortalFreeFieldsPagesController@destroyPortalFreeFieldsField');
 
         // Apart voor app en portal ivm toepassen aparte middleware
         Route::get('jory', '\\'.JoryController::class.'@multiple')->name('jory.multiple');

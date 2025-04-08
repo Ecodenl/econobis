@@ -14,7 +14,6 @@ use App\Eco\FinancialOverview\FinancialOverviewPost;
 use App\Eco\Jobs\JobsLog;
 use App\Eco\User\User;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
-use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use Carbon\Carbon;
 use iio\libmergepdf\Merger;
 use Illuminate\Bus\Queueable;
@@ -24,6 +23,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Storage;
 
 class CreateAllFinancialOverviewContactsPost implements ShouldQueue
 {
@@ -85,6 +85,8 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
                 FinancialOverviewHelper::financialOverviewContactSend($financialOverviewContact);
             }
             $jobLog = new JobsLog();
+            $dateTime = Carbon::now()->format("Y-m-d-H-i-s");
+
             if($financialOverviewContact->financialOverview->administration->administration_code){
                 $financialOverviewContactReference = 'WS-' . $financialOverviewContact->financialOverview->year . '-' . $financialOverviewContact->financialOverview->administration->administration_code . '-' . $financialOverviewContact->contact->number;
             } else {
@@ -114,19 +116,24 @@ class CreateAllFinancialOverviewContactsPost implements ShouldQueue
         $financialOverviewPost->save();
 
         if($this->numberOfChunks > 1){
-            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-part-' . $this->chunkNumber . "-of-" . $this->numberOfChunks . "-" . $dateTime . '.pdf';
         } else {
-            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . Carbon::now()->format("Y-m-d-H-i-s") . '.pdf';
+            $name = 'Post-waardestaten-' . $financialOverviewPost->id . '-' . $dateTime . '.pdf';
         }
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
 
         $merger = new Merger;
         foreach ($createdPdfs as $createdPdf){
-            $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
+//            todo WM: opschonen
+//            $merger->addFile(storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $createdPdf);
+            $addFilePath = Storage::disk('administrations')->path($createdPdf);
+            $merger->addFile($addFilePath);
         }
         $createdPdf = $merger->merge();
         file_put_contents($filePath, $createdPdf);

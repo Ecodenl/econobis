@@ -118,6 +118,7 @@ class OpportunityWorkflowHelper
             $email->cc = [];
             $email->bcc = [];
             $email->subject = $subject;
+            $email->subject_for_filter = trim(mb_substr($email->subject ?? '', 0, 150));
             $email->folder = 'sent';
             if ($this->opportunity) {
                 $email->opportunity_id = $this->opportunity->id;

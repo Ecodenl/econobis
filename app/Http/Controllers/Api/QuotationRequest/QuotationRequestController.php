@@ -17,6 +17,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
+use App\Helpers\Opportunity\OpportunityHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -26,6 +27,7 @@ use App\Http\Resources\QuotationRequest\GridQuotationRequest;
 use App\Http\Resources\QuotationRequest\QuotationRequestPeek;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -54,9 +56,9 @@ class QuotationRequestController extends ApiController
 
         return GridQuotationRequest::collection($quotationRequests)
             ->additional(['meta' => [
-            'total' => $requestQuery->total(),
-            ]
-        ]);
+                'total' => $requestQuery->total(),
+                'quotationRequestIdsTotal' => $requestQuery->totalIds(),            ]
+            ]);
     }
 
     public function show(QuotationRequest $quotationRequest)
@@ -108,6 +110,18 @@ class QuotationRequestController extends ApiController
 
         return FullQuotationRequest::make($quotationRequest);
     }
+
+    public function showUpdateOpportunityStatus(Request $request, QuotationRequest $quotationRequest)
+    {
+        $data = $request->validate([
+            'statusId' => 'required|exists:quotation_request_status,id',
+        ]);
+        $quotationRequest->status_id = $data['statusId'];
+        $opportunityHelper = new OpportunityHelper($quotationRequest);
+
+        return $opportunityHelper->showUpdateOpportunityStatus();
+    }
+
 
     public function csv(RequestQuery $requestQuery)
     {
@@ -416,8 +430,8 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_under_review = $data['dateUnderReview'];
         }
 
-        if ($data['dateExecuted']) {
-            $quotationRequest->date_executed = $data['dateExecuted'];
+        if (isset($data['dateExecuted'])) {
+            $quotationRequest->date_executed = !empty($data['dateExecuted']) ? $data['dateExecuted'] : null;
         }
 
         if ($data['dateUnderReviewDetermination']) {
@@ -475,6 +489,65 @@ class QuotationRequestController extends ApiController
             Log::error($e->getMessage());
             abort(501, 'Er is helaas een fout opgetreden.');
         }
+    }
+
+    public function bulkDelete(Request $request)
+    {
+        $this->authorize('manage', QuotationRequest::class);
+
+        $allResult = [];
+
+        if($request->input('ids')){
+            $quotationRequestsToDelete = QuotationRequest::whereIn('id', $request->input('ids'))->get();
+            foreach ($quotationRequestsToDelete as $quotationRequest) {
+
+                try {
+                    DB::beginTransaction();
+
+                    $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
+                    $result = $deleteQuotationRequest->delete();
+                    if(count($result) > 0){
+                        $allResult[] = $result;
+                        DB::rollBack();
+                    }
+
+                    DB::commit();
+                } catch (\PDOException $e) {
+                    DB::rollBack();
+                    Log::error($e->getMessage());
+                    abort(501, 'Er is helaas een fout opgetreden.');
+                }
+
+            }
+        }
+
+        return $allResult;
+    }
+
+    public function bulkUpdate(Request $request)
+    {
+        $this->authorize('manage', QuotationRequest::class);
+
+        $request->validate([
+            'ids' => ['required', 'array'],
+            'ids.*' => ['integer', 'exists:quotation_requests,id'],
+        ]);
+
+        $quotationRequests = QuotationRequest::whereIn('id', $request->input('ids'))->get();
+
+        // todo WM: is dit nodig?
+//        foreach ($quotationRequests as $quotationRequest) {
+//            $this->authorize('manage', $quotationRequest);
+//        }
+
+        $data = $request->validate([
+            'statusId' => ['nullable', 'exists:quotation_request_status,id'],
+        ]);
+
+        foreach ($quotationRequests as $quotationRequest) {
+            $quotationRequest->update(Arr::keysToSnakeCase($data));
+        }
+
     }
 
     public function peek(Request $request)

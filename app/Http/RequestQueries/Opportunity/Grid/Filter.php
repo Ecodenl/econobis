@@ -16,6 +16,7 @@ class Filter extends RequestFilter
 {
     protected $fields = [
         'number',
+        'address',
         'createdAtStart',
         'createdAtEnd',
         'desiredDateStart',
@@ -33,7 +34,6 @@ class Filter extends RequestFilter
         'number' => 'opportunities.number',
         'name' => 'contacts.full_name',
         'measureCategory' => 'measure_categories.name',
-        'measureName' => 'measures.name',
         'campaign' => 'campaigns.name',
         'statusId'  => 'opportunities.status_id',
     ];
@@ -44,6 +44,7 @@ class Filter extends RequestFilter
         'campaign' => 'campaigns',
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
+        'address' => 'address',
     ];
 
     protected $defaultTypes = [
@@ -94,4 +95,41 @@ class Filter extends RequestFilter
 
         return false;
     }
+
+    protected function applyAddressFilter($query, $type, $data)
+    {
+        // Elke term moet in een van de naam velden voor komen.
+        // Opbreken in array zodat 2 losse woorden ook worden gevonden als deze in 2 verschillende velden staan
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.street', 'LIKE', '%' . $term . '%');
+                $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+
+    protected function applyMeasureNameFilter($query, $type, $data)
+    {
+        $query->where(function($query) use ($data) {
+            $query
+                ->where(function($query) use ($data) {
+                    $query->whereNotNull('measures.name_custom')
+                        ->where('measures.name_custom', '!=', '')
+                        ->where('measures.name_custom', 'LIKE', '%' . $data . '%');
+                })
+                ->orWhere(function($query) use ($data) {
+                    $query->where(function($query) {
+                        $query->whereNull('measures.name_custom')
+                            ->orWhere('measures.name_custom', '=', '');
+                    })
+                        ->where('measures.name', 'LIKE', '%' . $data . '%');
+                });
+        });
+        return false;
+    }
+
 }

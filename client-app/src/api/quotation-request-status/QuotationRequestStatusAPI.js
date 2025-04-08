@@ -4,19 +4,11 @@ export default {
     fetchQuotationRequestStatus: () => {
         const requestUrl = `jory/quotation-request-status`;
 
-        // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
         return axiosInstance.get(requestUrl, {
             params: {
                 jory: {
-                    fld: [
-                        'id',
-                        'name',
-                        'usesWf',
-                        'emailTemplateIdWf',
-                        'numberOfDaysToSendEmail',
-                        'order',
-                        'mailCcToCoachWf',
-                    ],
+                    fld: ['id', 'name', 'usesWf', 'order', 'opportunityActionName', 'sendEmailReminder'],
+                    srt: ['opportunityActionId', 'order'],
                 },
             },
         });

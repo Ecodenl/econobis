@@ -239,7 +239,7 @@ class SepaHelper
         $name = 'incasso-sepa-' . $sepa->id .  '-' . Carbon::now()->format('Ymdhi') . '.xml';
         $path = 'administration_' . $this->administration->id
             . DIRECTORY_SEPARATOR . 'sepas' . DIRECTORY_SEPARATOR . $name;
-        Storage::put('administrations/' . $path, $xml);
+        Storage::disk('administrations')->put($path, $xml);
 
         $sepa->filename = $path;
         $sepa->name = $name;
@@ -272,21 +272,20 @@ class SepaHelper
      */
     public function checkStorageDir(){
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $this->administration->id . DIRECTORY_SEPARATOR . 'sepas');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);
         }
     }
 
-    public function translateToValidCharacterSet($field){
+    protected function translateToValidCharacterSet($field){
 
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');
-//        Log::info( mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() ) );
-
-        $field = mb_convert_encoding( strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo ), 'UTF-8', mb_list_encodings() );
+        $field = strtr( $fieldUtf8Decoded, $replaceFrom, $replaceTo );
         $field = preg_replace('/[^A-Za-z0-9 -]/', '', $field);
 
         return $field;

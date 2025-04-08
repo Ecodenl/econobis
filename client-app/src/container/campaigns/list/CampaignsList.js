@@ -49,12 +49,18 @@ class CampaignsList extends Component {
 
     render() {
         const { data = [], meta = {} } = this.props.campaigns;
+        const { permissions = {} } = this.props;
 
         let loadingText = '';
         let loading = true;
 
         if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van campagnes.';
+            if (!permissions.manageMarketing) {
+                loadingText =
+                    'Je moet de rol “Marketing medewerker” of “Beheerder” hebben om campagnes te kunnen inzien/aanpassen, vraag jou admin/key-user om jou deze rechten via instellingen > gebruikers te geven indien nodig.';
+            } else {
+                loadingText = 'Fout bij het ophalen van campagnes.';
+            }
         } else if (this.props.isLoading) {
             loadingText = 'Gegevens aan het laden.';
         } else if (data.length === 0) {
@@ -119,6 +125,7 @@ const mapStateToProps = state => {
         campaignsPagination: state.campaigns.pagination,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
+        permissions: state.meDetails.permissions,
     };
 };
 

@@ -72,6 +72,16 @@ const Forgot = React.lazy(() => import('./container/auth/Forgot'));
 const FreeFieldsListApp = React.lazy(() => import('./container/free-fields/list/FreeFieldsListApp'));
 const FreeFieldNewApp = React.lazy(() => import('./container/free-fields/new/FreeFieldNewApp'));
 const FreeFieldDetailsApp = React.lazy(() => import('./container/free-fields/details/FreeFieldDetailsApp'));
+const PortalFreeFieldsPagesListApp = React.lazy(() =>
+    import('./container/portal-free-fields-pages/list/PortalFreeFieldsPagesListApp')
+);
+const PortalFreeFieldsPagesNewApp = React.lazy(() =>
+    import('./container/portal-free-fields-pages/new/PortalFreeFieldsPagesNewApp')
+);
+const PortalFreeFieldsPagesDetailsApp = React.lazy(() =>
+    import('./container/portal-free-fields-pages/details/PortalFreeFieldsPagesDetailsApp')
+);
+
 const HousingFileDetailsApp = React.lazy(() => import('./container/housing-file/details/HousingFileDetailsApp'));
 const HousingFileNewApp = React.lazy(() => import('./container/housing-file/new/HousingFileNewApp'));
 const HousingFilesListApp = React.lazy(() => import('./container/housing-file/list/HousingFilesListApp'));
@@ -122,6 +132,7 @@ const MeasureCategoriesListApp = React.lazy(() =>
 const MeasureCategoryDetailsApp = React.lazy(() =>
     import('./container/measure-categories/details/MeasureCategoryDetailsApp')
 );
+const AddressDonglesListApp = React.lazy(() => import('./container/address-dongles/list/AddressDonglesListApp'));
 const NotFoundedPage = React.lazy(() => import('./container/global/NotFoundedPage'));
 const OpportunitiesListApp = React.lazy(() => import('./container/opportunities/list/OpportunitiesListApp'));
 const OpportunityDetailsApp = React.lazy(() => import('./container/opportunities/details/OpportunityDetailsApp'));
@@ -295,7 +306,6 @@ const Routes = () => {
                     <Route path="contact/nieuw/:type" component={ContactNewApp} />
                     <Route path="contact/import" component={ContactImportApp} />
                     <Route path="contact/:id" component={ContactDetailsApp} />
-                    <Route path="contacten" component={ContactsListApp} />
                     /* Contacts in group */
                     <Route path="contact-groep/:id/:mode" component={ContactGroupDetailsApp} />
                     <Route path="contact-groep/:id" component={ContactGroupDetailsApp} />
@@ -306,6 +316,7 @@ const Routes = () => {
                     <Route path="campagne/:id" component={CampaignDetailsApp} />
                     <Route path="campagnes" component={CampaignsListApp} />
                     <Route path="contacten/:filter/:value" component={ContactsListApp} />
+                    <Route path="contacten" component={ContactsListApp} />
                     /* Cooperation */
                     <Route path="cooperatie" component={CooperationDetailsApp} />
                     /* Documents */
@@ -390,6 +401,10 @@ const Routes = () => {
                     />
                     /* Orders */
                     <Route path="order/nieuw/contact/:contactId" component={OrderNewApp} />
+                    <Route
+                        path="order/nieuw/contact/:contactId/deelnemer/:participationId/administratie/:administrationId"
+                        component={OrderNewApp}
+                    />
                     <Route path="order/:id" component={OrderDetailsApp} />
                     <Route path="order/inzien/:id" component={InvoicePreviewApp} />
                     /* Nota's */
@@ -436,6 +451,8 @@ const Routes = () => {
                     /* Measures */
                     <Route path="maatregelen" component={MeasuresListApp} />
                     <Route path="maatregel/:id" component={MeasureDetailsApp} />
+                    /* Dongles */
+                    <Route path="dongels" component={PermissionHelper(AddressDonglesListApp, 'menuDongles')} />
                     /* Mailboxes */
                     <Route path="mailbox/nieuw" component={MailboxNewApp} />
                     <Route path="mailbox/:id" component={MailboxDetailsApp} />
@@ -576,10 +593,14 @@ const Routes = () => {
                     <Route path="btw-codes" component={VatCodesListApp} />
                     <Route path="btw-code/nieuw" component={VatCodeNewApp} />
                     <Route path="btw-code/:id" component={VatCodeDetailsApp} />
-                    /* Vrije velden*/
+                    /* Vrije velden algemeen */
                     <Route path="vrije-velden" component={FreeFieldsListApp} />
                     <Route path="vrije-velden/nieuw" component={FreeFieldNewApp} />
                     <Route path="vrije-velden/:id" component={FreeFieldDetailsApp} />
+                    /* Vrije velden portaal pagina */
+                    <Route path="vrije-velden-portaal-pagina" component={PortalFreeFieldsPagesListApp} />
+                    <Route path="vrije-velden-portaal-pagina/nieuw" component={PortalFreeFieldsPagesNewApp} />
+                    <Route path="vrije-velden-portaal-pagina/:id" component={PortalFreeFieldsPagesDetailsApp} />
                     /* Webforms */
                     <Route path="webformulieren" component={WebformsListApp} />
                     <Route path="webformulier/nieuw" component={WebformNewApp} />

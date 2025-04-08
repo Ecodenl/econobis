@@ -10,7 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
 
-function SubsidyRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
+function SubsidyRequestProjectManager({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [pmApproved, setPmApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'pm-approved'
             ? true
@@ -34,6 +34,8 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -64,6 +66,13 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -97,7 +106,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                         )}
                                     </Field>
                                     <FormLabel htmlFor="date_recorded" className={'field-label'}>
-                                        Datum opname
+                                        Afspraak gedaan op
                                     </FormLabel>
                                     <Field name="dateRecorded">
                                         {({ field }) => (
@@ -105,7 +114,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                                                 field={field}
                                                 type="datetime-local"
                                                 id="date_recorded"
-                                                placeholder={'Datum opname'}
+                                                placeholder={'Afspraak gedaan op'}
                                                 readOnly={true}
                                             />
                                         )}
@@ -291,13 +300,7 @@ function SubsidyRequestProjectManager({ history, initialQuotationRequest, handle
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

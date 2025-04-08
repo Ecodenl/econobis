@@ -10,7 +10,7 @@ import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
 
-function QuotationRequestProjectManager({ history, initialQuotationRequest, handleSubmit }) {
+function QuotationRequestProjectManager({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [pmApproved, setPmApproved] = useState(
         initialQuotationRequest.status?.codeRef === 'pm-approved'
             ? true
@@ -34,6 +34,8 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -64,6 +66,13 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -164,13 +173,7 @@ function QuotationRequestProjectManager({ history, initialQuotationRequest, hand
                             <Row>
                                 <Col>
                                     <ButtonGroup className="float-right">
-                                        <Button
-                                            variant={'outline-dark'}
-                                            size="sm"
-                                            onClick={function() {
-                                                history.push(`/schouwen`);
-                                            }}
-                                        >
+                                        <Button variant={'outline-dark'} size="sm" onClick={() => redirectBack()}>
                                             Annuleren
                                         </Button>
                                         <Button

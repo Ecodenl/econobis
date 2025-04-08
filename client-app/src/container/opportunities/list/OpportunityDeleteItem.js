@@ -1,5 +1,4 @@
 import React from 'react';
-
 import Modal from '../../../components/modal/Modal';
 import { deleteOpportunity } from '../../../actions/opportunity/OpportunityDetailsActions';
 import { connect } from 'react-redux';

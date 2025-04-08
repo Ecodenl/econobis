@@ -14,6 +14,7 @@ function Inspectlist(props) {
     const [isLoading, setIsLoading] = useState(true);
     const [statuses, setStatuses] = useState([]);
     const [contactFullNameFilter, setContactFullNameFilter] = useState('');
+    const [measureNamesFilter, setMeasureNamesFilter] = useState('');
     const [streetPostalCodeCityFilter, setStreetPostalCodeCityFilter] = useState('');
     const [statusFilter, setStatusFilter] = useState('');
     const [datePlannedFromFilter, setDatePlannedFromFilter] = useState('');
@@ -31,18 +32,15 @@ function Inspectlist(props) {
     const [sortOn, setSortOn] = useState({ col: 'contactFullName', desc: false });
 
     useEffect(() => {
-        const campaignId = props.match.params.campaignId;
-
-        QuotationRequestAPI.fetchAll(campaignId).then(response => {
-            setQuotationRequestsArray(response.data);
-
-            setIsLoading(false);
-        });
-
         QuotationRequestAPI.fetchAllQuotationRequestStatus().then(payload => {
             setStatuses(payload.data.data);
         });
-    }, [props.user]);
+
+        QuotationRequestAPI.fetchAll(props.match.params.campaignId).then(response => {
+            setQuotationRequestsArray(response.data);
+            setIsLoading(false);
+        });
+    }, []);
 
     const getFilteredQuotationRequests = () => {
         let varQuotationRequestsArray = quotationRequestsArray;
@@ -56,6 +54,11 @@ function Inspectlist(props) {
                 return quotationRequest.streetPostalCodeCity
                     .toUpperCase()
                     .includes(streetPostalCodeCityFilter.toUpperCase());
+            });
+        }
+        if (measureNamesFilter) {
+            varQuotationRequestsArray = varQuotationRequestsArray.filter(quotationRequest => {
+                return quotationRequest.measureNames.toUpperCase().includes(measureNamesFilter.toUpperCase());
             });
         }
         if (statusFilter) {
@@ -221,6 +224,16 @@ function Inspectlist(props) {
                                             />
                                         </th>
                                         <th>
+                                            Maatregel specifiek
+                                            <br />
+                                            <FiArrowUp
+                                                onClick={() => setSortOn({ col: 'measureNames', desc: false })}
+                                            />
+                                            <FiArrowDown
+                                                onClick={() => setSortOn({ col: 'measureNames', desc: true })}
+                                            />
+                                        </th>
+                                        <th>
                                             Status
                                             <br />
                                             <FiArrowUp onClick={() => setSortOn({ col: 'statusOrder', desc: false })} />
@@ -237,7 +250,7 @@ function Inspectlist(props) {
                                             />
                                         </th>
                                         <th>
-                                            Datum opname
+                                            Afspraak gedaan op
                                             <br />
                                             <FiArrowUp
                                                 onClick={() => setSortOn({ col: 'dateRecorded', desc: false })}
@@ -310,6 +323,16 @@ function Inspectlist(props) {
                                                 onChange={e => setStreetPostalCodeCityFilter(e.target.value)}
                                                 style={{ width: '100px' }}
                                                 title={'Filter op adres'}
+                                            />
+                                        </th>
+                                        <th style={{ verticalAlign: ' top' }}>
+                                            <input
+                                                type="text"
+                                                className={`text-input w-input content`}
+                                                value={measureNamesFilter}
+                                                onChange={e => setMeasureNamesFilter(e.target.value)}
+                                                style={{ width: '100px' }}
+                                                title={'Filter op maatregel specifiek'}
                                             />
                                         </th>
                                         <th style={{ verticalAlign: ' top' }}>
@@ -433,10 +456,19 @@ function Inspectlist(props) {
                                         <tr key={quotationRequest.id}>
                                             <td>{quotationRequest.contactFullName}</td>
                                             <td>
-                                                <Link to={`/schouwen/${quotationRequest.id}`}>
-                                                    {quotationRequest.streetPostalCodeCity}
-                                                </Link>
+                                                {props.match.params.campaignId ? (
+                                                    <Link
+                                                        to={`/schouwen/campagne/${props.match.params.campaignId}/${quotationRequest.id}`}
+                                                    >
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                ) : (
+                                                    <Link to={`/schouwen/${quotationRequest.id}`}>
+                                                        {quotationRequest.streetPostalCodeCity}
+                                                    </Link>
+                                                )}
                                             </td>
+                                            <td>{quotationRequest.measureNames}</td>
                                             <td>
                                                 {quotationRequest.opportunityAction.name +
                                                     ' - ' +

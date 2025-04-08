@@ -14,6 +14,7 @@ use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\FinancialOverview\FinancialOverviewContactController;
 use App\Http\Resources\FinancialOverview\Templates\FinancialOverviewContactMail;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Dompdf\Options;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
@@ -46,7 +47,9 @@ class FinancialOverviewHelper
 
         $img = '';
         if ($financialOverviewContact->financialOverview->administration->logo_filename) {
-            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
+//            todo WM: opschonen
+//            $path = storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR . $financialOverviewContact->financialOverview->administration->logo_filename);
+            $path = Storage::disk('administration-logos')->path($financialOverviewContact->financialOverview->administration->logo_filename);
             $logo = file_get_contents($path);
 
             $src = 'data:' . mime_content_type($path)
@@ -106,6 +109,12 @@ class FinancialOverviewHelper
                 'wsAdditionalInfo' => $wsAdditionalInfo,
             ]);
 
+            // Preview op scherm levert een fout op servers: file_exists(): open_basedir restriction in effect. File(/.ufm) is not within the allowed path(s)
+            // Setten van option "isPphpEnabled" is nodig voor toevoegen pagina nummers in PDF zelf.
+            // Op scherm zelf staat ook al een paginator, dus doen we het maar even zonder die in PDF zelf.
+            // Bij het daadwerkelijk maken van de PDF werkt dit wel op de server, dus dan kunnen paginanummers wel toevoegen in echte PDF zelf.
+            //
+            //  return $pdf->setOption('isPhpEnabled', true)->output();
             return $pdf->output();
         }
 
@@ -132,15 +141,16 @@ class FinancialOverviewHelper
             'logo' => $img,
             'wsAdditionalInfo' => $wsAdditionalInfo,
         ]);
-
         $name = $financialOverviewContactReference . '.pdf';
 
         $path = 'administration_' . $financialOverviewContact->financialOverview->administration->id
             . DIRECTORY_SEPARATOR . 'financial-overviews' . DIRECTORY_SEPARATOR . $name;
 
-        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+//        todo WM: opschonen
+//        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'administrations' . DIRECTORY_SEPARATOR) . $path);
+        $filePath = Storage::disk('administrations')->path($path);
 
-        $pdf->save($filePath);
+        $pdf->setOption('isPhpEnabled', true)->save($filePath);
 
         $financialOverviewContact->filename = $path;
         $financialOverviewContact->name = $name;
@@ -276,7 +286,8 @@ class FinancialOverviewHelper
     public static function checkStorageDir($administration_id)
     {
         //Check if storage map exists
-        $storageDir = Storage::disk('administrations')->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
+        $storageDir = Storage::disk('administrations')
+            ->path(DIRECTORY_SEPARATOR . 'administration_' . $administration_id . DIRECTORY_SEPARATOR . 'financial-overviews');
 
         if (!is_dir($storageDir)) {
             mkdir($storageDir, 0777, true);

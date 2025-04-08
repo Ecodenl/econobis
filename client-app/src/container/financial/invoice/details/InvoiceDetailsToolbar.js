@@ -26,7 +26,7 @@ class InvoiceToolbar extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             if (nextProps.invoiceDetails.dateReminder3) {
                 this.setState({

@@ -16,7 +16,7 @@ class DocumentTemplateDetailsApp extends Component {
         this.props.fetchDocumentTemplate(this.props.params.id);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.id !== nextProps.params.id) {
             this.props.fetchDocumentTemplate(nextProps.params.id);
         }

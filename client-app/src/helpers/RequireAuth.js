@@ -4,13 +4,13 @@ import { hashHistory } from 'react-router';
 
 export default function(ComposedComponent) {
     class Authentication extends Component {
-        componentWillMount() {
+        UNSAFE_componentWillMount() {
             if (!this.props.authenticated) {
                 hashHistory.push('/login');
             }
         }
 
-        componentWillUpdate(nextProps) {
+        UNSAFE_componentWillUpdate(nextProps) {
             if (!nextProps.authenticated) {
                 hashHistory.push('/login');
             }

@@ -12,7 +12,7 @@ class ButtonOpportunities extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         OpportunitiesAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveOpportunities: payload,

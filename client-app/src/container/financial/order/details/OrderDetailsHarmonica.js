@@ -27,7 +27,7 @@ class OrderDetailsHarmonica extends Component {
         this.toggleShowList = this.toggleShowList.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.id !== nextProps.id) {
             this.setState({
                 toggleShowList: {

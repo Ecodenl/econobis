@@ -39,7 +39,7 @@ class OppportunitiesNewApp extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then(payload => {
             this.setState({
                 ...this.state,

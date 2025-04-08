@@ -40,7 +40,7 @@ class EmailsInListApp extends Component {
         this.props.clearEmails();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.clearFilterEmail();

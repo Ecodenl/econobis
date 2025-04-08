@@ -12,7 +12,7 @@ class ButtonIntakes extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         IntakesAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveIntakes: payload,

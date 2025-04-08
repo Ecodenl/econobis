@@ -35,7 +35,7 @@ class ContactDetailsFormPhoneItem extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.phoneNumber, nextProps.phoneNumber)) {
             this.setState({
                 ...this.state,

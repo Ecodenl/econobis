@@ -18,7 +18,7 @@ class TaskDetailsApp extends Component {
         this.props.fetchTaskDetails(this.props.params.id);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.id !== nextProps.params.id) {
             this.props.fetchTaskDetails(nextProps.params.id);
         }

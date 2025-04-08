@@ -14,7 +14,7 @@ class QuotationRequestDetailsApp extends Component {
         super(props);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         this.props.fetchQuotationRequestDetails(this.props.params.id);
     }
 

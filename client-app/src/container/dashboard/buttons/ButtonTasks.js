@@ -12,7 +12,7 @@ class ButtonTasks extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         TaskAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveTasks: payload,

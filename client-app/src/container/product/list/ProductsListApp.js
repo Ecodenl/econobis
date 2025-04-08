@@ -31,7 +31,7 @@ class ProductsListApp extends Component {
         this.fetchProductsData();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.value !== nextProps.params.value) {
             this.props.clearFilterProducts();
 

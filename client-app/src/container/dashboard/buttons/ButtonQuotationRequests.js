@@ -12,7 +12,7 @@ class ButtonQuotationRequests extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         QuotationRequestsAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveQuotationsRequests: payload,

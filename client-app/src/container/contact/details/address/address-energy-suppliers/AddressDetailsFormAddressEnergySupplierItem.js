@@ -45,7 +45,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.addressEnergySupplier, nextProps.addressEnergySupplier)) {
             this.setState({
                 ...this.state,

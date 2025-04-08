@@ -4,13 +4,13 @@ import { hashHistory } from 'react-router';
 
 export default function(ComposedComponent, permission) {
     class PermissionHelper extends Component {
-        componentWillMount() {
+        UNSAFE_componentWillMount() {
             if (!this.props.permissions[permission]) {
                 hashHistory.push('/');
             }
         }
 
-        componentWillUpdate(nextProps) {
+        UNSAFE_componentWillUpdate(nextProps) {
             if (!nextProps.permissions[permission]) {
                 hashHistory.push('/');
             }

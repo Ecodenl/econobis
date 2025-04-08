@@ -40,7 +40,7 @@ class ParticipationTransferApp extends Component {
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         ParticipantProjectDetailsAPI.getContactsMembershipPeek(this.state.participationTransfer.participationId).then(
             payload => {
                 payload.unshift({ id: '0', fullName: 'Teruggave energieleverancier' });

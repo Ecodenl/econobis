@@ -26,7 +26,7 @@ class FinancialTree extends Component {
         this.onItemClick = this.onItemClick.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (
             this.props.currentRouteParams.type !== nextProps.currentRouteParams.type ||
             this.props.currentRouteParams.filter !== nextProps.currentRouteParams.filter

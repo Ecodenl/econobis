@@ -5,7 +5,7 @@ import { hashHistory } from 'react-router';
 import { authLogout } from '../../actions/general/AuthActions';
 
 class Logout extends Component {
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         localStorage.removeItem('auth_token');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');

@@ -32,7 +32,7 @@ class ProjectsListApp extends Component {
         this.fetchProjectsData();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.value !== nextProps.params.value) {
             if (!isEmpty(nextProps.params)) {
                 switch (nextProps.params.filter) {

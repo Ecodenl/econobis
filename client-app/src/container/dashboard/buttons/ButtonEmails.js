@@ -11,7 +11,7 @@ class ButtonEmails extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         EmailGenericAPI.getAmountOpen().then(payload => {
             this.setState({
                 amountOpenEmails: payload,

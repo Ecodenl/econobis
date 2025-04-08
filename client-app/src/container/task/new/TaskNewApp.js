@@ -192,7 +192,7 @@ class TaskNewApp extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.id !== nextProps.params.id || this.props.params.type !== nextProps.params.type) {
             this.updateStateByChangeParams(nextProps.params);
         }

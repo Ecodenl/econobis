@@ -69,7 +69,7 @@ class QuotationRequestNewFormGeneral extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         QuotationRequestDetailsAPI.fetchNewQuotationRequest(
             this.props.opportunityId,
             this.props.opportunityAction.id

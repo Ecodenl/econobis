@@ -7,10 +7,16 @@ import EmailAnswerToolbar from './EmailAnswerToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
+
+// Functionele wrapper voor de class component
+const EmailAnswerAppWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailAnswerApp {...props} navigate={navigate} />;
+};
 
 class EmailAnswerApp extends Component {
     constructor(props) {
@@ -292,10 +298,10 @@ class EmailAnswerApp extends Component {
                     //close the email we reply/forward
                     if (oldEmailId) {
                         EmailAPI.setStatus(oldEmailId, 'closed').then(() => {
-                            hashHistory.push(`/emails/inbox`);
+                            this.props.navigate(`/emails/inbox`);
                         });
                     } else {
-                        hashHistory.push(`/emails/concept`);
+                        this.props.navigate(`/emails/concept`);
                     }
                 })
                 .catch(function(error) {});
@@ -306,10 +312,10 @@ class EmailAnswerApp extends Component {
                     //close the email we reply/forward
                     if (oldEmailId) {
                         EmailAPI.setStatus(oldEmailId, 'closed').then(() => {
-                            hashHistory.push(`/emails/inbox`);
+                            this.props.navigate(`/emails/inbox`);
                         });
                     } else {
-                        hashHistory.push(`/emails/inbox`);
+                        this.props.navigate(`/emails/inbox`);
                     }
                 })
                 .catch(function(error) {
@@ -351,13 +357,15 @@ class EmailAnswerApp extends Component {
                 /**
                  * alleen bijlages zonder "cid", de cid bijlages zijn inline bijlages en worden bij opslaan automatisch toegevoegd (dmv de verwijzing in oldEmailId)
                  */
-                email.attachments.filter(a => !a.cid).map((file, key) => {
-                    if (file.id) {
-                        data.append('oldAttachments[' + key + ']', JSON.stringify(file));
-                    } else {
-                        data.append('attachments[' + key + ']', file);
-                    }
-                });
+                email.attachments
+                    .filter(a => !a.cid)
+                    .map((file, key) => {
+                        if (file.id) {
+                            data.append('oldAttachments[' + key + ']', JSON.stringify(file));
+                        } else {
+                            data.append('attachments[' + key + ']', file);
+                        }
+                    });
             }
 
             if (concept) {
@@ -428,4 +436,4 @@ class EmailAnswerApp extends Component {
     }
 }
 
-export default EmailAnswerApp;
+export default EmailAnswerAppWrapper;

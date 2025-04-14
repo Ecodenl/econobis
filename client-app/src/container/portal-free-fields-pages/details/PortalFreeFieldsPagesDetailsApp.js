@@ -4,13 +4,15 @@ import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import PortalFreeFieldsPagesDetailsFormGeneral from './general/PortalFreeFieldsPagesDetailsFormGeneral';
 import PortalFreeFieldsPagesDeleteItem from '../list/PortalFreeFieldsPagesDeleteItem';
 import { isEmpty } from 'lodash';
 import axios from 'axios';
 
 function PortalFreeFieldsPagesDetailsApp(props) {
+    const navigate = useNavigate();
+
     const [portalFreeFieldsPage, setPortalFreeFieldsPage] = useState({});
     const [portalUrl, setPortalUrl] = useState('');
     const [isLoading, setIsLoading] = useState(true);
@@ -32,7 +34,7 @@ function PortalFreeFieldsPagesDetailsApp(props) {
     function deletePortalFreeFieldsPage(portalFreeFieldsPage) {
         PortalFreeFieldsAPI.deletePortalFreeFieldsPage(portalFreeFieldsPage)
             .then(() => {
-                hashHistory.push(`/vrije-velden-portaal-pagina`);
+                navigate(`/vrije-velden-portaal-pagina`);
             })
             .catch(error => {
                 console.log(error);

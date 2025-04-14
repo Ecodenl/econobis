@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import HousingFileDetailsAPI from '../../api/housing-file/HousingFileDetailsAPI';
-import { hashHistory } from 'react-router';
+// import { useNavigate } from 'react-router-dom';
 
 export function* fetchHousingFileDetailsSaga({ payload }) {
     try {
@@ -15,10 +15,13 @@ export function* fetchHousingFileDetailsSaga({ payload }) {
 }
 
 export function* deleteHousingFileSaga({ id }) {
+    // const navigate = useNavigate();
+
     try {
         yield call(HousingFileDetailsAPI.deleteHousingFile, id);
         yield put({ type: 'DELETE_HOUSING_FILE_SUCCESS', id });
-        hashHistory.push(`/woningdossiers`);
+        // todo WM: verplaatsen !!!
+        // navigate(`/woningdossiers`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_HOUSING_FILE_ERROR', error });

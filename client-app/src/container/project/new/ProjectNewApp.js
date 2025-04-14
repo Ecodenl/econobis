@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ProjectNewToolbar from './ProjectNewToolbar';
 
@@ -22,6 +22,12 @@ import RequiredParticipantsHelper from '../../../helpers/RequiredParticipantsHel
 
 const defaultTextInfoProjectOnlyMembers =
     'Om in te schrijven voor dit project moet u eerst lid worden van onze coöperatie.';
+
+// Functionele wrapper voor de class component
+const ProjectNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectNewApp {...props} navigate={navigate} />;
+};
 
 class ProjectNewApp extends Component {
     constructor(props) {
@@ -412,7 +418,7 @@ class ProjectNewApp extends Component {
             ProjectDetailsAPI.storeProject(project)
                 .then(payload => {
                     this.setState({ loading: false });
-                    hashHistory.push(`/project/${payload.data.data.id}`);
+                    this.props.navigate(`/project/${payload.data.data.id}`);
                 })
                 .catch(error => {
                     console.log(error);
@@ -677,4 +683,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectNewApp);
+export default connect(mapStateToProps)(ProjectNewAppWrapper);

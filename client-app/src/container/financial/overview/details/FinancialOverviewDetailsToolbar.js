@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import FinancialOverviewDeleteItem from '../list/FinancialOverviewDeleteItem';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewDetailsToolbar extends Component {
     constructor(props) {
@@ -76,4 +82,4 @@ class FinancialOverviewDetailsToolbar extends Component {
 
 FinancialOverviewDetailsToolbar.propTypes = { description: PropTypes.any };
 
-export default FinancialOverviewDetailsToolbar;
+export default FinancialOverviewDetailsToolbarWrapper;

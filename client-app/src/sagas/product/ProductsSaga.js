@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import ProductsAPI from '../../api/product/ProductsAPI';
 import ProductDetailsAPI from '../../api/product/ProductDetailsAPI';
-import { hashHistory } from 'react-router';
+// import { useNavigate } from 'react-router-dom';
 
 export function* fetchProductsSaga({ filters, filterType }) {
     try {
@@ -19,10 +19,13 @@ export function* fetchProductsSaga({ filters, filterType }) {
 }
 
 export function* deleteProductSaga({ id }) {
+    // const navigate = useNavigate();
+
     try {
         yield call(ProductDetailsAPI.deleteProduct, id);
         yield put({ type: 'DELETE_PRODUCT_SUCCESS', id });
-        hashHistory.push(`/producten`);
+        // todo WM: verplaatsen !!!
+        // navigate(`/producten`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_PRODUCT_ERROR', error });

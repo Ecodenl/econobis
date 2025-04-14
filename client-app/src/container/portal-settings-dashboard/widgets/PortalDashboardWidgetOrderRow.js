@@ -7,7 +7,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 import { Image } from 'react-bootstrap';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import PortalSettingsDashboardWidgetDeleteItem from './details/PortalSettingsDashboardWidgetDeleteItem';
 
 const DND_ITEM_TYPE = 'row';
@@ -20,6 +20,8 @@ const PortalDashboardWidgetOrderRow = ({
     deletePortalSettingsDashboardWidget,
     imageHash,
 }) => {
+    const navigate = useNavigate();
+
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [showDelete, setShowDelete] = useState(false);
@@ -88,7 +90,7 @@ const PortalDashboardWidgetOrderRow = ({
                 ref={dropRef}
                 style={{ opacity }}
                 className={highlightRow}
-                onDoubleClick={() => hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)}
+                onDoubleClick={() => navigate(`/portal-instellingen-dashboard-widget/${row.id}`)}
                 onMouseEnter={() => {
                     setShowActionButtons(true);
                     setHighLightRow('highlight-row');
@@ -142,7 +144,7 @@ const PortalDashboardWidgetOrderRow = ({
                                             <a
                                                 role="button"
                                                 onClick={() =>
-                                                    hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
+                                                    navigate(`/portal-instellingen-dashboard-widget/${row.id}`)
                                                 }
                                             >
                                                 <Icon className="mybtn-success" size={14} icon={pencil} />

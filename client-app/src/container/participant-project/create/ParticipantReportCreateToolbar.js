@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
+
+// Functionele wrapper voor de class component
+const ParticipantReportCreateToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantReportCreateToolbar {...props} navigate={navigate} />;
+};
 
 class ParticipantReportCreateToolbar extends Component {
     constructor(props) {
@@ -47,4 +53,4 @@ class ParticipantReportCreateToolbar extends Component {
     }
 }
 
-export default ParticipantReportCreateToolbar;
+export default ParticipantReportCreateToolbarWrapper;

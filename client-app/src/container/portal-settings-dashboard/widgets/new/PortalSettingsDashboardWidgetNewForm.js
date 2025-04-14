@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Image from 'react-bootstrap/lib/Image';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -18,6 +18,12 @@ import PortalSettingsDashboardAPI from '../../../../api/portal-settings-dashboar
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputTextColorPicker from '../../../../components/form/InputTextColorPicker';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardWidgetNewForm {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardWidgetNewForm extends Component {
     constructor(props) {
@@ -198,7 +204,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
 
         PortalSettingsDashboardAPI.addPortalSettingsDashboardWidget(data)
             .then(response => {
-                hashHistory.push(`/portal-instellingen-dashboard`);
+                this.props.navigate(`/portal-instellingen-dashboard`);
             })
             .catch(error => {
                 console.log(error);
@@ -407,4 +413,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetNewFormWrapper);

@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
 import moment from 'moment';
-import MeAPI from "../../api/general/MeAPI";
+import MeAPI from '../../api/general/MeAPI';
+
+// Functionele wrapper voor de class component
+const LoginWrapper = props => {
+    const navigate = useNavigate();
+    return <Login {...props} navigate={navigate} />;
+};
 
 class Login extends Component {
     constructor(props) {
@@ -47,27 +54,33 @@ class Login extends Component {
 
                 MeAPI.fetchTwoFactorStatus().then(payload => {
                     if (!payload.data.requireTwoFactorAuthentication) {
-                        hashHistory.push('/');
+                        this.props.navigate('/');
                         return;
                     }
 
-                    if(!payload.data.twoFactorActivated) {
+                    if (!payload.data.twoFactorActivated) {
                         /**
                          * We geven het wachtwoord onderwater mee naar de two-factor activatie pagina.
                          * Voor het aanroepen van activatie api is bevestiging van huidig wachtwoord verplicht via de header.
                          * Omdat de gebruiker zojuist heeft ingelogd met zijn wachtwoord is het onzinnig om deze daar meteen nog eens te vragen.
                          */
-                        hashHistory.push({pathname: '/two-factor/activate', state: {password: this.state.password}});
+                        // this.props.navigate({
+                        //     pathname: '/two-factor/activate',
+                        //     state: { password: this.state.password },
+                        // });
+                        this.props.navigate('/two-factor/activate', {
+                            state: { password: this.state.password },
+                        });
                         return;
                     }
 
-                    if(payload.data.hasValidToken) {
-                        hashHistory.push('/');
+                    if (payload.data.hasValidToken) {
+                        this.props.navigate('/');
                         return;
                     }
 
-                    hashHistory.push('/two-factor/confirm');
-                })
+                    this.props.navigate('/two-factor/confirm');
+                });
             } else {
                 this.setState({
                     username: '',
@@ -157,4 +170,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(Login);
+export default connect(null, mapDispatchToProps)(LoginWrapper);

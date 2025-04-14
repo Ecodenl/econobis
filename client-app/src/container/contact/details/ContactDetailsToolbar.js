@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
@@ -10,7 +10,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function ContactDetailsToolbar({
     permissions,
@@ -25,6 +25,8 @@ function ContactDetailsToolbar({
     isLoading,
     occupations,
 }) {
+    const navigate = useNavigate();
+
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
@@ -43,7 +45,7 @@ function ContactDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                 {type &&
                                     type.id === 'organisation' &&
                                     permissions &&

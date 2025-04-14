@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import PortalSettingsDashboardWidgetDeleteItem from './PortalSettingsDashboardWidgetDeleteItem';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardWidgetDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
     constructor(props) {
@@ -52,4 +58,4 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
 
 PortalSettingsDashboardWidgetDetailsToolbar.propTypes = { description: PropTypes.any };
 
-export default PortalSettingsDashboardWidgetDetailsToolbar;
+export default PortalSettingsDashboardWidgetDetailsToolbarWrapper;

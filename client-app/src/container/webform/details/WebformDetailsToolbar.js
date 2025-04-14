@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import WebformDetailsDelete from './WebformDetailsDelete';
+
+// Functionele wrapper voor de class component
+const WebformToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <WebformToolbar {...props} navigate={navigate} />;
+};
 
 class WebformToolbar extends Component {
     constructor(props) {
@@ -49,4 +55,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(WebformToolbar);
+export default connect(mapStateToProps, null)(WebformToolbarWrapper);

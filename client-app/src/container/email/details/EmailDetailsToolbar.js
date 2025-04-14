@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Icon from 'react-icons-kit';
 import { mailReply } from 'react-icons-kit/fa/mailReply';
 import { mailReplyAll } from 'react-icons-kit/fa/mailReplyAll';
@@ -11,6 +11,8 @@ import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
+    const navigate = useNavigate();
+
     const { from } = email;
     let removeButtonClass = 'btn-success btn-sm';
 
@@ -25,7 +27,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group margin-small margin-10-right" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                             </div>
                             {email.id ? (
                                 <>
@@ -35,7 +37,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                                             title="Beantwoorden"
                                             className={'btn btn-success btn-sm'}
                                             onClick={() => {
-                                                hashHistory.push(`/email/${id}/beantwoorden`);
+                                                navigate(`/email/${id}/beantwoorden`);
                                             }}
                                         >
                                             <Icon icon={mailReply} size={13} />
@@ -45,7 +47,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                                             title="Allen beantwoorden"
                                             className={'btn btn-success btn-sm'}
                                             onClick={() => {
-                                                hashHistory.push(`/email/${id}/allenbeantwoorden`);
+                                                navigate(`/email/${id}/allenbeantwoorden`);
                                             }}
                                         >
                                             <Icon icon={mailReplyAll} size={13} />
@@ -55,7 +57,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                                             title="Doorsturen"
                                             className={'btn btn-success btn-sm'}
                                             onClick={() => {
-                                                hashHistory.push(`/email/${id}/doorsturen`);
+                                                navigate(`/email/${id}/doorsturen`);
                                             }}
                                         >
                                             <Icon icon={mailForward} size={13} />

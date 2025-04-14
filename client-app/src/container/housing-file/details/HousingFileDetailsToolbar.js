@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import HousingFileDetailsDelete from './HousingFileDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const HousingFileDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class HousingFileDetailsToolbar extends Component {
     constructor(props) {
@@ -31,10 +37,7 @@ class HousingFileDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageHousingFile && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
@@ -67,4 +70,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(HousingFileDetailsToolbar);
+export default connect(mapStateToProps)(HousingFileDetailsToolbarWrapper);

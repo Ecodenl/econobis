@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNewForm from './RevenueNewForm';
@@ -10,6 +10,12 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const RevenueNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenueNewApp {...props} navigate={navigate} />;
+};
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -474,7 +480,7 @@ class RevenueNewApp extends Component {
                     // Delete path new-project-revenue in history, so when go back the page goes to the project details
                     hashHistory.replace(`/project/details/${this.props.params.projectId}`);
                     // Push to new revenue
-                    hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
+                    this.props.navigate(`/project/opbrengst/${payload.data.data.id}`);
                 })
                 .catch(error => {
                     console.log(error);
@@ -527,4 +533,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(RevenueNewApp);
+export default connect(mapStateToProps)(RevenueNewAppWrapper);

@@ -1,12 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const MeasureDetailsToolbar = ({ measureDetails }) => {
+    const navigate = useNavigate();
+
     const { measureCategory } = measureDetails;
 
     return (

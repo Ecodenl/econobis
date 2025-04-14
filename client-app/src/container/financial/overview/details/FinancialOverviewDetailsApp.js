@@ -7,7 +7,13 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewDetailsApp {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewDetailsApp extends Component {
     constructor(props) {
@@ -41,7 +47,7 @@ class FinancialOverviewDetailsApp extends Component {
         // Api aanroepen met delete
         FinancialOverviewDetailsAPI.deleteFinancialOverview(id)
             .then(payload => {
-                hashHistory.push(`/waardestaten`);
+                this.props.navigate(`/waardestaten`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
@@ -112,4 +118,4 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsAppWrapper);

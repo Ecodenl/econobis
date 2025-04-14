@@ -3,12 +3,14 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
 import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
 import { isEmpty } from 'lodash';
 
 function FreeFieldDetailsApp(props) {
+    const navigate = useNavigate();
+
     const [freeField, setFreeField] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
@@ -29,7 +31,7 @@ function FreeFieldDetailsApp(props) {
     function deleteFreeFieldsField(freeField) {
         FreeFieldsAPI.deleteFreeFieldsField(freeField)
             .then(() => {
-                hashHistory.push(`/vrije-velden`);
+                navigate(`/vrije-velden`);
             })
             .catch(error => {
                 console.log(error);

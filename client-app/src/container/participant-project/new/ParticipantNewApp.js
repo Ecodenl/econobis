@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 
@@ -15,6 +15,12 @@ import ParticipantValidateForm from './ParticipantValidateForm';
 import moment from 'moment';
 import validator from 'validator';
 import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
+
+// Functionele wrapper voor de class component
+const ParticipantNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantNewApp {...props} navigate={navigate} />;
+};
 
 class ParticipantNewApp extends Component {
     constructor(props) {
@@ -150,11 +156,11 @@ class ParticipantNewApp extends Component {
     }
 
     redirectTask = () => {
-        hashHistory.push(this.state.modalRedirectTask);
+        this.props.navigate(this.state.modalRedirectTask);
     };
 
     redirectParticipation = () => {
-        hashHistory.push(this.state.modalRedirectParticipation);
+        this.props.navigate(this.state.modalRedirectParticipation);
     };
 
     closeShowModalError = () => {
@@ -304,7 +310,7 @@ class ParticipantNewApp extends Component {
                         modalRedirectParticipation: `/project/deelnemer/${payload.data.id}`,
                     });
                 } else {
-                    hashHistory.push(`/project/deelnemer/${payload.data.id}`);
+                    this.props.navigate(`/project/deelnemer/${payload.data.id}`);
                 }
                 this.setState({ isLoading: false });
             });
@@ -389,4 +395,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ParticipantNewApp);
+export default connect(mapStateToProps)(ParticipantNewAppWrapper);

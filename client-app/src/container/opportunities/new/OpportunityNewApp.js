@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
@@ -10,6 +10,12 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import validator from 'validator';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const OppportunitiesNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <OppportunitiesNewApp {...props} navigate={navigate} />;
+};
 
 class OppportunitiesNewApp extends Component {
     constructor(props) {
@@ -105,7 +111,7 @@ class OppportunitiesNewApp extends Component {
 
         !hasErrors &&
             OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
-                hashHistory.push('/kans/' + payload.id);
+                this.props.navigate('/kans/' + payload.id);
             });
     };
 
@@ -161,4 +167,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OppportunitiesNewApp);
+export default connect(mapStateToProps)(OppportunitiesNewAppWrapper);

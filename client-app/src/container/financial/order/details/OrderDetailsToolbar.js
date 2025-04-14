@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from './OrderDeleteItem';
 import ButtonText from '../../../../components/button/ButtonText';
 import { previewCreate } from '../../../../actions/order/OrdersActions';
+
+// Functionele wrapper voor de class component
+const OrderToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderToolbar {...props} navigate={navigate} />;
+};
 
 class OrderToolbar extends Component {
     constructor(props) {
@@ -22,12 +28,12 @@ class OrderToolbar extends Component {
     };
 
     preview = () => {
-        hashHistory.push(`/order/inzien/${this.props.orderDetails.id}`);
+        this.props.navigate(`/order/inzien/${this.props.orderDetails.id}`);
     };
 
     newInvoice = () => {
         this.props.previewCreate([this.props.orderDetails.id]);
-        hashHistory.push(`/financieel/${this.props.orderDetails.administrationId}/orders/aanmaken`);
+        this.props.navigate(`/financieel/${this.props.orderDetails.administrationId}/orders/aanmaken`);
     };
 
     render() {
@@ -89,4 +95,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbarWrapper);

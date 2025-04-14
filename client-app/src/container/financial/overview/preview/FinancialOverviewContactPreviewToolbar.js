@@ -1,9 +1,11 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 
 function FinancialOverviewContactPreviewToolbar({ financialOverviewContactDetails, zoomIn, zoomOut }) {
+    const navigate = useNavigate();
+
     return (
         <div className="row">
             <div className="col-md-3">

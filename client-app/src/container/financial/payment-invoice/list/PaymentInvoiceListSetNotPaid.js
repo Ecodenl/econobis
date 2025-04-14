@@ -3,7 +3,13 @@ import React, { Component } from 'react';
 import Modal from '../../../../components/modal/Modal';
 import PaymentInvoicesAPI from '../../../../api/payment-invoice/PaymentInvoicesAPI';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const PaymentInvoiceListSetNotPaidWrapper = props => {
+    const navigate = useNavigate();
+    return <PaymentInvoiceListSetNotPaid {...props} navigate={navigate} />;
+};
 
 class PaymentInvoiceListSetNotPaid extends Component {
     constructor(props) {
@@ -14,7 +20,7 @@ class PaymentInvoiceListSetNotPaid extends Component {
         event.preventDefault();
         PaymentInvoicesAPI.setNotPaid(this.props.invoiceId).then(payload => {
             this.props.closeModal();
-            hashHistory.push(`/financieel/${this.props.administrationId}/uitkering-notas/niet-betaald`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/uitkering-notas/niet-betaald`);
         });
     };
 
@@ -31,4 +37,4 @@ class PaymentInvoiceListSetNotPaid extends Component {
     }
 }
 
-export default PaymentInvoiceListSetNotPaid;
+export default PaymentInvoiceListSetNotPaidWrapper;

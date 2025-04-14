@@ -7,7 +7,13 @@ import ConceptToolbar from './ConceptToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ConceptAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ConceptApp {...props} navigate={navigate} />;
+};
 
 class ConceptApp extends Component {
     constructor(props) {
@@ -221,7 +227,7 @@ class ConceptApp extends Component {
         function handleUpdateConcept2(data, emailId) {
             EmailAPI.updateConcept2(data, emailId)
                 .then(() => {
-                    hashHistory.push(`/emails/concept`);
+                    this.props.navigate(`/emails/concept`);
                 })
                 .catch(function(error) {});
         }
@@ -229,7 +235,7 @@ class ConceptApp extends Component {
         function handleSendConcept(data, emailId) {
             EmailAPI.sendConcept(data, emailId)
                 .then(() => {
-                    hashHistory.push(`/emails/sent`);
+                    this.props.navigate(`/emails/sent`);
                 })
                 .catch(function(error) {});
         }
@@ -285,7 +291,7 @@ class ConceptApp extends Component {
 
     removeEmail() {
         EmailAPI.deleteEmail(this.props.params.id).then(() => {
-            browserHistory.goBack();
+            navigate(-1)();
         });
     }
 
@@ -331,4 +337,4 @@ class ConceptApp extends Component {
     }
 }
 
-export default ConceptApp;
+export default ConceptAppWrapper;

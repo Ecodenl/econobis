@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-class MeilgunDomainDetailsToolbar extends Component {
+// Functionele wrapper voor de class component
+const MailgunDomainDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <MailgunDomainDetailsToolbar {...props} navigate={navigate} />;
+};
+
+class MailgunDomainDetailsToolbar extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -34,4 +40,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(MeilgunDomainDetailsToolbar);
+export default connect(mapStateToProps, null)(MailgunDomainDetailsToolbarWrapper);

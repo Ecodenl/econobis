@@ -1,7 +1,14 @@
-import React, {Component} from 'react';
-import MeAPI from "../../api/general/MeAPI";
-import Logo from "../../components/logo/Logo";
-import {hashHistory, Link} from "react-router";
+import React, { Component } from 'react';
+import MeAPI from '../../api/general/MeAPI';
+import Logo from '../../components/logo/Logo';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const TwoFactorConfirmWrapper = props => {
+    const navigate = useNavigate();
+    return <TwoFactorConfirm {...props} navigate={navigate} />;
+};
 
 class TwoFactorConfirm extends Component {
     constructor(props) {
@@ -26,15 +33,17 @@ class TwoFactorConfirm extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        MeAPI.confirmTwoFactor({code: this.state.twoFactorCode}).then(payload => {
-            localStorage.setItem('two_factor_token', payload.data.token);
-            hashHistory.push('/');
-        }).catch(() => {
-            this.setState({
-                twoFactorCode: '',
-                errorMessage: 'Ongeldige code.',
+        MeAPI.confirmTwoFactor({ code: this.state.twoFactorCode })
+            .then(payload => {
+                localStorage.setItem('two_factor_token', payload.data.token);
+                this.props.navigate('/');
+            })
+            .catch(() => {
+                this.setState({
+                    twoFactorCode: '',
+                    errorMessage: 'Ongeldige code.',
+                });
             });
-        });
     };
 
     handleCancel = event => {
@@ -49,7 +58,7 @@ class TwoFactorConfirm extends Component {
         localStorage.removeItem('last_activity');
         localStorage.removeItem('two_factor_token');
 
-        hashHistory.push('/login');
+        this.props.navigate('/login');
     };
 
     renderAlert() {
@@ -68,7 +77,7 @@ class TwoFactorConfirm extends Component {
                 <div className="panel panel-default add">
                     <div className="panel-body">
                         <div className="text-center">
-                            <Logo height="150px"/>
+                            <Logo height="150px" />
                         </div>
                         <form onSubmit={this.handleSubmit}>
                             <div className="row margin-10-top">
@@ -107,7 +116,7 @@ class TwoFactorConfirm extends Component {
                                         <button type="button" className="btn btn-default" onClick={this.handleCancel}>
                                             Annuleren
                                         </button>
-                                        <button type="submit" className="btn btn-primary" style={{marginLeft: '5px'}}>
+                                        <button type="submit" className="btn btn-primary" style={{ marginLeft: '5px' }}>
                                             Login
                                         </button>
                                     </div>
@@ -121,4 +130,4 @@ class TwoFactorConfirm extends Component {
     }
 }
 
-export default TwoFactorConfirm;
+export default TwoFactorConfirmWrapper;

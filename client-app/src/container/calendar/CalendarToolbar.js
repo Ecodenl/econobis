@@ -1,18 +1,20 @@
 import React from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
 
 const CalendarToolbar = props => {
+    const navigate = useNavigate();
+
     const newTask = () => {
-        hashHistory.push(`/taak/nieuw`);
+        navigate(`/taak/nieuw`);
     };
 
     return (
         <div className="row margin-10-bottom">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                     <ButtonIcon iconName={'plus'} onClickAction={newTask} />
                 </div>
             </div>

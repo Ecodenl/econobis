@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import TaskDetailsDelete from './TaskDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import TaskDetailsDuplicate from './TaskDetailsDuplicate';
+
+// Functionele wrapper voor de class component
+const TaskDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <TaskDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class TaskDetailsToolbar extends Component {
     constructor(props) {
@@ -36,10 +42,7 @@ class TaskDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-4">
                                 <div className="btn-group btn-group-flex" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                     {this.props.permissions.manageTask && (
                                         <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}
@@ -84,4 +87,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TaskDetailsToolbar);
+export default connect(mapStateToProps, null)(TaskDetailsToolbarWrapper);

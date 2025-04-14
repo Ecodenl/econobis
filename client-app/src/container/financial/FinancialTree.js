@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -10,6 +11,12 @@ import { fileText } from 'react-icons-kit/fa/fileText';
 import { fileO } from 'react-icons-kit/fa/fileO';
 
 import FinancialSidebarHelper from '../../helpers/FinancialSidebarHelper';
+
+// Functionele wrapper voor de class component
+const FinancialTreeWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialTree {...props} navigate={navigate} />;
+};
 
 class FinancialTree extends Component {
     constructor(props) {
@@ -322,4 +329,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialTree);
+export default connect(mapStateToProps)(FinancialTreeWrapper);

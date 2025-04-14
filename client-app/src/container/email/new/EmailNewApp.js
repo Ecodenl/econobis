@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -13,6 +13,12 @@ import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import { connect } from 'react-redux';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import Modal from '../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const EmailNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailNewApp {...props} navigate={navigate} />;
+};
 
 class EmailNewApp extends Component {
     constructor(props) {
@@ -300,7 +306,7 @@ class EmailNewApp extends Component {
         if (this.state.email.htmlBody !== '' || this.state.email.subject !== '') {
             this.toggleShowModal();
         } else {
-            browserHistory.goBack();
+            navigate(-1)();
         }
     };
 
@@ -341,14 +347,14 @@ class EmailNewApp extends Component {
         function handleNewConcept2(data, mailboxId, emailId) {
             EmailAPI.newConcept2(data, mailboxId, emailId)
                 .then(() => {
-                    hashHistory.push(`/emails/concept`);
+                    this.props.navigate(`/emails/concept`);
                 })
                 .catch(function(error) {});
         }
         function handleNewEmail(data, mailboxId, emailId) {
             EmailAPI.newEmail(data, mailboxId, emailId)
                 .then(() => {
-                    browserHistory.goBack();
+                    navigate(-1)();
                 })
                 .catch(function(error) {});
         }
@@ -452,7 +458,7 @@ class EmailNewApp extends Component {
                     <Modal
                         buttonConfirmText="Verlaten"
                         closeModal={this.toggleShowModal}
-                        confirmAction={browserHistory.goBack}
+                        confirmAction={navigate(-1)}
                         title="Bevestigen"
                     >
                         <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>
@@ -469,4 +475,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(EmailNewApp);
+export default connect(mapStateToProps)(EmailNewAppWrapper);

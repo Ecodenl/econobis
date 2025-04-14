@@ -1,11 +1,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate, useLocation } from 'react-router-dom';
 
 import { authLogout } from '../../actions/general/AuthActions';
 
+// Functionele wrapper voor de class component
+const LogoutWrapper = props => {
+    const navigate = useNavigate();
+    const location = useLocation(); // Gebruik useLocation om toegang te krijgen tot query parameters
+
+    return <Logout {...props} navigate={navigate} location={location} />;
+};
+
 class Logout extends Component {
-    UNSAFE_componentWillMount() {
+    componentDidMount() {
+        // Verwijder de tokens uit localStorage
         localStorage.removeItem('auth_token');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
@@ -13,18 +22,24 @@ class Logout extends Component {
         localStorage.removeItem('userName');
         localStorage.removeItem('last_activity');
 
-        /**
-         * De "force" parameter wordt meegegeven bij handmatig uitloggen door gebruiker.
-         * Op dat moment willen we ook dat bij volgende keer inloggen de twee factor code opnieuw moet worden ingevoerd.
-         * Als gebruiker wordt uitgelogd doordat de sessie is verlopen komt de code hier ook langs maar willen we niet dat de two factor code opnieuw moet worden ingevoerd bij volgende login.
-         */
-        if(this.props.location.query.force === '1'){
+        // Verkrijg de 'force' query parameter uit de URL
+        const searchParams = new URLSearchParams(this.props.location.search);
+        const force = searchParams.get('force');
+
+        // Verwijder two_factor_token als 'force' gelijk is aan '1'
+        if (force === '1') {
             localStorage.removeItem('two_factor_token');
         }
 
+        // Voer de logout actie uit
         this.props.authLogout();
 
-        hashHistory.push('/login');
+        // Redirect naar login pagina na uitloggen
+        // this.props.navigate('/login');
+        // Gebruik een korte delay om redirect soepel te laten verlopen
+        setTimeout(() => {
+            this.props.navigate('/login');
+        }, 0);
     }
 
     render() {
@@ -38,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(Logout);
+export default connect(null, mapDispatchToProps)(LogoutWrapper);

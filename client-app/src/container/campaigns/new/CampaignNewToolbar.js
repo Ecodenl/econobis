@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+
+// Functionele wrapper voor de class component
+const CampaignNewToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <CampaignNewToolbar {...props} navigate={navigate} />;
+};
 
 class CampaignNewToolbar extends Component {
     constructor(props) {
@@ -22,10 +28,7 @@ class CampaignNewToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-4">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                 </div>
                             </div>
                             <div className="col-md-4">
@@ -40,4 +43,4 @@ class CampaignNewToolbar extends Component {
     }
 }
 
-export default CampaignNewToolbar;
+export default CampaignNewToolbarWrapper;

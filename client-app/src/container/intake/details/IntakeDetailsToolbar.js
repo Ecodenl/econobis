@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import IntakeDetailsDelete from './IntakeDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const IntakeDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class IntakeDetailsToolbar extends Component {
     constructor(props) {
@@ -37,10 +43,7 @@ class IntakeDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageIntake && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
@@ -76,4 +79,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(IntakeDetailsToolbar);
+export default connect(mapStateToProps)(IntakeDetailsToolbarWrapper);

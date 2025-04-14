@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../components/panel/PanelBody';
@@ -12,6 +12,12 @@ import { connect } from 'react-redux';
 import { clearPreviewReport } from '../../../../../../actions/project/ProjectDetailsActions';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 import Modal from '../../../../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const PaymentInvoiceCreateAppWrapper = props => {
+    const navigate = useNavigate();
+    return <PaymentInvoiceCreateApp {...props} navigate={navigate} />;
+};
 
 class PaymentInvoiceCreateApp extends Component {
     constructor(props) {
@@ -99,7 +105,7 @@ class PaymentInvoiceCreateApp extends Component {
 
     redirect = () => {
         if (this.state.redirect) {
-            hashHistory.push(this.state.redirect);
+            this.props.navigate(this.state.redirect);
         } else {
             browserHistory.goBack();
         }
@@ -251,4 +257,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PaymentInvoiceCreateApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PaymentInvoiceCreateAppWrapper);

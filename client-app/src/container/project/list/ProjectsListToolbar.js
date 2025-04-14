@@ -1,13 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const ProjectsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newProject = () => {
-        hashHistory.push('project/nieuw');
+        navigate('project/nieuw');
     };
 
     const { permissions = {} } = props;

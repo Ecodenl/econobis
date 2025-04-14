@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -13,6 +13,12 @@ import moment from 'moment';
 import validator from 'validator';
 import ErrorModal from '../../../components/modal/ErrorModal';
 import ParticipantDetailsTerminateLoanOrObligation from './ParticipantDetailsTerminateLoanOrObligation';
+
+// Functionele wrapper voor de class component
+const ParticipantDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -132,7 +138,7 @@ class ParticipantDetailsToolbar extends Component {
                                         {/*    <ButtonText*/}
                                         {/*        buttonText={`Deelnames overdragen`}*/}
                                         {/*        onClickAction={() =>*/}
-                                        {/*            hashHistory.push(*/}
+                                        {/*            this.props.navigate(*/}
                                         {/*                `/project/deelnemer/${participantProject.id}/overdragen`*/}
                                         {/*            )*/}
                                         {/*        }*/}
@@ -207,4 +213,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ParticipantDetailsToolbar);
+export default connect(mapStateToProps)(ParticipantDetailsToolbarWrapper);

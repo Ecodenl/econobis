@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -8,6 +8,13 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 moment.locale('nl');
+
+// Functionele wrapper voor de class component
+const CampaignsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <CampaignsListItem {...props} navigate={navigate} />;
+};
+
 class CampaignsListItem extends Component {
     constructor(props) {
         super(props);
@@ -33,7 +40,7 @@ class CampaignsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`campagne/${id}`);
+        this.props.navigate(`campagne/${id}`);
     }
 
     render() {
@@ -79,4 +86,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(CampaignsListItem);
+export default connect(mapStateToProps)(CampaignsListItemWrapper);

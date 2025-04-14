@@ -9,7 +9,7 @@ import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
 import Modal from '../../../components/modal/Modal';
@@ -17,6 +17,8 @@ import EmailMailboxStatuses from './EmailMailboxStatuses';
 import axios from 'axios';
 
 export default function EmailSplitView({ router }) {
+    const navigate = useNavigate();
+
     const perPage = 50;
     const [emails, setEmails] = useState([]);
     const [isLoadingMailboxes, setIsLoadingMailboxes] = useState(false);
@@ -184,7 +186,7 @@ export default function EmailSplitView({ router }) {
              */
             storeFiltersToStorage(defaultFilters);
 
-            hashHistory.push(router.location.pathname);
+            navigate(router.location.pathname);
 
             return;
         }
@@ -275,7 +277,7 @@ export default function EmailSplitView({ router }) {
                                         role="button"
                                         style={{ marginLeft: '10px' }}
                                         className="btn btn-success btn-sm"
-                                        onClick={() => hashHistory.push(router.location.pathname)}
+                                        onClick={() => navigate(router.location.pathname)}
                                     >
                                         Filter wissen
                                     </a>

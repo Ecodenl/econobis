@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonIcon from '../../../components/button/ButtonIcon';
+
+// Functionele wrapper voor de class component
+const OpportunitiesListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunitiesListToolbar {...props} navigate={navigate} />;
+};
 
 class OpportunitiesListToolbar extends Component {
     constructor(props) {
@@ -39,4 +45,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunitiesListToolbar);
+export default connect(mapStateToProps)(OpportunitiesListToolbarWrapper);

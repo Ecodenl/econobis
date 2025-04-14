@@ -7,7 +7,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 import CostCenterDetailsAPI from '../../../api/cost-center/CostCenterDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const CostCenterDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    return <CostCenterDetailsApp {...props} navigate={navigate} />;
+};
 
 class CostCenterDetailsApp extends Component {
     constructor(props) {
@@ -42,7 +48,7 @@ class CostCenterDetailsApp extends Component {
         // Api aanroepen met delete
         CostCenterDetailsAPI.deleteCostCenter(id)
             .then(payload => {
-                hashHistory.push(`/kostenplaatsen`);
+                this.props.navigate(`/kostenplaatsen`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
@@ -91,4 +97,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(CostCenterDetailsApp);
+export default connect(null, mapDispatchToProps)(CostCenterDetailsAppWrapper);

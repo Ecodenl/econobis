@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import EmailTemplateDeleteItem from './general/EmailTemplateDeleteItem';
+
+// Functionele wrapper voor de class component
+const EmailTemplateDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailTemplateDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class EmailTemplateDetailsToolbar extends Component {
     constructor(props) {
@@ -23,7 +29,7 @@ class EmailTemplateDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>
@@ -50,4 +56,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(EmailTemplateDetailsToolbar);
+export default connect(mapStateToProps, null)(EmailTemplateDetailsToolbarWrapper);

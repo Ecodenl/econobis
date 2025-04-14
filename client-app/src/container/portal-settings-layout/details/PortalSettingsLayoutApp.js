@@ -7,9 +7,15 @@ import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsLayoutDetailsAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import axios from 'axios';
+
+// Functionele wrapper voor de class component
+const PortalSettingsLayoutDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsLayoutDetailsApp {...props} navigate={navigate} />;
+};
 
 class PortalSettingsLayoutDetailsApp extends Component {
     constructor(props) {
@@ -55,7 +61,7 @@ class PortalSettingsLayoutDetailsApp extends Component {
         // Api aanroepen met delete
         PortalSettingsLayoutDetailsAPI.deletePortalSettingsLayout(id)
             .then(payload => {
-                hashHistory.push(`/portal-instellingen-layout`);
+                this.props.navigate(`/portal-instellingen-layout`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
@@ -113,4 +119,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutDetailsAppWrapper);

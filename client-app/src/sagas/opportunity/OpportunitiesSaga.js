@@ -1,7 +1,7 @@
 import { put, call } from 'redux-saga/effects';
 import OpportunitiesAPI from '../../api/opportunity/OpportunitiesAPI';
 import OpportunityDetailsAPI from '../../api/opportunity/OpportunityDetailsAPI';
-import { hashHistory } from 'react-router';
+// import { useNavigate } from 'react-router-dom';
 
 export function* fetchOpportunitiesSaga({ filters, sorts, pagination }) {
     try {
@@ -17,14 +17,17 @@ export function* fetchOpportunitiesSaga({ filters, sorts, pagination }) {
 }
 
 export function* deleteOpportunitySaga({ id, contactId }) {
+    // const navigate = useNavigate();
+
     try {
         yield call(OpportunityDetailsAPI.deleteOpportunity, id);
         yield put({ type: 'DELETE_OPPORTUNITY_SUCCESS', id });
-        if (contactId == 0) {
-            hashHistory.push(`/kansen`);
-        } else {
-            hashHistory.push(`/contact/` + contactId);
-        }
+        // todo WM: verplaatsen !!!
+        // if (contactId == 0) {
+        //     navigate(`/kansen`);
+        // } else {
+        //     navigate(`/contact/` + contactId);
+        // }
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_OPPORTUNITY_ERROR', error });

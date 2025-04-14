@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../components/panel/PanelBody';
@@ -12,6 +11,12 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
+
+// Functionele wrapper voor de class component
+const RevenuePartsKwhDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuePartsKwhDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class RevenuePartsKwhDetailsToolbar extends Component {
     constructor(props) {
@@ -53,10 +58,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                                 </div>
                             </div>
@@ -97,4 +99,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuePartsKwhDetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuePartsKwhDetailsToolbarWrapper);

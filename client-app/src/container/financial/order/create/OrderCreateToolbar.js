@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderCreateConfirm from './OrderCreateConfirm';
 import ButtonText from '../../../../components/button/ButtonText';
+
+// Functionele wrapper voor de class component
+const OrderCreateToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderCreateToolbar {...props} navigate={navigate} />;
+};
 
 class OrderCreateToolbar extends Component {
     constructor(props) {
@@ -22,7 +28,7 @@ class OrderCreateToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                         {this.props.amountOfOrders > 0 && (
                             <ButtonText buttonText={"Maak concept nota's"} onClickAction={this.showCreate} />
                         )}
@@ -45,4 +51,4 @@ class OrderCreateToolbar extends Component {
     }
 }
 
-export default OrderCreateToolbar;
+export default OrderCreateToolbarWrapper;

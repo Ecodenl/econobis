@@ -1,6 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import IntakeDetailsAPI from '../../api/intake/IntakeDetailsAPI';
-import { hashHistory } from 'react-router';
+// import { useNavigate } from 'react-router-dom';
 
 export function* fetchIntakeDetailsSaga({ payload }) {
     try {
@@ -15,14 +15,17 @@ export function* fetchIntakeDetailsSaga({ payload }) {
 }
 
 export function* deleteIntakeSaga({ id, contactId }) {
+    // const navigate = useNavigate();
+
     try {
         yield call(IntakeDetailsAPI.deleteIntake, id);
         yield put({ type: 'DELETE_INTAKE_SUCCESS', id });
-        if (contactId == 0) {
-            hashHistory.push('/intakes');
-        } else {
-            hashHistory.push(`/contact/` + contactId);
-        }
+        // todo WM: verplaatsen !!!
+        // if (contactId == 0) {
+        //     navigate('/intakes');
+        // } else {
+        //     navigate(`/contact/` + contactId);
+        // }
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_INTAKE_ERROR', error });

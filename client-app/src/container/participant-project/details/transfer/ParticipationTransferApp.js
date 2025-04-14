@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ParticipationTransferToolbar from './ParticipationTransferToolbar';
 import ParticipationTransfer from './ParticipationTransfer';
@@ -8,6 +8,12 @@ import ParticipationTransfer from './ParticipationTransfer';
 import ParticipantProjectDetailsAPI from '../../../../api/participant-project/ParticipantProjectDetailsAPI';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const ParticipationTransferAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipationTransferApp {...props} navigate={navigate} />;
+};
 
 class ParticipationTransferApp extends Component {
     constructor(props) {
@@ -149,7 +155,7 @@ class ParticipationTransferApp extends Component {
 
         !hasErrors &&
             ParticipantProjectDetailsAPI.transferParticipation(participationTransfer).then(payload => {
-                hashHistory.push(`/project/deelnemer/${participationTransfer.participationId}`);
+                this.props.navigate(`/project/deelnemer/${participationTransfer.participationId}`);
             });
     };
 
@@ -187,4 +193,4 @@ class ParticipationTransferApp extends Component {
     }
 }
 
-export default ParticipationTransferApp;
+export default ParticipationTransferAppWrapper;

@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import OpportunityDetailsDelete from './OpportunityDetailsDelete';
+
+// Functionele wrapper voor de class component
+const OpportunityDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunityDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class OpportunityDetailsToolbar extends Component {
     constructor(props) {
@@ -21,7 +27,9 @@ class OpportunityDetailsToolbar extends Component {
     };
 
     sendMail = () => {
-        hashHistory.push(`/email/nieuw/kans/${this.props.opportunity.id}/${this.props.opportunity.intake.contact.id}`);
+        this.props.navigate(
+            `/email/nieuw/kans/${this.props.opportunity.id}/${this.props.opportunity.intake.contact.id}`
+        );
     };
 
     render() {
@@ -34,10 +42,7 @@ class OpportunityDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageOpportunity && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
@@ -76,4 +81,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunityDetailsToolbar);
+export default connect(mapStateToProps)(OpportunityDetailsToolbarWrapper);

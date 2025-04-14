@@ -6,7 +6,13 @@ import EmailDetailsForm from './EmailDetailsForm';
 import EmailAPI from './../../../api/email/EmailAPI';
 
 import { fetchEmail, clearEmail } from '../../../actions/email/EmailDetailsActions';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const EmailDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailDetailsApp {...props} navigate={navigate} />;
+};
 
 class EmailDetailsApp extends Component {
     constructor(props) {
@@ -63,7 +69,7 @@ class EmailDetailsApp extends Component {
             });
         } else if (this.props.email.folder === 'removed') {
             EmailAPI.deleteEmail(this.props.email.id).then(() => {
-                browserHistory.goBack();
+                navigate(-1)();
             });
         }
     }
@@ -100,4 +106,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailDetailsAppWrapper);

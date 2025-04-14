@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import InvoiceDetailsFormSetPaid from './general/InvoiceDetailsFormSetPaid';
@@ -11,6 +11,12 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import { previewSend } from '../../../../actions/invoice/InvoicesActions';
 import InvoiceDetailsFormDelete from './general/InvoiceDetailsFormDelete';
 import { setError } from '../../../../actions/general/ErrorActions';
+
+// Functionele wrapper voor de class component
+const InvoiceToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceToolbar {...props} navigate={navigate} />;
+};
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -69,7 +75,7 @@ class InvoiceToolbar extends Component {
             );
         } else {
             this.props.previewSend([this.props.invoiceDetails.id]);
-            hashHistory.push(
+            this.props.navigate(
                 `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         }
@@ -78,7 +84,7 @@ class InvoiceToolbar extends Component {
     showSendPost = () => {
         let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
         this.props.previewSend([this.props.invoiceDetails.id]);
-        hashHistory.push(
+        this.props.navigate(
             `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
         );
     };
@@ -100,7 +106,7 @@ class InvoiceToolbar extends Component {
     };
 
     view = () => {
-        hashHistory.push(`/nota/inzien/${this.props.invoiceDetails.id}`);
+        this.props.navigate(`/nota/inzien/${this.props.invoiceDetails.id}`);
     };
 
     render() {
@@ -113,7 +119,7 @@ class InvoiceToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                         <ButtonIcon iconName={'eye'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
@@ -213,4 +219,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbarWrapper);

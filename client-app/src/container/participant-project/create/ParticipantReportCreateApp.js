@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -12,6 +12,12 @@ import { connect } from 'react-redux';
 import { clearPreviewParticipantReport } from '../../../actions/project/ProjectDetailsActions';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import Modal from '../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const ParticipantReportCreateAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantReportCreateApp {...props} navigate={navigate} />;
+};
 
 class ParticipantReportCreateApp extends Component {
     constructor(props) {
@@ -84,7 +90,7 @@ class ParticipantReportCreateApp extends Component {
 
     redirect = () => {
         if (this.state.redirect) {
-            hashHistory.push(this.state.redirect);
+            this.props.navigate(this.state.redirect);
         } else {
             browserHistory.goBack();
         }
@@ -229,4 +235,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantReportCreateApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantReportCreateAppWrapper);

@@ -1,5 +1,5 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
@@ -9,8 +9,10 @@ function PortalFreeFieldsPagesListToolbar({
     refreshPortalFreeFieldsPageFields,
     permissions,
 }) {
+    const navigate = useNavigate();
+
     const newPortalFreeFieldsPage = () => {
-        hashHistory.push(`/vrije-velden-portaal-pagina/nieuw`);
+        navigate(`/vrije-velden-portaal-pagina/nieuw`);
     };
 
     return (

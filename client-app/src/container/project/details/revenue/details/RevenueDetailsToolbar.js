@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -12,6 +11,12 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
+
+// Functionele wrapper voor de class component
+const RevenueDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenueDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class RevenueDetailsToolbar extends Component {
     constructor(props) {
@@ -94,4 +99,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDetailsToolbarWrapper);

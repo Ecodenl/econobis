@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import FinancialOverviewProjectMakeConcept from './FinancialOverviewProjectMakeConcept';
 import FinancialOverviewProjectMakeDefinitive from './FinancialOverviewProjectMakeDefinitive';
 import FinancialOverviewProjectAPI from '../../../../../api/financial/overview/FinancialOverviewProjectAPI';
@@ -17,6 +17,8 @@ function FinancialOverviewProjectItem({
     setShowNewFalse,
     refreshFinancialOverviewProjects,
 }) {
+    const navigate = useNavigate();
+
     const [showActionButtons, setShowActionButtuns] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
     const [showMakeConcept, setShowMakeConcept] = useState(false);
@@ -38,7 +40,7 @@ function FinancialOverviewProjectItem({
     }
 
     function clickItem(financialOverviewProjectId) {
-        hashHistory.push(`/waardestaat-project/${financialOverviewProjectId}`);
+        navigate(`/waardestaat-project/${financialOverviewProjectId}`);
     }
 
     function makeConceptProject() {

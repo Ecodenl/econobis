@@ -3,7 +3,13 @@ import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import EmailHarmonica from './harmonica/EmailHarmonica';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class InvoiceDetailsHarmonica extends Component {
     constructor(props) {
@@ -42,14 +48,14 @@ class InvoiceDetailsHarmonica extends Component {
 
     newTask = type => {
         if (this.props.invoiceDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/${type}/nota/${this.props.invoiceDetails.id}/order/${this.props.invoiceDetails.orderId}/contact/${this.props.invoiceDetails.contactId}`
             );
         }
     };
 
     newEmail = () => {
-        hashHistory.push(`/email/nieuw`);
+        this.props.navigate(`/email/nieuw`);
     };
 
     render() {
@@ -79,4 +85,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(InvoiceDetailsHarmonica);
+export default connect(mapStateToProps, null)(InvoiceDetailsHarmonicaWrapper);

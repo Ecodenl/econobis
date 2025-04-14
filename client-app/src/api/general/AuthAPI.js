@@ -43,7 +43,6 @@ export default {
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
 
-                hashHistory.push('/loguit');
                 }
             );*/
     },

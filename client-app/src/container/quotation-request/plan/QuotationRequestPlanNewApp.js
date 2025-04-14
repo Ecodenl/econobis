@@ -1,12 +1,14 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import ButtonIcon from "../../../components/button/ButtonIcon";
-import {browserHistory} from "react-router";
-import QuotationRequestPlanNewPlanningPanel from "./QuotationRequestPlanNewPlanningPanel";
-import DistrictAPI from "../../../api/district/DistrictAPI";
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import { useNavigate } from 'react-router-dom';
+import QuotationRequestPlanNewPlanningPanel from './QuotationRequestPlanNewPlanningPanel';
+import DistrictAPI from '../../../api/district/DistrictAPI';
 
 export default function QuotationRequestPlanNewApp(props) {
+    const navigate = useNavigate();
+
     const [district, setDistrict] = useState(false);
 
     useEffect(() => {
@@ -24,24 +26,26 @@ export default function QuotationRequestPlanNewApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'}
-                                                    onClickAction={browserHistory.goBack}/>
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                     </div>
                                 </div>
                                 <div className="col-md-4">
                                     <h4 className="text-center">Afspraak plannen {district.name}</h4>
                                 </div>
-                                <div className="col-md-4"/>
+                                <div className="col-md-4" />
                             </div>
                         </PanelBody>
                     </Panel>
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <QuotationRequestPlanNewPlanningPanel district={district} opportunityId={props.params.opportunityId} />
+                    <QuotationRequestPlanNewPlanningPanel
+                        district={district}
+                        opportunityId={props.params.opportunityId}
+                    />
                 </div>
             </div>
-            <div className="col-md-3"/>
+            <div className="col-md-3" />
         </div>
     );
 }

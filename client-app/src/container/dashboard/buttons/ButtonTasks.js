@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import TaskAPI from '../../../api/task/TasksAPI';
+
+// Functionele wrapper voor de class component
+const ButtonTasksWrapper = props => {
+    const navigate = useNavigate();
+    return <ButtonTasks {...props} navigate={navigate} />;
+};
 
 class ButtonTasks extends Component {
     constructor(props) {
@@ -22,7 +28,7 @@ class ButtonTasks extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/taken/eigen`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/taken/eigen`)}>
                 <div className="panel panel-default" id="dashboardbutton-4">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">OPEN TAKEN</h4>
@@ -34,4 +40,4 @@ class ButtonTasks extends Component {
     }
 }
 
-export default ButtonTasks;
+export default ButtonTasksWrapper;

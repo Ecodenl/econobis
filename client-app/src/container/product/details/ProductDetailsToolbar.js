@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ProductDeleteItem from './ProductDeleteItem';
+
+// Functionele wrapper voor de class component
+const ProductToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ProductToolbar {...props} navigate={navigate} />;
+};
 
 class ProductToolbar extends Component {
     constructor(props) {
@@ -50,4 +56,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ProductToolbar);
+export default connect(mapStateToProps, null)(ProductToolbarWrapper);

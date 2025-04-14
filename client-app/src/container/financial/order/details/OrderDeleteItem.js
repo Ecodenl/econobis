@@ -3,9 +3,11 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
 import { deleteOrder } from '../../../../actions/order/OrdersActions';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const OrderDeleteItem = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         props.deleteOrder(props.id);
         props.closeDeleteItemModal();

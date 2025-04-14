@@ -6,7 +6,13 @@ import NoteHarmonica from './harmonica/NoteHarmonica';
 import EmailInboxHarmonica from './harmonica/EmailInboxHarmonica';
 import EmailSentHarmonica from './harmonica/EmailSentHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const TaskDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <TaskDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class TaskDetailsHarmonica extends Component {
     constructor(props) {
@@ -50,16 +56,16 @@ class TaskDetailsHarmonica extends Component {
     }
 
     newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/taak/${this.props.taskDetails.id}`);
+        this.props.navigate(`/document/nieuw/${type}/taak/${this.props.taskDetails.id}`);
     };
 
     newEmail = () => {
         if (this.props.taskDetails.contact) {
-            hashHistory.push(
+            this.props.navigate(
                 `/email/nieuw/taak/${this.props.taskDetails.id}/contact/${this.props.taskDetails.contact.id}`
             );
         } else {
-            hashHistory.push(`/email/nieuw/taak/${this.props.taskDetails.id}`);
+            this.props.navigate(`/email/nieuw/taak/${this.props.taskDetails.id}`);
         }
     };
 
@@ -110,4 +116,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TaskDetailsHarmonica);
+export default connect(mapStateToProps, null)(TaskDetailsHarmonicaWrapper);

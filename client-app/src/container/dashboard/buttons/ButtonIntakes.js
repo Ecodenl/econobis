@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import IntakesAPI from './../../../api/intake/IntakesAPI';
+
+// Functionele wrapper voor de class component
+const ButtonIntakesWrapper = props => {
+    const navigate = useNavigate();
+    return <ButtonIntakes {...props} navigate={navigate} />;
+};
 
 class ButtonIntakes extends Component {
     constructor(props) {
@@ -22,7 +28,7 @@ class ButtonIntakes extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/intakes`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/intakes`)}>
                 <div className="panel panel-default" id="dashboardbutton-2">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">INTAKES</h4>
@@ -34,4 +40,4 @@ class ButtonIntakes extends Component {
     }
 }
 
-export default ButtonIntakes;
+export default ButtonIntakesWrapper;

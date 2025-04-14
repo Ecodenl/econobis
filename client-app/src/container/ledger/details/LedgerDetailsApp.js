@@ -7,7 +7,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 import LedgerDetailsAPI from '../../../api/ledger/LedgerDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const LedgerDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    return <LedgerDetailsApp {...props} navigate={navigate} />;
+};
 
 class LedgerDetailsApp extends Component {
     constructor(props) {
@@ -42,7 +48,7 @@ class LedgerDetailsApp extends Component {
         // Api aanroepen met delete
         LedgerDetailsAPI.deleteLedger(id)
             .then(payload => {
-                hashHistory.push(`/grootboekrekeningen`);
+                this.props.navigate(`/grootboekrekeningen`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
@@ -91,4 +97,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(LedgerDetailsApp);
+export default connect(null, mapDispatchToProps)(LedgerDetailsAppWrapper);

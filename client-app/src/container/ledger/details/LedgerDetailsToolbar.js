@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import LedgerDeleteItem from './LedgerDeleteItem';
+
+// Functionele wrapper voor de class component
+const LedgerDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <LedgerDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class LedgerDetailsToolbar extends Component {
     constructor(props) {
@@ -47,4 +53,4 @@ class LedgerDetailsToolbar extends Component {
 
 LedgerDetailsToolbar.propTypes = { description: PropTypes.any };
 
-export default LedgerDetailsToolbar;
+export default LedgerDetailsToolbarWrapper;

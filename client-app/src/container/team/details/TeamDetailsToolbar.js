@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import TeamDetailsDelete from './TeamDetailsDelete';
+
+// Functionele wrapper voor de class component
+const TeamToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <TeamToolbar {...props} navigate={navigate} />;
+};
 
 class TeamToolbar extends Component {
     constructor(props) {
@@ -49,4 +55,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TeamToolbar);
+export default connect(mapStateToProps, null)(TeamToolbarWrapper);

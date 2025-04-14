@@ -1,7 +1,8 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import { hashHistory, Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
 import ButtonText from '../../../../components/button/ButtonText';
 moment.locale('nl');
 
@@ -9,6 +10,8 @@ import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const IntakeMeasuresRequestedView = props => {
+    const navigate = useNavigate();
+
     const { id, name } = props.measureRequested;
 
     return (
@@ -25,9 +28,7 @@ const IntakeMeasuresRequestedView = props => {
                     ) : null}
                     <ButtonText
                         buttonText={'Maak kans'}
-                        onClickAction={() =>
-                            hashHistory.push(`/kans/nieuw/intake/${props.intakeId}/maatregel-categorie/${id}`)
-                        }
+                        onClickAction={() => navigate(`/kans/nieuw/intake/${props.intakeId}/maatregel-categorie/${id}`)}
                         buttonClassName={'btn-success btn-padding-small'}
                     />
                 </div>

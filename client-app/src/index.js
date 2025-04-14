@@ -1,7 +1,7 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+// import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import Routes from './router';
+import AppRoutes from './router';
 import './styles/style.scss';
 import 'babel-polyfill';
 import 'moment/locale/nl';
@@ -11,7 +11,6 @@ import * as authActions from './actions/general/AuthActions';
 import { createRoot } from 'react-dom/client';
 
 const store = require('./store/configureStore').configure();
-
 const token = localStorage.getItem('access_token');
 
 if (token) {
@@ -20,13 +19,12 @@ if (token) {
 
 // Internet Explorer 6-11
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
-
 let isNotIE = !isIE;
 
 const App = () => {
     return (
         <Provider store={store}>
-            <Routes />
+            <AppRoutes />
         </Provider>
     );
 };

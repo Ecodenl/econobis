@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
 const DocumentsListToolbar = props => {
+    const navigate = useNavigate();
+
     const newDocument = type => {
-        hashHistory.push(`document/nieuw/${type}/document`);
+        navigate(`document/nieuw/${type}/document`);
     };
 
     const { permissions = {} } = props;
@@ -19,7 +20,7 @@ const DocumentsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetDocumentsFilters} />
                     {/* Voorlopig geen nieuwe documenten (maken / uploaden) vanuit hier,Zie verderop uitleg via {i} knop */}
                     {/*    {permissions.createDocument && (*/}

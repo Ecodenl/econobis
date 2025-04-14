@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ProjectDetailsDelete from './ProjectDetailsDelete';
+
+// Functionele wrapper voor de class component
+const ProjectDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class ProjectDetailsToolbar extends Component {
     constructor(props) {
@@ -30,10 +36,7 @@ class ProjectDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
                                     {this.props.permissions.manageProject && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}
@@ -64,4 +67,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectDetailsToolbar);
+export default connect(mapStateToProps)(ProjectDetailsToolbarWrapper);

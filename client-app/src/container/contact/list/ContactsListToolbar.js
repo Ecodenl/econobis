@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
@@ -13,6 +14,12 @@ import { share } from 'react-icons-kit/fa/share';
 import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
 import Icon from 'react-icons-kit';
 import ReactTooltip from 'react-tooltip';
+
+// Functionele wrapper voor de class component
+const ContactsListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactsListToolbar {...props} navigate={navigate} />;
+};
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -44,11 +51,11 @@ class ContactsListToolbar extends Component {
     };
 
     newContact = () => {
-        hashHistory.push(`/contact/nieuw`);
+        this.props.navigate(`/contact/nieuw`);
     };
 
     importContacts = () => {
-        hashHistory.push(`/contact/import`);
+        this.props.navigate(`/contact/import`);
     };
 
     render() {
@@ -346,4 +353,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactsListToolbar);
+export default connect(mapStateToProps, null)(ContactsListToolbarWrapper);

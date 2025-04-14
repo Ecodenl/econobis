@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -8,6 +8,12 @@ import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 import RevenuesKwhNewToolbar from './RevenuesKwhNewToolbar';
 import RevenuesKwhNewForm from './RevenuesKwhNewForm';
 import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuesKwhNewApp {...props} navigate={navigate} />;
+};
 
 class RevenuesKwhNewApp extends Component {
     constructor(props) {
@@ -337,7 +343,7 @@ class RevenuesKwhNewApp extends Component {
                     // Delete path new-project-revenue in history, so when go back the page goes to the project details
                     hashHistory.replace(`/project/details/${this.props.params.projectId}`);
                     // Push to new revenue
-                    hashHistory.push(`/project/opbrengst-kwh/${payload.data.data.id}`);
+                    this.props.navigate(`/project/opbrengst-kwh/${payload.data.data.id}`);
                 })
                 .catch(error => {
                     console.log(error);
@@ -384,4 +390,4 @@ class RevenuesKwhNewApp extends Component {
     }
 }
 
-export default RevenuesKwhNewApp;
+export default RevenuesKwhNewAppWrapper;

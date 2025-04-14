@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../../components/panel/PanelBody';
@@ -12,6 +12,12 @@ import CreateRevenuePartsKwhReportList from './CreateRevenuePartsKwhReportList';
 import CreateRevenuePartsKwhReportViewPdf from './CreateRevenuePartsKwhReportViewPdf';
 import CreateRevenuePartsKwhReportViewEmail from './CreateRevenuePartsKwhReportViewEmail';
 import RevenuePartsKwhAPI from '../../../../../../../../api/project/RevenuePartsKwhAPI';
+
+// Functionele wrapper voor de class component
+const CreateRevenuePartsKwhReportAppWrapper = props => {
+    const navigate = useNavigate();
+    return <CreateRevenuePartsKwhReportApp {...props} navigate={navigate} />;
+};
 
 class CreateRevenuePartsKwhReportApp extends Component {
     constructor(props) {
@@ -92,7 +98,7 @@ class CreateRevenuePartsKwhReportApp extends Component {
 
     redirect = () => {
         if (this.state.redirect) {
-            hashHistory.push(this.state.redirect);
+            this.props.navigate(this.state.redirect);
         } else {
             browserHistory.goBack();
         }
@@ -249,4 +255,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(CreateRevenuePartsKwhReportApp);
+export default connect(mapStateToProps, mapDispatchToProps)(CreateRevenuePartsKwhReportAppWrapper);

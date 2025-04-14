@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 
 import validator from 'validator';
 import { isEmpty } from 'lodash';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import DocumentTemplateNewToolbar from './DocumentTemplateNewToolbar';
 import DocumentTemplateNew from './DocumentTemplateNew';
 
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const DocumentTemplateNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentTemplateNewApp {...props} navigate={navigate} />;
+};
 
 class DocumentTemplateNewApp extends Component {
     constructor(props) {
@@ -160,7 +166,7 @@ class DocumentTemplateNewApp extends Component {
 
         !hasErrors &&
             DocumentTemplateAPI.storeDocumentTemplate(documentTemplate).then(payload => {
-                hashHistory.push(`/document-template/${payload.id}`);
+                this.props.navigate(`/document-template/${payload.id}`);
             });
     };
 
@@ -205,4 +211,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DocumentTemplateNewApp);
+export default connect(mapStateToProps)(DocumentTemplateNewAppWrapper);

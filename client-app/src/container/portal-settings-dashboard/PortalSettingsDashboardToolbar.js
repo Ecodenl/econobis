@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardToolbar {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardToolbar extends Component {
     constructor(props) {
@@ -24,4 +30,4 @@ class PortalSettingsDashboardToolbar extends Component {
     }
 }
 
-export default PortalSettingsDashboardToolbar;
+export default PortalSettingsDashboardToolbarWrapper;

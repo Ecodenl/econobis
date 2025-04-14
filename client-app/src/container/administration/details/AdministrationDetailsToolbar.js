@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import AdministrationDeleteItem from './AdministrationDeleteItem';
@@ -9,6 +9,12 @@ import AdministrationDetailsAPI from '../../../api/administration/Administration
 import { setError } from '../../../actions/general/ErrorActions';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
+
+// Functionele wrapper voor de class component
+const AdministrationToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <AdministrationToolbar {...props} navigate={navigate} />;
+};
 
 class AdministrationToolbar extends Component {
     constructor(props) {
@@ -57,7 +63,7 @@ class AdministrationToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                         {this.props.administrationDetails.usesTwinfield == true &&
                             this.props.administrationDetails.twinfieldIsValid == true && (
                                 <>
@@ -65,9 +71,7 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingToCustomers}
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
-                                            <span
-                                                title='Contacten naar Twinfield synchroniseren'
-                                            >
+                                            <span title="Contacten naar Twinfield synchroniseren">
                                                 <Icon size={14} icon={refresh} />
                                                 &nbsp;Contacten
                                             </span>
@@ -78,9 +82,7 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingToInvoices}
                                         loadText={'Aan het synchroniseren'}
                                         buttonText={
-                                            <span
-                                                title='Notas naar Twinfield synchroniseren'
-                                            >
+                                            <span title="Notas naar Twinfield synchroniseren">
                                                 <Icon size={14} icon={refresh} />
                                                 &nbsp;Nota's
                                             </span>
@@ -91,9 +93,7 @@ class AdministrationToolbar extends Component {
                                         loading={this.state.syncingFromInvoices}
                                         loadText={'Betalingen aan het ophalen'}
                                         buttonText={
-                                            <span
-                                                title='Betalingen van Twinfield ophalen'
-                                            >
+                                            <span title="Betalingen van Twinfield ophalen">
                                                 <Icon size={14} icon={refresh} />
                                                 &nbsp;Betalingen
                                             </span>
@@ -135,4 +135,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationToolbarWrapper);

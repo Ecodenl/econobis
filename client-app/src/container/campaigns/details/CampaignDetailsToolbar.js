@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -8,6 +8,8 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import CampaignDetailsDelete from './CampaignDetailsDelete';
 
 function CampaignDetailsToolbar({ campaign, permissions }) {
+    const navigate = useNavigate();
+
     const [showDelete, setShowDelete] = useState(false);
 
     function toggleDelete() {
@@ -21,7 +23,7 @@ function CampaignDetailsToolbar({ campaign, permissions }) {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-2">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                 {permissions.manageMarketing && (
                                     <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
                                 )}

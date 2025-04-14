@@ -1,34 +1,41 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteTask } from '../../../actions/task/TaskDetailsActions';
-import { connect } from 'react-redux';
 
-const TaskDetailsDelete = props => {
+const TaskDetailsDelete = ({ id, noteSummary, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.taskDetails.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteTask(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteTask(id));
+        closeDeleteItemModal();
     };
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            navigate('/taken');
+            dispatch({ type: 'RESET_DELETE_TASK_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder taak: <strong> {`${props.noteSummary}`} </strong>
+                Verwijder taak: <strong>{noteSummary}</strong>
             </p>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteTask: id => {
-        dispatch(deleteTask(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(TaskDetailsDelete);
+export default TaskDetailsDelete;

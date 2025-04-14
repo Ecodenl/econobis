@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const ProjectsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectsListItem {...props} navigate={navigate} />;
+};
 
 class ProjectsListItem extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class ProjectsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`project/${id}`);
+        this.props.navigate(`project/${id}`);
     }
 
     render() {
@@ -107,4 +113,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectsListItem);
+export default connect(mapStateToProps)(ProjectsListItemWrapper);

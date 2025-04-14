@@ -1,8 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import passwordValidator from '../../helpers/PasswordValidator';
 import { isEmpty } from 'lodash';
+
+// Functionele wrapper voor de class component
+const ResetWrapper = props => {
+    const navigate = useNavigate();
+    return <Reset {...props} navigate={navigate} />;
+};
 
 class Reset extends Component {
     constructor(props) {
@@ -39,7 +45,7 @@ class Reset extends Component {
                     if (isEmpty(response.data)) {
                         this.setState({ err: false, errMessage: '', passwordError: false, passwordError2: false });
                         setTimeout(() => {
-                            hashHistory.push('/login');
+                            this.props.navigate('/login');
                         }, 2000);
                     } else {
                         // console.log(response.data);
@@ -189,4 +195,4 @@ class Reset extends Component {
     }
 }
 
-export default Reset;
+export default ResetWrapper;

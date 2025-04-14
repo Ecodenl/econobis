@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import DocumentTemplateDeleteItem from './DocumentTemplateDeleteItem';
 import DocumentTemplateDetailsDuplicate from './DocumentTemplateDetailsDuplicate';
+
+// Functionele wrapper voor de class component
+const DocumentTemplateDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentTemplateDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class DocumentTemplateDetailsToolbar extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class DocumentTemplateDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                         {permissions.createDocumentTemplate && (
                             <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         )}
@@ -71,4 +77,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentTemplateDetailsToolbar);
+export default connect(mapStateToProps, null)(DocumentTemplateDetailsToolbarWrapper);

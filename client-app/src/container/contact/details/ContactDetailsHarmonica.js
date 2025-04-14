@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import AddContactToGroup from './harmonica/AddContactToGroup';
 import ErrorModal from '../../../components/modal/ErrorModal';
@@ -17,6 +17,12 @@ import ParticipationHarmonica from './harmonica/ParticipationHarmonica';
 import OrderHarmonica from './harmonica/OrderHarmonica';
 import InvoiceHarmonica from './harmonica/InvoiceHarmonica';
 import FinancialOverviewContactHarmonica from './harmonica/FinancialOverviewContactHarmonica';
+
+// Functionele wrapper voor de class component
+const ContactDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class ContactDetailsHarmonica extends Component {
     constructor(props) {
@@ -77,10 +83,10 @@ class ContactDetailsHarmonica extends Component {
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             } else {
-                hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+                this.props.navigate(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
             }
         } else {
-            hashHistory.push(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            this.props.navigate(`/intake/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
         }
     };
 
@@ -97,10 +103,10 @@ class ContactDetailsHarmonica extends Component {
                     modalErrorMessage: 'Dit contact heeft nog geen adres.',
                 });
             } else {
-                hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+                this.props.navigate(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
             }
         } else {
-            hashHistory.push(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
+            this.props.navigate(`/woningdossier/nieuw/contact/${this.props.contactDetails.id}/adres/${address.id}`);
         }
     };
 
@@ -122,19 +128,19 @@ class ContactDetailsHarmonica extends Component {
 
     newTask = () => {
         if (this.props.contactDetails) {
-            hashHistory.push(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
+            this.props.navigate(`/taak/nieuw/contact/${this.props.contactDetails.id}`);
         }
     };
 
     newNote = () => {
         if (this.props.contactDetails) {
-            hashHistory.push(`/taak/nieuw/afgehandeld/contact/${this.props.contactDetails.id}`);
+            this.props.navigate(`/taak/nieuw/afgehandeld/contact/${this.props.contactDetails.id}`);
         }
     };
 
     newParticipation = () => {
         if (this.props.contactDetails) {
-            hashHistory.push(`/project/deelnemer/nieuw/contact/${this.props.contactDetails.id}`);
+            this.props.navigate(`/project/deelnemer/nieuw/contact/${this.props.contactDetails.id}`);
         }
     };
 
@@ -150,20 +156,20 @@ class ContactDetailsHarmonica extends Component {
                     modalErrorMessage: 'Dit contact heeft nog geen primair e-mail adres.',
                 });
             } else {
-                hashHistory.push(`/email/nieuw/contact/${this.props.contactDetails.id}`);
+                this.props.navigate(`/email/nieuw/contact/${this.props.contactDetails.id}`);
             }
         }
     };
 
     newDocument = type => {
         if (this.props.contactDetails) {
-            hashHistory.push(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
+            this.props.navigate(`/document/nieuw/${type}/contact/${this.props.contactDetails.id}`);
         }
     };
 
     newOrder = () => {
         if (this.props.contactDetails) {
-            hashHistory.push(`/order/nieuw/contact/${this.props.contactDetails.id}`);
+            this.props.navigate(`/order/nieuw/contact/${this.props.contactDetails.id}`);
         }
     };
 
@@ -317,4 +323,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactDetailsHarmonica);
+export default connect(mapStateToProps, null)(ContactDetailsHarmonicaWrapper);

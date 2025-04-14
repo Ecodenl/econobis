@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -8,7 +7,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactGroupDetailsDelete from './ContactGroupDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactGroupDetailsLapostaList from '../../contact-groups/details/ContactGroupDetailsLapostaList';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ContactGroupDetailsLapostaListDeActivate from './ContactGroupDetailsLapostaListDeActivate';
 import ContactGroupDetailsLapostaListConfirmDeActivate from './ContactGroupDetailsLapostaListConfirmDeActivate';
 
@@ -19,6 +18,8 @@ function ContactGroupDetailsToolbar({
     isLoading,
     callFetchContactGroupDetails,
 }) {
+    const navigate = useNavigate();
+
     const [showDelete, setShowDelete] = useState(false);
     const [showSyncLapostaList, setShowSyncLapostaList] = useState(false);
     const [showDeActivateLapostaListConfirm, setShowDeActivateLapostaListConfirm] = useState(false);
@@ -68,7 +69,7 @@ function ContactGroupDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-3">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
                                 {permissions.manageGroup &&
                                     !contactGroup.isUsedInComposedGroup &&
                                     !contactGroup.isUsedInExceptedGroup && (
@@ -76,7 +77,7 @@ function ContactGroupDetailsToolbar({
                                     )}
                                 <ButtonText
                                     buttonText={`Open lijst (${numberOfContacts})`}
-                                    onClickAction={() => hashHistory.push(`/contacten-in-groep/${id}`)}
+                                    onClickAction={() => navigate(`/contacten-in-groep/${id}`)}
                                 />
                                 {permissions.manageMarketing && cooperation && cooperation.use_laposta && (
                                     <>

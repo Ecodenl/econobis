@@ -36,7 +36,7 @@ class MeasuresListItem extends Component {
     }
 
     openItem(id) {
-        this.props.navigate(`maatregel/${id}`);
+        this.props.navigate(`/maatregel/${id}`);
     }
 
     render() {

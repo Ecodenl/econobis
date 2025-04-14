@@ -114,12 +114,13 @@ class InvoiceToolbar extends Component {
             (this.props.invoiceDetails.statusId === 'to-send' || this.props.invoiceDetails.statusId === 'sent') &&
             this.props.invoiceDetails.usesTwinfield &&
             !this.props.invoiceDetails.compatibleWithTwinfield;
+        const { navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'eye'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&

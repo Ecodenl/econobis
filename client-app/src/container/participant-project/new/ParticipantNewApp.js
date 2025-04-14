@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ParticipantNewToolbar from './ParticipantNewToolbar';
 
@@ -19,7 +19,8 @@ import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 // Functionele wrapper voor de class component
 const ParticipantNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <ParticipantNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <ParticipantNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class ParticipantNewApp extends Component {

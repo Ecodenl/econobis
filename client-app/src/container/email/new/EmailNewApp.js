@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import EmailNewForm from './EmailNewForm';
@@ -17,7 +17,8 @@ import Modal from '../../../components/modal/Modal';
 // Functionele wrapper voor de class component
 const EmailNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <EmailNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <EmailNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class EmailNewApp extends Component {

@@ -6,7 +6,7 @@ import './DistrictCalendar.css';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DistrictAPI from '../../../api/district/DistrictAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import InputSelect from '../../../components/form/InputSelect';
@@ -15,6 +15,7 @@ moment.locale('nl');
 
 const DistrictCalendarApp = props => {
     const navigate = useNavigate();
+    const params = useParams();
 
     const [view, setView] = useState('week');
     const [date, setDate] = useState(new Date());
@@ -46,7 +47,7 @@ const DistrictCalendarApp = props => {
                 .format('YYYY-MM-DD');
         }
 
-        DistrictAPI.fetchDistrictCalendarItems(props.params.id, startDate, endDate).then(data => {
+        DistrictAPI.fetchDistrictCalendarItems(params.id, startDate, endDate).then(data => {
             let quotationRequests = data.quotationRequests.map(item => {
                 return {
                     type: 'quotationRequest',
@@ -136,7 +137,7 @@ const DistrictCalendarApp = props => {
                 <div className="row margin-10-bottom">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                            <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         </div>
                     </div>
                     <div className="col-md-4">

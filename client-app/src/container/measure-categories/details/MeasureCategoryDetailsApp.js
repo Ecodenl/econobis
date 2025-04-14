@@ -5,6 +5,13 @@ import MeasureCategoryDetailsForm from './MeasureCategoryDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import MeasureCategoryDetailsAPI from '../../../api/measure-category/MeasureCategoryDetailsAPI';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const MeasureCategoryDetailsAppWrapper = props => {
+    const params = useParams();
+    return <MeasureCategoryDetailsApp {...props} params={params} />;
+};
 
 class MeasureCategoryDetailsApp extends Component {
     constructor(props) {
@@ -68,4 +75,4 @@ class MeasureCategoryDetailsApp extends Component {
     }
 }
 
-export default MeasureCategoryDetailsApp;
+export default MeasureCategoryDetailsAppWrapper;

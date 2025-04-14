@@ -3,13 +3,14 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
 import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
 import { isEmpty } from 'lodash';
 
 function FreeFieldDetailsApp(props) {
     const navigate = useNavigate();
+    const params = useParams();
 
     const [freeField, setFreeField] = useState({});
     const [isLoading, setIsLoading] = useState(true);
@@ -41,7 +42,7 @@ function FreeFieldDetailsApp(props) {
 
     function fetchFreeField() {
         setIsLoading(true);
-        FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
+        FreeFieldsAPI.fetchFreeFieldDetails(params.id)
             .then(data => {
                 setFreeField(data);
                 setIsLoading(false);

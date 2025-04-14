@@ -13,7 +13,7 @@ const InvoiceViewToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     <ButtonIcon iconName={'download'} onClickAction={props.download} />
                     <ButtonIcon iconName={'searchPlus'} onClickAction={props.zoomIn} />
                     <ButtonIcon iconName={'searchMinus'} onClickAction={props.zoomOut} />

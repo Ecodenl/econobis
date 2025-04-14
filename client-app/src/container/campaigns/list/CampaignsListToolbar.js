@@ -8,7 +8,7 @@ const CampaignsListToolbar = props => {
     const navigate = useNavigate();
 
     const newCampaign = () => {
-        navigate('campagne/nieuw');
+        navigate('/campagne/nieuw');
     };
 
     const { permissions = {} } = props;
@@ -18,7 +18,7 @@ const CampaignsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     {permissions.manageMarketing && <ButtonIcon iconName={'plus'} onClickAction={newCampaign} />}
                 </div>
             </div>

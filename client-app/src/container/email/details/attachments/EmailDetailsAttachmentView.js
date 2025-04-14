@@ -60,7 +60,7 @@ class EmailDetailsAttachmentView extends Component {
     };
 
     saveToAlfresco = id => {
-        this.props.navigate(`document/nieuw/upload/email-bijlage/${id}`);
+        this.props.navigate(`/document/nieuw/upload/email-bijlage/${id}`);
     };
 
     render() {

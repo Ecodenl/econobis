@@ -27,7 +27,7 @@ const EmailDetailsToolbar = ({ email, id, removeEmail }) => {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group margin-small margin-10-right" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                             </div>
                             {email.id ? (
                                 <>

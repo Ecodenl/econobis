@@ -7,14 +7,15 @@ import PanelBody from '../../../components/panel/PanelBody';
 import PortalSettingsLayoutDetailsAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import PortalSettingsDashboardAPI from '../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import axios from 'axios';
 
 // Functionele wrapper voor de class component
 const PortalSettingsLayoutDetailsAppWrapper = props => {
     const navigate = useNavigate();
-    return <PortalSettingsLayoutDetailsApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <PortalSettingsLayoutDetailsApp {...props} navigate={navigate} params={params} />;
 };
 
 class PortalSettingsLayoutDetailsApp extends Component {

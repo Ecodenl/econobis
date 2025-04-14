@@ -571,7 +571,7 @@ class ParticipationProjectController extends ApiController
             if($revenuesKwhPart){
                 $revenuePartsKwhRedirect = null;
                 if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
                 }
                 if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
                     $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];

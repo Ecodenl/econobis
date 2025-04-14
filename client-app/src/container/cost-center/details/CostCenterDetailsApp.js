@@ -7,12 +7,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 import CostCenterDetailsAPI from '../../../api/cost-center/CostCenterDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Functionele wrapper voor de class component
 const CostCenterDetailsAppWrapper = props => {
     const navigate = useNavigate();
-    return <CostCenterDetailsApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <CostCenterDetailsApp {...props} navigate={navigate} params={params} />;
 };
 
 class CostCenterDetailsApp extends Component {

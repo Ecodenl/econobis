@@ -14,6 +14,13 @@ import {
     setProductCodeFilter,
     setProductFilter,
 } from '../../../actions/product/ProductsFiltersActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ProductsListAppWrapper = props => {
+    const params = useParams();
+    return <ProductsListApp {...props} params={params} />;
+};
 
 class ProductsListApp extends Component {
     constructor(props) {
@@ -103,4 +110,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductsListAppWrapper);

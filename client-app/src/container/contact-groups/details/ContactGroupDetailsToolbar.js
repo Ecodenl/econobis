@@ -69,7 +69,7 @@ function ContactGroupDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-3">
                             <div className="btn-group" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 {permissions.manageGroup &&
                                     !contactGroup.isUsedInComposedGroup &&
                                     !contactGroup.isUsedInExceptedGroup && (

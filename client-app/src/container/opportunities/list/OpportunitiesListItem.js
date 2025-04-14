@@ -38,7 +38,7 @@ class OpportunitiesListItem extends Component {
 
     openItem(id) {
         if (!this.props.showCheckbox) {
-            this.props.navigate(`kans/${id}`);
+            this.props.navigate(`/kans/${id}`);
         }
     }
 

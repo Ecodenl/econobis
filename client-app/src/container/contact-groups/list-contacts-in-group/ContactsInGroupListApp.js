@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
 
 import {
     fetchContactGroupDetails,
@@ -10,7 +11,9 @@ import {
 import ContactsInGroupList from './ContactsInGroupList';
 import ContactsInGroupListToolbar from './ContactsInGroupListToolbar';
 
-function ContactsInGroupListApp({ params, fetchContactGroupDetails, clearContactGroupDetails }) {
+function ContactsInGroupListApp({ fetchContactGroupDetails, clearContactGroupDetails }) {
+    const params = useParams();
+
     useEffect(() => {
         fetchContactGroupDetails(params.contactGroup);
         return () => {

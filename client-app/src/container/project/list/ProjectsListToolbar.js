@@ -8,7 +8,7 @@ const ProjectsListToolbar = props => {
     const navigate = useNavigate();
 
     const newProject = () => {
-        navigate('project/nieuw');
+        navigate('/project/nieuw');
     };
 
     const { permissions = {} } = props;

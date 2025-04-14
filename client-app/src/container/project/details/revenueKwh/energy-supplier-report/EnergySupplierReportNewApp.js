@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import EnergySupplierReportNewToolbar from './EnergySupplierReportNewToolbar';
 import EnergySupplierReportNew from './EnergySupplierReportNew';
@@ -14,7 +14,8 @@ import axios from 'axios';
 // Functionele wrapper voor de class component
 const EnergySupplierReportNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <EnergySupplierReportNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <EnergySupplierReportNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class EnergySupplierReportNewApp extends Component {

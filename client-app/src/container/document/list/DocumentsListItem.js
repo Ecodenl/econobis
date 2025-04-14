@@ -42,7 +42,7 @@ class DocumentsListItem extends Component {
     }
 
     openItem(id) {
-        this.props.navigate(`document/${id}`);
+        this.props.navigate(`/document/${id}`);
     }
 
     download(id) {

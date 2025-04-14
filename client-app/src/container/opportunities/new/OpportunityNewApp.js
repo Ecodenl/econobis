@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
@@ -14,7 +14,8 @@ import { connect } from 'react-redux';
 // Functionele wrapper voor de class component
 const OppportunitiesNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <OppportunitiesNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <OppportunitiesNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class OppportunitiesNewApp extends Component {

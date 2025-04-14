@@ -20,7 +20,7 @@ const DocumentsListToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     <ButtonIcon iconName={'refresh'} onClickAction={props.resetDocumentsFilters} />
                     {/* Voorlopig geen nieuwe documenten (maken / uploaden) vanuit hier,Zie verderop uitleg via {i} knop */}
                     {/*    {permissions.createDocument && (*/}

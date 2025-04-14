@@ -6,12 +6,13 @@ import EmailDetailsForm from './EmailDetailsForm';
 import EmailAPI from './../../../api/email/EmailAPI';
 
 import { fetchEmail, clearEmail } from '../../../actions/email/EmailDetailsActions';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Functionele wrapper voor de class component
 const EmailDetailsAppWrapper = props => {
     const navigate = useNavigate();
-    return <EmailDetailsApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <EmailDetailsApp {...props} navigate={navigate} params={params} />;
 };
 
 class EmailDetailsApp extends Component {

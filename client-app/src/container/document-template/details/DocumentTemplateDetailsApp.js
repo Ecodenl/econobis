@@ -6,6 +6,13 @@ import DocumentTemplateDetailsToolbar from './DocumentTemplateDetailsToolbar';
 import DocumentTemplateDetailsForm from './DocumentTemplateDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const DocumentTemplateDetailsAppWrapper = props => {
+    const params = useParams();
+    return <DocumentTemplateDetailsApp {...props} params={params} />;
+};
 
 class DocumentTemplateDetailsApp extends Component {
     constructor(props) {
@@ -16,9 +23,9 @@ class DocumentTemplateDetailsApp extends Component {
         this.props.fetchDocumentTemplate(this.props.params.id);
     }
 
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (this.props.params.id !== nextProps.params.id) {
-            this.props.fetchDocumentTemplate(nextProps.params.id);
+    componentDidUpdate(prevProps) {
+        if (this.props.params.id !== prevProps.params.id) {
+            this.props.fetchDocumentTemplate(this.props.params.id);
         }
     }
 
@@ -56,4 +63,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplateDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplateDetailsAppWrapper);

@@ -2,17 +2,18 @@ import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import QuotationRequestPlanNewPlanningPanel from './QuotationRequestPlanNewPlanningPanel';
 import DistrictAPI from '../../../api/district/DistrictAPI';
 
 export default function QuotationRequestPlanNewApp(props) {
     const navigate = useNavigate();
+    const params = useParams();
 
     const [district, setDistrict] = useState(false);
 
     useEffect(() => {
-        DistrictAPI.fetchDistrictDetails(props.params.districtId).then(district => {
+        DistrictAPI.fetchDistrictDetails(params.districtId).then(district => {
             setDistrict(district);
         });
     }, []);
@@ -26,7 +27,7 @@ export default function QuotationRequestPlanNewApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     </div>
                                 </div>
                                 <div className="col-md-4">
@@ -39,10 +40,7 @@ export default function QuotationRequestPlanNewApp(props) {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <QuotationRequestPlanNewPlanningPanel
-                        district={district}
-                        opportunityId={props.params.opportunityId}
-                    />
+                    <QuotationRequestPlanNewPlanningPanel district={district} opportunityId={params.opportunityId} />
                 </div>
             </div>
             <div className="col-md-3" />

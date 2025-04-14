@@ -22,7 +22,7 @@ function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 {permissions.manageMarketing && formData.useLaposta == true ? (
                                     <ButtonText
                                         onClickAction={toggleShowSyncLaposta}

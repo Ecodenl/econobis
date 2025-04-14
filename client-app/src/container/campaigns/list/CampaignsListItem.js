@@ -40,7 +40,7 @@ class CampaignsListItem extends Component {
     }
 
     openItem(id) {
-        this.props.navigate(`campagne/${id}`);
+        this.props.navigate(`/campagne/${id}`);
     }
 
     render() {

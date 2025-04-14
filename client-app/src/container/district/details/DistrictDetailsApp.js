@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import DistrictAPI from '../../../api/district/DistrictAPI';
 import DistrictDetailsGeneral from './DistrictDetailsGeneral';
 import DistrictDetailsCoaches from './DistrictDetailsCoaches';
@@ -10,6 +10,7 @@ import DistrictListItemDeleteModal from './DistrictListItemDeleteModal';
 
 export default function DistrictDetailsApp(props) {
     const navigate = useNavigate();
+    const params = useParams();
 
     const [district, setDistrict] = useState({ coaches: [] });
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -19,7 +20,7 @@ export default function DistrictDetailsApp(props) {
     }, []);
 
     const fetch = () => {
-        DistrictAPI.fetchDistrictDetails(props.params.id)
+        DistrictAPI.fetchDistrictDetails(params.id)
             .then(data => {
                 setDistrict(data);
             })
@@ -37,7 +38,7 @@ export default function DistrictDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         <DistrictListItemDeleteModal
                                             district={district}
                                             onDelete={navigate(-1)}

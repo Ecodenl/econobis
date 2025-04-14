@@ -316,9 +316,75 @@ const AppRoutes = () => {
                         <Route path="administraties" element={<AdministrationsListApp />} />
                         <Route path="administratie/nieuw" element={<AdministrationNewApp />} />
                         <Route path="administratie/:id" element={<AdministrationDetailsApp />} />
+                        /* Audit trail*/
+                        <Route path="audit-trail" element={<AuditTrailListApp />} />
+                        /* Calender/agenda*/
+                        <Route path="agenda" element={<CalendarApp />} />
+                        /* Contact */
                         <Route path="contacten/:filter/:value" element={<ContactsListApp />} />
                         <Route path="contacten" element={<ContactsListApp />} />
                         <Route path="contact/:id" element={<ContactDetailsApp />} />
+                        <Route path="contact/nieuw/:type" element={<ContactNewApp />} />
+                        <Route path="contact/import" element={<ContactImportApp />} />
+                        /* Contacts in group */
+                        <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
+                        <Route path="contact-groepen" element={<ContactGroupsListApp />} />
+                        <Route path="contact-groep/:id/:mode" element={<ContactGroupDetailsApp />} />
+                        <Route path="contact-groep/:id" element={<ContactGroupDetailsApp />} />
+                        <Route path="contacten-in-groep/:contactGroup" element={<ContactsInGroupListApp />} />
+                        /* Campaign */
+                        <Route path="campagne/nieuw" element={<CampaignNewApp />} />
+                        <Route path="campagne/nieuw/maatregel/:measureId" element={<CampaignNewApp />} />
+                        <Route path="campagne/:id" element={<CampaignDetailsApp />} />
+                        <Route path="campagnes" element={<CampaignsListApp />} />
+                        /* Cooperation */
+                        <Route path="cooperatie" element={<CooperationDetailsApp />} />
+                        /* Documents */
+                        <Route path="documenten" element={<DocumentsListApp />} />
+                        <Route path="document/nieuw/:type/document" element={<DocumentNewApp />} />
+                        <Route
+                            path="document/nieuw/:type/:showOnPortal/administratie/:administrationId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route
+                            path="document/nieuw/:type/:showOnPortal/project/:projectId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route
+                            path="document/nieuw/:type/:showOnPortal/project/:projectId/deelnemer/:participantId/contact/:contactId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route
+                            path="document/nieuw/:type/email-bijlage/:emailAttachmentId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route path="document/nieuw/:type/campagne/:campaignId" element={<DocumentNewApp />} />
+                        <Route path="document/nieuw/:type/contact-groep/:contactGroupId" element={<DocumentNewApp />} />
+                        <Route path="document/nieuw/:type/contact/:contactId" element={<DocumentNewApp />} />
+                        <Route path="document/nieuw/:type/order/:orderId" element={<DocumentNewApp />} />
+                        <Route
+                            path="document/nieuw/:type/woningdossier/:housingFileId/contact/:contactId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route
+                            path="document/nieuw/:type/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route path="document/nieuw/:type/maatregel/:measureId" element={<DocumentNewApp />} />
+                        <Route
+                            path="document/nieuw/:type/offerteverzoek/:quotationRequestId"
+                            element={<DocumentNewApp />}
+                        />
+                        <Route path="document/nieuw/:type/taak/:taskId" element={<DocumentNewApp />} />
+                        <Route
+                            path="document/nieuw/:type/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                            element={<DocumentNewApp />}
+                        />
+                        {/* todo WM: worden deze nog gebruikt? */}
+                        {/*<Route path="document/nieuw/:type/kans/:opportunityId" element={<DocumentNewApp />} />*/}
+                        {/*<Route path="document/nieuw/:type/intake/:intakeId" element={<DocumentNewApp />} />*/}
+                        <Route path="document/:id" element={<DocumentDetailsApp />} />
+                        <Route path="document/inzien/:id" element={<DocumentViewApp />} />
                         <Route path="*" element={<NotFoundedPage />} />
                     </Route>
                 </Routes>

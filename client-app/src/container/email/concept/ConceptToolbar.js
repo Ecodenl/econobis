@@ -11,7 +11,7 @@ const ConceptNewToolbar = ({ handleSubmit, loading, removeEmail }) => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group margin-small margin-10-right" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                 </div>
                 <div className="btn-group margin-small" role="group">
                     <ButtonText

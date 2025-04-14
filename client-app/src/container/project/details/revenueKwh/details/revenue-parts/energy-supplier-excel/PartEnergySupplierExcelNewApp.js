@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import PartEnergySupplierExcelNewToolbar from './PartEnergySupplierExcelNewToolbar';
 import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
@@ -12,7 +12,8 @@ import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwh
 // Functionele wrapper voor de class component
 const PartEnergySupplierExcelNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <PartEnergySupplierExcelNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <PartEnergySupplierExcelNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class PartEnergySupplierExcelNewApp extends Component {
@@ -74,7 +75,7 @@ class PartEnergySupplierExcelNewApp extends Component {
     cancel = event => {
         event.preventDefault();
         this.props.navigate(
-            `project/opbrengst-kwh/${this.state.revenuePartsKwhForReport.revenueId}/deelperiode/${this.props.params.revenuePartId}`
+            `/project/opbrengst-kwh/${this.state.revenuePartsKwhForReport.revenueId}/deelperiode/${this.props.params.revenuePartId}`
         );
     };
 

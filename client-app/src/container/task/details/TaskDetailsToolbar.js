@@ -34,6 +34,7 @@ class TaskDetailsToolbar extends Component {
 
     render() {
         const { finished } = this.props.taskDetails;
+        const { navigate } = this.props;
 
         return (
             <div className="row">
@@ -42,7 +43,7 @@ class TaskDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-4">
                                 <div className="btn-group btn-group-flex" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageTask && (
                                         <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}

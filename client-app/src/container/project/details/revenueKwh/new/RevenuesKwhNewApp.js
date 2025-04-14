@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -12,7 +12,8 @@ import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
 // Functionele wrapper voor de class component
 const RevenuesKwhNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <RevenuesKwhNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <RevenuesKwhNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class RevenuesKwhNewApp extends Component {

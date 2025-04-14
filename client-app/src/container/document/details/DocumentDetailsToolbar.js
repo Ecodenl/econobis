@@ -25,13 +25,13 @@ class DocumentDetailsToolbar extends Component {
     };
 
     render() {
-        const { documentFilename = '' } = this.props;
+        const { documentFilename = '', navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.download} />
                         {documentFilename.toLowerCase().endsWith('.pdf') && (
                             <ButtonIcon

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -16,7 +16,8 @@ import Modal from '../../../components/modal/Modal';
 // Functionele wrapper voor de class component
 const ParticipantReportCreateAppWrapper = props => {
     const navigate = useNavigate();
-    return <ParticipantReportCreateApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <ParticipantReportCreateApp {...props} navigate={navigate} params={params} />;
 };
 
 class ParticipantReportCreateApp extends Component {

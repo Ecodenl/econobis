@@ -11,7 +11,7 @@ const DocumentViewToolbar = props => {
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     <ButtonIcon iconName={'download'} onClickAction={props.download} />
                     <ButtonIcon
                         iconName={'envelopeO'}

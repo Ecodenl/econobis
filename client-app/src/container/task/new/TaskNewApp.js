@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
 import moment from 'moment/moment';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import ContactsAPI from '../../../api/contact/ContactsAPI';
@@ -23,7 +23,8 @@ import InvoicesAPI from '../../../api/invoice/InvoicesAPI';
 // Functionele wrapper voor de class component
 const TaskNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <TaskNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <TaskNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class TaskNewApp extends Component {

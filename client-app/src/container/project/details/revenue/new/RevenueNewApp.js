@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNewForm from './RevenueNewForm';
@@ -14,7 +14,8 @@ import { connect } from 'react-redux';
 // Functionele wrapper voor de class component
 const RevenueNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <RevenueNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <RevenueNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class RevenueNewApp extends Component {

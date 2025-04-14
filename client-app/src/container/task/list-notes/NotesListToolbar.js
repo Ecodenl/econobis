@@ -8,7 +8,7 @@ const NotesListToolbar = props => {
     const navigate = useNavigate();
 
     const newTask = () => {
-        navigate('taak/nieuw/afgesloten');
+        navigate('/taak/nieuw/afgesloten');
     };
 
     const { permissions = {} } = props;

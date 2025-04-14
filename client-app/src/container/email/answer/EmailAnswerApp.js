@@ -7,7 +7,7 @@ import EmailAnswerToolbar from './EmailAnswerToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
@@ -15,7 +15,8 @@ import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 // Functionele wrapper voor de class component
 const EmailAnswerAppWrapper = props => {
     const navigate = useNavigate();
-    return <EmailAnswerApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <EmailAnswerApp {...props} navigate={navigate} params={params} />;
 };
 
 class EmailAnswerApp extends Component {

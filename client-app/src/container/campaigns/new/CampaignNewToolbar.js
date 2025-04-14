@@ -21,6 +21,8 @@ class CampaignNewToolbar extends Component {
     }
 
     render() {
+        const { navigate } = this.props;
+
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -28,7 +30,7 @@ class CampaignNewToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-4">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={navigate(-1)} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 </div>
                             </div>
                             <div className="col-md-4">

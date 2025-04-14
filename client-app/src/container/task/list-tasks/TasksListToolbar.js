@@ -8,7 +8,7 @@ const TasksListToolbar = props => {
     const navigate = useNavigate();
 
     const newTask = () => {
-        navigate('taak/nieuw');
+        navigate('/taak/nieuw');
     };
 
     const { permissions = {} } = props;

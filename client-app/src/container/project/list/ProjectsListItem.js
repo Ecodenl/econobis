@@ -38,7 +38,7 @@ class ProjectsListItem extends Component {
     }
 
     openItem(id) {
-        this.props.navigate(`project/${id}`);
+        this.props.navigate(`/project/${id}`);
     }
 
     render() {

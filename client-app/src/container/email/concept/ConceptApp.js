@@ -7,12 +7,13 @@ import ConceptToolbar from './ConceptToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import EmailAPI from '../../../api/email/EmailAPI';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Functionele wrapper voor de class component
 const ConceptAppWrapper = props => {
     const navigate = useNavigate();
-    return <ConceptApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <ConceptApp {...props} navigate={navigate} params={params} />;
 };
 
 class ConceptApp extends Component {

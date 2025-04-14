@@ -1,13 +1,14 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import passwordValidator from '../../helpers/PasswordValidator';
 import { isEmpty } from 'lodash';
 
 // Functionele wrapper voor de class component
 const ResetWrapper = props => {
     const navigate = useNavigate();
-    return <Reset {...props} navigate={navigate} />;
+    const params = useParams();
+    return <Reset {...props} navigate={navigate} params={params} />;
 };
 
 class Reset extends Component {

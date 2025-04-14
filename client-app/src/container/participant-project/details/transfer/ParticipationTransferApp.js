@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import ParticipationTransferToolbar from './ParticipationTransferToolbar';
 import ParticipationTransfer from './ParticipationTransfer';
@@ -12,7 +12,8 @@ import PanelBody from '../../../../components/panel/PanelBody';
 // Functionele wrapper voor de class component
 const ParticipationTransferAppWrapper = props => {
     const navigate = useNavigate();
-    return <ParticipationTransferApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <ParticipationTransferApp {...props} navigate={navigate} params={params} />;
 };
 
 class ParticipationTransferApp extends Component {

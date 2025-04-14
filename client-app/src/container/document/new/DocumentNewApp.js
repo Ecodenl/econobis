@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import DocumentNewForm from './DocumentNewForm';
@@ -32,7 +32,8 @@ import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
 // Functionele wrapper voor de class component
 const DocumentNewAppWrapper = props => {
     const navigate = useNavigate();
-    return <DocumentNewApp {...props} navigate={navigate} />;
+    const params = useParams();
+    return <DocumentNewApp {...props} navigate={navigate} params={params} />;
 };
 
 class DocumentNewApp extends Component {

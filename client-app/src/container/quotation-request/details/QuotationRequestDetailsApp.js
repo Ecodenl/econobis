@@ -8,6 +8,13 @@ import QuotationRequestDetailsForm from './QuotationRequestDetailsForm';
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import QuotationRequestDetailsHarmonica from './harmonica/QuotationRequestDetailsHarmonica';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const QuotationRequestDetailsAppWrapper = props => {
+    const params = useParams();
+    return <QuotationRequestDetailsApp {...props} params={params} />;
+};
 
 class QuotationRequestDetailsApp extends Component {
     constructor(props) {
@@ -46,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(QuotationRequestDetailsApp);
+export default connect(null, mapDispatchToProps)(QuotationRequestDetailsAppWrapper);

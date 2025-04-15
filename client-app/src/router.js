@@ -385,6 +385,294 @@ const AppRoutes = () => {
                         {/*<Route path="document/nieuw/:type/intake/:intakeId" element={<DocumentNewApp />} />*/}
                         <Route path="document/:id" element={<DocumentDetailsApp />} />
                         <Route path="document/inzien/:id" element={<DocumentViewApp />} />
+                        /* Document templates */
+                        <Route path="document-templates" element={<DocumentTemplatesListApp />} />
+                        <Route path="document-template/nieuw" element={<DocumentTemplateNewApp />} />
+                        <Route path="document-template/:id" element={<DocumentTemplateDetailsApp />} />
+                        /* Emails */
+                        <Route path="emails/concept" element={<ConceptsInListApp />} />
+                        <Route path="email/concept/:id" element={<ConceptApp />} />
+                        <Route path="emails/:folder" element={<EmailsInListApp />} />
+                        <Route path="emails/:folder/:type" element={<EmailsInListApp />} />
+                        <Route path="email/nieuw" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/:type" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/groep/:contactGroupId/:type" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/contact/:contactId" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/document/:documentId" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/kans/:opportunityId/:contactId" element={<EmailNewApp />} />
+                        <Route
+                            path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId"
+                            element={<EmailNewApp />}
+                        />
+                        {/*<Route path="email/nieuw/offerteverzoek/:quotationRequestId/contacts/:contactIds" element={<EmailNewApp />} />*/}
+                        <Route
+                            path="email/nieuw/offerteverzoek/:quotationRequestId/:contactId/occupant/:occupantId"
+                            element={<EmailNewApp />}
+                        />
+                        <Route path="email/nieuw/intake/:intakeId/contact/:contactId" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/taak/:taskId" element={<EmailNewApp />} />
+                        <Route path="email/nieuw/taak/:taskId/contact/:contactId" element={<EmailNewApp />} />
+                        <Route path="email/:id" element={<EmailDetailsApp />} />
+                        <Route path="email/:id/:type" element={<EmailAnswerApp />} />
+                        /* Email templates */
+                        <Route path="email-templates" element={<EmailTemplatesListApp />} />
+                        <Route path="email-template/nieuw" element={<EmailTemplateNewApp />} />
+                        <Route path="email-template/:id" element={<EmailTemplateDetailsApp />} />
+                        /* Financial */
+                        <Route path="financieel/:id" element={<FinancialApp />} />
+                        <Route path="financieel/:id/:type" element={<FinancialApp />} />
+                        <Route path="financieel/:id/orders/aanmaken" element={<OrderCreateApp />} />
+                        <Route path="financieel/:id/:type/:filter" element={<FinancialApp />} />
+                        <Route
+                            path="financieel/:id/notas/te-verzenden/verzenden/:type/:paymentType"
+                            element={<InvoiceSendApp />}
+                        />
+                        <Route
+                            path="financieel/:id/notas/te-verzenden/verzenden/:type/:paymentType"
+                            element={<InvoiceSendApp />}
+                        />
+                        /* Orders */
+                        <Route path="order/nieuw/contact/:contactId" element={<OrderNewApp />} />
+                        <Route
+                            path="order/nieuw/contact/:contactId/deelnemer/:participationId/administratie/:administrationId"
+                            element={<OrderNewApp />}
+                        />
+                        <Route path="order/:id" element={<OrderDetailsApp />} />
+                        <Route path="order/inzien/:id" element={<InvoicePreviewApp />} />
+                        /* Nota's */
+                        <Route path="nota/:id" element={<InvoiceDetailsApp />} />
+                        <Route path="nota/inzien/:id" element={<InvoiceViewApp />} />
+                        <Route path="nota/twinfield/:twinfieldCode/:twinfieldNumber" element={<InvoiceViewApp />} />
+                        /* Waardestaten */
+                        <Route path="waardestaten" element={<FinancialOverviewListApp />} />
+                        <Route path="waardestaat/nieuw" element={<FinancialOverviewNewApp />} />
+                        <Route path="waardestaat/:id" element={<FinancialOverviewDetailsApp />} />
+                        <Route path="waardestaat/:id/aanmaken/:type" element={<FinancialOverviewCreateApp />} />
+                        <Route path="waardestaat-project/:id" element={<FinancialOverviewProjectDetailsApp />} />
+                        <Route
+                            path="waardestaat-contact/preview/:id"
+                            element={<FinancialOverviewContactPreviewApp />}
+                        />
+                        <Route path="waardestaat-contact/inzien/:id" element={<FinancialOverviewContactViewApp />} />
+                        /* Campagnes */
+                        <Route path="campagne/nieuw" element={<CampaignNewApp />} />
+                        <Route path="campagne/:id" element={<CampaignDetailsApp />} />
+                        <Route path="campagnes" element={<CampaignsListApp />} />
+                        /* Ledgers */
+                        <Route path="grootboekrekeningen" element={<LedgersListApp />} />
+                        <Route path="grootboekrekening/nieuw" element={<LedgerNewApp />} />
+                        <Route path="grootboekrekening/:id" element={<LedgerDetailsApp />} />
+                        /* Costcenters */
+                        <Route path="kostenplaatsen" element={<CostCentersListApp />} />
+                        <Route path="kostenplaats/nieuw" element={<CostCenterNewApp />} />
+                        <Route path="kostenplaats/:id" element={<CostCenterDetailsApp />} />
+                        /* PortalSettingsLayout */
+                        <Route path="portal-instellingen-dashboard" element={<PortalSettingsDashboardApp />} />
+                        <Route
+                            path="portal-instellingen-dashboard-widget/nieuw"
+                            element={<PortalSettingsDashboardWidgetNewApp />}
+                        />
+                        <Route
+                            path="portal-instellingen-dashboard-widget/:id"
+                            element={<PortalSettingsDashboardWidgetDetailsApp />}
+                        />
+                        /* PortalSettingsLayout */
+                        <Route path="portal-instellingen-layout" element={<PortalSettingsLayoutListApp />} />
+                        <Route path="portal-instellingen-layout/nieuw" element={<PortalSettingsLayoutNewApp />} />
+                        <Route path="portal-instellingen-layout/:id" element={<PortalSettingsLayoutApp />} />
+                        /* MeasureCategories */
+                        <Route path="maatregel-categorieen" element={<MeasureCategoriesListApp />} />
+                        <Route path="maatregel-categorie/:id" element={<MeasureCategoryDetailsApp />} />
+                        /* Measures */
+                        <Route path="maatregelen" element={<MeasuresListApp />} />
+                        <Route path="maatregel/:id" element={<MeasureDetailsApp />} />
+                        /* Dongles */
+                        <Route
+                            path="dongels"
+                            element={
+                                <PermissionWrapper requiredPermission="menuDongles">
+                                    <AddressDonglesListApp />
+                                </PermissionWrapper>
+                            }
+                        />
+                        /* Mailboxes */
+                        <Route path="mailbox/nieuw" element={<MailboxNewApp />} />
+                        <Route path="mailbox/:id" element={<MailboxDetailsApp />} />
+                        <Route path="mailboxen" element={<MailboxesListApp />} />
+                        /* Districts */
+                        <Route path="afspraak-kalender/nieuw" element={<DistrictNewApp />} />
+                        <Route path="afspraak-kalender/:id" element={<DistrictDetailsApp />} />
+                        <Route path="afspraak-kalender/:id/kalender" element={<DistrictCalendarApp />} />
+                        <Route path="afspraak-kalenders" element={<DistrictsListApp />} />
+                        /* Availabilities */
+                        <Route path="beschikbaarheid/:id" element={<ContactAvailabilityDetailsApp />} />
+                        <Route path="beschikbaarheid" element={<ContactAvailabilityListApp />} />
+                        /* Mailgun Events */
+                        <Route path="mailgun/log" element={<MailgunEventListApp />} />
+                        /* Housing File */
+                        <Route
+                            path="woningdossier/nieuw/contact/:contactId/adres/:addressId"
+                            element={<HousingFileNewApp />}
+                        />
+                        <Route path="woningdossier/:id" element={<HousingFileDetailsApp />} />
+                        <Route path="woningdossiers" element={<HousingFilesListApp />} />
+                        <Route path="woningdossier-specificaties" element={<HousingFileSpecificationsListApp />} />
+                        /* Quotation Request */
+                        <Route
+                            path="offerteverzoek/nieuw/kans/:opportunityId/actie/:opportunityActionId"
+                            element={<QuotationRequestNewApp />}
+                        />
+                        <Route
+                            path="offerteverzoek/nieuw/kans/:opportunityId/plan/:districtId"
+                            element={<QuotationRequestPlanNewApp />}
+                        />
+                        <Route path="offerteverzoek/:id" element={<QuotationRequestDetailsApp />} />
+                        <Route path="offerteverzoeken" element={<QuotationRequestsListApp />} />
+                        /* Intake */
+                        <Route path="intake/nieuw/contact/:contactId/adres/:addressId" element={<IntakeNewApp />} />
+                        <Route path="intake/:id" element={<IntakeDetailsApp />} />
+                        <Route path="intakes" element={<IntakesListApp />} />
+                        /* User */
+                        <Route path="gebruiker/nieuw" element={<UserNewApp />} />
+                        <Route path="gebruiker/:id" element={<UserDetailsApp />} />
+                        <Route path="gebruikers" element={<UsersListApp />} />
+                        /* Opportunity */
+                        <Route
+                            path="kans/nieuw/intake/:intakeId/maatregel-categorie/:measureCategoryId"
+                            element={<OpportunityNewApp />}
+                        />
+                        <Route path="kans/:id" element={<OpportunityDetailsApp />} />
+                        <Route path="kansen" element={<OpportunitiesListApp />} />
+                        /* Postal code links */
+                        <Route path="postcoderoos" element={<PostalCodeLinkListApp />} />
+                        /* Product */
+                        <Route path="producten" element={<ProductsListApp />} />
+                        <Route path="product/nieuw" element={<ProductNewApp />} />
+                        <Route path="product/:id" element={<ProductDetailsApp />} />
+                        /* Project */
+                        <Route path="project/nieuw" element={<ProjectNewApp />} />
+                        <Route
+                            path="project/opbrengst/nieuw/:projectId/:categoryId"
+                            element={<ProjectRevenueNewApp />}
+                        />
+                        <Route path="project/details/:id" element={<ProjectDetailsApp />} />
+                        <Route path="project/opbrengst/:id" element={<ProjectRevenueDetailsApp />} />
+                        <Route path="project/opbrengst/:id/rapportage" element={<PaymentInvoiceCreateApp />} />
+                        <Route
+                            path="project/opbrengst-kwh/nieuw/:projectId/:categoryId"
+                            element={<RevenuesKwhNewApp />}
+                        />
+                        <Route path="project/opbrengst-kwh/:id" element={<RevenuesKwhDetailsApp />} />
+                        <Route path="project/opbrengst-kwh/:id/rapportage" element={<CreateRevenuesKwhReportApp />} />
+                        <Route
+                            path="project/opbrengst-kwh/:revenueId/energieleverancier-rapport/:reportType"
+                            element={<EnergySupplierReportNewApp />}
+                        />
+                        <Route
+                            path="project/opbrengst-deelperiode-kwh/:revenuePartId/energieleverancier-excel"
+                            element={<PartEnergySupplierExcelNewApp />}
+                        />
+                        <Route
+                            path="project/opbrengst-kwh/:revenueId/deelperiode/:id"
+                            element={<RevenuePartsKwhDetailsApp />}
+                        />
+                        <Route
+                            path="project/opbrengst-deelperiode-kwh/:id/rapportage"
+                            element={<CreateRevenuePartsKwhReportApp />}
+                        />
+                        <Route path="project/preview-rapportage" element={<ParticipantReportCreateApp />} />
+                        <Route path="project/:id" element={<ProjectGeneralApp />} />
+                        <Route path="projecten" element={<ProjectsListApp />} />
+                        <Route path="projecten/:filter/:value" element={<ProjectsListApp />} />
+                        <Route path="deelnemers" element={<ParticipantListApp />} />
+                        <Route
+                            path="project/deelnemer/:participationId/overdragen"
+                            element={<ParticipationTransferApp />}
+                        />
+                        <Route path="project/deelnemer/nieuw/:projectId" element={<ParticipantNewApp />} />
+                        <Route path="project/deelnemer/nieuw/contact/:contactId" element={<ParticipantNewApp />} />
+                        <Route path="project/deelnemer/:id" element={<ParticipantDetailsApp />} />
+                        {/*<Route*/}
+                        {/*    path="project/deelnemer/opbrengst/nieuw/:projectId/:participationId/:categoryId"*/}
+                        {/*    element={<ParticipantProjectRevenueNewApp />}*/}
+                        {/*/>*/}
+                        {/*<Route path="project/deelnemer/opbrengst/:id" element={<ParticipantProjectRevenueDetailsApp />} />*/}
+                        /* Processes */
+                        <Route path="processen" element={<ProcessesListApp />} />
+                        /* Twinfield */
+                        <Route path="twinfield" element={<TwinfieldListApp />} />
+                        /* Housingfile Log */
+                        <Route path="housing-file/log" element={<HousingFileListApp />} />
+                        /* Task / notes */
+                        <Route path="taak/nieuw" element={<TaskNewApp />} />
+                        <Route path="taak/nieuw/:closed" element={<TaskNewApp />} />
+                        <Route path="taak/nieuw/:closed/:type/:id" element={<TaskNewApp />} />
+                        <Route path="taak/:id" element={<TaskDetailsApp />} />
+                        <Route path="taak/nieuw/:type/:id" element={<TaskNewApp />} />
+                        <Route path="taak/nieuw/kans/:opportunityId/contact/:contactId" element={<TaskNewApp />} />
+                        <Route
+                            path="taak/nieuw/contact/:contactId/project/:projectId/deelnemer/:participantId"
+                            element={<TaskNewApp />}
+                        />
+                        <Route
+                            path="taak/nieuw/:closed/kans/:opportunityId/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                            element={<TaskNewApp />}
+                        />
+                        <Route
+                            path="taak/nieuw/:closed/intake/:intakeId/campagne/:campaignId/contact/:contactId"
+                            element={<TaskNewApp />}
+                        />
+                        <Route
+                            path="taak/nieuw/:closed/nota/:invoiceId/order/:orderId/contact/:contactId"
+                            element={<TaskNewApp />}
+                        />
+                        <Route path="taak/nieuw/:closed/order/:orderId/contact/:contactId" element={<TaskNewApp />} />
+                        <Route
+                            path="taak/nieuw/:closed/woningdossier/:housingFileId/contact/:contactId"
+                            element={<TaskNewApp />}
+                        />
+                        {/*<Route path="taak/nieuw/:closed/kans/:opportunityId/contact/:contactId" element={<TaskNewApp />} />*/}
+                        <Route path="taken" element={<TasksListApp />} />
+                        <Route path="taken/:type" element={<TasksListApp />} />
+                        <Route path="taken/:type" element={<TasksListApp />} />
+                        <Route path="notities" element={<NotesListApp />} />
+                        /* Teams */
+                        <Route path="teams" element={<TeamsListApp />} />
+                        <Route path="team/nieuw" element={<TeamNewApp />} />
+                        <Route path="team/:id" element={<TeamDetailsApp />} />
+                        /* Vat codes */
+                        <Route path="btw-codes" element={<VatCodesListApp />} />
+                        <Route path="btw-code/nieuw" element={<VatCodeNewApp />} />
+                        <Route path="btw-code/:id" element={<VatCodeDetailsApp />} />
+                        /* Vrije velden algemeen */
+                        <Route path="vrije-velden" element={<FreeFieldsListApp />} />
+                        <Route path="vrije-velden/nieuw" element={<FreeFieldNewApp />} />
+                        <Route path="vrije-velden/:id" element={<FreeFieldDetailsApp />} />
+                        /* Vrije velden portaal pagina */
+                        <Route path="vrije-velden-portaal-pagina" element={<PortalFreeFieldsPagesListApp />} />
+                        <Route path="vrije-velden-portaal-pagina/nieuw" element={<PortalFreeFieldsPagesNewApp />} />
+                        <Route path="vrije-velden-portaal-pagina/:id" element={<PortalFreeFieldsPagesDetailsApp />} />
+                        /* Webforms */
+                        <Route path="webformulieren" element={<WebformsListApp />} />
+                        <Route path="webformulier/nieuw" element={<WebformNewApp />} />
+                        <Route path="webformulier/:id" element={<WebformDetailsApp />} />
+                        /* Mailboxes */
+                        <Route path="mailgun-domeinen" element={<MailgunDomainsListApp />} />
+                        <Route path="mailgun-domein/nieuw" element={<MailgunDomainNewApp />} />
+                        <Route path="mailgun-domein/:id" element={<MailgunDomainDetailsApp />} />
+                        /* Portal settings */
+                        <Route path="portal-settings" element={<PortalSettingsApp />} />
+                        /* Taak types */
+                        <Route path="taak-types" element={<TaskTypesListApp />} />
+                        <Route path="taak-type/:id" element={<TaskTypeDetailsApp />} />
+                        <Route path="offerte-verzoek-statussen" element={<QuotationRequestStatusListApp />} />
+                        <Route path="offerte-verzoek-status/:id" element={<QuotationRequestStatusDetailsApp />} />
+                        <Route path="kans-statussen" element={<OpportunityStatusListApp />} />
+                        <Route path="kans-status/:id" element={<OpportunityStatusDetailsApp />} />
+                        /* Mailclient */
+                        <Route path="mailclient/:folder" element={<EmailSplitView />} />
+                        <Route path="mailclient/email/:id" element={<OpenEmailModal />} />
+                        /* 404 route */
                         <Route path="*" element={<NotFoundedPage />} />
                     </Route>
                 </Routes>

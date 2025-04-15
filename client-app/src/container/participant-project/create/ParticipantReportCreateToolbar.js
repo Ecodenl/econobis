@@ -24,7 +24,7 @@ class ParticipantReportCreateToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         {this.props.amountOfParticipants > 0 && (
                             <ButtonText
                                 buttonText={'Rapportage versturen'}

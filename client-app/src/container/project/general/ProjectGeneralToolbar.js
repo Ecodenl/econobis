@@ -19,7 +19,7 @@ class ProjectGeneralToolbar extends Component {
     }
 
     render() {
-        const { project } = this.props;
+        const { project, navigate } = this.props;
 
         return (
             <div className="row">
@@ -28,7 +28,7 @@ class ProjectGeneralToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex  margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     <ButtonText
                                         buttonText={`Open detailformulier`}
                                         onClickAction={() => this.props.navigate(`/project/details/${this.props.id}`)}

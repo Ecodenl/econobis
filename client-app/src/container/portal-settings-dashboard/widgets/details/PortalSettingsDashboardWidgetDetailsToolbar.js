@@ -24,7 +24,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
     };
 
     render() {
-        let { portalSettingsDashboardWidget, permissions } = this.props;
+        let { portalSettingsDashboardWidget, permissions, navigate } = this.props;
         let { id, title, codeRef } = portalSettingsDashboardWidget;
 
         const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
@@ -33,7 +33,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {permissions.managePortalSettings && !staticWidgets.includes(codeRef) && (
                             <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}

@@ -27,7 +27,7 @@ class IntakeDetailsToolbar extends Component {
     };
 
     render() {
-        const { intakeAddress = {} } = this.props;
+        const { intakeAddress = {}, navigate } = this.props;
         let fullStreet = '';
         intakeAddress &&
             (fullStreet = `${intakeAddress.street || ''} ${intakeAddress.number || ''}${intakeAddress.addition || ''}`);
@@ -43,7 +43,7 @@ class IntakeDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageIntake && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}

@@ -102,7 +102,7 @@ class CreateRevenuesKwhReportApp extends Component {
         if (this.state.redirect) {
             this.props.navigate(this.state.redirect);
         } else {
-            browserHistory.goBack();
+            this.props.navigate(-1);
         }
     };
 

@@ -27,7 +27,7 @@ class HousingFileDetailsToolbar extends Component {
     };
 
     render() {
-        const { housingFileAddress = {} } = this.props;
+        const { housingFileAddress = {}, navigate } = this.props;
         const fullStreet = `${housingFileAddress.street || ''} ${housingFileAddress.number || ''}`;
 
         return (
@@ -37,7 +37,7 @@ class HousingFileDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageHousingFile && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}

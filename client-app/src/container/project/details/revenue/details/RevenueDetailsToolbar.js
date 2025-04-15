@@ -46,7 +46,7 @@ class RevenueDetailsToolbar extends Component {
     };
 
     render() {
-        const { revenue } = this.props;
+        const { revenue, navigate } = this.props;
         const pdfLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-rapport`;
         const excelLink = `project/opbrengst/${this.props.revenue.id}/energieleverancier-excel`;
         const categoryCodeRef = revenue.category ? revenue.category.codeRef : '';
@@ -58,7 +58,7 @@ class RevenueDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageFinancial && !this.props.revenue.confirmed && (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     )}

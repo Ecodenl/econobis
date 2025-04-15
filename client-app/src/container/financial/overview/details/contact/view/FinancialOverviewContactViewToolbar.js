@@ -19,7 +19,7 @@ class FinancialOverviewContactViewToolbar extends Component {
             <div className="row">
                 <div className="col-md-3">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.download} />
                         <ButtonIcon iconName={'searchPlus'} onClickAction={this.props.zoomIn} />
                         <ButtonIcon iconName={'searchMinus'} onClickAction={this.props.zoomOut} />

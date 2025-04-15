@@ -29,7 +29,7 @@ export function* deleteParticipantProjectSaga({ id }) {
         yield call(ParticipantProjectDetailsAPI.deleteParticipantProject, id);
         yield put({ type: 'DELETE_PARTICIPANT_PROJECT_SUCCESS', id });
         // todo WM: verplaatsen
-        // browserHistory.goBack();
+        // this.props.navigate(-1);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_PARTICIPANT_PROJECT_ERROR', error });

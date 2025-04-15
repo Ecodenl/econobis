@@ -77,7 +77,7 @@ class ParticipantDetailsToolbar extends Component {
     }
 
     render() {
-        const { participantProject, project } = this.props;
+        const { participantProject, project, navigate } = this.props;
 
         if (!participantProject || !project) {
             return;
@@ -113,7 +113,7 @@ class ParticipantDetailsToolbar extends Component {
                             <PanelBody className={'panel-small'}>
                                 <div className="col-md-3">
                                     <div className="btn-group btn-group-flex margin-small" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {allowDeleteAndTerminateButtons && (
                                             <>
                                                 <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />

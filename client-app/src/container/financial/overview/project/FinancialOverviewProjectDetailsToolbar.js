@@ -43,13 +43,13 @@ class FinancialOverviewProjectDetailsToolbar extends Component {
     };
 
     render() {
-        let { financialOverviewDescription } = this.props;
+        let { financialOverviewDescription, navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                     </div>
                 </div>

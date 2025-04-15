@@ -46,7 +46,7 @@ class RevenuesKwhdetailsToolbar extends Component {
     };
 
     render() {
-        const { revenuesKwh } = this.props;
+        const { revenuesKwh, navigate } = this.props;
         const pdfLinkLedenverklaring = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
         const pdfLinkProductieSpecificatie = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie%20specificatie`;
         const excelLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
@@ -58,7 +58,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     ) : null}

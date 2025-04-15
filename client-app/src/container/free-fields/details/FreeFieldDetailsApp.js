@@ -75,7 +75,7 @@ function FreeFieldDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {!freeField.hasFreeFieldsFieldRecords && (
                                             <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                         )}

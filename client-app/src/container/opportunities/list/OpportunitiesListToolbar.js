@@ -21,7 +21,7 @@ class OpportunitiesListToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         <ButtonIcon iconName={'refresh'} onClickAction={this.props.resetOpportunitiesFilters} />
                         <ButtonIcon iconName={'check'} onClickAction={this.props.toggleMultiSelectEnabled} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.getCSV} />

@@ -49,7 +49,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
     };
 
     render() {
-        const { revenuePartsKwh, revenuesKwh } = this.props;
+        const { revenuePartsKwh, revenuesKwh, navigate } = this.props;
 
         return (
             <div className="row">
@@ -58,7 +58,7 @@ class RevenuePartsKwhDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     <ButtonIcon iconName={'download'} onClickAction={this.getCSV} />
                                 </div>
                             </div>

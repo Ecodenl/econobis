@@ -24,12 +24,12 @@ class PortalSettingsLayoutDetailsToolbar extends Component {
     };
 
     render() {
-        let { description, id, isDefault, permissions } = this.props;
+        let { description, id, isDefault, permissions, navigate } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {!isDefault && permissions.managePortalSettings && (
                             <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}

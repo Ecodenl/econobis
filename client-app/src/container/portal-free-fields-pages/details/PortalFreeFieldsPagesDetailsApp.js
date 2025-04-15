@@ -87,7 +87,7 @@ function PortalFreeFieldsPagesDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                     </div>
                                 </div>

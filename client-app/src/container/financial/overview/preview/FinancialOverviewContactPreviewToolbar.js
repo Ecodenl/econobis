@@ -10,7 +10,7 @@ function FinancialOverviewContactPreviewToolbar({ financialOverviewContactDetail
         <div className="row">
             <div className="col-md-3">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                     <ButtonIcon iconName={'searchPlus'} onClickAction={zoomIn} />
                     <ButtonIcon iconName={'searchMinus'} onClickAction={zoomOut} />
                 </div>

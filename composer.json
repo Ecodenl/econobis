@@ -4,15 +4,6 @@
     "keywords": ["framework", "laravel"],
     "license": "MIT",
     "type": "project",
-    "repositories": [
-        {
-            "type": "path",
-            "url": "../packages/joskolenberg/enum",
-            "options": {
-                "symlink": false
-            }
-        }
-    ],
     "require": {
         "php": "^8.2.0",
         "barryvdh/laravel-dompdf": "^2.2.0",
@@ -23,7 +14,7 @@
         "guzzlehttp/guzzle": "^7.0.1",
         "iio/libmergepdf": "^4.0",
         "innoge/laravel-msgraph-mail": "^1.0",
-        "joskolenberg/enum": "dev-master",
+        "joskolenberg/enum": "^1.6",
         "joskolenberg/laravel-jory": "^3.3",
         "laposta/laposta-api-php": "^1.5",
         "laracasts/presenter": "^0.2.1",

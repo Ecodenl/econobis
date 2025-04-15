@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a374e5ed460c349e42b9c68e7e1a1f4c",
+    "content-hash": "a148dcaea037089955cb7116df206e84",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -2653,18 +2653,23 @@
         },
         {
             "name": "joskolenberg/enum",
-            "version": "dev-master",
+            "version": "v1.6.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/joskolenberg/Enum.git",
+                "reference": "9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97"
+            },
             "dist": {
-                "type": "path",
-                "url": "../packages/joskolenberg/enum",
-                "reference": "0dfa4edd34af3f40f86cb4d187df7fbba4d49e46"
+                "type": "zip",
+                "url": "https://api.github.com/repos/joskolenberg/Enum/zipball/9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97",
+                "reference": "9b1f6f5d4a3e4d6550ef28d1d79e1ef671b82d97",
+                "shasum": ""
             },
             "require": {
-                "illuminate/support": "^5.3 || ^6.0 || ^7.0 || ^8.0 || ^9.0 || ^10.0 || ^11.0",
-                "php": "^7.0||^8.0"
+                "illuminate/support": "^5.3|^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
             },
             "require-dev": {
-                "phpunit/phpunit": "^6.0||^7.0||^8.0||^9.0"
+                "phpunit/phpunit": "^6.0|^7.0|^8.0|^9.0|^10.0|^11.0|^12.0"
             },
             "type": "library",
             "autoload": {
@@ -2672,6 +2677,7 @@
                     "JosKolenberg\\Enum\\": "src/"
                 }
             },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2687,10 +2693,12 @@
                 "enum",
                 "laravel"
             ],
-            "transport-options": {
-                "symlink": false,
-                "relative": true
-            }
+            "support": {
+                "issues": "https://github.com/joskolenberg/Enum/issues",
+                "source": "https://github.com/joskolenberg/Enum/tree/v1.6.0"
+            },
+            "abandoned": true,
+            "time": "2025-04-15T12:32:41+00:00"
         },
         {
             "name": "joskolenberg/jory",
@@ -13258,9 +13266,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "joskolenberg/enum": 20
-    },
+    "stability-flags": {},
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {

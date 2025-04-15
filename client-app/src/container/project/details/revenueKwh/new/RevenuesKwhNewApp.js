@@ -342,7 +342,7 @@ class RevenuesKwhNewApp extends Component {
                 .then(payload => {
                     this.setState({ isLoading: false });
                     // Delete path new-project-revenue in history, so when go back the page goes to the project details
-                    hashHistory.replace(`/project/details/${this.props.params.projectId}`);
+                    this.props.navigate(`/project/details/${this.props.params.projectId}`, { replace: true });
                     // Push to new revenue
                     this.props.navigate(`/project/opbrengst-kwh/${payload.data.data.id}`);
                 })
@@ -351,7 +351,7 @@ class RevenuesKwhNewApp extends Component {
                     alert(
                         'Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.'
                     );
-                    hashHistory.goBack();
+                    this.props.navigate(-1);
                 });
         }
     };

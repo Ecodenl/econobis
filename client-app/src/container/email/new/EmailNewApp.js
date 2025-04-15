@@ -307,7 +307,7 @@ class EmailNewApp extends Component {
         if (this.state.email.htmlBody !== '' || this.state.email.subject !== '') {
             this.toggleShowModal();
         } else {
-            navigate(-1)();
+            this.props.navigate(-1);
         }
     };
 
@@ -355,7 +355,7 @@ class EmailNewApp extends Component {
         function handleNewEmail(data, mailboxId, emailId) {
             EmailAPI.newEmail(data, mailboxId, emailId)
                 .then(() => {
-                    navigate(-1)();
+                    this.props.navigate(-1);
                 })
                 .catch(function(error) {});
         }

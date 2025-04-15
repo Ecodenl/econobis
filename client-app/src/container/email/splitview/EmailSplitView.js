@@ -9,15 +9,20 @@ import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import axiosInstance from '../../../api/default-setup/AxiosInstance';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
+// import queryString from 'query-string';
 import Icon from 'react-icons-kit';
 import { undo } from 'react-icons-kit/fa/undo';
 import Modal from '../../../components/modal/Modal';
 import EmailMailboxStatuses from './EmailMailboxStatuses';
 import axios from 'axios';
 
-export default function EmailSplitView({ router }) {
+export default function EmailSplitView() {
     const navigate = useNavigate();
+    const params = useParams();
+    const location = useLocation();
+    // const query = queryString.parse(location.search);
+    const query = Object.fromEntries(new URLSearchParams(location.search));
 
     const perPage = 50;
     const [emails, setEmails] = useState([]);
@@ -56,19 +61,19 @@ export default function EmailSplitView({ router }) {
     useEffect(() => {
         setFilters({ ...getFiltersFromStorage(), fetch: true });
         setSelectedEmailId(null);
-    }, [router.params.folder]);
+    }, [params.folder]);
 
     useEffect(() => {
         setFilters({ ...getFiltersFromStorage(), fetch: true });
 
-        if (router.location.query.contact) {
-            fetchContactName(router.location.query.contact).then(response => {
+        if (query.contact) {
+            fetchContactName(query.contact).then(response => {
                 setContact(response.data.data);
             });
         } else {
             setContact(null);
         }
-    }, [router.location.query.contact]);
+    }, [query.contact]);
 
     useEffect(() => {
         /**
@@ -161,11 +166,11 @@ export default function EmailSplitView({ router }) {
     };
 
     const getFilter = () => {
-        return getJoryFilter(filters, router.params.folder, router.location.query.contact, router.location.query.eigen);
+        return getJoryFilter(filters, params.folder, query.contact, query.eigen);
     };
 
     const getSorts = () => {
-        if (router.params.folder === 'concept') {
+        if (params.folder === 'concept') {
             return ['-createdAt'];
         }
 
@@ -179,14 +184,14 @@ export default function EmailSplitView({ router }) {
     };
 
     const resetFilters = () => {
-        if (router.location.query.contact) {
+        if (query.contact) {
             /**
              * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
              * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
              */
             storeFiltersToStorage(defaultFilters);
 
-            navigate(router.location.pathname);
+            navigate(location.pathname);
 
             return;
         }
@@ -277,7 +282,7 @@ export default function EmailSplitView({ router }) {
                                         role="button"
                                         style={{ marginLeft: '10px' }}
                                         className="btn btn-success btn-sm"
-                                        onClick={() => navigate(router.location.pathname)}
+                                        onClick={() => navigate(location.pathname)}
                                     >
                                         Filter wissen
                                     </a>
@@ -346,7 +351,7 @@ export default function EmailSplitView({ router }) {
                     )}
                     <EmailSplitViewSelectList
                         emails={emails}
-                        folder={router.params.folder}
+                        folder={params.folder}
                         emailCount={emailCount}
                         fetchMoreEmails={fetchMoreEmails}
                         selectedEmailId={selectedEmailId}
@@ -361,7 +366,7 @@ export default function EmailSplitView({ router }) {
                     <EmailSplitViewDetails
                         emailId={selectedEmailId}
                         updatedEmailHandler={refetchCurrentEmails}
-                        folder={router.params.folder}
+                        folder={params.folder}
                         deleted={() => {
                             localStorage.setItem('lastOpenedEmailId', null);
 

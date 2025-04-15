@@ -8,7 +8,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 // Functionele wrapper voor de class component
 const UsersListItemWrapper = props => {
     const navigate = useNavigate();
-    return <v {...props} navigate={navigate} />;
+    return <UsersListItem {...props} navigate={navigate} />;
 };
 
 class UsersListItem extends Component {

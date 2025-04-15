@@ -70,7 +70,7 @@ class EmailDetailsApp extends Component {
             });
         } else if (this.props.email.folder === 'removed') {
             EmailAPI.deleteEmail(this.props.email.id).then(() => {
-                navigate(-1)();
+                this.props.navigate(-1);
             });
         }
     }

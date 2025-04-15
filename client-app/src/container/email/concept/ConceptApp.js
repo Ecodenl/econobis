@@ -292,7 +292,7 @@ class ConceptApp extends Component {
 
     removeEmail() {
         EmailAPI.deleteEmail(this.props.params.id).then(() => {
-            navigate(-1)();
+            this.props.navigate(-1);
         });
     }
 

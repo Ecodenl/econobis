@@ -4,11 +4,22 @@ export default function(state = [], action) {
             return {
                 ...state,
                 ...action.administrationDetails,
+                deleteSuccess: false,
             };
         case 'UPDATE_ADMINISTRATION_SUCCESS':
             return {
                 ...state,
                 ...action.administrationDetails,
+            };
+        case 'DELETE_ADMINISTRATION_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE_ADMINISTRATION_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
             };
         case 'ADD_ADMINISTRATION_USER_SUCCESS':
             return {

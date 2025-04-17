@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import InvoiceDetailsAPI from '../../api/invoice/InvoiceDetailsAPI';
-// import { useNavigate } from 'react-router-dom';
 
 export function* fetchInvoiceDetailsSaga({ id }) {
     try {
@@ -34,8 +33,6 @@ export function* deleteInvoiceSaga({ id }) {
     try {
         yield call(InvoiceDetailsAPI.deleteInvoice, id);
         yield put({ type: 'DELETE_INVOICE_SUCCESS', id });
-        // todo WM: verplaatsen
-        // this.props.navigate(-1));
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_INVOICE_ERROR', error });

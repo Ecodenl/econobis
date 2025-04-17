@@ -4,11 +4,22 @@ export default function(state = {}, action) {
             return {
                 ...state,
                 ...action.intakeDetails,
+                deleteSuccess: false,
             };
         case 'UPDATE_INTAKE':
             return {
                 ...state,
                 ...action.intakeDetails,
+            };
+        case 'DELETE_INTAKE_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE_INTAKE_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
             };
         case 'NEW_INTAKE_MEASURE_REQUESTED':
             return {

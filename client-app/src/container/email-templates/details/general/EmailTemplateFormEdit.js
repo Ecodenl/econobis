@@ -198,7 +198,7 @@ const mapDispatchToProps = dispatch => ({
 
 const mapStateToProps = state => {
     return {
-        emailTemplate: state.emailTemplate,
+        emailTemplate: state.emailTemplateDetails,
     };
 };
 

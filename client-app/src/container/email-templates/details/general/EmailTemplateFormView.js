@@ -73,7 +73,7 @@ const EmailTemplateFormView = props => {
 
 const mapStateToProps = state => {
     return {
-        emailTemplate: state.emailTemplate,
+        emailTemplate: state.emailTemplateDetails,
     };
 };
 

@@ -1,32 +1,43 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteDocumentTemplate } from '../../../actions/document-templates/DocumentTemplateDetailsActions';
-import { connect } from 'react-redux';
 
-const DocumentTemplateDeleteItem = props => {
+const DocumentTemplateDeleteItem = ({ templateId, templateName, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.documentTemplateDetails?.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteDocumentTemplate(props.templateId);
-        props.closeDeleteItemModal();
+        dispatch(deleteDocumentTemplate(templateId));
+        closeDeleteItemModal();
     };
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            if (contactId == 0) {
+                navigate(`/kansen`);
+            } else {
+                navigate(`/contact/` + contactId);
+            }
+            dispatch({ type: 'RESET_DELETE_DOCUMENT_TEMPLATE_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
-            Verwijder document template: <strong> {props.templateName} </strong>
+            Verwijder document template: <strong> {templateName} </strong>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteDocumentTemplate: id => {
-        dispatch(deleteDocumentTemplate(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(DocumentTemplateDeleteItem);
+export default DocumentTemplateDeleteItem;

@@ -1,6 +1,5 @@
 import { put, call, all } from 'redux-saga/effects';
 import EmailTemplateAPI from '../../api/email-template/EmailTemplateAPI';
-// import { useNavigate } from 'react-router-dom';
 
 export function* fetchEmailTemplatesSaga() {
     try {
@@ -31,13 +30,9 @@ export function* fetchEmailTemplateSaga({ id }) {
 }
 
 export function* deleteEmailTemplateSaga({ id }) {
-    // const navigate = useNavigate();
-
     try {
         yield call(EmailTemplateAPI.deleteEmailTemplate, id);
         yield put({ type: 'DELETE_EMAIL_TEMPLATE_SUCCESS', id });
-        // todo WM: verplaatsen !!!
-        // navigate(`/email-templates`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_EMAIL_TEMPLATE_ERROR', error });

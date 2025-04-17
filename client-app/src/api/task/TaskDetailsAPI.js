@@ -6,7 +6,14 @@ export default {
     fetchTaskDetails: id => {
         const requestUrl = `${URL_TASK}/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return axiosInstance
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     newTask: task => {

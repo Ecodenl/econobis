@@ -4,11 +4,22 @@ export default function(state = [], action) {
             return {
                 ...state,
                 ...action.orderDetails,
+                deleteSuccess: false,
             };
         case 'UPDATE_ORDER_SUCCESS':
             return {
                 ...state,
                 ...action.orderDetails,
+            };
+        case 'DELETE_ORDER_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE_ORDER_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
             };
         default:
             return state;

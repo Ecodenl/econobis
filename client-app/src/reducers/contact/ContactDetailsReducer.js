@@ -5,6 +5,17 @@ export default function(state = {}, action) {
             return {
                 ...state,
                 ...action.contactDetails,
+                deleteSuccess: false,
+            };
+        case 'DELETE_CONTACT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE__CONTACT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
             };
         case 'UPDATE_PERSON':
             return {

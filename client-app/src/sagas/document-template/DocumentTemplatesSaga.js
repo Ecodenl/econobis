@@ -1,6 +1,5 @@
 import { put, call, all } from 'redux-saga/effects';
 import DocumentTemplateAPI from '../../api/document-template/DocumentTemplateAPI';
-// import { useNavigate } from 'react-router-dom';
 
 export function* fetchDocumentTemplatesSaga() {
     try {
@@ -32,13 +31,9 @@ export function* fetchDocumentTemplateSaga({ id }) {
 }
 
 export function* deleteDocumentTemplateSaga({ id }) {
-    // const navigate = useNavigate();
-
     try {
         yield call(DocumentTemplateAPI.deleteDocumentTemplate, id);
         yield put({ type: 'DELETE_DOCUMENT_TEMPLATE_SUCCESS', id });
-        // todo WM: verplaatsen !!!
-        // navigate(`/document-templates`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_DOCUMENT_TEMPLATE_ERROR', error });

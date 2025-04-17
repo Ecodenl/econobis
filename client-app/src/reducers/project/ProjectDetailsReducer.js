@@ -3,9 +3,20 @@ export default function(state = [], action) {
         case 'FETCH_PROJECT_SUCCESS':
             return {
                 ...action.project,
+                deleteSuccess: false,
             };
         case 'CLEAR_PROJECT':
             return (state.project = []);
+        case 'DELETE_PROJECT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE_PROJECT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
+            };
         case 'NEW_VALUE_COURSE':
             return {
                 ...state,

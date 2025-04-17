@@ -1,35 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteIntake } from '../../../actions/intake/IntakeDetailsActions';
-import { connect } from 'react-redux';
 
-const IntakeDetailsDelete = props => {
+const IntakeDetailsDelete = ({ id, contactId, fullStreet, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.intakeDetails?.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteIntake(props.id, props.contactId);
-
-        props.closeDeleteItemModal();
+        dispatch(deleteIntake(id, contactId));
+        closeDeleteItemModal();
     };
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            if (contactId == 0) {
+                navigate('/intakes');
+            } else {
+                navigate(`/contact/` + contactId);
+            }
+            dispatch({ type: 'RESET_DELETE_INTAKE_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder intake: <strong> {`${props.fullStreet}?`} </strong>
+                Verwijder intake: <strong> {`${fullStreet}?`} </strong>
             </p>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteIntake: (id, contactId) => {
-        dispatch(deleteIntake(id, contactId));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(IntakeDetailsDelete);
+export default IntakeDetailsDelete;

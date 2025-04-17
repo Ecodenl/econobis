@@ -4,6 +4,7 @@ export default function(state = {}, action) {
             return {
                 ...state,
                 ...action.participantProjectDetails,
+                deleteSuccess: false,
             };
         case 'CLEAR_PARTICIPANT_PROJECT':
             return (state.participantProject = []);
@@ -11,6 +12,16 @@ export default function(state = {}, action) {
             return {
                 ...state,
                 ...action.participantProjectDetails,
+            };
+        case 'DELETE_PARTICIPANT_PROJECT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: true,
+            };
+        case 'RESET_DELETE_PARTICIPANT_PROJECT_SUCCESS':
+            return {
+                ...state,
+                deleteSuccess: false,
             };
         case 'NEW_OBLIGATION_NUMBER':
             return {

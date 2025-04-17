@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import ContactsAPI from '../../api/contact/ContactsAPI';
-// import { useNavigate } from 'react-router-dom';
 
 export function* fetchContactsSaga({ filters, extraFilters, sorts, pagination, filterType, dataControleType }) {
     try {
@@ -22,13 +21,9 @@ export function* fetchContactsSaga({ filters, extraFilters, sorts, pagination, f
 }
 
 export function* deleteContactSaga({ id }) {
-    // const navigate = useNavigate();
-
     try {
         yield call(ContactsAPI.deleteContact, id);
         yield put({ type: 'DELETE_CONTACT_SUCCESS', id });
-        // todo WM: verplaatsen !!!
-        // navigate(`/contacten`);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_CONTACT_ERROR', error });

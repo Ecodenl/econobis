@@ -1,7 +1,6 @@
 import { put, call } from 'redux-saga/effects';
 import OrdersAPI from '../../api/order/OrdersAPI';
 import OrderDetailsAPI from '../../api/order/OrderDetailsAPI';
-// import { useNavigate } from 'react-router-dom';
 
 export function* fetchOrdersSaga({ filters, sorts, pagination, administrationId, showOnlyOrdersWithOrderProducts }) {
     try {
@@ -25,8 +24,6 @@ export function* deleteOrderSaga({ id }) {
     try {
         yield call(OrderDetailsAPI.deleteOrder, id);
         yield put({ type: 'DELETE_ORDER_SUCCESS', id });
-        // todo WM: verplaatsen
-        // this.props.navigate(-1);
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_ORDER_ERROR', error });

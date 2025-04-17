@@ -1,17 +1,12 @@
-const initialState = {
-    task: {},
-    deleteSuccess: false,
-};
+const initialState = {};
 
 export default function(state = initialState, action) {
     switch (action.type) {
         case 'FETCH_TASK_DETAILS_SUCCESS':
             return {
                 ...state,
-                task: {
-                    ...action.taskDetails.data.data,
-                },
-                deleteSuccess: false, // reset bij ophalen nieuwe task
+                ...action.taskDetails,
+                deleteSuccess: false,
             };
         case 'UPDATE_TASK_DETAILS':
             return {

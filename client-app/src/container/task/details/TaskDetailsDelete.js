@@ -9,7 +9,7 @@ const TaskDetailsDelete = ({ id, noteSummary, closeDeleteItemModal }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
 
-    const deleteSuccess = useSelector(state => state.taskDetails.deleteSuccess);
+    const deleteSuccess = useSelector(state => state.taskDetails?.deleteSuccess);
 
     const confirmAction = () => {
         dispatch(deleteTask(id));

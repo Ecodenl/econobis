@@ -1,21 +1,38 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteOpportunity } from '../../../actions/opportunity/OpportunityDetailsActions';
-import { connect } from 'react-redux';
 
-const OpportunityDetailsDelete = props => {
+const OpportunityDetailsDelete = ({ id, contactId, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.opportunityDetails?.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteOpportunity(props.id, props.contactId);
-        props.closeDeleteItemModal();
+        dispatch(deleteOpportunity(id, contactId));
+        closeDeleteItemModal();
     };
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            if (contactId == 0) {
+                navigate(`/kansen`);
+            } else {
+                navigate(`/contact/` + contactId);
+            }
+            dispatch({ type: 'RESET_DELETE_OPPORTUNITY_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>Weet u zeker dat u deze kans wilt verwijderen?</p>
@@ -23,10 +40,4 @@ const OpportunityDetailsDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteOpportunity: (id, contactId) => {
-        dispatch(deleteOpportunity(id, contactId));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(OpportunityDetailsDelete);
+export default OpportunityDetailsDelete;

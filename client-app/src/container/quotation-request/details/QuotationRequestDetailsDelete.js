@@ -1,33 +1,42 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteQuotationRequest } from '../../../actions/quotation-request/QuotationRequestDetailsActions';
-import { connect } from 'react-redux';
 
-const QuotationRequestDetailsDelete = props => {
+const QuotationRequestDetailsDelete = ({ id, opportunity, opportunityAction, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.quotationRequestDetails?.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteQuotationRequest(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteQuotationRequest(id));
+        closeDeleteItemModal();
     };
 
-    let opportunityActionName = props.opportunityAction ? props.opportunityAction.name : 'actie';
+    useEffect(() => {
+        if (deleteSuccess) {
+            navigate('/offerteverzoeken');
+            dispatch({ type: 'RESET_DELETE_QUOTATION_REQUEST_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
+
+    let opportunityActionName = opportunityAction ? opportunityAction.name : 'actie';
     let measureCategoryName =
-        props.opportunity && props.opportunity && props.opportunity.measureCategory
-            ? props.opportunity.measureCategory.name
-            : '';
+        opportunity && opportunity && opportunity.measureCategory ? opportunity.measureCategory.name : '';
     let fullName =
-        props.opportunity && props.opportunity.intake && props.opportunity.intake.contact
-            ? props.opportunity.intake.contact.fullName
-            : '';
-    let fullAddress = props.opportunity && props.opportunity.intake ? props.opportunity.intake.fullAddress : '';
+        opportunity && opportunity.intake && opportunity.intake.contact ? opportunity.intake.contact.fullName : '';
+    let fullAddress = opportunity && opportunity.intake ? opportunity.intake.fullAddress : '';
     let quotationDeleteText = `${opportunityActionName} ${measureCategoryName} voor ${fullName} op ${fullAddress}`;
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>Verwijder {quotationDeleteText}</p>
@@ -35,10 +44,4 @@ const QuotationRequestDetailsDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteQuotationRequest: id => {
-        dispatch(deleteQuotationRequest(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(QuotationRequestDetailsDelete);
+export default QuotationRequestDetailsDelete;

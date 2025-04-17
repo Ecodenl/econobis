@@ -1,32 +1,39 @@
-import React from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteAdministration } from '../../../actions/administration/AdministrationsActions';
 
-const AdministrationDeleteItem = props => {
+const AdministrationDeleteItem = ({ id, name, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
+    const deleteSuccess = useSelector(state => state.administrationDetails?.deleteSuccess);
+
     const confirmAction = () => {
-        props.deleteAdministration(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteAdministration(id));
+        closeDeleteItemModal();
     };
+
+    useEffect(() => {
+        if (deleteSuccess) {
+            navigate('/administraties');
+            dispatch({ type: 'RESET_DELETE_ADMINISTRATION_SUCCESS' });
+        }
+    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
-            Verwijder administratie: <strong>{props.name}</strong>?
+            Verwijder administratie: <strong>{name}</strong>?
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteAdministration: id => {
-        dispatch(deleteAdministration(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(AdministrationDeleteItem);
+export default AdministrationDeleteItem;

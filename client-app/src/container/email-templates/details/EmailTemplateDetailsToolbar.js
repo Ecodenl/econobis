@@ -53,8 +53,8 @@ class EmailTemplateDetailsToolbar extends Component {
 
 const mapStateToProps = state => {
     return {
-        templateName: state.emailTemplate.name,
-        templateId: state.emailTemplate.id,
+        templateName: state.emailTemplateDetails.name,
+        templateId: state.emailTemplateDetails.id,
     };
 };
 

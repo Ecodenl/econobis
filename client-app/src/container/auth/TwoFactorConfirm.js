@@ -109,7 +109,7 @@ class TwoFactorConfirm extends Component {
 
                             <div className="row">
                                 <div className="col-sm-10 col-md-offset-1">
-                                    <Link to="two-factor/recover" className="link-underline">
+                                    <Link to="/two-factor/recover" className="link-underline">
                                         Gebruik herstelcode
                                     </Link>
                                     <div className="pull-right">

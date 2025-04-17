@@ -109,12 +109,12 @@ class ContactsListToolbar extends Component {
                                     <ul className="dropdown-menu">
                                         {permissions.createPerson && (
                                             <li>
-                                                <Link to="contact/nieuw/persoon">Persoon</Link>
+                                                <Link to="/contact/nieuw/persoon">Persoon</Link>
                                             </li>
                                         )}
                                         {permissions.createOrganisation && (
                                             <li>
-                                                <Link to="contact/nieuw/organisatie">Organisatie</Link>
+                                                <Link to="/contact/nieuw/organisatie">Organisatie</Link>
                                             </li>
                                         )}
                                         {permissions.manageGroup && (

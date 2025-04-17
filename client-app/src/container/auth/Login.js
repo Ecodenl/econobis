@@ -146,7 +146,7 @@ class Login extends Component {
 
                             <div className="row">
                                 <div className="col-sm-10 col-md-offset-1">
-                                    <Link to="wachtwoord-vergeten" className="link-underline">
+                                    <Link to="/wachtwoord-vergeten" className="link-underline">
                                         Wachtwoord vergeten?
                                     </Link>
                                     <div className="btn-group pull-right">

@@ -23,8 +23,13 @@ class OrderToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     preview = () => {
@@ -57,7 +62,7 @@ class OrderToolbar extends Component {
                                     title={'Deze order heeft nog geen orderregels'}
                                 />
                             )}
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 {!this.props.isLoading && (
@@ -70,7 +75,7 @@ class OrderToolbar extends Component {
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <OrderDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         subject={this.props.orderDetails.subject}
                         id={this.props.orderDetails.id}
                         administrationId={this.props.administrationId}

@@ -24,8 +24,13 @@ class TaskDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/taken');
     };
 
     toggleDuplicate = () => {
@@ -48,7 +53,7 @@ class TaskDetailsToolbar extends Component {
                                         <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}
                                     {this.props.permissions.manageTask && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -63,7 +68,7 @@ class TaskDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <TaskDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         noteSummary={this.props.taskDetails.noteSummary}
                         id={this.props.id}
                     />

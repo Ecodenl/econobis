@@ -1,6 +1,5 @@
-import React, { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
@@ -15,21 +14,11 @@ const ContactDetailsDelete = ({
     closeDeleteItemModal,
 }) => {
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-
-    const deleteSuccess = useSelector(state => state.contactDetails?.deleteSuccess);
 
     const confirmAction = () => {
         dispatch(deleteContact(id));
         closeDeleteItemModal();
     };
-
-    useEffect(() => {
-        if (deleteSuccess) {
-            navigate('/contacten');
-            dispatch({ type: 'RESET_DELETE_CONTACT_SUCCESS' });
-        }
-    }, [deleteSuccess, navigate, dispatch]);
 
     return (
         <Modal

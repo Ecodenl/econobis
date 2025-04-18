@@ -101,8 +101,13 @@ class InvoiceToolbar extends Component {
         this.setState({ showSetIrrecoverable: !this.state.showSetIrrecoverable });
     };
 
-    showDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     view = () => {
@@ -156,7 +161,7 @@ class InvoiceToolbar extends Component {
                             )}
                         <ButtonIcon iconName={'download'} onClickAction={this.download} />
                         {this.props.invoiceDetails.statusId === 'to-send' && (
-                            <ButtonIcon iconName={'trash'} onClickAction={this.showDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                         )}
                     </div>
                 </div>
@@ -196,7 +201,7 @@ class InvoiceToolbar extends Component {
                     <InvoiceDetailsFormDelete
                         number={this.props.invoiceDetails.number}
                         id={this.props.invoiceDetails.id}
-                        closeDeleteItemModal={this.showDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                     />
                 )}
             </div>

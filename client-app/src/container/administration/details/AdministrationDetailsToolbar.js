@@ -28,8 +28,13 @@ class AdministrationToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/administraties');
     };
 
     syncContactsToTwinfield = () => {
@@ -104,7 +109,7 @@ class AdministrationToolbar extends Component {
                                     />
                                 </>
                             )}
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -113,7 +118,7 @@ class AdministrationToolbar extends Component {
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <AdministrationDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         name={this.props.name}
                         id={this.props.id}
                     />

@@ -9,23 +9,11 @@ export default function(state = {}, action) {
             return {
                 ...state,
                 ...action.housingFileDetails,
-                deleteSuccess: false,
             };
         case 'UPDATE_HOUSING_FILE_USE':
             return {
                 ...state,
                 ...action.housingFileDetails,
-                deleteSuccess: false,
-            };
-        case 'DELETE_HOUSING_FILE_SUCCESS':
-            return {
-                ...state,
-                deleteSuccess: true,
-            };
-        case 'RESET_DELETE_HOUSING_FILE_SUCCESS':
-            return {
-                ...state,
-                deleteSuccess: false,
             };
         case 'UPDATE_HOUSING_FILE_SPECIFICATION':
             return {

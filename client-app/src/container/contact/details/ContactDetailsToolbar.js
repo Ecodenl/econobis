@@ -30,8 +30,13 @@ function ContactDetailsToolbar({
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
-    function toggleDelete() {
-        setShowDelete(!showDelete);
+    function showDeleteModal() {
+        setShowDelete(true);
+    }
+
+    function hideDeleteModal() {
+        setShowDelete(false);
+        navigate('/contacten');
     }
 
     function toggleShowMakeHoomdossier() {
@@ -50,10 +55,10 @@ function ContactDetailsToolbar({
                                     type.id === 'organisation' &&
                                     permissions &&
                                     permissions.deleteOrganisation && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                     )}
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
-                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                 )}
                                 {type &&
                                 type.id === 'person' &&
@@ -99,7 +104,7 @@ function ContactDetailsToolbar({
 
             {showDelete && (
                 <ContactDetailsDelete
-                    closeDeleteItemModal={toggleDelete}
+                    closeDeleteItemModal={hideDeleteModal}
                     type={type}
                     fullName={fullName}
                     id={id}

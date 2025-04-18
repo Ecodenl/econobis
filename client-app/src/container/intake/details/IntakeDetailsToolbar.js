@@ -22,8 +22,17 @@ class IntakeDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        if (this.props.contact.id == 0) {
+            this.props.navigate('/intakes');
+        } else {
+            this.props.navigate(`/contact/` + this.props.contact.id);
+        }
     };
 
     render() {
@@ -45,7 +54,7 @@ class IntakeDetailsToolbar extends Component {
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageIntake && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -58,7 +67,7 @@ class IntakeDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <IntakeDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         fullStreet={fullStreet}
                         id={this.props.id}
                         contactId={this.props.contact.id}

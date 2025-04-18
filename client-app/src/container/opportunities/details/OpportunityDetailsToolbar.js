@@ -22,8 +22,17 @@ class OpportunityDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        if (this.props.opportunity.intake.contact.id == 0) {
+            this.props.navigate('/kansen');
+        } else {
+            this.props.navigate(`/contact/` + this.props.opportunity.intake.contact.id);
+        }
     };
 
     sendMail = () => {

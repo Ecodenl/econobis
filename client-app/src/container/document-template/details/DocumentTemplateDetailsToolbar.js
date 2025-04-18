@@ -26,8 +26,13 @@ class DocumentTemplateDetailsToolbar extends Component {
         this.setState({ showDuplicate: !this.state.showDuplicate });
     };
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/document-templates');
     };
 
     render() {
@@ -42,17 +47,17 @@ class DocumentTemplateDetailsToolbar extends Component {
                             <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         )}
                         {permissions.createDocumentTemplate && (
-                            <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                         )}
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">{'Document template: ' + this.props.templateName}</h4>
+                    <h4 className="text-center">{'Document template: ' + (this.props.templateName || '...')}</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <DocumentTemplateDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         templateName={this.props.templateName}
                         templateId={this.props.templateId}
                     />

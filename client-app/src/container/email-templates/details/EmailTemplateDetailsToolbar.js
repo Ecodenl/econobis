@@ -20,8 +20,13 @@ class EmailTemplateDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/email-templates');
     };
 
     render() {
@@ -32,16 +37,16 @@ class EmailTemplateDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 <div className="col-md-4">
-                    <h4 className="text-center">{'E-mail template: ' + this.props.templateName}</h4>
+                    <h4 className="text-center">{'E-mail template: ' + (this.props.templateName || '...')}</h4>
                 </div>
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <EmailTemplateDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         templateName={this.props.templateName}
                         templateId={this.props.templateId}
                     />

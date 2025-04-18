@@ -22,8 +22,13 @@ class HousingFileDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/woningdossiers');
     };
 
     render() {
@@ -39,7 +44,7 @@ class HousingFileDetailsToolbar extends Component {
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageHousingFile && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -52,7 +57,7 @@ class HousingFileDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <HousingFileDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         fullStreet={fullStreet}
                         id={this.props.id}
                     />

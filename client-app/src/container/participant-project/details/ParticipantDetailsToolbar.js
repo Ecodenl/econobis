@@ -33,8 +33,13 @@ class ParticipantDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     toggleTerminate = () => {
@@ -116,7 +121,7 @@ class ParticipantDetailsToolbar extends Component {
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {allowDeleteAndTerminateButtons && (
                                             <>
-                                                <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                                <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                                 {!isTerminated ? (
                                                     <ButtonText
                                                         buttonText={`Beëindigen`}
@@ -163,7 +168,7 @@ class ParticipantDetailsToolbar extends Component {
 
                     {this.state.showDelete && (
                         <ParticipantDetailsDelete
-                            closeDeleteItemModal={this.toggleDelete}
+                            closeDeleteItemModal={this.hideDeleteModal}
                             id={participantProject.id}
                             projectid={participantProject.project.id}
                         />

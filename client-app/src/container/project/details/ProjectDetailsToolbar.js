@@ -22,8 +22,13 @@ class ProjectDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/projecten');
     };
 
     render() {
@@ -38,7 +43,7 @@ class ProjectDetailsToolbar extends Component {
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageProject && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -53,7 +58,7 @@ class ProjectDetailsToolbar extends Component {
                 </div>
 
                 {this.state.showDelete && (
-                    <ProjectDetailsDelete closeDeleteItemModal={this.toggleDelete} id={project.id} />
+                    <ProjectDetailsDelete closeDeleteItemModal={this.hideDeleteModal} id={project.id} />
                 )}
             </div>
         );

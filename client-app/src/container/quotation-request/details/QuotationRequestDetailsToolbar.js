@@ -22,8 +22,13 @@ class QuotationRequestDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/offerteverzoeken');
     };
 
     sendMail = () => {
@@ -59,7 +64,7 @@ class QuotationRequestDetailsToolbar extends Component {
                                 <div className="btn-group" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                                     {this.props.permissions.manageQuotationRequest && !isPendingStatus && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                     <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendMail} />
                                 </div>
@@ -73,7 +78,7 @@ class QuotationRequestDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <QuotationRequestDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         id={this.props.id}
                         opportunity={opportunity}
                         opportunityAction={opportunityAction}

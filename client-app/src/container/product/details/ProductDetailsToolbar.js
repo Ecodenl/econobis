@@ -20,8 +20,13 @@ class ProductToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/producten');
     };
 
     render() {
@@ -30,7 +35,7 @@ class ProductToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -39,7 +44,7 @@ class ProductToolbar extends Component {
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <ProductDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         name={this.props.name}
                         id={this.props.id}
                     />

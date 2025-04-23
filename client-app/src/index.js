@@ -2,7 +2,6 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import AppRoutes from './router';
 import './styles/style.scss';
-import 'babel-polyfill';
 import 'moment/locale/nl';
 import 'bootstrap-sass';
 
@@ -18,11 +17,11 @@ if (token) {
 
 const fetchConfig = async () => {
     const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
-    console.log('backendUrl: ', backendUrl);
+    // console.log('backendUrl: ', backendUrl);
 
     const response = await fetch(`${backendUrl}/config`);
     const config = await response.json();
-    console.log('config: ', config);
+    // console.log('config: ', config);
 
     window.env = {
         CLIENT_ID: config.client_id,

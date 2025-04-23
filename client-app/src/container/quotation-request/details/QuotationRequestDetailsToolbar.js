@@ -28,7 +28,6 @@ class QuotationRequestDetailsToolbar extends Component {
 
     hideDeleteModal = () => {
         this.setState({ showDelete: false });
-        this.props.navigate('/offerteverzoeken');
     };
 
     sendMail = () => {

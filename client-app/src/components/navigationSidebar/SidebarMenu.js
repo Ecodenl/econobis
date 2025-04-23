@@ -476,7 +476,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         return (
                             <Nav key={i} id={`administration/${administration.id}`}>
                                 <NavText>
-                                    <Link className="sidebar-link" to={`financieel/${administration.id}`}>
+                                    <Link className="sidebar-link" to={`/financieel/${administration.id}`}>
                                         {administration.name}
                                     </Link>
                                 </NavText>

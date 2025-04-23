@@ -32,7 +32,6 @@ class DocumentTemplateDetailsToolbar extends Component {
 
     hideDeleteModal = () => {
         this.setState({ showDelete: false });
-        this.props.navigate('/document-templates');
     };
 
     render() {

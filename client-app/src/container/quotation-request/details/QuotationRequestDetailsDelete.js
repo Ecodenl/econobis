@@ -1,15 +1,24 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteQuotationRequest } from '../../../actions/quotation-request/QuotationRequestDetailsActions';
 
 const QuotationRequestDetailsDelete = ({ id, opportunity, opportunityAction, closeDeleteItemModal }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const confirmAction = () => {
-        dispatch(deleteQuotationRequest(id));
-        closeDeleteItemModal();
+        dispatch(
+            deleteQuotationRequest(id, () => {
+                // Eerst modal sluiten
+                closeDeleteItemModal();
+
+                // Daarna navigeren
+                navigate('/offerteverzoeken');
+            })
+        );
     };
 
     let opportunityActionName = opportunityAction ? opportunityAction.name : 'actie';

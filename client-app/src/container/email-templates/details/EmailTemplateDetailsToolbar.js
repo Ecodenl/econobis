@@ -26,7 +26,6 @@ class EmailTemplateDetailsToolbar extends Component {
 
     hideDeleteModal = () => {
         this.setState({ showDelete: false });
-        this.props.navigate('/email-templates');
     };
 
     render() {

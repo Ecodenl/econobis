@@ -1,15 +1,24 @@
 import React from 'react';
 import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../../components/modal/Modal';
 import { deleteEmailTemplate } from '../../../../actions/email-templates/EmailTemplateDetailsActions';
 
 const EmailTemplateDeleteItem = ({ templateId, templateName, closeDeleteItemModal }) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     const confirmAction = () => {
-        dispatch(deleteEmailTemplate(templateId));
-        closeDeleteItemModal();
+        dispatch(
+            deleteEmailTemplate(templateId, () => {
+                // Eerst modal sluiten
+                closeDeleteItemModal();
+
+                // Daarna navigeren
+                navigate('/email-templates');
+            })
+        );
     };
 
     return (

@@ -53,7 +53,7 @@ class OpportunityDetailsToolbar extends Component {
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                                     {this.props.permissions.manageOpportunity && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                     <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendMail} />
                                 </div>
@@ -73,7 +73,7 @@ class OpportunityDetailsToolbar extends Component {
 
                 {this.state.showDelete && (
                     <OpportunityDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         id={id}
                         contactId={intake ? intake.contact.id : 0}
                     />

@@ -10,8 +10,8 @@ return new class extends Migration {
         $oldPublic = storage_path('oauth-public.key');
 
         $newDir = base_path('secrets/oauth');
-        $newPrivate = $newDir . '/private.key';
-        $newPublic = $newDir . '/public.key';
+        $newPrivate = $newDir . '/oauth-private.key';
+        $newPublic = $newDir . '/oauth-public.key';
 
         // Check if migration is needed
         if (!File::exists($oldPrivate) || !File::exists($oldPublic)) {

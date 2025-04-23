@@ -1,18 +1,19 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_CONTACT_PORTAL_USER = `${URL_API}/api/contact-portal-user`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     updatePortalUser: portalUser => {
+        const URL_CONTACT_PORTAL_USER = `${getApiUrl()}/api/contact-portal-user`;
         const requestUrl = `${URL_CONTACT_PORTAL_USER}/${portalUser.id}`;
 
-        return axiosInstance.post(requestUrl, portalUser);
+        return getAxiosInstance().post(requestUrl, portalUser);
     },
 
     deletePortalUser: id => {
+        const URL_CONTACT_PORTAL_USER = `${getApiUrl()}/api/contact-portal-user`;
         const requestUrl = `${URL_CONTACT_PORTAL_USER}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -22,9 +23,10 @@ export default {
             });
     },
 
-    resetTwoFactor: (id) => {
+    resetTwoFactor: id => {
+        const URL_CONTACT_PORTAL_USER = `${getApiUrl()}/api/contact-portal-user`;
         const requestUrl = `${URL_CONTACT_PORTAL_USER}/${id}/reset-two-factor`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

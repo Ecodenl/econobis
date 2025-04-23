@@ -1,10 +1,10 @@
-import axiosInstance from '../../default-setup/AxiosInstance';
+import getAxiosInstance from '../../default-setup/AxiosInstance';
 
 export default {
     fetchFinancialOverviews: () => {
         const requestUrl = `jory/financial-overview`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: ['id', 'description', 'administrationId', 'year', 'definitive', 'statusId', 'dateProcessed'],

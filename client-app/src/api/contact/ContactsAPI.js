@@ -1,16 +1,21 @@
 import axios from 'axios';
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
-axiosInstance.CancelToken = axios.CancelToken;
-axiosInstance.isCancel = axios.isCancel;
+try {
+    getAxiosInstance().CancelToken = axios.CancelToken;
+    getAxiosInstance().isCancel = axios.isCancel;
+} catch (e) {
+    console.warn('Axios instance is nog niet beschikbaar bij load time:', e.message);
+}
 
 let cancelToken;
 
 export default {
     fetchContacts: ({ filters, extraFilters, sorts, pagination, filterType, dataControleType }) => {
-        const requestUrl = `${URL_API}/api/contact/grid`;
+        const requestUrl = `${getApiUrl()}/api/contact/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -24,15 +29,15 @@ export default {
     },
 
     deleteContact: id => {
-        const requestUrl = `${URL_API}/api/contact/${id}/delete`;
+        const requestUrl = `${getApiUrl()}/api/contact/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteContacts: ids => {
-        const requestUrl = `${URL_API}/api/contacts/delete`;
+        const requestUrl = `${getApiUrl()}/api/contacts/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: ids })
             .then(function(response) {
                 return response.data.data;
@@ -43,13 +48,13 @@ export default {
     },
 
     mergeContacts: (toId, fromId) => {
-        return axiosInstance.post('contacts/merge', { toId, fromId });
+        return getAxiosInstance().post('contacts/merge', { toId, fromId });
     },
 
     getPerson: (inspectionPersonType = null) => {
-        const requestUrl = `${URL_API}/api/contact/peek/${inspectionPersonType}`;
+        const requestUrl = `${getApiUrl()}/api/contact/peek/${inspectionPersonType}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -60,9 +65,9 @@ export default {
     },
 
     getContactsPeek: () => {
-        const requestUrl = `${URL_API}/api/contact/peek`;
+        const requestUrl = `${getApiUrl()}/api/contact/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -72,9 +77,9 @@ export default {
             });
     },
     getContactsAddressesPeek: () => {
-        const requestUrl = `${URL_API}/api/contact/address/peek`;
+        const requestUrl = `${getApiUrl()}/api/contact/address/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -85,7 +90,7 @@ export default {
     },
 
     fetchContactSearch: (searchTermContact, inspectionPersonType = null) => {
-        const requestUrl = `${URL_API}/api/contact/search/${inspectionPersonType}/?searchTerm=${searchTermContact}`;
+        const requestUrl = `${getApiUrl()}/api/contact/search/${inspectionPersonType}/?searchTerm=${searchTermContact}`;
 
         if (typeof cancelToken != typeof undefined) {
             //Check if there are any previous pending requests
@@ -95,15 +100,15 @@ export default {
         //Save the cancel token for the current request
         cancelToken = axios.CancelToken.source();
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             cancelToken: cancelToken.token,
         });
     },
 
     getCSV: ({ filters, extraFilters, sorts, filterType, dataControleType }) => {
-        const requestUrl = `${URL_API}/api/contact/csv`;
+        const requestUrl = `${getApiUrl()}/api/contact/csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -115,9 +120,9 @@ export default {
     },
 
     getFreeFieldsCSV: ({ filters, extraFilters, sorts, filterType }) => {
-        const requestUrl = `${URL_API}/api/contact/free-fields-csv`;
+        const requestUrl = `${getApiUrl()}/api/contact/free-fields-csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -128,9 +133,9 @@ export default {
     },
 
     getEnergySuppliersCSV: ({ filters, extraFilters, sorts, filterType }) => {
-        const requestUrl = `${URL_API}/api/contact/energy-suppliers-csv`;
+        const requestUrl = `${getApiUrl()}/api/contact/energy-suppliers-csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -141,9 +146,9 @@ export default {
     },
 
     getExcelAddressEnergyConsumptionGas: ({ filters, extraFilters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/contact/excel/verbruik/gas`;
+        const requestUrl = `${getApiUrl()}/api/contact/excel/verbruik/gas`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -156,9 +161,9 @@ export default {
     },
 
     getExcelAddressEnergyConsumptionElectricity: ({ filters, extraFilters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/contact/excel/verbruik/electriciteit`;
+        const requestUrl = `${getApiUrl()}/api/contact/excel/verbruik/electriciteit`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -171,9 +176,9 @@ export default {
     },
 
     saveAsGroup: ({ filters, extraFilters, filterType }) => {
-        const requestUrl = `${URL_API}/api/contact/save-as-group`;
+        const requestUrl = `${getApiUrl()}/api/contact/save-as-group`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -183,20 +188,20 @@ export default {
     },
 
     validateImport: csv => {
-        const requestUrl = `${URL_API}/api/contact/validate-import`;
+        const requestUrl = `${getApiUrl()}/api/contact/validate-import`;
 
-        return axiosInstance.post(requestUrl, csv);
+        return getAxiosInstance().post(requestUrl, csv);
     },
 
     import: csv => {
-        const requestUrl = `${URL_API}/api/contact/import`;
+        const requestUrl = `${getApiUrl()}/api/contact/import`;
 
-        return axiosInstance.post(requestUrl, csv);
+        return getAxiosInstance().post(requestUrl, csv);
     },
 
     getChartData: () => {
-        const requestUrl = `${URL_API}/api/contact/chart-data`;
+        const requestUrl = `${getApiUrl()}/api/contact/chart-data`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

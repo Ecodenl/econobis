@@ -8,7 +8,7 @@ import { EmailModalContext } from '../../../context/EmailModalContext';
 import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import axiosInstance from '../../../api/default-setup/AxiosInstance';
+import getAxiosInstance from '../../../api/default-setup/AxiosInstance';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 // import queryString from 'query-string';
 import Icon from 'react-icons-kit';
@@ -382,7 +382,7 @@ export default function EmailSplitView() {
 }
 
 const fetchContactName = contactId => {
-    return axiosInstance.get('/jory/contact/' + contactId, {
+    return getAxiosInstance().get('/jory/contact/' + contactId, {
         params: {
             jory: {
                 fld: ['fullName'],

@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 import Image from 'react-bootstrap/lib/Image';
 import { useNavigate } from 'react-router-dom';
@@ -215,7 +217,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
     render() {
         const { widget, errors, errorMessage } = this.state;
 
-        const imageUrl = `${URL_API}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
+        const imageUrl = `${getApiUrl()}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
         const { managePortalSettings = {} } = this.props.permissions;
 
         return (

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_OCCUPATION = `${URL_API}/api/occupation`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     newOccupation: occupation => {
+        const URL_OCCUPATION = `${getApiUrl()}/api/occupation`;
         const requestUrl = `${URL_OCCUPATION}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     updateOccupation: occupation => {
+        const URL_OCCUPATION = `${getApiUrl()}/api/occupation`;
         const requestUrl = `${URL_OCCUPATION}/${occupation.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     deleteOccupation: occupation => {
+        const URL_OCCUPATION = `${getApiUrl()}/api/occupation`;
         const requestUrl = `${URL_OCCUPATION}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, occupation)
             .then(function(response) {
                 return response.data.data;

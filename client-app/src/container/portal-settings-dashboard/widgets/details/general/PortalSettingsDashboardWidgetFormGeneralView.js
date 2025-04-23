@@ -1,4 +1,5 @@
 import React from 'react';
+import { getApiUrl } from '../../../../../api/utils/ApiUrl';
 
 import ViewText from '../../../../../components/form/ViewText';
 import Panel from '../../../../../components/panel/Panel';
@@ -25,7 +26,7 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     switchToEdit,
     imageHash,
 }) => {
-    const imageUrl = widgetImageFileName && `${URL_API}/portal/images/${widgetImageFileName}?${imageHash}`;
+    const imageUrl = widgetImageFileName && `${getApiUrl()}/portal/images/${widgetImageFileName}?${imageHash}`;
 
     return (
         <div onClick={switchToEdit}>

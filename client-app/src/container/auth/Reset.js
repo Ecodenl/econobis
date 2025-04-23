@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../api/utils/ApiUrl';
+
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import passwordValidator from '../../helpers/PasswordValidator';
@@ -27,7 +29,7 @@ class Reset extends Component {
         e.preventDefault();
         const { token, email, password, password_confirmation } = this.state;
 
-        const url = `${URL_API}/api/password/reset`;
+        const url = `${getApiUrl()}/api/password/reset`;
         if (!passwordValidator(password)) {
             this.setState({ passwordError: true, passwordError2: false });
         } else if (!passwordValidator(password_confirmation)) {

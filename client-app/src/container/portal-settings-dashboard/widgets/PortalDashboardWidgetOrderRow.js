@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { getApiUrl } from '../../../api/utils/ApiUrl';
+
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 
@@ -115,7 +117,7 @@ const PortalDashboardWidgetOrderRow = ({
                         case 'title':
                             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                         case 'widgetImageFileName': {
-                            const imageUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                            const imageUrl = cell.value && `${getApiUrl()}/portal/images/${cell.value}?${imageHash}`;
                             return (
                                 <td key={cell.column.id}>
                                     <Image

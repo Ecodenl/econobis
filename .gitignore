@@ -16,5 +16,6 @@ yarn-error.log
 .env.testing
 /.env.development
 _ide_helper.php
-# Persistent secrets dir (symlinked via deploy script)
-secrets/
+# Negeer alles in secrets, behalve README.md
+secrets/*
+!secrets/README.md

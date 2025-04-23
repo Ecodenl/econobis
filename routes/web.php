@@ -17,6 +17,14 @@ use App\Http\Controllers\Api\Mailbox\MailgunMailController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use App\Http\Middleware\VerifyCsrfToken;
 
+Route::get('/config', function () {
+    return response()->json([
+        'client_id' => env('OAUTH_CLIENT_ID'),
+        'client_key' => env('OAUTH_CLIENT_KEY'),
+        'url_api' => env('APP_URL'),
+    ]);
+});
+
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
 
 Route::get('/mollie/betalen/{invoiceCode}', [InvoiceMolliePaymentController::class, 'pay'])->name('mollie.pay');

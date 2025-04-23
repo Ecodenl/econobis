@@ -1,4 +1,4 @@
-<!doctype html><html lang="{{ app()->getLocale() }}"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Econobis</title><script defer="defer" src="./js/9630.2b7706d348df81aedcbc.js"></script><script defer="defer" src="./js/bundle.30f9487577b437826050.js"></script></head><body><script src="./js/polyfill.js"></script><script>// Set some global JS variables
+<!doctype html><html lang="{{ app()->getLocale() }}"><head><meta charset="utf-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Econobis</title><script defer="defer" src="./js/9630.2b7706d348df81aedcbc.js"></script><script defer="defer" src="./js/bundle.5d4c98e128311cc833e6.js"></script></head><body><script src="./js/polyfill.js"></script><script>// Set some global JS variables
     {{--var URL_APP ="{{ config('app.url') }}";--}}
     var URL_API ="{{ config('app.url_api') }}";
     var CLIENT_ID ="{{ config('app.oauth_client_id') }}";

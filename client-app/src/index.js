@@ -19,7 +19,7 @@ const fetchConfig = async () => {
     const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
     // console.log('backendUrl: ', backendUrl);
 
-    const response = await fetch(`${backendUrl}/config`);
+    const response = await fetch(`${backendUrl}/frontend-config`);
     const config = await response.json();
     // console.log('config: ', config);
 

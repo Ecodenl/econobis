@@ -2,13 +2,13 @@ import getAxiosInstance from '../default-setup/AxiosInstance';
 import axios from 'axios';
 import { getApiUrl } from '../utils/ApiUrl';
 
-try {
-    getAxiosInstance().CancelToken = axios.CancelToken;
-    getAxiosInstance().isCancel = axios.isCancel;
-} catch (e) {
-    console.warn('Axios instance is nog niet beschikbaar bij load time:', e.message);
-}
-
+// try {
+//     getAxiosInstance().CancelToken = axios.CancelToken;
+//     getAxiosInstance().isCancel = axios.isCancel;
+// } catch (e) {
+//     console.warn('Axios instance is nog niet beschikbaar bij load time:', e.message);
+// }
+//
 let cancelToken;
 
 export default {
@@ -56,6 +56,8 @@ export default {
 
     fetchEmailAddressessSearch: searchTermContact => {
         const requestUrl = `${getApiUrl()}/api/email/search?searchTerm=${searchTermContact}`;
+        getAxiosInstance().CancelToken = axios.CancelToken;
+        getAxiosInstance().isCancel = axios.isCancel;
 
         if (typeof cancelToken != typeof undefined) {
             //Check if there are any previous pending requests

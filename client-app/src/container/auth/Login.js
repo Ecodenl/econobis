@@ -8,6 +8,7 @@ import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
 import moment from 'moment';
 import MeAPI from '../../api/general/MeAPI';
+import VersionAPI from '../../api/general/VersionAPI';
 
 // Functionele wrapper voor de class component
 const LoginWrapper = props => {
@@ -23,7 +24,14 @@ class Login extends Component {
             username: '',
             password: '',
             errorMessage: '',
+            version: '',
         };
+    }
+
+    componentDidMount() {
+        VersionAPI.fetchVersion().then(response => {
+            this.setState({ version: response.data.version });
+        });
     }
 
     handleInputChange = event => {
@@ -102,7 +110,7 @@ class Login extends Component {
     }
 
     render() {
-        const { username, password } = this.state;
+        const { username, password, version } = this.state;
 
         return (
             <div className="col-md-4 col-sm-8 col-xs-10 login-form">
@@ -110,6 +118,9 @@ class Login extends Component {
                     <div className="panel-body">
                         <div className="text-center">
                             <Logo height="150px" />
+                            <h4 className="text-center">
+                                <i>Versie: {version}</i>
+                            </h4>
                         </div>
                         <form onSubmit={this.handleSubmit}>
                             <div className="row margin-10-top">

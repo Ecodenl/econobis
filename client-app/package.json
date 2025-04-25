@@ -65,6 +65,7 @@
     "node-sass": "^8.0.0",
     "password-validator": "^4.1.1",
     "pdfjs-dist": "^3.11.174",
+    "pkce-challenge": "^5.0.0",
     "prettier": "^1.15.3",
     "process": "^0.11.10",
     "prop-types": "^15.6.2",

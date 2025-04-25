@@ -25,7 +25,7 @@ const fetchConfig = async () => {
 
     window.env = {
         CLIENT_ID: config.client_id,
-        CLIENT_KEY: config.client_key,
+        // CLIENT_KEY: config.client_key,
         URL_API: config.url_api,
     };
 };

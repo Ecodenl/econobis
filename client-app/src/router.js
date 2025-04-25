@@ -98,6 +98,7 @@ const QuotationRequestPlanNewApp = React.lazy(() =>
 const QuotationRequestsListApp = React.lazy(() =>
     import('./container/quotation-request/list/QuotationRequestsListApp')
 );
+// const AuthCallback = React.lazy(() => import('./container/auth/AuthCallback'));
 const Reset = React.lazy(() => import('./container/auth/Reset'));
 const Login = React.lazy(() => import('./container/auth/Login'));
 const Logout = React.lazy(() => import('./container/auth/Logout'));
@@ -124,6 +125,7 @@ import RevenuesKwhNewApp from './container/project/details/revenueKwh/new/Revenu
 import RevenuesKwhDetailsApp from './container/project/details/revenueKwh/details/RevenuesKwhDetailsApp';
 import RevenuePartsKwhDetailsApp from './container/project/details/revenueKwh/details/revenue-parts/details/RevenuePartsKwhDetailsApp';
 import PortalSettingsDashboardWidgetDetailsApp from './container/portal-settings-dashboard/widgets/details/PortalSettingsDashboardWidgetDetailsApp';
+import AuthCallback from './container/auth/AuthCallback';
 const MeasuresListApp = React.lazy(() => import('./container/measures/list/MeasuresListApp'));
 const MeasureDetailsApp = React.lazy(() => import('./container/measures/details/MeasureDetailsApp'));
 const MeasureCategoriesListApp = React.lazy(() =>
@@ -270,6 +272,7 @@ const AppRoutes = () => {
             <Suspense fallback={<LoadingPage />}>
                 <ScrollToTop />
                 <Routes>
+                    <Route path="/auth/callback" element={<AuthCallback />} />
                     <Route path="login" element={<Login />} />
                     <Route path="loguit" element={<Logout />} />
                     <Route path="wachtwoord-vergeten" element={<Forgot />} />

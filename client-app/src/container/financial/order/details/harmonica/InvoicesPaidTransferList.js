@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const InvoicesPaidTransferPaidTransferListWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoicesPaidTransferPaidTransferList {...props} navigate={navigate} />;
+};
 
 class InvoicesPaidTransferPaidTransferList extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class InvoicesPaidTransferPaidTransferList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/nota/${id}`);
+        this.props.navigate(`/nota/${id}`);
     };
 
     render() {
@@ -47,4 +53,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(InvoicesPaidTransferPaidTransferList);
+export default connect(mapStateToProps)(InvoicesPaidTransferPaidTransferListWrapper);

@@ -8,6 +8,11 @@ import {
 import DocumentTemplatesList from './DocumentTemplatesList';
 import DocumentTemplatesListToolbar from './DocumentTemplatesListToolbar';
 
+// Functionele wrapper voor de class component
+const DocumentTemplatesListAppWrapper = props => {
+    return <DocumentTemplatesListApp {...props} />;
+};
+
 class DocumentTemplatesListApp extends Component {
     constructor(props) {
         super(props);
@@ -65,4 +70,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplatesListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentTemplatesListAppWrapper);

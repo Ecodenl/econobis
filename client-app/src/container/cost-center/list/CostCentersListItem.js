@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const CostCenterDetailsAppWrapperWrapper = props => {
+    const navigate = useNavigate();
+    return <CostCenterDetailsAppWrapper {...props} navigate={navigate} />;
+};
 
 class CostCentersListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class CostCentersListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/kostenplaats/${id}`);
+        this.props.navigate(`/kostenplaats/${id}`);
     }
 
     render() {
@@ -74,4 +80,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(CostCentersListItem);
+export default connect(mapStateToProps)(CostCenterDetailsAppWrapperWrapper);

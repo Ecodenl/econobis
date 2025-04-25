@@ -1,7 +1,7 @@
-import React, {useContext} from 'react';
+import React, { useContext } from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
-import {EmailModalContext} from "../../../../context/EmailModalContext";
+import { EmailModalContext } from '../../../../context/EmailModalContext';
 
 const EmailsSentList = ({ emails }) => {
     const { openEmailDetailsModal } = useContext(EmailModalContext);
@@ -13,16 +13,16 @@ const EmailsSentList = ({ emails }) => {
             {emails !== '' && (
                 <table className="table harmonica-table">
                     <tbody>
-                    {emails.map((item, i) => (
-                        <tr key={i}>
-                            <td className="col-xs-4 clickable" onClick={() => openEmailDetailsModal(item.id)}>
-                                {moment(item.date_sent).format('L')}
-                            </td>
-                            <td className="col-xs-8 clickable" onClick={() => openEmailDetailsModal(item.id)}>
-                                {item.subject}
-                            </td>
-                        </tr>
-                    ))}
+                        {emails.map((item, i) => (
+                            <tr key={i}>
+                                <td className="col-xs-4 clickable" onClick={() => openEmailDetailsModal(item.id)}>
+                                    {moment(item.date_sent).format('L')}
+                                </td>
+                                <td className="col-xs-8 clickable" onClick={() => openEmailDetailsModal(item.id)}>
+                                    {item.subject}
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             )}
@@ -30,7 +30,7 @@ const EmailsSentList = ({ emails }) => {
     );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
     return {
         emails: state.taskDetails.relatedEmailsInbox,
     };

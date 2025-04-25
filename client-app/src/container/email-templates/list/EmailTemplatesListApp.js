@@ -5,6 +5,11 @@ import { fetchEmailTemplates, clearEmailTemplates } from '../../../actions/email
 import EmailTemplatesList from './EmailTemplatesList';
 import EmailTemplatesListToolbar from './EmailTemplatesListToolbar';
 
+// Functionele wrapper voor de class component
+const EmailTemplatesListAppWrapper = props => {
+    return <EmailTemplatesListApp {...props} />;
+};
+
 class EmailTemplatesListApp extends Component {
     constructor(props) {
         super(props);
@@ -14,9 +19,10 @@ class EmailTemplatesListApp extends Component {
         this.props.fetchEmailTemplates();
     }
 
-    componentWillUnmount() {
-        this.props.clearEmailTemplates();
-    }
+    // niet echt nodig
+    // componentWillUnmount() {
+    //     this.props.clearEmailTemplates();
+    // }
 
     refreshEmailTemplatesData = () => {
         this.props.clearEmailTemplates();
@@ -59,4 +65,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplatesListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailTemplatesListAppWrapper);

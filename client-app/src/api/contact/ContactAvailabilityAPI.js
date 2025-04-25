@@ -1,33 +1,38 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
-const BASE_URL = `${URL_API}/api/contact`;
+const BASE_URL = `${getApiUrl()}/api/contact`;
 
 export default {
     fetchContactAvailabilitiesByWeek: (contactId, startOfWeek) => {
-        return axiosInstance.get(`${BASE_URL}/${contactId}/availability/by-week`, {
-            params: {
-                startOfWeek: startOfWeek,
-            },
-        }).then(payload => {
-            return payload.data;
-        });
+        return getAxiosInstance()
+            .get(`${BASE_URL}/${contactId}/availability/by-week`, {
+                params: {
+                    startOfWeek: startOfWeek,
+                },
+            })
+            .then(payload => {
+                return payload.data;
+            });
     },
 
     updateContactAvailabilities: (contactId, data) => {
-        return axiosInstance.post(`${BASE_URL}/${contactId}/availability`, data);
+        return getAxiosInstance().post(`${BASE_URL}/${contactId}/availability`, data);
     },
 
     copyAvailabilities: (contactId, data) => {
-        return axiosInstance.post(`${BASE_URL}/${contactId}/availability/copy-weeks`, data);
+        return getAxiosInstance().post(`${BASE_URL}/${contactId}/availability/copy-weeks`, data);
     },
 
-    fetchDistrictAvailabilitiesByWeek: ({districtId, startOfWeek}) => {
-        return axiosInstance.get(`${URL_API}/api/district/${districtId}/availability/by-week`, {
-            params: {
-                startOfWeek,
-            },
-        }).then(payload => {
-            return payload.data;
-        });
+    fetchDistrictAvailabilitiesByWeek: ({ districtId, startOfWeek }) => {
+        return getAxiosInstance()
+            .get(`${getApiUrl()}/api/district/${districtId}/availability/by-week`, {
+                params: {
+                    startOfWeek,
+                },
+            })
+            .then(payload => {
+                return payload.data;
+            });
     },
 };

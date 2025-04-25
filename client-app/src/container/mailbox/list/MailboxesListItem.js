@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const MailboxesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <MailboxesListItem {...props} navigate={navigate} />;
+};
 
 class MailboxesListItem extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class MailboxesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/mailbox/${id}`);
+        this.props.navigate(`/mailbox/${id}`);
     }
 
     render() {
@@ -103,4 +109,4 @@ class MailboxesListItem extends Component {
     }
 }
 
-export default MailboxesListItem;
+export default MailboxesListItemWrapper;

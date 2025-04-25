@@ -1,16 +1,18 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import PanelHeader from "../../../components/panel/PanelHeader";
-import moment from "moment/moment";
-import ContactAvailabilityAPI from "../../../api/contact/ContactAvailabilityAPI";
-import ButtonIcon from "../../../components/button/ButtonIcon";
-import QuotationRequestDetailsAPI from "../../../api/quotation-request/QuotationRequestDetailsAPI";
-import {hashHistory} from "react-router";
-import QuotationRequestPlanNewSelectCoachModal from "./QuotationRequestPlanNewSelectCoachModal";
+import PanelHeader from '../../../components/panel/PanelHeader';
+import moment from 'moment/moment';
+import ContactAvailabilityAPI from '../../../api/contact/ContactAvailabilityAPI';
+import ButtonIcon from '../../../components/button/ButtonIcon';
+import QuotationRequestDetailsAPI from '../../../api/quotation-request/QuotationRequestDetailsAPI';
+import { useNavigate } from 'react-router-dom';
+import QuotationRequestPlanNewSelectCoachModal from './QuotationRequestPlanNewSelectCoachModal';
 
-export default function QuotationRequestPlanNewPlanningPanel({district, opportunityId}) {
-    if(!district) {
+export default function QuotationRequestPlanNewPlanningPanel({ district, opportunityId }) {
+    const navigate = useNavigate();
+
+    if (!district) {
         return null;
     }
 
@@ -58,7 +60,11 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
         /**
          * Bij laden de weekinstelling op de huidige instellen
          */
-        setCurrentWeek(moment().startOf('isoWeek').format('YYYY-MM-DD'));
+        setCurrentWeek(
+            moment()
+                .startOf('isoWeek')
+                .format('YYYY-MM-DD')
+        );
 
         setDurationMinutes(district.defaultDurationMinutes);
     }, []);
@@ -78,14 +84,14 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
         initDays();
     }, [currentWeek]);
 
-    const transformCoachAvailabilitiesToAvailabilities = (coachAvailabilities) => {
+    const transformCoachAvailabilitiesToAvailabilities = coachAvailabilities => {
         return coachAvailabilities.reduce((acc, coach) => {
             coach.availabilities = coach.availabilities.map(availability => {
                 return {
                     ...availability,
                     from: moment(availability.from),
                     to: moment(availability.to),
-                }
+                };
             });
 
             let filteredAvailabilities = filterAvailabilitiesByPlannedQuotationRequests(coach);
@@ -96,23 +102,23 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                     coach: {
                         id: coach.id,
                         fullName: coach.fullName,
-                    }
+                    },
                 });
             });
 
             return acc;
         }, []);
-    }
+    };
 
-    const filterAvailabilitiesByPlannedQuotationRequests = (coach) => {
+    const filterAvailabilitiesByPlannedQuotationRequests = coach => {
         let blockedTimeslots = coach.quotationRequests.map(qr => {
-
             return {
                 from: moment(qr.datePlanned).subtract(coach.coachMinMinutesBetweenAppointments, 'minutes'),
-                to: moment(qr.datePlanned).add(qr.durationMinutes, 'minutes').add(coach.coachMinMinutesBetweenAppointments, 'minutes'),
-            }
+                to: moment(qr.datePlanned)
+                    .add(qr.durationMinutes, 'minutes')
+                    .add(coach.coachMinMinutesBetweenAppointments, 'minutes'),
+            };
         });
-
 
         let availabilities = coach.availabilities;
         for (let i = 0; i < blockedTimeslots.length; i++) {
@@ -185,7 +191,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
         }
 
         return availabilities;
-    }
+    };
 
     useEffect(() => {
         initTimeslots();
@@ -224,7 +230,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             temp.push(i);
         }
         setTimeslots(temp);
-    }
+    };
 
     const initDays = () => {
         /**
@@ -238,12 +244,12 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             day.add(1, 'd');
         }
         setDays(temp);
-    }
+    };
 
     /**
      * Formatteer een aantal minuten vanaf middernacht naar een tijd in het formaat HH:mm.
      */
-    const formatMinutesToTime = (minutes) => {
+    const formatMinutesToTime = minutes => {
         let hours = Math.floor(minutes / 60);
         let minutesLeft = minutes % 60;
 
@@ -252,7 +258,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
         minutesLeft = minutesLeft < 10 ? '0' + minutesLeft : minutesLeft;
 
         return hours + ':' + minutesLeft;
-    }
+    };
 
     /**
      * Geef de opties voor de weekselectie.
@@ -268,69 +274,71 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             current.add(1, 'w');
         }
         return options;
-    }
+    };
 
     /**
      * Geef de opties voor het coach filter.
      */
     const getCoachOptions = () => {
-        return availabilities.reduce((acc, availability) => {
-            if (!acc.find(coach => coach.id === availability.coach.id)) {
-                acc.push(availability.coach);
-            }
+        return availabilities
+            .reduce((acc, availability) => {
+                if (!acc.find(coach => coach.id === availability.coach.id)) {
+                    acc.push(availability.coach);
+                }
 
-            return acc;
-        }, []).map(coach => {
-            return {
-                value: coach.id,
-                text: coach.fullName,
-            };
-        });
-    }
+                return acc;
+            }, [])
+            .map(coach => {
+                return {
+                    value: coach.id,
+                    text: coach.fullName,
+                };
+            });
+    };
 
     const getDurationMinutesOptions = () => {
         let options = [];
-        for (let i = 30; i <= (60 * 3); i = i+15) {
+        for (let i = 30; i <= 60 * 3; i = i + 15) {
             options.push({
                 value: i,
                 text: i + ' minuten',
             });
         }
         return options;
-    }
+    };
 
     const getPreviousWeek = () => {
-        let currentIndex = getWeekOptions().findIndex((option) => {
+        let currentIndex = getWeekOptions().findIndex(option => {
             return option.value === currentWeek;
         });
 
         if (currentIndex > 0) {
             return getWeekOptions()[currentIndex - 1].value;
         }
-    }
+    };
 
     const getNextWeek = () => {
-        let currentIndex = getWeekOptions().findIndex((option) => {
+        let currentIndex = getWeekOptions().findIndex(option => {
             return option.value === currentWeek;
         });
 
         if (currentIndex < getWeekOptions().length - 1) {
             return getWeekOptions()[currentIndex + 1].value;
         }
-    }
+    };
 
     /**
      * Geef de beschikbaarheden na toepassen van coach filter.
      */
     const getFilteredAvailabilities = () => {
-        if(!currentCoachId) {
+        if (!currentCoachId) {
             return availabilities;
         }
 
         return availabilities.filter(availability => {
             return availability.coach.id === parseInt(currentCoachId);
         });
-    }
+    };
 
     const getAvailabilitiesForTimeslot = (day, timeslot) => {
         return getFilteredAvailabilities().filter(availability => {
@@ -338,10 +346,12 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
              * Kijk of er een availability is waar het timeslot volledig binnen valt.
              * availabilities kunnen niet aansluitend zijn in de database (dan zouden ze samengevoegd moeten worden), dus het is niet nodig om te kijken of het timeslot door meerdere availabilities wordt gedekt.
              */
-            return availability.from <= moment(day).add(timeslot, 'minutes')
-                && availability.to >= moment(day).add(timeslot + durationMinutes, 'minutes');
+            return (
+                availability.from <= moment(day).add(timeslot, 'minutes') &&
+                availability.to >= moment(day).add(timeslot + durationMinutes, 'minutes')
+            );
         });
-    }
+    };
 
     const handleTimeslotClick = (day, timeslot) => {
         let availabilitiesForTimeslot = getAvailabilitiesForTimeslot(day, timeslot);
@@ -356,10 +366,10 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             day,
             timeslot,
         });
-    }
+    };
 
     const createQuotationRequest = (day, timeslot, coachId) => {
-        if(isSaving){
+        if (isSaving) {
             return;
         }
 
@@ -383,26 +393,29 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             dateApprovedProjectManager: '',
             dateApprovedExternal: '',
         }).then(payload => {
-            hashHistory.push(`/offerteverzoek/${payload.data.id}`);
+            navigate(`/offerteverzoek/${payload.data.id}`);
         });
 
         setSelectedTimeslot(null);
-    }
+    };
 
     return (
         <Panel>
             <PanelHeader>
                 <div className="row">
                     <div className={'col-sm-3'}>
-                        <ButtonIcon disabled={!getPreviousWeek()} iconName={'arrowLeft'}
-                                    buttonClassName="btn-default btn-sm"
-                                    onClickAction={() => setCurrentWeek(getPreviousWeek())}/>
+                        <ButtonIcon
+                            disabled={!getPreviousWeek()}
+                            iconName={'arrowLeft'}
+                            buttonClassName="btn-default btn-sm"
+                            onClickAction={() => setCurrentWeek(getPreviousWeek())}
+                        />
                     </div>
                     <div className={'col-sm-2'}>
                         <select
                             className="form-control input-sm"
                             value={currentWeek}
-                            onChange={(event) => setCurrentWeek(event.target.value)}
+                            onChange={event => setCurrentWeek(event.target.value)}
                         >
                             {getWeekOptions().map(option => {
                                 return (
@@ -417,7 +430,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                         <select
                             className="form-control input-sm"
                             value={currentCoachId}
-                            onChange={(event) => setCurrentCoachId(event.target.value)}
+                            onChange={event => setCurrentCoachId(event.target.value)}
                         >
                             <option value={''}>Alle coaches</option>
                             {getCoachOptions().map(option => {
@@ -433,7 +446,7 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                         <select
                             className="form-control input-sm"
                             value={durationMinutes}
-                            onChange={(event) => setDurationMinutes(parseInt(event.target.value))}
+                            onChange={event => setDurationMinutes(parseInt(event.target.value))}
                         >
                             {getDurationMinutesOptions().map(option => {
                                 return (
@@ -444,67 +457,73 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
                             })}
                         </select>
                     </div>
-                    <div className={'col-sm-3'} style={{textAlign: 'right'}}>
-                        <ButtonIcon disabled={!getNextWeek()} iconName={'arrowRight'}
-                                    buttonClassName="btn-default btn-sm"
-                                    onClickAction={() => setCurrentWeek(getNextWeek())}/>
+                    <div className={'col-sm-3'} style={{ textAlign: 'right' }}>
+                        <ButtonIcon
+                            disabled={!getNextWeek()}
+                            iconName={'arrowRight'}
+                            buttonClassName="btn-default btn-sm"
+                            onClickAction={() => setCurrentWeek(getNextWeek())}
+                        />
                     </div>
                 </div>
             </PanelHeader>
             <PanelBody>
                 <div className="row">
                     <div className="col-md-12">
-                        <table className="table-drag-select" style={{width: '100%'}}>
+                        <table className="table-drag-select" style={{ width: '100%' }}>
                             <thead>
-                            <tr>
-                                {
-                                    days.map((day, j) => {
+                                <tr>
+                                    {days.map((day, j) => {
                                         return (
-                                            <th key={j}
-                                                style={{textAlign: 'center'}}>{day.format('dd DD-MM')}</th>
+                                            <th key={j} style={{ textAlign: 'center' }}>
+                                                {day.format('dd DD-MM')}
+                                            </th>
                                         );
-                                    })
-                                }
-                            </tr>
+                                    })}
+                                </tr>
                             </thead>
                             <tbody>
-                            {
-                                timeslots.length === 0 ? (
-                                        <tr>
-                                            <td colSpan={7} style={{ textAlign: 'center'}}>Geen beschikbare data gevonden</td>
-                                        </tr>
-                                    ) :
+                                {timeslots.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={7} style={{ textAlign: 'center' }}>
+                                            Geen beschikbare data gevonden
+                                        </td>
+                                    </tr>
+                                ) : (
                                     timeslots.map((timeslot, i) => {
                                         return (
                                             <tr key={i}>
-                                                {
-                                                    days.map((day, j) => {
-                                                        let isAvailable = getAvailabilitiesForTimeslot(day, timeslot).length > 0;
+                                                {days.map((day, j) => {
+                                                    let isAvailable =
+                                                        getAvailabilitiesForTimeslot(day, timeslot).length > 0;
 
-                                                        if (!isAvailable) {
-                                                            return (
-                                                                <td key={j} style={{textAlign: 'center'}}></td>
-                                                            );
-                                                        }
+                                                    if (!isAvailable) {
+                                                        return <td key={j} style={{ textAlign: 'center' }}></td>;
+                                                    }
 
-                                                        return (
-                                                            <td key={j}
-                                                                style={{
-                                                                    textAlign: 'center',
-                                                                    padding: '3px',
-                                                                }}>
-                                                                <button className="btn btn-sm" style={{width: '100%'}}
-                                                                        onClick={() => handleTimeslotClick(day, timeslot)}>
-                                                                    {formatMinutesToTime(timeslot)} - {formatMinutesToTime(timeslot + durationMinutes)}
-                                                                </button>
-                                                            </td>
-                                                        );
-                                                    })
-                                                }
+                                                    return (
+                                                        <td
+                                                            key={j}
+                                                            style={{
+                                                                textAlign: 'center',
+                                                                padding: '3px',
+                                                            }}
+                                                        >
+                                                            <button
+                                                                className="btn btn-sm"
+                                                                style={{ width: '100%' }}
+                                                                onClick={() => handleTimeslotClick(day, timeslot)}
+                                                            >
+                                                                {formatMinutesToTime(timeslot)} -{' '}
+                                                                {formatMinutesToTime(timeslot + durationMinutes)}
+                                                            </button>
+                                                        </td>
+                                                    );
+                                                })}
                                             </tr>
                                         );
                                     })
-                            }
+                                )}
                             </tbody>
                         </table>
                     </div>
@@ -512,9 +531,14 @@ export default function QuotationRequestPlanNewPlanningPanel({district, opportun
             </PanelBody>
             {selectedTimeslot !== null && (
                 <QuotationRequestPlanNewSelectCoachModal
-                    coaches={getAvailabilitiesForTimeslot(selectedTimeslot.day, selectedTimeslot.timeslot).map(av => av.coach)}
-                    onSelectCoach={coachId => createQuotationRequest(selectedTimeslot.day, selectedTimeslot.timeslot, coachId)}
-                    onCancel={() => setSelectedTimeslot(null)}/>
+                    coaches={getAvailabilitiesForTimeslot(selectedTimeslot.day, selectedTimeslot.timeslot).map(
+                        av => av.coach
+                    )}
+                    onSelectCoach={coachId =>
+                        createQuotationRequest(selectedTimeslot.day, selectedTimeslot.timeslot, coachId)
+                    }
+                    onCancel={() => setSelectedTimeslot(null)}
+                />
             )}
         </Panel>
     );

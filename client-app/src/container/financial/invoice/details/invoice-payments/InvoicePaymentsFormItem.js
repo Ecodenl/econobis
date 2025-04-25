@@ -34,7 +34,7 @@ class InvoicePaymentsFormItem extends Component {
         this.setState({ showDelete: !this.state.showDelete });
     };
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.payment, nextProps.payment)) {
             this.setState({
                 ...this.state,

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_PRODUCT = `${URL_API}/api/product`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchProductDetails: function(id) {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     newProduct: product => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, product)
             .then(function(response) {
                 return response.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     updateProduct: ({ product }) => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/${product.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, product)
             .then(function(response) {
                 return response;
@@ -43,14 +45,16 @@ export default {
     },
 
     deleteProduct: id => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newPriceHistory: priceHistory => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/price-history`;
 
-        return axiosInstance.post(requestUrl, priceHistory);
+        return getAxiosInstance().post(requestUrl, priceHistory);
     },
 };

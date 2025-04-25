@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const MeasureCategoriesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <MeasureCategoriesListItem {...props} navigate={navigate} />;
+};
 
 class MeasureCategoriesListItem extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class MeasureCategoriesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/maatregel-categorie/${id}`);
+        this.props.navigate(`/maatregel-categorie/${id}`);
     }
 
     render() {
@@ -74,4 +80,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MeasureCategoriesListItem);
+export default connect(mapStateToProps)(MeasureCategoriesListItemWrapper);

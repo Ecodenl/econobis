@@ -55,17 +55,23 @@ class ParticipantReportMail extends Mailable
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
             if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $rawData = $documentController->downLoadRawDocument($defaultAttachmentDocument);
 
-                if ($rawData) { // Ensure raw data is valid
-                    $this->attachData($rawData, $defaultAttachmentDocument->filename, [
-                        'as' => $defaultAttachmentDocument->filename,
-                    ]);
+                $attachment = $documentController->downLoadRawDocument($defaultAttachmentDocument);
+                if ($attachment && isset($attachment['content'])) {
+                    $this->attachData(
+                        $attachment['content'],
+                        $attachment['filename'],
+                        [
+                            'as' => $attachment['filename'],
+                            'mime' => $attachment['mime'] ?? 'application/octet-stream',
+                        ]
+                    );
                 } else {
                     Log::error("Failed to retrieve raw data for attachment: {$defaultAttachmentDocument->filename}");
                 }
             }
         }
+
         $this->from($this->from_email, $this->from_name);
 
         return $this;

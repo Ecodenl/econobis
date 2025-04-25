@@ -1,6 +1,5 @@
 import { put, call, all } from 'redux-saga/effects';
 import ContactGroupAPI from '../../api/contact-group/ContactGroupAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchContactGroupsSaga({ filters, sorts, pagination }) {
     try {

@@ -47,7 +47,7 @@ class ContactDetailsFormAddressItem extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.address, nextProps.address)) {
             this.setState({
                 ...this.state,

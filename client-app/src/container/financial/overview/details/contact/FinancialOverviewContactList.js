@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import moment from 'moment';
 
@@ -23,6 +23,8 @@ const recordsPerPage = 50;
 // const maxRecordsPost = 50;
 
 function FinancialOverviewContactList({ financialOverview, previewFinancialOverview }) {
+    const navigate = useNavigate();
+
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
     const [checkedAll, setCheckedAll] = useState(false);
     const [financialOverviewContactIds, setFinancialOverviewContactIds] = useState([]);
@@ -112,7 +114,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
 
         if (financialOverviewContactIds.length > 0) {
             previewFinancialOverview(financialOverviewContactIds);
-            hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/email`);
+            navigate(`/waardestaat/${financialOverview.id}/aanmaken/email`);
         } else {
             toggleShowCheckboxList();
         }
@@ -128,7 +130,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         // } else {
         if (financialOverviewContactIds.length > 0) {
             previewFinancialOverview(financialOverviewContactIds);
-            hashHistory.push(`/waardestaat/${financialOverview.id}/aanmaken/post`);
+            navigate(`/waardestaat/${financialOverview.id}/aanmaken/post`);
         } else {
             toggleShowCheckboxList();
         }

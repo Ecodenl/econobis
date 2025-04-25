@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
+
+// Functionele wrapper voor de class component
+const ButtonOpportunitiesWrapper = props => {
+    const navigate = useNavigate();
+    return <ButtonOpportunities {...props} navigate={navigate} />;
+};
 
 class ButtonOpportunities extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class ButtonOpportunities extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         OpportunitiesAPI.getAmountActive().then(payload => {
             this.setState({
                 amountActiveOpportunities: payload,
@@ -22,7 +28,7 @@ class ButtonOpportunities extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/kansen`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/kansen`)}>
                 <div className="panel panel-default" id="dashboardbutton-3">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">KANSEN</h4>
@@ -34,4 +40,4 @@ class ButtonOpportunities extends Component {
     }
 }
 
-export default ButtonOpportunities;
+export default ButtonOpportunitiesWrapper;

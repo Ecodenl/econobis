@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import fileDownload from 'js-file-download';
 import InputDate from '../../../../components/form/InputDate';
 import validator from 'validator';
 import moment from 'moment/moment';
+
+// Functionele wrapper voor de class component
+const InvoiceSendConfirmPostWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceSendConfirmPost {...props} navigate={navigate} />;
+};
 
 class InvoiceSendConfirmPost extends Component {
     constructor(props) {
@@ -56,13 +62,13 @@ class InvoiceSendConfirmPost extends Component {
                             InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
                                 if (payload && payload.headers && payload.headers['x-filename']) {
                                     fileDownload(payload.data, payload.headers['x-filename']);
-                                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                                 } else {
-                                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                                 }
                             });
                         } else {
-                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         }
                     }
                 );
@@ -78,13 +84,13 @@ class InvoiceSendConfirmPost extends Component {
                     InvoiceDetailsAPI.createSepaForInvoiceIds(this.props.invoiceIds).then(payload => {
                         if (payload && payload.headers && payload.headers['x-filename']) {
                             fileDownload(payload.data, payload.headers['x-filename']);
-                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         } else {
-                            hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                            this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                         }
                     });
                 } else {
-                    hashHistory.push(`/financieel/${this.props.administrationId}/notas/verzonden`);
+                    this.props.navigate(`/financieel/${this.props.administrationId}/notas/verzonden`);
                 }
             });
         }
@@ -135,4 +141,4 @@ class InvoiceSendConfirmPost extends Component {
     }
 }
 
-export default InvoiceSendConfirmPost;
+export default InvoiceSendConfirmPostWrapper;

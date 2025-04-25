@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import * as ibantools from 'ibantools';
 import axios from 'axios';
@@ -21,6 +21,12 @@ import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
 import Image from 'react-bootstrap/lib/Image';
 import PortalImageCrop from '../../../components/imageUploadAndCrop/PortalImageCrop';
+
+// Functionele wrapper voor de class component
+const AdministrationNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <AdministrationNewForm {...props} navigate={navigate} />;
+};
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -406,7 +412,7 @@ class AdministrationNewForm extends Component {
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
-                    hashHistory.push(`/administratie/${payload.data.id}`);
+                    this.props.navigate(`/administratie/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -989,4 +995,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(AdministrationNewForm);
+export default connect(mapStateToProps)(AdministrationNewFormWrapper);

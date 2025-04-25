@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SideNav, { Nav, NavText } from 'react-sidenav';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class FinancialOverviewCreateList extends Component {
     constructor(props) {

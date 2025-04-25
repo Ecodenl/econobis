@@ -1,11 +1,11 @@
-import axiosInstance from '../../default-setup/AxiosInstance';
+import getAxiosInstance from '../../default-setup/AxiosInstance';
 
 const URL_FINANCIAL_OVERVIEW_PROJECT = `financial-overview-project`;
 
 export default {
     fetchFinancialOverviewProjects: financialOverviewId => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/grid`;
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 financialOverviewId: JSON.stringify(financialOverviewId),
             },
@@ -15,7 +15,7 @@ export default {
     fetchFinancialOverviewProjectDetails: id => {
         const requestUrl = `jory/${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [
@@ -85,24 +85,24 @@ export default {
             },
         });
 
-        return axiosInstance.post(requestUrl, financialOverviewProject);
+        return getAxiosInstance().post(requestUrl, financialOverviewProject);
     },
 
     updateFinancialOverviewProject: (financialOverviewProjectId, definitive) => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${financialOverviewProjectId}`;
 
-        return axiosInstance.post(requestUrl, definitive);
+        return getAxiosInstance().post(requestUrl, definitive);
     },
 
     deleteFinancialOverviewProject: id => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     getCSV: id => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_PROJECT}/${id}/csv`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

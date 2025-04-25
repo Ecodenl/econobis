@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import NoteHarmonica from './harmonica/NoteHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import EmailHarmonica from './harmonica/EmailHarmonica';
+
+// Functionele wrapper voor de class component
+const IntakeDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class IntakeDetailsHarmonica extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class IntakeDetailsHarmonica extends Component {
 
     newTask() {
         if (this.props.intakeDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/open/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
             );
         }
@@ -38,7 +44,7 @@ class IntakeDetailsHarmonica extends Component {
 
     newNote() {
         if (this.props.intakeDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/afgehandeld/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
             );
         }
@@ -47,7 +53,7 @@ class IntakeDetailsHarmonica extends Component {
     // todo hier bij newDocument zouden we eventueel ook campaignId meteen kunnen meegeven en vullen ??
     newDocument(type) {
         if (this.props.intakeDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/document/nieuw/${type}/intake/${this.props.id}/campagne/${this.props.intakeDetails.campaign.id}/contact/${this.props.intakeDetails.contact.id}`
             );
         }
@@ -55,7 +61,7 @@ class IntakeDetailsHarmonica extends Component {
 
     newEmail() {
         if (this.props.intakeDetails) {
-            hashHistory.push(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
+            this.props.navigate(`/email/nieuw/intake/${this.props.id}/contact/${this.props.intakeDetails.contact.id}`);
         }
     }
 
@@ -107,4 +113,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(IntakeDetailsHarmonica);
+export default connect(mapStateToProps)(IntakeDetailsHarmonicaWrapper);

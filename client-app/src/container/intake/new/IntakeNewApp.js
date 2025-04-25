@@ -5,6 +5,13 @@ import { isEmpty } from 'lodash';
 import { fetchContactDetails } from '../../../actions/contact/ContactDetailsActions';
 import IntakeNewForm from './IntakeNewForm';
 import IntakeNewToolbar from './IntakeNewToolbar';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const IntakeNewAppWrapper = props => {
+    const params = useParams();
+    return <IntakeNewApp {...props} params={params} />;
+};
 
 class IntakeNewApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(IntakeNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(IntakeNewAppWrapper);

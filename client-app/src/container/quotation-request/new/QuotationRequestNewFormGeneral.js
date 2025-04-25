@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -14,6 +14,12 @@ import validator from 'validator';
 import InputTime from '../../../components/form/InputTime';
 import Modal from '../../../components/modal/Modal';
 import ViewText from '../../../components/form/ViewText';
+
+// Functionele wrapper voor de class component
+const QuotationRequestNewFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestNewFormGeneral {...props} navigate={navigate} />;
+};
 
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
@@ -69,7 +75,7 @@ class QuotationRequestNewFormGeneral extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         QuotationRequestDetailsAPI.fetchNewQuotationRequest(
             this.props.opportunityId,
             this.props.opportunityAction.id
@@ -256,7 +262,7 @@ class QuotationRequestNewFormGeneral extends Component {
         !hasErrors &&
             QuotationRequestDetailsAPI.newQuotationRequest(quotationRequest)
                 .then(payload => {
-                    hashHistory.push(`/offerteverzoek/${payload.data.id}`);
+                    this.props.navigate(`/offerteverzoek/${payload.data.id}`);
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 422) {
@@ -295,7 +301,7 @@ class QuotationRequestNewFormGeneral extends Component {
         this.setState({
             showHoomdossierWarningModal: false,
         });
-        hashHistory.push(`/kans/${this.props.opportunityId}`);
+        this.props.navigate(`/kans/${this.props.opportunityId}`);
     };
 
     render() {
@@ -659,4 +665,4 @@ class QuotationRequestNewFormGeneral extends Component {
     }
 }
 
-export default QuotationRequestNewFormGeneral;
+export default QuotationRequestNewFormGeneralWrapper;

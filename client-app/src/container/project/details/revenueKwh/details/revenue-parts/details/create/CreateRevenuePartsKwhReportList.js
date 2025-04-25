@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
 
 import SideNav, { Nav, NavText } from 'react-sidenav';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class CreateRevenuePartsKwhReportList extends Component {
     constructor(props) {

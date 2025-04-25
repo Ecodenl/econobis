@@ -1,11 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const EmailTemplatesListToolbar = props => {
+    const navigate = useNavigate();
+
     const newEmailTemplate = () => {
-        hashHistory.push(`/email-template/nieuw`);
+        navigate(`/email-template/nieuw`);
     };
 
     return (

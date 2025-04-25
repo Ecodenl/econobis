@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import * as ibantools from 'ibantools';
 
@@ -15,6 +15,12 @@ import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputDate from '../../../../components/form/InputDate';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const OrderNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderNewForm {...props} navigate={navigate} />;
+};
 
 class OrderNewForm extends Component {
     constructor(props) {
@@ -287,7 +293,7 @@ class OrderNewForm extends Component {
         if (!hasErrors) {
             OrderDetailsAPI.newOrder(order)
                 .then(payload => {
-                    hashHistory.push(`/order/${payload.data.id}`);
+                    this.props.navigate(`/order/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -552,4 +558,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OrderNewForm);
+export default connect(mapStateToProps)(OrderNewFormWrapper);

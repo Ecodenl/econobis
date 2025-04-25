@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import TaskDetailsDelete from './TaskDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import TaskDetailsDuplicate from './TaskDetailsDuplicate';
+
+// Functionele wrapper voor de class component
+const TaskDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <TaskDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class TaskDetailsToolbar extends Component {
     constructor(props) {
@@ -18,8 +24,13 @@ class TaskDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/taken');
     };
 
     toggleDuplicate = () => {
@@ -28,6 +39,7 @@ class TaskDetailsToolbar extends Component {
 
     render() {
         const { finished } = this.props.taskDetails;
+        const { navigate } = this.props;
 
         return (
             <div className="row">
@@ -36,15 +48,12 @@ class TaskDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-4">
                                 <div className="btn-group btn-group-flex" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageTask && (
                                         <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                                     )}
                                     {this.props.permissions.manageTask && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -59,7 +68,7 @@ class TaskDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <TaskDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         noteSummary={this.props.taskDetails.noteSummary}
                         id={this.props.id}
                     />
@@ -84,4 +93,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TaskDetailsToolbar);
+export default connect(mapStateToProps, null)(TaskDetailsToolbarWrapper);

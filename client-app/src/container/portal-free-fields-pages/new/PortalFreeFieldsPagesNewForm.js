@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
 
@@ -9,6 +9,12 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import InputToggle from '../../../components/form/InputToggle';
 import InputTextArea from '../../../components/form/InputTextArea';
+
+// Functionele wrapper voor de class component
+const PortalFreeFieldsPagesNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalFreeFieldsPagesNewForm {...props} navigate={navigate} />;
+};
 
 class PortalFreeFieldsPagesNewForm extends Component {
     constructor(props) {
@@ -88,7 +94,7 @@ class PortalFreeFieldsPagesNewForm extends Component {
         if (!hasErrors) {
             PortalFreeFieldsAPI.newPortalFreeFieldsPage(portalFreeFieldsPage)
                 .then(payload => {
-                    hashHistory.push(`/vrije-velden-portaal-pagina`);
+                    this.props.navigate(`/vrije-velden-portaal-pagina`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -181,4 +187,4 @@ class PortalFreeFieldsPagesNewForm extends Component {
     }
 }
 
-export default PortalFreeFieldsPagesNewForm;
+export default PortalFreeFieldsPagesNewFormWrapper;

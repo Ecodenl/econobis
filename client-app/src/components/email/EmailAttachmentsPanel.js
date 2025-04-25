@@ -5,12 +5,14 @@ import fileDownload from 'js-file-download';
 import { download } from 'react-icons-kit/fa/download';
 import { share } from 'react-icons-kit/fa/share';
 import { eye } from 'react-icons-kit/fa/eye';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../modal/Modal';
 import PdfViewer from '../pdf/PdfViewer';
 import { EmailModalContext } from '../../context/EmailModalContext';
 
 export default function EmailAttachmentsPanel({ email, allowView = true }) {
+    const navigate = useNavigate();
+
     const [hoveredAttachmentId, setHoveredAttachmentId] = useState(null);
     const [viewedAttachment, setViewedAttachment] = useState(null);
     const { setIsEmailDetailsModalOpen } = useContext(EmailModalContext);
@@ -22,7 +24,7 @@ export default function EmailAttachmentsPanel({ email, allowView = true }) {
     };
 
     const saveToAlfresco = attachment => {
-        hashHistory.push(`document/nieuw/upload/email-bijlage/${attachment.id}`);
+        hnavigate(`document/nieuw/upload/email-bijlage/${attachment.id}`);
 
         setIsEmailDetailsModalOpen(false);
     };

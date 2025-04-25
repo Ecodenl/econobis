@@ -9,7 +9,7 @@ import Modal from '../../../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../../../components/form/InputSelect';
 import DocumentTemplateAPI from '../../../../../../../../api/document-template/DocumentTemplateAPI';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../../../components/form/InputText';
@@ -25,6 +25,12 @@ import ButtonIcon from '../../../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../../../components/modal/ErrorModal';
 import RevenuePartsKwhDistributionFormList from './RevenuePartsKwhDistributionFormList';
 import InputToggle from '../../../../../../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const RevenuePartsKwhDistributionFormWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuePartsKwhDistributionForm {...props} navigate={navigate} />;
+};
 
 class RevenuePartsKwhDistributionForm extends Component {
     constructor(props) {
@@ -278,7 +284,7 @@ class RevenuePartsKwhDistributionForm extends Component {
                 distributionPartsKwhIds: this.state.distributionPartsKwhIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/opbrengst-deelperiode-kwh/${this.props.revenuePartsKwh.id}/rapportage`);
+            this.props.navigate(`/project/opbrengst-deelperiode-kwh/${this.props.revenuePartsKwh.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -296,7 +302,7 @@ class RevenuePartsKwhDistributionForm extends Component {
         this.props.energySupplierExcelReportKwh({
             distributionPartsKwhIds: this.state.distributionPartsKwhIds,
         });
-        hashHistory.push(
+        this.props.navigate(
             `/project/opbrengst-deelperiode-kwh/${this.props.revenuePartsKwh.id}/energieleverancier-excel`
         );
     };
@@ -502,4 +508,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuePartsKwhDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuePartsKwhDistributionFormWrapper);

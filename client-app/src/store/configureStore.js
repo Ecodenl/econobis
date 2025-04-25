@@ -4,19 +4,29 @@ import rootSaga from '../sagas';
 
 import reducers from '../reducers';
 import moment from 'moment';
-import { hashHistory } from 'react-router';
 
 export const configure = (initialState = {}) => {
     const sagaMiddleware =
         typeof createSagaMiddleware === 'function' ? createSagaMiddleware() : createSagaMiddleware.default();
 
     const checkTokenExpirationMiddleware = store => next => action => {
+        const state = store.getState();
+
+        // todo WM: check voor later: of dit wel nodig is en goed gaat?
+        const isAuthenticated = state.auth.authenticated;
+        const meDetailsLoaded = state.systemData.meDetailsLoaded;
+        if (!isAuthenticated || !meDetailsLoaded) {
+            // Nog niet ingelogd of data nog niet binnen, dus skip deze check
+            return next(action);
+        }
+
         const lastActivity = moment(localStorage.getItem('last_activity'));
 
         if (!localStorage.getItem('last_activity') || lastActivity.add('30', 'minutes').format() < moment().format()) {
-            if (window.location.hash !== '#/login' && window.location.hash !== '#/loguit') {
+            const path = window.location.pathname;
+            if (path !== '/login' && path !== '/loguit') {
                 setTimeout(() => {
-                    hashHistory.push(`/loguit`);
+                    window.location.href = '/#/loguit';
                 }, 200);
             }
         } else {

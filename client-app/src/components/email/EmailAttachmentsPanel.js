@@ -24,7 +24,7 @@ export default function EmailAttachmentsPanel({ email, allowView = true }) {
     };
 
     const saveToAlfresco = attachment => {
-        hnavigate(`document/nieuw/upload/email-bijlage/${attachment.id}`);
+        navigate(`/document/nieuw/upload/email-bijlage/${attachment.id}`);
 
         setIsEmailDetailsModalOpen(false);
     };

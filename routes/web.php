@@ -18,14 +18,20 @@ use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePa
 use App\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Support\Facades\DB;
 
+Route::get('/client-version', function () {
+    return response()->json([
+        'version' => config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
+    ]);
+});
+
 Route::get('/frontend-config', function () {
-    $clientId = env('OAUTH_CLIENT_ID', 2);
+    $clientId = \Config::get('app.oauth_client_id');
     $clientKey = DB::table('oauth_clients')->where('id', $clientId)->value('secret');
 
     return response()->json([
         'client_id' => $clientId,
         'client_key' => $clientKey ?? '',
-        'url_api' => env('APP_URL'),
+        'url_api' => \Config::get('app.url'),
     ]);
 });
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');

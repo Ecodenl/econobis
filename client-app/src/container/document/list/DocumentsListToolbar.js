@@ -10,7 +10,7 @@ const DocumentsListToolbar = props => {
     const navigate = useNavigate();
 
     const newDocument = type => {
-        navigate(`document/nieuw/${type}/document`);
+        navigate(`/document/nieuw/${type}/document`);
     };
 
     const { permissions = {} } = props;

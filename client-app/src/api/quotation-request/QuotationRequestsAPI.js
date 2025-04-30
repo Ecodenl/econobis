@@ -65,9 +65,9 @@ export default {
     },
 
     getExcel: ({ filters, sorts, type }) => {
-        const requestUrl = `${URL_API}/api/quotation-request/excel/` + type;
+        const requestUrl = `${getApiUrl()}/api/quotation-request/excel/` + type;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance.get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

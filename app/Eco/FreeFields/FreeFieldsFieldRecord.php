@@ -12,11 +12,12 @@ class FreeFieldsFieldRecord extends Model
 
     protected $table = 'free_fields_field_records';
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'deleted_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
+        'deleted_at' => 'datetime',
     ];
+
     public function freeFieldsField()
     {
         return $this->belongsTo(FreeFieldsField::class, 'field_id');

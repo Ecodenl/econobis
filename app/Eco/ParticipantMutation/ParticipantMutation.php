@@ -21,15 +21,9 @@ class ParticipantMutation extends Model
         'paid_on',
     ];
 
-    protected $dates = [
-//        'date_interest',
-//        'date_option',
-//        'date_granted',
-//        'date_contract_retour',
-//        'date_payment',
-//        'date_entry',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function participation()

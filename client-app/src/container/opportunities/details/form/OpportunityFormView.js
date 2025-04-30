@@ -23,7 +23,7 @@ const OpportunityFormView = props => {
                 <ViewText
                     label={'Contact'}
                     value={intake && intake.contact.fullName}
-                    link={intake ? 'contact/' + intake.contact.id : ''}
+                    link={intake ? '/contact/' + intake.contact.id : ''}
                 />
                 <ViewText label={'Adres'} value={intake && intake.fullAddress} />
             </div>

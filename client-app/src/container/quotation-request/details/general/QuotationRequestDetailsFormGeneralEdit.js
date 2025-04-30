@@ -418,7 +418,7 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         id={'opportunityNumber'}
                         className={'col-sm-6 form-group'}
                         value={opportunityNumber}
-                        link={opportunityId != '' ? 'kans/' + opportunityId : ''}
+                        link={opportunityId != '' ? '/kans/' + opportunityId : ''}
                     />
                 </div>
 

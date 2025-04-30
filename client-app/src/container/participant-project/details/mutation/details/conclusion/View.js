@@ -32,7 +32,7 @@ const ParticipantDetailsMutationConclusionView = ({
                         createdWith == 'portal' || createdWith == 'webform'
                             ? ''
                             : createdBy
-                            ? 'gebruiker/' + createdBy.id
+                            ? '/gebruiker/' + createdBy.id
                             : ''
                     }
                 />
@@ -52,7 +52,7 @@ const ParticipantDetailsMutationConclusionView = ({
                         updatedWith == 'portal' || updatedWith == 'webform'
                             ? ''
                             : updatedBy
-                            ? 'gebruiker/' + updatedBy.id
+                            ? '/gebruiker/' + updatedBy.id
                             : ''
                     }
                 />

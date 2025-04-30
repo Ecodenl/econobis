@@ -1,11 +1,8 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
-import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
-import axiosInstance from '../../../api/default-setup/AxiosInstance';
 
 function ContactToImportsListItem({
     checkedNew,

@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchContactToImports: (filters, sorts, pagination, selectAllNew, selectAllUpdate) => {
-        const requestUrl = `${URL_API}/api/contact-to-imports/grid`;
+        const requestUrl = `${getApiUrl()}/api/contact-to-imports/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -17,9 +18,9 @@ export default {
     },
 
     peekContactToImportsWithStatus: status => {
-        const requestUrl = `${URL_API}/api/contact-to-imports/peek-with-status`;
+        const requestUrl = `${getApiUrl()}/api/contact-to-imports/peek-with-status`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 status: JSON.stringify(status),
             },
@@ -29,9 +30,9 @@ export default {
     createContactsFromImport: selectedImportsNew => {
         // console.log('ContactToImportsAPI - selectedImportsNew');
         // console.log(selectedImportsNew);
-        const requestUrl = `${URL_API}/api/contact-to-imports/createContactsFromImport`;
+        const requestUrl = `${getApiUrl()}/api/contact-to-imports/createContactsFromImport`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { selectedImportsNew: selectedImportsNew })
             .then(response => response.data)
             .catch(error => {
@@ -42,9 +43,9 @@ export default {
     updateContactsFromImport: selectedContactsUpdate => {
         // console.log('ContactToImportsAPI - selectedContactsUpdate');
         // console.log(selectedContactsUpdate);
-        const requestUrl = `${URL_API}/api/contact-to-imports/updateContactsFromImport`;
+        const requestUrl = `${getApiUrl()}/api/contact-to-imports/updateContactsFromImport`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { selectedContactsUpdate: selectedContactsUpdate })
             .then(response => response.data)
             .catch(error => {
@@ -52,9 +53,9 @@ export default {
             });
     },
     updateContactMatches: () => {
-        const requestUrl = `${URL_API}/api/contact/update-contact-matches`;
+        const requestUrl = `${getApiUrl()}/api/contact/update-contact-matches`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data)
             .catch(error => {

@@ -24,8 +24,12 @@ const ContactNewApp = React.lazy(() => import('./container/contact/new/ContactNe
 const ContactsInGroupListApp = React.lazy(() =>
     import('./container/contact-groups/list-contacts-in-group/ContactsInGroupListApp')
 );
-const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));
 const ContactImportApp = React.lazy(() => import('./container/contact/import/ContactImportApp'));
+const ContactImportFromEnergySupplierApp = React.lazy(() =>
+    import('./container/contact/import-from-energy-supplier/ContactImportApp')
+);
+const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));
+const ContactToImportsListApp = React.lazy(() => import('./container/contact-to-imports/list/ContactToImportsListApp'));
 const CreateRevenuesKwhReportApp = React.lazy(() =>
     import('./container/project/details/revenueKwh/details/create/CreateRevenuesKwhReportApp')
 );
@@ -327,7 +331,9 @@ const AppRoutes = () => {
                         <Route path="contact/nieuw/:type" element={<ContactNewApp />} />
                         <Route path="contact/import" element={<ContactImportApp />} />
                         /* Contacts in group */
-                        <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
+                        <Route path="contact/importeren-energie-klanten" component={ContactImportFromEnergySupplierApp} />
+                    <Route path="contact/signaleringslijst-energie-klanten" component={ContactToImportsListApp} />
+                    <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
                         <Route path="contact-groepen" element={<ContactGroupsListApp />} />
                         <Route path="contact-groep/:id/:mode" element={<ContactGroupDetailsApp />} />
                         <Route path="contact-groep/:id" element={<ContactGroupDetailsApp />} />

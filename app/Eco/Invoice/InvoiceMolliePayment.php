@@ -8,14 +8,14 @@ class InvoiceMolliePayment extends Model
 {
     protected $guarded = ['id'];
 
-    protected $casts = [
-        'date_activated' => 'date:Y-m-d H:i:s',
-        'date_paid' => 'date:Y-m-d H:i:s',
-    ];
+//    protected $casts = [
+//        'date_activated' => 'date:Y-m-d H:i:s',
+//        'date_paid' => 'date:Y-m-d H:i:s',
+//    ];
 
-    protected $dates = [
-        'date_activated',
-        'date_paid',
+    protected $casts = [
+        'date_activated' => 'datetime',
+        'date_paid' => 'datetime',
     ];
 
     public function invoice()

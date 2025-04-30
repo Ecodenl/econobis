@@ -10,10 +10,10 @@ class FinancialOverview extends Model
 {
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'date_processed',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'date_processed' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function administration()

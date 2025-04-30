@@ -12,10 +12,10 @@ class ParticipantMutationStatusLog extends Model
 
     use RevisionableTrait;
 
-    protected $dates = [
-        'date_status',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'date_status' => 'datetime',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

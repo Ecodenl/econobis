@@ -10,12 +10,8 @@ class MailgunEvent extends Model
 
     protected $casts = [
         'event_date' => 'datetime',
-    ];
-
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'event_date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function domain()

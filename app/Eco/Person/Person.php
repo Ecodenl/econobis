@@ -24,10 +24,6 @@ class Person extends Model
         'primary' => 'boolean',
     ];
 
-    protected $dates = [
-//        'date_of_birth',
-    ];
-
     public function contact()
     {
         return $this->belongsTo(Contact::class);

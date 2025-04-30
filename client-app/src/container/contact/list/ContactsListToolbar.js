@@ -54,9 +54,9 @@ class ContactsListToolbar extends Component {
         this.props.navigate(`/contact/nieuw`);
     };
 
-    importContacts = () => {
-        this.props.navigate(`/contact/import`);
-    };
+    // importContacts = () => {
+    //     this.props.navigate(`/contact/import`);
+    // };
 
     render() {
         const { permissions = {} } = this.props.meDetails;
@@ -203,13 +203,13 @@ class ContactsListToolbar extends Component {
                                         title="Downloaden contacten energieleveranciers gegevens naar CSV"
                                     />
                                 )}
-                            {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
-                                <ButtonIcon
-                                    iconName={'upload'}
-                                    onClickAction={this.importContacts}
-                                    title="Importeren contacten"
-                                />
-                            )}
+                            {/*{!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (*/}
+                            {/*    <ButtonIcon*/}
+                            {/*        iconName={'upload'}*/}
+                            {/*        onClickAction={this.importContacts}*/}
+                            {/*        title="Importeren contacten"*/}
+                            {/*    />*/}
+                            {/*)}*/}
                             {!dataControleType &&
                                 !showCheckboxList &&
                                 !showCheckboxListMerge &&

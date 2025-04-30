@@ -14,7 +14,7 @@ const IntakeDetailsFormConclusionView = props => {
                 <ViewText
                     label={'Gemaakt door'}
                     value={createdBy ? createdBy.fullName : 'Onbekend'}
-                    link={createdBy ? 'gebruiker/' + createdBy.id : ''}
+                    link={createdBy ? '/gebruiker/' + createdBy.id : ''}
                 />
                 <ViewText label={'Gemaakt op'} value={createdAt ? moment(createdAt).format('L') : 'Onbekend'} />
             </div>

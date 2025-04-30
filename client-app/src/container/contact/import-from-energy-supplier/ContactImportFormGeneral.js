@@ -11,8 +11,14 @@ import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import ContactImportValidationRow from './ContactImportValidationRow';
 import InputSelect from '../../../components/form/InputSelect';
-import { hashHistory } from 'react-router';
 import ContactToImportsAPI from '../../../api/contact-to-imports/ContactToImportsAPI';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ContactImportFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactImportFormGeneral {...props} navigate={navigate} />;
+};
 
 class ContactImportFormGeneral extends Component {
     constructor(props) {
@@ -72,7 +78,7 @@ class ContactImportFormGeneral extends Component {
         );
 
         ContactsAPI.importFromEnergySupplier(data).then(payload => {
-            hashHistory.push(`/contact/signaleringslijst-energie-klanten`);
+            this.props.navigate(`/contact/signaleringslijst-energie-klanten`);
         });
     };
 
@@ -230,4 +236,4 @@ class ContactImportFormGeneral extends Component {
     }
 }
 
-export default ContactImportFormGeneral;
+export default ContactImportFormGeneralWrapper;

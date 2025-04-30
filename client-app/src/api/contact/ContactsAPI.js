@@ -202,21 +202,21 @@ export default {
     },
 
     validateImportFromEnergySupplier: csv => {
-        const requestUrl = `${URL_API}/api/contact/validate-import-from-energy-supplier`;
+        const requestUrl = `${getApiUrl()}/api/contact/validate-import-from-energy-supplier`;
 
-        return axiosInstance.post(requestUrl, csv);
+        return getAxiosInstance().post(requestUrl, csv);
     },
 
     importFromEnergySupplier: csv => {
-        const requestUrl = `${URL_API}/api/contact/import-from-energy-supplier`;
+        const requestUrl = `${getApiUrl()}/api/contact/import-from-energy-supplier`;
 
-        return axiosInstance.post(requestUrl, csv);
+        return getAxiosInstance().post(requestUrl, csv);
     },
 
     getExcelContactToImport: ({ filters, sorts }) => {
-        const requestUrl = `${URL_API}/api/contact/excel-contact-to-import`;
+        const requestUrl = `${getApiUrl()}/api/contact/excel-contact-to-import`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -226,9 +226,9 @@ export default {
     },
 
     getContactToImportsSuppliers: () => {
-        const requestUrl = `${URL_API}/api/contact/contact-to-imports-suppliers`;
+        const requestUrl = `${getApiUrl()}/api/contact/contact-to-imports-suppliers`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

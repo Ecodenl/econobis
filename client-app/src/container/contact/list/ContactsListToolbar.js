@@ -55,9 +55,9 @@ class ContactsListToolbar extends Component {
         this.props.navigate(`/contact/nieuw`);
     };
 
-    importContacts = () => {
-        this.props.navigate(`/contact/import`);
-    };
+    // importContacts = () => {
+    //     this.props.navigate(`/contact/import`);
+    // };
 
     render() {
         const { permissions = {} } = this.props.meDetails;
@@ -204,110 +204,90 @@ class ContactsListToolbar extends Component {
                                         title="Downloaden contacten energieleveranciers gegevens naar CSV"
                                     />
                                 )}
-                            {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
-                                // <ButtonIcon
-                            //     iconName={'upload'}
-                            //     onClickAction={this.importContacts}
-                            //     title="Importeren contacten"
-                            // />
-
-                            <div className="nav navbar-nav btn-group" role="group">
-                                <button
-                                    className="btn btn-success btn-sm"
-                                    data-toggle="dropdown"
-                                    title="Importeer contacten / energieklanten"
-                                >
-                                    <Icon size={14} icon={upload} />
-                                </button>
-                                <ul className="dropdown-menu">
-                                    <li>
-                                        <Link to="contact/import">Importeer contacten</Link>
-                                    </li>
-
-                                    <li>
-                                        <Link to="contact/importeren-energie-klanten">Importeer energieklanten</Link>
-                                    </li>
-
-                                    <li>
-                                        <Link to="contact/signaleringslijst-energie-klanten">
-                                            Verwerk geïmporteerde energieklanten
-                                        </Link>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                        {!dataControleType &&
-                            !showCheckboxList &&
-                            !showCheckboxListMerge &&
-                            permissions.downloadContactConsumption &&
-                            meta.useExportAddressConsumption && (
+                            {/*{!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (*/}
+                            {/*    <ButtonIcon*/}
+                            {/*        iconName={'upload'}*/}
+                            {/*        onClickAction={this.importContacts}*/}
+                            {/*        title="Importeren contacten"*/}
+                            {/*    />*/}
+                            {/*)}*/}
+                            {!dataControleType &&
+                                !showCheckboxList &&
+                                !showCheckboxListMerge &&
+                                permissions.downloadContactConsumption &&
+                                meta.useExportAddressConsumption && (
+                                    <>
+                                        <a
+                                            role="button"
+                                            className={'btn btn-success btn-sm'}
+                                            onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
+                                            title="Downloaden elektriciteit verbruik"
+                                        >
+                                            <FaRegLightbulb width={'13px'} height={'12px'} />
+                                        </a>
+                                        <a
+                                            role="button"
+                                            className={'btn btn-success btn-sm'}
+                                            onClick={this.props.getExcelAddressEnergyConsumptionGas}
+                                            title="Downloaden gas verbruik"
+                                        >
+                                            <FaFire width={'13px'} height={'12px'} />
+                                        </a>
+                                    </>
+                                )}
+                            {!showCheckboxList &&
+                                (permissions.deletePerson ||
+                                    permissions.deleteOrganisation ||
+                                    permissions.manageGroup) && (
+                                    <ButtonIcon
+                                        iconName={'check'}
+                                        onClickAction={this.props.toggleShowCheckboxListMerge}
+                                        title="Contacten samenvoegen selectie"
+                                    />
+                                )}
+                            {showCheckboxListMerge &&
+                                (permissions.deletePerson ||
+                                    permissions.deleteOrganisation ||
+                                    permissions.manageGroup) && (
+                                    <ButtonIcon
+                                        iconName={'compress'}
+                                        onClickAction={this.toggleShowMergeSelectedItems}
+                                        title="Contacten samenvoegen"
+                                    />
+                                )}
+                        </div>
+                    </div>
+                    <div className="col-md-4">
+                        <h3 className="text-center table-title">
+                            Contacten {dataControleTypeText()}
+                            {dataControleType && (
                                 <>
-                                    <a
-                                        role="button"
-                                        className={'btn btn-success btn-sm'}
-                                        onClick={this.props.getExcelAddressEnergyConsumptionElectricity}
-                                        title="Downloaden elektriciteit verbruik"
-                                    >
-                                        <FaRegLightbulb width={'13px'} height={'12px'} />
-                                    </a>
-                                    <a
-                                        role="button"
-                                        className={'btn btn-success btn-sm'}
-                                        onClick={this.props.getExcelAddressEnergyConsumptionGas}
-                                        title="Downloaden gas verbruik"
-                                    >
-                                        <FaFire width={'13px'} height={'12px'} />
-                                    </a>
+                                    &nbsp;
+                                    <FaInfoCircle
+                                        color={'blue'}
+                                        size={'15px'}
+                                        data-tip={
+                                            'Hier staan de contacten die op basis van het geselecteerde criterium als dubbel zijn gevonden.  Je kan deze ontdubbelen door op het de blauwe knop met het vinkje te klikken. (Contacten samenvoegen selectie) Als je twee contacten hebt geselecteerd kan je die samenvoegen door op de blauwe knop met twee pijltjes te klikken (Contacten samenvoegen) Hiermee worden de gegevens van het contact wat groen gemarkeerd is aangevuld. Het rood gemarkeerde contact wordt verwijderd.'
+                                        }
+                                        data-for={`tooltip-note`}
+                                    />
+                                    <ReactTooltip
+                                        id={`tooltip-note`}
+                                        effect="float"
+                                        place="right"
+                                        multiline={true}
+                                        aria-haspopup="true"
+                                    />
                                 </>
                             )}
-                        {!showCheckboxList &&
-                            (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
-                                <ButtonIcon
-                                    iconName={'check'}
-                                    onClickAction={this.props.toggleShowCheckboxListMerge}
-                                    title="Contacten samenvoegen selectie"
-                                />
-                            )}
-                        {showCheckboxListMerge &&
-                            (permissions.deletePerson || permissions.deleteOrganisation || permissions.manageGroup) && (
-                                <ButtonIcon
-                                    iconName={'compress'}
-                                    onClickAction={this.toggleShowMergeSelectedItems}
-                                    title="Contacten samenvoegen"
-                                />
-                            )}
+                        </h3>
                     </div>
-                </div>
-                <div className="col-md-4">
-                    <h3 className="text-center table-title">
-                        Contacten {dataControleTypeText()}
-                        {dataControleType && (
-                            <>
-                                &nbsp;
-                                <FaInfoCircle
-                                    color={'blue'}
-                                    size={'15px'}
-                                    data-tip={
-                                        'Hier staan de contacten die op basis van het geselecteerde criterium als dubbel zijn gevonden.  Je kan deze ontdubbelen door op het de blauwe knop met het vinkje te klikken. (Contacten samenvoegen selectie) Als je twee contacten hebt geselecteerd kan je die samenvoegen door op de blauwe knop met twee pijltjes te klikken (Contacten samenvoegen) Hiermee worden de gegevens van het contact wat groen gemarkeerd is aangevuld. Het rood gemarkeerde contact wordt verwijderd.'
-                                    }
-                                    data-for={`tooltip-note`}
-                                />
-                                <ReactTooltip
-                                    id={`tooltip-note`}
-                                    effect="float"
-                                    place="right"
-                                    multiline={true}
-                                    aria-haspopup="true"
-                                />
-                            </>
-                        )}
-                    </h3>
-                </div>
-                <div className="col-md-4">
-                    <div className="pull-right">Resultaten: {meta.total || 0}</div>
-                </div>
-                {this.state.showDeleteSelectedItems && (
-                    <ContactsDeleteSelectedItems toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems}
+                    <div className="col-md-4">
+                        <div className="pull-right">Resultaten: {meta.total || 0}</div>
+                    </div>
+                    {this.state.showDeleteSelectedItems && (
+                        <ContactsDeleteSelectedItems
+                            toggleShowDeleteSelectedItems={this.toggleShowDeleteSelectedItems}
                         />
                     )}
                     {this.state.showAddContactsToGroup && (

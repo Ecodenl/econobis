@@ -331,9 +331,12 @@ const AppRoutes = () => {
                         <Route path="contact/nieuw/:type" element={<ContactNewApp />} />
                         <Route path="contact/import" element={<ContactImportApp />} />
                         /* Contacts in group */
-                        <Route path="contact/importeren-energie-klanten" component={ContactImportFromEnergySupplierApp} />
-                    <Route path="contact/signaleringslijst-energie-klanten" component={ContactToImportsListApp} />
-                    <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
+                        <Route
+                            path="contact/importeren-energie-klanten"
+                            element={<ContactImportFromEnergySupplierApp />}
+                        />
+                        <Route path="contact/signaleringslijst-energie-klanten" element={<ContactToImportsListApp />} />
+                        <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
                         <Route path="contact-groepen" element={<ContactGroupsListApp />} />
                         <Route path="contact-groep/:id/:mode" element={<ContactGroupDetailsApp />} />
                         <Route path="contact-groep/:id" element={<ContactGroupDetailsApp />} />

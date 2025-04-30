@@ -1,5 +1,4 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';

@@ -141,7 +141,7 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         $mollieApi = $invoice->administration->getMollieApiFacade();
-        $payment = $mollieApi->payments()->create($molliePostData);
+        $payment = $mollieApi->payments->create($molliePostData);
 
         return InvoiceMolliePayment::create([
             'invoice_id' => $invoice->id,

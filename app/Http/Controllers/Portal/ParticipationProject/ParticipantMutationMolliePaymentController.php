@@ -17,7 +17,6 @@ use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 use Mollie\Api\Exceptions\ApiException;
 
 class ParticipantMutationMolliePaymentController extends ApiController
@@ -173,7 +172,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
         try{
-            $payment = $mollieApi->payments()->create($molliePostData);
+            $payment = $mollieApi->payments->create($molliePostData);
         } catch (ApiException $exception) {
             return null;
         }

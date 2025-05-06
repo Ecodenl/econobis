@@ -12,11 +12,6 @@ class Mailbox extends Model
 
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-    ];
-
     protected $encryptable = [
         'password'
     ];
@@ -26,6 +21,8 @@ class Mailbox extends Model
         'primary' => 'boolean',
         'valid' => 'boolean',
         'link_contact_from_email_to_address' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function users()

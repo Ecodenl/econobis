@@ -166,7 +166,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
         }
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
-        $payment = $mollieApi->payments()->create($molliePostData);
+        $payment = $mollieApi->payments->create($molliePostData);
 
         return ParticipantMutationMolliePayment::create([
             'participant_mutation_id' => $participantMutation->id,

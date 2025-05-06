@@ -30,6 +30,7 @@
         "mailgun/mailgun-php": "^3.5",
         "microsoft/microsoft-graph": "^1.67",
         "mollie/laravel-mollie": "^3.1",
+        "mollie/mollie-api-php": "^2.79",
         "particle/validator": "^2.3",
         "php-imap/php-imap": "^4.3",
         "php-twinfield/twinfield": "^3.0",

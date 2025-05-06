@@ -41,9 +41,6 @@ class ParticipantProject extends Model
         'id'
     ];
 
-    protected $dates = [
-    ];
-
     protected $encryptable = [
         'iban_payout'
     ];

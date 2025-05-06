@@ -6,6 +6,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ParticipantReportMail extends Mailable
@@ -65,6 +66,8 @@ class ParticipantReportMail extends Mailable
                             'mime' => $attachment['mime'] ?? 'application/octet-stream',
                         ]
                     );
+                } else {
+                    Log::error("Failed to retrieve raw data for attachment: {$defaultAttachmentDocument->filename}");
                 }
             }
         }

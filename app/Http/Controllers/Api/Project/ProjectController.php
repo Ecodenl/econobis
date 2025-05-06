@@ -74,6 +74,8 @@ class ProjectController extends ApiController
             'documentUnderstandInfo',
             'documentProjectInfo',
             'emailTemplateAgreement',
+            'documentTemplateIncreaseParticipations',
+            'emailTemplateIncreaseParticipations',
             'questionAboutMembershipGroup',
             'memberGroup',
             'noMemberGroup',
@@ -135,6 +137,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
@@ -258,6 +263,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->whenMissing(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()

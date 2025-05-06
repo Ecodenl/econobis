@@ -150,6 +150,16 @@ const HousingFileDetailsFormGeneralView = props => {
                     {remarkCoach}
                 </div>
             </div>
+            <div className="row">
+                <div className="col-sm-3">
+                    <label htmlFor="remarkCoach" className="col-sm-12">
+                        WOZ waarde
+                    </label>
+                </div>
+                <div className="col-sm-9" id="remarkCoach">
+                    {wozValue !== null ? MoneyPresenter(wozValue) : 'Onbekend'}
+                </div>
+            </div>
         </div>
     );
 };

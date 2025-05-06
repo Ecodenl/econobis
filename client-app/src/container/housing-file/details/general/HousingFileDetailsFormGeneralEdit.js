@@ -526,6 +526,17 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
+                <div className="row">
+                    <InputText
+                        label={'WOZ waarde'}
+                        name="wozValue"
+                        value={wozValue}
+                        allowZero={true}
+                        onChangeAction={this.handleInputChange}
+                        error={this.state.errors.wozValue}
+                    />
+                </div>
+
                 <div className="panel-footer">
                     <div className="pull-right btn-group" role="group">
                         <ButtonText

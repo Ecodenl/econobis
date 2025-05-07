@@ -2103,7 +2103,7 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
             }
 
-                // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
             $responsibleUser = User::find($webform->responsible_user_id);
             if($responsibleUser){
@@ -2753,7 +2753,7 @@ class ExternalWebformController extends Controller
                 'address_id' =>  $address->id,
                 'building_type_id' => $buildingType ? $buildingType->id : null,
                 'build_year' => $buildYear ? $buildYear : null,
-                'is_house_for_sale' => $data['is_house_for_sale'] == '0' ? false : true,
+                'is_house_for_sale' => $data['is_house_for_sale'] == '0' || empty($data['is_house_for_sale']) ? false : true,
                 'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
                 'roof_type_id' => $rofeType ? $rofeType->id : null,
                 'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,

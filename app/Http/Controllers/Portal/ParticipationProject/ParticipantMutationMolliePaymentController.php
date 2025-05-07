@@ -123,6 +123,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
 
+// todo WM: Moeten in portal anders doen
+//        kan mij niet voorstellen dat dit werk ?!
+
         if (!$participantMutation) {
             return view('mollie.404');
         }
@@ -141,9 +144,10 @@ class ParticipantMutationMolliePaymentController extends ApiController
          */
         $participantMutationMolliePayment = $this->createParticipantMutationMolliePayment($participantMutation);
 
-        if(!$participantMutationMolliePayment){
-            return view('mollie.422');
-        }
+// todo WM: Moeten in portal anders doen
+//        if(!$participantMutationMolliePayment){
+//            return view('mollie.422');
+//        }
 
         return redirect($participantMutationMolliePayment->checkout_url);
     }

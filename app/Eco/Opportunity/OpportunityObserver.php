@@ -65,7 +65,7 @@ class OpportunityObserver
             } else {
                 $days = 0;
             }
-            $mailDate = Carbon::now()->addDays($days);
+            $mailDate = Carbon::now()->addDays((int) $days);
             $opportunity->date_planned_to_send_wf_email_status = $mailDate;
         }
     }

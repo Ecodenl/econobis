@@ -226,7 +226,7 @@ class Order extends Model
     }
     
     //Adds the collection frequency to a carbon date
-    public function addDurationToDate($date){
+    public function addDurationToDate(Carbon $date){
         switch ($this->collection_frequency_id) {
             case 'once':
                 return $date;
@@ -238,7 +238,7 @@ class Order extends Model
                 return $date->addQuarter();
                 break;
             case 'half-year':
-                return $date->addMonth(6);
+                return $date->addMonths(6);
                 break;
             case 'yearly':
                 return $date->addYear();

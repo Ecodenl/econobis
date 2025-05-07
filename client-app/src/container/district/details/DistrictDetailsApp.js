@@ -41,7 +41,7 @@ export default function DistrictDetailsApp(props) {
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         <DistrictListItemDeleteModal
                                             district={district}
-                                            onDelete={navigate(-1)}
+                                            onDelete={() => navigate(-1)}
                                             setShowDeleteModal={setShowDeleteModal}
                                             showDeleteModal={showDeleteModal}
                                         />{' '}

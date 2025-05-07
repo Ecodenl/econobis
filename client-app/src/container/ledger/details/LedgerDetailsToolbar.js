@@ -51,6 +51,6 @@ class LedgerDetailsToolbar extends Component {
     }
 }
 
-LedgerDetailsToolbar.propTypes = { description: PropTypes.any };
+LedgerDetailsToolbarWrapper.propTypes = { description: PropTypes.any };
 
 export default LedgerDetailsToolbarWrapper;

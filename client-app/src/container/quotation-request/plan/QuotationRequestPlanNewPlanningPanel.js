@@ -11,11 +11,6 @@ import QuotationRequestPlanNewSelectCoachModal from './QuotationRequestPlanNewSe
 
 export default function QuotationRequestPlanNewPlanningPanel({ district, opportunityId }) {
     const navigate = useNavigate();
-
-    if (!district) {
-        return null;
-    }
-
     const intervalMinutes = 30;
 
     /**
@@ -57,6 +52,7 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
+        console.log('useEffect 1');
         /**
          * Bij laden de weekinstelling op de huidige instellen
          */
@@ -66,13 +62,13 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
                 .format('YYYY-MM-DD')
         );
 
-        setDurationMinutes(district.defaultDurationMinutes);
+        if (district) {
+            setDurationMinutes(district.defaultDurationMinutes);
+        }
     }, []);
 
     useEffect(() => {
-        if (!currentWeek) {
-            return;
-        }
+        if (!district || !currentWeek) return;
 
         ContactAvailabilityAPI.fetchDistrictAvailabilitiesByWeek({
             districtId: district.id,
@@ -81,8 +77,8 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
             setAvailabilities(transformCoachAvailabilitiesToAvailabilities(coachAvailabilities));
         });
 
-        initDays();
-    }, [currentWeek]);
+        initDays(currentWeek);
+    }, [currentWeek, district]);
 
     const transformCoachAvailabilitiesToAvailabilities = coachAvailabilities => {
         return coachAvailabilities.reduce((acc, coach) => {
@@ -232,19 +228,15 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
         setTimeslots(temp);
     };
 
-    const initDays = () => {
-        /**
-         * De 7 dagen van de week in het huidige overzicht in moment objecten vullen.
-         */
-        let temp = [];
-        let day = moment(currentWeek);
-        let endOfWeek = day.clone().endOf('isoWeek');
-        while (day <= endOfWeek) {
-            temp.push(day.clone());
-            day.add(1, 'd');
+    function initDays(weekStart) {
+        const newDays = [];
+
+        for (let i = 0; i < 7; i++) {
+            newDays.push(moment(weekStart).add(i, 'days'));
         }
-        setDays(temp);
-    };
+
+        setDays(newDays);
+    }
 
     /**
      * Formatteer een aantal minuten vanaf middernacht naar een tijd in het formaat HH:mm.
@@ -369,6 +361,10 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
     };
 
     const createQuotationRequest = (day, timeslot, coachId) => {
+        if (!district) {
+            return null;
+        }
+
         if (isSaving) {
             return;
         }

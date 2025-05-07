@@ -67,11 +67,6 @@ class Contact extends Model
         'coach_min_minutes_between_appointments' => 'integer',
     ];
 
-    protected $dates = [
-//        'member_since',
-//        'member_until',
-    ];
-
     protected $encryptable = [
         'iban'
     ];

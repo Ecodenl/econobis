@@ -9,9 +9,9 @@ class FinancialOverviewParticipantProject extends Model
 {
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function participantProject()

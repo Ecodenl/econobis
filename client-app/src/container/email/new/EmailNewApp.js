@@ -345,21 +345,6 @@ class EmailNewApp extends Component {
 
         this.setState({ ...this.state, errors: errors });
 
-        function handleNewConcept2(data, mailboxId, emailId) {
-            EmailAPI.newConcept2(data, mailboxId, emailId)
-                .then(() => {
-                    this.props.navigate(`/emails/concept`);
-                })
-                .catch(function(error) {});
-        }
-        function handleNewEmail(data, mailboxId, emailId) {
-            EmailAPI.newEmail(data, mailboxId, emailId)
-                .then(() => {
-                    this.props.navigate(-1);
-                })
-                .catch(function(error) {});
-        }
-
         // If no errors send form
         if (!hasErrors) {
             if (email.to.length > 0) {
@@ -392,7 +377,7 @@ class EmailNewApp extends Component {
             if (concept) {
                 EmailAPI.newConcept(email, email.from)
                     .then(emailId => {
-                        handleNewConcept2(data, email.from, emailId.data);
+                        this.handleNewConcept2(data, email.from, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);
@@ -403,7 +388,7 @@ class EmailNewApp extends Component {
 
                 EmailAPI.newConcept(email, email.from)
                     .then(emailId => {
-                        handleNewEmail(data, email.from, emailId.data);
+                        this.handleNewEmail(data, email.from, emailId.data);
                     })
                     .catch(function(error) {
                         console.log(error);
@@ -412,6 +397,22 @@ class EmailNewApp extends Component {
             }
         }
     }
+
+    handleNewConcept2 = (data, mailboxId, emailId) => {
+        EmailAPI.newConcept2(data, mailboxId, emailId)
+            .then(() => {
+                this.props.navigate(`/emails/concept`);
+            })
+            .catch(error => {});
+    };
+
+    handleNewEmail = (data, mailboxId, emailId) => {
+        EmailAPI.newEmail(data, mailboxId, emailId)
+            .then(() => {
+                this.props.navigate(-1);
+            })
+            .catch(error => {});
+    };
 
     render() {
         return (
@@ -459,7 +460,7 @@ class EmailNewApp extends Component {
                     <Modal
                         buttonConfirmText="Verlaten"
                         closeModal={this.toggleShowModal}
-                        confirmAction={navigate(-1)}
+                        confirmAction={this.props.navigate(-1)}
                         title="Bevestigen"
                     >
                         <p>Weet u zeker dat u deze pagina wilt verlaten zonder deze e-mail op te slaan als concept?</p>

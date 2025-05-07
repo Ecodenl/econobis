@@ -21,7 +21,7 @@ use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Mollie\Laravel\Wrappers\MollieApiWrapper;
+use Mollie\Api\MollieApiClient;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -463,14 +463,12 @@ class Administration extends Model
      */
     public function getMollieApiFacade()
     {
-        if(!$this->uses_mollie){
-            return;
+        if (!$this->uses_mollie) {
+            return null;
         }
 
-        $config = app()['config'];
+        $mollie = new MollieApiClient();
+        $mollie->setApiKey($this->mollie_api_key);
 
-        $config->set('mollie.key', $this->mollie_api_key);
-
-        return new MollieApiWrapper($config, app()['mollie.api.client']);
-    }
-}
+        return $mollie;
+    }}

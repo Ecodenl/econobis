@@ -10,6 +10,7 @@ import { FaInfoCircle, FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
 import { share } from 'react-icons-kit/fa/share';
+import { upload } from 'react-icons-kit/fa/upload';
 
 import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
 import Icon from 'react-icons-kit';
@@ -203,13 +204,39 @@ class ContactsListToolbar extends Component {
                                         title="Downloaden contacten energieleveranciers gegevens naar CSV"
                                     />
                                 )}
-                            {/*{!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (*/}
-                            {/*    <ButtonIcon*/}
-                            {/*        iconName={'upload'}*/}
-                            {/*        onClickAction={this.importContacts}*/}
-                            {/*        title="Importeren contacten"*/}
-                            {/*    />*/}
-                            {/*)}*/}
+                            {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
+                                // <ButtonIcon
+                                //     iconName={'upload'}
+                                //     onClickAction={this.importContacts}
+                                //     title="Importeren contacten"
+                                // />
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        data-toggle="dropdown"
+                                        title="Importeren contacten"
+                                    >
+                                        <Icon size={14} icon={upload} />
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <Link to="/contact/import">Importeer contacten</Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="/contact/importeren-energie-klanten">
+                                                Importeer energieklanten
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="/contact/signaleringslijst-energie-klanten">
+                                                Verwerk geïmporteerde energieklanten
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
                             {!dataControleType &&
                                 !showCheckboxList &&
                                 !showCheckboxListMerge &&

@@ -7,9 +7,9 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 // Functionele wrapper voor de class component
-const CostCenterDetailsAppWrapperWrapper = props => {
+const CostCentersListItemWrapper = props => {
     const navigate = useNavigate();
-    return <CostCenterDetailsAppWrapper {...props} navigate={navigate} />;
+    return <CostCentersListItem {...props} navigate={navigate} />;
 };
 
 class CostCentersListItem extends Component {
@@ -80,4 +80,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(CostCenterDetailsAppWrapperWrapper);
+export default connect(mapStateToProps)(CostCentersListItemWrapper);

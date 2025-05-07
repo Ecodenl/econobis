@@ -51,6 +51,6 @@ class CostCenterDetailsToolbar extends Component {
     }
 }
 
-CostCenterDetailsToolbar.propTypes = { description: PropTypes.any };
+CostCenterDetailsToolbarWrapper.propTypes = { description: PropTypes.any };
 
 export default CostCenterDetailsToolbarWrapper;

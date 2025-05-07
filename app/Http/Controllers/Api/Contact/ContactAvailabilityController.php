@@ -105,8 +105,8 @@ class ContactAvailabilityController
         // Create new availabilities
         foreach ($request->availabilities as $availability) {
             $contact->availabilities()->create([
-                'from' => $startOfWeek->copy()->addDays($availability['day'])->format('Y-m-d') . ' ' . $availability['from'] . ':00',
-                'to' => $startOfWeek->copy()->addDays($availability['day'])->format('Y-m-d') . ' ' . $availability['to'] . ':00',
+                'from' => $startOfWeek->copy()->addDays((int) $availability['day'])->format('Y-m-d') . ' ' . $availability['from'] . ':00',
+                'to' => $startOfWeek->copy()->addDays((int) $availability['day'])->format('Y-m-d') . ' ' . $availability['to'] . ':00',
             ]);
         }
     }
@@ -131,7 +131,7 @@ class ContactAvailabilityController
         $numberOfWeeks = $request->numberOfWeeks;
 
         $startOfWeekToCopyTo = Carbon::make($request->copyToWeek);
-        $diffInWeeks = $startOfWeekToCopyTo->diffInWeeks($startOfWeekToCopyFrom);
+        $diffInWeeks = $startOfWeekToCopyTo->diffInWeeks($startOfWeekToCopyFrom, true);
         $contact->availabilities()->whereBetween('from', [$startOfWeekToCopyTo, $startOfWeekToCopyTo->copy()->addWeeks($numberOfWeeks - 1)->endOfWeek()])->delete();
 
         for ($i = 0; $i < $numberOfWeeks; $i++) {

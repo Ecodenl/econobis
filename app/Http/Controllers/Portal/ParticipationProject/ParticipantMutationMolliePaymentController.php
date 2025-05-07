@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mollie\Api\Exceptions\ApiException;
 
 class ParticipantMutationMolliePaymentController extends ApiController
 {
@@ -122,6 +123,9 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         $participantMutation = ParticipantMutation::firstWhere('code', $participantMutationCode);
 
+// todo WM: Moeten in portal anders doen
+//        kan mij niet voorstellen dat dit werk ?!
+
         if (!$participantMutation) {
             return view('mollie.404');
         }
@@ -139,6 +143,11 @@ class ParticipantMutationMolliePaymentController extends ApiController
          * Er is nog niet betaald, maak een mollie transactie aan, en redirect daar naartoe.
          */
         $participantMutationMolliePayment = $this->createParticipantMutationMolliePayment($participantMutation);
+
+// todo WM: Moeten in portal anders doen
+//        if(!$participantMutationMolliePayment){
+//            return view('mollie.422');
+//        }
 
         return redirect($participantMutationMolliePayment->checkout_url);
     }
@@ -166,7 +175,11 @@ class ParticipantMutationMolliePaymentController extends ApiController
         }
 
         $mollieApi = $participantMutation->participation->project->administration->getMollieApiFacade();
-        $payment = $mollieApi->payments->create($molliePostData);
+        try{
+            $payment = $mollieApi->payments->create($molliePostData);
+        } catch (ApiException $exception) {
+            return null;
+        }
 
         return ParticipantMutationMolliePayment::create([
             'participant_mutation_id' => $participantMutation->id,

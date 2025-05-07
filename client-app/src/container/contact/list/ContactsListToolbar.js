@@ -193,11 +193,33 @@ class ContactsListToolbar extends Component {
                                     />
                                 )}
                             {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
-                                <ButtonIcon
-                                    iconName={'upload'}
-                                    onClickAction={this.importContacts}
-                                    title="Importeren contacten"
-                                />
+                                // <ButtonIcon
+                                //     iconName={'upload'}
+                                //     onClickAction={this.importContacts}
+                                //     title="Importeren contacten"
+                                // />
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button className="btn btn-success btn-sm" data-toggle="dropdown">
+                                        <Icon size={14} icon={upload} />
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <Link to="contact/import">Importeer contacten</Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="contact/importeren-energie-klanten">
+                                                Importeer energieklanten
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="contact/signaleringslijst-energie-klanten">
+                                                Verwerk geïmporteerde energieklanten
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                             {!dataControleType &&
                                 !showCheckboxList &&

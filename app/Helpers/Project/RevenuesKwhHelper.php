@@ -152,7 +152,7 @@ class RevenuesKwhHelper
                     $createOrUpdateNextRevenueValuesKwh = true;
                 }
                 // Delete bestaande gesimuleerde values kwh
-                $partDateDateAfterBegin =  Carbon::parse($revenuePartsKwh->date_begin)->addDay(1)->format('Y-m-d');
+                $partDateDateAfterBegin =  Carbon::parse($revenuePartsKwh->date_begin)->addDay()->format('Y-m-d');
                 $partDateEnd =  Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
                 if( !($revenuePartsKwh->date_begin == $revenuePartsKwh->date_end) ){
                     $conceptSimulatedValuesKwh =  RevenueValuesKwh::where('revenue_id', $revenuePartsKwh->revenue_id)->whereBetween('date_registration', [$partDateDateAfterBegin, $partDateEnd])->where('is_simulated', true)->where('status', 'concept');
@@ -199,7 +199,7 @@ class RevenuesKwhHelper
      */
     protected function createOrUpdateRevenueValuesKwhSimulate($revenueId, $partDateBegin, $partDateEnd, $dateRegistrationDayAfterEnd): void
     {
-        $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin));
+        $daysOfPeriod = Carbon::parse($dateRegistrationDayAfterEnd)->diffInDays(Carbon::parse($partDateBegin), true);
         $beginRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $partDateBegin)->first();
         $endRevenueValuesKwh = RevenueValuesKwh::where('revenue_id', $revenueId)->where('date_registration', $dateRegistrationDayAfterEnd)->first();
 
@@ -267,7 +267,7 @@ class RevenuesKwhHelper
         // Bepalen energiesupplier
         $partDateBegin = Carbon::parse($revenuePartsKwh->date_begin)->format('Y-m-d');
         $partDateEnd = Carbon::parse($revenuePartsKwh->date_end)->format('Y-m-d');
-        $daysOfPeriod = Carbon::parse($revenuePartsKwh->date_end)->addDay(1)->diffInDays(Carbon::parse($revenuePartsKwh->date_begin));
+        $daysOfPeriod = Carbon::parse($revenuePartsKwh->date_end)->addDay()->diffInDays(Carbon::parse($revenuePartsKwh->date_begin), true);
 
         $addressEnergySupplier = AddressEnergySupplier::where('address_id', '=', $distributionKwh->participation->address_id)
             ->whereIn('energy_supply_type_id', [2, 3] )
@@ -494,7 +494,7 @@ class RevenuesKwhHelper
 
             $dateEndForPeriod = clone $dateEndMutation;
             $dateEndForPeriod->endOfDay();
-            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+            $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin, true);
             if($dateBegin->format('Y-m-d') <= $dateEndMutation->format('Y-m-d')) {
                 RevenueDistributionValuesKwh::create(
                     [
@@ -517,7 +517,7 @@ class RevenuesKwhHelper
 
         $dateEndForPeriod = clone $dateEnd;
         $dateEndForPeriod->endOfDay();
-        $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin);
+        $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateBegin, true);
 
         RevenueDistributionValuesKwh::create(
             [
@@ -788,7 +788,7 @@ class RevenuesKwhHelper
                             $newDistributionValuesKwh->parts_id = $newRevenuePartsKwh->id;
                             $dateEndForPeriodNew = clone Carbon::parse($oldEndDateOriginalPartsKwh);
                             $dateEndForPeriodNew->endOfDay();
-                            $newDistributionValuesKwh->days_of_period = $dateEndForPeriodNew->addDay()->diffInDays(Carbon::parse($splitDateString));
+                            $newDistributionValuesKwh->days_of_period = $dateEndForPeriodNew->addDay()->diffInDays(Carbon::parse($splitDateString), true);
                             $newDistributionValuesKwh->quantity_multiply_by_days = $newDistributionValuesKwh->participations_quantity * $newDistributionValuesKwh->days_of_period;
                             $newDistributionValuesKwh->delivered_kwh = round($newDistributionValuesKwh->delivered_kwh / $distributionValuesKwh->days_of_period * $newDistributionValuesKwh->days_of_period, 6);
                             $newDistributionValuesKwh->save();
@@ -797,7 +797,7 @@ class RevenuesKwhHelper
                             $dateEndForPeriodOriginal = clone Carbon::parse($newEndDateOriginalPartsKwh);
                             $dateEndForPeriodOriginal->endOfDay();
                             $distributionValuesKwh->date_end = $newEndDateOriginalPartsKwh;
-                            $distributionValuesKwh->days_of_period = $dateEndForPeriodOriginal->addDay()->diffInDays(Carbon::parse($revenuePartsKwh->date_begin));
+                            $distributionValuesKwh->days_of_period = $dateEndForPeriodOriginal->addDay()->diffInDays(Carbon::parse($revenuePartsKwh->date_begin), true);
                             $distributionValuesKwh->quantity_multiply_by_days =$distributionValuesKwh->participations_quantity * $distributionValuesKwh->days_of_period;
                             $distributionValuesKwh->delivered_kwh = $distributionValuesKwh->delivered_kwh - $newDistributionValuesKwh->delivered_kwh;
                             $distributionValuesKwh->save();

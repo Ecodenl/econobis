@@ -96,7 +96,7 @@ class ProjectRevenueDistributionCalculator
                         // If date entry is before date begin then date entry is equal to date begin
                         if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-                        $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                        $daysOfPeriod = $dateEnd->diffInDays($dateEntry, true);
                         $totalParticipationsDays = $totalParticipationsDays + ($daysOfPeriod * $mutation->quantity);
                     }
                 }
@@ -111,7 +111,7 @@ class ProjectRevenueDistributionCalculator
                     // If date entry is before date begin then date entry is equal to date begin
                     if ($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+                    $daysOfPeriod = $dateEnd->diffInDays($dateEntry, true);
                     $distributionParticipationsDays = $distributionParticipationsDays + ($daysOfPeriod * $mutation->quantity);
                 }
             }
@@ -193,7 +193,7 @@ class ProjectRevenueDistributionCalculator
             if (!$dateBegin || !$dateEnd){
                 $payout = 0;
             }else{
-                $daysOfPeriod = $dateEnd->diffInDays($dateBegin);
+                $daysOfPeriod = $dateEnd->diffInDays($dateBegin, true);
                 // If key amount first percentage is filled and is greater participationValue, then split calculation with the two percentages
                 if ($this->projectRevenueDistribution->revenue->key_amount_first_percentage && $participationValue > $this->projectRevenueDistribution->revenue->key_amount_first_percentage) {
                     $payoutTillKeyAmount = ($this->projectRevenueDistribution->revenue->key_amount_first_percentage * $this->projectRevenueDistribution->revenue->pay_percentage) / 100 / ($dateBegin->isLeapYear() ? 366 : 365) * $daysOfPeriod;
@@ -233,7 +233,7 @@ class ProjectRevenueDistributionCalculator
             // If date entry is before date begin then date entry is equal to date begin
             if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+            $daysOfPeriod = $dateEnd->diffInDays($dateEntry, true);
 
             if($this->projectTypeCodeRef === 'loan') {
                 $mutationValue = $mutation->amount;
@@ -291,7 +291,7 @@ class ProjectRevenueDistributionCalculator
             // If date entry is before date begin then date entry is equal to date begin
             if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
-            $daysOfPeriod = $dateEnd->diffInDays($dateEntry);
+            $daysOfPeriod = $dateEnd->diffInDays($dateEntry, true);
 
             if($this->projectTypeCodeRef === 'obligation' || $this->projectTypeCodeRef === 'capital' || $this->projectTypeCodeRef === 'postalcode_link_capital') {
                 $mutationValue = $currentBookWorth * $mutation->quantity;

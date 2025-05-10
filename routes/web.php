@@ -11,19 +11,52 @@
 |
 */
 
+use App\Eco\User\User;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Controllers\Api\Mailbox\MailgunMailController;
+use App\Http\Controllers\Auth\PkceLoginController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use App\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+
+//use Illuminate\Support\Facades\DB;
+
+Route::get('/test-oauth', fn() => 'Hallo van Laravel!');
+
+Route::get('/debug-login', function () {
+    $user = User::first();
+    Auth::guard('web')->login($user);
+    session(['custom_debug_check' => true]);
+    Log::info('Ingelogd met session ID', [
+        'session_id' => session()->getId(),
+        'user' => auth()->user(),
+    ]);
+    return 'Logged in as ' . $user->email;
+});
+
+Route::get('/redirect.html', function () {
+    return response()->file(public_path('redirect.html'));
+});
 
 Route::get('/client-version', function () {
     return response()->json([
         'version' => config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
     ]);
 });
+Route::get('/auth/callback-temp', function (\Illuminate\Http\Request $request) {
+    Log::info('callback-temp?');
+    $query = http_build_query([
+        'code' => $request->get('code'),
+        'state' => $request->get('state'),
+    ]);
+    return redirect("/#/auth/callback?$query");
+});
 
+Route::post('/pkce-login', [PkceLoginController::class, 'login']);
+
+// todo WM: deze frontend-config kan helemaal vervallen als pkce-login werkt!
 Route::get('/frontend-config', function () {
     $clientId = \Config::get('app.oauth_client_id');
 //    $clientKey = DB::table('oauth_clients')->where('id', $clientId)->value('secret');
@@ -34,6 +67,7 @@ Route::get('/frontend-config', function () {
         'url_api' => \Config::get('app.url'),
     ]);
 });
+
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
 
 Route::get('/mollie/betalen/{invoiceCode}', [InvoiceMolliePaymentController::class, 'pay'])->name('mollie.pay');

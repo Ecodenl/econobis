@@ -1,5 +1,5 @@
 import getAxiosInstance from '../default-setup/AxiosInstance';
-import { getApiUrl } from '../utils/ApiUrl';
+import { getApiUrl } from '../utils/loginRouteFields';
 
 const URL_REVENUES_KWH = `project/revenues-kwh`;
 

@@ -16,8 +16,8 @@ class SetPassportPortalProvider
      */
     public function handle($request, Closure $next)
     {
-        Config::set('auth.guards.api.provider', 'portal');
-        Config::set('auth.defaults.passwords', 'portal');
+        Config::set('auth.guards.api.provider', 'portal_users');
+        Config::set('auth.defaults.passwords', 'portal_users');
 
         return $next($request);
     }

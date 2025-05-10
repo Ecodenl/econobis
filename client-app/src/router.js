@@ -272,7 +272,7 @@ const AppRoutes = () => {
             <Suspense fallback={<LoadingPage />}>
                 <ScrollToTop />
                 <Routes>
-                    <Route path="/auth/callback" element={<AuthCallback />} />
+                    <Route path="auth/callback" element={<AuthCallback />} />
                     <Route path="login" element={<Login />} />
                     <Route path="loguit" element={<Logout />} />
                     <Route path="wachtwoord-vergeten" element={<Forgot />} />

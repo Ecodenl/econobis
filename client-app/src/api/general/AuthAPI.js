@@ -1,70 +1,52 @@
-import getAxiosInstance from '../default-setup/AxiosInstance';
-import { getApiUrl } from '../utils/ApiUrl';
-import pkceChallenge from 'pkce-challenge';
+import axios from 'axios';
+import { generatePKCECodes } from '../../container/auth/pkce';
+import { getApiUrl, getClientId, getRedirectUri } from '../utils/loginRouteFields';
 
-// const REDIRECT_URI = `${window.location.origin}/auth/callback`;
-// const AUTH_URL = `${window.env?.URL_API}/oauth/authorize`;
-// const TOKEN_URL = `${window.env?.URL_API}/oauth/token`;
-const REDIRECT_URI = `${window.location.origin}/auth/callback`;
+const clientId = getClientId();
+console.log('AuthAPI - cliendId: ' + clientId);
+const redirectUri = getRedirectUri();
+console.log('AuthAPI - redirectUri: ' + redirectUri);
 
-let codeVerifier = null;
+const startLoginWithPKCE = async (username, password) => {
+    const { codeVerifier, codeChallenge } = await generatePKCECodes();
 
-const startLogin = () => {
-    const CLIENT_ID = window.env?.CLIENT_ID;
-    const AUTH_URL = `${getApiUrl()}/oauth/authorize`;
-    const pkce = pkceChallenge(); // generate { code_verifier, code_challenge }
-    codeVerifier = pkce.code_verifier;
-    localStorage.setItem('pkce_verifier', codeVerifier);
+    console.log('codeVerifier', codeVerifier);
+    console.log('codeChallenge', codeChallenge);
 
-    console.log('startLogin - pkce_verifier ', codeVerifier);
-    console.log('startLogin - AUTH_URL ', AUTH_URL);
-    console.log('startLogin - REDIRECT_URI ', REDIRECT_URI);
-    console.log('startLogin - CLIENT_ID ', CLIENT_ID);
+    // Bewaar de verifier tijdelijk in localStorage (of sessionStorage)
+    localStorage.setItem('pkce_code_verifier', codeVerifier);
+    localStorage.setItem('pkce_code_verifier', codeVerifier);
 
-    const params = new URLSearchParams({
-        client_id: CLIENT_ID,
-        response_type: 'code',
-        redirect_uri: REDIRECT_URI,
-        scope: '', // eventueel: 'app'
-        code_challenge: pkce.code_challenge,
-        code_challenge_method: 'S256',
-    });
+    // .get(requestUrl)
+    //         .then(function(response) {
+    //             return response.data.data;
+    //         })
+    //         .catch(function(error) {
+    //             console.log(error);
+    //         });
 
-    window.location.href = `${AUTH_URL}?${params.toString()}`;
-};
+    const response = await axios.post(
+        `${getApiUrl()}/pkce-login`,
+        {
+            email: username,
+            password,
+        },
+        {
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        }
+    );
+    console.log('/pkce-login - response', response);
 
-const handleAuthCallback = async authorizationCode => {
-    const CLIENT_ID = window.env?.CLIENT_ID;
-    const TOKEN_URL = `${getApiUrl()}/oauth/token`;
-    const storedVerifier = localStorage.getItem('pkce_verifier');
-
-    console.log('handleAuthCallback - pkce_verifier ', storedVerifier);
-    console.log('handleAuthCallback - TOKEN_URL ', TOKEN_URL);
-    console.log('handleAuthCallback - REDIRECT_URI ', REDIRECT_URI);
-    console.log('handleAuthCallback - CLIENT_ID ', CLIENT_ID);
-
-    const data = {
-        grant_type: 'authorization_code',
-        client_id: CLIENT_ID,
-        redirect_uri: REDIRECT_URI,
-        code: authorizationCode,
-        code_verifier: storedVerifier,
-    };
-
-    try {
-        const response = await getAxiosInstance().post(TOKEN_URL, data);
-        // Opslaan tokens in localStorage of state (zoals eerder)
-        localStorage.setItem('access_token', response.data.access_token);
-        localStorage.setItem('refresh_token', response.data.refresh_token);
-
-        return { success: true };
-    } catch (error) {
-        console.error('Auth error', error);
-        return { success: false, error };
-    }
+    // Redirect naar Laravel Passport authorize route
+    // const authUrl = `${getApiUrl()}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${codeChallenge}&code_challenge_method=S256`;
+    const authUrl = `${getApiUrl()}/oauth/authorize?response_type=code&client_id=${clientId}&redirect_uri=${redirectUri}&code_challenge=${codeChallenge}&code_challenge_method=S256&scope=use-app`;
+    console.log('authUrl', authUrl);
+    window.location.href = authUrl;
 };
 
 export default {
-    startLogin,
-    handleAuthCallback,
+    startLoginWithPKCE,
 };

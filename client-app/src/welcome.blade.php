@@ -8,6 +8,13 @@
 
     <title>Econobis</title>
 
+    <script>
+        window.env = {
+            CLIENT_ID: "{{ config('app.oauth_client_id') }}",
+            URL_API: "{{ config('app.url') }}"
+        };
+    </script>
+
 </head>
 <body>
 

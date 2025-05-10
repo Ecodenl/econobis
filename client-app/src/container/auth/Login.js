@@ -6,7 +6,6 @@ import { useNavigate } from 'react-router-dom';
 import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
-import moment from 'moment';
 import MeAPI from '../../api/general/MeAPI';
 import VersionAPI from '../../api/general/VersionAPI';
 
@@ -32,6 +31,24 @@ class Login extends Component {
         VersionAPI.fetchVersion().then(response => {
             this.setState({ version: response.data.version });
         });
+
+        // ⬇️ Check of we via PKCE binnenkomen
+        console.log('window.location.search:', window.location.search);
+        const urlParams = new URLSearchParams(window.location.search);
+        console.log('urlParams:', urlParams);
+        const clientId = urlParams.get('client_id');
+        const redirectUri = urlParams.get('redirect_uri');
+        const responseType = urlParams.get('response_type');
+        const codeChallenge = urlParams.get('code_challenge');
+
+        if (clientId && redirectUri && responseType === 'code' && codeChallenge) {
+            // Stel de volledige authorize URL samen en sla op
+            const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}&scope=use-app`;
+
+            localStorage.setItem('authorize_url', authorizeUrl);
+            console.log('PKCE authorize_url opgeslagen:', authorizeUrl);
+        } else {
+        }
     }
 
     handleInputChange = event => {
@@ -46,56 +63,17 @@ class Login extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+        const { username, password } = this.state;
 
-        const loginCredentials = {
-            username: this.state.username,
-            password: this.state.password,
-        };
-
-        AuthAPI.startLogin().then(payload => {
-            if (payload.status == 200) {
-                localStorage.setItem('access_token', payload.data.access_token);
-                localStorage.setItem('refresh_token', payload.data.refresh_token);
-                localStorage.setItem('last_activity', moment().format());
-
-                this.props.authSuccess();
-
-                MeAPI.fetchTwoFactorStatus().then(payload => {
-                    if (!payload.data.requireTwoFactorAuthentication) {
-                        this.props.navigate('/');
-                        return;
-                    }
-
-                    if (!payload.data.twoFactorActivated) {
-                        /**
-                         * We geven het wachtwoord onderwater mee naar de two-factor activatie pagina.
-                         * Voor het aanroepen van activatie api is bevestiging van huidig wachtwoord verplicht via de header.
-                         * Omdat de gebruiker zojuist heeft ingelogd met zijn wachtwoord is het onzinnig om deze daar meteen nog eens te vragen.
-                         */
-                        // this.props.navigate({
-                        //     pathname: '/two-factor/activate',
-                        //     state: { password: this.state.password },
-                        // });
-                        this.props.navigate('/two-factor/activate', {
-                            state: { password: this.state.password },
-                        });
-                        return;
-                    }
-
-                    if (payload.data.hasValidToken) {
-                        this.props.navigate('/');
-                        return;
-                    }
-
-                    this.props.navigate('/two-factor/confirm');
-                });
-            } else {
+        AuthAPI.startLoginWithPKCE(username, password).then(result => {
+            if (result?.error) {
                 this.setState({
                     username: '',
                     password: '',
-                    errorMessage: 'Verkeerde inloggegevens ingevuld!',
+                    errorMessage: result.error,
                 });
             }
+            // anders: je wordt direct gerefreshed naar de authorize endpoint
         });
     };
 

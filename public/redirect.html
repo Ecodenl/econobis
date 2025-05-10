@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+        console.log('hallo redirect 1');
+        // const params = window.location.search;
+        // window.location.replace(`https://econobis-laravel7.nl/#/auth/callback${params}`);
+        const params = window.location.search;
+        window.location.href = '/#/auth/callback' + params;
+    </script>
+</head>
+<body>
+Redirecting...
+</body>
+</html>

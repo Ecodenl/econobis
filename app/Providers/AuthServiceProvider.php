@@ -187,18 +187,17 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        $this->registerPolicies();
-
         Log::info('AuthServiceProvider@boot wordt uitgevoerd');
 
-//        Passport::routes();
+        $this->registerPolicies();
+        Passport::tokensExpireIn(now()->addHours(12));
+        Passport::refreshTokensExpireIn(now()->addHours(12));
+
+        // Laad de custom Passport routes
+        //        Passport::routes();
         if (! $this->app->routesAreCached()) {
             require base_path('routes/passport.php');
         }
-
-        Passport::tokensExpireIn(now()->addHours(12));
-        Passport::refreshTokensExpireIn(now()->addHours(12));
-        Passport::refreshTokensExpireIn(now()->addDays(15));
 
         Passport::loadKeysFrom(__DIR__ . '/../../secrets/oauth');
     }

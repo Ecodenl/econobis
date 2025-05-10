@@ -6,7 +6,6 @@ use App\Eco\Cooperation\Cooperation;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Illuminate\Support\Facades\Log;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
@@ -17,7 +16,6 @@ class TwoFactorAuthenticationController extends Controller
      */
     public function status(Request $request)
     {
-        Log::info('TwoFactorAuthenticationController - status - komen we hier ?');
         $token = $request->header('TwoFactorToken');
         $cooperation =  Cooperation::first();
 

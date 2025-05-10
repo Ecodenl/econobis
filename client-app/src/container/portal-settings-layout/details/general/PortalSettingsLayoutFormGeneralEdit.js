@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getApiUrl } from '../../../../api/utils/ApiUrl';
+import { getApiUrl } from '../../../../api/utils/loginRouteFields';
 import { connect } from 'react-redux';
 import { FaUser } from 'react-icons/fa';
 import validator from 'validator';

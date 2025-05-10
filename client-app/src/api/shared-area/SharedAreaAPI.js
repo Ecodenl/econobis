@@ -1,6 +1,6 @@
 import getAxiosInstance from '../default-setup/AxiosInstance';
 import axios from 'axios';
-import { getApiUrl } from '../utils/ApiUrl';
+import { getApiUrl } from '../utils/loginRouteFields';
 
 // try {
 //     getAxiosInstance().CancelToken = axios.CancelToken;

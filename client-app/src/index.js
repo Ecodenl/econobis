@@ -15,20 +15,19 @@ if (token) {
     store.dispatch(authActions.authSuccess());
 }
 
-const fetchConfig = async () => {
-    const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
-    console.log('index.js - fetchConfig - backendUrl: ', backendUrl);
-
-    const response = await fetch(`${backendUrl}/frontend-config`);
-    const config = await response.json();
-    console.log('index.js - fetchConfig - config: ', config);
-
-    window.env = {
-        CLIENT_ID: config.client_id,
-        // CLIENT_KEY: config.client_key,
-        URL_API: config.url_api,
-    };
-};
+// const fetchConfig = async () => {
+//     const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
+//     console.log('index.js - fetchConfig - backendUrl: ', backendUrl);
+//
+//     const response = await fetch(`${backendUrl}/frontend-config`);
+//     const config = await response.json();
+//     console.log('index.js - fetchConfig - config: ', config);
+//
+//     window.env = {
+//         CLIENT_ID: config.client_id,
+//         URL_API: config.url_api,
+//     };
+// };
 
 // Detecteer IE
 const isIE = /*@cc_on!@*/ false || !!document.documentMode;
@@ -49,8 +48,8 @@ const IEPage = () => (
     </div>
 );
 
-fetchConfig().then(() => {
-    const container = document.getElementById('root');
-    const root = createRoot(container);
-    root.render(isIE ? <IEPage /> : <App />);
-});
+// fetchConfig().then(() => {
+const container = document.getElementById('root');
+const root = createRoot(container);
+root.render(isIE ? <IEPage /> : <App />);
+// });

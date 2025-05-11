@@ -56,16 +56,16 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'passport-portal' => \App\Http\Middleware\SetPassportPortalProvider::class,
+//        'passport-portal' => \App\Http\Middleware\SetPassportPortalProvider::class,
         'auth' => \Illuminate\Auth\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings' => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can' => \Illuminate\Auth\Middleware\Authorize::class,
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \App\Http\Middleware\ThrottleRequests::class,
-        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
-        'scope.app' => SetAppScope::class,
-        'scope.portal' => SetPortalScope::class,
+//        'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
+//        'scope.app' => SetAppScope::class,
+//        'scope.portal' => SetPortalScope::class,
         'two-factor' => VerifyTwoFactorAuthentication::class,
         'two-factor-portal' => VerifyPortalTwoFactorAuthentication::class,
     ];

@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkceUtils';
-import { getClientId, getRedirectUri, getApiUrl } from '../utils/loginRouteFields';
+import { getApiUrl } from '../utils/loginRouteFields';
 
 const AuthAPI = {
     startLoginWithPKCE: async (username, password) => {

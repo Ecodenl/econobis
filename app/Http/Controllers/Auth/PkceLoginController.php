@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+//use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class PkceLoginController extends Controller
@@ -19,12 +19,12 @@ class PkceLoginController extends Controller
         ]);
 
         Log::info('HTTP_REFERER: ' . $_SERVER['HTTP_REFERER']);
-        if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost:')){
-            Log::info('HTTP_REFERER: start met http://localhost:');
-            $clientId = "9";
+        if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost')){
+            Log::info('HTTP_REFERER: start met http://localhost');
+            $clientId = config('app.oauth_client_id_local');
             $redirect = config('app.url') . '/redirect.html';
         } else {
-            Log::info('HTTP_REFERER: start NIET met http://localhost:');
+            Log::info('HTTP_REFERER: start NIET met http://localhost');
             $clientId = config('app.oauth_client_id');
             $redirect = config('app.url') . '/auth/callback';
         }

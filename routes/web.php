@@ -11,26 +11,13 @@
 |
 */
 
-use App\Eco\User\User;
 use App\Http\Controllers\Api\Invoice\InvoiceMolliePaymentController;
 use App\Http\Controllers\Api\Mailbox\MailboxController;
 use App\Http\Controllers\Api\Mailbox\MailgunMailController;
 use App\Http\Controllers\Auth\PkceLoginController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use App\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-
-//Route::get('/debug-login', function () {
-//    $user = User::first();
-//    Auth::guard('web')->login($user);
-//    session(['custom_debug_check' => true]);
-//    Log::info('Ingelogd met session ID', [
-//        'session_id' => session()->getId(),
-//        'user' => auth()->user(),
-//    ]);
-//    return 'Logged in as ' . $user->email;
-//});
 
 Route::get('/redirect.html', function () {
     return response()->file(public_path('redirect.html'));
@@ -43,10 +30,20 @@ Route::get('/client-version', function () {
 });
 
 Route::get('/auth/callback', function (\Illuminate\Http\Request $request) {
-    Log::info('callback-temp?');
+     Log::info('HTTP_REFERER: ' . $_SERVER['HTTP_REFERER']);
+    if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost')){
+        Log::info('HTTP_REFERER: start met http://localhost');
+        $clientId = config('app.oauth_client_id_local');
+    } else {
+        Log::info('HTTP_REFERER: start NIET met http://localhost');
+        $clientId = config('app.oauth_client_id');
+    }
+
     $query = http_build_query([
         'code' => $request->get('code'),
         'state' => $request->get('state'),
+        'clientId' => $clientId,
+        'redirectUri' => config('app.redirectUri'),
     ]);
     return redirect("/#/auth/callback?$query");
 });
@@ -54,27 +51,25 @@ Route::get('/auth/callback', function (\Illuminate\Http\Request $request) {
 Route::post('/pkce-login', [PkceLoginController::class, 'login']);
 
 // todo WM: deze frontend-config kan helemaal vervallen als pkce-login werkt!
-Route::get('/frontend-config', function () {
+//Route::get('/frontend-config', function () {
 //    if (window.location.hostname === 'localhost') {
 //        console.log('loginRouteFields - localhost - getClientId', window.env.CLIENT_ID);
 //        return '9';
 //    }
-    Log::info('HTTP_REFERER: ' . $_SERVER['HTTP_REFERER']);
-    if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost:')){
-        Log::info('HTTP_REFERER: start met http://localhost:');
-        $clientId = "9";
-    } else {
-        Log::info('HTTP_REFERER: start NIET met http://localhost:');
-        $clientId = \Config::get('app.oauth_client_id');
-    }
-//    $clientKey = DB::table('oauth_clients')->where('id', $clientId)->value('secret');
-
-    return response()->json([
-        'client_id' => $clientId,
-//        'client_key' => $clientKey ?? '',
-        'url_api' => \Config::get('app.url'),
-    ]);
-});
+//    Log::info('HTTP_REFERER: ' . $_SERVER['HTTP_REFERER']);
+//    if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost')){
+//        Log::info('HTTP_REFERER: start met http://localhost');
+//        $clientId = config('app.oauth_client_id_local');
+//    } else {
+//        Log::info('HTTP_REFERER: start NIET met http://localhost');
+//        $clientId = config('app.oauth_client_id');
+//    }
+//
+//    return response()->json([
+//        'client_id' => $clientId,
+//        'url_api' => config('app.url'),
+//    ]);
+//});
 
 Route::get('/twinfield', 'Api\Twinfield\TwinfieldController@twinfield');
 

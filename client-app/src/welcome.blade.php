@@ -11,7 +11,6 @@
     <script>
         console.log('Econobis Laravel7 build? - welcome.blade.php');
         window.env = {
-            CLIENT_ID: "{{ config('app.oauth_client_id') }}",
             URL_API: "{{ config('app.url') }}"
         };
     </script>

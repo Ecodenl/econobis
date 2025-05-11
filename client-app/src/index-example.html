@@ -1,18 +1,15 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <title>Econobis</title>
-  </head>
-  <body>
-    <script type="text/javascript">
-      // Set some global JS variables
-      // var URL_APP = "https://econobis-xaris.nl";
-      var URL_API = "https://econobis-xaris.nl";
-      var CLIENT_ID ="2";
-      var CLIENT_KEY ="sdzX088pM1j3IyrzMHwcdNvAtrC134Z0eRjXkz3y";
-    </script>
-    <script type="text/javascript" src="./polyfill.js"></script>
-    <div id="root"></div>
-  </body>
+    <head>
+        <meta charset="UTF-8" />
+        <title>Econobis</title>
+        <script>
+            window.env = {
+                URL_API: 'https://je-lokale-domein.nl'
+            };
+        </script>
+    </head>
+    <body>
+      <div id="root"></div>
+    </body>
 </html>

@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getClientId, getRedirectUri, getApiUrl } from '../../api/utils/loginRouteFields';
+import { getApiUrl } from '../../api/utils/loginRouteFields';
 import resetAxiosInstance from '../../api/default-setup/AxiosInstance';
 import MeAPI from '../../api/general/MeAPI';
 import { useDispatch } from 'react-redux';
@@ -21,8 +21,8 @@ const AuthCallback = () => {
         const urlParams = new URLSearchParams(queryString);
         const authCode = urlParams.get('code');
         const codeVerifier = localStorage.getItem('pkce_code_verifier');
-        const clientId = getClientId();
-        const redirectUri = getRedirectUri();
+        const clientId = urlParams.get('clientId');
+        const redirectUri = urlParams.get('redirectUri');
         console.log('AuthCallback - useEffect - authCode =', authCode); // Debug
         console.log('AuthCallback - useEffect - pkce_code_verifier =', localStorage.getItem('pkce_code_verifier'));
         console.log('AuthCallback - useEffect - client_id =', clientId);
@@ -48,19 +48,19 @@ const AuthCallback = () => {
                     dispatch(authSuccess());
                     navigate('/');
 
-                    // MeAPI.fetchTwoFactorStatus().then(payload => {
-                    //     const data = payload.data;
-                    //
-                    //     if (!data.requireTwoFactorAuthentication) {
-                    //         navigate('/');
-                    //     } else if (!data.twoFactorActivated) {
-                    //         navigate('/two-factor/activate');
-                    //     } else if (data.hasValidToken) {
-                    //         navigate('/');
-                    //     } else {
-                    //         navigate('/two-factor/confirm');
-                    //     }
-                    // });
+                    MeAPI.fetchTwoFactorStatus().then(payload => {
+                        const data = payload.data;
+
+                        if (!data.requireTwoFactorAuthentication) {
+                            navigate('/');
+                        } else if (!data.twoFactorActivated) {
+                            navigate('/two-factor/activate');
+                        } else if (data.hasValidToken) {
+                            navigate('/');
+                        } else {
+                            navigate('/two-factor/confirm');
+                        }
+                    });
                 })
                 .catch(error => {
                     console.error('AuthCallback - token request error:', error);

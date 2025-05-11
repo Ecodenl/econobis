@@ -1,14 +1,24 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getClientId, getApiUrl, getRedirectUri } from '../../api/utils/loginRouteFields';
+import { getClientId, getRedirectUri, getApiUrl } from '../../api/utils/loginRouteFields';
 import resetAxiosInstance from '../../api/default-setup/AxiosInstance';
+import MeAPI from '../../api/general/MeAPI';
+import { useDispatch } from 'react-redux';
+import { authSuccess } from '../../actions/general/AuthActions';
+import moment from 'moment';
+
 const AuthCallback = () => {
     const navigate = useNavigate();
     console.log('Huidige pathname is:', window.location.pathname);
 
+    const dispatch = useDispatch();
+
     useEffect(() => {
-        const urlParams = new URLSearchParams(window.location.search);
+        // const urlParams = new URLSearchParams(window.location.search);
+        const hash = window.location.hash; // bijv. "#/auth/callback?code=abc123&state=xyz"
+        const queryString = hash.includes('?') ? hash.split('?')[1] : '';
+        const urlParams = new URLSearchParams(queryString);
         const authCode = urlParams.get('code');
         const codeVerifier = localStorage.getItem('pkce_code_verifier');
         const clientId = getClientId();
@@ -32,27 +42,36 @@ const AuthCallback = () => {
                     console.log('handleAuthCallback Ok');
                     localStorage.setItem('access_token', response.data.access_token);
                     localStorage.setItem('refresh_token', response.data.refresh_token);
-                    resetAxiosInstance(); // stel instance = null
+                    localStorage.setItem('last_activity', moment().format());
+                    resetAxiosInstance();
 
-                    // navigate('/');
-                    const storedAuthorizeUrl = localStorage.getItem('authorize_url');
-                    if (storedAuthorizeUrl) {
-                        localStorage.removeItem('authorize_url'); // opschonen
-                        window.location.href = storedAuthorizeUrl;
-                    } else {
-                        navigate('/');
-                    }
+                    dispatch(authSuccess());
+                    navigate('/');
+
+                    // MeAPI.fetchTwoFactorStatus().then(payload => {
+                    //     const data = payload.data;
+                    //
+                    //     if (!data.requireTwoFactorAuthentication) {
+                    //         navigate('/');
+                    //     } else if (!data.twoFactorActivated) {
+                    //         navigate('/two-factor/activate');
+                    //     } else if (data.hasValidToken) {
+                    //         navigate('/');
+                    //     } else {
+                    //         navigate('/two-factor/confirm');
+                    //     }
+                    // });
                 })
-                .catch(() => {
+                .catch(error => {
+                    console.error('AuthCallback - token request error:', error);
                     alert('Login mislukt');
                     navigate('/');
                 });
         } else {
-            console.log('AuthCallback - useEffect - authCode en codeVerifier (nog) niet bekend');
+            console.warn('AuthCallback - ontbrekende authCode of codeVerifier');
         }
-    }, [navigate]);
+    }, [navigate, dispatch]);
 
-    // return <div>Authenticatie afronden…</div>;
     return <div>Bezig met inloggen...</div>;
 };
 

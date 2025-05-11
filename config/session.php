@@ -191,5 +191,9 @@ return [
 
 //    'same_site' => 'none',
     'same_site' => env('SESSION_SAMESITE', 'lax'),
+//    'secure' => env('SESSION_SECURE_COOKIE', false),
+//    'http_only' => true,
+//    'domain' => env('SESSION_DOMAIN', null),
+//    'same_site' => env('SESSION_SAMESITE', 'lax'),
 
 ];

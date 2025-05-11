@@ -34,8 +34,13 @@ class Login extends Component {
 
         // ⬇️ Check of we via PKCE binnenkomen
         console.log('window.location.search:', window.location.search);
-        const urlParams = new URLSearchParams(window.location.search);
+        // const urlParams = new URLSearchParams(window.location.search);
+        const hash = window.location.hash; // bijv. "#/auth/callback?code=ABC123"
+        console.log('hash:', hash);
+        const queryString = hash.split('?')[1]; // pak alles na '?'
+        const urlParams = new URLSearchParams(queryString);
         console.log('urlParams:', urlParams);
+
         const clientId = urlParams.get('client_id');
         const redirectUri = urlParams.get('redirect_uri');
         const responseType = urlParams.get('response_type');

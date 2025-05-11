@@ -12,7 +12,7 @@ use Nyholm\Psr7\Factory\Psr17Factory;
 
 Route::middleware(['web'])->group(function () {
     Route::get('/oauth/authorize', function (\Illuminate\Http\Request $request) {
-        Log::info('/oauth/authorize bereikt zonder auth middleware', [
+        Log::info('GET /oauth/authorize bereikt zonder auth middleware', [
             'user' => auth()->user(),
             'session_id' => session()->getId(),
         ]);

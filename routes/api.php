@@ -34,7 +34,7 @@ Route::get('password/reset/{token}', [
 ]);
 
 Route::namespace('Api')
-    ->middleware(['auth:api', 'scopes:use-app', 'two-factor'])
+    ->middleware(['auth:api', 'two-factor'])
     ->group(function () {
 
 // Todo WM: check rewrite code:  Shared api's. Naar namespce 'Shared' ??
@@ -777,7 +777,7 @@ Route::namespace('Api')
     });
 
 Route::namespace('Api')
-    ->middleware(['auth:api', 'scopes:use-app'])
+    ->middleware(['auth:api'])
     ->group(function () {
         Route::middleware([\App\Http\Middleware\CheckPasswordConfirmationHeader::class])->group(function () {
             Route::get('/me/check-password', [\App\Http\Controllers\Api\User\UserController::class, 'checkPassword']);

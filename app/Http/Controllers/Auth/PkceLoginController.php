@@ -11,33 +11,35 @@ class PkceLoginController extends Controller
 {
     public function login(Request $request)
     {
-        Log::info('PkceLoginController - login - komen we hier ??');
-        $credentials = $request->validate([
-            'email' => ['required', 'email'],
-            'password' => ['required'],
+        $request->validate([
+            'username' => 'required|email',
+            'password' => 'required',
+            'code_challenge' => 'required',
+            'code_challenge_method' => 'required',
         ]);
 
-        Log::info('Credentials: ');
-        Log::info($credentials);
-
-        if (Auth::guard('web')->attempt($credentials)) {
-            $request->session()->regenerate();
-//            Log::info('Ingelogde gebruiker: ' . Auth::guard('web')->user()?->email);
-            Log::info('Ingelogde gebruiker: ' . Auth::guard('web')->id());
-            Log::info(Auth::guard('web')->user());
-            Log::info('Gebruiker ingelogd en zou nu doorgestuurd moeten kunnen worden naar /oauth/authorize.', [
-                'user_id' => Auth::id(),
-                'session' => session()->all(),
-            ]);
-
-            $response = response()->json(['message' => 'Logged in']);
-            Log::info('Response cookies:', [
-                'set_cookie_headers' => $response->headers->get('Set-Cookie'),
-            ]);
-            return $response;
-
-//            return response()->json(['message' => 'Logged in']);
+        Log::info('HTTP_REFERER: ' . $_SERVER['HTTP_REFERER']);
+        if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost:')){
+            Log::info('HTTP_REFERER: start met http://localhost:');
+            $clientId = "9";
+            $redirect = config('app.url') . '/redirect.html';
+        } else {
+            Log::info('HTTP_REFERER: start NIET met http://localhost:');
+            $clientId = config('app.oauth_client_id');
+            $redirect = config('app.url') . '/auth/callback';
         }
-        return response()->json(['message' => 'Invalid credentials'], 401);
+
+        $query = http_build_query([
+            'response_type' => 'code',
+            'client_id' => $clientId,
+            'redirect_uri' => $redirect,
+            'code_challenge' => $request->code_challenge,
+            'code_challenge_method' => $request->code_challenge_method,
+//            'scope' => 'use-app',
+        ]);
+
+        return response()->json([
+            'authorize_url' => url("/oauth/authorize?$query"),
+        ]);
     }
 }

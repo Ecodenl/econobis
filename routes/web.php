@@ -42,14 +42,14 @@ Route::get('/client-version', function () {
     ]);
 });
 
-//Route::get('/auth/callback-temp', function (\Illuminate\Http\Request $request) {
-//    Log::info('callback-temp?');
-//    $query = http_build_query([
-//        'code' => $request->get('code'),
-//        'state' => $request->get('state'),
-//    ]);
-//    return redirect("/#/auth/callback?$query");
-//});
+Route::get('/auth/callback', function (\Illuminate\Http\Request $request) {
+    Log::info('callback-temp?');
+    $query = http_build_query([
+        'code' => $request->get('code'),
+        'state' => $request->get('state'),
+    ]);
+    return redirect("/#/auth/callback?$query");
+});
 
 Route::post('/pkce-login', [PkceLoginController::class, 'login']);
 

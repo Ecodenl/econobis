@@ -19,6 +19,7 @@ const AuthCallback = () => {
         console.log('AuthCallback - useEffect - redirect_uri=', redirectUri);
 
         if (authCode && codeVerifier) {
+            console.log('AuthCallback - useEffect - authCode en codeVerifier bekend');
             axios
                 .post(`${getApiUrl()}/oauth/token`, {
                     grant_type: 'authorization_code',
@@ -46,6 +47,8 @@ const AuthCallback = () => {
                     alert('Login mislukt');
                     navigate('/');
                 });
+        } else {
+            console.log('AuthCallback - useEffect - authCode en codeVerifier (nog) niet bekend');
         }
     }, [navigate]);
 

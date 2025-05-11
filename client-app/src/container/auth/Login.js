@@ -43,7 +43,8 @@ class Login extends Component {
 
         if (clientId && redirectUri && responseType === 'code' && codeChallenge) {
             // Stel de volledige authorize URL samen en sla op
-            const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}&scope=use-app`;
+            const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}`;
+            // const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}&scope=use-app`;
 
             localStorage.setItem('authorize_url', authorizeUrl);
             console.log('PKCE authorize_url opgeslagen:', authorizeUrl);
@@ -63,10 +64,13 @@ class Login extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+
         const { username, password } = this.state;
 
         AuthAPI.startLoginWithPKCE(username, password).then(result => {
+            console.log('startLoginWithPKCE result', result ?? 'geen');
             if (result?.error) {
+                console.log('error', result.error);
                 this.setState({
                     username: '',
                     password: '',

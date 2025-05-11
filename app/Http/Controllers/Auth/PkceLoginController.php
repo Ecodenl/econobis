@@ -22,17 +22,14 @@ class PkceLoginController extends Controller
 
         if (Auth::guard('web')->attempt($credentials)) {
             $request->session()->regenerate();
-            Log::info('Ingelogde gebruiker: ' . Auth::guard('web')->user()?->email);
+//            Log::info('Ingelogde gebruiker: ' . Auth::guard('web')->user()?->email);
+            Log::info('Ingelogde gebruiker: ' . Auth::guard('web')->id());
+            Log::info(Auth::guard('web')->user());
             Log::info('Gebruiker ingelogd en zou nu doorgestuurd moeten kunnen worden naar /oauth/authorize.', [
                 'user_id' => Auth::id(),
                 'session' => session()->all(),
             ]);
-//            Log::info('Cookie settings:', [
-//                'session_name' => session_name(),
-//                'session_id' => session()->getId(),
-//                'cookies' => request()->cookies->all(),
-//                'response_cookies' => response()->headers->getCookies(),
-//            ]);
+
             $response = response()->json(['message' => 'Logged in']);
             Log::info('Response cookies:', [
                 'set_cookie_headers' => $response->headers->get('Set-Cookie'),

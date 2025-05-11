@@ -17,11 +17,11 @@ if (token) {
 
 const fetchConfig = async () => {
     const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
-    console.log('backendUrl: ', backendUrl);
+    console.log('index.js - fetchConfig - backendUrl: ', backendUrl);
 
     const response = await fetch(`${backendUrl}/frontend-config`);
     const config = await response.json();
-    console.log('config: ', config);
+    console.log('index.js - fetchConfig - config: ', config);
 
     window.env = {
         CLIENT_ID: config.client_id,

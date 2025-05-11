@@ -4,7 +4,7 @@ use App\Http\Controllers\Api\Setting\SettingController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
-Route::get('/version', function () {
+Route::get('/client-version', function () {
     return response()->json([
         'version' => config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
     ]);

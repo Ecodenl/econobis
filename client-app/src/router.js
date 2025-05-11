@@ -98,7 +98,6 @@ const QuotationRequestPlanNewApp = React.lazy(() =>
 const QuotationRequestsListApp = React.lazy(() =>
     import('./container/quotation-request/list/QuotationRequestsListApp')
 );
-// const AuthCallback = React.lazy(() => import('./container/auth/AuthCallback'));
 const Reset = React.lazy(() => import('./container/auth/Reset'));
 const Login = React.lazy(() => import('./container/auth/Login'));
 const Logout = React.lazy(() => import('./container/auth/Logout'));

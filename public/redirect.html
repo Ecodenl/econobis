@@ -4,11 +4,11 @@
     <meta charset="UTF-8" />
     <title>Redirecting...</title>
     <script>
-        console.log('hallo redirect 1');
-        // const params = window.location.search;
-        // window.location.replace(`https://econobis-laravel7.nl/#/auth/callback${params}`);
+        console.log('hallo redirect !');
         const params = window.location.search;
-        window.location.href = '/#/auth/callback' + params;
+        // window.location.replace(`https://econobis-laravel7.nl/#/auth/callback${params}`);
+        // window.location.href = '/auth/callback' + params;
+        window.location.replace(`http://localhost:8080/#/auth/callback${params}`);
     </script>
 </head>
 <body>

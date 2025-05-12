@@ -20,7 +20,7 @@ class RedirectIfAuthenticated
     {
         if (Auth::guard($guard)->check()) {
             Log::error('Check of we hier ooit langs komern in RedirectIfAuthenticated ?????????????');
-            return redirect('/home');
+            return redirect('/');
         }
 
         return $next($request);

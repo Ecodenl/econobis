@@ -1,9 +1,7 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-// todo WM xxx opschonen
-import { getClientId, getRedirectUri, getApiUrl } from '../../api/utils/loginRouteFields';
-// import { getApiUrl, getRedirectUri } from '../../api/utils/loginRouteFields';
+import { getClientId, getRedirectUri, getApiUrl } from '../../api/utils/LoginRouteFields';
 import resetAxiosInstance from '../../api/default-setup/AxiosInstance';
 import MeAPI from '../../api/general/MeAPI';
 import { useDispatch } from 'react-redux';
@@ -12,32 +10,20 @@ import moment from 'moment';
 
 const AuthCallback = () => {
     const navigate = useNavigate();
-    console.log('Huidige pathname is:', window.location.pathname);
 
     const dispatch = useDispatch();
 
     useEffect(() => {
         // const urlParams = new URLSearchParams(window.location.search);
         const hash = window.location.hash; // bijv. "#/auth/callback?code=abc123&state=xyz"
-        console.log('AuthCallback - hash', hash); // Debug
         const queryString = hash.includes('?') ? hash.split('?')[1] : '';
         const urlParams = new URLSearchParams(queryString);
         const authCode = urlParams.get('code');
         const codeVerifier = localStorage.getItem('pkce_code_verifier');
-        // todo WM xxx opschonen
-        console.log('Debug CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
-        console.log('AuthCallback - useEffect - params client_id =', urlParams.get('clientId'));
-        console.log('AuthCallback - useEffect - localStorage client_id =', localStorage.getItem('test_client_id'));
         const clientId = getClientId();
         const redirectUri = getRedirectUri();
-        //         const clientId = urlParams.get('clientId');
-        console.log('AuthCallback - useEffect - authCode =', authCode); // Debug
-        console.log('AuthCallback - useEffect - pkce_code_verifier =', localStorage.getItem('pkce_code_verifier'));
-        console.log('AuthCallback - useEffect - client_id =', clientId);
-        console.log('AuthCallback - useEffect - redirect_uri=', redirectUri);
 
         if (authCode && codeVerifier) {
-            console.log('AuthCallback - useEffect - authCode en codeVerifier bekend');
             axios
                 .post(`${getApiUrl()}/oauth/token`, {
                     grant_type: 'authorization_code',
@@ -47,7 +33,6 @@ const AuthCallback = () => {
                     redirect_uri: redirectUri,
                 })
                 .then(response => {
-                    console.log('handleAuthCallback Ok');
                     localStorage.setItem('access_token', response.data.access_token);
                     localStorage.setItem('refresh_token', response.data.refresh_token);
                     localStorage.setItem('last_activity', moment().format());

@@ -1,12 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
-import MeAPI from '../../api/general/MeAPI';
 import VersionAPI from '../../api/general/VersionAPI';
 
 // Functionele wrapper voor de class component
@@ -49,7 +46,6 @@ class Login extends Component {
         const { username, password } = this.state;
 
         AuthAPI.startLoginWithPKCE(username, password).then(result => {
-            console.log('startLoginWithPKCE result', result ?? 'geen');
             if (result?.error) {
                 console.log('error', result.error);
                 this.setState({
@@ -138,10 +134,4 @@ class Login extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    authSuccess: () => {
-        dispatch(authSuccess());
-    },
-});
-
-export default connect(null, mapDispatchToProps)(LoginWrapper);
+export default LoginWrapper;

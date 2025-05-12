@@ -2,7 +2,6 @@
 
 namespace App\Eco\Passport;
 
-use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Client as PassportClient;
 
 class Client extends PassportClient
@@ -14,14 +13,11 @@ class Client extends PassportClient
      */
     public function skipsAuthorization()
     {
-        $allowedClientIds = [config('app.oauth_client_id')];
-        Log::info('allowedClientIds 1', $allowedClientIds);
+        $allowedClientIds = [(int) config('app.oauth_client_id')];
 
         if (config('app.oauth_client_id_local')) {
-            Log::info('aparte oauth_client_id_local');
-            $allowedClientIds[] = config('app.oauth_client_id_local');
+            $allowedClientIds[] = (int) config('app.oauth_client_id_local');
         }
-        Log::info('allowedClientIds 2', $allowedClientIds);
 
         return in_array($this->id, $allowedClientIds, true);
     }

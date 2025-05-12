@@ -17,9 +17,7 @@ return [
     |
     */
 
-    // todo WM xxx opschonen
     'paths' => ['api/*', 'oauth/*', 'portal/*', 'pkce-login', 'frontend-config', 'client-version', 'auth/callback'],
-//    'paths' => ['api/*', 'oauth/*', 'portal/*', 'pkce-login', 'client-version', 'auth/callback'],
     'supports_credentials' => true,
     'allowed_origins' => [],
     'allowed_origins_patterns' => json_decode(env('CORS_ORIGIN_PATTERNS', '[]')),

@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getApiUrl } from '../utils/loginRouteFields';
+import { getApiUrl } from '../utils/LoginRouteFields';
 
 let instance = null;
 

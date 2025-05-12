@@ -1,5 +1,5 @@
 import React from 'react';
-import { getApiUrl } from '../../api/utils/loginRouteFields';
+import { getApiUrl } from '../../api/utils/LoginRouteFields';
 import { FaUser } from 'react-icons/fa';
 
 const PreviewPortalDashboardPage = ({

@@ -5,14 +5,11 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Log;
 
 class PkceLoginController extends Controller
 {
     public function login(Request $request)
     {
-        Log::info('PkceLoginController - login !!!!');
-
         $request->validate([
             'username' => 'required|email',
             'password' => 'required',
@@ -28,16 +25,11 @@ class PkceLoginController extends Controller
             return response()->json(['message' => 'Invalid credentials'], 401);
         }
 
-        // Optioneel extra logging
-        Log::info('Gebruiker ingelogd', ['user_id' => Auth::id()]);
-
         // Detecteer omgeving en stel redirect/callback in
         if(str_starts_with($_SERVER['HTTP_REFERER'], 'http://localhost')){
-            Log::info('HTTP_REFERER: start met http://localhost');
             $clientId = config('app.oauth_client_id_local');
             $redirect = config('app.url') . '/redirect.html';
         } else {
-            Log::info('HTTP_REFERER: start NIET met http://localhost');
             $clientId = config('app.oauth_client_id');
             $redirect = config('app.url') . '/auth/callback';
         }
@@ -53,11 +45,12 @@ class PkceLoginController extends Controller
         ]);
 
         $authorizeUrl = url("/oauth/authorize?$query");
-        Log::info('PkceLoginController - authorize_url to return:');
-        Log::info($authorizeUrl);
 
         return response()->json([
             'authorize_url' => $authorizeUrl,
+            'url_api' => config('app.url'),
+            'client_id' => $clientId,
+            'redirect_uri' => $redirect,
         ]);
     }
 }

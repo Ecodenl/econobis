@@ -1,5 +1,5 @@
 import React from 'react';
-import { getApiUrl } from '../../../../api/utils/loginRouteFields';
+import { getApiUrl } from '../../../../api/utils/LoginRouteFields';
 
 import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';

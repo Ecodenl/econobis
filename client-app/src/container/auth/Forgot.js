@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getApiUrl } from '../../api/utils/loginRouteFields';
+import { getApiUrl } from '../../api/utils/LoginRouteFields';
 
 import axios from 'axios';
 

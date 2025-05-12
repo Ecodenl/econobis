@@ -1,12 +1,9 @@
 import axios from 'axios';
 import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkceUtils';
-import { getApiUrl } from '../utils/loginRouteFields';
+import { getApiUrl } from '../utils/LoginRouteFields';
 
 const AuthAPI = {
     startLoginWithPKCE: async (username, password) => {
-        console.log('AuthAPI - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
-        console.log('AuthAPI - startLoginWithPKCE');
-
         const codeVerifier = generateCodeVerifier();
         const codeChallenge = await generateCodeChallenge(codeVerifier);
 
@@ -19,9 +16,10 @@ const AuthAPI = {
             code_challenge_method: 'S256',
         });
 
+        localStorage.setItem('client_id', response.data.client_id);
+        localStorage.setItem('redirect_uri', response.data.redirect_uri);
+
         const authorizeUrl = response.data.authorize_url;
-        console.log('AuthAPI - authorizeUrl uit response: ');
-        console.log(authorizeUrl);
 
         window.location.href = authorizeUrl;
     },

@@ -33,6 +33,7 @@ class Login extends Component {
         });
 
         // ⬇️ Check of we via PKCE binnenkomen
+        // todo check of dit stukje code nog nodig is?
         console.log('window.location.search:', window.location.search);
         // const urlParams = new URLSearchParams(window.location.search);
         const hash = window.location.hash; // bijv. "#/auth/callback?code=ABC123"

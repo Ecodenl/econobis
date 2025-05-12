@@ -193,6 +193,11 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensExpireIn(now()->addHours(12));
         Passport::refreshTokensExpireIn(now()->addHours(12));
 
+        Passport::tokensCan([
+            'use-app' => 'Use Econobis app',
+            'use-portal' => 'Use Econobis portal',
+        ]);
+
         // Laad de custom Passport routes
         //        Passport::routes();
         if (! $this->app->routesAreCached()) {

@@ -2,4 +2,4 @@
         window.env = {
             CLIENT_ID: "{{ config('app.oauth_client_id') }}",
             URL_API: "{{ config('app.url') }}"
-        };</script><script defer="defer" src="./js/3244.adccf3ee47cc9eab52c2.js"></script><script defer="defer" src="./js/bundle.f0986feb09bf98d81810.js"></script></head><body><div id="root"></div></body></html>
+        };</script><script defer="defer" src="./js/3244.adccf3ee47cc9eab52c2.js"></script><script defer="defer" src="./js/bundle.635d59ce31a5e388bed8.js"></script></head><body><div id="root"></div></body></html>

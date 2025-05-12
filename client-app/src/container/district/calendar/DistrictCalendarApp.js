@@ -45,15 +45,24 @@ const DistrictCalendarApp = props => {
         }
 
         DistrictAPI.fetchDistrictCalendarItems(props.params.id, startDate, endDate).then(data => {
-            let quotationRequests = data.quotationRequests.map(item => {
+            const quotationRequests = data.quotationRequests.map(item => {
+                const { id, coach, datePlanned, durationMinutes, statusCodeRef } = item;
+
+                const prefixMap = {
+                    done: '✅ ',
+                    'not-made': '❌ ',
+                };
+
+                const title = `${prefixMap[statusCodeRef] || ''}${coach?.fullName || 'Onbekende coach'}`;
+
                 return {
                     type: 'quotationRequest',
-                    id: item.id,
-                    coach: item.coach,
-                    title: item.coach.fullName,
-                    start: new Date(item.datePlanned),
-                    end: moment(item.datePlanned)
-                        .add(item.durationMinutes, 'm')
+                    id,
+                    coach,
+                    title,
+                    start: new Date(datePlanned),
+                    end: moment(datePlanned)
+                        .add(durationMinutes, 'm')
                         .toDate(),
                 };
             });

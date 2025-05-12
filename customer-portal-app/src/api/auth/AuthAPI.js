@@ -25,7 +25,8 @@ export default {
     login: loginCredentials => {
         const requestUrl = `${BASE_URL}/oauth/token`;
         delete axios.defaults.headers.common['Authorization'];
-
+        console.log('Debug portal ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
+        console.log(AUTH_KEY);
         return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
     },
 

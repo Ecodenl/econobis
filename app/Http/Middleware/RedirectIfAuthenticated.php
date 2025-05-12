@@ -18,10 +18,9 @@ class RedirectIfAuthenticated
      */
     public function handle($request, Closure $next, $guard = null)
     {
-        Log::info('RedirectIfAuthenticated - wordt dit gebruikt?');
         if (Auth::guard($guard)->check()) {
-            Log::info('RedirectIfAuthenticated check true');
-            return redirect('/xxx');
+            Log::error('Check of we hier ooit langs komern in RedirectIfAuthenticated ?????????????');
+            return redirect('/home');
         }
 
         return $next($request);

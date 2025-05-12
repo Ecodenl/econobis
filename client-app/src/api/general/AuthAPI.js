@@ -4,6 +4,9 @@ import { getApiUrl } from '../utils/loginRouteFields';
 
 const AuthAPI = {
     startLoginWithPKCE: async (username, password) => {
+        console.log('AuthAPI - AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA');
+        console.log('AuthAPI - startLoginWithPKCE');
+
         const codeVerifier = generateCodeVerifier();
         const codeChallenge = await generateCodeChallenge(codeVerifier);
 
@@ -17,9 +20,8 @@ const AuthAPI = {
         });
 
         const authorizeUrl = response.data.authorize_url;
-        console.log('AuthAPI - authorizeUrl: ' + authorizeUrl);
-
-        localStorage.setItem('authorize_url', window.location.href); // waar de user vandaan kwam
+        console.log('AuthAPI - authorizeUrl uit response: ');
+        console.log(authorizeUrl);
 
         window.location.href = authorizeUrl;
     },

@@ -1,7 +1,9 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getApiUrl } from '../../api/utils/loginRouteFields';
+// todo WM xxx opschonen
+import { getClientId, getRedirectUri, getApiUrl } from '../../api/utils/loginRouteFields';
+// import { getApiUrl, getRedirectUri } from '../../api/utils/loginRouteFields';
 import resetAxiosInstance from '../../api/default-setup/AxiosInstance';
 import MeAPI from '../../api/general/MeAPI';
 import { useDispatch } from 'react-redux';
@@ -17,12 +19,18 @@ const AuthCallback = () => {
     useEffect(() => {
         // const urlParams = new URLSearchParams(window.location.search);
         const hash = window.location.hash; // bijv. "#/auth/callback?code=abc123&state=xyz"
+        console.log('AuthCallback - hash', hash); // Debug
         const queryString = hash.includes('?') ? hash.split('?')[1] : '';
         const urlParams = new URLSearchParams(queryString);
         const authCode = urlParams.get('code');
         const codeVerifier = localStorage.getItem('pkce_code_verifier');
-        const clientId = urlParams.get('clientId');
-        const redirectUri = urlParams.get('redirectUri');
+        // todo WM xxx opschonen
+        console.log('Debug CCCCCCCCCCCCCCCCCCCCCCCCCCCCCC');
+        console.log('AuthCallback - useEffect - params client_id =', urlParams.get('clientId'));
+        console.log('AuthCallback - useEffect - localStorage client_id =', localStorage.getItem('test_client_id'));
+        const clientId = getClientId();
+        const redirectUri = getRedirectUri();
+        //         const clientId = urlParams.get('clientId');
         console.log('AuthCallback - useEffect - authCode =', authCode); // Debug
         console.log('AuthCallback - useEffect - pkce_code_verifier =', localStorage.getItem('pkce_code_verifier'));
         console.log('AuthCallback - useEffect - client_id =', clientId);

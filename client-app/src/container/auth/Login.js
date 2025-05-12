@@ -31,30 +31,6 @@ class Login extends Component {
         VersionAPI.fetchVersion().then(response => {
             this.setState({ version: response.data.version });
         });
-
-        // ⬇️ Check of we via PKCE binnenkomen
-        console.log('window.location.search:', window.location.search);
-        // const urlParams = new URLSearchParams(window.location.search);
-        const hash = window.location.hash; // bijv. "#/auth/callback?code=ABC123"
-        console.log('hash:', hash);
-        const queryString = hash.split('?')[1]; // pak alles na '?'
-        const urlParams = new URLSearchParams(queryString);
-        console.log('urlParams:', urlParams);
-
-        const clientId = urlParams.get('client_id');
-        const redirectUri = urlParams.get('redirect_uri');
-        const responseType = urlParams.get('response_type');
-        const codeChallenge = urlParams.get('code_challenge');
-
-        if (clientId && redirectUri && responseType === 'code' && codeChallenge) {
-            // Stel de volledige authorize URL samen en sla op
-            const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}`;
-            // const authorizeUrl = `${window.location.origin}/oauth/authorize${window.location.search}&scope=use-app`;
-
-            localStorage.setItem('authorize_url', authorizeUrl);
-            console.log('PKCE authorize_url opgeslagen:', authorizeUrl);
-        } else {
-        }
     }
 
     handleInputChange = event => {

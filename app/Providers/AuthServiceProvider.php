@@ -72,6 +72,7 @@ use App\Eco\ParticipantProject\ObligationNumber;
 use App\Eco\ParticipantProject\ObligationNumberPolicy;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPolicy;
+use App\Eco\Passport\Client;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -187,11 +188,19 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-//        Log::info('AuthServiceProvider@boot wordt uitgevoerd');
+        Log::info('AuthServiceProvider@boot wordt uitgevoerd');
 
         $this->registerPolicies();
+
+        Passport::useClientModel(Client::class);
+
         Passport::tokensExpireIn(now()->addHours(12));
         Passport::refreshTokensExpireIn(now()->addHours(12));
+
+        Passport::tokensCan([
+            'use-app' => 'Use Econobis app',
+            'use-portal' => 'Use Econobis portal',
+        ]);
 
         // Laad de custom Passport routes
         if (! $this->app->routesAreCached()) {

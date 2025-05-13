@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { getApiUrl } from '../../../../api/utils/ApiUrl';
+import { getApiUrl } from '../../../../api/utils/LoginRouteFields';
 
 import { connect } from 'react-redux';
 import Image from 'react-bootstrap/lib/Image';

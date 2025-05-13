@@ -1,12 +1,14 @@
 import React, { Component } from 'react';
 import MeAPI from '../../api/general/MeAPI';
 import Logo from '../../components/logo/Logo';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // Functionele wrapper voor de class component
 const TwoFactorActivateWrapper = props => {
     const navigate = useNavigate();
-    return <TwoFactorActivate {...props} navigate={navigate} />;
+    const location = useLocation(); // Gebruik useLocation om toegang te krijgen tot query parameters
+
+    return <TwoFactorActivate {...props} navigate={navigate} location={location} />;
 };
 
 class TwoFactorActivate extends Component {

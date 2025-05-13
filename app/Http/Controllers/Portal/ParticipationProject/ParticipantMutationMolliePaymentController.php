@@ -17,6 +17,7 @@ use App\Http\Controllers\Api\ParticipantMutation\ParticipantMutationController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Mollie\Api\Exceptions\ApiException;
 
 class ParticipantMutationMolliePaymentController extends ApiController
@@ -91,9 +92,13 @@ class ParticipantMutationMolliePaymentController extends ApiController
                     break;
             }
 
+            Log::info('registerType');
+            Log::info($request->registerType );
+
             (new ParticipationProjectController())->createAndSendRegistrationDocument(
                 $participantMutation->participation->contact,
                 $participantMutation->participation->project,
+                $request->registerType ?? null,
                 $participantMutation->participation,
                 $responsibleUser->id,
                 $participantMutation,

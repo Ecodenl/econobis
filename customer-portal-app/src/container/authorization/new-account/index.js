@@ -162,13 +162,24 @@ const NewAccount = props => {
 };
 
 function NewAccountWithProvider() {
-    const RE_CAPTCHA_KEY = process.env.REACT_APP_RE_CAPTCHA_KEY;
+    const RE_CAPTCHA_KEY = getRecaptchaKeyByDomain();
 
     return (
         <GoogleReCaptchaProvider reCaptchaKey={RE_CAPTCHA_KEY} language={'nl'}>
             <NewAccount />
         </GoogleReCaptchaProvider>
     );
+}
+function getRecaptchaKeyByDomain() {
+    const hostname = window.location.hostname;
+
+    // Check of het om een .eu domein gaat
+    if (hostname.endsWith('.eu')) {
+        return process.env.REACT_APP_RE_CAPTCHA_KEY_EU;
+    }
+
+    // Standaard: oude key
+    return process.env.REACT_APP_RE_CAPTCHA_KEY;
 }
 
 export default NewAccountWithProvider;

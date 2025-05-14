@@ -4,7 +4,6 @@ const URL_OPPORTUNITY_STATUS = `opportunity-status`;
 
 const defaultFields = {
     fld: ['id', 'name', 'usesWf'],
-    rlt: { emailTemplateWorkflow: [] },
 };
 
 export default {

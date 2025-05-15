@@ -107,6 +107,7 @@ class QuotationRequestController
             'dateUnderReviewDetermination' => ['nullable', 'date'],
             'dateApprovedDetermination' => ['nullable', 'date'],
             'quotationAmount' => ['nullable', 'string'],
+            'costAdjustment' => ['nullable', 'string'],
             'awardAmount' => ['nullable', 'string'],
             'amountDetermination' => ['nullable', 'string'],
         ]);
@@ -134,6 +135,7 @@ class QuotationRequestController
         $quotationRequest->date_under_review_determination = $request->input('dateUnderReviewDetermination') ?: null;
         $quotationRequest->date_approved_determination = $request->input('dateApprovedDetermination') ?: null;
         $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
+        $quotationRequest->cost_adjustment = $request->input('costAdjustment') ?: 0;
         $quotationRequest->award_amount = $request->input('awardAmount') ?: 0;
         $quotationRequest->amount_determination = $request->input('amountDetermination') ?: 0;
 

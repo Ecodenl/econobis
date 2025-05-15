@@ -281,6 +281,9 @@ class QuotationRequestController extends ApiController
         if (isset($data['awardAmount'])) {
             $quotationRequest->award_amount = trim($data['awardAmount']) ?: 0;
         }
+        if (isset($data['amountDetermination'])) {
+            $quotationRequest->amount_determination = trim($data['amountDetermination']) ?: 0;
+        }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
         $quotationRequest->uses_planning = $request->input('usesPlanning', false);

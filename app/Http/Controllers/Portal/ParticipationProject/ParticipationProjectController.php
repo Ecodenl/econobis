@@ -492,7 +492,6 @@ class ParticipationProjectController extends Controller
 
     protected function createParticipantProject($contact, $address, $project, $request, $portalUser, $responsibleUserId)
     {
-
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         $responsibleUser = User::find($responsibleUserId);
         $responsibleUser->occupation = '@portal-update@';
@@ -579,6 +578,7 @@ class ParticipationProjectController extends Controller
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
             'transaction_costs_amount' => $participationMutationTransactionCostsAmount,
+            'register_type' => $request->registerType ?? null,
         ]);
 
         // Recalculate dependent data in participantProject
@@ -631,7 +631,6 @@ class ParticipationProjectController extends Controller
 
     protected function updateParticipantProject($contact, $project, $participantProject, $request, $portalUser, $responsibleUserId)
     {
-
         // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu zetten we responisibleUserId in Auth user tbv observers die create_by en updated_by hiermee vastleggen
         $responsibleUser = User::find($responsibleUserId);
         $responsibleUser->occupation = '@portal-update@';
@@ -698,6 +697,7 @@ class ParticipationProjectController extends Controller
             'amount_final' => $amountFinal,
             'quantity_final' => $quantityFinal,
             'transaction_costs_amount' => $participationMutationTransactionCostsAmount,
+            'register_type' => $request->registerType ?? null,
         ]);
 
         // Recalculate dependent data in participantProject

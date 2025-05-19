@@ -95,6 +95,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
             (new ParticipationProjectController())->createAndSendRegistrationDocument(
                 $participantMutation->participation->contact,
                 $participantMutation->participation->project,
+                null,
                 $participantMutation->participation,
                 $responsibleUser->id,
                 $participantMutation,

@@ -13,6 +13,7 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/CapitalizeText';
 
 function StepOnePcr({
     portalSettings,
@@ -23,6 +24,10 @@ function StepOnePcr({
     initialRegisterValues,
     handleSubmitRegisterValues,
 }) {
+    const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige boekwaarde';
+    const textRegisterParticipationSingular = project.textRegisterParticipationSingular ?? 'participatie';
+    const textRegisterParticipationPlural = project.textRegisterParticipationPlural ?? 'participaties';
+
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')
@@ -153,16 +158,23 @@ function StepOnePcr({
                         <Form>
                             <Row>
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        Minimale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                    </FormLabel>
                                     <TextBlock>{project.minParticipations}</TextBlock>
                                 </Col>
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        Maximale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                    </FormLabel>
                                     <TextBlock>{project.maxParticipations}</TextBlock>
                                 </Col>
 
                                 <Col xs={12} md={6}>
-                                    <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
+                                    <FormLabel className={'field-label'}>
+                                        {capitalizeFirstLetter(textRegisterCurrentBookWorth)} per{' '}
+                                        {lowerCaseFirstLetter(textRegisterParticipationSingular)}
+                                    </FormLabel>
                                     <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                                 </Col>
                             </Row>
@@ -355,16 +367,17 @@ function StepOnePcr({
                                     <p>
                                         We adviseren tot {PCR_POWER_KWH_CONSUMPTION_PERCENTAGE * 100}% van je jaarlijks
                                         verbruik minus de jaarlijkse opbrengsten (in jouw geval {powerKwhConsumption}{' '}
-                                        kWh) te dekken met participaties. In het veld hier direct onder is voor je
-                                        uitgerekend hoeveel participaties dat zijn. Het is een advies, je mag er ook
-                                        meer kopen. Dit kan echter slecht zijn voor je rendement.
+                                        kWh) te dekken met {lowerCaseFirstLetter(textRegisterParticipationPlural)}. In
+                                        het veld hier direct onder is voor je uitgerekend hoeveel{' '}
+                                        {lowerCaseFirstLetter(textRegisterParticipationPlural)} dat zijn. Het is een
+                                        advies, je mag er ook meer kopen. Dit kan echter slecht zijn voor je rendement.
                                     </p>
                                 </Col>
                             </Row>
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label'}>
-                                        Advies maximaal aantal participaties
+                                        Advies maximaal aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
                                     </Form.Label>
                                     <TextBlock>{pcrAdviseMaxNumberOfParticipations}</TextBlock>
                                 </Col>
@@ -373,7 +386,7 @@ function StepOnePcr({
                             <Row>
                                 <Col xs={12} md={6}>
                                     <Form.Label className={'field-label required'}>
-                                        Gewenst aantal participaties
+                                        Gewenst aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
                                     </Form.Label>
                                     <Field name="participationsOptioned">
                                         {({ field }) => (

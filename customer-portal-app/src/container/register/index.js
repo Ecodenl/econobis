@@ -264,13 +264,13 @@ function RegisterProject({ match, currentSelectedContact }) {
                                         <ButtonGroup aria-label="register" className="w-button-group-left">
                                             <Link to={`/inschrijven-projecten`}>
                                                 <Button className={'w-button'} size="sm">
-                                                    Inschrijven projecten
+                                                    Ga terug
                                                 </Button>
                                             </Link>
                                         </ButtonGroup>
                                     </Row>
                                     <h1 className="content-heading">
-                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor{' '}
                                         <strong>{project.name}</strong>
                                     </h1>
                                 </>

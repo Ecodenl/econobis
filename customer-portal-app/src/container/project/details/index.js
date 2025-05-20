@@ -95,7 +95,7 @@ function ProjectDetails({ match }) {
                             <ButtonGroup aria-label="project-details" className="w-button-group-left">
                                 <Link to={`/inschrijven-projecten`}>
                                     <Button className={'w-button'} size="sm">
-                                        Inschrijven projecten
+                                        Ga terug
                                     </Button>
                                 </Link>
                             </ButtonGroup>
@@ -103,7 +103,9 @@ function ProjectDetails({ match }) {
 
                         <Row>
                             <Col>
-                                <h1 className="content-heading">Inschrijven project</h1>
+                                <h1 className="content-heading">
+                                    {project.textRegisterPageHeader ?? 'Inschrijven project Test B'}
+                                </h1>
                                 <div className="content-subheading">Organisatie {project.administration.name}</div>
                             </Col>
                         </Row>
@@ -115,7 +117,7 @@ function ProjectDetails({ match }) {
                                 <p>
                                     {project.documentProjectInfo ? (
                                         <>
-                                            {'Meer informatie over dit project kan je hier '}
+                                            {'Meer informatie vind je hier '}
                                             <a
                                                 href="#"
                                                 onClick={e =>
@@ -131,14 +133,14 @@ function ProjectDetails({ match }) {
                                         </>
                                     ) : project.linkProjectInfo != null ? (
                                         <>
-                                            {'Meer informatie over dit project vind je '}
+                                            {'Meer informatie vind je '}
                                             <a href={`${project.linkProjectInfo}`} target="_blank">
                                                 hier
                                             </a>
                                         </>
                                     ) : null}
                                 </p>
-                                <p>Wil je inschrijven op dit project. Klik dan op "Ga naar inschrijven".</p>
+                                <p>Wil je meedoen? Klik op "Ga naar inschrijven".</p>
                             </Col>
                         </Row>
                         <Row>

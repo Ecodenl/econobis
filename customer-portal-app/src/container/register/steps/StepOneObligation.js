@@ -13,8 +13,13 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/CapitalizeText';
 
 function StepOneObligation({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
+    const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige hoofdsom';
+    const textRegisterParticipationSingular = project.textRegisterParticipationSingular ?? 'obligatie';
+    const textRegisterParticipationPlural = project.textRegisterParticipationPlural ?? 'obligaties';
+
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')
@@ -78,20 +83,29 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                     <Form>
                         <Row>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Minimale aantal obligaties</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    Minimale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </FormLabel>
                                 <TextBlock>{project.minParticipations}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Maximale aantal obligaties</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    Maximale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </FormLabel>
                                 <TextBlock>{project.maxParticipations}</TextBlock>
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Huidige hoofdsom per obligatie</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {capitalizeFirstLetter(textRegisterCurrentBookWorth)} per{' '}
+                                    {lowerCaseFirstLetter(textRegisterParticipationSingular)}
+                                </FormLabel>
                                 <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
-                                <Form.Label className={'field-label'}>Gewenst aantal obligaties</Form.Label>
+                                <Form.Label className={'field-label'}>
+                                    Gewenst aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </Form.Label>
                                 <Field name="participationsOptioned">
                                     {({ field }) => (
                                         <InputText

@@ -68,6 +68,10 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'obligation':
+                $textRegisterCurrentBookWorth = $this->project->text_register_current_book_worth ?? 'Huidige hoofdsom';
+                $textRegisterParticipationSingular = $this->project->text_register_participation_singular ?? 'obligatie';
+                $textRegisterParticipationPlural = $this->project->text_register_participation_plural ?? 'obligaties';
+
                 return
                     [
                         'basicInformation' => $basicInformation,
@@ -80,7 +84,7 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Project',
+                                'label' => 'Inschrijving voor',
                                 'value' => $this->project ? $this->project->name : '',
                             ],
                             [
@@ -90,18 +94,18 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Nominale waarde per obligatie',
+                                'label' => 'Nominale waarde per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->participation_worth : '',
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Huidige boekwaarde per obligatie',
+                                'label' => $this->capitalizeFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->current_book_worth : '',
-                                'dataTip' => 'De huidige hoofdsom per obligatie is een administratieve hoofdsom van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De hoofdsom per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                                'dataTip' => 'De ' . $this->lowercaseFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular) . ' is een administratieve hoofdsom van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De hoofdsom per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Huidig aantal obligaties',
+                                'label' => 'Huidig aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural),
                                 'value' => $this->participations_definitive,
                             ],
                             [
@@ -113,6 +117,9 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'postalcode_link_capital':
+                $textRegisterCurrentBookWorth = $this->project->text_register_current_book_worth ?? 'Huidige boekwaarde';
+                $textRegisterParticipationSingular = $this->project->text_register_participation_singular ?? 'participatie';
+                $textRegisterParticipationPlural = $this->project->text_register_participation_plural ?? 'participaties';
                 return
                     [
                         'basicInformation' => $basicInformation,
@@ -125,7 +132,7 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Project',
+                                'label' => 'Inschrijving voor',
                                 'value' => $this->project ? $this->project->name : '',
                             ],
                             [
@@ -135,18 +142,18 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Nominale waarde per participatie',
+                                'label' => 'Nominale waarde per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->participation_worth : '',
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Huidige boekwaarde per participatie',
+                                'label' => $this->capitalizeFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->current_book_worth : '',
-                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                                'dataTip' => 'De ' . $this->lowercaseFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular) . ' is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Huidig aantal participaties',
+                                'label' => 'Huidig aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural),
                                 'value' => $this->participations_definitive,
                             ],
                             [
@@ -169,6 +176,9 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
             case 'capital':
+                $textRegisterCurrentBookWorth = $this->project->text_register_current_book_worth ?? 'Huidige boekwaarde';
+                $textRegisterParticipationSingular = $this->project->text_register_participation_singular ?? 'participatie';
+                $textRegisterParticipationPlural = $this->project->text_register_participation_plural ?? 'participaties';
                 return
                     [
                         'basicInformation' => $basicInformation,
@@ -181,7 +191,7 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Project',
+                                'label' => 'Inschrijving voor',
                                 'value' => $this->project ? $this->project->name : '',
                             ],
                             [
@@ -191,18 +201,18 @@ class ParticipantProjectResource extends JsonResource
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Nominale waarde per participatie',
+                                'label' => 'Nominale waarde per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->participation_worth : '',
                             ],
                             [
                                 'type' => 'money',
-                                'label' => 'Huidige boekwaarde per participatie',
+                                'label' => $this->capitalizeFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular),
                                 'value' => $this->project ? $this->project->current_book_worth : '',
-                                'dataTip' => 'De huidige boekwaarde per participatie is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
+                                'dataTip' => 'De ' . $this->lowercaseFirstLetter($textRegisterCurrentBookWorth) . ' per ' . $this->lowercaseFirstLetter($textRegisterParticipationSingular) . ' is een administratieve boekwaarde van een deelname, die afhankelijk is van de waarde van het project en de gemaakte kosten en wordt vastgesteld o.b.v. de jaarrekening van de coöperatie. De boekwaarde per 1 januari van een jaar gebruik je bij je aangifte inkomstenbelasting.',
                             ],
                             [
                                 'type' => 'string',
-                                'label' => 'Huidig aantal participaties',
+                                'label' => 'Huidig aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural),
                                 'value' => $this->participations_definitive,
                             ],
                             [
@@ -219,5 +229,16 @@ class ParticipantProjectResource extends JsonResource
                         'participantMutations' => ParticipantMutationCollection::collection($this->whenLoaded('mutationsForPortal')),
                     ];
         }
+    }
+    private function capitalizeFirstLetter(string $text): string
+    {
+        if (!$text) return '';
+        return ucfirst($text);
+    }
+
+    private function lowercaseFirstLetter(string $text): string
+    {
+        if (!$text) return '';
+        return lcfirst($text);
     }
 }

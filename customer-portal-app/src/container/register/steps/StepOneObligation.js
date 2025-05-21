@@ -13,7 +13,8 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
-import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/CapitalizeText';
+import textMethodeTransactionCosts from '../../../helpers/TextMethodeTransactionCosts';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function StepOneObligation({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige hoofdsom';
@@ -42,6 +43,22 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
     function calculateAmount(participationsOptioned) {
         return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
+
+    function getMethodeTransactionCosts(participationsOptioned, choiceMembership) {
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+        }
+        return textMethodeTransactionCosts(
+            project,
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        );
+    }
+
     function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
         if (!project.useTransactionCostsWithMembership) {
             if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
@@ -190,7 +207,17 @@ function StepOneObligation({ next, project, contactProjectData, initialRegisterV
                                 <hr />
                                 <Row>
                                     <Col xs={12} md={6}>
-                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <FormLabel className={'field-label'}>
+                                            {getMethodeTransactionCosts(
+                                                values.participationsOptioned,
+                                                values.choiceMembership
+                                            ).map((line, index) => (
+                                                <React.Fragment key={index}>
+                                                    {line}
+                                                    <br />
+                                                </React.Fragment>
+                                            ))}{' '}
+                                        </FormLabel>
                                         <TextBlock>
                                             {MoneyPresenter(
                                                 calculateTransactionCostsAmount(

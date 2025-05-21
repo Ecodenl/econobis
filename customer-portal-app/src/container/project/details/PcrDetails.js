@@ -5,7 +5,7 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import moment from 'moment';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
-import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/CapitalizeText';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function PcrDetails({ project }) {
     const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige boekwaarde';
@@ -36,7 +36,9 @@ function PcrDetails({ project }) {
                     <TextBlock>{project.totalParticipations}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Minimaal aantal {lowerCaseFirstLetter(ParticipationPlural)} per contact</FormLabel>
+                    <FormLabel>
+                        Minimaal aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)} per contact
+                    </FormLabel>
                     <TextBlock>{project.minParticipations}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>

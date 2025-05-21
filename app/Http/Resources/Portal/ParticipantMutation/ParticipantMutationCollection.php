@@ -82,7 +82,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Obligatie rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                             ],
@@ -94,7 +94,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Obligatie rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
@@ -111,7 +111,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                             ],
@@ -123,7 +123,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
@@ -140,7 +140,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
                                 ['type' => 'decimal', 'label' => 'kWh', 'value' => $this->payout_kwh],
@@ -155,7 +155,7 @@ class ParticipantMutationCollection extends JsonResource
                                 ['type' => 'date', 'label' => 'Datum', 'value' => $date],
                                 ['type' => 'string', 'label' => 'Omschrijving', 'value' => $this->type->description],
                                 ['type' => 'string', 'label' => 'Status', 'value' => $this->status ? $this->status->name : ''],
-                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowercaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
+                                ['type' => 'integer', 'label' => 'Aantal ' . $this->lowerCaseFirstLetter($textRegisterParticipationPlural), 'value' => $this->quantity],
                                 ['type' => 'money', 'label' => 'Kapitaal rekening', 'value' => ($this->amount + $this->participation_worth)],
                                 ['type' => 'money', 'label' => $projectTextTransactionCosts, 'value' => $this->transaction_costs_amount],
                                 ['type' => 'money', 'label' => 'Opbrengst', 'value' => $this->returns],
@@ -174,7 +174,7 @@ class ParticipantMutationCollection extends JsonResource
         return ucfirst($text);
     }
 
-    private function lowercaseFirstLetter(string $text): string
+    private function lowerCaseFirstLetter(string $text): string
     {
         if (!$text) return '';
         return lcfirst($text);

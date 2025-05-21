@@ -5,7 +5,7 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import moment from 'moment';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
-import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/CapitalizeText';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function CapitalDetails({ project }) {
     const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige boekwaarde';

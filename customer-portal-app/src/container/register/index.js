@@ -246,7 +246,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    {registerType === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'} voor project{' '}
+                                    {registerType === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'} voor{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                                 <Row className={'mb-4'}>
@@ -288,7 +288,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
+                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                             </Col>
@@ -310,7 +310,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Col>
                             {isSucces ? (
                                 <h1 className="content-heading">
-                                    {registerType === 'verhogen' ? 'Bijgeschreven' : 'Ingeschreven'} voor project{' '}
+                                    {registerType === 'verhogen' ? 'Bijgeschreven' : 'Ingeschreven'} voor{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                             ) : (

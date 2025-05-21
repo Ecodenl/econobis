@@ -13,6 +13,7 @@ import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
 import InputTextCurrency from '../../../components/form/InputTextCurrency';
+import textMethodeTransactionCosts from '../../../helpers/TextMethodeTransactionCosts';
 
 function StepOneLoan({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
     const validationSchema = Yup.object({
@@ -45,6 +46,19 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
     function calculateAmount(amountOptioned) {
         return amountOptioned ? parseFloat(amountOptioned.toString().replace(',', '.')) : 0;
     }
+
+    function getMethodeTransactionCosts(amountOptioned, choiceMembership) {
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+        }
+        return textMethodeTransactionCosts(project, calculateTransactionCostsAmount(amountOptioned, choiceMembership));
+    }
+
     function calculateTransactionCostsAmount(amountOptioned, choiceMembership) {
         if (!project.useTransactionCostsWithMembership) {
             if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
@@ -180,7 +194,17 @@ function StepOneLoan({ next, project, contactProjectData, initialRegisterValues,
                                 <hr />
                                 <Row>
                                     <Col xs={12} md={6}>
-                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <FormLabel className={'field-label'}>
+                                            {getMethodeTransactionCosts(
+                                                values.amountOptioned,
+                                                values.choiceMembership
+                                            ).map((line, index) => (
+                                                <React.Fragment key={index}>
+                                                    {line}
+                                                    <br />
+                                                </React.Fragment>
+                                            ))}
+                                        </FormLabel>
                                         <TextBlock>
                                             {MoneyPresenter(
                                                 calculateTransactionCostsAmount(

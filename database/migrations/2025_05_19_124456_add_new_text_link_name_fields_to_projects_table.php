@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->string('text_register_page_header')->default('')->after('document_template_increase_participations_id');
+            $table->string('text_register_page_header')->default('')->after('document_template_agreement_id');
             $table->string('text_register_current_book_worth')->default('')->after('text_register_page_header');
             $table->string('text_register_participation_singular')->default('')->after('text_register_current_book_worth');
             $table->string('text_register_participation_plural')->default('')->after('text_register_participation_singular');

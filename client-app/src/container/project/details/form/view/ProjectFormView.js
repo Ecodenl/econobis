@@ -85,6 +85,10 @@ const ProjectFormView = props => {
         showQuestionAboutMembership,
         useTransactionCostsWithMembership,
         questionAboutMembershipGroup,
+        textRegisterPageHeader,
+        textRegisterCurrentBookWorth,
+        textRegisterParticipationSingular,
+        textRegisterParticipationPlural,
         textIsMember,
         textIsNoMember,
         textBecomeMember,
@@ -93,7 +97,9 @@ const ProjectFormView = props => {
         noMemberGroup,
         textAgreeTerms,
         textLinkAgreeTerms,
+        textLinkNameAgreeTerms,
         textLinkUnderstandInfo,
+        textLinkNameUnderstandInfo,
         textAcceptAgreement,
         textAcceptAgreementQuestion,
         textRegistrationFinished,
@@ -174,6 +180,10 @@ const ProjectFormView = props => {
                 showQuestionAboutMembership={showQuestionAboutMembership}
                 useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                 questionAboutMembershipGroup={questionAboutMembershipGroup}
+                textRegisterPageHeader={textRegisterPageHeader}
+                textRegisterCurrentBookWorth={textRegisterCurrentBookWorth}
+                textRegisterParticipationSingular={textRegisterParticipationSingular}
+                textRegisterParticipationPlural={textRegisterParticipationPlural}
                 textIsMember={textIsMember}
                 textIsNoMember={textIsNoMember}
                 textBecomeMember={textBecomeMember}
@@ -182,7 +192,9 @@ const ProjectFormView = props => {
                 noMemberGroup={noMemberGroup}
                 textAgreeTerms={textAgreeTerms}
                 textLinkAgreeTerms={textLinkAgreeTerms}
+                textLinkNameAgreeTerms={textLinkNameAgreeTerms}
                 textLinkUnderstandInfo={textLinkUnderstandInfo}
+                textLinkNameUnderstandInfo={textLinkNameUnderstandInfo}
                 textAcceptAgreement={textAcceptAgreement}
                 textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                 textRegistrationFinished={textRegistrationFinished}

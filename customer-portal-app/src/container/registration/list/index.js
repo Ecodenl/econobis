@@ -51,7 +51,7 @@ function RegistrationList(props) {
                 <Row>
                     <Col>
                         <h1 className="content-heading">
-                            De projecten waarin <strong>{contact.fullNameFnf}</strong> deelneemt.
+                            Actieve inschrijvingen van <strong>{contact.fullNameFnf}</strong>.
                         </h1>
                     </Col>
                 </Row>
@@ -66,7 +66,7 @@ function RegistrationList(props) {
                                 <thead>
                                     <tr>
                                         <th>Organisatie</th>
-                                        <th>Project</th>
+                                        <th>Inschrijving voor</th>
                                         <th>Deelname</th>
                                     </tr>
                                 </thead>
@@ -133,32 +133,43 @@ function RegistrationList(props) {
                                                             <>
                                                                 {participation.participationsInteressed != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsInteressed}
-                                                                        {' obligaties '} <em> (Interesse)</em>
+                                                                        {participation.participationsInteressed}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'obligaties'}{' '}
+                                                                        <em> (Interesse)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsOptioned != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsOptioned}
-                                                                        {' obligaties '} <em>(Ingeschreven)</em>
+                                                                        {participation.participationsOptioned}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'obligaties'}{' '}
+                                                                        <em>(Ingeschreven)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsGranted != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsGranted}
-                                                                        {' obligaties '} <em>(Toegekend)</em>
+                                                                        {participation.participationsGranted}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'obligaties'}{' '}
+                                                                        <em>(Toegekend)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsDefinitive != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsDefinitive}
-                                                                        {' obligaties '}
+                                                                        {participation.participationsDefinitive}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'obligaties'}{' '}
                                                                         <em>(Definitief)</em>
                                                                     </span>
                                                                 ) : (
@@ -173,32 +184,44 @@ function RegistrationList(props) {
                                                             <>
                                                                 {participation.participationsInteressed != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsInteressed}
-                                                                        {' participaties '} <em>(Interesse)</em>
+                                                                        {participation.participationsInteressed}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Interesse)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsOptioned != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsOptioned}
-                                                                        {' participaties '} <em>(Ingeschreven)</em>
+                                                                        {participation.participationsOptioned}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Ingeschreven)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsGranted != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsGranted}
-                                                                        {' participaties '} <em>(Toegekend)</em>
+                                                                        {participation.participationsGranted}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Toegekend)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsDefinitive != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsDefinitive}
-                                                                        {' participaties '} <em>(Definitief)</em>
+                                                                        {participation.participationsDefinitive}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Definitief)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
@@ -213,32 +236,44 @@ function RegistrationList(props) {
                                                             <>
                                                                 {participation.participationsInteressed != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsInteressed}
-                                                                        {' participaties '} <em>(Interesse)</em>
+                                                                        {participation.participationsInteressed}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Interesse)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsOptioned != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsOptioned}
-                                                                        {' participaties '} <em>(Ingeschreven)</em>
+                                                                        {participation.participationsOptioned}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Ingeschreven)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsGranted != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsGranted}
-                                                                        {' participaties '} <em>(Toegekend)</em>
+                                                                        {participation.participationsGranted}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Toegekend)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''
                                                                 )}
                                                                 {participation.participationsDefinitive != 0 ? (
                                                                     <span>
-                                                                        {participation.participationsDefinitive}
-                                                                        {' participaties '} <em>(Definitief)</em>
+                                                                        {participation.participationsDefinitive}{' '}
+                                                                        {participation?.project
+                                                                            ?.textRegisterParticipationPlural ??
+                                                                            'participaties'}{' '}
+                                                                        <em>(Definitief)</em>
                                                                     </span>
                                                                 ) : (
                                                                     ''

@@ -885,7 +885,7 @@ const ProjectFormEditGeneral = ({
                             errorMessage={errorMessages.textRegisterCurrentBookWorth}
                             readOnly={!permissions.managePortalSettings}
                             size={'col-sm-5'}
-                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier, standaard is dit veld: “huidge waarde per participatie” als iemand 2 deelnames van 100 euro kiest komt onder dit veld 200 euro te staan. (dit kan afwijken van het te betalen bedrag als er bijvoorbeeld ook inschrijfkosten zijn).`}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier, standaard is dit veld: “huidige waarde per participatie” als iemand 2 deelnames van 100 euro kiest komt onder dit veld 200 euro te staan. (dit kan afwijken van het te betalen bedrag als er bijvoorbeeld ook inschrijfkosten zijn).`}
                         />
                         <InputText
                             label="Communicatienaam Deelname (meervoud)"

@@ -9,7 +9,6 @@ import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 import { FaInfoCircle, FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
-import { upload } from 'react-icons-kit/fa/upload';
 import { share } from 'react-icons-kit/fa/share';
 import { upload } from 'react-icons-kit/fa/upload';
 

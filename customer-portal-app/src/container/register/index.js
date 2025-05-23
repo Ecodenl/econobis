@@ -194,7 +194,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    Inschrijving voor project <strong>{project.name}</strong>
+                                    Inschrijving voor <strong>{project.name}</strong>
                                 </h1>
                                 <Row className={'mb-4'}>
                                     <Col>
@@ -234,7 +234,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
+                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                             </Col>
@@ -256,7 +256,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Col>
                             {isSucces ? (
                                 <h1 className="content-heading">
-                                    Ingeschreven voor project <strong>{project.name}</strong>
+                                    Ingeschreven voor <strong>{project.name}</strong>
                                 </h1>
                             ) : (
                                 <>
@@ -264,13 +264,13 @@ function RegisterProject({ match, currentSelectedContact }) {
                                         <ButtonGroup aria-label="register" className="w-button-group-left">
                                             <Link to={`/inschrijven-projecten`}>
                                                 <Button className={'w-button'} size="sm">
-                                                    Inschrijven projecten
+                                                    Ga terug
                                                 </Button>
                                             </Link>
                                         </ButtonGroup>
                                     </Row>
                                     <h1 className="content-heading">
-                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor{' '}
                                         <strong>{project.name}</strong>
                                     </h1>
                                 </>

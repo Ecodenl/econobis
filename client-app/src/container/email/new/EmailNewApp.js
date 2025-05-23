@@ -465,7 +465,7 @@ class EmailNewApp extends Component {
 
 const mapStateToProps = state => {
     return {
-        defaultUserMailbox: state.systemData.defaultUserMailbox,
+        defaultUserMailbox: state.meDetails.defaultMailboxWithFallback,
         toIds: state.bulkMailTo.toIds,
     };
 };

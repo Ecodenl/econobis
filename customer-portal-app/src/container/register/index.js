@@ -235,7 +235,7 @@ function RegisterProject({ match, currentSelectedContact }) {
     return (
         <div className={'content-section'}>
             <div className="content-container w-container">
-                {isLoading ? (
+                {isLoading1 || isLoading2 || isLoading3 ? (
                     <LoadingView />
                 ) : hasError ? (
                     <ErrorPage message={errorMessage} />

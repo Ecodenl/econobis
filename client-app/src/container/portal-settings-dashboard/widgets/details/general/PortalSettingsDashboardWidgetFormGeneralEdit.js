@@ -237,6 +237,28 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
             });
     };
 
+    textButtonText = () => {
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        if (staticWidgets.includes(this.state.widget.codeRef)) {
+            return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${this.getDefaultButtonTextByCodeRef(
+                this.state.widget.codeRef
+            )}” ook mee veranderen.`;
+        }
+        return '';
+    };
+
+    getDefaultButtonTextByCodeRef(codeRef) {
+        switch (codeRef) {
+            case 'over-ons':
+                return 'Over ons';
+            case 'project-schrijf-je-in':
+                return 'Inschrijven projecten';
+            case 'huidige-deelnames':
+                return 'Huidige deelnames';
+        }
+        return '**onbekend**';
+    }
+
     render() {
         const { widget, errors, errorMessage } = this.state;
 
@@ -245,6 +267,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
 
         const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
+
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -346,6 +370,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 required={'required'}
                                 error={errors.buttonText}
                                 errorMessage={errorMessage.buttonText}
+                                size={'col-sm-5'}
+                                textToolTip={this.textButtonText()}
                             />
                         </div>
                         <div className="row">
@@ -355,7 +381,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                                 name={'buttonLink'}
                                 value={widget.buttonLink}
                                 onChangeAction={this.handleInputChange}
-                                readOnly={!managePortalSettings}
+                                readOnly={!managePortalSettings || staticWidgets.includes(widget.codeRef)}
                                 required={'required'}
                                 error={errors.buttonLink}
                                 errorMessage={errorMessage.buttonLink}

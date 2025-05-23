@@ -1,9 +1,11 @@
 import React from 'react';
 import { Link } from 'react-router';
 import PropTypes from 'prop-types';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
 const ViewTextLong = props => {
-    const { label, id, value, link, hidden } = props;
+    const { label, id, value, link, hidden, textToolTip } = props;
 
     if (link.length > 0) {
         return (
@@ -16,7 +18,24 @@ const ViewTextLong = props => {
                 <div className="col-sm-9" id={id} onClick={null} style={hidden ? { display: 'none' } : {}}>
                     <Link to={link} className="link-underline">
                         {value}
-                    </Link>
+                    </Link>{' '}
+                    {textToolTip && (
+                        <span>
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={textToolTip}
+                                data-for={`tooltip-${name}`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-${name}`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </span>
+                    )}
                 </div>
             </>
         );
@@ -29,7 +48,24 @@ const ViewTextLong = props => {
                     </label>
                 </div>
                 <div className="col-sm-9" id={id} style={hidden ? { display: 'none' } : {}}>
-                    {value}
+                    {value}{' '}
+                    {textToolTip && (
+                        <span>
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={textToolTip}
+                                data-for={`tooltip-${name}`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-${name}`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </span>
+                    )}
                 </div>
             </>
         );
@@ -40,6 +76,7 @@ ViewTextLong.defaultProps = {
     value: '',
     link: '',
     hidden: false,
+    textToolTip: '',
 };
 
 ViewTextLong.propTypes = {
@@ -48,6 +85,7 @@ ViewTextLong.propTypes = {
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     link: PropTypes.string,
     hidden: PropTypes.bool,
+    textToolTip: PropTypes.string,
 };
 
 export default ViewTextLong;

@@ -27,7 +27,7 @@ class EmailNewApp extends Component {
             mailboxAddresses: [],
             emailTemplates: [],
             email: {
-                from: '',
+                from: props.defaultUserMailbox ? props.defaultUserMailbox.id : '',
                 to: '',
                 cc: '',
                 bcc: '',
@@ -465,6 +465,7 @@ class EmailNewApp extends Component {
 
 const mapStateToProps = state => {
     return {
+        defaultUserMailbox: state.meDetails.defaultMailboxWithFallback,
         toIds: state.bulkMailTo.toIds,
     };
 };

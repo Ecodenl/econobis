@@ -32,6 +32,7 @@ class ContactStatus extends EnumWithIdAndName
             new static('none', 'Geen'),
             new static('portal', 'Portal'),
             new static('webform', 'Webformulier'),
+            new static('importEsClient', 'Import energieklant'),
         ];
     }
 }

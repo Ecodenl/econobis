@@ -5,8 +5,14 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import moment from 'moment/moment';
 import validator from 'validator';
 import InputDate from '../../../../components/form/InputDate';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import InputText from '../../../../components/form/InputText';
+
+// Functionele wrapper voor de class component
+const InvoiceListSetPaidWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceListSetPaid {...props} navigate={navigate} />;
+};
 
 class InvoiceListSetPaid extends Component {
     constructor(props) {
@@ -67,7 +73,7 @@ class InvoiceListSetPaid extends Component {
         // If no errors send form
         if (!hasErrors) {
             InvoiceDetailsAPI.updateInvoice(invoice).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/notas/betaald`);
+                this.props.navigate(`/financieel/${this.props.administrationId}/notas/betaald`);
             });
         }
     };
@@ -119,4 +125,4 @@ class InvoiceListSetPaid extends Component {
     }
 }
 
-export default InvoiceListSetPaid;
+export default InvoiceListSetPaidWrapper;

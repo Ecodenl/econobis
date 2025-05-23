@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
@@ -16,6 +16,8 @@ function FinancialOverviewContactItem({
     toggleFinancialOverviewContactCheck,
     financialOverviewContactIds,
 }) {
+    const navigate = useNavigate();
+
     const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -69,9 +71,9 @@ function FinancialOverviewContactItem({
 
     function getFinancialOverviewPDF(financialOverviewContactId, statusId) {
         if (statusId === 'sent' || statusId === 'error-sending') {
-            hashHistory.push(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
+            navigate(`/waardestaat-contact/inzien/${financialOverviewContactId}`);
         } else {
-            hashHistory.push(`/waardestaat-contact/preview/${financialOverviewContactId}`);
+            navigate(`/waardestaat-contact/preview/${financialOverviewContactId}`);
         }
     }
 }

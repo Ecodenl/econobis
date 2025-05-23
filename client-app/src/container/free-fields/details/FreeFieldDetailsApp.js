@@ -3,12 +3,15 @@ import FreeFieldsAPI from '../../../api/free-fields/FreeFieldsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import FreeFieldDetailsFormGeneral from './general/FreeFieldDetailsFormGeneral';
 import FreeFieldsDeleteItem from '../list/FreeFieldsDeleteItem';
 import { isEmpty } from 'lodash';
 
 function FreeFieldDetailsApp(props) {
+    const navigate = useNavigate();
+    const params = useParams();
+
     const [freeField, setFreeField] = useState({});
     const [isLoading, setIsLoading] = useState(true);
     const [hasError, setHasError] = useState(false);
@@ -29,7 +32,7 @@ function FreeFieldDetailsApp(props) {
     function deleteFreeFieldsField(freeField) {
         FreeFieldsAPI.deleteFreeFieldsField(freeField)
             .then(() => {
-                hashHistory.push(`/vrije-velden`);
+                navigate(`/vrije-velden`);
             })
             .catch(error => {
                 console.log(error);
@@ -39,7 +42,7 @@ function FreeFieldDetailsApp(props) {
 
     function fetchFreeField() {
         setIsLoading(true);
-        FreeFieldsAPI.fetchFreeFieldDetails(props.params.id)
+        FreeFieldsAPI.fetchFreeFieldDetails(params.id)
             .then(data => {
                 setFreeField(data);
                 setIsLoading(false);
@@ -72,7 +75,7 @@ function FreeFieldDetailsApp(props) {
                             <div className="row">
                                 <div className="col-md-4">
                                     <div className="btn-group" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {!freeField.hasFreeFieldsFieldRecords && (
                                             <ButtonIcon iconName={'trash'} onClickAction={showDeleteItemModal} />
                                         )}

@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchHousingFileSpecifications: ({ filters, extraFilters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/housing-file-specification/grid`;
+        const requestUrl = `${getApiUrl()}/api/housing-file-specification/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -16,9 +17,9 @@ export default {
     },
 
     createOpportunitiesFromSpecificationsList: (specificationIds, campaignId) => {
-        const requestUrl = `${URL_API}/api/housing-file-specification/campaign/${campaignId}/create-opportunities`;
+        const requestUrl = `${getApiUrl()}/api/housing-file-specification/campaign/${campaignId}/create-opportunities`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: specificationIds })
             .then(function(response) {
                 return response.data;
@@ -29,9 +30,9 @@ export default {
     },
 
     createQuotationRequestsFromSpecificationsList: (specificationIds, organisationOrCoachId) => {
-        const requestUrl = `${URL_API}/api/housing-file-specification/contact/${organisationOrCoachId}/create-quotation-requests`;
+        const requestUrl = `${getApiUrl()}/api/housing-file-specification/contact/${organisationOrCoachId}/create-quotation-requests`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: specificationIds })
             .then(function(response) {
                 return response.data;
@@ -42,8 +43,8 @@ export default {
     },
 
     getExcelSpecifications: ({ filters, extraFilters, sorts }) => {
-        const requestUrl = `${URL_API}/api/housing-file-specification/excel-specifications`;
-        return axiosInstance.get(requestUrl, {
+        const requestUrl = `${getApiUrl()}/api/housing-file-specification/excel-specifications`;
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

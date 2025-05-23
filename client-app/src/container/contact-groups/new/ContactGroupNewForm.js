@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -15,6 +15,12 @@ import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputReactSelect from '../../../components/form/InputReactSelect';
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import ViewText from '../../../components/form/ViewText';
+
+// Functionele wrapper voor de class component
+const ContactGroupNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactGroupNewForm {...props} navigate={navigate} />;
+};
 
 class ContactGroupNewForm extends Component {
     constructor(props) {
@@ -142,7 +148,7 @@ class ContactGroupNewForm extends Component {
         !hasErrors &&
             ContactGroupAPI.newContactGroup(contactGroup).then(payload => {
                 this.props.fetchSystemData();
-                hashHistory.push('/contact-groep/' + payload.id);
+                this.props.navigate('/contact-groep/' + payload.id);
             });
     };
 
@@ -443,4 +449,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupNewFormWrapper);

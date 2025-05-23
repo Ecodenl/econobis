@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 
 import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const OpportunityFormView = props => {
     const {
@@ -15,6 +16,8 @@ const OpportunityFormView = props => {
         measureCategory,
         measures,
         amount,
+        belowWozLimit,
+        exceptionDebtRelief,
     } = props.opportunity;
 
     return (
@@ -23,7 +26,7 @@ const OpportunityFormView = props => {
                 <ViewText
                     label={'Contact'}
                     value={intake && intake.contact.fullName}
-                    link={intake ? 'contact/' + intake.contact.id : ''}
+                    link={intake ? '/contact/' + intake.contact.id : ''}
                 />
                 <ViewText label={'Adres'} value={intake && intake.fullAddress} />
             </div>
@@ -70,6 +73,30 @@ const OpportunityFormView = props => {
                     value={evaluationAgreedDate ? moment(evaluationAgreedDate).format('L') : ''}
                 />
             </div>
+
+            {intake.campaign.subsidyPossible != false ? (
+                <>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText label={'Campagne WOZ grens'} value={MoneyPresenter(intake.campaign.wozLimit)} />
+                        <ViewText
+                            label={'WOZ waarde woningdossier'}
+                            value={
+                                intake?.address?.housingFile ? MoneyPresenter(intake.address.housingFile.wozValue) : ''
+                            }
+                        />
+                    </div>
+                    <div className="row" onClick={props.switchToEdit}>
+                        <ViewText
+                            label={'Onder WOZ grens'}
+                            value={belowWozLimit === 1 ? 'Ja' : belowWozLimit === 0 ? 'Nee' : 'Geen'}
+                        />
+                        <ViewText
+                            label={'Uitzondering schuldhulpsanering '}
+                            value={exceptionDebtRelief === 1 ? 'Ja' : exceptionDebtRelief === 0 ? 'Nee' : 'Geen'}
+                        />
+                    </div>
+                </>
+            ) : null}
         </div>
     );
 };

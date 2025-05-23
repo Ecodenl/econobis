@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
 
 import { fetchAdministrationDetails } from '../../../actions/administration/AdministrationDetailsActions';
 import AdministrationDetailsToolbar from './AdministrationDetailsToolbar';
@@ -7,6 +8,11 @@ import AdministrationDetailsForm from './AdministrationDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import AdministrationDetailsHarmonica from './AdministrationDetailsHarmonica';
+
+const AdministrationDetailsAppWrapper = props => {
+    const params = useParams();
+    return <AdministrationDetailsApp {...props} params={params} />;
+};
 
 class AdministrationDetailsApp extends Component {
     constructor(props) {
@@ -61,4 +67,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(AdministrationDetailsAppWrapper);

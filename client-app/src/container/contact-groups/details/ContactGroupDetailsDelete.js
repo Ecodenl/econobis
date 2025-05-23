@@ -3,10 +3,12 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContactGroup } from '../../../actions/contact/ContactGroupsActions';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 
 const ContactGroupDetailsDelete = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         props.deleteContactGroup(props.id, successAction);
         props.closeDeleteItemModal();
@@ -14,7 +16,7 @@ const ContactGroupDetailsDelete = props => {
 
     const successAction = () => {
         props.fetchSystemData();
-        hashHistory.push(`/contact-groepen`);
+        navigate(`/contact-groepen`);
     };
 
     return (

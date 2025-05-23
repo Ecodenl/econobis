@@ -1,6 +1,5 @@
 import { put, call } from 'redux-saga/effects';
 import QuotationRequestDetailsAPI from '../../api/quotation-request/QuotationRequestDetailsAPI';
-import { hashHistory } from 'react-router';
 
 export function* fetchQuotationRequestDetailsSaga({ payload }) {
     try {
@@ -14,11 +13,11 @@ export function* fetchQuotationRequestDetailsSaga({ payload }) {
     }
 }
 
-export function* deleteQuotationRequestSaga({ id }) {
+export function* deleteQuotationRequestSaga({ id, callback }) {
     try {
         yield call(QuotationRequestDetailsAPI.deleteQuotationRequest, id);
         yield put({ type: 'DELETE_QUOTATION_REQUEST_SUCCESS', id });
-        hashHistory.push(`/offerteverzoeken`);
+        if (callback) callback(); // 👈 uitvoeren ná succesvolle delete
     } catch (error) {
         yield put({ type: 'SET_ERROR', http_code: error.response.status, message: error.response.data.message });
         yield put({ type: 'DELETE_QUOTATION_REQUEST_ERROR', error });

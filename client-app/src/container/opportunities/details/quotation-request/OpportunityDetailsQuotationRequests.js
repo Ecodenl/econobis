@@ -1,18 +1,24 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import OpportunityDetailsQuotationRequestsList from './OpportunityDetailsQuotationRequestsList';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import {connect} from 'react-redux';
-import {hashHistory} from 'react-router';
-import DistrictAPI from "../../../../api/district/DistrictAPI";
-import OpportunityDetailsQuotationRequestPlanByDistrictModal
-    from "./OpportunityDetailsQuotationRequestPlanByDistrictModal";
+import { connect } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
+import DistrictAPI from '../../../../api/district/DistrictAPI';
+import OpportunityDetailsQuotationRequestPlanByDistrictModal from './OpportunityDetailsQuotationRequestPlanByDistrictModal';
 
 import Icon from 'react-icons-kit';
 import { calendar } from 'react-icons-kit/fa/calendar';
 import { plus } from 'react-icons-kit/fa/plus';
+
+// Functionele wrapper voor de class component
+const OpportunityDetailsQuotationRequestsWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunityDetailsQuotationRequests {...props} navigate={navigate} />;
+};
 
 class OpportunityDetailsQuotationRequests extends Component {
     constructor(props) {
@@ -21,40 +27,43 @@ class OpportunityDetailsQuotationRequests extends Component {
         this.state = {
             districts: [],
             setShowPlanByDistrictModal: false,
-        }
+        };
     }
 
     componentDidMount() {
-        DistrictAPI.fetchDistricts().then((data) => {
-            this.setState({districts: data.filter(district => !district.closed)});
+        DistrictAPI.fetchDistricts().then(data => {
+            this.setState({ districts: data.filter(district => !district.closed) });
         });
     }
 
     render() {
-        const {opportunityActions, opportunityId} = this.props;
+        const { opportunityActions, opportunityId } = this.props;
 
         return (
             <>
                 <Panel>
                     <PanelHeader>
-                        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between'}}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-between' }}>
                             <span className="h5 text-bold">Acties</span>
                             <div>
                                 {this.state.districts.length > 0 && (
                                     <>
-                                        <button className="btn btn-link"
-                                                onClick={() => this.setState({setShowPlanByDistrictModal: true})}
+                                        <button
+                                            className="btn btn-link"
+                                            onClick={() => this.setState({ setShowPlanByDistrictModal: true })}
                                         >
                                             <Icon size={14} icon={calendar} />
                                         </button>
                                     </>
                                 )}
                                 {this.props.permissions.manageQuotationRequest && opportunityActions.length == 1 ? (
-                                    <button className="btn btn-link" onClick={() =>
-                                        hashHistory.push(
-                                            `/offerteverzoek/nieuw/kans/${opportunityId}/actie/${opportunityActions[0].id}`
-                                        )
-                                    }
+                                    <button
+                                        className="btn btn-link"
+                                        onClick={() =>
+                                            this.props.navigate(
+                                                `/offerteverzoek/nieuw/kans/${opportunityId}/actie/${opportunityActions[0].id}`
+                                            )
+                                        }
                                     >
                                         <Icon size={14} icon={plus} />
                                     </button>
@@ -72,7 +81,7 @@ class OpportunityDetailsQuotationRequests extends Component {
                                                             role={'button'}
                                                             title={opportunityAction.name}
                                                             onClick={() =>
-                                                                hashHistory.push(
+                                                                this.props.navigate(
                                                                     `/offerteverzoek/nieuw/kans/${opportunityId}/actie/${opportunityAction.id}`
                                                                 )
                                                             }
@@ -90,14 +99,14 @@ class OpportunityDetailsQuotationRequests extends Component {
                     </PanelHeader>
                     <PanelBody>
                         <div className="col-md-12">
-                            <OpportunityDetailsQuotationRequestsList/>
+                            <OpportunityDetailsQuotationRequestsList />
                         </div>
                     </PanelBody>
                 </Panel>
                 {this.state.setShowPlanByDistrictModal && (
                     <OpportunityDetailsQuotationRequestPlanByDistrictModal
                         districts={this.state.districts}
-                        onCancel={() => this.setState({setShowPlanByDistrictModal: false})}
+                        onCancel={() => this.setState({ setShowPlanByDistrictModal: false })}
                         opportunityId={opportunityId}
                     />
                 )}
@@ -114,4 +123,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OpportunityDetailsQuotationRequests);
+export default connect(mapStateToProps)(OpportunityDetailsQuotationRequestsWrapper);

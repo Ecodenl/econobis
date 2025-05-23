@@ -17,7 +17,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import Modal from '../../../../components/modal/Modal';
 import ButtonText from '../../../../components/button/ButtonText';
@@ -29,6 +29,12 @@ import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
 import ParticipantsListExtraFilters from './ParticipantsListExtraFilters';
 import InputToggle from '../../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const ParticipantsListAppWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantsListApp {...props} navigate={navigate} />;
+};
 
 class ParticipantsListApp extends Component {
     constructor(props) {
@@ -301,7 +307,7 @@ class ParticipantsListApp extends Component {
                 participantIds: this.state.participantIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/preview-rapportage`);
+            this.props.navigate(`/project/preview-rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -391,7 +397,7 @@ class ParticipantsListApp extends Component {
             filterType,
             saveFromProject,
         }).then(payload => {
-            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+            this.props.navigate(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
@@ -567,4 +573,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ParticipantsListAppWrapper);

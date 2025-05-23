@@ -5,6 +5,13 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import FinancialOverviewProjectDetailsToolbar from './FinancialOverviewProjectDetailsToolbar';
 import FinancialOverviewProjectDetailsForm from './FinancialOverviewProjectDetailsForm';
 import FinancialOverviewProjectAPI from '../../../../api/financial/overview/FinancialOverviewProjectAPI';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewProjectDetailsAppWrapper = props => {
+    const params = useParams();
+    return <FinancialOverviewProjectDetailsApp {...props} params={params} />;
+};
 
 class FinancialOverviewProjectDetailsApp extends Component {
     constructor(props) {
@@ -75,4 +82,4 @@ class FinancialOverviewProjectDetailsApp extends Component {
     }
 }
 
-export default FinancialOverviewProjectDetailsApp;
+export default FinancialOverviewProjectDetailsAppWrapper;

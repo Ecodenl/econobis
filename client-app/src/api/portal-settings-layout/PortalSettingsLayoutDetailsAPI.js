@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PORTAL_SETTINGS_LAYOUT = `portal-settings-layout`;
 
@@ -6,7 +6,7 @@ export default {
     fetchPortalSettingsLayoutDetails: id => {
         const requestUrl = `jory/portal-settings-layout/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [
@@ -40,7 +40,7 @@ export default {
     fetchDefaultPortalSettingsLayoutDetails: () => {
         const requestUrl = `${URL_PORTAL_SETTINGS_LAYOUT}/default`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     newPortalSettingsLayout: portalSettingsLayout => {
@@ -50,18 +50,18 @@ export default {
             fld: ['id'],
         });
 
-        return axiosInstance.post(requestUrl, portalSettingsLayout);
+        return getAxiosInstance().post(requestUrl, portalSettingsLayout);
     },
 
     updatePortalSettingsLayout: (portalSettingsLayoutId, portalSettingsLayout) => {
         const requestUrl = `${URL_PORTAL_SETTINGS_LAYOUT}/${portalSettingsLayoutId}`;
 
-        return axiosInstance.post(requestUrl, portalSettingsLayout);
+        return getAxiosInstance().post(requestUrl, portalSettingsLayout);
     },
 
     deletePortalSettingsLayout: id => {
         const requestUrl = `${URL_PORTAL_SETTINGS_LAYOUT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

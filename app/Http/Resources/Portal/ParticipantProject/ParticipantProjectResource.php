@@ -18,9 +18,13 @@ class ParticipantProjectResource extends JsonResource
     public function toArray($request)
     {
         $projectTypeCodeRef = $this->project->projectType->code_ref;
+
         $basicInformation = [
+            'participantId' => $this->id,
             'contactName' => $this->contact ? $this->contact->full_name_fnf : '',
             'projectName' => $this->project ? $this->project->name : '',
+            'projectId' => $this->project ? $this->project->id : '',
+            'allowIncreaseParticipations' => $this->allowIncreaseParticipations,
             'administrationName' => ($this->project && $this->project->administration) ? $this->project->administration->name : '',
             'portalSettingsLayoutAssigned' => ($this->project && $this->project->administration) ? $this->project->administration->portalSettingsLayoutAssigned : '',
         ];

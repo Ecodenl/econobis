@@ -1,13 +1,15 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../../../../../components/modal/Modal';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
 
 const RevenuePartsKwhDetailsDelete = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         RevenuePartsKwhAPI.deleteRevenuePartsKwh(props.id).then(() => {
-            hashHistory.push(`/project/opbrengst-kwh/${props.revenueId}`);
+            navigate(`/project/opbrengst-kwh/${props.revenueId}`);
         });
     };
 

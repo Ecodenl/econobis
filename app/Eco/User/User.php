@@ -53,10 +53,7 @@ class User extends Authenticatable
         'active' => 'boolean',
         'require_two_factor_authentication' => 'boolean',
         'show_two_factor_notification' => 'boolean',
-    ];
-
-    protected $dates = [
-        'last_visit',
+        'last_visit' => 'datetime',
     ];
 
     protected $encryptable = [

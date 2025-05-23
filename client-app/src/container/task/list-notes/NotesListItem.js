@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const NotesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <NotesListItem {...props} navigate={navigate} />;
+};
 
 class NotesListItem extends Component {
     constructor(props) {
@@ -35,7 +41,7 @@ class NotesListItem extends Component {
     }
 
     openItem() {
-        hashHistory.push(`/taak/${this.props.id}`);
+        this.props.navigate(`/taak/${this.props.id}`);
     }
 
     render() {
@@ -79,4 +85,4 @@ const mapStateToProps = state => ({
     permissions: state.meDetails.permissions,
 });
 
-export default connect(mapStateToProps, null)(NotesListItem);
+export default connect(mapStateToProps, null)(NotesListItemWrapper);

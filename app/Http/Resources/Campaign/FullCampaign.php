@@ -57,6 +57,8 @@ class FullCampaign extends JsonResource
             'documentCount' => $this->documents()->count(),
             'relatedDocuments' => FullDocument::collection($this->whenLoaded('documents')),
             'numberOfIntakes' => $this->numberOfIntakes,
+            'subsidyPossible' => $this->subsidy_possible,
+            'wozLimit' => $this->woz_limit,
         ];
     }
 }

@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const AdministrationsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <AdministrationsListItem {...props} navigate={navigate} />;
+};
 
 class AdministrationsListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class AdministrationsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/administratie/${id}`);
+        this.props.navigate(`/administratie/${id}`);
     }
 
     render() {
@@ -76,4 +82,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(AdministrationsListItem);
+export default connect(mapStateToProps, null)(AdministrationsListItemWrapper);

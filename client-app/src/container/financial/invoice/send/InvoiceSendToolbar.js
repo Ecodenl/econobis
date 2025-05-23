@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import InvoiceSendConfirm from './InvoiceSendConfirm';
 import ButtonText from '../../../../components/button/ButtonText';
 import InvoiceSendConfirmPost from './InvoiceSendConfirmPost';
+
+// Functionele wrapper voor de class component
+const InvoiceSendToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceSendToolbar {...props} navigate={navigate} />;
+};
 
 class InvoiceSendToolbar extends Component {
     constructor(props) {
@@ -19,11 +25,13 @@ class InvoiceSendToolbar extends Component {
     };
 
     render() {
+        const { navigate } = this.props;
+
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {this.props.amountOfInvoices > 0 &&
                             this.props.type === 'email' &&
                             this.props.paymentType === 'incasso' && (
@@ -79,4 +87,4 @@ class InvoiceSendToolbar extends Component {
     }
 }
 
-export default InvoiceSendToolbar;
+export default InvoiceSendToolbarWrapper;

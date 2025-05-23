@@ -39,9 +39,18 @@ class GenericMailWithoutAttachment extends Mailable
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
             if($defaultAttachmentDocument){
                 $documentController = new DocumentController();
-                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
-                    'as' => $defaultAttachmentDocument->filename
-                ]);
+
+                $attachment = $documentController->downLoadRawDocument($defaultAttachmentDocument);
+                if ($attachment && isset($attachment['content'])) {
+                    $this->attachData(
+                        $attachment['content'],
+                        $attachment['filename'],
+                        [
+                            'as' => $attachment['filename'],
+                            'mime' => $attachment['mime'] ?? 'application/octet-stream',
+                        ]
+                    );
+                }
             }
         }
 

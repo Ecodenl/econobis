@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import { setCheckedContact } from '../../../actions/contact/ContactsActions';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const ContactsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactsListItem {...props} navigate={navigate} />;
+};
 
 class ContactsListItem extends Component {
     constructor(props) {
@@ -37,7 +43,7 @@ class ContactsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/contact/${id}`);
+        this.props.navigate(`/contact/${id}`);
     }
 
     render() {
@@ -148,4 +154,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListItemWrapper);

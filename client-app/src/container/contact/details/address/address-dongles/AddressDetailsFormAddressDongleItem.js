@@ -32,7 +32,7 @@ class AddressDetailsFormAddressDongleItem extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.addressDongle, nextProps.addressDongle)) {
             this.setState({
                 ...this.state,

@@ -34,7 +34,7 @@ class InvoiceProductsFormItem extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.invoiceProduct, nextProps.invoiceProduct)) {
             this.setState({
                 ...this.state,

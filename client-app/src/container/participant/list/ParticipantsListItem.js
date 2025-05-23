@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
@@ -8,6 +8,12 @@ import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 
 moment.locale('nl');
+
+// Functionele wrapper voor de class component
+const ParticipantsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantsListItem {...props} navigate={navigate} />;
+};
 
 class ParticipantsListItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class ParticipantsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/project/deelnemer/${id}`);
+        this.props.navigate(`/project/deelnemer/${id}`);
     }
 
     render() {
@@ -128,4 +134,4 @@ class ParticipantsListItem extends Component {
     }
 }
 
-export default ParticipantsListItem;
+export default ParticipantsListItemWrapper;

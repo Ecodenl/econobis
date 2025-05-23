@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const DocumentsListWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentsList {...props} navigate={navigate} />;
+};
 
 class DocumentsList extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class DocumentsList extends Component {
     }
 
     openItem = id => {
-        hashHistory.push(`/document/${id}`);
+        this.props.navigate(`/document/${id}`);
     };
 
     render() {
@@ -47,4 +53,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DocumentsList);
+export default connect(mapStateToProps)(DocumentsListWrapper);

@@ -15,7 +15,7 @@ class JobLogs extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         JobAPI.getLastJobs().then(payload => {
             this.setState({
                 jobs: payload.data,

@@ -73,6 +73,9 @@ const ProjectFormView = props => {
         amountInteressed,
         documentTemplateAgreement,
         emailTemplateAgreement,
+        allowIncreaseParticipationsInPortal,
+        documentTemplateIncreaseParticipations,
+        emailTemplateIncreaseParticipations,
         linkAgreeTerms,
         linkUnderstandInfo,
         linkProjectInfo,
@@ -165,6 +168,9 @@ const ProjectFormView = props => {
                 kwhStartLowNextRevenue={kwhStartLowNextRevenue}
                 documentTemplateAgreement={documentTemplateAgreement}
                 emailTemplateAgreement={emailTemplateAgreement}
+                allowIncreaseParticipationsInPortal={allowIncreaseParticipationsInPortal}
+                documentTemplateIncreaseParticipations={documentTemplateIncreaseParticipations}
+                emailTemplateIncreaseParticipations={emailTemplateIncreaseParticipations}
                 linkAgreeTerms={linkAgreeTerms}
                 linkUnderstandInfo={linkUnderstandInfo}
                 linkProjectInfo={linkProjectInfo}

@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchPortalFreeFieldsPages: (filters, sorts, pagination) => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-pages/grid`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-pages/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -14,29 +15,31 @@ export default {
         });
     },
     fetchPortalFreeFieldsPageDetails: id => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page/${id}`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page/${id}`;
 
-        return axiosInstance.get(requestUrl).then(response => {
-            return response.data.data;
-        });
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(response => {
+                return response.data.data;
+            });
     },
 
     peekFreeFieldsContacts: pageId => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page/free-fields-contacts/${pageId}/peek-contacts`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page/free-fields-contacts/${pageId}/peek-contacts`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     deletePortalFreeFieldsPage: id => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page/${id}/delete`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newPortalFreeFieldsPage: portalFreeFieldsPage => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, portalFreeFieldsPage)
             .then(function(response) {
                 return response.data;
@@ -47,16 +50,16 @@ export default {
     },
 
     updatePortalFreeFieldsPage: portalFreeFieldsPage => {
-        return axiosInstance.post(
-            `${URL_API}/api/portal-free-fields-page/${portalFreeFieldsPage.id}/update`,
+        return getAxiosInstance().post(
+            `${getApiUrl()}/api/portal-free-fields-page/${portalFreeFieldsPage.id}/update`,
             portalFreeFieldsPage
         );
     },
 
     // fetchPortalFreeFieldsFieldRecords: (table, recordId) => {
-    //     const requestUrl = `${URL_API}/api/free-fields-field-records/get-values`;
+    //     const requestUrl = `${getApiUrl()}/api/free-fields-field-records/get-values`;
     //
-    //     return axiosInstance
+    //     return getAxiosInstance()
     //         .get(requestUrl, {
     //             params: {
     //                 table: table,
@@ -68,23 +71,23 @@ export default {
     //
 
     createPortalFreeFieldsField: payload => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page-field`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page-field`;
 
-        return axiosInstance.post(requestUrl, payload);
+        return getAxiosInstance().post(requestUrl, payload);
     },
     updatePortalFreeFieldsField: (recordId, payload) => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page-field/${recordId}`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page-field/${recordId}`;
 
-        return axiosInstance.post(requestUrl, payload);
+        return getAxiosInstance().post(requestUrl, payload);
     },
     deletePortalFreeFieldsField: recordId => {
-        const requestUrl = `${URL_API}/api/portal-free-fields-page-field/${recordId}/delete`;
+        const requestUrl = `${getApiUrl()}/api/portal-free-fields-page-field/${recordId}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     // updatePortalFreeFieldsFieldRecords: (data, recordId) => {
-    //     const requestUrl = `${URL_API}/api/free-fields-field-records/update-values`;
-    //     return axiosInstance.post(requestUrl, { data: { records: data, recordId: recordId } });
+    //     const requestUrl = `${getApiUrl()}/api/free-fields-field-records/update-values`;
+    //     return getAxiosInstance().post(requestUrl, { data: { records: data, recordId: recordId } });
     // },
 };

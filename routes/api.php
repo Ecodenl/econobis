@@ -67,6 +67,11 @@ Route::namespace('Api')
         Route::post('/contacts/merge', 'Contact\ContactController@mergeContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
+        Route::post('/contact/validate-import-from-energy-supplier', 'Contact\ContactController@validateImportFromEnergySupplier');
+        Route::post('/contact/import-from-energy-supplier', 'Contact\ContactController@importFromEnergySupplier');
+        Route::post('/contact/update-contact-matches', 'Contact\ContactController@updateContactMatches');
+        Route::get('/contact/excel-contact-to-import', 'Contact\ContactToImportController@excelContactToImport');
+        Route::get('/contact/contact-to-imports-suppliers', 'Contact\ContactController@contactToImportsSuppliers');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/addresses', 'Contact\ContactController@getContactWithAddresses');
@@ -78,6 +83,11 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
         Route::get('/contact/{contact}/coach-attributes', 'Contact\ContactController@getCoachAttributes');
         Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
+
+        Route::get('/contact-to-imports/grid', 'Contact\ContactToImportController@index');
+        Route::get('/contact-to-imports/peek-with-status', 'Contact\ContactToImportController@peekWithStatus');
+        Route::post('/contact-to-imports/createContactsFromImport', 'Contact\ContactToImportController@createContactsFromImport');
+        Route::post('/contact-to-imports/updateContactsFromImport', 'Contact\ContactToImportController@updateContactsFromImport');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
@@ -473,6 +483,7 @@ Route::namespace('Api')
         Route::get('/quotation-request/grid', 'QuotationRequest\QuotationRequestController@grid');
         Route::get('/quotation-request/peek', 'QuotationRequest\QuotationRequestController@peek');
         Route::get('/quotation-request/csv', 'QuotationRequest\QuotationRequestController@csv');
+        Route::get('/quotation-request/excel/{type}', 'QuotationRequest\QuotationRequestController@excel');
         Route::get('/quotation-request/amount-open', 'QuotationRequest\QuotationRequestController@getAmountOfOpenQuotationRequests');
         Route::get('/opportunity/{opportunity}/{opportunityAction}/quotation-request', 'QuotationRequest\QuotationRequestController@getStore');
         Route::post('/quotation-request', 'QuotationRequest\QuotationRequestController@store');

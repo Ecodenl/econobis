@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteTeam } from '../../../actions/team/TeamsActions';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const TeamDetailsDelete = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         props.deleteTeam(props.id);
         props.closeDeleteItemModal();
-        hashHistory.push(`/teams`);
+        navigate(`/teams`);
     };
 
     return (

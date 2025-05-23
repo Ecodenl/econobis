@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactsDeleteSelectedItems from './ContactsDeleteSelectedItems';
@@ -8,11 +9,19 @@ import ContactListAddContactsToGroup from './ContactListAddContactsToGroup';
 import { FaInfoCircle, FaRegLightbulb } from 'react-icons/fa';
 import { FaFire } from 'react-icons/fa';
 import { plus } from 'react-icons-kit/fa/plus';
+import { upload } from 'react-icons-kit/fa/upload';
 import { share } from 'react-icons-kit/fa/share';
+import { upload } from 'react-icons-kit/fa/upload';
 
 import ContactsMergeSelectedItems from './ContactsMergeSelectedItems';
 import Icon from 'react-icons-kit';
 import ReactTooltip from 'react-tooltip';
+
+// Functionele wrapper voor de class component
+const ContactsListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactsListToolbar {...props} navigate={navigate} />;
+};
 
 class ContactsListToolbar extends Component {
     constructor(props) {
@@ -44,12 +53,12 @@ class ContactsListToolbar extends Component {
     };
 
     newContact = () => {
-        hashHistory.push(`/contact/nieuw`);
+        this.props.navigate(`/contact/nieuw`);
     };
 
-    importContacts = () => {
-        hashHistory.push(`/contact/import`);
-    };
+    // importContacts = () => {
+    //     this.props.navigate(`/contact/import`);
+    // };
 
     render() {
         const { permissions = {} } = this.props.meDetails;
@@ -102,12 +111,12 @@ class ContactsListToolbar extends Component {
                                     <ul className="dropdown-menu">
                                         {permissions.createPerson && (
                                             <li>
-                                                <Link to="contact/nieuw/persoon">Persoon</Link>
+                                                <Link to="/contact/nieuw/persoon">Persoon</Link>
                                             </li>
                                         )}
                                         {permissions.createOrganisation && (
                                             <li>
-                                                <Link to="contact/nieuw/organisatie">Organisatie</Link>
+                                                <Link to="/contact/nieuw/organisatie">Organisatie</Link>
                                             </li>
                                         )}
                                         {permissions.manageGroup && (
@@ -197,11 +206,37 @@ class ContactsListToolbar extends Component {
                                     />
                                 )}
                             {!dataControleType && !showCheckboxList && !showCheckboxListMerge && permissions.import && (
-                                <ButtonIcon
-                                    iconName={'upload'}
-                                    onClickAction={this.importContacts}
-                                    title="Importeren contacten"
-                                />
+                                // <ButtonIcon
+                                //     iconName={'upload'}
+                                //     onClickAction={this.importContacts}
+                                //     title="Importeren contacten"
+                                // />
+                                <div className="nav navbar-nav btn-group" role="group">
+                                    <button
+                                        className="btn btn-success btn-sm"
+                                        data-toggle="dropdown"
+                                        title="Importeren contacten"
+                                    >
+                                        <Icon size={14} icon={upload} />
+                                    </button>
+                                    <ul className="dropdown-menu">
+                                        <li>
+                                            <Link to="/contact/import">Importeer contacten</Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="/contact/importeren-energie-klanten">
+                                                Importeer energieklanten
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link to="/contact/signaleringslijst-energie-klanten">
+                                                Verwerk geïmporteerde energieklanten
+                                            </Link>
+                                        </li>
+                                    </ul>
+                                </div>
                             )}
                             {!dataControleType &&
                                 !showCheckboxList &&
@@ -346,4 +381,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactsListToolbar);
+export default connect(mapStateToProps, null)(ContactsListToolbarWrapper);

@@ -1,11 +1,13 @@
 import React from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 const TaskNewToolbar = props => {
+    const navigate = useNavigate();
+
     const { finished } = props;
 
     return (
@@ -15,7 +17,7 @@ const TaskNewToolbar = props => {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                             </div>
                         </div>
                         <div className="col-md-4">

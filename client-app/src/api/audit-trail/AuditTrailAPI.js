@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchAuditTrail: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/audit-trail/grid`;
+        const requestUrl = `${getApiUrl()}/api/audit-trail/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -15,9 +16,9 @@ export default {
     },
 
     fetchAuditTrailModels: () => {
-        const requestUrl = `${URL_API}/api/audit-trail/peek-models`;
+        const requestUrl = `${getApiUrl()}/api/audit-trail/peek-models`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

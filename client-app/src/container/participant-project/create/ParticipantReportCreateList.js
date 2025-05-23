@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 
 import SideNav, { Nav, NavText } from 'react-sidenav';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 class ParticipantReportCreateList extends Component {
     constructor(props) {

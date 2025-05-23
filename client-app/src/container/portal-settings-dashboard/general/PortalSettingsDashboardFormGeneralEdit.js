@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
@@ -122,8 +124,8 @@ class PortalSettingsDashboardFormGeneralEdit extends Component {
             defaultWidgetTextColor,
         } = this.state.dashboardSettings;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
-        const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${getApiUrl()}/portal/images/logo-header.png?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${getApiUrl()}/portal/images/background-header.png?${this.props.imageHash}`;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>

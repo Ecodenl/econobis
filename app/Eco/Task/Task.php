@@ -31,12 +31,9 @@ class Task extends Model
 
     protected $guarded = ['id'];
 
-    protected $dates = [
-//        'date_planned_start',
-//        'date_planned_finish',
-//        'date_finished',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     /**

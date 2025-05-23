@@ -1,35 +1,30 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../../../components/modal/Modal';
 import { deleteInvoice } from '../../../../../actions/invoice/InvoiceDetailsActions';
-import { connect } from 'react-redux';
 
-const InvoiceDetailsFormDelete = props => {
+const InvoiceDetailsFormDelete = ({ id, number, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteInvoice(props.id);
-
-        props.closeDeleteItemModal();
+        dispatch(deleteInvoice(id));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder nota: <strong> {`${props.number}?`}</strong>
+                Verwijder nota: <strong> {`${number}?`}</strong>
             </p>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteInvoice: id => {
-        dispatch(deleteInvoice(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(InvoiceDetailsFormDelete);
+export default InvoiceDetailsFormDelete;

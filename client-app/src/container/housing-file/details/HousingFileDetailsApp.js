@@ -8,6 +8,13 @@ import HousingFileDetailsHarmonica from './harmonica/HousingFileDetailsHarmonica
 
 import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const HousingFileDetailsAppWrapper = props => {
+    const params = useParams();
+    return <HousingFileDetailsApp {...props} params={params} />;
+};
 
 class HousingFileDetailsApp extends Component {
     constructor(props) {
@@ -46,4 +53,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(HousingFileDetailsApp);
+export default connect(null, mapDispatchToProps)(HousingFileDetailsAppWrapper);

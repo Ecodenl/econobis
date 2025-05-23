@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -10,6 +10,12 @@ import { download } from 'react-icons-kit/fa/download';
 import { trash } from 'react-icons-kit/fa/trash';
 import { eye } from 'react-icons-kit/fa/eye';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const DocumentsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentsListItem {...props} navigate={navigate} />;
+};
 
 class DocumentsListItem extends Component {
     constructor(props) {
@@ -36,7 +42,7 @@ class DocumentsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`document/${id}`);
+        this.props.navigate(`/document/${id}`);
     }
 
     download(id) {
@@ -79,7 +85,7 @@ class DocumentsListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons && filename.toLowerCase().endsWith('.pdf') ? (
-                        <a role="button" onClick={() => hashHistory.push(`/document/inzien/${id}`)}>
+                        <a role="button" onClick={() => this.props.navigate(`/document/inzien/${id}`)}>
                             <Icon className="mybtn-success" size={14} icon={eye} />
                         </a>
                     ) : (
@@ -111,4 +117,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(DocumentsListItem);
+export default connect(mapStateToProps)(DocumentsListItemWrapper);

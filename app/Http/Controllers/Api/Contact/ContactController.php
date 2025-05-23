@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\ContactToImportSupplier;
 use App\Eco\User\User;
 use App\Helpers\Contact\ContactMergeException;
 use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
+use App\Helpers\Import\ContactImportFromEnergySupplierHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
@@ -93,6 +95,34 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->import($request->file('attachment'));
+    }
+
+    public function validateImportFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplierCodeRef'), $request->input('fileHeader'));
+    }
+
+    public function importFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->import($request->file('attachment'), $request->input('suppliercodeRef'), $request->input('warninglines'));
+    }
+
+    public function updateContactMatches(){
+        $this->authorize('import', Contact::class);
+        set_time_limit(300);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->updateContactMatches();
+    }
+
+    public function contactToImportsSuppliers (){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        return ContactToImportSupplier::get();
     }
 
     public function destroy(Contact $contact)

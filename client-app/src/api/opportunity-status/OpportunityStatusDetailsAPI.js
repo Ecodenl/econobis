@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_OPPORTUNITY_STATUS = `opportunity-status`;
 
@@ -10,7 +10,7 @@ export default {
     fetchOpportunityStatusDetails: id => {
         const requestUrl = `jory/opportunity-status/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: defaultFields,
             },
@@ -19,7 +19,7 @@ export default {
 
     updateOpportunityStatus: opportunityStatus => {
         const requestUrl = `${URL_OPPORTUNITY_STATUS}/${opportunityStatus.id}`;
-        return axiosInstance.post(requestUrl, opportunityStatus, {
+        return getAxiosInstance().post(requestUrl, opportunityStatus, {
             params: {
                 jory: defaultFields,
             },

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_INSPECTION_PERSON = `${URL_API}/api`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     getCoachPeek: () => {
+        const URL_INSPECTION_PERSON = `${getApiUrl()}/api`;
         const requestUrl = `${URL_INSPECTION_PERSON}/coach-peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -16,9 +16,10 @@ export default {
             });
     },
     getProjectManagerPeek: () => {
+        const URL_INSPECTION_PERSON = `${getApiUrl()}/api`;
         const requestUrl = `${URL_INSPECTION_PERSON}/project-manager-peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -28,9 +29,10 @@ export default {
             });
     },
     getExternalPartyPeek: () => {
+        const URL_INSPECTION_PERSON = `${getApiUrl()}/api`;
         const requestUrl = `${URL_INSPECTION_PERSON}/external-party-peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

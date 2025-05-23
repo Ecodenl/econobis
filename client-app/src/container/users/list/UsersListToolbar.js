@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { connect } from 'react-redux';
 
 const UsersListToolbar = props => {
+    const navigate = useNavigate();
+
     const newUser = () => {
-        hashHistory.push(`/gebruiker/nieuw`);
+        navigate(`/gebruiker/nieuw`);
     };
 
     const { permissions = {} } = props;
@@ -27,11 +29,7 @@ const UsersListToolbar = props => {
                                 onClickAction={props.getRolesPermissionsExcel}
                                 title="Downloaden roles/permissions naar Excel"
                             />
-                            <ButtonIcon
-                                iconName={'plus'}
-                                onClickAction={newUser}
-                                title="Toevoegen gebruiker"
-                            />
+                            <ButtonIcon iconName={'plus'} onClickAction={newUser} title="Toevoegen gebruiker" />
                         </>
                     ) : null}
                 </div>

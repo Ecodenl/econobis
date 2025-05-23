@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewContactViewToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewContactViewToolbar {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewContactViewToolbar extends Component {
     constructor(props) {
@@ -13,7 +19,7 @@ class FinancialOverviewContactViewToolbar extends Component {
             <div className="row">
                 <div className="col-md-3">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.download} />
                         <ButtonIcon iconName={'searchPlus'} onClickAction={this.props.zoomIn} />
                         <ButtonIcon iconName={'searchMinus'} onClickAction={this.props.zoomOut} />
@@ -49,4 +55,4 @@ class FinancialOverviewContactViewToolbar extends Component {
     }
 }
 
-export default FinancialOverviewContactViewToolbar;
+export default FinancialOverviewContactViewToolbarWrapper;

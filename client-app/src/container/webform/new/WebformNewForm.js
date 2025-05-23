@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import uuid from 'uuid';
 import moment from 'moment';
@@ -13,7 +13,13 @@ import Panel from '../../../components/panel/Panel';
 import WebformDetailsAPI from '../../../api/webform/WebformDetailsAPI';
 import InputSelectGroup from '../../../components/form/InputSelectGroup';
 import InputDate from '../../../components/form/InputDate';
-import InputCheckbox from "../../../components/form/InputCheckbox";
+import InputCheckbox from '../../../components/form/InputCheckbox';
+
+// Functionele wrapper voor de class component
+const WebformNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <WebformNewForm {...props} navigate={navigate} />;
+};
 
 class WebformNewForm extends Component {
     constructor(props) {
@@ -105,7 +111,7 @@ class WebformNewForm extends Component {
         !hasErrors &&
             WebformDetailsAPI.newWebform(webform)
                 .then(payload => {
-                    hashHistory.push(`/webformulier/${payload.data.data.id}`);
+                    this.props.navigate(`/webformulier/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -114,7 +120,16 @@ class WebformNewForm extends Component {
     }
 
     render() {
-        const { name, apiKey, emailAddressErrorReport, mailErrorReport, maxRequestsPerMinute, dateStart, dateEnd, responsible } = this.state.webform;
+        const {
+            name,
+            apiKey,
+            emailAddressErrorReport,
+            mailErrorReport,
+            maxRequestsPerMinute,
+            dateStart,
+            dateEnd,
+            responsible,
+        } = this.state.webform;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -230,4 +245,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(WebformNewForm);
+export default connect(mapStateToProps, null)(WebformNewFormWrapper);

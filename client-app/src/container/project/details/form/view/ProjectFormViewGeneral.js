@@ -5,7 +5,6 @@ import ViewTextLong from '../../../../../components/form/ViewTextLong';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
-import FreeFields from '../../../../../components/freeFields/FreeFields';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -50,6 +49,9 @@ const ProjectFormViewGeneral = ({
     requiresContactGroups,
     documentTemplateAgreement,
     emailTemplateAgreement,
+    allowIncreaseParticipationsInPortal,
+    documentTemplateIncreaseParticipations,
+    emailTemplateIncreaseParticipations,
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
@@ -567,6 +569,37 @@ const ProjectFormViewGeneral = ({
                             value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Contacten mogen deelnames/bedragen bijschrijven na initiele inschrijving'}
+                            value={allowIncreaseParticipationsInPortal ? 'Ja' : 'Nee'}
+                        />{' '}
+                    </div>
+                    {allowIncreaseParticipationsInPortal ? (
+                        <>
+                            <div className="row">
+                                <ViewTextLong
+                                    label="Document template bijschrijfformulier"
+                                    value={
+                                        documentTemplateIncreaseParticipations
+                                            ? documentTemplateIncreaseParticipations.name
+                                            : ''
+                                    }
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewTextLong
+                                    label="E-mail template bijschrijfformulier"
+                                    value={
+                                        emailTemplateIncreaseParticipations
+                                            ? emailTemplateIncreaseParticipations.name
+                                            : ''
+                                    }
+                                />
+                            </div>
+                        </>
+                    ) : null}
+
                     <hr />
                     <div className="row">
                         <label htmlFor="confirmAgreementAndPayment" className="col-sm-12">

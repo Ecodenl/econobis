@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 import OrderHarmonica from './harmonica/OrderHarmonica';
+
+// Functionele wrapper voor de class component
+const ParticipantDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class ParticipantDetailsHarmonica extends Component {
     constructor(props) {
@@ -31,18 +37,18 @@ class ParticipantDetailsHarmonica extends Component {
     }
 
     newDocumentNotOnPortal = type => {
-        hashHistory.push(
+        this.props.navigate(
             `/document/nieuw/${type}/eco/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
         );
     };
     newDocumentOnPortal = type => {
-        hashHistory.push(
+        this.props.navigate(
             `/document/nieuw/${type}/portal/project/${this.props.participant.projectId}/deelnemer/${this.props.participant.id}/contact/${this.props.participant.contact.id}`
         );
     };
 
     newOrder = () => {
-        hashHistory.push(
+        this.props.navigate(
             `/order/nieuw/contact/${this.props.participant.contact.id}/deelnemer/${this.props.participant.id}/administratie/${this.props.participant.project.administrationId}`
         );
     };
@@ -94,4 +100,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ParticipantDetailsHarmonica);
+export default connect(mapStateToProps, null)(ParticipantDetailsHarmonicaWrapper);

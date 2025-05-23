@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
-import EmailGenericAPI from "../../../api/email/EmailGenericAPI";
+import { useNavigate } from 'react-router-dom';
+import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
+
+// Functionele wrapper voor de class component
+const ButtonEmailsWrapper = props => {
+    const navigate = useNavigate();
+    return <ButtonEmails {...props} navigate={navigate} />;
+};
 
 class ButtonEmails extends Component {
     constructor(props) {
@@ -11,7 +17,7 @@ class ButtonEmails extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         EmailGenericAPI.getAmountOpen().then(payload => {
             this.setState({
                 amountOpenEmails: payload,
@@ -21,7 +27,7 @@ class ButtonEmails extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => hashHistory.push(`/mailclient/inbox?eigen=1`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/mailclient/inbox?eigen=1`)}>
                 <div className="panel panel-default" id="dashboardbutton-1">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">E-MAIL</h4>
@@ -33,4 +39,4 @@ class ButtonEmails extends Component {
     }
 }
 
-export default ButtonEmails;
+export default ButtonEmailsWrapper;

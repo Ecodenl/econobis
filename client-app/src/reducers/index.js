@@ -119,7 +119,7 @@ const rootReducer = combineReducers({
     email: emailDetailsReducer,
     // Email templates
     emailTemplates: emailTemplatesReducer,
-    emailTemplate: emailTemplateDetailsReducer,
+    emailTemplateDetails: emailTemplateDetailsReducer,
     // Financial overview
     financialOverviewPreview: financialOverviewPreviewReducer,
     // Housing file

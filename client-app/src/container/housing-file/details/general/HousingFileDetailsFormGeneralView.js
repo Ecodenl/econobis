@@ -4,6 +4,7 @@ import moment from 'moment';
 moment.locale('nl');
 
 import ViewText from '../../../../components/form/ViewText';
+import MoneyPresenter from '../../../../helpers/MoneyPresenter';
 
 const HousingFileDetailsFormGeneralView = props => {
     const {
@@ -31,6 +32,7 @@ const HousingFileDetailsFormGeneralView = props => {
         heatSource,
         waterComfort,
         revenueSolarPanels,
+        wozValue,
     } = props.housingFileDetails;
 
     const showFields = props.housingFileHoomLinksToShowInEconobis;
@@ -41,7 +43,7 @@ const HousingFileDetailsFormGeneralView = props => {
                 <ViewText
                     label={'Contact'}
                     value={address && address.contact.fullName}
-                    link={address ? 'contact/' + address.contact.id : ''}
+                    link={address ? '/contact/' + address.contact.id : ''}
                 />
                 <ViewText label={'Adres'} value={fullAddress && fullAddress} />
             </div>
@@ -81,6 +83,11 @@ const HousingFileDetailsFormGeneralView = props => {
                 <ViewText label="Hoom building Id" value={hoomBuildingId && hoomBuildingId} />
                 {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
                     <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
+                ) : null}
+            </div>
+            <div className="row">
+                {showFields.some(showField => showField.econobisFieldName === 'woz_value') ? (
+                    <ViewText label="WOZ waarde" value={wozValue !== null ? MoneyPresenter(wozValue) : 'Onbekend'} />
                 ) : null}
             </div>
             <div className="row">

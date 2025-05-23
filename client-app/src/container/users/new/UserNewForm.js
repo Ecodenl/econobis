@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import UserAPI from '../../../api/user/UserAPI';
@@ -10,6 +10,12 @@ import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
 import { setError } from '../../../actions/general/ErrorActions';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+
+// Functionele wrapper voor de class component
+const UserNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <UserNewForm {...props} navigate={navigate} />;
+};
 
 class UserNewForm extends Component {
     constructor(props) {
@@ -86,7 +92,7 @@ class UserNewForm extends Component {
                             'Alfresco account voor deze gebruiker bestaat al. Er wordt alleen een nieuw account aangemaakt voor Econobis'
                         );
                     }
-                    hashHistory.push(`/gebruiker/${payload.data.data.id}`);
+                    this.props.navigate(`/gebruiker/${payload.data.data.id}`);
                 })
                 .catch(
                     function(error) {
@@ -223,4 +229,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(UserNewFormWrapper);

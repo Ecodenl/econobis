@@ -1,65 +1,65 @@
 import React from 'react';
-import EmailDetailsModalLayout from "./EmailDetailsModalLayout";
-import ViewText from "../../../components/form/ViewText";
-import {FaInfoCircle} from "react-icons/fa";
-import ReactTooltip from "react-tooltip";
+import EmailDetailsModalLayout from './EmailDetailsModalLayout';
+import ViewText from '../../../components/form/ViewText';
+import { FaInfoCircle } from 'react-icons/fa';
+import ReactTooltip from 'react-tooltip';
 
-export default function EmailDetailsModalView({email, updateEmailAttributes, createContact}) {
+export default function EmailDetailsModalView({ email, updateEmailAttributes, createContact }) {
     return (
         <EmailDetailsModalLayout
             email={email}
             updateEmailAttributes={updateEmailAttributes}
             createContact={createContact}
-            intakeComponent={(
+            intakeComponent={
                 <ViewText
                     label={'Intake'}
                     value={email.intake ? email.intake.name : ''}
-                    link={email.intake ? 'intake/' + email.intake.id : ''}
+                    link={email.intake ? '/intake/' + email.intake.id : ''}
                 />
-            )}
-            taskComponent={(
+            }
+            taskComponent={
                 <ViewText
                     label={'Taak'}
                     value={email.task ? email.task.noteSummary : ''}
-                    link={email.task ? 'taak/' + email.task.id : ''}
+                    link={email.task ? '/taak/' + email.task.id : ''}
                 />
-            )}
-            quotationRequestComponent={(
+            }
+            quotationRequestComponent={
                 <ViewText
                     label={'Kansactie'}
                     value={email.quotationRequest ? 'Offerteverzoek ' + email.quotationRequest.id : ''}
-                    link={email.quotationRequest ? 'offerteverzoek/' + email.quotationRequest.id : ''}
+                    link={email.quotationRequest ? '/offerteverzoek/' + email.quotationRequest.id : ''}
                 />
-            )}
-            measureComponent={(
+            }
+            measureComponent={
                 <ViewText
                     label={'Maatregel'}
                     value={email.measure ? email.measure.name : ''}
-                    link={email.measure ? 'maatregel/' + email.measure.id : ''}
+                    link={email.measure ? '/maatregel/' + email.measure.id : ''}
                 />
-            )}
-            opportunityComponent={(
+            }
+            opportunityComponent={
                 <ViewText
                     label={'Kans'}
                     value={email.opportunity ? email.opportunity.name : ''}
-                    link={email.opportunity ? 'kans/' + email.opportunity.id : ''}
+                    link={email.opportunity ? '/kans/' + email.opportunity.id : ''}
                 />
-            )}
-            orderComponent={(
+            }
+            orderComponent={
                 <ViewText
                     label={'Order'}
                     value={email.order ? email.order.subject : ''}
-                    link={email.order ? 'order/' + email.order.id : ''}
+                    link={email.order ? '/order/' + email.order.id : ''}
                 />
-            )}
-            invoiceComponent={(
+            }
+            invoiceComponent={
                 <ViewText
                     label={'Nota'}
                     value={email.invoice ? email.invoice.number : ''}
-                    link={email.invoice ? 'nota/' + email.invoice.id : ''}
+                    link={email.invoice ? '/nota/' + email.invoice.id : ''}
                 />
-            )}
-            noteComponent={(
+            }
+            noteComponent={
                 <>
                     <div className="col-sm-3">
                         <label htmlFor="note" className="col-sm-12">
@@ -73,7 +73,9 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, cre
                         <FaInfoCircle
                             color={'blue'}
                             size={'15px'}
-                            data-tip={"Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien."}
+                            data-tip={
+                                'Let op: deze opmerking is alleen intern zichtbaar bij deze specifieke e-mail, bij latere antwoordmails is de opmerking niet te zien.'
+                            }
                             data-for={`tooltip-note`}
                         />
                         <ReactTooltip
@@ -86,8 +88,7 @@ export default function EmailDetailsModalView({email, updateEmailAttributes, cre
                         &nbsp;
                     </div>
                 </>
-            )}
+            }
         />
     );
 }
-

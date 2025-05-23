@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router';
+// import { Link } from 'react-router-dom';
 
 /**
  * Klein component om een inklapbare lijst met mailadressen mee weer te geven.

@@ -303,7 +303,7 @@ class ParticipationProjectController extends ApiController
                 $projectRevenueCategoryRevenueEuro = ProjectRevenueCategory::where('code_ref', 'revenueEuro' )->first()->id;
                 $confirmedProjectRevenuesEuro = $participantProject->project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
                 if($confirmedProjectRevenuesEuro->exists()){
-                    $dateBegin = Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end)->addDay(1)->format('Y-m-d');
+                    $dateBegin = Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end)->addDay()->format('Y-m-d');
                 }
             }
 
@@ -571,7 +571,7 @@ class ParticipationProjectController extends ApiController
             if($revenuesKwhPart){
                 $revenuePartsKwhRedirect = null;
                 if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
                 }
                 if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
                     $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
@@ -1343,7 +1343,7 @@ class ParticipationProjectController extends ApiController
 
             // we controleren in jaar van beeindigsdatum + 1 dag
             // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
-            $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay(1)->year;
+            $dateEntryYear = \Carbon\Carbon::parse($participantProject['date_terminated'])->addDay()->year;
             $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
             $participantMutation->save();
@@ -1388,7 +1388,7 @@ class ParticipationProjectController extends ApiController
 
         // we controleren in jaar van beeindigsdatum + 1 dag
         // (dit laatste omdat beeindiging op 31-12 nog wel mag, ook als hij in beeindigingsjaar dus in def. ws zat.
-        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay(1)->year;
+        $dateEntryYear = \Carbon\Carbon::parse($participantProject->date_terminated)->addDay()->year;
         $result = $this->checkMutationAllowed($participantMutation, $dateEntryYear);
 
         $participantMutation->save();
@@ -1454,7 +1454,7 @@ class ParticipationProjectController extends ApiController
                 if($dateEntry < $dateBegin) $dateEntry = $dateBegin;
 
                 $dateEndForPeriod = clone $dateEnd;
-                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateEntry);
+                $daysOfPeriod = $dateEndForPeriod->addDay()->diffInDays($dateEntry, true);
 
                 if($projectTypeCodeRef === 'obligation' || $projectTypeCodeRef === 'capital' || $projectTypeCodeRef === 'postalcode_link_capital') {
                     $mutationValue = $currentBookWorth * $mutation->quantity;

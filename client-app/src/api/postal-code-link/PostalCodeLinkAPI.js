@@ -1,29 +1,32 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_POSTAL_CODE_LINK = `${URL_API}/api/postal-code-link`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchPostalCodeLinks: () => {
+        const URL_POSTAL_CODE_LINK = `${getApiUrl()}/api/postal-code-link`;
         const requestUrl = `${URL_POSTAL_CODE_LINK}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     newPostalCodeLink: postalCodeLink => {
+        const URL_POSTAL_CODE_LINK = `${getApiUrl()}/api/postal-code-link`;
         const requestUrl = URL_POSTAL_CODE_LINK;
 
-        return axiosInstance.post(requestUrl, postalCodeLink);
+        return getAxiosInstance().post(requestUrl, postalCodeLink);
     },
 
     updatePostalCodeLink: postalCodeLink => {
+        const URL_POSTAL_CODE_LINK = `${getApiUrl()}/api/postal-code-link`;
         const requestUrl = `${URL_POSTAL_CODE_LINK}/${postalCodeLink.id}`;
 
-        return axiosInstance.post(requestUrl, postalCodeLink);
+        return getAxiosInstance().post(requestUrl, postalCodeLink);
     },
 
     deletePostalCodeLink: id => {
+        const URL_POSTAL_CODE_LINK = `${getApiUrl()}/api/postal-code-link`;
         const requestUrl = `${URL_POSTAL_CODE_LINK}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

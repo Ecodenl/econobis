@@ -11,7 +11,7 @@ class ButtonUnpaidInvoices extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         InvoicesAPI.getUnpaidInvoices().then(payload => {
             this.setState({
                 amountUnpaidInvoices: payload,

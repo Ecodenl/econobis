@@ -435,6 +435,22 @@ class Contact extends Model
             ->orderBy('contacts.full_name');
     }
 
+    public function organisationNamePrimaryOccupation()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->where('contacts.type_id', ContactType::ORGANISATION)
+            ->where('occupation_contact.primary', true)
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('occupation_contact.created_at')->first();
+    }
     public function isPrimaryOccupant()
     {
         return $this->hasMany(OccupationContact::class, 'primary_contact_id');

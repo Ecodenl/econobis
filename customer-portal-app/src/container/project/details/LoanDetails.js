@@ -11,13 +11,13 @@ function LoanDetails({ project }) {
         <>
             <Row>
                 <Col xs={12} md={6}>
-                    <FormLabel>Project</FormLabel>
+                    <FormLabel>Inschrijving voor</FormLabel>
                     <TextBlock>{project.name}</TextBlock>
                     <FormLabel>Lening nodig</FormLabel>
                     <TextBlock>{MoneyPresenter(project.amountOfLoanNeeded)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Omschrijving project</FormLabel>
+                    <FormLabel>Omschrijving</FormLabel>
                     <TextBlock>{project.description ? project.description : ' '}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>

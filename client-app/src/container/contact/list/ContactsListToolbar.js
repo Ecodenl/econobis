@@ -68,11 +68,11 @@ class ContactsListToolbar extends Component {
             if (dataControleType) {
                 switch (dataControleType) {
                     case 'zelfde-email-naam':
-                        return '(met zelfde email en naam)';
+                        return '(met zelfde e-mail en naam)';
                     case 'zelfde-email-adres':
-                        return '(met zelfde email en adres)';
+                        return '(met zelfde e-mail en adres)';
                     case 'zelfde-email':
-                        return '(met zelfde email)';
+                        return '(met zelfde e-mail)';
                     case 'zelfde-adres':
                         return '(met zelfde adres)';
                     case 'zelfde-kvknummer':

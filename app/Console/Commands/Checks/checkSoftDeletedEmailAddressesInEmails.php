@@ -17,7 +17,7 @@ class checkSoftDeletedEmailAddressesInEmails extends Command
      * @var string
      */
     protected $signature = 'email:checkSoftDeletedEmailAddressesInEmails {--recover=false} {--from=2024}';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

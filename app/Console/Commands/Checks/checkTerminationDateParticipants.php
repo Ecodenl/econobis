@@ -20,7 +20,7 @@ class checkTerminationDateParticipants extends Command
      * @var string
      */
     protected $signature = 'participants:checkTerminationDate';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

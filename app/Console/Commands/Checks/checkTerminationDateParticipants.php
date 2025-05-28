@@ -55,10 +55,17 @@ class checkTerminationDateParticipants extends Command
         foreach($projects as $project) {
             $participantsProject = $project->participantsProject()->whereNotNull('date_terminated')->get();
             $mutationTypeWithDrawalId = ParticipantMutationType::where('code_ref', 'withDrawal')->where('project_type_id',  $project->projectType->id)->first()->id;
+            $mutationTypeResultDepositId = ParticipantMutationType::where('code_ref', 'result_deposit')->where('project_type_id',  $project->projectType->id)->first()->id;
 
             foreach($participantsProject as $participantProject) {
 
-                $lastMutation = $participantProject->mutationsDefinitiveDesc()->where('participant_mutations.type_id', $mutationTypeWithDrawalId)->first();
+                $lastMutation = $participantProject->mutationsDefinitiveDesc()
+                    ->where('participant_mutations.type_id', $mutationTypeWithDrawalId)
+                    ->orWhere(function ($query) use ($mutationTypeResultDepositId) {
+                        $query->where('participant_mutations.type_id', $mutationTypeResultDepositId)
+                            ->where('participant_mutations.amount', '<', 0);
+                    })
+                    ->first();
                 if($lastMutation) {
                     $lastmutationDateEntry = Carbon::parse($lastMutation->date_entry)->format('Y-m-d');
                 } else {

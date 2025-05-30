@@ -63,6 +63,13 @@ class UpdateCooperation extends FormRequest
             'externalUrlContacts' => [''],
             'externalUrlContactsButtonText' => [''],
             'externalUrlContactsOnNewPage' => [''],
+            'cleanupYearsInvoicesDateSend' => [''],
+            'cleanupYearsOneoffOrdersStartDate' => [''],
+            'cleanupYearsPeriodicOrdersTerminationDate' => [''],
+            'cleanupYearsIntakesMutationDate' => [''],
+            'cleanupYearsOpportunitiesMutationDate' => [''],
+            'cleanupYearsParticipationsChangeDate' => [''],
+            'cleanupYearsParticipationsTerminationDate' => [''],
         ];
     }
 }

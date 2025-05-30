@@ -154,6 +154,29 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
 
             <Panel>
                 <PanelHeader>
+                    <span className="h5 text-bold">Data opschonen</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Nota’s - Datum verstuurd'} value={formData.cleanupYearsInvoicesDateSend + ' jaar'} />
+                        <ViewText label={'Eenmalige orders - Ingangsdatum'} value={formData.cleanupYearsOneoffOrdersStartDate + ' jaar'} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Periodieke orders - Beëindigingsdatum'} value={formData.cleanupYearsPeriodicOrdersTerminationDate + ' jaar'} />
+                        <ViewText label={'Intakes – Mutatiedatum'} value={formData.cleanupYearsIntakesMutationDate + ' jaar'} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Kansen – Mutatiedatum'} value={formData.cleanupYearsOpportunitiesMutationDate + ' jaar'} />
+                        <ViewText label={'Deelnames met status Interesse, Ingeschreven of toegekend – Mutatiedatum'} value={formData.cleanupYearsParticipationsChangeDate + ' jaar'} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Deelnames met status Beëindigd – Beëindigingsdatum'} value={formData.cleanupYearsParticipationsTerminationDate + ' jaar'} />
+                    </div>
+                </PanelBody>
+            </Panel>
+
+            <Panel>
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>

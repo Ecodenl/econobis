@@ -431,6 +431,153 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                     </PanelBody>
                 </Panel>
+
+
+
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Data opschonen</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Nota’s - Datum verstuurd'}
+                                name={'cleanupYearsInvoicesDateSend'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsInvoicesDateSend}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                            <InputReactSelect
+                                label={'Eenmalige orders - Ingangsdatum'}
+                                name={'cleanupYearsOneoffOrdersStartDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsOneoffOrdersStartDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Periodieke orders - Beëindigingsdatum'}
+                                name={'cleanupYearsPeriodicOrdersTerminationDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsPeriodicOrdersTerminationDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                            <InputReactSelect
+                                label={'Intakes – Mutatiedatum'}
+                                name={'cleanupYearsIntakesMutationDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsIntakesMutationDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Kansen – Mutatiedatum'}
+                                name={'cleanupYearsOpportunitiesMutationDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsOpportunitiesMutationDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                            <InputReactSelect
+                                label={'Deelnames met status Interesse, Ingeschreven of toegekend – Mutatiedatum'}
+                                name={'cleanupYearsParticipationsChangeDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsParticipationsChangeDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputReactSelect
+                                label={'Deelnames met status Beëindigd – Beëindigingsdatum'}
+                                name={'cleanupYearsParticipationsTerminationDate'}
+                                options={[
+                                    { id: 1, name: '1' },
+                                    { id: 2, name: '2' },
+                                    { id: 3, name: '3' },
+                                    { id: 4, name: '4' },
+                                    { id: 5, name: '5' },
+                                    { id: 6, name: '6' },
+                                    { id: 7, name: '7' },
+                                    { id: 8, name: '8' },
+                                    { id: 9, name: '9' },
+                                    { id: 10, name: '10' },
+                                ]}
+                                value={values.cleanupYearsParticipationsTerminationDate}
+                                onChangeAction={(value, name) => setFieldValue(name, value)}
+                            />
+                        </div>
+                    </PanelBody>
+                </Panel>
+
+
+
                 <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Overig</span>

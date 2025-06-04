@@ -31,7 +31,7 @@ class CleanupController extends Controller
         $participationsCleanupYears = $cooperation->cleanup_years_participations_change_date;
         $participationsCleanupOlderThen = $dateToday->copy()->subYears($participationsCleanupYears);
 
-        $invoices = Invoice::whereDate('updated_at', '<', $invoicesCleanupOlderThen)->count();
+        $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
         $orders = Order::whereDate('updated_at', '<', $ordersCleanupOlderThen)->count();
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();

@@ -12,4 +12,16 @@ export default {
                 console.log(error);
             });
     },
+
+
+    getLastCleanupDates: () => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/last-cleanup-dates`;
+
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
 };

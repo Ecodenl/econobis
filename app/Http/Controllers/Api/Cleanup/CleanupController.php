@@ -10,11 +10,12 @@ use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Http\Controllers\Controller;
+use Carbon\Carbon;
 
 class CleanupController extends Controller
 {
     public function getCleanupAmounts(){
-        $dateToday = \Carbon\Carbon::now();
+        $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
         $invoicesCleanupYears = $cooperation->cleanup_years_invoices_date_send;
@@ -56,6 +57,29 @@ class CleanupController extends Controller
         $return['opportunities'] = $opportunities;
         $return['participationsWithStatus'] = $participationsWithStatus;
         $return['participationsFinished'] = $participationsFinished;
+
+        return $return;
+    }
+
+    public function getLastCleanupDates(){
+        $cooperation = Cooperation::first();
+
+        $invoicesLastCleanupDate = $cooperation->cleanup_invoices_last_run_at !== null ? Carbon::parse($cooperation->cleanup_invoices_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $ordersOneoffLastCleanupDate = $cooperation->cleanup_oneoff_orders_last_run_at !== null ? Carbon::parse($cooperation->cleanup_oneoff_orders_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $ordersPeriodicLastCleanupDate = $cooperation->cleanup_periodic_orders_last_run_at !== null ? Carbon::parse($cooperation->cleanup_periodic_orders_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $intakesLastCleanupDate = $cooperation->cleanup_intakes_last_run_at !== null ? Carbon::parse($cooperation->cleanup_intakes_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $opportunitiesLastCleanupDate = $cooperation->cleanup_opportunities_last_run_at !== null ? Carbon::parse($cooperation->cleanup_opportunities_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $participationsWithStatusLastCleanupDate = $cooperation->cleanup_participations_change_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_participations_change_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+        $participationsFinishedLastCleanupDate = $cooperation->cleanup_participations_termination_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_participations_termination_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+
+        $return = [];
+        $return['invoices'] = $invoicesLastCleanupDate;
+        $return['ordersOneOff'] = $ordersOneoffLastCleanupDate;
+        $return['ordersPeriodic'] = $ordersPeriodicLastCleanupDate;
+        $return['intakes'] = $intakesLastCleanupDate;
+        $return['opportunities'] = $opportunitiesLastCleanupDate;
+        $return['participationsWithStatus'] = $participationsWithStatusLastCleanupDate;
+        $return['participationsFinished'] = $participationsFinishedLastCleanupDate;
 
         return $return;
     }

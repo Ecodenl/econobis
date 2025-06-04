@@ -10,6 +10,11 @@ class DataCleanupListItems extends Component {
 
         this.state = {
             amountOfInvoicesToCleanup: '-',
+            amountOfOrdersToCleanup: '-',
+            amountOfIntakesToCleanup: '-',
+            amountOfOpportunitiesToCleanup: '-',
+            amountOfParticipationsWithStatusToCleanup: '-',
+            amountOfParticipationsFinishedToCleanup: '-',
         };
     }
 
@@ -22,6 +27,18 @@ class DataCleanupListItems extends Component {
                 amountOfOpportunitiesToCleanup: payload['opportunities'],
                 amountOfParticipationsWithStatusToCleanup: payload['participationsWithStatus'],
                 amountOfParticipationsFinishedToCleanup: payload['participationsFinished'],
+            });
+        });
+
+        DataCleanupAPI.getLastCleanupDates().then(payload => {
+            this.setState({
+                invoicesLastCleanupDate: payload['invoices'],
+                ordersOneoffLastCleanupDate: payload['ordersOneOff'],
+                ordersPeriodicLastCleanupDate: payload['ordersPeriodic'],
+                intakesLastCleanupDate: payload['intakes'],
+                opportunitiesLastCleanupDate: payload['opportunities'],
+                participationsWithStatusLastCleanupDate: payload['participationsWithStatus'],
+                participationsFinishedLastCleanupDate: payload['participationsFinished'],
             });
         });
     }
@@ -48,7 +65,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.invoicesLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
 
                 <tr>
@@ -60,7 +78,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.ordersOneoffLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
 
                 <tr>
@@ -72,7 +91,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.intakesLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
 
                 <tr>
@@ -84,7 +104,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.opportunitiesLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
 
                 <tr>
@@ -96,7 +117,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.participationsWithStatusLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
 
                 <tr>
@@ -108,7 +130,8 @@ class DataCleanupListItems extends Component {
                             <Icon size={14} icon={trash} />
                         </a>
                     </td>
-                    <td className="col-sm-3"></td>
+                    <td className="col-sm-1">{this.state.participationsFinishedLastCleanupDate}</td>
+                    <td className="col-sm-2"></td>
                 </tr>
             </table>
         );

@@ -268,6 +268,7 @@ Route::namespace('Api')
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
         Route::get('cleanup/amounts', 'Cleanup\CleanupController@getCleanupAmounts');
+        Route::get('cleanup/last-cleanup-dates', 'Cleanup\CleanupController@getLastCleanupDates');
 
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');

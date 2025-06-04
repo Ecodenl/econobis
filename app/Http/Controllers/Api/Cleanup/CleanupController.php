@@ -83,4 +83,27 @@ class CleanupController extends Controller
 
         return $return;
     }
+
+    public function getCleanupYears(){
+        $cooperation = Cooperation::first();
+
+        $invoicesCleanupYears = $cooperation->cleanup_years_invoices_date_send;
+        $ordersOneoffCleanupYears = $cooperation->cleanup_years_oneoff_orders_start_date;
+        $ordersPeriodicCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
+        $intakesCleanupYears = $cooperation->cleanup_years_intakes_mutation_date;
+        $opportunitiesCleanupYears = $cooperation->cleanup_years_opportunities_mutation_date;
+        $participationsWithStatusCleanupYears = $cooperation->cleanup_years_participations_change_date;
+        $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
+
+        $return = [];
+        $return['invoices'] = $invoicesCleanupYears;
+        $return['ordersOneOff'] = $ordersOneoffCleanupYears;
+        $return['ordersPeriodic'] = $ordersPeriodicCleanupYears;
+        $return['intakes'] = $intakesCleanupYears;
+        $return['opportunities'] = $opportunitiesCleanupYears;
+        $return['participationsWithStatus'] = $participationsWithStatusCleanupYears;
+        $return['participationsFinished'] = $participationsFinishedCleanupYears;
+
+        return $return;
+    }
 }

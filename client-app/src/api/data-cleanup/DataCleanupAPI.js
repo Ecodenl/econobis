@@ -24,4 +24,15 @@ export default {
                 console.log(error);
             });
     },
+
+    getCleanupYears: () => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/cleanup-years`;
+
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
 };

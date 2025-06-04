@@ -8,6 +8,7 @@ import { ic_aspect_ratio } from 'react-icons-kit/md/ic_aspect_ratio';
 import { ic_dashboard } from 'react-icons-kit/md/ic_dashboard';
 import { ic_business } from 'react-icons-kit/md/ic_business';
 import { ic_contacts } from 'react-icons-kit/md/ic_contacts';
+import { ic_delete } from 'react-icons-kit/md/ic_delete';
 import { ic_contacts_outline } from 'react-icons-kit/md/ic_contacts_outline';
 import { ic_email } from 'react-icons-kit/md/ic_email';
 import { ic_fiber_new } from 'react-icons-kit/md/ic_fiber_new';
@@ -20,6 +21,7 @@ import { ic_business_center } from 'react-icons-kit/md/ic_business_center';
 import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
+
 
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
@@ -145,6 +147,38 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         <NavText>
                             <Link className="sidebar-link" to="contacten/data-controle/zelfde-iban">
                                 Zelfde IBAN
+                            </Link>
+                        </NavText>
+                    </Nav>
+                </Nav>
+            )}
+
+            {permissions.menuDataCleanup && (
+                <Nav id="data-cleanup">
+                    <NavIcon>
+                        <SvgIcon size={20} icon={ic_delete} />
+                    </NavIcon>
+                    <NavText>Opschonen</NavText>
+                    <Nav id="data-cleanup-participations">
+                        <NavText>
+                            <Link className="sidebar-link" to="data-opschonen/items">
+                                Items
+                            </Link>
+                        </NavText>
+                    </Nav>
+
+                    <Nav id="data-cleanup-email">
+                        <NavText>
+                            <Link className="sidebar-link" to="data-opschonen/e-mail">
+                                E-mailcorrespondentie
+                            </Link>
+                        </NavText>
+                    </Nav>
+
+                    <Nav id="data-cleanup-contacts">
+                        <NavText>
+                            <Link className="sidebar-link" to="data-opschonen/contacten">
+                                Contacten
                             </Link>
                         </NavText>
                     </Nav>

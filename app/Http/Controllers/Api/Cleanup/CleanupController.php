@@ -19,8 +19,11 @@ class CleanupController extends Controller
         $invoicesCleanupYears = $cooperation->cleanup_years_invoices_date_send;
         $invoicesCleanupOlderThen = $dateToday->copy()->subYears($invoicesCleanupYears);
 
-        $ordersCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
-        $ordersCleanupOlderThen = $dateToday->copy()->subYears($ordersCleanupYears);
+        $ordersOneoffCleanupYears = $cooperation->cleanup_years_oneoff_orders_start_date;
+        $ordersOneoffCleanupOlderThen = $dateToday->copy()->subYears($ordersOneoffCleanupYears);
+
+        $ordersPeriodicCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
+        $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
 
         $intakesCleanupYears = $cooperation->cleanup_years_intakes_mutation_date;
         $intakesCleanupOlderThen = $dateToday->copy()->subYears($intakesCleanupYears);
@@ -32,7 +35,8 @@ class CleanupController extends Controller
         $participationsCleanupOlderThen = $dateToday->copy()->subYears($participationsCleanupYears);
 
         $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $orders = Order::whereDate('updated_at', '<', $ordersCleanupOlderThen)->count();
+        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
+        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
         $participationsWithStatus = ParticipantProject::whereDate('updated_at', '<', $participationsCleanupOlderThen)->count();
@@ -40,7 +44,7 @@ class CleanupController extends Controller
 
         $return = [];
         $return['invoices'] = $invoices;
-        $return['orders'] = $orders;
+        $return['orders'] = $ordersOneoff + $ordersPeriodic;
         $return['intakes'] = $intakes;
         $return['opportunities'] = $opportunities;
         $return['participationsWithStatus'] = $participationsWithStatus;

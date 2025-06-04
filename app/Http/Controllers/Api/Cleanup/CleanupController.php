@@ -7,7 +7,8 @@ use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
-use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\ParticipantMutation\ParticipantMutation;
+use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Http\Controllers\Controller;
 
 class CleanupController extends Controller
@@ -31,16 +32,22 @@ class CleanupController extends Controller
         $opportunitiesCleanupYears = $cooperation->cleanup_years_opportunities_mutation_date;
         $opportunitiesCleanupOlderThen = $dateToday->copy()->subYears($opportunitiesCleanupYears);
 
-        $participationsCleanupYears = $cooperation->cleanup_years_participations_change_date;
-        $participationsCleanupOlderThen = $dateToday->copy()->subYears($participationsCleanupYears);
+        $participationsWithStatusCleanupYears = $cooperation->cleanup_years_participations_change_date;
+        $participationsWithStatusCleanupOlderThen = $dateToday->copy()->subYears($participationsWithStatusCleanupYears);
+        $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
+
+        $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
+        $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
         $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
         $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
         $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
-        $participationsWithStatus = ParticipantProject::whereDate('updated_at', '<', $participationsCleanupOlderThen)->count();
-        $participationsFinished = ParticipantProject::whereDate('updated_at', '<', $participationsCleanupOlderThen)->count();
+        $participationsWithStatus = ParticipantMutation::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
+        $participationsFinished = ParticipantMutation::whereHas('participation', function ($query) use($participationsFinishedCleanupOlderThen) {
+            $query->whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen);
+        })->count();
 
         $return = [];
         $return['invoices'] = $invoices;

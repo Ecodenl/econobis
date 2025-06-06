@@ -86,10 +86,10 @@ class DataCleanupListItems extends Component {
             <table className="table">
                 <thead>
                     <tr>
-                        <th className="col-sm-3"></th>
+                        <th className="col-sm-2"></th>
                         <th className="col-sm-4">Onderdeel</th>
                         <th className="col-sm-1">Items</th>
-                        <th className="col-sm-1">Acties</th>
+                        <th className="col-sm-2">Acties</th>
 
                         <th className="col-sm-1">Laatst opgeschoond</th>
                         <th className="col-sm-2"></th>
@@ -97,10 +97,10 @@ class DataCleanupListItems extends Component {
                 </thead>
                 <tbody>
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Nota's ouder dan {this.state.invoicesCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfInvoicesToCleanup}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupInvoices()}>
                                 <Icon size={14} icon={trash} />
                             </a>
@@ -110,10 +110,10 @@ class DataCleanupListItems extends Component {
                     </tr>
 
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Orders ouder dan {this.state.ordersOneoffCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfOrdersToCleanup}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupOrders()}>
                                 <Icon size={14} icon={trash} />
                             </a>
@@ -123,10 +123,10 @@ class DataCleanupListItems extends Component {
                     </tr>
 
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Intakes ouder dan {this.state.intakesCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfIntakesToCleanup}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupIntakes()}>
                                 <Icon size={14} icon={trash} />
                             </a>
@@ -136,10 +136,10 @@ class DataCleanupListItems extends Component {
                     </tr>
 
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Kansen ouder dan {this.state.opportunitiesCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfOpportunitiesToCleanup}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupOpportunities()}>
                                 <Icon size={14} icon={trash} />
                             </a>
@@ -149,10 +149,10 @@ class DataCleanupListItems extends Component {
                     </tr>
 
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Deelnames met status interesse, ingeschreven of toegekend ouder dan {this.state.participationsWithStatusCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.participationsWithStatusCleanupYears}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupParticipationsWithStatus()}>
                                 <Icon size={14} icon={trash} />
                             </a>
@@ -162,10 +162,10 @@ class DataCleanupListItems extends Component {
                     </tr>
 
                     <tr>
-                        <td className="col-sm-3"></td>
+                        <td className="col-sm-2"></td>
                         <td className="col-sm-4">Deelnames die zijn beëindigd ouder dan {this.state.participationsFinishedCleanupYears} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfParticipationsFinishedToCleanup}</td>
-                        <td className="col-sm-1">
+                        <td className="col-sm-2">
                             <a role="button" onClick={() => props.cleanupParticipationsFinished()}>
                                 <Icon size={14} icon={trash} />
                             </a>

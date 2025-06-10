@@ -35,4 +35,15 @@ export default {
                 console.log(error);
             });
     },
+
+    cleanupItems: (cleanupType) => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/cleanup-items/`+cleanupType;
+
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(response => response.data)
+            .catch(error => {
+                console.log(error);
+            });
+    },
 };

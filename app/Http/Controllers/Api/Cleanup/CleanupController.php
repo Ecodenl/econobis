@@ -9,6 +9,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
+use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
@@ -40,11 +41,11 @@ class CleanupController extends Controller
         $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
         $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
-        $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
-        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
-        $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
-        $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
+        $invoices = Invoice::withTrashed()->whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
+        $ordersOneoff = Order::withTrashed()->where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
+        $ordersPeriodic = Order::withTrashed()->whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
+        $intakes = Intake::withTrashed()->whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
+        $opportunities = Opportunity::withTrashed()->whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
         $participationsWithStatus = ParticipantMutation::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
         $participationsFinished = ParticipantMutation::whereHas('participation', function ($query) use($participationsFinishedCleanupOlderThen) {
             $query->whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen);
@@ -105,5 +106,26 @@ class CleanupController extends Controller
         $return['participationsFinished'] = $participationsFinishedCleanupYears;
 
         return $return;
+    }
+
+    public function cleanupItems($cleanupType){
+        $dateToday = Carbon::now();
+        $cooporation = Cooperation::first();
+
+        $errorMessage = [];
+
+        if($cleanupType === 'invoices') {
+            $cleanupYears = $cooporation->cleanup_years_invoices_date_send;
+            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
+
+            $invoices = Invoice::withTrashed()->whereDate('date_sent', '<', $cleanupDate)->get();
+
+            foreach($invoices as $invoice) {
+                $deleteInvoice = new DeleteInvoice($invoice);
+                $errorMessage = array_merge($errorMessage, $deleteInvoice->delete(true));
+            }
+        }
+
+        return $errorMessage;
     }
 }

@@ -9,7 +9,9 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -40,23 +42,33 @@ class DeleteInvoice implements DeleteInterface
      * @return array
      * @throws
      */
-    public function delete()
+    public function delete($destroy = false)
     {
-        $this->canDelete();
+        $this->canDelete($destroy);
         $this->deleteModels();
         $this->dissociateRelations();
-        $this->deleteRelations();
+        $this->deleteRelations($destroy);
         $this->customDeleteActions();
-        $this->invoice->delete();
+
+        if($destroy === true) {
+            $dateToday = Carbon::now();
+            $cooperation = Cooperation::first();
+            $cooperation->cleanup_invoices_last_run_at = $dateToday;
+            $cooperation->save();
+
+            $this->invoice->forceDelete();
+        } else {
+            $this->invoice->delete();
+        }
 
         return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete()
+    public function canDelete($destroy = false)
     {
-        if(!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ){
+        if($destroy === false && (!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 )){
             array_push($this->errorMessage, "Er is al een nota aangemaakt. Een nota kan niet worden verwijderd vanwege de bewaarplicht.");
         }
     }
@@ -89,8 +101,21 @@ class DeleteInvoice implements DeleteInterface
     /**
      * Delete relations who dont need their own Delete class
      */
-    public function deleteRelations()
+    public function deleteRelations($destroy = false)
     {
+        if($destroy) {
+            foreach ($this->invoice->payments as $payment){
+                $payment->forceDelete();
+            }
+
+            foreach ($this->invoice->invoiceProducts as $invoiceProduct){
+                $invoiceProduct->forceDelete();
+            }
+
+            foreach ($this->invoice->twinfieldMessages as $twinfieldMessage){
+                $twinfieldMessage->forceDelete();
+            }
+        }
     }
 
     /** Model specific delete actions e.g. delete files from server

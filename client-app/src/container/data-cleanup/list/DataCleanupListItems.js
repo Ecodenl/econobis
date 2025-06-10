@@ -34,11 +34,12 @@ class DataCleanupListItems extends Component {
             participationsFinishedCleanupYears: '-',
 
             showModal: false,
-            modalCleanupType: null, // Track which cleanup action is triggered
+            modalCleanupType: null
         };
     }
 
-    componentDidMount() {
+    // New method to fetch all cleanup data
+    fetchCleanupData = () => {
         DataCleanupAPI.getAmountsToCleanup().then(payload => {
             this.setState({
                 amountOfInvoicesToCleanup: payload['invoices'],
@@ -73,6 +74,10 @@ class DataCleanupListItems extends Component {
                 participationsFinishedCleanupYears: payload['participationsFinished'],
             });
         });
+    };
+
+    componentDidMount() {
+        this.fetchCleanupData();
     }
 
     // Open modal and set which cleanup type
@@ -93,33 +98,14 @@ class DataCleanupListItems extends Component {
 
     // Confirm action based on type
     confirmCleanup = () => {
-        const { modalCleanupType } = this.state;
-        if (!modalCleanupType) return;
-
-        // Call the appropriate cleanup function from props
-        switch (modalCleanupType) {
-            case 'invoices':
-                this.props.cleanupInvoices();
-                break;
-            case 'orders':
-                this.props.cleanupOrders();
-                break;
-            case 'intakes':
-                this.props.cleanupIntakes();
-                break;
-            case 'opportunities':
-                this.props.cleanupOpportunities();
-                break;
-            case 'participationsWithStatus':
-                this.props.cleanupParticipationsWithStatus();
-                break;
-            case 'participationsFinished':
-                this.props.cleanupParticipationsFinished();
-                break;
-            default:
-                break;
-        }
-        this.closeModal();
+        DataCleanupAPI.cleanupItems(this.state.modalCleanupType)
+            .then(payload => {
+                this.closeModal();
+                this.fetchCleanupData(); // Refresh the data after cleanup
+            })
+            .catch(error => {
+                // this.props.setError(error.response.status, error.response.data.message);
+            });
     };
 
     render() {
@@ -164,7 +150,6 @@ class DataCleanupListItems extends Component {
                         ) : null}
                     </Modal>
                 )}
-
                 <table className="table">
                     <thead>
                     <tr>

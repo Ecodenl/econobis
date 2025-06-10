@@ -143,7 +143,7 @@ class DataCleanupListItems extends Component {
                     >
                         {modalCleanupType ? (
                             <div>
-                                Weet u zeker dat u <strong>{cleanupLabels[modalCleanupType].toLowerCase()}</strong> en <strong>ouder zijn dan {cleanupYears[modalCleanupType]} jaar</strong> wilt opschonen?<br/>
+                                Weet u zeker dat u <strong>{cleanupLabels[modalCleanupType].toLowerCase()}</strong>, <strong>ouder dan {cleanupYears[modalCleanupType]} jaar</strong> wilt opschonen?<br/>
                                 <br/>
                                 Deze verwijderactie is niet terug te draaien.
                             </div>
@@ -203,9 +203,9 @@ class DataCleanupListItems extends Component {
                         <td className="col-sm-4">Kansen ouder dan {cleanupYears['opportunities']} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfOpportunitiesToCleanup}</td>
                         <td className="col-sm-1">
-                            {/*<a role="button" onClick={() => this.openModal('opportunities')}>*/}
+                            <a role="button" onClick={() => this.openModal('opportunities')}>
                                 <Icon size={14} icon={trash} />
-                            {/*</a>*/}
+                            </a>
                         </td>
                         <td className="col-sm-2">{this.state.opportunitiesLastCleanupDate}</td>
                         <td className="col-sm-2"></td>

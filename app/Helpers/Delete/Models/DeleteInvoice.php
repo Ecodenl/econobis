@@ -37,6 +37,21 @@ class DeleteInvoice implements DeleteInterface
         $this->invoice = $invoice;
     }
 
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup($destroy = false)
+    {
+        $this->delete($destroy);
+
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+        $cooperation->cleanup_invoices_last_run_at = $dateToday;
+        $cooperation->save();
+    }
+
     /** Main method for deleting this model and all it's relations
      *
      * @return array
@@ -50,18 +65,15 @@ class DeleteInvoice implements DeleteInterface
         $this->deleteRelations($destroy);
         $this->customDeleteActions();
 
-        if($destroy === true) {
-            $dateToday = Carbon::now();
-            $cooperation = Cooperation::first();
-            $cooperation->cleanup_invoices_last_run_at = $dateToday;
-            $cooperation->save();
+        if(!empty($this->errorMessage)) {
+            return $this->errorMessage;
+        }
 
+        if($destroy === true) {
             $this->invoice->forceDelete();
         } else {
             $this->invoice->delete();
         }
-
-        return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages

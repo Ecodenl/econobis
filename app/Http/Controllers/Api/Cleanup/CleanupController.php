@@ -42,11 +42,11 @@ class CleanupController extends Controller
         $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
         $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
-        $invoices = Invoice::withTrashed()->whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $ordersOneoff = Order::withTrashed()->where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
-        $ordersPeriodic = Order::withTrashed()->whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
-        $intakes = Intake::withTrashed()->whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
-        $opportunities = Opportunity::withTrashed()->whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
+        $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
+        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
+        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
+        $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
+        $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
         $participationsWithStatus = ParticipantMutation::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
         $participationsFinished = ParticipantMutation::whereHas('participation', function ($query) use($participationsFinishedCleanupOlderThen) {
             $query->whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen);
@@ -113,17 +113,20 @@ class CleanupController extends Controller
         $dateToday = Carbon::now();
         $cooporation = Cooperation::first();
 
-        $errorMessage = [];
+        $errorMessageArray = [];
 
         if($cleanupType === 'invoices') {
             $cleanupYears = $cooporation->cleanup_years_invoices_date_send;
             $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
 
-            $invoices = Invoice::withTrashed()->whereDate('date_sent', '<', $cleanupDate)->get();
+            $invoices = Invoice::whereDate('date_sent', '<', $cleanupDate)->get();
 
             foreach($invoices as $invoice) {
                 $deleteInvoice = new DeleteInvoice($invoice);
-                $errorMessage = array_merge($errorMessage, $deleteInvoice->delete(true));
+                $errorMessage = $deleteInvoice->cleanup();
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray, $errorMessage);
+                }
             }
         }
 
@@ -131,14 +134,17 @@ class CleanupController extends Controller
             $cleanupYears = $cooporation->cleanup_years_opportunities_mutation_date;
             $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
 
-            $opportunities = Opportunity::withTrashed()->whereDate('updated_at', '<', $cleanupDate)->get();
+            $opportunities = Opportunity::whereDate('updated_at', '<', $cleanupDate)->get();
 
             foreach($opportunities as $opportunity) {
                 $deleteOpportunity = new DeleteOpportunity($opportunity);
-                $errorMessage = array_merge($errorMessage, $deleteOpportunity->delete(true));
+                $errorMessage = $deleteOpportunity->cleanup();
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                }
             }
         }
 
-        return $errorMessage;
+        return $errorMessageArray;
     }
 }

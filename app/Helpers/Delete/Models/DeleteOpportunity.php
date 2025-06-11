@@ -38,6 +38,21 @@ class DeleteOpportunity implements DeleteInterface
         $this->opportunity = $opportunity;
     }
 
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup($destroy = false)
+    {
+        $this->delete($destroy);
+
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+        $cooperation->cleanup_opportunities_last_run_at = $dateToday;
+        $cooperation->save();
+    }
+
     /** Main method for deleting this model and all it's relations
      *
      * @return array
@@ -56,11 +71,6 @@ class DeleteOpportunity implements DeleteInterface
         }
 
         if($destroy === true) {
-            $dateToday = Carbon::now();
-            $cooperation = Cooperation::first();
-            $cooperation->cleanup_opportunities_last_run_at = $dateToday;
-            $cooperation->save();
-
             $this->opportunity->forceDelete();
         } else {
             $this->opportunity->delete();

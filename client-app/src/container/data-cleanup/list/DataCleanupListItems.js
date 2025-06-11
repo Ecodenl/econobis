@@ -34,7 +34,8 @@ class DataCleanupListItems extends Component {
             participationsFinishedCleanupYears: '-',
 
             showModal: false,
-            modalCleanupType: null
+            modalCleanupType: null,
+            modalErrorMessage: '',
         };
     }
 
@@ -93,6 +94,7 @@ class DataCleanupListItems extends Component {
         this.setState({
             showModal: false,
             modalCleanupType: null,
+            modalErrorMessage: '',
         });
     };
 
@@ -100,8 +102,14 @@ class DataCleanupListItems extends Component {
     confirmCleanup = () => {
         DataCleanupAPI.cleanupItems(this.state.modalCleanupType)
             .then(payload => {
-                this.closeModal();
-                this.fetchCleanupData(); // Refresh the data after cleanup
+                if (payload.length === 0) {
+                    this.closeModal();
+                    this.fetchCleanupData(); // Refresh the data after cleanup
+                } else {
+                    this.setState({
+                        modalErrorMessage: payload
+                    });
+                }
             })
             .catch(error => {
                 // this.props.setError(error.response.status, error.response.data.message);
@@ -143,9 +151,21 @@ class DataCleanupListItems extends Component {
                     >
                         {modalCleanupType ? (
                             <div>
-                                Weet u zeker dat u <strong>{cleanupLabels[modalCleanupType].toLowerCase()}</strong>, <strong>ouder dan {cleanupYears[modalCleanupType]} jaar</strong> wilt opschonen?<br/>
-                                <br/>
+                                Weet u zeker dat
+                                u <strong>{cleanupLabels[modalCleanupType].toLowerCase()}</strong>, <strong>ouder
+                                dan {cleanupYears[modalCleanupType]} jaar</strong> wilt opschonen?<br />
+                                <br />
                                 Deze verwijderactie is niet terug te draaien.
+                                <br /><br />
+                                <div id='cleanupModalWarning' style={{ color: '#e64a4a' }}>
+                                    {this.state.modalErrorMessage != '' && (
+                                        <ul>
+                                            {this.state.modalErrorMessage.map((item, idx) => (
+                                                <li key={idx}>{item}</li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
                             </div>
                         ) : null}
                     </Modal>

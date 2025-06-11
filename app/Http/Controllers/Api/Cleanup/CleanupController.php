@@ -10,6 +10,7 @@ use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Helpers\Delete\Models\DeleteInvoice;
+use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 
@@ -123,6 +124,18 @@ class CleanupController extends Controller
             foreach($invoices as $invoice) {
                 $deleteInvoice = new DeleteInvoice($invoice);
                 $errorMessage = array_merge($errorMessage, $deleteInvoice->delete(true));
+            }
+        }
+
+        if($cleanupType === 'opportunities') {
+            $cleanupYears = $cooporation->cleanup_years_opportunities_mutation_date;
+            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
+
+            $opportunities = Opportunity::withTrashed()->whereDate('updated_at', '<', $cleanupDate)->get();
+
+            foreach($opportunities as $opportunity) {
+                $deleteOpportunity = new DeleteOpportunity($opportunity);
+                $errorMessage = array_merge($errorMessage, $deleteOpportunity->delete(true));
             }
         }
 

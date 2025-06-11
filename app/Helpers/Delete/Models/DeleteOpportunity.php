@@ -8,8 +8,9 @@
 
 namespace App\Helpers\Delete\Models;
 
-
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -42,16 +43,28 @@ class DeleteOpportunity implements DeleteInterface
      * @return array
      * @throws
      */
-    public function delete()
+    public function delete($destroy = false)
     {
         $this->canDelete();
         $this->deleteModels();
         $this->dissociateRelations();
-        $this->deleteRelations();
+        $this->deleteRelations($destroy);
         $this->customDeleteActions();
-        $this->opportunity->delete();
 
-        return $this->errorMessage;
+        if(!empty($this->errorMessage)) {
+            return $this->errorMessage;
+        }
+
+        if($destroy === true) {
+            $dateToday = Carbon::now();
+            $cooperation = Cooperation::first();
+            $cooperation->cleanup_opportunities_last_run_at = $dateToday;
+            $cooperation->save();
+
+            $this->opportunity->forceDelete();
+        } else {
+            $this->opportunity->delete();
+        }
     }
 
     /** Checks if the model can be deleted and sets error messages

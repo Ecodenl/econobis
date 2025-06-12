@@ -9,6 +9,7 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\Delete\Models\DeleteParticipation;
@@ -125,6 +126,21 @@ class CleanupController extends Controller
                 $errorMessage = $deleteInvoice->cleanup();
                 if(is_array($errorMessage)) {
                     $errorMessageArray = array_merge($errorMessageArray, $errorMessage);
+                }
+            }
+        }
+
+        if($cleanupType === 'intakes') {
+            $cleanupYears = $cooporation->cleanup_years_intakes_mutation_date;
+            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
+
+            $intakes = Intake::whereDate('updated_at', '<', $cleanupDate)->get();
+
+            foreach($intakes as $intake) {
+                $deleteIntake = new DeleteIntake($intake);
+                $errorMessage = $deleteIntake->cleanup();
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
                 }
             }
         }

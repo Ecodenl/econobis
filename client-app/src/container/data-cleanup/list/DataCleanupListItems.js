@@ -211,9 +211,9 @@ class DataCleanupListItems extends Component {
                         <td className="col-sm-4">Intakes ouder dan {cleanupYears['intakes']} jaar</td>
                         <td className="col-sm-1">{this.state.amountOfIntakesToCleanup}</td>
                         <td className="col-sm-1">
-                            {/*<a role="button" onClick={() => this.openModal('intakes')}>*/}
+                            <a role="button" onClick={() => this.openModal('intakes')}>
                                 <Icon size={14} icon={trash} />
-                            {/*</a>*/}
+                            </a>
                         </td>
                         <td className="col-sm-2">{this.state.intakesLastCleanupDate}</td>
                         <td className="col-sm-2"></td>

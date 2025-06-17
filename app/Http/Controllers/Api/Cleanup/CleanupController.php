@@ -9,9 +9,11 @@ use App\Eco\Opportunity\Opportunity;
 use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
+use App\Eco\Product\Product;
 use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Delete\Models\DeleteOpportunity;
+use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
@@ -31,6 +33,8 @@ class CleanupController extends Controller
         $ordersPeriodicCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
         $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
 
+        $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+
         $intakesCleanupYears = $cooperation->cleanup_years_intakes_mutation_date;
         $intakesCleanupOlderThen = $dateToday->copy()->subYears($intakesCleanupYears);
 
@@ -45,8 +49,14 @@ class CleanupController extends Controller
         $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
         $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
-        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
+
+        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
+            $query->whereIn('id', $exceptionProductIds);
+        })->count();
+        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
+            $query->whereIn('id', $exceptionProductIds);
+        })->count();
+
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
         $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
@@ -185,6 +195,33 @@ class CleanupController extends Controller
             foreach($participantProjects as $participantProject) {
                 $deleteParticipation = new DeleteParticipation($participantProject);
                 $errorMessage = $deleteParticipation->cleanup('participationsWithStatus');
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                }
+            }
+        }
+
+        if($cleanupType === 'orders') {
+            $cleanupYearsOrdersOneoff = $cooporation->cleanup_years_oneoff_orders_start_date;
+            $cleanupYearsOrdersPeriodic = $cooporation->cleanup_years_periodic_orders_termination_date;
+
+            $cleanupDateOrdersOneoff = $dateToday->copy()->subYears($cleanupYearsOrdersOneoff);
+            $cleanupDateOrdersPeriodic = $dateToday->copy()->subYears($cleanupYearsOrdersPeriodic);
+
+            $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+
+            $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $cleanupDateOrdersOneoff)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
+                $query->whereIn('id', $exceptionProductIds);
+            })->get();
+            $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $cleanupDateOrdersPeriodic)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
+                $query->whereIn('id', $exceptionProductIds);
+            })->get();
+
+            $orders = $ordersOneoff->merge($ordersPeriodic);
+
+            foreach($orders as $order) {
+                $deleteOrder = new DeleteOrder($order);
+                $errorMessage = $deleteOrder->cleanup();
                 if(is_array($errorMessage)) {
                     $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
                 }

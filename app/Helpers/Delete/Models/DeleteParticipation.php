@@ -44,13 +44,17 @@ class DeleteParticipation implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup($type)
     {
         $this->delete();
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
-        $cooperation->cleanup_participations_termination_date_last_run_at = $dateToday;
+        if($type === 'participationsFinished') {
+            $cooperation->cleanup_participations_termination_date_last_run_at = $dateToday;
+        } elseif ($type === 'participationsWithStatus') {
+            $cooperation->cleanup_participations_change_date_last_run_at = $dateToday;
+        }
         $cooperation->save();
     }
     /** Main method for deleting this model and all it's relations

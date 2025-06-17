@@ -235,9 +235,9 @@ class DataCleanupListItems extends Component {
                             <td className="col-sm-4">Deelnames met status interesse, ingeschreven of toegekend ouder dan {cleanupYears['participationsWithStatus']} jaar</td>
                             <td className="col-sm-1">{this.state.amountOfParticipationsWithStatusToCleanup}</td>
                             <td className="col-sm-1">
-                                {/*<a role="button" onClick={() => this.openModal('participationsWithStatus')}>*/}
+                                <a role="button" onClick={() => this.openModal('participationsWithStatus')}>
                                     <Icon size={14} icon={trash} />
-                                {/*</a>*/}
+                                </a>
                             </td>
                             <td className="col-sm-2">{this.state.participationsWithStatusLastCleanupDate}</td>
                             <td className="col-sm-2"></td>

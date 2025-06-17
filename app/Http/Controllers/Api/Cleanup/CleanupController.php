@@ -45,12 +45,12 @@ class CleanupController extends Controller
         $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
         $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '>', $ordersOneoffCleanupOlderThen)->count();
-        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '>', $ordersPeriodicCleanupOlderThen)->count();
+        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
+        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
-        $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '>', $participationsWithStatusCleanupOlderThen)->count();
-        $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '>', $participationsFinishedCleanupOlderThen)->count();
+        $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
+        $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)->count();
 
         $return = [];
         $return['invoices'] = $invoices;
@@ -168,7 +168,23 @@ class CleanupController extends Controller
 
             foreach($participantProjects as $participantProject) {
                 $deleteParticipation = new DeleteParticipation($participantProject);
-                $errorMessage = $deleteParticipation->cleanup();
+                $errorMessage = $deleteParticipation->cleanup('participationsFinished');
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                }
+            }
+        }
+
+        if($cleanupType === 'participationsWithStatus') {
+            $cleanupYears = $cooporation->cleanup_years_participations_termination_date;
+            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
+
+            $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
+            $participantProjects = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $cleanupDate)->get();
+
+            foreach($participantProjects as $participantProject) {
+                $deleteParticipation = new DeleteParticipation($participantProject);
+                $errorMessage = $deleteParticipation->cleanup('participationsWithStatus');
                 if(is_array($errorMessage)) {
                     $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
                 }

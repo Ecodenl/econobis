@@ -164,6 +164,7 @@ class CleanupController extends Controller
             foreach($opportunities as $opportunity) {
                 $deleteOpportunity = new DeleteOpportunity($opportunity);
                 $errorMessage = $deleteOpportunity->cleanup();
+                print_r($errorMessage);
                 if(is_array($errorMessage)) {
                     $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
                 }

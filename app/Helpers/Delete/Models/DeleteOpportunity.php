@@ -43,9 +43,9 @@ class DeleteOpportunity implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($destroy = false)
+    public function cleanup()
     {
-        $this->delete($destroy);
+        $this->delete();
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
@@ -58,23 +58,16 @@ class DeleteOpportunity implements DeleteInterface
      * @return array
      * @throws
      */
-    public function delete($destroy = false)
+    public function delete()
     {
         $this->canDelete();
         $this->deleteModels();
         $this->dissociateRelations();
-        $this->deleteRelations($destroy);
+        $this->deleteRelations();
         $this->customDeleteActions();
+        $this->opportunity->delete();
 
-        if(!empty($this->errorMessage)) {
-            return $this->errorMessage;
-        }
-
-        if($destroy === true) {
-            $this->opportunity->forceDelete();
-        } else {
-            $this->opportunity->delete();
-        }
+        return $this->errorMessage;
     }
 
     /** Checks if the model can be deleted and sets error messages

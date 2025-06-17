@@ -45,12 +45,12 @@ class CleanupController extends Controller
         $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
         $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->count();
-        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->count();
+        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '>', $ordersOneoffCleanupOlderThen)->count();
+        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '>', $ordersPeriodicCleanupOlderThen)->count();
         $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
         $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
-        $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
-        $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)->count();
+        $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '>', $participationsWithStatusCleanupOlderThen)->count();
+        $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '>', $participationsFinishedCleanupOlderThen)->count();
 
         $return = [];
         $return['invoices'] = $invoices;

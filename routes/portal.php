@@ -4,6 +4,19 @@ use App\Http\Controllers\Api\Setting\SettingController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
+//use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Http\Controllers\AuthorizationController;
+use Laravel\Passport\Http\Controllers\ApproveAuthorizationController;
+use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
+
+Route::prefix('oauth')
+    ->middleware(['passport-portal', 'scope.portal', 'web', 'auth']) // voeg aan naar wens
+    ->group(function () {
+        Route::get('authorize', [AuthorizationController::class, 'authorize'])->name('portal.passport.authorize');
+        Route::post('authorize', [ApproveAuthorizationController::class, 'approve'])->name('portal.passport.approve');
+        Route::delete('authorize', [DenyAuthorizationController::class, 'deny'])->name('portal.passport.deny');
+    });
+
 Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');

@@ -202,10 +202,10 @@ class AuthServiceProvider extends ServiceProvider
         Passport::routes(null, [
             'middleware' => ['scope.app'],
         ]);
-        Passport::routes(null, [
-            'middleware' => ['passport-portal', 'scope.portal'],
-            'prefix' => 'portal/oauth',
-        ]);
+//        Passport::routes(null, [
+//            'middleware' => ['passport-portal', 'scope.portal'],
+//            'prefix' => 'portal/oauth',
+//        ]);
 //        Passport::routes();
 
         /**

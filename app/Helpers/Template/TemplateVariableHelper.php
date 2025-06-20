@@ -2053,23 +2053,35 @@ class TemplateVariableHelper
             case 'datum_afspraak_zonder_tijdstip':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y') : null;
             case 'tijdstip_afspraak_30_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_60_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(60)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(60)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_90_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(90)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(90)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_120_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(120)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(120)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_150_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(150)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(150)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_180_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(180)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(180)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_210_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(210)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_240_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(240)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_270_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(270)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_300_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(300)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
 //            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
 //            case 'datum_opname':
 //                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;

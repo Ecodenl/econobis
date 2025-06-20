@@ -290,7 +290,7 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
 
     const getDurationMinutesOptions = () => {
         let options = [];
-        for (let i = 30; i <= 60 * 3; i = i + 15) {
+        for (let i = 30; i <= 60 * 5; i = i + 30) {
             options.push({
                 value: i,
                 text: i + ' minuten',

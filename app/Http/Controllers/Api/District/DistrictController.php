@@ -103,11 +103,18 @@ class DistrictController
                 'name' => $district->name,
             ],
             'quotationRequests' => $quotationRequests->map(function ($quotationRequest) {
+                $contact = $quotationRequest?->opportunity?->intake?->contact;
+
                 return [
                     'id' => $quotationRequest->id,
                     'coach' => [
                         'id' => $quotationRequest->organisationOrCoach->id,
                         'fullName' => $quotationRequest->organisationOrCoach->full_name,
+                    ],
+                    'contact' => [
+                        'id' => $contact ? $contact->id : null,
+                        'fullName' => $contact ? $contact->full_name : 'onbekend',
+                        'postalCode' => $contact?->primaryAddress ? $contact?->primaryAddress->postal_code : '',
                     ],
                     'datePlanned' => $quotationRequest->date_planned,
                     'durationMinutes' => $quotationRequest->duration_minutes,

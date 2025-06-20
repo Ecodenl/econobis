@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Portal\Setting;
+namespace App\Http\Controllers\Portal\PortalSettings;
 
 use App\Helpers\Settings\PortalSettings;
 use App\Http\Controllers\Controller;

@@ -1,7 +1,7 @@
 <?php
 
 
-namespace App\Http\Controllers\Api\Setting;
+namespace App\Http\Controllers\Api\PortalSettings;
 
 
 use App\Eco\ContactGroup\ContactGroup;
@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Spatie\Valuestore\Valuestore;
 
-class SettingController extends Controller
+class PortalSettingController extends Controller
 {
 
     public function get(Request $request)

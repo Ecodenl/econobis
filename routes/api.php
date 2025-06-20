@@ -690,9 +690,9 @@ Route::namespace('Api')
         Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
         Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
-        Route::get('setting', 'Setting\SettingController@get');
-        Route::get('setting/multiple', 'Setting\SettingController@multiple');
-        Route::post('setting', 'Setting\SettingController@store');
+        Route::get('setting', 'Setting\PortalSettingController@get');
+        Route::get('setting/multiple', 'Setting\PortalSettingController@multiple');
+        Route::post('setting', 'Setting\PortalSettingController@store');
 
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');

@@ -154,7 +154,7 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
 
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Data opschonen</span>
+                    <span className="h5 text-bold">Items opschonen</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">

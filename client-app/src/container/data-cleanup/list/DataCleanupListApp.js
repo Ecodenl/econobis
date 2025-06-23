@@ -35,7 +35,7 @@ class DataCleanupListApp extends Component {
         const renderContent = () => {
             switch (dataCleanupType) {
                 case 'items':
-                    return <DataCleanupListItems numberOfInvoicesToCleanup={'500'}/>;
+                    return <DataCleanupListItems />;
                 case 'e-mail':
                     return 'e-mailcorrespondentie';
                 case 'contacten':

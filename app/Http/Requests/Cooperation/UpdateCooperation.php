@@ -70,6 +70,9 @@ class UpdateCooperation extends FormRequest
             'cleanupYearsOpportunitiesMutationDate' => [''],
             'cleanupYearsParticipationsChangeDate' => [''],
             'cleanupYearsParticipationsTerminationDate' => [''],
+            'cleanupEmail' => [''],
+            'cleanupYearsEmailIncoming' => [''],
+            'cleanupYearsEmailOutgoing' => [''],
         ];
     }
 }

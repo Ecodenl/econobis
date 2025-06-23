@@ -66,6 +66,9 @@ class CreateCooperation extends FormRequest
             'cleanupYearsOpportunitiesMutationDate' => [7],
             'cleanupYearsParticipationsChangeDate' => [7],
             'cleanupYearsParticipationsTerminationDate' => [7],
+            'cleanupEmail' => [0],
+            'cleanupYearsEmailIncoming' => [7],
+            'cleanupYearsEmailOutgoing' => [7],
         ];
     }
 }

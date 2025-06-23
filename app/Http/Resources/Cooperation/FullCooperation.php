@@ -77,6 +77,9 @@ class FullCooperation extends JsonResource
             'cleanupYearsOpportunitiesMutationDate' => $this->cleanup_years_opportunities_mutation_date,
             'cleanupYearsParticipationsChangeDate' => $this->cleanup_years_participations_change_date,
             'cleanupYearsParticipationsTerminationDate' => $this->cleanup_years_participations_termination_date,
+            'cleanupEmail' => $this->cleanup_email,
+            'cleanupYearsEmailIncoming' => $this->cleanup_years_email_incoming,
+            'cleanupYearsEmailOutgoing' => $this->cleanup_years_email_outgoing,
         ];
     }
 }

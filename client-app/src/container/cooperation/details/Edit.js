@@ -576,7 +576,61 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </PanelBody>
                 </Panel>
 
-
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">E-mail opschonen</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label="Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?"
+                                name={'cleanupEmail'}
+                                value={values.cleanupEmail}
+                                onChangeAction={e => setFieldValue('cleanupEmail', e.target.checked)}
+                            />
+                        </div>
+                        {values.cleanupEmail == true && (
+                            <div className="row">
+                                <InputReactSelect
+                                    label={'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'}
+                                    name={'cleanupYearsEmailIncoming'}
+                                    options={[
+                                        { id: 1, name: '1' },
+                                        { id: 2, name: '2' },
+                                        { id: 3, name: '3' },
+                                        { id: 4, name: '4' },
+                                        { id: 5, name: '5' },
+                                        { id: 6, name: '6' },
+                                        { id: 7, name: '7' },
+                                        { id: 8, name: '8' },
+                                        { id: 9, name: '9' },
+                                        { id: 10, name: '10' },
+                                    ]}
+                                    value={values.cleanupYearsEmailIncoming}
+                                    onChangeAction={(value, name) => setFieldValue(name, value)}
+                                />
+                                <InputReactSelect
+                                    label={'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'}
+                                    name={'cleanupYearsEmailOutgoing'}
+                                    options={[
+                                        { id: 1, name: '1' },
+                                        { id: 2, name: '2' },
+                                        { id: 3, name: '3' },
+                                        { id: 4, name: '4' },
+                                        { id: 5, name: '5' },
+                                        { id: 6, name: '6' },
+                                        { id: 7, name: '7' },
+                                        { id: 8, name: '8' },
+                                        { id: 9, name: '9' },
+                                        { id: 10, name: '10' },
+                                    ]}
+                                    value={values.cleanupYearsEmailOutgoing}
+                                    onChangeAction={(value, name) => setFieldValue(name, value)}
+                                />
+                            </div>
+                        )}
+                    </PanelBody>
+                </Panel>
 
                 <Panel>
                     <PanelHeader>

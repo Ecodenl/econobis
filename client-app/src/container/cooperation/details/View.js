@@ -177,6 +177,23 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
 
             <Panel>
                 <PanelHeader>
+                    <span className="h5 text-bold">E-mail opschonen</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText label={'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?'} value={formData.cleanupEmail ? 'Ja' : 'Nee'} />
+                    </div>
+                    {formData.cleanupEmail == true && (
+                        <div className="row">
+                            <ViewText label={'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'} value={formData.cleanupYearsEmailIncoming + ' jaar'} />
+                            <ViewText label={'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'} value={formData.cleanupYearsEmailOutgoing + ' jaar'} />
+                        </div>
+                    )}
+                </PanelBody>
+            </Panel>
+
+            <Panel>
+                <PanelHeader>
                     <span className="h5 text-bold">Overig</span>
                 </PanelHeader>
                 <PanelBody>

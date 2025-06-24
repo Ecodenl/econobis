@@ -6,6 +6,7 @@ import { bindActionCreators } from 'redux';
 import DataCleanupListToolbar from './DataCleanupListToolbar';
 
 import DataCleanupListItems from './DataCleanupListItems';
+import DataCleanupListEmails from './DataCleanupListEmails';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -37,7 +38,7 @@ class DataCleanupListApp extends Component {
                 case 'items':
                     return <DataCleanupListItems />;
                 case 'e-mail':
-                    return 'e-mailcorrespondentie';
+                    return <DataCleanupListEmails />;
                 case 'contacten':
                     return 'contacten';
             }

@@ -14,7 +14,7 @@ use App\Eco\Order\Order;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\Task\TaskType;
 use App\Helpers\Delete\DeleteInterface;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -67,7 +67,7 @@ class DeleteEmailTemplate implements DeleteInterface
      */
     public function canDelete()
     {
-        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+        $emailTemplateNewAccountId = PortalSettings::first()?->email_template_new_account_id;
         if($emailTemplateNewAccountId == $this->emailTemplate->id){
             array_push($this->errorMessage,'Ontkoppel deze template eerst in Portal instellingen bij "E-mail template Nieuwe account activeren"');
         }
@@ -91,7 +91,7 @@ class DeleteEmailTemplate implements DeleteInterface
         }
 
         // Email template can not be deleted if it is used in portalsettings
-        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+        $emailTemplateNewAccountId = PortalSettings::first()?->email_template_new_account_id;
         if($this->emailTemplate->id == $emailTemplateNewAccountId){
             array_push($this->errorMessage, "Dit email template wordt nog gebruikt in algemene portal instellingen.");
         }

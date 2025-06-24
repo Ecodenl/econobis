@@ -1,12 +1,12 @@
 <?php
 
-use App\Helpers\Settings\PortalSettings;
 use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
+use Spatie\Valuestore\Valuestore;
 
 return new class extends Migration
 {
@@ -104,34 +104,34 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        $hasPortalSettings = !empty(PortalSettings::get('portalActive')) ? true : false;
+        $hasPortalSettings = !empty($this->get('portalActive')) ? true : false;
 
         if ($hasPortalSettings) {
 
-            $portalActive = PortalSettings::get('portalActive') === 'true' || PortalSettings::get('portalActive') === '1'
-                || PortalSettings::get('portalActive') === true || PortalSettings::get('portalActive') === 1;
-            $showNewAtCooperativeLink = PortalSettings::get('showNewAtCooperativeLink') === 'true' || PortalSettings::get('showNewAtCooperativeLink') === '1'
-                || PortalSettings::get('showNewAtCooperativeLink') === true || PortalSettings::get('showNewAtCooperativeLink') === 1;
+            $portalActive = $this->get('portalActive') === 'true' || $this->get('portalActive') === '1'
+                || $this->get('portalActive') === true || $this->get('portalActive') === 1;
+            $showNewAtCooperativeLink = $this->get('showNewAtCooperativeLink') === 'true' || $this->get('showNewAtCooperativeLink') === '1'
+                || $this->get('showNewAtCooperativeLink') === true || $this->get('showNewAtCooperativeLink') === 1;
             DB::table('portal_settings')->insert([
                 [
                     'portal_active' => $portalActive,
-                    'portal_name' => !empty(PortalSettings::get('portalName')) ? PortalSettings::get('portalName') : null,
-                    'cooperative_name' => !empty(PortalSettings::get('cooperativeName')) ? PortalSettings::get('portalWebsite') : null,
-                    'portal_website' => !empty(PortalSettings::get('portalWebsite')) ? PortalSettings::get('portalWebsite') : null,
-                    'portal_url' => !empty(PortalSettings::get('portalUrl')) ? PortalSettings::get('portalUrl') : null,
-                    'responsible_user_id' => !empty(PortalSettings::get('responsibleUserId')) ? PortalSettings::get('responsibleUserId') : null,
-                    'contact_responsible_owner_user_id' => !empty(PortalSettings::get('contactResponsibleOwnerUserId')) ? PortalSettings::get('contactResponsibleOwnerUserId') : null,
-                    'check_contact_task_responsible_user_id' => !empty(PortalSettings::get('checkContactTaskResponsibleUserId')) ? PortalSettings::get('checkContactTaskResponsibleUserId') : null,
-                    'check_contact_task_responsible_team_id' => !empty(PortalSettings::get('checkContactTaskResponsibleTeamId')) ? PortalSettings::get('checkContactTaskResponsibleTeamId') : null,
-                    'email_template_new_account_id' => !empty(PortalSettings::get('emailTemplateNewAccountId')) ? PortalSettings::get('emailTemplateNewAccountId') : null,
-                    'link_privacy_policy' => !empty(PortalSettings::get('linkPrivacyPolicy')) ? PortalSettings::get('linkPrivacyPolicy') : null,
+                    'portal_name' => !empty($this->get('portalName')) ? $this->get('portalName') : null,
+                    'cooperative_name' => !empty($this->get('cooperativeName')) ? $this->get('portalWebsite') : null,
+                    'portal_website' => !empty($this->get('portalWebsite')) ? $this->get('portalWebsite') : null,
+                    'portal_url' => !empty($this->get('portalUrl')) ? $this->get('portalUrl') : null,
+                    'responsible_user_id' => !empty($this->get('responsibleUserId')) ? $this->get('responsibleUserId') : null,
+                    'contact_responsible_owner_user_id' => !empty($this->get('contactResponsibleOwnerUserId')) ? $this->get('contactResponsibleOwnerUserId') : null,
+                    'check_contact_task_responsible_user_id' => !empty($this->get('checkContactTaskResponsibleUserId')) ? $this->get('checkContactTaskResponsibleUserId') : null,
+                    'check_contact_task_responsible_team_id' => !empty($this->get('checkContactTaskResponsibleTeamId')) ? $this->get('checkContactTaskResponsibleTeamId') : null,
+                    'email_template_new_account_id' => !empty($this->get('emailTemplateNewAccountId')) ? $this->get('emailTemplateNewAccountId') : null,
+                    'link_privacy_policy' => !empty($this->get('linkPrivacyPolicy')) ? $this->get('linkPrivacyPolicy') : null,
                     'show_new_at_cooperative_link' => $showNewAtCooperativeLink,
-                    'new_at_cooperative_link_text' => !empty(PortalSettings::get('newAtCooperativeLinkText')) ? PortalSettings::get('newAtCooperativeLinkText') : null,
-                    'pcr_power_kwh' => !empty(PortalSettings::get('pcrPowerKwhConsumptionPercentage')) ? PortalSettings::get('pcrPowerKwhConsumptionPercentage') : null,
-                    'pcr_generating_capacity_one_solor_panel' => !empty(PortalSettings::get('pcrGeneratingCapacityOneSolorPanel')) ? PortalSettings::get('pcrGeneratingCapacityOneSolorPanel') : null,
-                    'default_contact_group_member_id' => !empty(PortalSettings::get('defaultContactGroupMemberId')) ? PortalSettings::get('defaultContactGroupMemberId') : null,
-                    'default_contact_group_no_member_id' => !empty(PortalSettings::get('defaultContactGroupNoMemberId')) ? PortalSettings::get('defaultContactGroupNoMemberId') : null,
-                    'default_administration_id' => !empty(PortalSettings::get('defaultAdministrationId')) ? PortalSettings::get('defaultAdministrationId') : null,
+                    'new_at_cooperative_link_text' => !empty($this->get('newAtCooperativeLinkText')) ? $this->get('newAtCooperativeLinkText') : null,
+                    'pcr_power_kwh' => !empty($this->get('pcrPowerKwhConsumptionPercentage')) ? $this->get('pcrPowerKwhConsumptionPercentage') : null,
+                    'pcr_generating_capacity_one_solor_panel' => !empty($this->get('pcrGeneratingCapacityOneSolorPanel')) ? $this->get('pcrGeneratingCapacityOneSolorPanel') : null,
+                    'default_contact_group_member_id' => !empty($this->get('defaultContactGroupMemberId')) ? $this->get('defaultContactGroupMemberId') : null,
+                    'default_contact_group_no_member_id' => !empty($this->get('defaultContactGroupNoMemberId')) ? $this->get('defaultContactGroupNoMemberId') : null,
+                    'default_administration_id' => !empty($this->get('defaultAdministrationId')) ? $this->get('defaultAdministrationId') : null,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ],
@@ -151,4 +151,17 @@ return new class extends Migration
     {
         Schema::dropIfExists('portal_settings');
     }
+
+    public static function make()
+    {
+        $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
+        return Valuestore::make($filePath);
+    }
+
+    public static function get(string $name)
+    {
+        return static::make()->get($name);
+    }
+
+
 };

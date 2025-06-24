@@ -22,7 +22,7 @@ use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Delete\Models\DeleteParticipation;
 use App\Helpers\Document\DocumentHelper;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
@@ -117,7 +117,7 @@ class ParticipationProjectController extends Controller
 
         if ($document->filename) {
             // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if (!$responsibleUserId) {
                 abort(501, 'Er is helaas een fout opgetreden (5).');
             }
@@ -162,7 +162,7 @@ class ParticipationProjectController extends Controller
 
         // Voor aanmaak van Participant Mutations wordt created by and updated by via ParticipantMutationObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (5).');
         }
@@ -306,8 +306,8 @@ class ParticipationProjectController extends Controller
             if($emailTemplate && !empty($emailTemplate->subject) )
             {
                 $subject = $emailTemplate->subject;
-                $portalName = PortalSettings::get('portalName');
-                $cooperativeName = PortalSettings::get('cooperativeName');
+                $portalName = PortalSettings::first()?->portal_name;
+                $cooperativeName = PortalSettings::first()?->cooperative_name;
                 $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
                 $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
                 $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);

@@ -80,10 +80,13 @@ const ProjectFormEditGeneral = ({
     errors,
     errorMessages,
     amountOfParticipants,
-    documentTemplateAgreementId,
     documentTemplates,
-    emailTemplateAgreementId,
     emailTemplates,
+    documentTemplateAgreementId,
+    emailTemplateAgreementId,
+    allowIncreaseParticipationsInPortal,
+    documentTemplateIncreaseParticipationsId,
+    emailTemplateIncreaseParticipationsId,
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
@@ -450,7 +453,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                 />
             </div>
-            {isMembershipRequired && (
+            {isMembershipRequired ? (
                 <div className={'row'}>
                     <InputMultiSelect
                         label={'Onderdeel van groep'}
@@ -464,7 +467,7 @@ const ProjectFormEditGeneral = ({
                         required={'required'}
                     />
                 </div>
-            )}
+            ) : null}
             {isMembershipRequired ? (
                 <>
                     <div className="row">
@@ -909,7 +912,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             disabled={!permissions.managePortalSettings}
                         />
-                        {showQuestionAboutMembership && (
+                        {showQuestionAboutMembership ? (
                             <InputToggle
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 name={'useTransactionCostsWithMembership'}
@@ -917,9 +920,9 @@ const ProjectFormEditGeneral = ({
                                 onChangeAction={handleInputChange}
                                 disabled={!permissions.managePortalSettings}
                             />
-                        )}
+                        ) : null}
                     </div>
-                    {showQuestionAboutMembership && (
+                    {showQuestionAboutMembership ? (
                         <>
                             <div className={'row'}>
                                 <InputReactSelectLong
@@ -1015,7 +1018,7 @@ const ProjectFormEditGeneral = ({
                                 />
                             </div>
                         </>
-                    )}
+                    ) : null}
 
                     <hr />
                     <div className="row">
@@ -1333,6 +1336,45 @@ const ProjectFormEditGeneral = ({
                             disabled={!permissions.managePortalSettings}
                         />
                     </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Contacten mogen deelnames/bedragen bijschrijven na initiele inschrijving'}
+                            name={'allowIncreaseParticipationsInPortal'}
+                            value={allowIncreaseParticipationsInPortal}
+                            onChangeAction={handleInputChange}
+                            disabled={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    {allowIncreaseParticipationsInPortal ? (
+                        <>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label="Document template bijschrijfformulier"
+                                    name={'documentTemplateIncreaseParticipationsId'}
+                                    options={documentTemplates}
+                                    value={documentTemplateIncreaseParticipationsId}
+                                    onChangeAction={handleReactSelectChange}
+                                    // isLoading={peekLoading.documentTemplates}
+                                    error={errors.documentTemplateIncreaseParticipationsId}
+                                    errorMessage={errorMessages.documentTemplateIncreaseParticipationsId}
+                                    disabled={!permissions.managePortalSettings}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label="E-mail template bijschrijfformulier"
+                                    name={'emailTemplateIncreaseParticipationsId'}
+                                    options={emailTemplates}
+                                    value={emailTemplateIncreaseParticipationsId}
+                                    onChangeAction={handleReactSelectChange}
+                                    // isLoading={peekLoading.emailTemplates}
+                                    error={errors.emailTemplateIncreaseParticipationsId}
+                                    errorMessage={errorMessages.emailTemplateIncreaseParticipationsId}
+                                    disabled={!permissions.managePortalSettings}
+                                />
+                            </div>
+                        </>
+                    ) : null}
 
                     <hr />
                     <div className="row">
@@ -1341,16 +1383,16 @@ const ProjectFormEditGeneral = ({
                         </label>
                     </div>
                     {administrations.find(a => a.id === administrationId) &&
-                        administrations.find(a => a.id === administrationId).usesMollie && (
-                            <div className="row">
-                                <InputToggle
-                                    label={'Direct elektronisch betalen via Mollie'}
-                                    name={'usesMollie'}
-                                    value={usesMollie}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                        )}
+                    administrations.find(a => a.id === administrationId).usesMollie ? (
+                        <div className="row">
+                            <InputToggle
+                                label={'Direct elektronisch betalen via Mollie'}
+                                name={'usesMollie'}
+                                value={usesMollie}
+                                onChangeAction={handleInputChange}
+                            />
+                        </div>
+                    ) : null}
 
                     <hr />
                     <div className="row">

@@ -80,10 +80,13 @@ const ProjectFormEditGeneral = ({
     errors,
     errorMessages,
     amountOfParticipants,
-    documentTemplateAgreementId,
     documentTemplates,
-    emailTemplateAgreementId,
     emailTemplates,
+    documentTemplateAgreementId,
+    emailTemplateAgreementId,
+    allowIncreaseParticipationsInPortal,
+    documentTemplateIncreaseParticipationsId,
+    emailTemplateIncreaseParticipationsId,
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
@@ -100,6 +103,10 @@ const ProjectFormEditGeneral = ({
     showQuestionAboutMembership,
     useTransactionCostsWithMembership,
     questionAboutMembershipGroupId,
+    textRegisterPageHeader,
+    textRegisterCurrentBookWorth,
+    textRegisterParticipationSingular,
+    textRegisterParticipationPlural,
     textIsMember,
     textIsNoMember,
     textBecomeMember,
@@ -108,7 +115,9 @@ const ProjectFormEditGeneral = ({
     noMemberGroupId,
     textAgreeTerms,
     textLinkAgreeTerms,
+    textLinkNameAgreeTerms,
     textLinkUnderstandInfo,
+    textLinkNameUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
     textRegistrationFinished,
@@ -444,7 +453,7 @@ const ProjectFormEditGeneral = ({
                     onChangeAction={handleInputChange}
                 />
             </div>
-            {isMembershipRequired && (
+            {isMembershipRequired ? (
                 <div className={'row'}>
                     <InputMultiSelect
                         label={'Onderdeel van groep'}
@@ -458,7 +467,7 @@ const ProjectFormEditGeneral = ({
                         required={'required'}
                     />
                 </div>
-            )}
+            ) : null}
             {isMembershipRequired ? (
                 <>
                     <div className="row">
@@ -582,6 +591,8 @@ const ProjectFormEditGeneral = ({
                             name={'disableChangeContactNameOnPortal'}
                             value={disableChangeContactNameOnPortal}
                             onChangeAction={handleInputChange}
+                            size={'col-sm-5'}
+                            textToolTip={`Als deze instelling actief is kunnen contacten die deelnemen in dit project hun naam niet wijzigen via de contactenportal. In verband met customer due diligence (voorkomen fraude en witwassen) zijn extra controles wenselijk bij naamswijziging of overdracht. Daarom kun je met deze instelling naamswijziging door contacten in het portal blokkeren.`}
                         />
                     </div>
 
@@ -837,6 +848,62 @@ const ProjectFormEditGeneral = ({
                             <strong>Inschrijven</strong>
                         </label>
                     </div>
+                    <div className={'row'}>
+                        <InputText
+                            label="Koptekst inschrijfpagina"
+                            name={'textRegisterPageHeader'}
+                            value={textRegisterPageHeader}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textRegisterPageHeader}
+                            errorMessage={errorMessages.textRegisterPageHeader}
+                            readOnly={!permissions.managePortalSettings}
+                            size={'col-sm-5'}
+                            textToolTip={`De tekst die een portal gebruiker ziet zodra hij heeft gekozen om op dit project te gaan inschrijven links boven op de pagina.`}
+                        />
+                        <InputText
+                            label="Communicatienaam Deelname (enkelvoud)"
+                            name={'textRegisterParticipationSingular'}
+                            value={textRegisterParticipationSingular}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textRegisterParticipationSingular}
+                            errorMessage={errorMessages.textRegisterParticipationSingular}
+                            readOnly={!permissions.managePortalSettings}
+                            size={'col-sm-5'}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier waar je kiest voor hoeveel participatie(s) of deelname(s) je inschrijft.`}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <InputText
+                            label="Waarde aanduiding"
+                            name={'textRegisterCurrentBookWorth'}
+                            value={textRegisterCurrentBookWorth}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textRegisterCurrentBookWorth}
+                            errorMessage={errorMessages.textRegisterCurrentBookWorth}
+                            readOnly={!permissions.managePortalSettings}
+                            size={'col-sm-5'}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier, standaard is dit veld: “huidige waarde per participatie” als iemand 2 deelnames van 100 euro kiest komt onder dit veld 200 euro te staan. (dit kan afwijken van het te betalen bedrag als er bijvoorbeeld ook inschrijfkosten zijn).`}
+                        />
+                        <InputText
+                            label="Communicatienaam Deelname (meervoud)"
+                            name={'textRegisterParticipationPlural'}
+                            value={textRegisterParticipationPlural}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textRegisterParticipationPlural}
+                            errorMessage={errorMessages.textRegisterParticipationPlural}
+                            readOnly={!permissions.managePortalSettings}
+                            size={'col-sm-5'}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier waar je kiest voor hoeveel participatie(s) of deelname(s) je inschrijft.`}
+                        />
+                    </div>
                     <div className="row">
                         <InputToggle
                             label={'Vragen over lid worden aan of uit?'}
@@ -845,7 +912,7 @@ const ProjectFormEditGeneral = ({
                             onChangeAction={handleInputChange}
                             disabled={!permissions.managePortalSettings}
                         />
-                        {showQuestionAboutMembership && (
+                        {showQuestionAboutMembership ? (
                             <InputToggle
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 name={'useTransactionCostsWithMembership'}
@@ -853,9 +920,9 @@ const ProjectFormEditGeneral = ({
                                 onChangeAction={handleInputChange}
                                 disabled={!permissions.managePortalSettings}
                             />
-                        )}
+                        ) : null}
                     </div>
-                    {showQuestionAboutMembership && (
+                    {showQuestionAboutMembership ? (
                         <>
                             <div className={'row'}>
                                 <InputReactSelectLong
@@ -951,7 +1018,7 @@ const ProjectFormEditGeneral = ({
                                 />
                             </div>
                         </>
-                    )}
+                    ) : null}
 
                     <hr />
                     <div className="row">
@@ -1077,6 +1144,20 @@ const ProjectFormEditGeneral = ({
                             textToolTip={helpTextLinkAgreeTerms}
                         />
                     </div>
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Voorwaarden link naam"
+                            name={'textLinkNameAgreeTerms'}
+                            value={textLinkNameAgreeTerms}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textLinkNameAgreeTerms}
+                            errorMessage={errorMessages.textLinkNameAgreeTerms}
+                            readOnly={!permissions.managePortalSettings}
+                            textToolTip={`Je kan hier het klikbare gedeelte van de linktekst aanpassen maar in de voorwaarde tekst moet het {voorwaarden_link} blijven`}
+                        />
+                    </div>
 
                     <hr />
 
@@ -1161,6 +1242,20 @@ const ProjectFormEditGeneral = ({
                             textToolTip={helpTextLinkUnderstandInfo}
                         />
                     </div>
+                    <div className={'row'}>
+                        <InputTextLong
+                            label="Project informatie link naam"
+                            name={'textLinkNameUnderstandInfo'}
+                            value={textLinkNameUnderstandInfo}
+                            maxLength="191"
+                            onChangeAction={handleInputChange}
+                            required={'required'}
+                            error={errors.textLinkNameUnderstandInfo}
+                            errorMessage={errorMessages.textLinkNameUnderstandInfo}
+                            readOnly={!permissions.managePortalSettings}
+                            textToolTip={`Je kan hier het klikbare gedeelte van de linktekst aanpassen maar in het voorwaarden tekst veld moet het {project_informatie_link} blijven.`}
+                        />
+                    </div>
 
                     <hr />
                     <div className="row">
@@ -1241,6 +1336,45 @@ const ProjectFormEditGeneral = ({
                             disabled={!permissions.managePortalSettings}
                         />
                     </div>
+                    <div className="row">
+                        <InputToggle
+                            label={'Contacten mogen deelnames/bedragen bijschrijven na initiele inschrijving'}
+                            name={'allowIncreaseParticipationsInPortal'}
+                            value={allowIncreaseParticipationsInPortal}
+                            onChangeAction={handleInputChange}
+                            disabled={!permissions.managePortalSettings}
+                        />
+                    </div>
+                    {allowIncreaseParticipationsInPortal ? (
+                        <>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label="Document template bijschrijfformulier"
+                                    name={'documentTemplateIncreaseParticipationsId'}
+                                    options={documentTemplates}
+                                    value={documentTemplateIncreaseParticipationsId}
+                                    onChangeAction={handleReactSelectChange}
+                                    // isLoading={peekLoading.documentTemplates}
+                                    error={errors.documentTemplateIncreaseParticipationsId}
+                                    errorMessage={errorMessages.documentTemplateIncreaseParticipationsId}
+                                    disabled={!permissions.managePortalSettings}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label="E-mail template bijschrijfformulier"
+                                    name={'emailTemplateIncreaseParticipationsId'}
+                                    options={emailTemplates}
+                                    value={emailTemplateIncreaseParticipationsId}
+                                    onChangeAction={handleReactSelectChange}
+                                    // isLoading={peekLoading.emailTemplates}
+                                    error={errors.emailTemplateIncreaseParticipationsId}
+                                    errorMessage={errorMessages.emailTemplateIncreaseParticipationsId}
+                                    disabled={!permissions.managePortalSettings}
+                                />
+                            </div>
+                        </>
+                    ) : null}
 
                     <hr />
                     <div className="row">
@@ -1249,16 +1383,16 @@ const ProjectFormEditGeneral = ({
                         </label>
                     </div>
                     {administrations.find(a => a.id === administrationId) &&
-                        administrations.find(a => a.id === administrationId).usesMollie && (
-                            <div className="row">
-                                <InputToggle
-                                    label={'Direct elektronisch betalen via Mollie'}
-                                    name={'usesMollie'}
-                                    value={usesMollie}
-                                    onChangeAction={handleInputChange}
-                                />
-                            </div>
-                        )}
+                    administrations.find(a => a.id === administrationId).usesMollie ? (
+                        <div className="row">
+                            <InputToggle
+                                label={'Direct elektronisch betalen via Mollie'}
+                                name={'usesMollie'}
+                                value={usesMollie}
+                                onChangeAction={handleInputChange}
+                            />
+                        </div>
+                    ) : null}
 
                     <hr />
                     <div className="row">

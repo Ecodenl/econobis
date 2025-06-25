@@ -36,7 +36,6 @@ export default function ContactAvailabilityDetailsApp(props) {
                         <PanelBody className={'panel-small'}>
                             <div className="row">
                                 <div className="col-md-4">
-                                    F
                                     <div className="btn-group" role="group">
                                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     </div>

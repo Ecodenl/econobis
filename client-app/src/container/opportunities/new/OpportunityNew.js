@@ -147,7 +147,9 @@ const OpportunityNew = props => {
                             className={'form-group col-sm-6'}
                             label={'WOZ waarde woningdossier'}
                             value={
-                                intake?.address?.housingFile ? MoneyPresenter(intake.address.housingFile.wozValue) : ''
+                                props.intake?.address?.housingFile
+                                    ? MoneyPresenter(props.intake.address.housingFile.wozValue)
+                                    : ''
                             }
                         />
                     </div>

@@ -16,7 +16,7 @@ export default function QuotationRequestPlanNewApp(props) {
         DistrictAPI.fetchDistrictDetails(params.districtId).then(district => {
             setDistrict(district);
         });
-    }, []);
+    }, [params.districtId]);
 
     return (
         <div className="row">

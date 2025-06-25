@@ -18,7 +18,7 @@ class checkMissingEnergySupplierDataInParts extends Command
      * @var string
      */
     protected $signature = 'revenue:checkMissingEnergySupplierDataInParts';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

@@ -5,7 +5,6 @@ import ViewTextLong from '../../../../../components/form/ViewTextLong';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
-import FreeFields from '../../../../../components/freeFields/FreeFields';
 
 const ProjectFormViewGeneral = ({
     switchToEdit,
@@ -50,6 +49,9 @@ const ProjectFormViewGeneral = ({
     requiresContactGroups,
     documentTemplateAgreement,
     emailTemplateAgreement,
+    allowIncreaseParticipationsInPortal,
+    documentTemplateIncreaseParticipations,
+    emailTemplateIncreaseParticipations,
     linkAgreeTerms,
     linkUnderstandInfo,
     linkProjectInfo,
@@ -59,6 +61,10 @@ const ProjectFormViewGeneral = ({
     showQuestionAboutMembership,
     useTransactionCostsWithMembership,
     questionAboutMembershipGroup,
+    textRegisterPageHeader,
+    textRegisterCurrentBookWorth,
+    textRegisterParticipationSingular,
+    textRegisterParticipationPlural,
     textIsMember,
     textIsNoMember,
     textBecomeMember,
@@ -67,7 +73,9 @@ const ProjectFormViewGeneral = ({
     noMemberGroup,
     textAgreeTerms,
     textLinkAgreeTerms,
+    textLinkNameAgreeTerms,
     textLinkUnderstandInfo,
+    textLinkNameUnderstandInfo,
     textAcceptAgreement,
     textAcceptAgreementQuestion,
     textRegistrationFinished,
@@ -394,19 +402,44 @@ const ProjectFormViewGeneral = ({
                             <strong>Inschrijven</strong>
                         </label>
                     </div>
+                    <div className={'row'}>
+                        <ViewText
+                            label={'Koptekst inschrijfpagina'}
+                            value={textRegisterPageHeader}
+                            textToolTip={`De tekst die een portal gebruiker ziet zodra hij heeft gekozen om op dit project te gaan inschrijven links boven op de pagina.`}
+                        />
+                        <ViewText
+                            label={'Communicatienaam Deelname (enkelvoud)'}
+                            value={textRegisterParticipationSingular}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier waar je kiest voor hoeveel participatie(s) of deelname(s) je inschrijft.`}
+                        />
+                    </div>
+                    <div className={'row'}>
+                        <ViewText
+                            label={'Waarde aanduiding'}
+                            value={textRegisterCurrentBookWorth}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier, standaard is dit veld: “huidige waarde per participatie” als iemand 2 deelnames van 100 euro kiest komt onder dit veld 200 euro te staan. (dit kan afwijken van het te betalen bedrag als er bijvoorbeeld ook inschrijfkosten zijn).`}
+                        />
+                        <ViewText
+                            label={'Communicatienaam Deelname (meervoud)'}
+                            value={textRegisterParticipationPlural}
+                            textToolTip={`Dit veld wordt getoond op pagina 1 van het inschrijf formulier waar je kiest voor hoeveel participatie(s) of deelname(s) je inschrijft.`}
+                        />
+                    </div>
+
                     <div className="row">
                         <ViewText
                             label={'Vragen over lid worden aan of uit?'}
                             value={showQuestionAboutMembership ? 'Ja' : 'Nee'}
                         />
-                        {showQuestionAboutMembership && (
+                        {showQuestionAboutMembership ? (
                             <ViewText
                                 label={'Transactie kosten ook bij lidmaatschap (Keuze 1)?'}
                                 value={useTransactionCostsWithMembership ? 'Ja' : 'Nee'}
                             />
-                        )}
+                        ) : null}
                     </div>
-                    {showQuestionAboutMembership && (
+                    {showQuestionAboutMembership ? (
                         <>
                             <div className={'row'}>
                                 <ViewTextLong
@@ -441,7 +474,7 @@ const ProjectFormViewGeneral = ({
                                 />
                             </div>
                         </>
-                    )}
+                    ) : null}
                     <hr />
                     <div className="row">
                         <label htmlFor="agreeTerms" className="col-sm-12">
@@ -473,6 +506,13 @@ const ProjectFormViewGeneral = ({
                     <div className="row">
                         <ViewTextLong label={'Voorwaarden tekst'} value={textLinkAgreeTerms} />
                     </div>
+                    <div className="row">
+                        <ViewTextLong
+                            label={'Voorwaarden link naam'}
+                            value={textLinkNameAgreeTerms}
+                            textToolTip={`Je kan hier het klikbare gedeelte van de linktekst aanpassen maar in de voorwaarde tekst moet het {voorwaarden_link} blijven`}
+                        />
+                    </div>
                     <hr />
                     <div className="row">
                         {documentUnderstandInfo != null ? (
@@ -486,6 +526,13 @@ const ProjectFormViewGeneral = ({
                     </div>
                     <div className="row">
                         <ViewTextLong label={'Project informatie tekst'} value={textLinkUnderstandInfo} />
+                    </div>
+                    <div className="row">
+                        <ViewTextLong
+                            label={'Project informatie link naam'}
+                            value={textLinkNameUnderstandInfo}
+                            textToolTip={`Je kan hier het klikbare gedeelte van de linktekst aanpassen maar in het voorwaarden tekst veld moet het {project_informatie_link} blijven.`}
+                        />
                     </div>
                     <hr />
                     <div className="row">
@@ -522,6 +569,37 @@ const ProjectFormViewGeneral = ({
                             value={emailTemplateAgreement ? emailTemplateAgreement.name : ''}
                         />
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Contacten mogen deelnames/bedragen bijschrijven na initiele inschrijving'}
+                            value={allowIncreaseParticipationsInPortal ? 'Ja' : 'Nee'}
+                        />{' '}
+                    </div>
+                    {allowIncreaseParticipationsInPortal ? (
+                        <>
+                            <div className="row">
+                                <ViewTextLong
+                                    label="Document template bijschrijfformulier"
+                                    value={
+                                        documentTemplateIncreaseParticipations
+                                            ? documentTemplateIncreaseParticipations.name
+                                            : ''
+                                    }
+                                />
+                            </div>
+                            <div className="row">
+                                <ViewTextLong
+                                    label="E-mail template bijschrijfformulier"
+                                    value={
+                                        emailTemplateIncreaseParticipations
+                                            ? emailTemplateIncreaseParticipations.name
+                                            : ''
+                                    }
+                                />
+                            </div>
+                        </>
+                    ) : null}
+
                     <hr />
                     <div className="row">
                         <label htmlFor="confirmAgreementAndPayment" className="col-sm-12">

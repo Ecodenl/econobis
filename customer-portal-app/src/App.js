@@ -47,6 +47,10 @@ function App() {
                                 path="/inschrijven/mollie-resultaat/:code"
                                 component={ProjectMollieRedirectWithContext}
                             />
+                            <ProtectedRoute
+                                path="/inschrijven/:registerType/:id/:participantId"
+                                component={RegisterProject}
+                            />
                             <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                             <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                             <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />

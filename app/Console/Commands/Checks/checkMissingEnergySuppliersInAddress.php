@@ -23,7 +23,7 @@ class checkMissingEnergySuppliersInAddress extends Command
      * @var string
      */
     protected $signature = 'revenue:checkMissingEnergySuppliersInAddress {--recover=false}';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

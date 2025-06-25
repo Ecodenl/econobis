@@ -49,7 +49,7 @@ const DistrictCalendarApp = props => {
 
         DistrictAPI.fetchDistrictCalendarItems(params.id, startDate, endDate).then(data => {
             const quotationRequests = data.quotationRequests.map(item => {
-                const { id, coach, datePlanned, durationMinutes, statusCodeRef } = item;
+                const { id, coach, contact, datePlanned, durationMinutes, statusCodeRef } = item;
 
                 const prefixMap = {
                     done: '✅ ',
@@ -57,11 +57,15 @@ const DistrictCalendarApp = props => {
                 };
 
                 const title = `${prefixMap[statusCodeRef] || ''}${coach?.fullName || 'Onbekende coach'}`;
+                const tooltip = `\n${title}\nContact: ${contact?.fullName ||
+                    'Onbekend contact'}\nPostcode: ${contact?.postalCode || 'Onbekende postcode'}`;
+
                 return {
                     type: 'quotationRequest',
                     id,
                     coach,
                     title,
+                    tooltip,
                     start: new Date(datePlanned),
                     end: moment(datePlanned)
                         .add(durationMinutes, 'm')
@@ -178,6 +182,7 @@ const DistrictCalendarApp = props => {
                 </div>
                 <Calendar
                     events={getFilteredEvents()}
+                    tooltipAccessor="tooltip"
                     style={{ height: 'calc(100vh - 200px)' }}
                     step={15}
                     timeslots={4}

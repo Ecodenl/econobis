@@ -14,6 +14,7 @@ module.exports = merge(common, {
         static: {
             directory: path.resolve(__dirname, 'dist'),
         },
+        historyApiFallback: true,
     },
     plugins: [
         new HtmlWebpackPlugin({

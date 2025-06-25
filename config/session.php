@@ -161,8 +161,9 @@ return [
     |
     */
 
-    'secure' => env('SESSION_SECURE_COOKIE', true),
-
+//    todo WM xxx opschonen
+    'secure' => env('SESSION_SECURE_COOKIE', false),
+//    'secure' => env('SESSION_SECURE_COOKIE', true),
     /*
     |--------------------------------------------------------------------------
     | HTTP Access Only
@@ -189,6 +190,14 @@ return [
     |
     */
 
-    'same_site' => 'lax',
+//    todo WM xxx opschonen
+//    'same_site' => 'lax',
+    'same_site' => env('SESSION_SAMESITE', 'lax'),
+//    'same_site' => env('SESSION_SAMESITE', 'none'),
+
+//    'secure' => env('SESSION_SECURE_COOKIE', true),
+//    'http_only' => true,
+//    'domain' => env('SESSION_DOMAIN', null),
+//    'same_site' => env('SESSION_SAMESITE', 'none'),
 
 ];

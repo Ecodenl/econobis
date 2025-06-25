@@ -17,8 +17,8 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'oauth/*', 'portal/*', 'frontend-config', 'client-version'],
-    'supports_credentials' => false,
+    'paths' => ['api/*', 'oauth/*', 'portal/*', 'pkce-login', 'frontend-config', 'client-version', 'auth/callback'],
+    'supports_credentials' => true,
     'allowed_origins' => [],
     'allowed_origins_patterns' => json_decode(env('CORS_ORIGIN_PATTERNS', '[]')),
     'allowed_headers' => ['*'],

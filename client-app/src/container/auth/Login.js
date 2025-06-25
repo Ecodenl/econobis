@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
-import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 
-import { authSuccess } from '../../actions/general/AuthActions';
 import AuthAPI from '../../api/general/AuthAPI';
 import Logo from '../../components/logo/Logo';
-import moment from 'moment';
-import MeAPI from '../../api/general/MeAPI';
 import VersionAPI from '../../api/general/VersionAPI';
 
 // Functionele wrapper voor de class component
@@ -47,55 +43,18 @@ class Login extends Component {
     handleSubmit = event => {
         event.preventDefault();
 
-        const loginCredentials = {
-            username: this.state.username,
-            password: this.state.password,
-        };
+        const { username, password } = this.state;
 
-        AuthAPI.loginUser(loginCredentials).then(payload => {
-            if (payload.status == 200) {
-                localStorage.setItem('access_token', payload.data.access_token);
-                localStorage.setItem('refresh_token', payload.data.refresh_token);
-                localStorage.setItem('last_activity', moment().format());
-
-                this.props.authSuccess();
-
-                MeAPI.fetchTwoFactorStatus().then(payload => {
-                    if (!payload.data.requireTwoFactorAuthentication) {
-                        this.props.navigate('/');
-                        return;
-                    }
-
-                    if (!payload.data.twoFactorActivated) {
-                        /**
-                         * We geven het wachtwoord onderwater mee naar de two-factor activatie pagina.
-                         * Voor het aanroepen van activatie api is bevestiging van huidig wachtwoord verplicht via de header.
-                         * Omdat de gebruiker zojuist heeft ingelogd met zijn wachtwoord is het onzinnig om deze daar meteen nog eens te vragen.
-                         */
-                        // this.props.navigate({
-                        //     pathname: '/two-factor/activate',
-                        //     state: { password: this.state.password },
-                        // });
-                        this.props.navigate('/two-factor/activate', {
-                            state: { password: this.state.password },
-                        });
-                        return;
-                    }
-
-                    if (payload.data.hasValidToken) {
-                        this.props.navigate('/');
-                        return;
-                    }
-
-                    this.props.navigate('/two-factor/confirm');
-                });
-            } else {
+        AuthAPI.startLoginWithPKCE(username, password).then(result => {
+            if (result?.error) {
+                console.log('error', result.error);
                 this.setState({
                     username: '',
                     password: '',
-                    errorMessage: 'Verkeerde inloggegevens ingevuld!',
+                    errorMessage: result.error,
                 });
             }
+            // anders: je wordt direct gerefreshed naar de authorize endpoint
         });
     };
 
@@ -175,10 +134,4 @@ class Login extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    authSuccess: () => {
-        dispatch(authSuccess());
-    },
-});
-
-export default connect(null, mapDispatchToProps)(LoginWrapper);
+export default LoginWrapper;

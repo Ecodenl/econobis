@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8" />
+    <title>Redirecting...</title>
+    <script>
+        const params = window.location.search;
+        window.location.replace(`http://localhost:8080/#/auth/callback${params}`);
+    </script>
+</head>
+<body>
+Redirecting...
+</body>
+</html>

@@ -73,6 +73,8 @@ class CleanupController extends Controller
         $incomingMails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)->count();
         $outgoingMails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
 
+        $contacts = 10;
+
         $return = [];
         $return['invoices'] = $invoices;
         $return['orders'] = $ordersOneoff + $ordersPeriodic;
@@ -83,6 +85,8 @@ class CleanupController extends Controller
 
         $return['incomingMails'] = $incomingMails;
         $return['outgoingMails'] = $outgoingMails;
+
+        $return['contacts'] = $contacts;
 
         return $return;
     }
@@ -101,6 +105,8 @@ class CleanupController extends Controller
         $incomingMailsLastCleanupDate = $cooperation->cleanup_years_email_incoming_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_email_incoming_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
         $outgoingMailsLastCleanupDate = $cooperation->cleanup_years_email_outgoing_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_email_outgoing_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
 
+        $contactsLastCleanupDate = $cooperation->cleanup_years_contact_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_contact_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
+
         $return = [];
         $return['invoices'] = $invoicesLastCleanupDate;
         $return['ordersOneOff'] = $ordersOneoffLastCleanupDate;
@@ -112,6 +118,8 @@ class CleanupController extends Controller
 
         $return['incomingMails'] = $incomingMailsLastCleanupDate;
         $return['outgoingMails'] = $outgoingMailsLastCleanupDate;
+
+        $return['contacts'] = $contactsLastCleanupDate;
 
         return $return;
     }

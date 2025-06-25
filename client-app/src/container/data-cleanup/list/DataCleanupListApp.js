@@ -7,6 +7,7 @@ import DataCleanupListToolbar from './DataCleanupListToolbar';
 
 import DataCleanupListItems from './DataCleanupListItems';
 import DataCleanupListEmails from './DataCleanupListEmails';
+import DataCleanupListContacts from './DataCleanupListContacts';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -40,7 +41,7 @@ class DataCleanupListApp extends Component {
                 case 'e-mail':
                     return <DataCleanupListEmails />;
                 case 'contacten':
-                    return 'contacten';
+                    return <DataCleanupListContacts />;
             }
         };
 

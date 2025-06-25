@@ -31,7 +31,11 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
     /**
      * De maandag-datum van de huidige geselecteerde week in de dropdown in format YYYY-MM-DD.
      */
-    const [currentWeek, setCurrentWeek] = useState('');
+    const [currentWeek, setCurrentWeek] = useState(
+        moment()
+            .startOf('isoWeek')
+            .format('YYYY-MM-DD')
+    );
 
     /**
      * Het ingestelde coach filter.
@@ -52,20 +56,10 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
     const [isSaving, setIsSaving] = useState(false);
 
     useEffect(() => {
-        console.log('useEffect 1');
-        /**
-         * Bij laden de weekinstelling op de huidige instellen
-         */
-        setCurrentWeek(
-            moment()
-                .startOf('isoWeek')
-                .format('YYYY-MM-DD')
-        );
-
         if (district) {
             setDurationMinutes(district.defaultDurationMinutes);
         }
-    }, []);
+    }, [district]);
 
     useEffect(() => {
         if (!district || !currentWeek) return;
@@ -290,7 +284,7 @@ export default function QuotationRequestPlanNewPlanningPanel({ district, opportu
 
     const getDurationMinutesOptions = () => {
         let options = [];
-        for (let i = 30; i <= 60 * 3; i = i + 15) {
+        for (let i = 30; i <= 60 * 5; i = i + 30) {
             options.push({
                 value: i,
                 text: i + ' minuten',

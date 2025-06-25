@@ -74,6 +74,8 @@ class ProjectController extends ApiController
             'documentUnderstandInfo',
             'documentProjectInfo',
             'emailTemplateAgreement',
+            'documentTemplateIncreaseParticipations',
+            'emailTemplateIncreaseParticipations',
             'questionAboutMembershipGroup',
             'memberGroup',
             'noMemberGroup',
@@ -135,6 +137,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
@@ -144,6 +149,10 @@ class ProjectController extends ApiController
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textRegisterPageHeader')->alias('text_register_page_header')->next()
+            ->string('textRegisterCurrentBookWorth')->alias('text_register_current_book_worth')->next()
+            ->string('textRegisterParticipationSingular')->alias('text_register_participation_singular')->next()
+            ->string('textRegisterParticipationPlural')->alias('text_register_participation_plural')->next()
             ->string('textIsMember')->alias('text_is_member')->next()
             ->string('textIsNoMember')->alias('text_is_no_member')->next()
             ->string('textBecomeMember')->alias('text_become_member')->next()
@@ -152,7 +161,9 @@ class ProjectController extends ApiController
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->string('textAgreeTerms')->alias('text_agree_terms')->next()
             ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkNameAgreeTerms')->alias('text_link_name_agree_terms')->next()
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textLinkNameUnderstandInfo')->alias('text_link_name_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
@@ -258,6 +269,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->whenMissing(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
@@ -267,6 +281,10 @@ class ProjectController extends ApiController
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textRegisterPageHeader')->alias('text_register_page_header')->next()
+            ->string('textRegisterCurrentBookWorth')->alias('text_register_current_book_worth')->next()
+            ->string('textRegisterParticipationSingular')->alias('text_register_participation_singular')->next()
+            ->string('textRegisterParticipationPlural')->alias('text_register_participation_plural')->next()
             ->string('textIsMember')->alias('text_is_member')->next()
             ->string('textIsNoMember')->alias('text_is_no_member')->next()
             ->string('textBecomeMember')->alias('text_become_member')->next()
@@ -275,7 +293,9 @@ class ProjectController extends ApiController
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->string('textAgreeTerms')->alias('text_agree_terms')->next()
             ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkNameAgreeTerms')->alias('text_link_name_agree_terms')->next()
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textLinkNameUnderstandInfo')->alias('text_link_name_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()

@@ -18,6 +18,8 @@ function Steps({
     previous,
     next,
     project,
+    participantId,
+    registerType,
     contactProjectData,
     initialRegisterValues,
     handleSubmitRegisterValues,
@@ -30,7 +32,10 @@ function Steps({
             <Container className={'content-section'}>
                 <Row>
                     <Col>
-                        <p>Fout bij ophalen project. Inschrijving niet (meer) mogelijk op dit moment.</p>
+                        <p>
+                            Fout bij ophalen project. {registerType === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'}{' '}
+                            niet (meer) mogelijk op dit moment.
+                        </p>
                     </Col>
                 </Row>
             </Container>
@@ -112,6 +117,8 @@ function Steps({
             return (
                 <StepFour
                     project={project}
+                    registerType={registerType}
+                    participantId={participantId}
                     contactProjectData={contactProjectData}
                     previous={previous}
                     next={next}

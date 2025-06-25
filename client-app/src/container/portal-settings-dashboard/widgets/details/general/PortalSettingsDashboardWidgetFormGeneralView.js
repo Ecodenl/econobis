@@ -7,6 +7,18 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import Image from 'react-bootstrap/es/Image';
 import InputTextArea from '../../../../../components/form/InputTextArea';
 
+function getDefaultButtonTextByCodeRef(codeRef) {
+    switch (codeRef) {
+        case 'over-ons':
+            return 'Over ons';
+        case 'project-schrijf-je-in':
+            return 'Inschrijven projecten';
+        case 'huidige-deelnames':
+            return 'Huidige deelnames';
+    }
+    return '**onbekend**';
+}
+
 const PortalSettingsDashboardWidgetFormGeneralView = ({
     id,
     codeRef,
@@ -27,6 +39,17 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     imageHash,
 }) => {
     const imageUrl = widgetImageFileName && `${getApiUrl()}/portal/images/${widgetImageFileName}?${imageHash}`;
+
+    const textButtonText = () => {
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        if (staticWidgets.includes(codeRef)) {
+            console.log('variable tekst', getDefaultButtonTextByCodeRef(codeRef));
+            return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${getDefaultButtonTextByCodeRef(
+                codeRef
+            )}” ook mee veranderen.`;
+        }
+        return '';
+    };
 
     return (
         <div onClick={switchToEdit}>
@@ -99,6 +122,7 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
                             value={buttonText}
                             divSize={'col-sm-8'}
                             className={'col-sm-8 form-group'}
+                            textToolTip={textButtonText()}
                         />
                     </div>
                     <div className="row">

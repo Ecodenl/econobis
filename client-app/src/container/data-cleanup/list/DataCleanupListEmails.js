@@ -27,7 +27,7 @@ class DataCleanupListItems extends Component {
 
     // New method to fetch all cleanup data
     fetchCleanupData = () => {
-        DataCleanupAPI.getAmountsToCleanup('emails').then(payload => {
+        DataCleanupAPI.getAmountsToCleanup().then(payload => {
             this.setState({
                 amountOfOutgoingEmailsToCleanup: payload['outgoingMails'],
                 amountOfIncomingEmailsToCleanup: payload['incomingMails'],

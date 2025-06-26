@@ -271,6 +271,9 @@ Route::namespace('Api')
         Route::get('cleanup/last-cleanup-dates', 'Cleanup\CleanupController@getLastCleanupDates');
         Route::get('cleanup/cleanup-years', 'Cleanup\CleanupController@getCleanupYears');
         Route::get('cleanup/cleanup-items/{cleanupType}', 'Cleanup\CleanupController@cleanupItems');
+        Route::get('cleanup/excluded-groups', 'Cleanup\CleanupController@excludedGroups');
+        Route::get('cleanup/excluded-groups/delete/{groupId}', 'Cleanup\CleanupController@excludedGroupDelete');
+        Route::get('cleanup/excluded-groups/add/{groupId}', 'Cleanup\CleanupController@excludedGroupAdd');
 
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');

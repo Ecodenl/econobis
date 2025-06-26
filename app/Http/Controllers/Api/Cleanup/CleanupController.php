@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Cleanup;
 
+use App\Eco\Contact\Contact;
+use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Email\Email;
 use App\Eco\Intake\Intake;
@@ -73,7 +75,23 @@ class CleanupController extends Controller
         $incomingMails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)->count();
         $outgoingMails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
 
-        $contacts = 10;
+        $contacts = Contact::whereDoesntHave('orders')->whereDoesntHave('invoices')->whereDoesntHave('participations')->whereDoesntHave('intakes')->whereDoesntHave('opportunities')->whereDoesntHave('emails');
+
+        $excludedGroupIds = $cooperation->cleanup_excluded_group_ids;
+        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
+
+        $contactIdsInGroups = [];
+
+        foreach($excludedGroupIdsArray as $groupId) {
+            $contactgroup = Contactgroup::find($groupId);
+
+            if($contactgroup) {
+                $contactIdsInGroups = array_merge($contactIdsInGroups, $contactgroup->getAllContacts()->pluck('id')->toArray());
+            }
+        }
+
+        $contactsAmount = $contacts->count();
+        $contactsAmountNet = $contacts->whereNotIn('id', $contactIdsInGroups)->count();
 
         $return = [];
         $return['invoices'] = $invoices;
@@ -86,7 +104,8 @@ class CleanupController extends Controller
         $return['incomingMails'] = $incomingMails;
         $return['outgoingMails'] = $outgoingMails;
 
-        $return['contacts'] = $contacts;
+        $return['contacts'] = $contactsAmount;
+        $return['contactsNet'] = $contactsAmountNet;
 
         return $return;
     }
@@ -284,5 +303,53 @@ class CleanupController extends Controller
         }
 
         return $errorMessageArray;
+    }
+
+    public function excludedGroups(){
+        $cooporation = Cooperation::first();
+
+        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
+        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
+
+        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
+
+        return $excludedGroups;
+    }
+
+    public function excludedGroupDelete($groupId){
+        $cooporation = Cooperation::first();
+
+        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
+        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
+
+        while(($i = array_search($groupId, $excludedGroupIdsArray)) !== false) {
+            unset($excludedGroupIdsArray[$i]);
+        }
+
+        $cooporation->cleanup_excluded_group_ids = implode(',', $excludedGroupIdsArray);
+        $cooporation->save();
+
+        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
+
+        return $excludedGroups;
+    }
+
+    public function excludedGroupAdd($groupId){
+        $cooporation = Cooperation::first();
+
+        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
+        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
+
+        // Check if $newId is already in the array
+        if (!in_array($groupId, $excludedGroupIdsArray)) {
+            $excludedGroupIdsArray[] = $groupId; // Add the new ID
+        }
+
+        $cooporation->cleanup_excluded_group_ids = implode(',', $excludedGroupIdsArray);
+        $cooporation->save();
+
+        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
+
+        return $excludedGroups;
     }
 }

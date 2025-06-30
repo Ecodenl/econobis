@@ -62,13 +62,13 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                 fullAddress,
                 buildingTypeId: buildingType ? buildingType.id : '',
                 buildYear: buildYear ? buildYear : '',
-                isHouseForSale: isHouseForSale ? isHouseForSale : true,
+                isHouseForSale: isHouseForSale ? isHouseForSale : '2',
                 surface: surface ? surface : '',
                 roofTypeId: roofType ? roofType.id : '',
                 energyLabelId: energyLabel ? energyLabel.id : '',
                 floors: floors ? floors : '',
                 energyLabelStatusId: energyLabelStatus ? energyLabelStatus.id : '',
-                isMonument: isMonument ? isMonument : false,
+                isMonument: isMonument ? isMonument : '2',
                 remark,
                 remarkCoach,
                 hoomBuildingId: hoomBuildingId ? hoomBuildingId : null,
@@ -88,6 +88,20 @@ class HousingFileDetailsFormGeneralEdit extends Component {
             errors: {
                 wozValue: false,
             },
+            noYesUnknownOptions: [
+                {
+                    id: '0',
+                    name: 'Nee',
+                },
+                {
+                    id: '1',
+                    name: 'Ja',
+                },
+                {
+                    id: '2',
+                    name: 'Onbekend',
+                },
+            ],
         };
     }
 
@@ -350,10 +364,18 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
-                        <InputToggle
+                        // <InputToggle
+                        //     label={'Monument'}
+                        //     name={'isMonument'}
+                        //     value={isMonument}
+                        //     onChangeAction={this.handleInputChange}
+                        //     disabled={hasHoomDossierLink}
+                        // />
+                        <InputSelect
                             label={'Monument'}
                             name={'isMonument'}
                             value={isMonument}
+                            options={this.state.noYesUnknownOptions}
                             onChangeAction={this.handleInputChange}
                             disabled={hasHoomDossierLink}
                         />
@@ -367,10 +389,18 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={hoomBuildingId && hoomBuildingId}
                     />
                     {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
-                        <InputToggle
+                        // <InputToggle
+                        //     label={'Koophuis'}
+                        //     name={'isHouseForSale'}
+                        //     value={isHouseForSale}
+                        //     onChangeAction={this.handleInputChange}
+                        //     disabled={hasHoomDossierLink}
+                        // />
+                        <InputSelect
                             label={'Koophuis'}
                             name={'isHouseForSale'}
                             value={isHouseForSale}
+                            options={this.state.noYesUnknownOptions}
                             onChangeAction={this.handleInputChange}
                             disabled={hasHoomDossierLink}
                         />

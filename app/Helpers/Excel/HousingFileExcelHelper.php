@@ -101,9 +101,16 @@ class HousingFileExcelHelper
                 $rowData[10] = $housingFile->energyLabel ? $housingFile->energyLabel->name : '';
                 $rowData[11] = $housingFile->energyLabelStatus ? $housingFile->energyLabelStatus->name : '';
                 $rowData[12] = $housingFile->floors;
-                $rowData[13] = $housingFile->is_monument ? 'Ja' : 'Nee';
-                $rowData[14] = $housingFile->is_house_for_sale ? 'Ja' : 'Nee';
-
+                $rowData[13] = match ($housingFile->is_monument) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
+                $rowData[14] = match ($housingFile->is_house_for_sale) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
                 $rowData[15] = $housingFile->hoom_building_id;
                 $rowData[16] = $housingFile->wall_surface;
                 $rowData[17] = $housingFile->total_window_surface;

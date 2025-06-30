@@ -14,7 +14,7 @@ class AddExcludedGroupIdsToCooperationsTable extends Migration
     public function up()
     {
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->string('cleanup_excluded_group_ids')->after('cleanup_years_contact_date_last_run_at')->nullable();
+            $table->string('cleanup_excluded_group_ids')->nullable();
         });
     }
 

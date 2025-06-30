@@ -14,7 +14,7 @@ class AddCleanupContactFieldsToCooperationsTable extends Migration
     public function up()
     {
         Schema::table('cooperations', function (Blueprint $table) {
-            $table->datetime('cleanup_years_contact_date_last_run_at')->after('cleanup_years_email_outgoing_date_last_run_at')->nullable();
+            $table->datetime('cleanup_years_contact_date_last_run_at')->nullable();
         });
     }
 

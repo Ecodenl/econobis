@@ -76,13 +76,19 @@ const HousingFileDetailsFormGeneralView = props => {
                     <ViewText label="Status energielabel" value={energyLabelStatus && energyLabelStatus.name} />
                 ) : null}
                 {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
-                    <ViewText label="Monument" value={isMonument ? 'Ja' : 'Nee'} />
+                    <ViewText
+                        label="Monument"
+                        value={isMonument === '0' ? 'Nee' : isMonument === '1' ? 'Ja' : 'Onbekend'}
+                    />
                 ) : null}
             </div>
             <div className="row">
                 <ViewText label="Hoom building Id" value={hoomBuildingId && hoomBuildingId} />
                 {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
-                    <ViewText label="Koophuis" value={isHouseForSale ? 'Ja' : 'Nee'} />
+                    <ViewText
+                        label="Koophuis"
+                        value={isHouseForSale === '0' ? 'Nee' : isHouseForSale === '1' ? 'Ja' : 'Onbekend'}
+                    />
                 ) : null}
             </div>
             <div className="row">

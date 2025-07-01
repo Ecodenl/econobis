@@ -148,7 +148,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => env('SESSION_DOMAIN', '.econobis.nl'),
 
     /*
     |--------------------------------------------------------------------------
@@ -189,6 +189,6 @@ return [
     |
     */
 
-    'same_site' => 'lax',
+    'same_site' => env('SESSION_SAMESITE', 'lax'),
 
 ];

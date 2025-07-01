@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { getApiUrl } from '../utils/ApiUrl';
+import { getApiUrl } from '../utils/LoginRouteFields';
 
 let instance = null;
 
@@ -7,6 +7,7 @@ const getAxiosInstance = () => {
     if (!instance) {
         instance = axios.create({
             baseURL: `${getApiUrl()}/api/`,
+            withCredentials: true,
         });
 
         instance.interceptors.request.use(
@@ -24,6 +25,10 @@ const getAxiosInstance = () => {
     }
 
     return instance;
+};
+
+export const resetAxiosInstance = () => {
+    instance = null;
 };
 
 export default getAxiosInstance;

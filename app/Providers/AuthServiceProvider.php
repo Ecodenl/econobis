@@ -72,6 +72,7 @@ use App\Eco\ParticipantProject\ObligationNumber;
 use App\Eco\ParticipantProject\ObligationNumberPolicy;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\ParticipantProject\ParticipantProjectPolicy;
+use App\Eco\Passport\Client;
 use App\Eco\Person\Person;
 use App\Eco\Person\PersonPolicy;
 use App\Eco\PhoneNumber\PhoneNumber;
@@ -111,8 +112,9 @@ use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Auth;
-use Laravel\Passport\Guards\TokenGuard;
+//use Illuminate\Support\Facades\Auth;
+//use Laravel\Passport\Guards\TokenGuard;
+use Illuminate\Support\Facades\Log;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -186,14 +188,15 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Log::info('AuthServiceProvider@boot wordt uitgevoerd');
+
         $this->registerPolicies();
+
+        Passport::useClientModel(Client::class);
+
         Passport::tokensExpireIn(now()->addHours(12));
         Passport::refreshTokensExpireIn(now()->addHours(12));
 
-        /**
-         * Scopes registreren voor verschillende tokens voor
-         * gebruik van app of portal.
-         */
         Passport::tokensCan([
             'use-app' => 'Use Econobis app',
             'use-portal' => 'Use Econobis portal',
@@ -205,23 +208,5 @@ class AuthServiceProvider extends ServiceProvider
         }
 
         Passport::loadKeysFrom(__DIR__ . '/../../secrets/oauth');
-
-        /**
-         * Helperfuncties op Auth facade toevoegen. Zo kan via
-         * \Auth::isPortalUser() snel gecheckt worden of er
-         * een portal gebruiker is ingelogd.
-         */
-        TokenGuard::macro('isPortalUser', function () {
-            return Auth::user() instanceof PortalUser;
-        });
-
-        /**
-         * Tegenovergestelde functie om te checken of
-         * het een gebruiker van Econobis zelf is.
-         */
-        TokenGuard::macro('isAppUser', function () {
-            return Auth::user() instanceof User;
-        });
-
     }
 }

@@ -17,17 +17,10 @@ if (token) {
 
 const fetchConfig = async () => {
     const backendUrl = document.querySelector('meta[name="backend-url"]')?.content || '';
-    // console.log('backendUrl: ', backendUrl);
-
     const response = await fetch(`${backendUrl}/frontend-config`);
     const config = await response.json();
-    // console.log('config: ', config);
 
-    window.env = {
-        CLIENT_ID: config.client_id,
-        CLIENT_KEY: config.client_key,
-        URL_API: config.url_api,
-    };
+    localStorage.setItem('url_api', config.url_api);
 };
 
 // Detecteer IE

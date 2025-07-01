@@ -1,6 +1,7 @@
 <?php
 
 use App\Eco\Portal\PortalUser;
+use App\Eco\User\User;
 
 return [
 
@@ -42,10 +43,13 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
-
         'api' => [
             'driver' => 'passport',
             'provider' => 'users',
+        ],
+        'portal_api' => [
+            'driver' => 'passport',
+            'provider' => 'portal_users',
         ],
     ],
 
@@ -69,18 +73,13 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => \App\Eco\User\User::class,
+            'model' => User::class,
         ],
 
-        'portal' => [
+        'portal_users' => [
             'driver' => 'eloquent',
             'model' => PortalUser::class,
         ],
-
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
     ],
 
     /*
@@ -105,8 +104,8 @@ return [
             'expire' => 60,
         ],
 
-        'portal' => [
-            'provider' => 'portal',
+        'portal_users' => [
+            'provider' => 'portal_users',
             'table' => 'portal_password_resets',
             'expire' => 60,
         ],

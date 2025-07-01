@@ -1,35 +1,34 @@
-import getAxiosInstance from '../default-setup/AxiosInstance';
+import axios from 'axios';
+import { generateCodeVerifier, generateCodeChallenge } from '../utils/pkceUtils';
+import { getApiUrl } from '../utils/LoginRouteFields';
 
-const getAuthKey = () => ({
-    grant_type: 'password',
-    client_id: window.env?.CLIENT_ID,
-    client_secret: window.env?.CLIENT_KEY,
-});
+const AuthAPI = {
+    startLoginWithPKCE: async (username, password) => {
+        const codeVerifier = generateCodeVerifier();
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-export default {
-    loginUser: loginCredentials => {
-        const requestUrl = `${window.env?.URL_API}/oauth/token`;
+        localStorage.setItem('pkce_code_verifier', codeVerifier);
+        console.log('startLoginWithPKCE');
+        const response = await axios.post(
+            `${getApiUrl()}/pkce-login`,
+            {
+                username,
+                password,
+                code_challenge: codeChallenge,
+                code_challenge_method: 'S256',
+            },
+            {
+                withCredentials: true,
+            }
+        );
 
-        delete getAxiosInstance().defaults.headers.common['Authorization'];
+        localStorage.setItem('client_id', response.data.client_id);
+        localStorage.setItem('redirect_uri', response.data.redirect_uri);
 
-        return getAxiosInstance()
-            .post(requestUrl, { ...getAuthKey(), ...loginCredentials })
-            .then(response => response)
-            .catch(() => {
-                return { error: 'Geen juiste login gegevens ingevuld' };
-            });
-    },
+        const authorizeUrl = response.data.authorize_url;
 
-    refreshToken: () => {
-        const request = {
-            grant_type: 'refresh_token',
-            refresh_token: localStorage.getItem('refresh_token'),
-            client_id: window.env?.CLIENT_ID,
-            client_secret: window.env?.CLIENT_KEY,
-        };
-
-        const requestUrl = `${window.env?.URL_API}/oauth/token`;
-
-        return getAxiosInstance().post(requestUrl, request);
+        window.location.href = authorizeUrl;
     },
 };
+
+export default AuthAPI;

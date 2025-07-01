@@ -44,7 +44,7 @@ class Login extends Component {
         event.preventDefault();
 
         const { username, password } = this.state;
-
+        console.log('hier gaan we startLoginWithPKCE doen');
         AuthAPI.startLoginWithPKCE(username, password).then(result => {
             if (result?.error) {
                 console.log('error', result.error);

@@ -8,13 +8,19 @@ const AuthAPI = {
         const codeChallenge = await generateCodeChallenge(codeVerifier);
 
         localStorage.setItem('pkce_code_verifier', codeVerifier);
-
-        const response = await axios.post(`${getApiUrl()}/pkce-login`, {
-            username,
-            password,
-            code_challenge: codeChallenge,
-            code_challenge_method: 'S256',
-        });
+        console.log('startLoginWithPKCE');
+        const response = await axios.post(
+            `${getApiUrl()}/pkce-login`,
+            {
+                username,
+                password,
+                code_challenge: codeChallenge,
+                code_challenge_method: 'S256',
+            },
+            {
+                withCredentials: true,
+            }
+        );
 
         localStorage.setItem('client_id', response.data.client_id);
         localStorage.setItem('redirect_uri', response.data.redirect_uri);

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Api\Cleanup;
 
-use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Email\Email;
@@ -13,6 +12,7 @@ use App\Eco\Order\Order;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Product\Product;
+use App\Helpers\CleanupItem\CleanupItemHelper;
 use App\Helpers\Delete\Models\DeleteIntake;
 use App\Helpers\Delete\Models\DeleteInvoice;
 use App\Helpers\Delete\Models\DeleteMail;
@@ -24,152 +24,28 @@ use Carbon\Carbon;
 
 class CleanupController extends Controller
 {
-    public function getCleanupAmounts(){
-        $dateToday = Carbon::now();
+    public function updateAmounts($cleanupType)
+    {
+        $helper = new CleanupItemHelper();
+        $helper->updateAmounts($cleanupType);
+    }
+
+    public function getCleanupItems(){
+
         $cooperation = Cooperation::first();
 
-        $invoicesCleanupYears = $cooperation->cleanup_years_invoices_date_send;
-        $invoicesCleanupOlderThen = $dateToday->copy()->subYears($invoicesCleanupYears);
+        $cleanupItems = [];
 
-        $ordersOneoffCleanupYears = $cooperation->cleanup_years_oneoff_orders_start_date;
-        $ordersOneoffCleanupOlderThen = $dateToday->copy()->subYears($ordersOneoffCleanupYears);
-
-        $ordersPeriodicCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
-        $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
-
-        $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
-
-        $intakesCleanupYears = $cooperation->cleanup_years_intakes_mutation_date;
-        $intakesCleanupOlderThen = $dateToday->copy()->subYears($intakesCleanupYears);
-
-        $opportunitiesCleanupYears = $cooperation->cleanup_years_opportunities_mutation_date;
-        $opportunitiesCleanupOlderThen = $dateToday->copy()->subYears($opportunitiesCleanupYears);
-
-        $participationsWithStatusCleanupYears = $cooperation->cleanup_years_participations_change_date;
-        $participationsWithStatusCleanupOlderThen = $dateToday->copy()->subYears($participationsWithStatusCleanupYears);
-        $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
-
-        $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
-        $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
-
-        $incomingMailsCleanupYears = $cooperation->cleanup_years_email_incoming;
-        $incomingMailsCleanupOlderThen = $dateToday->copy()->subYears($incomingMailsCleanupYears);
-
-        $outgoingMailsCleanupYears = $cooperation->cleanup_years_email_outgoing;
-        $outgoingMailsCleanupOlderThen = $dateToday->copy()->subYears($outgoingMailsCleanupYears);
-
-        $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-
-        $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-            $query->whereIn('id', $exceptionProductIds);
-        })->count();
-        $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-            $query->whereIn('id', $exceptionProductIds);
-        })->count();
-
-        $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
-        $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
-        $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
-        $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)->count();
-
-        $incomingMails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)->count();
-        $outgoingMails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
-
-        $contacts = Contact::whereDoesntHave('orders')->whereDoesntHave('invoices')->whereDoesntHave('participations')->whereDoesntHave('intakes')->whereDoesntHave('opportunities')->whereDoesntHave('emails');
-
-        $excludedGroupIds = $cooperation->cleanup_excluded_group_ids;
-        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
-
-        $contactIdsInGroups = [];
-
-        foreach($excludedGroupIdsArray as $groupId) {
-            $contactgroup = Contactgroup::find($groupId);
-
-            if($contactgroup) {
-                $contactIdsInGroups = array_merge($contactIdsInGroups, $contactgroup->getAllContacts()->pluck('id')->toArray());
-            }
+        foreach($cooperation->cleanupItems as $cleanupItem) {
+            $cleanupItems[$cleanupItem->code_ref]['name'] = $cleanupItem->name;
+            $cleanupItems[$cleanupItem->code_ref]['years_for_delete'] = $cleanupItem->years_for_delete;
+            $cleanupItems[$cleanupItem->code_ref]['code_ref'] = $cleanupItem->code_ref;
+            $cleanupItems[$cleanupItem->code_ref]['number_of_items_to_delete'] = $cleanupItem->number_of_items_to_delete;
+            $cleanupItems[$cleanupItem->code_ref]['date_cleaned_up'] = $cleanupItem->date_cleaned_up;
+            $cleanupItems[$cleanupItem->code_ref]['date_determined'] = $cleanupItem->date_determined;
         }
 
-        $contactsAmount = $contacts->count();
-        $contactsAmountNet = $contacts->whereNotIn('id', $contactIdsInGroups)->count();
-
-        $return = [];
-        $return['invoices'] = $invoices;
-        $return['orders'] = $ordersOneoff + $ordersPeriodic;
-        $return['intakes'] = $intakes;
-        $return['opportunities'] = $opportunities;
-        $return['participationsWithStatus'] = $participationsWithStatus;
-        $return['participationsFinished'] = $participationsFinished;
-
-        $return['incomingMails'] = $incomingMails;
-        $return['outgoingMails'] = $outgoingMails;
-
-        $return['contacts'] = $contactsAmount;
-        $return['contactsNet'] = $contactsAmountNet;
-
-        return $return;
-    }
-
-    public function getLastCleanupDates(){
-        $cooperation = Cooperation::first();
-
-        $invoicesLastCleanupDate = $cooperation->cleanup_invoices_last_run_at !== null ? Carbon::parse($cooperation->cleanup_invoices_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $ordersOneoffLastCleanupDate = $cooperation->cleanup_oneoff_orders_last_run_at !== null ? Carbon::parse($cooperation->cleanup_oneoff_orders_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $ordersPeriodicLastCleanupDate = $cooperation->cleanup_periodic_orders_last_run_at !== null ? Carbon::parse($cooperation->cleanup_periodic_orders_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $intakesLastCleanupDate = $cooperation->cleanup_intakes_last_run_at !== null ? Carbon::parse($cooperation->cleanup_intakes_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $opportunitiesLastCleanupDate = $cooperation->cleanup_opportunities_last_run_at !== null ? Carbon::parse($cooperation->cleanup_opportunities_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $participationsWithStatusLastCleanupDate = $cooperation->cleanup_participations_change_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_participations_change_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $participationsFinishedLastCleanupDate = $cooperation->cleanup_participations_termination_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_participations_termination_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-
-        $incomingMailsLastCleanupDate = $cooperation->cleanup_years_email_incoming_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_email_incoming_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-        $outgoingMailsLastCleanupDate = $cooperation->cleanup_years_email_outgoing_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_email_outgoing_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-
-        $contactsLastCleanupDate = $cooperation->cleanup_years_contact_date_last_run_at !== null ? Carbon::parse($cooperation->cleanup_years_contact_date_last_run_at)->format('d-m-Y H:i:s') : 'nooit';
-
-        $return = [];
-        $return['invoices'] = $invoicesLastCleanupDate;
-        $return['ordersOneOff'] = $ordersOneoffLastCleanupDate;
-        $return['ordersPeriodic'] = $ordersPeriodicLastCleanupDate;
-        $return['intakes'] = $intakesLastCleanupDate;
-        $return['opportunities'] = $opportunitiesLastCleanupDate;
-        $return['participationsWithStatus'] = $participationsWithStatusLastCleanupDate;
-        $return['participationsFinished'] = $participationsFinishedLastCleanupDate;
-
-        $return['incomingMails'] = $incomingMailsLastCleanupDate;
-        $return['outgoingMails'] = $outgoingMailsLastCleanupDate;
-
-        $return['contacts'] = $contactsLastCleanupDate;
-
-        return $return;
-    }
-
-    public function getCleanupYears(){
-        $cooperation = Cooperation::first();
-
-        $invoicesCleanupYears = $cooperation->cleanup_years_invoices_date_send;
-        $ordersOneoffCleanupYears = $cooperation->cleanup_years_oneoff_orders_start_date;
-        $ordersPeriodicCleanupYears = $cooperation->cleanup_years_periodic_orders_termination_date;
-        $intakesCleanupYears = $cooperation->cleanup_years_intakes_mutation_date;
-        $opportunitiesCleanupYears = $cooperation->cleanup_years_opportunities_mutation_date;
-        $participationsWithStatusCleanupYears = $cooperation->cleanup_years_participations_change_date;
-        $participationsFinishedCleanupYears = $cooperation->cleanup_years_participations_termination_date;
-
-        $incomingMailsCleanupYears = $cooperation->cleanup_years_email_incoming;
-        $outgoingMailsFinishedCleanupYears = $cooperation->cleanup_years_email_outgoing;
-
-        $return = [];
-        $return['invoices'] = $invoicesCleanupYears;
-        $return['ordersOneOff'] = $ordersOneoffCleanupYears;
-        $return['ordersPeriodic'] = $ordersPeriodicCleanupYears;
-        $return['intakes'] = $intakesCleanupYears;
-        $return['opportunities'] = $opportunitiesCleanupYears;
-        $return['participationsWithStatus'] = $participationsWithStatusCleanupYears;
-        $return['participationsFinished'] = $participationsFinishedCleanupYears;
-
-        $return['incomingMails'] = $incomingMailsCleanupYears;
-        $return['outgoingMails'] = $outgoingMailsFinishedCleanupYears;
-
-        return $return;
+        return $cleanupItems;
     }
 
     public function cleanupItems($cleanupType){
@@ -178,10 +54,10 @@ class CleanupController extends Controller
 
         $errorMessageArray = [];
 
-        if($cleanupType === 'invoices') {
-            $cleanupYears = $cooporation->cleanup_years_invoices_date_send;
-            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
+        $cleanupItem = $cooporation->cleanupItems()->where('code_ref', $cleanupType)->first();
+        $cleanupDate = $dateToday->copy()->subYears($cleanupItem->years_for_delete);
 
+        if($cleanupType === 'invoices') {
             $invoices = Invoice::whereDate('date_sent', '<', $cleanupDate)->get();
 
             foreach($invoices as $invoice) {
@@ -194,9 +70,6 @@ class CleanupController extends Controller
         }
 
         if($cleanupType === 'intakes') {
-            $cleanupYears = $cooporation->cleanup_years_intakes_mutation_date;
-            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
-
             $intakes = Intake::whereDate('updated_at', '<', $cleanupDate)->get();
 
             foreach($intakes as $intake) {
@@ -209,9 +82,6 @@ class CleanupController extends Controller
         }
 
         if($cleanupType === 'opportunities') {
-            $cleanupYears = $cooporation->cleanup_years_opportunities_mutation_date;
-            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
-
             $opportunities = Opportunity::whereDate('updated_at', '<', $cleanupDate)->get();
 
             foreach($opportunities as $opportunity) {
@@ -225,9 +95,6 @@ class CleanupController extends Controller
         }
 
         if($cleanupType === 'participationsFinished') {
-            $cleanupYears = $cooporation->cleanup_years_participations_termination_date;
-            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
-
             $participantProjects = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '<', $cleanupDate)->get();
 
             foreach($participantProjects as $participantProject) {
@@ -240,9 +107,6 @@ class CleanupController extends Controller
         }
 
         if($cleanupType === 'participationsWithStatus') {
-            $cleanupYears = $cooporation->cleanup_years_participations_termination_date;
-            $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
-
             $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
             $participantProjects = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $cleanupDate)->get();
 
@@ -255,25 +119,38 @@ class CleanupController extends Controller
             }
         }
 
-        if($cleanupType === 'orders') {
+        if($cleanupType === 'ordersOneoff') {
             $cleanupYearsOrdersOneoff = $cooporation->cleanup_years_oneoff_orders_start_date;
-            $cleanupYearsOrdersPeriodic = $cooporation->cleanup_years_periodic_orders_termination_date;
 
             $cleanupDateOrdersOneoff = $dateToday->copy()->subYears($cleanupYearsOrdersOneoff);
-            $cleanupDateOrdersPeriodic = $dateToday->copy()->subYears($cleanupYearsOrdersPeriodic);
 
             $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
 
             $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $cleanupDateOrdersOneoff)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
             })->get();
+
+            foreach($ordersOneoff as $order) {
+                $deleteOrder = new DeleteOrder($order);
+                $errorMessage = $deleteOrder->cleanup();
+                if(is_array($errorMessage)) {
+                    $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
+                }
+            }
+        }
+
+        if($cleanupType === 'ordersPeriodic') {
+            $cleanupYearsOrdersPeriodic = $cooporation->cleanup_years_periodic_orders_termination_date;
+
+            $cleanupDateOrdersPeriodic = $dateToday->copy()->subYears($cleanupYearsOrdersPeriodic);
+
+            $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+
             $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $cleanupDateOrdersPeriodic)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
                 $query->whereIn('id', $exceptionProductIds);
             })->get();
 
-            $orders = $ordersOneoff->merge($ordersPeriodic);
-
-            foreach($orders as $order) {
+            foreach($ordersPeriodic as $order) {
                 $deleteOrder = new DeleteOrder($order);
                 $errorMessage = $deleteOrder->cleanup();
                 if(is_array($errorMessage)) {
@@ -284,12 +161,8 @@ class CleanupController extends Controller
 
         if($cleanupType === 'incomingEmails' || $cleanupType === 'outgoingEmails') {
             if($cleanupType === 'incomingEmails') {
-                $cleanupYears = $cooporation->cleanup_years_email_incoming;
-                $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
                 $mails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $cleanupDate)->get();
             } else if($cleanupType === 'outgoingEmails') {
-                $cleanupYears = $cooporation->cleanup_years_email_outgoing;
-                $cleanupDate = $dateToday->copy()->subYears($cleanupYears);
                 $mails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $cleanupDate)->get();
             }
 

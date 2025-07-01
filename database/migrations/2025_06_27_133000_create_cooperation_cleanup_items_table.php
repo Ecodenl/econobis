@@ -39,12 +39,12 @@ class CreateCooperationCleanupItemsTable extends Migration
             ],
             1 => [
                 'name' => 'Eenmalige orders',
-                'code_ref' => 'orders_oneoff',
+                'code_ref' => 'ordersOneoff',
                 'date_ref' => 'Ingangsdatum'
             ],
             2 => [
                 'name' => 'Periodieke orders',
-                'code_ref' => 'orders_periodic',
+                'code_ref' => 'ordersPeriodic',
                 'date_ref' => 'Beëindigingsdatum'
             ],
             3 => [
@@ -59,22 +59,22 @@ class CreateCooperationCleanupItemsTable extends Migration
             ],
             5 => [
                 'name' => 'Deelnames met status Interesse, Ingeschreven of toegekend',
-                'code_ref' => 'participations_with_status',
+                'code_ref' => 'participationsWithStatus',
                 'date_ref' => 'Mutatiedatum'
             ],
             6 => [
                 'name' => 'Deelnames met status Beëindigd',
-                'code_ref' => 'participations_finished',
+                'code_ref' => 'participationsFinished',
                 'date_ref' => 'Beëindigingsdatum'
             ],
             7 => [
                 'name' => 'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map',
-                'code_ref' => 'email_incoming',
+                'code_ref' => 'incomingEmails',
                 'date_ref' => ''
             ],
             8 => [
                 'name' => 'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map',
-                'code_ref' => 'email_outgoing',
+                'code_ref' => 'outgoingEmails',
                 'date_ref' => ''
             ],
             9 => [

@@ -23,6 +23,7 @@ const DataCleanupListAppWrapper = props => {
 class DataCleanupListApp extends Component {
     render() {
         const dataCleanupType = this.props.params.type;
+
         const dataCleanupTypeText = () => {
             switch (dataCleanupType) {
                 case 'items':

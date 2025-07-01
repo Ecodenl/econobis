@@ -2,24 +2,8 @@ import getAxiosInstance from '../default-setup/AxiosInstance';
 import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
-    getAmountsToCleanup: (netContacts) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/amounts`;
-
-        return getAxiosInstance()
-            .get(requestUrl, {
-                params: {
-                    netContacts: netContacts,
-                },
-            })
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-
-    getLastCleanupDates: () => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/last-cleanup-dates`;
+    updateAmounts: (cleanupType) => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/update-amounts/${cleanupType}`;
 
         return getAxiosInstance()
             .get(requestUrl)
@@ -29,11 +13,17 @@ export default {
             });
     },
 
-    getCleanupYears: () => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/cleanup-years`;
+    getCleanupItems: (netContacts) => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/items`;
 
         return getAxiosInstance()
-            .get(requestUrl)
+            .get(requestUrl
+                // , {
+                //     params: {
+                //         netContacts: netContacts,
+                //     },
+                // }
+            )
             .then(response => response.data)
             .catch(error => {
                 console.log(error);

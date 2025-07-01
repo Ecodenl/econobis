@@ -267,9 +267,9 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
-        Route::get('cleanup/amounts', 'Cleanup\CleanupController@getCleanupAmounts');
-        Route::get('cleanup/last-cleanup-dates', 'Cleanup\CleanupController@getLastCleanupDates');
-        Route::get('cleanup/cleanup-years', 'Cleanup\CleanupController@getCleanupYears');
+        Route::get('cleanup/items', 'Cleanup\CleanupController@getCleanupItems');
+        Route::get('cleanup/update-amounts/{cleanupType}', 'Cleanup\CleanupController@updateAmounts');
+
         Route::get('cleanup/cleanup-items/{cleanupType}', 'Cleanup\CleanupController@cleanupItems');
         Route::get('cleanup/excluded-groups', 'Cleanup\CleanupController@excludedGroups');
         Route::get('cleanup/excluded-groups/delete/{groupId}', 'Cleanup\CleanupController@excludedGroupDelete');

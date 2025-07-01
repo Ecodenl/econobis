@@ -49,8 +49,12 @@ class DeleteOpportunity implements DeleteInterface
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
-        $cooperation->cleanup_opportunities_last_run_at = $dateToday;
-        $cooperation->save();
+
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', 'opportunities')->first();
+
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations

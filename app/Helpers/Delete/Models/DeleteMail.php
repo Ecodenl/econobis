@@ -40,19 +40,18 @@ class DeleteMail implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($subtype)
+    public function cleanup($cleanupType)
     {
         $this->delete();
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        if($subtype === 'incomingEmails') {
-            $cooperation->cleanup_years_email_incoming_date_last_run_at = $dateToday;
-        } elseif($subtype === 'outgoingEmails') {
-            $cooperation->cleanup_years_email_outgoing_date_last_run_at = $dateToday;
-        }
-        $cooperation->save();
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
+
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations

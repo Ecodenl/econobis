@@ -43,10 +43,13 @@ class DeleteOrder implements DeleteInterface
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        $cooperation->cleanup_oneoff_orders_last_run_at = $dateToday;
-        $cooperation->cleanup_periodic_orders_last_run_at = $dateToday;
+        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', ['ordersOneoff','ordersPeriodic'])->get();
 
-        $cooperation->save();
+        foreach($cleanupItems as $cleanupItem) {
+            $cleanupItem->number_of_items_to_delete = 0;
+            $cleanupItem->date_cleaned_up = $dateToday;
+            $cleanupItem->save();
+        }
     }
 
     /** Sets the model to delete

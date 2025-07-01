@@ -30,21 +30,13 @@ class DataCleanupListContacts extends Component {
 
     // New method to fetch all cleanup data
     fetchCleanupData = () => {
-        DataCleanupAPI.getAmountsToCleanup().then(payload => {
+        DataCleanupAPI.getCleanupItems().then(payload => {
             this.setState({
                 amountOfContactsToCleanup: payload['contacts'],
                 amountOfContactsToCleanupNet: payload['contactsNet'],
-            });
-        });
 
-        DataCleanupAPI.getLastCleanupDates().then(payload => {
-            this.setState({
                 contactsLastCleanupDate: payload['contacts'],
-            });
-        });
 
-        DataCleanupAPI.getExcludedGroups().then(payload => {
-            this.setState({
                 excludedGroups: payload,
             });
         });

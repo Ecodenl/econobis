@@ -20,16 +20,21 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Product\Product;
 use App\Helpers\Settings\Request;
 use Carbon\Carbon;
-use Spatie\Valuestore\Valuestore;
 
 class CleanupItemHelper
 {
-    public function updateAmounts()
+    public function updateAmounts($cleanupType = null)
     {
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        foreach($cooperation->cleanupItems as $cleanupItem) {
+        if($cleanupType) {
+            $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
+        } else {
+            $cleanupItems = $cooperation->cleanupItems;
+        }
+
+        foreach($cleanupItems as $cleanupItem) {
             switch($cleanupItem->code_ref) {
                 case "invoices":
                     $invoicesCleanupYears = $cleanupItem->years_for_delete;
@@ -42,7 +47,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "orders_oneoff":
+                case "ordersOneoff":
                     $ordersOneoffCleanupYears = $cleanupItem->years_for_delete;
                     $ordersOneoffCleanupOlderThen = $dateToday->copy()->subYears($ordersOneoffCleanupYears);
 
@@ -58,7 +63,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "orders_periodic":
+                case "ordersPeriodic":
                     $ordersPeriodicCleanupYears = $cleanupItem->years_for_delete;
                     $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
 
@@ -98,7 +103,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "participations_with_status":
+                case "participationsWithStatus":
                     $participationsWithStatusCleanupYears = $cleanupItem->years_for_delete;
                     $participationsWithStatusCleanupOlderThen = $dateToday->copy()->subYears($participationsWithStatusCleanupYears);
 
@@ -112,7 +117,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "participations_finished":
+                case "participationsFinished":
                     $participationsFinishedCleanupYears = $cleanupItem->years_for_delete;
                     $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
@@ -124,7 +129,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "email_incoming":
+                case "incomingEmails":
                     $incomingMailsCleanupYears = $cleanupItem->years_for_delete;
                     $incomingMailsCleanupOlderThen = $dateToday->copy()->subYears($incomingMailsCleanupYears);
 
@@ -136,7 +141,7 @@ class CleanupItemHelper
 
                     break;
 
-                case "email_outgoing":
+                case "outgoingEmails":
                     $outgoingMailsCleanupYears = $cleanupItem->years_for_delete;
                     $outgoingMailsCleanupOlderThen = $dateToday->copy()->subYears($outgoingMailsCleanupYears);
 

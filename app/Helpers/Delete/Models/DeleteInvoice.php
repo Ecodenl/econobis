@@ -42,14 +42,18 @@ class DeleteInvoice implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($destroy = false)
+    public function cleanup()
     {
-        $this->delete($destroy);
+        $this->delete();
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
-        $cooperation->cleanup_invoices_last_run_at = $dateToday;
-        $cooperation->save();
+
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', 'invoices')->first();
+
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations
@@ -57,30 +61,26 @@ class DeleteInvoice implements DeleteInterface
      * @return array
      * @throws
      */
-    public function delete($destroy = false)
+    public function delete()
     {
-        $this->canDelete($destroy);
+        $this->canDelete();
         $this->deleteModels();
         $this->dissociateRelations();
-        $this->deleteRelations($destroy);
+        $this->deleteRelations();
         $this->customDeleteActions();
 
         if(!empty($this->errorMessage)) {
             return $this->errorMessage;
         }
 
-        if($destroy === true) {
-            $this->invoice->forceDelete();
-        } else {
-            $this->invoice->delete();
-        }
+        $this->invoice->delete();
     }
 
     /** Checks if the model can be deleted and sets error messages
      */
-    public function canDelete($destroy = false)
+    public function canDelete()
     {
-        if($destroy === false && (!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 )){
+        if(!($this->invoice->status_id == 'to-send') || $this->invoice->invoice_number != 0 ){
             array_push($this->errorMessage, "Er is al een nota aangemaakt. Een nota kan niet worden verwijderd vanwege de bewaarplicht.");
         }
     }
@@ -113,21 +113,8 @@ class DeleteInvoice implements DeleteInterface
     /**
      * Delete relations who dont need their own Delete class
      */
-    public function deleteRelations($destroy = false)
+    public function deleteRelations()
     {
-        if($destroy) {
-            foreach ($this->invoice->payments as $payment){
-                $payment->forceDelete();
-            }
-
-            foreach ($this->invoice->invoiceProducts as $invoiceProduct){
-                $invoiceProduct->forceDelete();
-            }
-
-            foreach ($this->invoice->twinfieldMessages as $twinfieldMessage){
-                $twinfieldMessage->forceDelete();
-            }
-        }
     }
 
     /** Model specific delete actions e.g. delete files from server

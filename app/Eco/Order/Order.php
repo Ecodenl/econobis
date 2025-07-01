@@ -226,7 +226,7 @@ class Order extends Model
     }
     
     //Adds the collection frequency to a carbon date
-    public function addDurationToDate(Carbon $date){
+    public function addDurationToDate(\Carbon\Carbon $date){
         switch ($this->collection_frequency_id) {
             case 'once':
                 return $date;

@@ -18,7 +18,7 @@ class PkceLoginController extends Controller
         ]);
 
         // Auth::attempt logt automatisch in en vult Auth::user()
-        if (!Auth::attempt([
+        if (!Auth::guard('web')->attempt([
             'email' => $request->username,
             'password' => $request->password,
         ])) {

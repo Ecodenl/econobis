@@ -42,9 +42,9 @@ class CreatePkceClients extends Command
                 $data['name'],
                 $data['redirect'],
                 null,
-                false, // personal_access_client
-                false, // password_client
-                true   // PKCE
+                false,
+                false,
+                false,
             );
 
             $client->provider = $data['provider'];

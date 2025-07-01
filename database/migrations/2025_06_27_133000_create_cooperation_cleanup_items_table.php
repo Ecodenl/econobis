@@ -25,6 +25,8 @@ class CreateCooperationCleanupItemsTable extends Migration
             $table->unsignedInteger('number_of_items_to_delete')->default(0);
             $table->datetime('date_cleaned_up')->nullable();
             $table->datetime('date_determined')->nullable();
+
+            $table->timestamps();
         });
 
         $cooperation = Cooperation::first();

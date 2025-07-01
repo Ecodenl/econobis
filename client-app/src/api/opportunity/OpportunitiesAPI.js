@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchOpportunities: ({ filters, sorts, pagination }) => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -17,9 +17,10 @@ export default {
     },
 
     peekOpportunities: () => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -29,14 +30,15 @@ export default {
             });
     },
 
-    peekOpportunitiesForContacts: (contactIds) => {
+    peekOpportunitiesForContacts: contactIds => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;
@@ -44,9 +46,10 @@ export default {
     },
 
     getAmountActive: () => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/amount-active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -55,15 +58,17 @@ export default {
     },
 
     getChartData: () => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/chart-data`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     getCSV: ({ filters, sorts }) => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

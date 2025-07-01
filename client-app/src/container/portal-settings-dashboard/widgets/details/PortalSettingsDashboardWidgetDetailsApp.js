@@ -6,11 +6,18 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import PortalSettingsDashboardAPI from '../../../../api/portal-settings-dashboard/PortalSettingsDashboardAPI';
 import axios from 'axios';
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import PortalSettingsLayoutDetailsAPI from '../../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <PortalSettingsDashboardWidgetDetailsApp {...props} navigate={navigate} params={params} />;
+};
 
 class PortalSettingsDashboardWidgetDetailsApp extends Component {
     constructor(props) {
@@ -64,7 +71,7 @@ class PortalSettingsDashboardWidgetDetailsApp extends Component {
         // Api aanroepen met delete
         PortalSettingsDashboardAPI.deletePortalSettingsDashboardWidget(id)
             .then(payload => {
-                hashHistory.push(`/portal-instellingen-dashboard`);
+                this.props.navigate(`/portal-instellingen-dashboard`);
             })
             .catch(error => {
                 this.props.setError(error.response.status, error.response.data.message);
@@ -121,4 +128,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetDetailsAppWrapper);

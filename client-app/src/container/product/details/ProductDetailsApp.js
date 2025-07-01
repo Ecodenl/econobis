@@ -6,6 +6,13 @@ import ProductDetailsToolbar from './ProductDetailsToolbar';
 import ProductDetailsForm from './ProductDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ProductDetailsAppWrapper = props => {
+    const params = useParams();
+    return <ProductDetailsApp {...props} params={params} />;
+};
 
 class ProductDetailsApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ProductDetailsAppWrapper);

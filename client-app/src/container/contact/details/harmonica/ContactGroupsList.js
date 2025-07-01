@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import DeleteContactFromGroup from './ContactDetailsFormGroupDelete';
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
@@ -8,6 +8,12 @@ import { fetchContactDetails } from '../../../../actions/contact/ContactDetailsA
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const ContactGroupsListWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactGroupsList {...props} navigate={navigate} />;
+};
 
 class ContactGroupsList extends Component {
     constructor(props) {
@@ -36,7 +42,7 @@ class ContactGroupsList extends Component {
     };
 
     openGroup = id => {
-        hashHistory.push(`/contact-groep/${id}`);
+        this.props.navigate(`/contact-groep/${id}`);
     };
 
     componentDidMount() {
@@ -112,4 +118,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsList);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactGroupsListWrapper);

@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PARTICIPANT_PROJECT = `project/participant`;
 
@@ -6,7 +6,7 @@ export default {
     fetchParticipantsProject: ({ filters, extraFilters, sorts, pagination, filterType, fetchFromProject }) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -22,7 +22,7 @@ export default {
     getExcel: (filters, extraFilters, sorts, pagination, fetchFromProject, filterProjectId) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excel`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -39,7 +39,7 @@ export default {
     getExcelParticipants: (filters, extraFilters, sorts, pagination, fetchFromProject, filterProjectId) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/excelParticipants`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -56,7 +56,7 @@ export default {
     peekParticipantsProjects: () => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -71,7 +71,7 @@ export default {
             templateId ? templateId : 'no-pdf'
         }/${emailTemplateId}`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             participantIds: participantIds,
             subject: subject,
             showOnPortal: showOnPortal,
@@ -81,13 +81,13 @@ export default {
     previewPDF: (templateId, participantIds) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-pdf/${templateId}`;
 
-        return axiosInstance.post(requestUrl, { participantIds: [participantIds] }, { responseType: 'blob' });
+        return getAxiosInstance().post(requestUrl, { participantIds: [participantIds] }, { responseType: 'blob' });
     },
 
     previewEmail: (emailTemplateId, participantIds) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/preview-email/${emailTemplateId}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { participantIds: [participantIds] })
             .then(response => response.data)
             .catch(error => {
@@ -98,7 +98,7 @@ export default {
     saveAsGroup: ({ filters, extraFilters, filterType, saveFromProject }) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/save-as-group`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),

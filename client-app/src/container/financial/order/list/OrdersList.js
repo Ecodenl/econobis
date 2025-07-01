@@ -22,7 +22,7 @@ import { setPaymentTypeIdFilterOrders, setStatusIdFilterOrders } from '../../../
 import OrdersAPI from '../../../../api/order/OrdersAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonText from '../../../../components/button/ButtonText';
 
 const initialState = {
@@ -35,6 +35,12 @@ const initialState = {
         id: '',
         subject: '',
     },
+};
+
+// Functionele wrapper voor de class component
+const OrdersListWrapper = props => {
+    const navigate = useNavigate();
+    return <OrdersList {...props} navigate={navigate} />;
 };
 
 class OrdersList extends Component {
@@ -173,7 +179,7 @@ class OrdersList extends Component {
 
         if (this.state.orderIds.length > 0) {
             this.props.previewCreate(this.state.orderIds);
-            hashHistory.push(`/financieel/${this.props.administrationId}/orders/aanmaken`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/orders/aanmaken`);
         } else {
             this.toggleShowCheckboxList();
         }
@@ -545,4 +551,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrdersList);
+export default connect(mapStateToProps, mapDispatchToProps)(OrdersListWrapper);

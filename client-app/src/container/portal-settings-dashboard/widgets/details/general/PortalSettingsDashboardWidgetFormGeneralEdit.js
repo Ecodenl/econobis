@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 import Image from 'react-bootstrap/es/Image';
 import moment from 'moment';
@@ -262,11 +264,11 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
     render() {
         const { widget, errors, errorMessage } = this.state;
 
-        const imageUrl = `${URL_API}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
+        const imageUrl = `${getApiUrl()}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
         const { managePortalSettings = {} } = this.props.permissions;
 
-        const logoHeaderUrl = `${URL_API}/portal/images/logo-header.png?${this.props.imageHash}`;
-        const imageBgHeaderUrl = `${URL_API}/portal/images/background-header.png?${this.props.imageHash}`;
+        const logoHeaderUrl = `${getApiUrl()}/portal/images/logo-header.png?${this.props.imageHash}`;
+        const imageBgHeaderUrl = `${getApiUrl()}/portal/images/background-header.png?${this.props.imageHash}`;
 
         const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
 

@@ -10,8 +10,11 @@ import filterHelper from '../../../helpers/FilterHelper';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
 
 function TasksListApp(props) {
+    const params = useParams();
+
     const [multiSelectEnabled, setMultiSelectEnabled] = useState(false);
     const tasks = useSelector(state => state.tasks.list);
     const tasksFilters = useSelector(state => state.tasks.filters);
@@ -20,12 +23,12 @@ function TasksListApp(props) {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        if (props.params && props.params.type === 'eigen') {
+        if (params && params.type === 'eigen') {
             dispatch(setFilterTaskMe(true));
         } else {
             dispatch(setFilterTaskMe(false));
         }
-    }, [props.params.type]);
+    }, [params.type]);
     useEffect(() => {
         fetchTasksData();
     }, [tasksFilters, tasksSorts, tasksPagination]);
@@ -43,8 +46,8 @@ function TasksListApp(props) {
         dispatch(clearFilterTask());
 
         // Filter eigen komt vanuit URL (params) en die willen we graag behouden.
-        if (!isEmpty(props.params)) {
-            if (props.params.type === 'eigen') {
+        if (!isEmpty(params)) {
+            if (params.type === 'eigen') {
                 dispatch(setFilterTaskMe(true));
             }
         }
@@ -66,7 +69,7 @@ function TasksListApp(props) {
     };
 
     let me = false;
-    if (props.params.type === 'eigen') {
+    if (params.type === 'eigen') {
         me = true;
     }
 

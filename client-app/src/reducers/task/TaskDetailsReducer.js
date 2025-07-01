@@ -3,7 +3,7 @@ export default function(state = [], action) {
         case 'FETCH_TASK_DETAILS_SUCCESS':
             return {
                 ...state,
-                ...action.taskDetails.data.data,
+                ...action.taskDetails,
             };
         case 'UPDATE_TASK_DETAILS':
             return {

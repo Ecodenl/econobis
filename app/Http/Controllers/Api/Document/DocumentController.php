@@ -21,6 +21,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
@@ -307,9 +308,24 @@ class DocumentController extends Controller
         if ($document->file_path_and_name != null) {
 
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
-            header('X-Filename:' . $document->filename);
-            header('Access-Control-Expose-Headers: X-Filename');
-            return response()->download($filePath, $document->filename);
+            $path = Storage::disk('documents')->path($document->file_path_and_name);
+            if (!file_exists($path)) {
+                Log::error("Document niet gevonden: " . $path);
+                abort(404, 'Document niet gevonden.');
+            }
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $path);
+            finfo_close($finfo);
+//            Log::info("MIME-type gedetecteerd: " . $mime);
+
+
+            return response()->download($filePath, $document->filename, [
+                'Cache-Control' => 'no-cache, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'X-Filename' => $document->filename,
+                'Access-Control-Expose-Headers' => 'X-Filename',
+            ]);
 
             // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
         } elseif ($document->alfresco_node_id != null) {
@@ -324,19 +340,36 @@ class DocumentController extends Controller
     {
         // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
         if ($document->file_path_and_name != null) {
-            return Storage::disk('documents')->get($document->file_path_and_name);
+            $path = Storage::disk('documents')->path($document->file_path_and_name);
 
-            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+            if (!file_exists($path)) {
+                Log::error("Document niet gevonden: " . $path);
+                abort(404, 'Document niet gevonden.');
+            }
+
+            $content = file_get_contents($path);
+            $mime = mime_content_type($path);
+
+            return [
+                'content' => $content,
+                'filename' => $document->filename,
+                'mime' => $mime,
+            ];
         } elseif ($document->alfresco_node_id != null) {
             $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+//            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+            $content = $alfrescoHelper->downloadFile($document->alfresco_node_id);
+            return [
+                'content' => $content,
+                'filename' => $document->filename,
+            ];
         }
 
         return null;
     }
 
-    protected function translateToValidCharacterSet($field){
-
+    protected function translateToValidCharacterSet($field)
+    {
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');

@@ -1,10 +1,10 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 export default {
     fetchMeasureCategories: () => {
         const requestUrl = `jory/measure-category`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [

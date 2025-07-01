@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ORDER = `${URL_API}/api/order`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchOrderDetails: function(id) {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     newOrder: order => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, order)
             .then(function(response) {
                 return response.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     updateOrder: ({ order }) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${order.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, order)
             .then(function(response) {
                 return response;
@@ -43,33 +45,38 @@ export default {
     },
 
     deleteOrder: id => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newOrderProduct: orderProduct => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/order-product`;
 
-        return axiosInstance.post(requestUrl, orderProduct);
+        return getAxiosInstance().post(requestUrl, orderProduct);
     },
 
     newProductAndOrderProduct: (orderProduct, product) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/product-and-order-product`;
 
-        return axiosInstance.post(requestUrl, { orderProduct: orderProduct, product: product });
+        return getAxiosInstance().post(requestUrl, { orderProduct: orderProduct, product: product });
     },
 
     updateOrderProductOneTime: (orderProduct, product) => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/product-and-order-product/update`;
 
-        return axiosInstance.post(requestUrl, { orderProduct: orderProduct, product: product });
+        return getAxiosInstance().post(requestUrl, { orderProduct: orderProduct, product: product });
     },
 
     deleteOrderProduct: orderProductId => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/order-product/${orderProductId}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -80,15 +87,17 @@ export default {
     },
 
     updateOrderProduct: orderProduct => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/order-product/${orderProduct.id}/update`;
 
-        return axiosInstance.post(requestUrl, orderProduct);
+        return getAxiosInstance().post(requestUrl, orderProduct);
     },
 
     fetchContactInfoForOrder: function(contactId) {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${contactId}/contact-info-for-order`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response;
@@ -99,15 +108,17 @@ export default {
     },
 
     downloadPreview: id => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${id}/download-preview`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 
     createAll: orderIds => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/create-all`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { orderIds: orderIds })
             .then(function(response) {
                 return response.data;
@@ -118,9 +129,10 @@ export default {
     },
 
     getEmailPreview: id => {
+        const URL_ORDER = `${getApiUrl()}/api/order`;
         const requestUrl = `${URL_ORDER}/${id}/email-preview`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;

@@ -25,7 +25,7 @@ class ProjectRegister extends JsonResource
                 'hasParticipation' => $this->hasParticipation,
                 'isSceOrPcrProject' => $this->isSceOrPcrProject,
                 'postalcodeLink' => $this->postalcode_link,
-                'allowChangeParticipation' => $this->allowChangeParticipation,
+                'allowIncreaseParticipations' => $this->allowIncreaseParticipations,
                 'allowPayMollie' => $this->allowPayMollie,
                 'econobisPaymentLink' => $this->econobisPaymentLink,
                 'allowRegisterToProject' => $this->allowRegisterToProject,

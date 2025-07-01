@@ -1,30 +1,33 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADDRESS = `${URL_API}/api/address`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     newAddress: address => {
+        const URL_ADDRESS = `${getApiUrl()}/api/address`;
         const requestUrl = `${URL_ADDRESS}`;
 
-        return axiosInstance.post(requestUrl, address);
+        return getAxiosInstance().post(requestUrl, address);
     },
 
     updateAddress: address => {
+        const URL_ADDRESS = `${getApiUrl()}/api/address`;
         const requestUrl = `${URL_ADDRESS}/${address.id}`;
 
-        return axiosInstance.post(requestUrl, address);
+        return getAxiosInstance().post(requestUrl, address);
     },
 
     deleteAddress: id => {
+        const URL_ADDRESS = `${getApiUrl()}/api/address`;
         const requestUrl = `${URL_ADDRESS}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     getLvbagAddress: (postalCode, number) => {
+        const URL_ADDRESS = `${getApiUrl()}/api/address`;
         const requestUrl = `${URL_ADDRESS}/lvbag`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { postalCode: postalCode, number: number })
             .then(function(response) {
                 return response.data;

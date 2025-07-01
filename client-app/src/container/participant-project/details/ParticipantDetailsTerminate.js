@@ -7,7 +7,7 @@ import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
 import ParticipantProjectDetailsAPI from '../../../api/participant-project/ParticipantProjectDetailsAPI';
 import InputToggle from '../../../components/form/InputToggle';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../components/form/ViewText';
 import validator from 'validator';
 
@@ -18,6 +18,8 @@ const ParticipantDetailsTerminate = ({
     projectTypeCodeRef,
     fetchParticipantProjectDetails,
 }) => {
+    const navigate = useNavigate();
+
     useEffect(() => {
         getAdditionalInfoForTerminatingOrChangeEntryDate(participantProject.id);
     }, [participantProject.id]);

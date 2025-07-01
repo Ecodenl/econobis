@@ -82,7 +82,7 @@ const TaskDetailsFormGeneralView = props => {
                     <ViewText
                         label={'Verantwoordelijke'}
                         value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
-                        link={responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id}
+                        link={responsibleUser ? '/gebruiker/' + responsibleUser.id : '/team/' + responsibleTeam.id}
                     />
                 </div>
 
@@ -91,7 +91,7 @@ const TaskDetailsFormGeneralView = props => {
                     <ViewText
                         label="Afgerond door"
                         value={finishedBy && finishedBy.fullName}
-                        link={finishedBy ? 'gebruiker/' + finishedBy.id : ''}
+                        link={finishedBy ? '/gebruiker/' + finishedBy.id : ''}
                     />
                 </div>
 
@@ -126,7 +126,7 @@ const TaskDetailsFormGeneralView = props => {
                     <ViewText
                         label={'Contact'}
                         value={contact && contact.fullName}
-                        link={contact ? 'contact/' + contact.id : ''}
+                        link={contact ? '/contact/' + contact.id : ''}
                     />
                 </div>
             </div>
@@ -148,21 +148,25 @@ const TaskDetailsFormGeneralView = props => {
                             <ViewText
                                 label={'Campagne'}
                                 value={campaign && campaign.name}
-                                link={campaign ? 'campagne/' + campaign.id : ''}
+                                link={campaign ? '/campagne/' + campaign.id : ''}
                             />
-                            <ViewText label={'Intake'} value={intakeName} link={intakeId ? 'intake/' + intakeId : ''} />
+                            <ViewText
+                                label={'Intake'}
+                                value={intakeName}
+                                link={intakeId ? '/intake/' + intakeId : ''}
+                            />
                         </div>
 
                         <div className="row">
                             <ViewText
                                 label={'Groep'}
                                 value={contactGroup && contactGroup.name}
-                                link={contactGroup ? 'contact-groep/' + contactGroup.id : ''}
+                                link={contactGroup ? '/contact-groep/' + contactGroup.id : ''}
                             />
                             <ViewText
                                 label={'Kans'}
                                 value={opportunityName}
-                                link={opportunityId ? 'kans/' + opportunityId : ''}
+                                link={opportunityId ? '/kans/' + opportunityId : ''}
                             />
                         </div>
 
@@ -170,12 +174,12 @@ const TaskDetailsFormGeneralView = props => {
                             <ViewText
                                 label={'Woningdossier'}
                                 value={housingFile && housingFile.id}
-                                link={housingFile ? 'woningdossier/' + housingFile.id : ''}
+                                link={housingFile ? '/woningdossier/' + housingFile.id : ''}
                             />
                             <ViewText
                                 label={'Project'}
                                 value={project && project.name}
-                                link={project ? 'project/' + project.id : ''}
+                                link={project ? '/project/' + project.id : ''}
                             />
                         </div>
 
@@ -183,12 +187,12 @@ const TaskDetailsFormGeneralView = props => {
                             <ViewText
                                 label={'Participant project'}
                                 value={participant && participant.name}
-                                link={participant ? 'project/deelnemer/' + participant.id : ''}
+                                link={participant ? '/project/deelnemer/' + participant.id : ''}
                             />
                             <ViewText
                                 label={'Order'}
                                 value={order && order.name}
-                                link={order ? 'order/' + order.id : ''}
+                                link={order ? '/order/' + order.id : ''}
                             />
                         </div>
 
@@ -196,7 +200,7 @@ const TaskDetailsFormGeneralView = props => {
                             <ViewText
                                 label={'Nota'}
                                 value={invoice && invoice.name}
-                                link={invoice ? 'nota/' + invoice.id : ''}
+                                link={invoice ? '/nota/' + invoice.id : ''}
                             />
                         </div>
                     </div>

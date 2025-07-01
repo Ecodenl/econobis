@@ -16,45 +16,104 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
 
-function StepFour({ project, contactProjectData, previous, next, registerValues, setSucces }) {
+function StepFour({
+    project,
+    participantId,
+    registerType,
+    contactProjectData,
+    previous,
+    next,
+    registerValues,
+    setSucces,
+}) {
     const [contactDocument, setContactDocument] = useState('');
     const [isLoading, setLoading] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
+
     useEffect(() => {
         (function callFetchContact() {
             setLoading(true);
-            ContactAPI.previewDocument(registerValues)
-                .then(payload => {
-                    setContactDocument(payload.data);
-                    setLoading(false);
-                })
-                .catch(error => {
-                    alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                    setLoading(false);
-                });
+            if (registerType === 'verhogen' && participantId !== null) {
+                ContactAPI.previewDocumentIncrease(registerValues, registerType, participantId)
+                    .then(payload => {
+                        setContactDocument(payload.data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            } else {
+                ContactAPI.previewDocument(registerValues)
+                    .then(payload => {
+                        setContactDocument(payload.data);
+                        setLoading(false);
+                    })
+                    .catch(error => {
+                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setLoading(false);
+                    });
+            }
         })();
     }, [registerValues]);
 
     function handleSubmitRegisterValues(actions, next) {
-        ParticipantProjectAPI.createParticipantProject(registerValues)
-            .then(payload => {
-                actions.setSubmitting(false);
+        setHasError(false);
+        setErrorMessage(null);
+        if (registerType === 'verhogen' && participantId !== null) {
+            ParticipantProjectAPI.updateParticipantProject(registerValues, registerType, participantId)
+                .then(payload => {
+                    actions.setSubmitting(false);
 
-                /**
-                 * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
-                 * In dat geval huidige scherm verlaten en door naar mollie.
-                 */
-                if (payload.data.econobisPaymentLink) {
-                    window.location.href = payload.data.econobisPaymentLink;
-                    return;
-                }
+                    /**
+                     * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                     * In dat geval huidige scherm verlaten en door naar mollie.
+                     */
+                    if (payload.data.econobisPaymentLink) {
+                        window.location.href = payload.data.econobisPaymentLink;
+                        return;
+                    }
 
-                setSucces(true);
-                next();
-            })
-            .catch(error => {
-                alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
-                actions.setSubmitting(false);
-            });
+                    setSucces(true);
+                    next();
+                })
+                .catch(error => {
+                    // console.log('error');
+                    // console.log(error);
+                    // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Er is iets misgegaan met opslaan!');
+
+                    actions.setSubmitting(false);
+                });
+        } else {
+            ParticipantProjectAPI.createParticipantProject(registerValues)
+                .then(payload => {
+                    actions.setSubmitting(false);
+
+                    /**
+                     * Als Mollie is ingeschakeld voor het project wordt er een betaallink gereturned.
+                     * In dat geval huidige scherm verlaten en door naar mollie.
+                     */
+                    if (payload.data.econobisPaymentLink) {
+                        window.location.href = payload.data.econobisPaymentLink;
+                        return;
+                    }
+
+                    setSucces(true);
+                    next();
+                })
+                .catch(error => {
+                    // console.log('error');
+                    // console.log(error);
+                    // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Er is iets misgegaan met opslaan!');
+
+                    actions.setSubmitting(false);
+                });
+        }
     }
 
     const validationSchema = Yup.object({
@@ -74,6 +133,33 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
         <>
             {isLoading ? (
                 <LoadingView />
+            ) : hasError ? (
+                <>
+                    <Row>
+                        <Col>
+                            <div className="alert-wrapper">
+                                <Alert key={'form-general-error-alert'} variant={'danger'}>
+                                    {errorMessage}
+                                </Alert>
+                            </div>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} md={10}>
+                            <ButtonGroup aria-label="Steps" className="float-right">
+                                <Button
+                                    className={'w-button'}
+                                    size="sm"
+                                    onClick={() => {
+                                        window.location.reload();
+                                    }}
+                                >
+                                    Probeer opnieuw
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </>
             ) : !contactDocumentOk ? (
                 <>
                     <Row>
@@ -211,9 +297,19 @@ function StepFour({ project, contactProjectData, previous, next, registerValues,
                                                 ) : (
                                                     <>
                                                         {project.usesMollie ? (
-                                                            <>Betaal en bevestig de inschrijving</>
+                                                            <>
+                                                                Betaal en bevestig de{' '}
+                                                                {registerType === 'verhogen'
+                                                                    ? 'bijschrijving'
+                                                                    : 'inschrijving'}
+                                                            </>
                                                         ) : (
-                                                            <>Bevestig inschrijving</>
+                                                            <>
+                                                                Bevestig{' '}
+                                                                {registerType === 'verhogen'
+                                                                    ? 'bijschrijving'
+                                                                    : 'inschrijving'}
+                                                            </>
                                                         )}
                                                     </>
                                                 )}

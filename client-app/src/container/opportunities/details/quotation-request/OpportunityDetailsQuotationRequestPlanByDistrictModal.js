@@ -1,8 +1,10 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import Modal from '../../../../components/modal/Modal';
-import {hashHistory} from "react-router";
+import { useNavigate } from 'react-router-dom';
 
-export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({districts, onCancel, opportunityId}) {
+export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({ districts, onCancel, opportunityId }) {
+    const navigate = useNavigate();
+
     const [districtId, setDistrictId] = useState('');
 
     useEffect(() => {
@@ -10,9 +12,7 @@ export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({d
     }, []);
 
     const confirmAction = () => {
-        hashHistory.push(
-            `/offerteverzoek/nieuw/kans/${opportunityId}/plan/${districtId}`
-        )
+        navigate(`/offerteverzoek/nieuw/kans/${opportunityId}/plan/${districtId}`);
     };
 
     return (
@@ -26,7 +26,7 @@ export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({d
             <select
                 className="form-control input-sm"
                 value={districtId}
-                onChange={(event) => setDistrictId(event.target.value)}
+                onChange={event => setDistrictId(event.target.value)}
             >
                 {districts.map(option => {
                     return (
@@ -36,7 +36,6 @@ export default function OpportunityDetailsQuotationRequestPlanByDistrictModal({d
                     );
                 })}
             </select>
-
         </Modal>
     );
 }

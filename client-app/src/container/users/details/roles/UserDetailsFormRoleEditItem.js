@@ -54,7 +54,7 @@ class UserDetailsFormRoleListItem extends Component {
                 value={hasRole}
                 size="col-sm-5"
                 onChangeAction={this.handleInputChange}
-                {...(name === 'Projectmedewerker' && {
+                {...(name === 'Projectmanager' && {
                     textToolTip: "Als deze rol wordt toegewezen, wordt voor de gebruiker in het linkermenu de optie Projecten zichtbaar en kan de gebruiker de functionaliteiten Projecten gebruiken. Ook worden voor de gebruiker op de Contactpagina in het rechtermenu de onderdelen Deelnames en Waardestaten zichtbaar en te gebruiken. Een gebruiker met de rol Projectmanager kan Contactgegevens inzien, wijzigingen aanbrengen en contacten verwijderen. Deze gebruiker kan projecten aanmaken en wijzigen maar geen deelnames wijzigen."
                 })}
                 {...(name === 'Participatie medewerker' && {

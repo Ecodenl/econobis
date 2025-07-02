@@ -105,10 +105,10 @@ class ProjectsListApp extends Component {
     }
 
     render() {
-        const { keyUserRole, ProjectmedewerkerRole, ParticipatiemedewerkerRole } = this.props;
+        const { keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole } = this.props;
 
         return (
-            (keyUserRole?.hasRole || ProjectmedewerkerRole?.hasRole || ParticipatiemedewerkerRole?.hasRole) && (
+            (keyUserRole?.hasRole || ProjectmanagerRole?.hasRole || ParticipatiemedewerkerRole?.hasRole) && (
                 <div>
                     <div className="panel panel-default col-md-12">
                         <div className="panel-body">
@@ -141,7 +141,7 @@ const mapStateToProps = state => {
         projectsPagination: state.projects.pagination,
 
         keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        ProjectmedewerkerRole: state.meDetails.roles.find(role => role.name === 'Projectmedewerker'),
+        ProjectmanagerRole: state.meDetails.roles.find(role => role.name === 'Projectmanager'),
         ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
     };
 };

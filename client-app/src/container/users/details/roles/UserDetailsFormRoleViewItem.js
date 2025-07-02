@@ -14,7 +14,7 @@ class UserDetailsFormRoleViewItem extends Component {
             <div className="col-sm-6 border-bottom">
                 <label className="col-sm-6">{name}</label>
                 <span className="col-sm-6">{hasRole ? 'Ja' : 'Nee'}
-                    {name === 'Projectmedewerker' && (
+                    {name === 'Projectmanager' && (
                         <>
                             &nbsp;&nbsp;
                             <FaInfoCircle

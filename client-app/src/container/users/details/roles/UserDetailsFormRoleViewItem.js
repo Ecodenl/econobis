@@ -55,6 +55,27 @@ class UserDetailsFormRoleViewItem extends Component {
                             />
                         </>
                     )}
+
+                    {name === 'Beheerder' && (
+                        <>
+                            &nbsp;&nbsp;
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={
+                                    'Als een gebruiker deze rol toegewezen krijgt kan zij/hij alle opties in het linkmenu zien en krijgt alle rechten voor wijzigen/aanmaken/verwijderen.'
+                                }
+                                data-for={`tooltip-note`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-note`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    )}
                 </span>
             </div>
         );

@@ -19,7 +19,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenuSmall = ({ permissions, administrations }) => (
+const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, ProjectmedewerkerRole, ParticipatiemedewerkerRole }) => (
     <div className="sidebar-menu-small">
         {/* Dashboard */}
         <div className="sidebar-menu-small-item">
@@ -38,7 +38,7 @@ const SidebarMenuSmall = ({ permissions, administrations }) => (
             </div>
         )}
         {/* Projects */}
-        {permissions.menuProjects && (
+        {(permissions.menuProjects && (keyUserRole.hasRole || ProjectmedewerkerRole.hasRole || ParticipatiemedewerkerRole.hasRole)) && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={drawer} />
             </div>
@@ -122,6 +122,9 @@ const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
+        ProjectmedewerkerRole: state.meDetails.roles.find(role => role.name === 'Projectmedewerker'),
+        ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
     };
 };
 

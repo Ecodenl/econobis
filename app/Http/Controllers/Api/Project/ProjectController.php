@@ -30,6 +30,8 @@ class ProjectController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         $projects = $requestQuery->get();
@@ -48,6 +50,8 @@ class ProjectController extends ApiController
     public function show(Project $project)
     {
         set_time_limit(60);
+
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
 
         $this->authorize('view', Project::class);
 
@@ -89,6 +93,8 @@ class ProjectController extends ApiController
 
     public function store(Request $request, RequestInput $requestInput)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('manage', Project::class);
 
         $data = $requestInput
@@ -216,6 +222,8 @@ class ProjectController extends ApiController
 
     public function update(Request $request, RequestInput $requestInput, Project $project)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('manage', Project::class);
 
         $data = $requestInput
@@ -375,6 +383,8 @@ class ProjectController extends ApiController
 
     public function destroy(Project $project)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('manage', Project::class);
 
         try {
@@ -412,6 +422,8 @@ class ProjectController extends ApiController
 
     public function getObligationNumbers(Project $project)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         $obligationNumbers = [];
@@ -425,18 +437,24 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
     }
 
     public function getActive(){
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         return Project::whereIn('project_status_id', [1,2])->pluck('id');
     }
 
     public function getChartData(Project $project){
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         //TODO fixing chart data
@@ -455,6 +473,8 @@ class ProjectController extends ApiController
     }
 
     public function getChartDataParticipations(Project $project){
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         //TODO fixing chart data
@@ -480,6 +500,8 @@ class ProjectController extends ApiController
     }
 
     public function getChartDataStatus(Project $project){
+        if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
         $this->authorize('view', Project::class);
 
         //TODO fixing chart data

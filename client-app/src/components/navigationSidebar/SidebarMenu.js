@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmedewerkerRole, ParticipatiemedewerkerRole }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -151,7 +151,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {permissions.menuProjects && (
+            {(permissions.menuProjects && (keyUserRole.hasRole || ProjectmedewerkerRole.hasRole || ParticipatiemedewerkerRole.hasRole)) && (
                 <Nav id="projecten">
                     <NavIcon>
                         <SvgIcon size={20} icon={drawer} />
@@ -722,6 +722,9 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
         useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
+        ProjectmedewerkerRole: state.meDetails.roles.find(role => role.name === 'Projectmedewerker'),
+        ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
     };
 };
 

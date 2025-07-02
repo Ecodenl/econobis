@@ -19,8 +19,10 @@ use App\Helpers\Delete\Models\DeleteMail;
 use App\Helpers\Delete\Models\DeleteOpportunity;
 use App\Helpers\Delete\Models\DeleteOrder;
 use App\Helpers\Delete\Models\DeleteParticipation;
+use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class CleanupController extends Controller
 {
@@ -28,6 +30,17 @@ class CleanupController extends Controller
     {
         $helper = new CleanupItemHelper();
         $helper->updateAmounts($cleanupType);
+    }
+
+    public function updateCleanupItem(Request $request, RequestInput $requestInput, $cleanupItemId)
+    {
+        $cooperation = Cooperation::first();
+
+        $cleanupItem = $cooperation->cleanupItems()->where('id', $cleanupItemId)->first();
+        $cleanupItem->years_for_delete = $request->yearsForDelete;
+        $this->getCleanupItem($cleanupItem)->save();
+
+        return $cleanupItem;
     }
 
     public function getCleanupItems(){
@@ -224,5 +237,14 @@ class CleanupController extends Controller
         $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
 
         return $excludedGroups;
+    }
+
+    /**
+     * @param $cleanupItem
+     * @return mixed
+     */
+    public function getCleanupItem($cleanupItem)
+    {
+        return $cleanupItem;
     }
 }

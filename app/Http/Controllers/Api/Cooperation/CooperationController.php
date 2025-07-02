@@ -30,7 +30,7 @@ class CooperationController extends ApiController
 
         $cooperation = Cooperation::first();
 
-        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns']);
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns', 'cleanupItems']);
 
         return FullCooperation::make($cooperation);
     }

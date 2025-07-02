@@ -20,6 +20,7 @@ import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
+import CleanupItems from './cleanup-items/CleanupItems';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -65,6 +66,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             'updatedAt',
             'updatedById',
             'updatedBy',
+            'cleanupItems',
         ];
         for (const item of cleanUpFormFields) {
             delete values[item];
@@ -436,149 +438,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
 
                 <Panel>
                     <PanelHeader>
-                        <span className="h5 text-bold">Items opschonen</span>
-                    </PanelHeader>
-                    <PanelBody>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Nota’s - Datum verstuurd'}
-                                name={'cleanupYearsInvoicesDateSend'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsInvoicesDateSend}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                            <InputReactSelect
-                                label={'Eenmalige orders - Ingangsdatum'}
-                                name={'cleanupYearsOneoffOrdersStartDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsOneoffOrdersStartDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Periodieke orders - Beëindigingsdatum'}
-                                name={'cleanupYearsPeriodicOrdersTerminationDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsPeriodicOrdersTerminationDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                            <InputReactSelect
-                                label={'Intakes – Mutatiedatum'}
-                                name={'cleanupYearsIntakesMutationDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsIntakesMutationDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Kansen – Mutatiedatum'}
-                                name={'cleanupYearsOpportunitiesMutationDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsOpportunitiesMutationDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                            <InputReactSelect
-                                label={'Deelnames met status Interesse, Ingeschreven of toegekend – Mutatiedatum'}
-                                name={'cleanupYearsParticipationsChangeDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsParticipationsChangeDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelect
-                                label={'Deelnames met status Beëindigd – Beëindigingsdatum'}
-                                name={'cleanupYearsParticipationsTerminationDate'}
-                                options={[
-                                    { id: 1, name: '1' },
-                                    { id: 2, name: '2' },
-                                    { id: 3, name: '3' },
-                                    { id: 4, name: '4' },
-                                    { id: 5, name: '5' },
-                                    { id: 6, name: '6' },
-                                    { id: 7, name: '7' },
-                                    { id: 8, name: '8' },
-                                    { id: 9, name: '9' },
-                                    { id: 10, name: '10' },
-                                ]}
-                                value={values.cleanupYearsParticipationsTerminationDate}
-                                onChangeAction={(value, name) => setFieldValue(name, value)}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-
-                <Panel>
-                    <PanelHeader>
-                        <span className="h5 text-bold">E-mail opschonen</span>
+                        <span className="h5 text-bold">Opschonen</span>
                     </PanelHeader>
                     <PanelBody>
                         <div className="row">
@@ -589,46 +449,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 onChangeAction={e => setFieldValue('cleanupEmail', e.target.checked)}
                             />
                         </div>
-                        {values.cleanupEmail == true && (
-                            <div className="row">
-                                <InputReactSelect
-                                    label={'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'}
-                                    name={'cleanupYearsEmailIncoming'}
-                                    options={[
-                                        { id: 1, name: '1' },
-                                        { id: 2, name: '2' },
-                                        { id: 3, name: '3' },
-                                        { id: 4, name: '4' },
-                                        { id: 5, name: '5' },
-                                        { id: 6, name: '6' },
-                                        { id: 7, name: '7' },
-                                        { id: 8, name: '8' },
-                                        { id: 9, name: '9' },
-                                        { id: 10, name: '10' },
-                                    ]}
-                                    value={values.cleanupYearsEmailIncoming}
-                                    onChangeAction={(value, name) => setFieldValue(name, value)}
-                                />
-                                <InputReactSelect
-                                    label={'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'}
-                                    name={'cleanupYearsEmailOutgoing'}
-                                    options={[
-                                        { id: 1, name: '1' },
-                                        { id: 2, name: '2' },
-                                        { id: 3, name: '3' },
-                                        { id: 4, name: '4' },
-                                        { id: 5, name: '5' },
-                                        { id: 6, name: '6' },
-                                        { id: 7, name: '7' },
-                                        { id: 8, name: '8' },
-                                        { id: 9, name: '9' },
-                                        { id: 10, name: '10' },
-                                    ]}
-                                    value={values.cleanupYearsEmailOutgoing}
-                                    onChangeAction={(value, name) => setFieldValue(name, value)}
-                                />
-                            </div>
-                        )}
+                        <CleanupItems
+                            cooperationId={formData.id}
+                            showEditCooperation={false}
+                            cleanupItems={formData.cleanupItems}
+                        />
                     </PanelBody>
                 </Panel>
 

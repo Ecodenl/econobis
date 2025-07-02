@@ -61,14 +61,9 @@ export default {
             });
     },
 
-    cleanupItems: (cleanupType) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/cleanup-items/`+cleanupType;
+    updateCleanupItem: (cleanupItemId, payload) => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/item/`+cleanupItemId;
 
-        return getAxiosInstance()
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
+        return getAxiosInstance().post(requestUrl, payload);
     },
 };

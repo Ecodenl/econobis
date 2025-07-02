@@ -70,16 +70,9 @@ class FullCooperation extends JsonResource
             'externalUrlContacts' => $this->external_url_contacts,
             'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
             'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
-            'cleanupYearsInvoicesDateSend' => $this->cleanup_years_invoices_date_send,
-            'cleanupYearsOneoffOrdersStartDate' => $this->cleanup_years_oneoff_orders_start_date,
-            'cleanupYearsPeriodicOrdersTerminationDate' => $this->cleanup_years_periodic_orders_termination_date,
-            'cleanupYearsIntakesMutationDate' => $this->cleanup_years_intakes_mutation_date,
-            'cleanupYearsOpportunitiesMutationDate' => $this->cleanup_years_opportunities_mutation_date,
-            'cleanupYearsParticipationsChangeDate' => $this->cleanup_years_participations_change_date,
-            'cleanupYearsParticipationsTerminationDate' => $this->cleanup_years_participations_termination_date,
+
             'cleanupEmail' => $this->cleanup_email,
-            'cleanupYearsEmailIncoming' => $this->cleanup_years_email_incoming,
-            'cleanupYearsEmailOutgoing' => $this->cleanup_years_email_outgoing,
+            'cleanupItems' => FullCooperationCleanupItem::collection($this->whenLoaded('cleanupItems')),
         ];
     }
 }

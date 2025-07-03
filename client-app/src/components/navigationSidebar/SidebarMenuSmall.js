@@ -19,7 +19,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole }) => (
+const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManager, BuurtaanpakCoordinator }) => (
     <div className="sidebar-menu-small">
         {/* Dashboard */}
         <div className="sidebar-menu-small-item">
@@ -44,7 +44,7 @@ const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, Projectma
             </div>
         )}
         {/* Intakes */}
-        {permissions.menuEnergySaving && (
+        {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManager.hasRole || BuurtaanpakCoordinator.hasRole)) && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={home} />
             </div>
@@ -125,6 +125,10 @@ const mapStateToProps = state => {
         keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
         ProjectmanagerRole: state.meDetails.roles.find(role => role.name === 'Projectmanager'),
         ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
+        EnergieAdviseurRole: state.meDetails.roles.find(role => role.name === 'Energie adviseur'),
+        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
+        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
+        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

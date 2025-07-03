@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManager, BuurtaanpakCoordinator }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -186,7 +186,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {permissions.menuEnergySaving && (
+            {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManager.hasRole || BuurtaanpakCoordinator.hasRole)) && (
                 <Nav id="energy-saving">
                     <NavIcon>
                         <SvgIcon size={20} icon={home} />
@@ -725,6 +725,10 @@ const mapStateToProps = state => {
         keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
         ProjectmanagerRole: state.meDetails.roles.find(role => role.name === 'Projectmanager'),
         ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
+        EnergieAdviseurRole: state.meDetails.roles.find(role => role.name === 'Energie adviseur'),
+        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
+        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
+        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

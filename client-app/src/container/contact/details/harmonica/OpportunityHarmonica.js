@@ -11,24 +11,34 @@ const OpportunityHarmonica = ({
     newOpportunity,
     opportunityCount,
     permissions,
+    keyUserRole,
+    MarketingMedewerkerRole,
+    BuurtaanpakManager,
+    BuurtaanpakCoordinator
 }) => {
     return (
-        <Panel className={'harmonica-button'}>
-            <PanelBody>
-                <div className="col-sm-12" onClick={toggleShowList} role="button">
-                    <span className="">
-                        KANSEN <span className="badge">{opportunityCount}</span>
-                    </span>
-                </div>
-                <div className="col-sm-12">{showOpportunitiesList && <OpportunitiesList />}</div>
-            </PanelBody>
-        </Panel>
+        (keyUserRole?.hasRole || MarketingMedewerkerRole?.hasRole || BuurtaanpakManager?.hasRole || BuurtaanpakCoordinator?.hasRole) && (
+            <Panel className={'harmonica-button'}>
+                <PanelBody>
+                    <div className="col-sm-12" onClick={toggleShowList} role="button">
+                        <span className="">
+                            KANSEN <span className="badge">{opportunityCount}</span>
+                        </span>
+                    </div>
+                    <div className="col-sm-12">{showOpportunitiesList && <OpportunitiesList />}</div>
+                </PanelBody>
+            </Panel>
+        )
     );
 };
 
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
+        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
+        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
+        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
+        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

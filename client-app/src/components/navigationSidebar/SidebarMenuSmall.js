@@ -19,7 +19,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManager, BuurtaanpakCoordinator }) => (
+const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManagerRole, BuurtaanpakCoordinatorRole, FinancieelMedewerkerRole, FinancieelControllerRole }) => (
     <div className="sidebar-menu-small">
         {/* Dashboard */}
         <div className="sidebar-menu-small-item">
@@ -44,7 +44,7 @@ const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, Projectma
             </div>
         )}
         {/* Intakes */}
-        {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManager.hasRole || BuurtaanpakCoordinator.hasRole)) && (
+        {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManagerRole.hasRole || BuurtaanpakCoordinatorRole.hasRole)) && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={home} />
             </div>
@@ -92,7 +92,7 @@ const SidebarMenuSmall = ({ permissions, administrations, keyUserRole, Projectma
             </div>
         )}
         {/* Administraties */}
-        {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
+        {(permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (keyUserRole.hasRole || FinancieelMedewerkerRole.hasRole || FinancieelControllerRole.hasRole)) && (
             <div className="sidebar-menu-small-item">
                 <SvgIcon size={20} icon={ic_business_center} />
             </div>
@@ -127,8 +127,10 @@ const mapStateToProps = state => {
         ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
         EnergieAdviseurRole: state.meDetails.roles.find(role => role.name === 'Energie adviseur'),
         MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
+        BuurtaanpakManagerRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
+        BuurtaanpakCoordinatorRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
+        FinancieelMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Financieel medewerker'),
+        FinancieelControllerRole: state.meDetails.roles.find(role => role.name === 'Financieel controller'),
     };
 };
 

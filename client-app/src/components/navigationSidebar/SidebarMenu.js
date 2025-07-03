@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManager, BuurtaanpakCoordinator }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManagerRole, BuurtaanpakCoordinatorRole, FinancieelMedewerkerRole, FinancieelControllerRole }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -186,7 +186,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManager.hasRole || BuurtaanpakCoordinator.hasRole)) && (
+            {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManagerRole.hasRole || BuurtaanpakCoordinatorRole.hasRole)) && (
                 <Nav id="energy-saving">
                     <NavIcon>
                         <SvgIcon size={20} icon={home} />
@@ -466,7 +466,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
+            {(permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (keyUserRole.hasRole || FinancieelMedewerkerRole.hasRole || FinancieelControllerRole.hasRole)) && (
                 <Nav id="financial">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_business_center} />
@@ -727,8 +727,10 @@ const mapStateToProps = state => {
         ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
         EnergieAdviseurRole: state.meDetails.roles.find(role => role.name === 'Energie adviseur'),
         MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
+        BuurtaanpakManagerRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
+        BuurtaanpakCoordinatorRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
+        FinancieelMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Financieel medewerker'),
+        FinancieelControllerRole: state.meDetails.roles.find(role => role.name === 'Financieel controller'),
     };
 };
 

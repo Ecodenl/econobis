@@ -179,6 +179,26 @@ class UserDetailsFormRoleViewItem extends Component {
                             />
                         </>
                     )}
+                    {name === 'Financieel controller' && (
+                        <>
+                            &nbsp;&nbsp;
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={
+                                    'Als deze rol wordt toegewezen krijgt de gebruiker in het linkermenu de optie Financieel en in het rechtermenu op de contactpagina de opties Orders en Nota’s te zien . De rol Financieel medewerker mag contacten, orders en nota;s wijzigingen en verwijderen. De financieel controller mag ook projecten wijzigen.'
+                                }
+                                data-for={`tooltip-note`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-note`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    )}
                 </span>
             </div>
         );

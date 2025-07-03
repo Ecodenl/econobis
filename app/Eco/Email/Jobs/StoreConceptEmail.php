@@ -11,7 +11,7 @@ namespace App\Eco\Email\Jobs;
 
 use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 
 class StoreConceptEmail
 {
@@ -31,8 +31,8 @@ class StoreConceptEmail
     {
         $email = new Email($this->data);
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;;
         $subject = $email->subject;
         if(!empty($subject)){
             $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);

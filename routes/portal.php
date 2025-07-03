@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\Api\Setting\SettingController;
+use App\Http\Controllers\Api\PortalSettings\PortalSettingController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
@@ -48,8 +48,8 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::post('/project/participant/{participantProject}/update', 'ParticipationProject\ParticipationProjectController@update');
 
-        Route::get('setting', '\\' . SettingController::class . '@get');
-        Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
+        Route::get('setting', '\\' . PortalSettingController::class . '@get');
+        Route::get('setting/multiple', '\\' . PortalSettingController::class . '@multiple');
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 

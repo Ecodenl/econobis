@@ -146,7 +146,27 @@ class UserDetailsFormRoleViewItem extends Component {
                                 color={'blue'}
                                 size={'15px'}
                                 data-tip={
-                                    'Als deze rol wordt toegewezen, wordt voor de gebruiker in het linkermenu de optie Energiebesparing zichtbaar en kan de gebruiker de functionaliteiten Energiebesparing gebruiken. Ook worden voor de gebruiker op de Contactpagina in het rechtermenu de onderdelen Intakes, Kansen en Woningdossiers zichtbaar en te gebruiken. Een gebruiker met de rol Marketing medewerker kan Contactgegevens inzien maar niet toevoegen, wijzigingen of verwijderen. Deze gebruiker kan wel Intakes, Kansen en Woningdossiers toevoegen, wijzigen of verwijderen bij het Contact.'
+                                    'Als deze rol wordt toegewezen krijgt de gebruiker in het linkermenu de optie Energiebesparing en in het rechtermenu op de contactpagina de opties Intakes, Kansen en Woningdossiers te zien . De rol Marketing medewerker mag contacten wijzigingen en verwijderen. Intakes, Kansen en Woningdossiers mogen niet worden toegevoegd, gewijzigd of verwijderd worden. De gebruiker met de rol Marketing medewerker mag Campagnes aanmaken.'
+                                }
+                                data-for={`tooltip-note`}
+                            />
+                            <ReactTooltip
+                                id={`tooltip-note`}
+                                effect="float"
+                                place="right"
+                                multiline={true}
+                                aria-haspopup="true"
+                            />
+                        </>
+                    )}
+                    {name === 'Financieel medewerker' && (
+                        <>
+                            &nbsp;&nbsp;
+                            <FaInfoCircle
+                                color={'blue'}
+                                size={'15px'}
+                                data-tip={
+                                    'Als deze rol wordt toegewezen krijgt de gebruiker in het linkermenu de optie Financieel en in het rechtermenu op de contactpagina de opties Orders en Nota’s te zien . De rol Financieel medewerker mag contacten, orders en nota;s wijzigingen en verwijderen.'
                                 }
                                 data-for={`tooltip-note`}
                             />

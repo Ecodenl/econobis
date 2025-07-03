@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Link, Redirect, useHistory} from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 
 import { AuthConsumer } from '../../../context/AuthContext';
 import LoginForm from './Form';
@@ -9,8 +9,9 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
-import MeAPI from "../../../api/general/MeAPI";
+import MeAPI from '../../../api/general/MeAPI';
 
+import { generateCodeChallenge, generateCodeVerifier } from '../../../utils/pkceUtils';
 export default props => {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
@@ -58,26 +59,50 @@ export default props => {
         })();
     }, []);
 
-    function handleSubmit(values, actions, login) {
-        AuthAPI.login(values)
-            .then(payload => {
-                toggleError(false);
-                login(payload.data, () => {
-                    MeAPI.fetchTwoFactorStatus().then(payload => {
-                        if(payload.data.hasTwoFactorEnabled && !payload.data.hasValidToken) {
-                            history.push('/two-factor/confirm');
-                            return;
-                        }
+    // function handleSubmit(values, actions, login) {
+    //     AuthAPI.login(values)
+    //         .then(payload => {
+    //             toggleError(false);
+    //             login(payload.data, () => {
+    //                 MeAPI.fetchTwoFactorStatus().then(payload => {
+    //                     if(payload.data.hasTwoFactorEnabled && !payload.data.hasValidToken) {
+    //                         history.push('/two-factor/confirm');
+    //                         return;
+    //                     }
+    //
+    //                     toggleRedirect(true)
+    //                 });
+    //             });
+    //         })
+    //         .catch(error => {
+    //             // If login fails show error and then set submitting back to false
+    //             toggleError(true);
+    //             actions.setSubmitting(false);
+    //         });
+    // }
 
-                        toggleRedirect(true)
-                    });
-                });
-            })
-            .catch(error => {
-                // If login fails show error and then set submitting back to false
-                toggleError(true);
-                actions.setSubmitting(false);
-            });
+    function handlePkceLogin() {
+        const state = crypto.randomUUID();
+        const verifier = generateCodeVerifier();
+        const challenge = generateCodeChallenge(verifier);
+
+        // Save verifier & state temporarily (e.g. in localStorage or sessionStorage)
+        sessionStorage.setItem('pkce_verifier', verifier);
+        sessionStorage.setItem('pkce_state', state);
+
+        const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID_PORTAL;
+        const redirectUri = `${window.location.origin}/login/callback`;
+
+        const authorizeUrl = new URL(`${process.env.REACT_APP_API_BASE}/oauth/authorize`);
+        authorizeUrl.searchParams.set('client_id', clientId);
+        authorizeUrl.searchParams.set('redirect_uri', redirectUri);
+        authorizeUrl.searchParams.set('response_type', 'code');
+        authorizeUrl.searchParams.set('scope', '');
+        authorizeUrl.searchParams.set('state', state);
+        authorizeUrl.searchParams.set('code_challenge', challenge);
+        authorizeUrl.searchParams.set('code_challenge_method', 'S256');
+
+        window.location.href = authorizeUrl.toString();
     }
 
     function redirect() {
@@ -113,7 +138,7 @@ export default props => {
                                         </React.Fragment>
                                     ) : !isLoading ? (
                                         <React.Fragment>
-                                            <LoginForm handleSubmit={handleSubmit} login={login} />
+                                            <LoginForm handleSubmit={handlePkceLogin} login={login} />
                                             {showError ? (
                                                 <Row className="justify-content-center">
                                                     <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>

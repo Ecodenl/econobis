@@ -8,7 +8,10 @@ const AuthAPI = {
         const codeChallenge = await generateCodeChallenge(codeVerifier);
 
         localStorage.setItem('pkce_code_verifier', codeVerifier);
-        console.log('startLoginWithPKCE');
+        console.log('startLoginWithPKCE client-app', {
+            username,
+            codeChallenge,
+        });
         const response = await axios.post(
             `${getApiUrl()}/pkce-login`,
             {

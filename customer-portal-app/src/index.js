@@ -15,8 +15,8 @@ const root = createRoot(container); // createRoot(container!) if you use TypeScr
 root.render(<App />);
 
 // Server data is set and can now removed
-// var serverDataScript = document.getElementById('server-data');
-// serverDataScript.remove();
+var serverDataScript = document.getElementById('server-data');
+serverDataScript.remove();
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

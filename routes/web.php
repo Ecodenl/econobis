@@ -27,7 +27,7 @@ Route::get('/client-version', function () {
 
 Route::get('/auth/callback', function (\Illuminate\Http\Request $request) {
 // todo WM: opschonen
-    Log::info('KKKKKKKKKKKKKKKKKomen we hier langs?');
+    Log::info('Client-app callback - Komen we hier langs?');
     $query = http_build_query([
         'code' => $request->get('code'),
         'state' => $request->get('state'),

@@ -54,7 +54,7 @@ class CreatePkceClients extends Command
                 false,
             );
             $this->info("Portal-app client aangemaakt met ID: {$portalAppClient->id}");
-            $this->appendToEnvIfMissing('OAUTH_PORTAL_CLIENT_ID', $portalAppClient->id);
+            $this->appendToEnvIfMissing('OAUTH_CLIENT_ID_PORTAL', $portalAppClient->id);
         }
 
         Artisan::call('config:cache');

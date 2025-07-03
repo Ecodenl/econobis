@@ -1,53 +1,57 @@
-import axios from 'axios';
-
-const AUTH_KEY = {
-    client_id: window.__SERVER_DATA__.client_id,
-    client_secret: window.__SERVER_DATA__.client_key,
-    grant_type: 'password',
-};
-
-const BASE_URL = window.__SERVER_DATA__.base_url;
+import axiosInstance from '../../default-setup/AxiosInstance';
+import { getApiUrl } from '../../utils/LoginRouteFields';
+import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkceUtils';
 
 export default {
+    startLoginWithPKCE: async (username, password) => {
+        const codeVerifier = generateCodeVerifier();
+        const codeChallenge = await generateCodeChallenge(codeVerifier);
+
+        localStorage.setItem('pkce_code_verifier', codeVerifier);
+        console.log('startLoginWithPKCE portal', {
+            username,
+            codeChallenge,
+        });
+
+        const response = await axiosInstance.post(
+            `${getApiUrl()}/pkce-login`,
+            {
+                username,
+                password,
+                code_challenge: codeChallenge,
+                code_challenge_method: 'S256',
+            },
+            { withCredentials: true }
+        );
+
+        localStorage.setItem('client_id', response.data.client_id);
+        localStorage.setItem('redirect_uri', response.data.redirect_uri);
+
+        window.location.href = response.data.authorize_url;
+    },
+
     newAccount: payload => {
-        const requestUrl = `${BASE_URL}/new-account`;
-        delete axios.defaults.headers.common['Authorization'];
-
-        return axios.post(requestUrl, payload);
+        const requestUrl = `${getApiUrl()}/new-account`;
+        return axiosInstance.post(requestUrl, payload);
     },
+
     newAccountSuccess: payload => {
-        const requestUrl = `${BASE_URL}/new-account-success`;
-        delete axios.defaults.headers.common['Authorization'];
-
-        return axios.post(requestUrl, payload);
-    },
-
-    login: loginCredentials => {
-        const requestUrl = `${BASE_URL}/oauth/token`;
-        delete axios.defaults.headers.common['Authorization'];
-        console.log('Debug portal ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
-        console.log(AUTH_KEY);
-        return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
+        const requestUrl = `${getApiUrl()}/new-account-success`;
+        return axiosInstance.post(requestUrl, payload);
     },
 
     register: payload => {
-        const requestUrl = `${BASE_URL}/register`;
-        delete axios.defaults.headers.common['Authorization'];
-
-        return axios.post(requestUrl, payload);
+        const requestUrl = `${getApiUrl()}/register`;
+        return axiosInstance.post(requestUrl, payload);
     },
 
     forgot: email => {
-        const requestUrl = `${BASE_URL}/password/email`;
-        delete axios.defaults.headers.common['Authorization'];
-
-        return axios.post(requestUrl, email);
+        const requestUrl = `${getApiUrl()}/password/email`;
+        return axiosInstance.post(requestUrl, email);
     },
 
     reset: payload => {
-        const requestUrl = `${BASE_URL}/password/reset`;
-        delete axios.defaults.headers.common['Authorization'];
-
-        return axios.post(requestUrl, payload);
+        const requestUrl = `${getApiUrl()}/password/reset`;
+        return axiosInstance.post(requestUrl, payload);
     },
 };

@@ -175,7 +175,11 @@ return [
 
     'url_api' => env('URL_API', env('APP_URL')),
     'oauth_client_id' => env('OAUTH_CLIENT_ID', 3),
+    'oauth_client_id_portal' => env('OAUTH_CLIENT_ID_PORTAL', 4),
     'oauth_client_id_local' => env('OAUTH_CLIENT_ID_LOCAL', 5),
+    'oauth_client_id_portal_local' => env('OAUTH_CLIENT_ID_PORTAL_LOCAL', 6),
+//    'portal_redirect' => env('PORTAL_REDIRECT'),
+//    'portal_redirect_local' => env('PORTAL_REDIRECT_LOCAL'),
 
     // //locale (linux/windows verschil)
     'LC_TIME' => env('LC_TIME', 'nl_NL.utf8'),

@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Api\Setting\SettingController;
+use App\Http\Controllers\Portal\Auth\PkceLoginController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('/client-version', function () {
@@ -9,6 +11,18 @@ Route::get('/client-version', function () {
         'version' => config('app.version_major') . '.' . config('app.version_minor') . '.' . config('app.version_fix'),
     ]);
 });
+
+Route::get('/auth/callback', function (\Illuminate\Http\Request $request) {
+// todo WM: opschonen
+    Log::info('Portal-app callback - Komen we hier langs?');
+    $query = http_build_query([
+        'code' => $request->get('code'),
+        'state' => $request->get('state'),
+    ]);
+    return redirect("/portal/#/auth/callback?$query");
+});
+
+Route::post('/pkce-login', [PkceLoginController::class, 'login']);
 
 Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');

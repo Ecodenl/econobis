@@ -34,7 +34,8 @@ class ProjectController extends ApiController
 
         $this->authorize('view', Project::class);
 
-        $projects = $requestQuery->get();
+        $projectsQuery = $requestQuery->getQuery();
+        $projects = $projectsQuery->whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->get();
 
         $projects->load([
             'projectType',
@@ -42,7 +43,7 @@ class ProjectController extends ApiController
 
         return GridProject::collection($projects)
             ->additional(['meta' => [
-            'total' => $requestQuery->total(),
+            'total' => $projects->count(),
             ]
         ]);
     }
@@ -52,6 +53,8 @@ class ProjectController extends ApiController
         set_time_limit(60);
 
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $this->authorize('view', Project::class);
 
@@ -385,6 +388,8 @@ class ProjectController extends ApiController
     {
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
 
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $this->authorize('manage', Project::class);
 
         try {
@@ -410,7 +415,7 @@ class ProjectController extends ApiController
     {
 //        $this->authorize('view', Project::class);
         if(Auth::user()->hasPermissionTo('view_project', 'api')){
-            $projects = Project::orderBy('name')->orderBy('id')->get();
+            $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
         } else {
             $projects = new Collection();
         }
@@ -423,6 +428,8 @@ class ProjectController extends ApiController
     public function getObligationNumbers(Project $project)
     {
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $this->authorize('view', Project::class);
 
@@ -439,6 +446,8 @@ class ProjectController extends ApiController
     {
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
 
+        if (!in_array(Project::find($id)->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $this->authorize('view', Project::class);
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
@@ -449,11 +458,13 @@ class ProjectController extends ApiController
 
         $this->authorize('view', Project::class);
 
-        return Project::whereIn('project_status_id', [1,2])->pluck('id');
+        return Project::whereIn('project_status_id', [1,2])->whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->pluck('id');
     }
 
     public function getChartData(Project $project){
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $this->authorize('view', Project::class);
 
@@ -474,6 +485,8 @@ class ProjectController extends ApiController
 
     public function getChartDataParticipations(Project $project){
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $this->authorize('view', Project::class);
 
@@ -501,6 +514,8 @@ class ProjectController extends ApiController
 
     public function getChartDataStatus(Project $project){
         if(Auth::user()->roles()->whereIn('name', ['Beheerder', 'Projectmedewerker', 'Participatie medewerker'])->count() === 0) abort(403);
+
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $this->authorize('view', Project::class);
 

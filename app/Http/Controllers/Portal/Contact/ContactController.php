@@ -31,7 +31,7 @@ use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
 use App\Helpers\Document\DocumentHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
@@ -66,7 +66,7 @@ class ContactController extends ApiController
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
@@ -157,7 +157,7 @@ class ContactController extends ApiController
 
         // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
         // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden.');
         }
@@ -372,7 +372,7 @@ class ContactController extends ApiController
             });
         })->orderBy('name')->get();
         if($administrations->count() == 0){
-            $defaultAdministrationId = PortalSettings::get('defaultAdministrationId');
+            $defaultAdministrationId = PortalSettings::first()?->default_administration_id;
             if(!empty($defaultAdministrationId)){
                 $administrations = Administration::whereId($defaultAdministrationId)->get();
             }
@@ -682,8 +682,8 @@ class ContactController extends ApiController
             $noteAddress = $noteAddress . "Nieuwe EAN gas: " . $address->ean_gas . "\n";
         }
         if(!empty($noteAddress)){
-            $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-            $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+            $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+            $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
             $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
             if($taskTypeForPortal) {
@@ -809,8 +809,8 @@ class ContactController extends ApiController
         }
 
         if($addressEnergySupplierChanged) {
-            $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-            $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+            $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+            $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
             $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
             if ($taskTypeForPortal) {
@@ -907,8 +907,8 @@ class ContactController extends ApiController
             $note = $note . "Nieuwe IBAN t.n.v.: " . $contact->iban_attn . "\n";
         }
 
-        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+        $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
         $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
         if($taskTypeForPortal) {

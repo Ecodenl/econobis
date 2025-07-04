@@ -36,7 +36,7 @@ use App\Helpers\Excel\ParticipantExcelHelper;
 use App\Helpers\Excel\ParticipantExcelHelperHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -777,8 +777,8 @@ class ParticipationProjectController extends ApiController
 
         $participantIds = $request->input('participantIds');
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -914,8 +914,8 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 

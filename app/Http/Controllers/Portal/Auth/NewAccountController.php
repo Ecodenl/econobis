@@ -13,7 +13,7 @@ use App\Eco\Person\Person;
 use App\Eco\Portal\PortalUser;
 use App\Eco\Title\Title;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Portal\Templates\PortalMail;
@@ -79,11 +79,11 @@ class NewAccountController extends Controller
 
         if($resultJson->success) {
             // Voor aanmaak van Contact wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if (!$responsibleUserId) {
                 abort(501, 'Er is helaas een fout opgetreden (5).');
             }
-            $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
+            $emailTemplateNewAccountId = PortalSettings::first()?->email_template_new_account_id;
             if (!$emailTemplateNewAccountId) {
                 abort(501, 'Er is helaas een fout opgetreden (6).');
             }
@@ -246,7 +246,7 @@ class NewAccountController extends Controller
 
             return $contactPerson;
         }
-        $contactResponsibleOwnerUserId = PortalSettings::get('contactResponsibleOwnerUserId');
+        $contactResponsibleOwnerUserId = PortalSettings::first()?->contact_responsible_owner_user_id;
 
         $contact = Contact::create([
             'type_id' => ContactType::PERSON,
@@ -311,8 +311,8 @@ class NewAccountController extends Controller
             $htmlBody = $emailTemplate->html_body;
         }
 
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
         $subject = str_replace('{contactpersoon}', $contact->full_name, $subject);

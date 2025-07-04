@@ -3,27 +3,36 @@
 namespace App\Providers;
 
 use App\Mail\MailManager;
+use Illuminate\Contracts\Events\Dispatcher as LaravelDispatcher;
 use Illuminate\Mail\MailServiceProvider;
 use Illuminate\Support\Facades\Mail;
 use InnoGE\LaravelMsGraphMail\MicrosoftGraphTransport;
 use InnoGE\LaravelMsGraphMail\Services\MicrosoftGraphApiService;
+use Psr\EventDispatcher\EventDispatcherInterface;
 
 class CustomMailServiceProvider extends MailServiceProvider
 {
-    /**
-     * Register the Illuminate mailer instance.
-     *
-     * @return void
-     */
-    protected function registerIlluminateMailer()
+    public function register()
     {
-        // Een vieze truc: tbv werkend maken mailgun-mailer package op servers: hier maar CURL_SSLVERSION_TLSv1_2 definieren.
-        // om 1 of andere reden hebben we op server (vps9 en vps10) geen toegang tot php.jar/stubs/curl/curl_d.php ?!
-        // daar word o.a. dus CURL_SSLVERSION_TLSv1_2 = 6 gedefinieerd.
-        if (!defined('CURL_SSLVERSION_TLSv1_2')) {
-            define('CURL_SSLVERSION_TLSv1_2', 6);
-        }
+        // Bind PSR EventDispatcher naar Laravel dispatcher
+        $this->app->singleton(EventDispatcherInterface::class, function ($app) {
+            return new class($app['events']) implements EventDispatcherInterface {
+                private LaravelDispatcher $dispatcher;
 
+                public function __construct(LaravelDispatcher $dispatcher)
+                {
+                    $this->dispatcher = $dispatcher;
+                }
+
+                public function dispatch(object $event): object
+                {
+                    $this->dispatcher->dispatch($event);
+                    return $event;
+                }
+            };
+        });
+
+        // Bind mail manager en mailer
         $this->app->singleton('mail.manager', function ($app) {
             return new MailManager($app);
         });
@@ -32,11 +41,14 @@ class CustomMailServiceProvider extends MailServiceProvider
             return $app->make('mail.manager')->mailer();
         });
 
-        /**
-         * Custom microsoft-graph driver in LaravelMsGraphMailServiceProvider is voor
-         * ons niet bruikbaar omdat we de config dynamisch uit de database halen.
-         * Daarom hier een custom transport toegevoegd die dit wel ondersteunt.
-         */
+        // Fix voor cURL TLS versie
+        if (!defined('CURL_SSLVERSION_TLSv1_2')) {
+            define('CURL_SSLVERSION_TLSv1_2', 6);
+        }
+    }
+
+    public function boot()
+    {
         Mail::extend('microsoft-graph-custom', function (array $config) {
             return new MicrosoftGraphTransport(
                 new MicrosoftGraphApiService(
@@ -45,7 +57,7 @@ class CustomMailServiceProvider extends MailServiceProvider
                     clientSecret: $config['microsoft_graph_client_secret'],
                     accessTokenTtl: 0,
                 ),
-                $config['from']['address']
+                app(EventDispatcherInterface::class) // Correcte PSR dispatcher
             );
         });
     }

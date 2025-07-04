@@ -18,7 +18,7 @@ use App\Helpers\Delete\Models\DeleteRevenueDistributionKwh;
 use App\Helpers\Delete\Models\DeleteRevenuesKwh;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\RequestInput\RequestInput;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateTableHelper;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -500,8 +500,8 @@ class RevenuesKwhController extends ApiController
     public function previewEmail(Request $request, RevenueDistributionKwh $distributionKwh)
     {
         $subject = $request->input('subject');
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 
@@ -657,8 +657,8 @@ class RevenuesKwhController extends ApiController
 
     public function createParticipantRevenueReport($subject, $distributionKwhId, ?DocumentTemplate $documentTemplate, EmailTemplate $emailTemplate, $showOnPortal)
     {
-        $portalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
+        $portalName = PortalSettings::first()?->portal_name;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
         $subject = str_replace('{cooperatie_portal_naam}', $portalName, $subject);
         $subject = str_replace('{cooperatie_naam}', $cooperativeName, $subject);
 

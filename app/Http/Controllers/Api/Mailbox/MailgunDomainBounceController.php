@@ -18,7 +18,7 @@ class MailgunDomainBounceController
 
         $mailgunClient = Mailgun::create($mailgunDomain->secret, 'https://' . config('services.mailgun.endpoint'));
 
-        $fetchedBounces = $mailgunClient->suppressions()->bounces()->index($mailgunDomain->domain)->getItems();
+        $fetchedBounces = $mailgunClient->suppressions()->bounces()->index($mailgunDomain->domain, 1000)->getItems();
 
         return collect($fetchedBounces)->map(function ($bounce) {
             return [

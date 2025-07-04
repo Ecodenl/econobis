@@ -20,48 +20,22 @@ class PortalSettingsApp extends Component {
     }
 
     componentDidMount() {
-        this.callFetchPortalSettings();
+        this.callFetchPortalSettingsDetails();
     }
 
-    callFetchPortalSettings = () => {
+    callFetchPortalSettingsDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        const keys =
-            '?keys[]=portalActive' +
-            '&keys[]=portalName' +
-            '&keys[]=cooperativeName' +
-            '&keys[]=portalWebsite' +
-            '&keys[]=portalUrl' +
-            // '&keys[]=backgroundColor' +
-            // '&keys[]=backgroundTextColor' +
-            // '&keys[]=backgroundImageColor' +
-            // '&keys[]=backgroundImageTextColor' +
-            // '&keys[]=headerPortalIconColor' +
-            // '&keys[]=backgroundSecondaryColor' +
-            // '&keys[]=backgroundSecondaryTextColor' +
-            // '&keys[]=buttonColor' +
-            // '&keys[]=buttonTextColor' +
-            '&keys[]=responsibleUserId' +
-            '&keys[]=checkContactTaskResponsibleUserId' +
-            '&keys[]=checkContactTaskResponsibleTeamId' +
-            '&keys[]=contactResponsibleOwnerUserId' +
-            '&keys[]=emailTemplateNewAccountId' +
-            '&keys[]=linkPrivacyPolicy' +
-            '&keys[]=showNewAtCooperativeLink' +
-            '&keys[]=newAtCooperativeLinkText' +
-            '&keys[]=defaultContactGroupMemberId' +
-            '&keys[]=defaultContactGroupNoMemberId' +
-            '&keys[]=defaultAdministrationId' +
-            '&keys[]=pcrPowerKwhConsumptionPercentage' +
-            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
-        PortalSettingsAPI.fetchPortalSettings(keys)
+
+        // todo WM: check / anders
+        //
+        const portalSettingsId = 1;
+
+        PortalSettingsAPI.fetchPortalSettingsDetails(portalSettingsId)
             .then(payload => {
                 this.setState({
                     isLoading: false,
                     portalSettings: {
-                        ...payload.data,
-                        portalActive: payload.data.portalActive == 'true',
-                        showNewAtCooperativeLink: payload.data.showNewAtCooperativeLink == 'true',
-                        pcrPowerKwhConsumptionPercentage: payload.data.pcrPowerKwhConsumptionPercentage * 100,
+                        ...payload.data.data,
                     },
                 });
             })
@@ -74,9 +48,6 @@ class PortalSettingsApp extends Component {
         this.setState({
             portalSettings: {
                 ...portalSettings,
-                portalActive: portalSettings.portalActive == 'true',
-                showNewAtCooperativeLink: portalSettings.showNewAtCooperativeLink == 'true',
-                pcrPowerKwhConsumptionPercentage: portalSettings.pcrPowerKwhConsumptionPercentage * 100,
             },
         });
     };

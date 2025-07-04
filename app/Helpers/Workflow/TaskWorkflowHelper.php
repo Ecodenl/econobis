@@ -5,7 +5,7 @@ namespace App\Helpers\Workflow;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\Mail;
@@ -20,7 +20,7 @@ class TaskWorkflowHelper
         $this->contact = $task->contact;
         $this->responsibleUser = $task->responsibleUser;
         $this->responsibleTeam = $task->responsibleTeam;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;;
 
     }
 

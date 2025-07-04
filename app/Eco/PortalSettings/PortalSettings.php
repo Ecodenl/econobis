@@ -16,6 +16,7 @@ class PortalSettings extends Model
     protected $casts = [
         'portal_active' => 'boolean',
         'show_new_at_cooperative_link' => 'boolean',
+        'show_allow_request_for_delete' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

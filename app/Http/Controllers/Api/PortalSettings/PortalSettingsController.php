@@ -31,7 +31,6 @@ class PortalSettingsController extends Controller
 
     public function update(PortalSettings $portalSettings, RequestInput $input, Request $request)
     {
-
         $this->authorize('manage', PortalSettings::class);
 
         // Alleen bij eerste aanmaak (portal_url is nog leeg) en als groepen niet opgegeven zijn,
@@ -73,6 +72,8 @@ class PortalSettingsController extends Controller
             ->string('linkPrivacyPolicy')->onEmpty(null)->alias('link_privacy_policy')->next()
             ->boolean('showNewAtCooperativeLink')->onEmpty(false)->alias('show_new_at_cooperative_link')->next()
             ->string('newAtCooperativeLinkText')->onEmpty(null)->alias('new_at_cooperative_link_text')->next()
+            ->boolean('showAllowRequestForDelete')->onEmpty(false)->alias('show_allow_request_for_delete')->next()
+            ->string('allowRequestForDeleteButtonText')->onEmpty(null)->alias('allow_request_for_delete_button_text')->next()
             ->double('pcrPowerKwhConsumptionPercentage')->onEmpty(null)->alias('pcr_power_kwh_consumption_percentage')->next()
             ->double('pcrGeneratingCapacityOneSolorPanel')->onEmpty(null)->alias('pcr_generating_capacity_one_solor_panel')->next()
             // Gebruik meegegeven ID, of fallback naar automatisch aangemaakte groep bij eerste keer (als portal_url nog leeg was)

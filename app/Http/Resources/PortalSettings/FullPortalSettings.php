@@ -9,7 +9,6 @@
 namespace App\Http\Resources\PortalSettings;
 
 
-use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboardWidget;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullPortalSettings extends JsonResource
@@ -31,6 +30,8 @@ class FullPortalSettings extends JsonResource
             'linkPrivacyPolicy' => $this->link_privacy_policy,
             'showNewAtCooperativeLink' => $this->show_new_at_cooperative_link,
             'newAtCooperativeLinkText' => $this->new_at_cooperative_link_text,
+            'showAllowRequestForDelete' => $this->show_allow_request_for_delete,
+            'allowRequestForDeleteButtonText' => $this->allow_request_for_delete_button_text,
             'pcrPowerKwhConsumptionPercentage' => $this->pcr_power_kwh_consumption_percentage,
             'pcrGeneratingCapacityOneSolorPanel' => $this->pcr_generating_capacity_one_solor_panel,
             'defaultContactGroupMemberId' => $this->default_contact_group_member_id,

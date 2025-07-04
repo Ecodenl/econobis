@@ -34,6 +34,8 @@ class PortalSettingsJoryResource extends JoryResource
         $this->field('link_privacy_policy')->filterable()->sortable();
         $this->field('show_new_at_cooperative_link')->filterable()->sortable();
         $this->field('new_at_cooperative_link_text')->filterable()->sortable();
+        $this->field('show_allow_request_for_delete')->filterable()->sortable();
+        $this->field('allow_request_for_delete_button_text')->filterable()->sortable();
         $this->field('pcr_power_kwh_consumption_percentage')->filterable()->sortable();
         $this->field('pcr_generating_capacity_one_solor_panel')->filterable()->sortable();
         $this->field('default_contact_group_member_id')->filterable()->sortable();

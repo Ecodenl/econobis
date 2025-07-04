@@ -24,6 +24,8 @@ export default {
                         'linkPrivacyPolicy',
                         'showNewAtCooperativeLink',
                         'newAtCooperativeLinkText',
+                        'showAllowRequestForDelete',
+                        'allowRequestForDeleteButtonText',
                         'pcrPowerKwhConsumptionPercentage',
                         'pcrGeneratingCapacityOneSolorPanel',
                         'defaultContactGroupMemberId',

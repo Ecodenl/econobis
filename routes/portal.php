@@ -8,6 +8,8 @@ Route::get('setting/portal-active', 'PortalSettings\PortalSettingsController@get
 Route::get('setting/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
 Route::get('setting/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
 Route::get('setting/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
+Route::get('setting/show-allow-request-for-delete', 'PortalSettings\PortalSettingsController@getShowAllowRequestForDeletenk');
+Route::get('setting/allow-request-for-delete-button-text', 'PortalSettings\PortalSettingsController@getAllowRequestForDeleteButtonText');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');

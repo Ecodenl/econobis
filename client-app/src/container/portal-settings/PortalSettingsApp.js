@@ -36,9 +36,6 @@ class PortalSettingsApp extends Component {
                     isLoading: false,
                     portalSettings: {
                         ...payload.data.data,
-                        // portalActive: payload.data.data.portalActive == 'true',
-                        // showNewAtCooperativeLink: payload.data.data.showNewAtCooperativeLink == 'true',
-                        pcrPowerKwhConsumptionPercentage: payload.data.data.pcrPowerKwhConsumptionPercentage,
                     },
                 });
             })
@@ -51,9 +48,6 @@ class PortalSettingsApp extends Component {
         this.setState({
             portalSettings: {
                 ...portalSettings,
-                // portalActive: portalSettings.portalActive == 'true',
-                // showNewAtCooperativeLink: portalSettings.showNewAtCooperativeLink == 'true',
-                pcrPowerKwhConsumptionPercentage: portalSettings.pcrPowerKwhConsumptionPercentage,
             },
         });
     };

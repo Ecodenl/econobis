@@ -27,8 +27,13 @@ class PortalSettingsController extends Controller
 
         return !empty($newAtCooperativeLinkText) ? $newAtCooperativeLinkText : false;
     }
-
-
-
+    protected function getShowAllowRequestForDelete()
+    {
+        return PortalSettings::first()?->show_allow_request_for_delete ? PortalSettings::first()?->show_allow_request_for_delete : false;
+    }
+    protected function getAllowRequestForDeleteButtonText()
+    {
+        return  PortalSettings::first()?->allow_request_for_delete_button_text ? PortalSettings::first()?->allow_request_for_delete_button_text : '';
+    }
 
 }

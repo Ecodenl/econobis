@@ -3,8 +3,9 @@
 namespace App\Http\JoryResources;
 
 use App\Eco\PortalSettings\PortalSettings;
-use App\Http\Controllers\Api\PortalSettings\PortalSettingController;
+use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
 use App\Http\JoryResources\Base\JoryResource;
+use Illuminate\Support\Facades\Log;
 
 class PortalSettingsJoryResource extends JoryResource
 {
@@ -12,7 +13,7 @@ class PortalSettingsJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        $portalSettingsController = new PortalSettingController();
+        $portalSettingsController = new PortalSettingsController();
         $portalSettingsController->authorize('view', PortalSettings::class);
     }
 
@@ -20,24 +21,24 @@ class PortalSettingsJoryResource extends JoryResource
     {
         // Fields
         $this->field('id')->filterable()->sortable();
-        $this->field('portalActive')->filterable()->sortable();
-        $this->field('portalName')->filterable()->sortable();
-        $this->field('cooperativeName')->filterable()->sortable();
-        $this->field('portalWebsite')->filterable()->sortable();
-        $this->field('portalUrl')->filterable()->sortable();
-        $this->field('responsibleUserId')->filterable()->sortable();
-        $this->field('contactResponsibleOwnerUserId')->filterable()->sortable();
-        $this->field('checkContactTaskResponsibleUserId')->filterable()->sortable();
-        $this->field('checkContactTaskResponsibleTeamId')->filterable()->sortable();
-        $this->field('emailTemplateNewAccountId')->filterable()->sortable();
-        $this->field('linkPrivacyPolicy')->filterable()->sortable();
-        $this->field('showNewAtCooperativeLink')->filterable()->sortable();
-        $this->field('newAtCooperativeLinkText')->filterable()->sortable();
-        $this->field('pcrPowerKwhConsumptionPercentage')->filterable()->sortable();
-        $this->field('pcrGeneratingCapacityOneSolorPanel')->filterable()->sortable();
-        $this->field('defaultContactGroupMemberId')->filterable()->sortable();
-        $this->field('defaultContactGroupNoMemberId')->filterable()->sortable();
-        $this->field('defaultAdministrationId')->filterable()->sortable();
+        $this->field('portal_active')->filterable()->sortable();
+        $this->field('portal_name')->filterable()->sortable();
+        $this->field('cooperative_name')->filterable()->sortable();
+        $this->field('portal_website')->filterable()->sortable();
+        $this->field('portal_url')->filterable()->sortable();
+        $this->field('responsible_user_id')->filterable()->sortable();
+        $this->field('contact_responsible_owner_user_id')->filterable()->sortable();
+        $this->field('check_contact_task_responsible_user_id')->filterable()->sortable();
+        $this->field('check_contact_task_responsible_team_id')->filterable()->sortable();
+        $this->field('email_template_new_account_id')->filterable()->sortable();
+        $this->field('link_privacy_policy')->filterable()->sortable();
+        $this->field('show_new_at_cooperative_link')->filterable()->sortable();
+        $this->field('new_at_cooperative_link_text')->filterable()->sortable();
+        $this->field('pcr_power_kwh_consumption_percentage')->filterable()->sortable();
+        $this->field('pcr_generating_capacity_one_solor_panel')->filterable()->sortable();
+        $this->field('default_contact_group_member_id')->filterable()->sortable();
+        $this->field('default_contact_group_no_member_id')->filterable()->sortable();
+        $this->field('default_administration_id')->filterable()->sortable();
 
         // Relations
         $this->relation('responsibleUser');
@@ -53,16 +54,7 @@ class PortalSettingsJoryResource extends JoryResource
     protected function configureForPortal(): void
     {
         // Fields
-//        $this->field('id')->filterable()->sortable();
-//        $this->field('welcome_title')->filterable()->sortable();
-//        $this->field('welcome_message')->filterable()->sortable();
-//        $this->field('default_widget_background_color')->filterable()->sortable();
-//        $this->field('default_widget_text_color')->filterable()->sortable();
-//        $this->field('created_at')->filterable()->sortable();
-//        $this->field('updated_at')->filterable()->sortable();
-//        $this->field('deleted_at')->filterable()->sortable();
 
         // Relations
-//        $this->relation('widgets');
     }
 }

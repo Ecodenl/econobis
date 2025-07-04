@@ -1,13 +1,13 @@
 <?php
 
-use App\Http\Controllers\Api\PortalSettings\PortalSettingController;
+use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
-Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
-Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
-Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
-Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
+Route::get('setting/portal-active', 'PortalSettings\PortalSettingsController@getPortalActive');
+Route::get('setting/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
+Route::get('setting/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
+Route::get('setting/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
@@ -48,8 +48,9 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::post('/project/participant/{participantProject}/update', 'ParticipationProject\ParticipationProjectController@update');
 
-        Route::get('setting', '\\' . PortalSettingController::class . '@get');
-        Route::get('setting/multiple', '\\' . PortalSettingController::class . '@multiple');
+//        Route::get('setting', '\\' . PortalSettingsController::class . '@get');
+//        Route::get('setting/multiple', '\\' . PortalSettingsController::class . '@multiple');
+        Route::get('/portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@get');
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 

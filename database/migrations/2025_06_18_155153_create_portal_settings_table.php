@@ -15,44 +15,6 @@ return new class extends Migration
      */
     public function up(): void
     {
-//            'portalActive',
-//        'portal_active'
-//            'portalName',
-//        'portal_name'
-//            'cooperativeName',
-//        'cooperative_name'
-//            'portalWebsite',
-//        'portal_website'
-//            'portalUrl',
-//        'portal_url'
-//            'responsibleUserId',
-//        'responsible_user_id'
-//            'contactResponsibleOwnerUserId',
-//        'contact_responsible_owner_user_id'
-//            'checkContactTaskResponsibleUserId',
-//        'check_contact_task_responsible_user_id'
-//            'checkContactTaskResponsibleTeamId',
-//        'check_contact_task_responsible_team_id'
-//            'emailTemplateNewAccountId',
-//        'email_template_new_account_id'
-//            'linkPrivacyPolicy',
-//        'link_privacy_policy'
-//            'showNewAtCooperativeLink',
-//        'show_new_at_cooperative_link'
-//            'newAtCooperativeLinkText',
-//        'new_at_cooperative_link_text'
-//            'pcrPowerKwhConsumptionPercentage',
-//        'pcr_power_kwh'
-//            'pcrGeneratingCapacityOneSolorPanel',
-//        'pcr_generating_capacity_one_solor_panel'
-//            'defaultContactGroupMemberId',
-//        'default_contact_group_member_id'
-//            'defaultContactGroupNoMemberId',
-//        'default_contact_group_no_member_id'
-//            'defaultAdministrationId',
-//        'default_administration_id'
-
-
         Schema::create('portal_settings', function (Blueprint $table) {
             $table->id();
 
@@ -85,7 +47,7 @@ return new class extends Migration
             $table->boolean('show_new_at_cooperative_link')->nullable();
             $table->string('new_at_cooperative_link_text')->nullable();
 
-            $table->double('pcr_power_kwh')->nullable();
+            $table->double('pcr_power_kwh_consumption_percentage')->nullable();
             $table->double('pcr_generating_capacity_one_solor_panel')->nullable();
 
             $table->unsignedInteger('default_contact_group_member_id')->nullable();
@@ -127,7 +89,7 @@ return new class extends Migration
                     'link_privacy_policy' => !empty($this->get('linkPrivacyPolicy')) ? $this->get('linkPrivacyPolicy') : null,
                     'show_new_at_cooperative_link' => $showNewAtCooperativeLink,
                     'new_at_cooperative_link_text' => !empty($this->get('newAtCooperativeLinkText')) ? $this->get('newAtCooperativeLinkText') : null,
-                    'pcr_power_kwh' => !empty($this->get('pcrPowerKwhConsumptionPercentage')) ? $this->get('pcrPowerKwhConsumptionPercentage') : null,
+                    'pcr_power_kwh_consumption_percentage' => !empty($this->get('pcrPowerKwhConsumptionPercentage')) ? $this->get('pcrPowerKwhConsumptionPercentage') : null,
                     'pcr_generating_capacity_one_solor_panel' => !empty($this->get('pcrGeneratingCapacityOneSolorPanel')) ? $this->get('pcrGeneratingCapacityOneSolorPanel') : null,
                     'default_contact_group_member_id' => !empty($this->get('defaultContactGroupMemberId')) ? $this->get('defaultContactGroupMemberId') : null,
                     'default_contact_group_no_member_id' => !empty($this->get('defaultContactGroupNoMemberId')) ? $this->get('defaultContactGroupNoMemberId') : null,

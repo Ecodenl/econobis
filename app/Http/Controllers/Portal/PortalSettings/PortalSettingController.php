@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Portal\PortalSettings;
 use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Controller;
 
-class PortalSettingController extends Controller
+class PortalSettingsController extends Controller
 {
     protected function getPortalActive()
     {

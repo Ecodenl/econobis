@@ -20,10 +20,10 @@ class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        this.manageTechnicalPortalSettings =
-            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-                ? true
-                : false;
+        this.manageTechnicalPortalSettings = true;
+        // this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+        //     ? true
+        //     : false;
 
         this.state = {
             portalSettings: {
@@ -96,7 +96,7 @@ class PortalSettingsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(portalSettings.portalUrl)) {
+        if (!portalSettings.portalUrl || validator.isEmpty(portalSettings.portalUrl + '')) {
             errors.portalUrl = true;
             hasErrors = true;
         }
@@ -128,11 +128,11 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')) {
+        if (portalSettings.portalActive && portalSettings.pcrPowerKwhConsumptionPercentage === null) {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
+        if (portalSettings.portalActive && portalSettings.pcrGeneratingCapacityOneSolorPanel === null) {
             errors.pcrGeneratingCapacityOneSolorPanel = true;
             hasErrors = true;
         }
@@ -174,78 +174,30 @@ class PortalSettingsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        const data = new FormData();
-
-        data.append('portalActive', portalSettings.portalActive ? portalSettings.portalActive : false);
-        data.append('portalName', portalSettings.portalName ? portalSettings.portalName : '');
-        data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
-        data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
-        data.append('portalUrl', portalSettings.portalUrl);
-        data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
-        data.append(
-            'checkContactTaskResponsibleUserId',
-            portalSettings.checkContactTaskResponsibleUserId ? portalSettings.checkContactTaskResponsibleUserId : ''
-        );
-        data.append(
-            'checkContactTaskResponsibleTeamId',
-            portalSettings.checkContactTaskResponsibleTeamId ? portalSettings.checkContactTaskResponsibleTeamId : ''
-        );
-        data.append(
-            'contactResponsibleOwnerUserId',
-            portalSettings.contactResponsibleOwnerUserId ? portalSettings.contactResponsibleOwnerUserId : ''
-        );
-        data.append(
-            'emailTemplateNewAccountId',
-            portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
-        );
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
-        data.append(
-            'showNewAtCooperativeLink',
-            portalSettings.showNewAtCooperativeLink ? portalSettings.showNewAtCooperativeLink : false
-        );
-        data.append(
-            'newAtCooperativeLinkText',
-            portalSettings.newAtCooperativeLinkText ? portalSettings.newAtCooperativeLinkText : ''
-        );
-        data.append(
-            'defaultContactGroupMemberId',
-            portalSettings.defaultContactGroupMemberId ? portalSettings.defaultContactGroupMemberId : ''
-        );
-        data.append(
-            'defaultContactGroupNoMemberId',
-            portalSettings.defaultContactGroupNoMemberId ? portalSettings.defaultContactGroupNoMemberId : ''
-        );
-        data.append(
-            'pcrPowerKwhConsumptionPercentage',
-            portalSettings.pcrPowerKwhConsumptionPercentage
-                ? parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100
-                : 0
-        );
-        data.append(
-            'pcrGeneratingCapacityOneSolorPanel',
-            portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0
-        );
-        data.append(
-            'defaultAdministrationId',
-            portalSettings.defaultAdministrationId ? portalSettings.defaultAdministrationId : ''
-        );
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            PortalSettingsAPI.updatePortalSettings(data)
+        if (!hasErrors) {
+            // pcrPowerKwhConsumptionPercentage als factor opslaan
+            portalSettings.pcrPowerKwhConsumptionPercentage =
+                parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100;
+            PortalSettingsAPI.updatePortalSettings(portalSettings)
                 .then(payload => {
-                    this.props.updateState(payload.data);
+                    this.props.updateState(payload.data.data);
                     this.props.fetchSystemData();
                     this.props.peekAdministrations();
                     this.props.fetchStaticContactGroups();
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                        alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    }
                 });
+        }
     };
 
     render() {

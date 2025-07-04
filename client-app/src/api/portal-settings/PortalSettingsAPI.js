@@ -3,8 +3,8 @@ import getAxiosInstance from '../default-setup/AxiosInstance';
 const URL_PORTAL_SETTINGS = `portal-settings`;
 
 export default {
-    fetchPortalSettings: () => {
-        const requestUrl = `jory/portal-settings`;
+    fetchPortalSettingsDetails: id => {
+        const requestUrl = `jory/portal-settings/${id}`;
 
         return getAxiosInstance().get(requestUrl, {
             params: {
@@ -46,7 +46,7 @@ export default {
     },
 
     updatePortalSettings: portalSettings => {
-        const requestUrl = `${URL_PORTAL_SETTINGS}`;
+        const requestUrl = `${URL_PORTAL_SETTINGS}/${portalSettings.id}`;
 
         return getAxiosInstance().post(requestUrl, portalSettings);
     },

@@ -6,14 +6,16 @@ use App\Eco\Administration\Administration;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\Team\Team;
+use App\Eco\User\User;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PortalSettings extends Model
 {
     protected $guarded = ['id'];
 
     protected $casts = [
+        'portal_active' => 'boolean',
+        'show_new_at_cooperative_link' => 'boolean',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
     ];

@@ -1,4 +1,4 @@
-import axiosInstance from '../../default-setup/AxiosInstance';
+import axiosInstance from '../default-setup/AxiosInstance';
 import { getApiUrl } from '../../utils/LoginRouteFields';
 import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkceUtils';
 

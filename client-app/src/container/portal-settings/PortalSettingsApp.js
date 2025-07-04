@@ -38,7 +38,7 @@ class PortalSettingsApp extends Component {
                         ...payload.data.data,
                         // portalActive: payload.data.data.portalActive == 'true',
                         // showNewAtCooperativeLink: payload.data.data.showNewAtCooperativeLink == 'true',
-                        pcrPowerKwhConsumptionPercentage: payload.data.data.pcrPowerKwhConsumptionPercentage * 100,
+                        pcrPowerKwhConsumptionPercentage: payload.data.data.pcrPowerKwhConsumptionPercentage,
                     },
                 });
             })
@@ -53,7 +53,7 @@ class PortalSettingsApp extends Component {
                 ...portalSettings,
                 // portalActive: portalSettings.portalActive == 'true',
                 // showNewAtCooperativeLink: portalSettings.showNewAtCooperativeLink == 'true',
-                pcrPowerKwhConsumptionPercentage: portalSettings.pcrPowerKwhConsumptionPercentage * 100,
+                pcrPowerKwhConsumptionPercentage: portalSettings.pcrPowerKwhConsumptionPercentage,
             },
         });
     };

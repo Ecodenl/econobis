@@ -2304,7 +2304,8 @@ class TemplateVariableHelper
             case 'naam':
                 return $portalName;
             case 'advies_percentage_dekking_zonnepanelen':
-                return $pcrPowerKwhConsumptionPercentage;
+                // Todo WM: navragen of ze hier niet gewoon 80 willen zien ipv 0.8 ???
+                return $pcrPowerKwhConsumptionPercentage / 100;
             case 'capaciteit_van_een_zonnepaneel':
                 return $pcrGeneratingCapacityOneSolorPanel;
             default:

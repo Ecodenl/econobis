@@ -178,9 +178,9 @@ class PortalSettingsFormGeneralEdit extends Component {
 
         // If no errors send form
         if (!hasErrors) {
-            // pcrPowerKwhConsumptionPercentage als factor opslaan
-            portalSettings.pcrPowerKwhConsumptionPercentage =
-                parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100;
+            // pcrPowerKwhConsumptionPercentage als factor opslaan (04-07-2025 WM: niet meer)
+            // portalSettings.pcrPowerKwhConsumptionPercentage =
+            //     parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100;
             PortalSettingsAPI.updatePortalSettings(portalSettings)
                 .then(payload => {
                     this.props.updateState(payload.data.data);

@@ -4,12 +4,17 @@ namespace App\Http\Controllers\Portal\PortalSettings;
 
 use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\PortalSettings\FullPortalSettings;
 
 class PortalSettingsController extends Controller
 {
+    protected function getAllKeys(PortalSettings $portalSettings)
+    {
+        return FullPortalSettings::make($portalSettings);
+    }
     protected function getPortalActive()
     {
-        return PortalSettings::first()?->portal_active;;
+        return PortalSettings::first()?->portal_active;
     }
     protected function getCooperativeName()
     {

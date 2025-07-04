@@ -4,12 +4,10 @@ use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
-Route::get('setting/portal-active', 'PortalSettings\PortalSettingsController@getPortalActive');
-Route::get('setting/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
-Route::get('setting/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
-Route::get('setting/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
-Route::get('setting/show-allow-request-for-delete', 'PortalSettings\PortalSettingsController@getShowAllowRequestForDeletenk');
-Route::get('setting/allow-request-for-delete-button-text', 'PortalSettings\PortalSettingsController@getAllowRequestForDeleteButtonText');
+Route::get('portal-settings/portal-active', 'PortalSettings\PortalSettingsController@getPortalActive');
+Route::get('portal-settings/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
+Route::get('portal-settings/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
+Route::get('portal-settings/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
 
 Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
@@ -52,7 +50,9 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
 
 //        Route::get('setting', '\\' . PortalSettingsController::class . '@get');
 //        Route::get('setting/multiple', '\\' . PortalSettingsController::class . '@multiple');
-        Route::get('/portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@get');
+        Route::get('/portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@getAllKeys');
+        Route::get('/portal-settings/show-allow-request-for-delete', 'PortalSettings\PortalSettingsController@getShowAllowRequestForDelete');
+        Route::get('/portal-settings/allow-request-for-delete-button-text', 'PortalSettings\PortalSettingsController@getAllowRequestForDeleteButtonText');
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 

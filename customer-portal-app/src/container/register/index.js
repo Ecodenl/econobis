@@ -85,18 +85,13 @@ function RegisterProject({ match, currentSelectedContact }) {
     function callFetchPortalSettings() {
         setIsLoading1(true);
 
-        const keys =
-            '?keys[]=portalName' +
-            '&keys[]=portalWebsite' +
-            '&keys[]=portalUrl' +
-            '&keys[]=responsibleUserId' +
-            '&keys[]=checkContactTaskResponsibleUserId' +
-            '&keys[]=linkPrivacyPolicy' +
-            '&keys[]=pcrPowerKwhConsumptionPercentage' +
-            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
-        PortalSettingsAPI.fetchPortalSettings(keys)
+        // todo WM: check / anders
+        //
+        const portalSettingsId = 1;
+
+        PortalSettingsAPI.fetchPortalSettings(portalSettingsId)
             .then(payload => {
-                setPortalSettings({ ...payload.data });
+                setPortalSettings({ ...payload.data.data });
                 setIsLoading1(false);
             })
             .catch(error => {

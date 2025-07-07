@@ -191,6 +191,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        //todo WM: opschonen
         Log::info('AuthServiceProvider@boot wordt uitgevoerd');
 
         $this->registerPolicies();

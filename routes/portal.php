@@ -1,10 +1,18 @@
 <?php
 
-use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
+//use App\Http\Controllers\Api\PortalSettings\PortalSettingsController;
 use App\Http\Controllers\Portal\Auth\PkceLoginController;
 use App\Http\Controllers\Portal\ParticipationProject\ParticipantMutationMolliePaymentController;
+use App\Http\Middleware\SetPortalWebGuard;
 use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
+use Illuminate\Support\Facades\Route;
+use Laravel\Passport\Http\Controllers\AuthorizationController;
+use Laravel\Passport\Http\Controllers\ApproveAuthorizationController;
+use Laravel\Passport\Http\Controllers\DenyAuthorizationController;
+use Laravel\Passport\Http\Controllers\AccessTokenController;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+use Nyholm\Psr7\Factory\Psr17Factory;
 
 Route::get('/client-version', function () {
     return response()->json([
@@ -115,3 +123,34 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
 
 Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');
 Route::get('mollie/test-webhook/{participantMutationCode}', [ParticipantMutationMolliePaymentController::class, 'testWebhook'])->name('portal.mollie.testWebhook');
+
+Route::middleware(['web', SetPortalWebGuard::class])->group(function () {
+    Route::get('/oauth/authorize', function (\Illuminate\Http\Request $request) {
+        Log::info('PORTAL GET /oauth/authorize bereikt', [
+            'portal_user' => auth()->guard('portal_api')->user(),
+            'session_id' => session()->getId(),
+        ]);
+
+        $psr17Factory = new Psr17Factory();
+        $psrHttpFactory = new PsrHttpFactory($psr17Factory, $psr17Factory, $psr17Factory, $psr17Factory);
+        $psrRequest = $psrHttpFactory->createRequest($request);
+
+        return app(AuthorizationController::class)->authorize(
+            $psrRequest,
+            $request,
+            app(\Laravel\Passport\ClientRepository::class),
+            app(\Laravel\Passport\TokenRepository::class)
+        );
+    })->name('portal.passport.authorizations.authorize');
+
+    Route::post('/oauth/authorize', [ApproveAuthorizationController::class, 'approve'])
+        ->name('portal.passport.authorizations.approve');
+
+    Route::delete('/oauth/authorize', [DenyAuthorizationController::class, 'deny'])
+        ->name('portal.passport.authorizations.deny');
+});
+
+// Alleen voor token route: stateless
+Route::post('/oauth/token', [AccessTokenController::class, 'issueToken'])
+    ->middleware(['api', 'passport-portal'])
+    ->name('portal.passport.token');

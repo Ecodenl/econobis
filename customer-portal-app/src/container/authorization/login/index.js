@@ -12,6 +12,8 @@ import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
 import MeAPI from '../../../api/general/MeAPI';
 
 import { generateCodeChallenge, generateCodeVerifier } from '../../../utils/pkceUtils';
+// import { getApiUrl } from '../../../utils/LoginRouteFields';
+
 export default props => {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
@@ -81,23 +83,25 @@ export default props => {
     //         });
     // }
 
-    function handlePkceLogin() {
+    async function handlePkceLogin() {
         const state = crypto.randomUUID();
         const verifier = generateCodeVerifier();
-        const challenge = generateCodeChallenge(verifier);
+        const challenge = await generateCodeChallenge(verifier);
 
-        // Save verifier & state temporarily (e.g. in localStorage or sessionStorage)
+        // Save verifier & state
         sessionStorage.setItem('pkce_verifier', verifier);
         sessionStorage.setItem('pkce_state', state);
 
-        const clientId = process.env.REACT_APP_OAUTH_CLIENT_ID_PORTAL;
+        const baseUrl = window.__SERVER_DATA__?.base_url;
+        const clientId = window.__SERVER_DATA__?.client_id;
         const redirectUri = `${window.location.origin}/login/callback`;
+        const scope = 'use-portal';
 
-        const authorizeUrl = new URL(`${process.env.REACT_APP_API_BASE}/oauth/authorize`);
+        const authorizeUrl = new URL(`${baseUrl}/oauth/authorize`);
         authorizeUrl.searchParams.set('client_id', clientId);
         authorizeUrl.searchParams.set('redirect_uri', redirectUri);
         authorizeUrl.searchParams.set('response_type', 'code');
-        authorizeUrl.searchParams.set('scope', '');
+        authorizeUrl.searchParams.set('scope', scope);
         authorizeUrl.searchParams.set('state', state);
         authorizeUrl.searchParams.set('code_challenge', challenge);
         authorizeUrl.searchParams.set('code_challenge_method', 'S256');

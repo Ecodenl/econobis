@@ -47,6 +47,10 @@ return [
             'driver' => 'passport',
             'provider' => 'users',
         ],
+        'portal_web' => [
+            'driver' => 'session',
+            'provider' => 'portal_users',
+        ],
         'portal_api' => [
             'driver' => 'passport',
             'provider' => 'portal_users',

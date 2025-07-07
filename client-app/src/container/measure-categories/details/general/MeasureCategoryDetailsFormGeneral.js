@@ -81,6 +81,8 @@ class MeasureCategoryDetailsFormGeneral extends Component {
                         explanationWfCreateOpportunity={explanationWfCreateOpportunity}
                         explanationWfCreateQuotationRequest={explanationWfCreateQuotationRequest}
                         explanationWfEmailQuotationRequest={explanationWfEmailQuotationRequest}
+                        // calendarBackgroundColor={calendarBackgroundColor}
+                        // calendarTextColor={calendarTextColor}
                     />
                 )}
             </div>

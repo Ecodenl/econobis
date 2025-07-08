@@ -2817,22 +2817,22 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is een woondossier met ' . $housingFile->id . ' gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier bijwerken.');
 
-            $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
-            $housingFile->build_year = $buildYear ? $buildYear : null;
-            $housingFile->is_house_for_sale = $data['is_house_for_sale'] == '0' ? false : true;
-            $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
-            $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
-            $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
-            $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
-            $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = $data['is_monument'] == '1' ? true : false;
-            $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
-            $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
+            $housingFile->building_type_id = $buildingType ? $buildingType->id : $housingFile->building_type_id;
+            $housingFile->build_year = $buildYear ? $buildYear : $housingFile->build_year;
+            $housingFile->is_house_for_sale = $data['is_house_for_sale'] !== null ? $data['is_house_for_sale'] : $housingFile->is_house_for_sale;
+            $housingFile->surface = (isset($data['surface']) && is_numeric($data['surface'])) ? $data['surface'] : $housingFile->surface;
+            $housingFile->roof_type_id = $rofeType ? $rofeType->id : $housingFile->roof_type_id;
+            $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : $housingFile->energy_label_id;
+            $housingFile->floors = (isset($data['floors']) && is_numeric($data['floors'])) ? $data['floors'] : $housingFile->floors;
+            $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : $housingFile->energy_label_status_id;
+            $housingFile->is_monument = $data['is_monument'] !== null ? $data['is_monument'] : $housingFile->is_monument;
+            $housingFile->number_of_residents = (isset($data['number_of_residents']) && is_numeric($data['number_of_residents'])) ? $data['number_of_residents'] : $housingFile->number_of_residents;
+            $housingFile->revenue_solar_panels = (isset($data['revenue_solar_panels']) && is_numeric($data['revenue_solar_panels'])) ? $data['revenue_solar_panels'] : $housingFile->revenue_solar_panels;
             $housingFile->remark = $data['remark'];
             $housingFile->remark_coach = $data['remark_coach'];
-            $housingFile->amount_electricity = $data['amount_electricity'];
-            $housingFile->amount_gas = $data['amount_gas'];
-            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null;
+            $housingFile->amount_electricity = $data['amount_electricity'] !== null ? $data['amount_electricity'] : $housingFile->amount_electricity;
+            $housingFile->amount_gas = $data['amount_gas'] !== null ? $data['amount_gas'] : $housingFile->amount_gas;
+            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : $housingFile->boiler_setting_comfort_heat;
             $housingFile->save();
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
@@ -2878,13 +2878,13 @@ class ExternalWebformController extends Controller
 //                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                     } else {
                         $housingFileSpecification->update([
-                            'measure_date' => $measureDate,
+                            'measure_date' => $measureDate !== null ? $measureDate : $housingFileSpecification->measure_date,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
                             'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
                             'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
-                            'campaign_id' => $housingFileSpecificationCampaignId,
+                            'campaign_id' => $housingFileSpecificationCampaignId !== null ? $housingFileSpecificationCampaignId : $housingFileSpecification->campaign_id,
                         ]);
 //                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " gewijzigd voor id: " . $housingFileSpecification->id . ".");
                     }

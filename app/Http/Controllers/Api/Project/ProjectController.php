@@ -405,8 +405,6 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-// todo WM: kijken of hier toch niet ook view autorisatie gebruikt moet worden?
-//        $this->authorize('view', Project::class);
         if(Auth::user()->hasPermissionTo('view_project', 'api')){
             $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
         } else {

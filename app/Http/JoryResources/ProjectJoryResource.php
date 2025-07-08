@@ -95,6 +95,10 @@ class ProjectJoryResource extends JoryResource
         $this->field('link_agree_terms')->filterable()->sortable();
         $this->field('link_understand_info')->filterable()->sortable();
         $this->field('link_project_info')->filterable()->sortable();
+        $this->field('text_register_page_header')->filterable()->sortable();
+        $this->field('text_register_current_book_worth')->filterable()->sortable();
+        $this->field('text_register_participation_singular')->filterable()->sortable();
+        $this->field('text_register_participation_plural')->filterable()->sortable();
         $this->field('show_question_about_membership')->filterable()->sortable();
         $this->field('use_transaction_costs_with_membership')->filterable()->sortable();
         $this->field('uses_mollie')->filterable()->sortable();

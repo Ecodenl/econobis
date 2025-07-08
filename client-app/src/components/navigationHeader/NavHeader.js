@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 import Icon from 'react-icons-kit';
@@ -42,7 +42,7 @@ const NavHeader = props => {
                             </a>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link to="loguit?force=1">Uitloggen</Link>
+                                    <Link to="/loguit?force=1">Uitloggen</Link>
                                 </li>
                                 <li onClick={props.toggleChangePassword}>
                                     <Link>Wachtwoord wijzigen</Link>

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -21,6 +21,12 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import Icon from 'react-icons-kit';
 import { angleRight } from 'react-icons-kit/fa/angleRight';
 import { angleDown } from 'react-icons-kit/fa/angleDown';
+
+// Functionele wrapper voor de class component
+const ContactNewFormPersonalWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactNewFormPersonal {...props} navigate={navigate} />;
+};
 
 class ContactNewFormPersonal extends Component {
     constructor(props) {
@@ -119,7 +125,7 @@ class ContactNewFormPersonal extends Component {
 
     hideConfirmDuplicate = contactId => {
         if (this.state.duplicateContactId != '') {
-            hashHistory.push('/contact/' + this.state.duplicateContactId);
+            this.props.navigate('/contact/' + this.state.duplicateContactId);
         } else {
             this.setState({
                 showConfirmDuplicate: false,
@@ -352,7 +358,7 @@ class ContactNewFormPersonal extends Component {
 
             PersonAPI.newPerson({ person, address, emailAddress, phoneNumber, checkDuplicates })
                 .then(response => {
-                    hashHistory.push(`/contact/${response.data.data.id}`);
+                    this.props.navigate(`/contact/${response.data.data.id}`);
                 })
                 .catch(error => {
                     //409 conflict
@@ -576,4 +582,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactNewFormPersonal);
+export default connect(mapStateToProps)(ContactNewFormPersonalWrapper);

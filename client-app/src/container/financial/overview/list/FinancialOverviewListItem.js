@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -7,6 +7,12 @@ import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import Modal from '../../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewListItem {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewListItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class FinancialOverviewListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/waardestaat/${id}`);
+        this.props.navigate(`/waardestaat/${id}`);
     }
 
     showHasNoAccessToAdministrationModal() {
@@ -138,4 +144,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialOverviewListItem);
+export default connect(mapStateToProps)(FinancialOverviewListItemWrapper);

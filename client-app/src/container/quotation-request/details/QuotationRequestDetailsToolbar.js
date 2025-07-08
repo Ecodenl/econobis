@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import QuotationRequestDetailsDelete from './QuotationRequestDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const QuotationRequestDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class QuotationRequestDetailsToolbar extends Component {
     constructor(props) {
@@ -16,12 +22,16 @@ class QuotationRequestDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
     };
 
     sendMail = () => {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.quotationRequestDetails.id}/${this.props.quotationRequestDetails.organisationOrCoachId}`
         );
     };
@@ -51,12 +61,9 @@ class QuotationRequestDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                                     {this.props.permissions.manageQuotationRequest && !isPendingStatus && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                     <ButtonIcon iconName={'envelopeO'} onClickAction={this.sendMail} />
                                 </div>
@@ -70,7 +77,7 @@ class QuotationRequestDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <QuotationRequestDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         id={this.props.id}
                         opportunity={opportunity}
                         opportunityAction={opportunityAction}
@@ -88,4 +95,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(QuotationRequestDetailsToolbar);
+export default connect(mapStateToProps)(QuotationRequestDetailsToolbarWrapper);

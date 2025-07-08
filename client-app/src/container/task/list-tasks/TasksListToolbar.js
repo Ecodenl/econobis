@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory, Link } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const TasksListToolbar = props => {
+    const navigate = useNavigate();
+
     const newTask = () => {
-        hashHistory.push('taak/nieuw');
+        navigate('/taak/nieuw');
     };
 
     const { permissions = {} } = props;

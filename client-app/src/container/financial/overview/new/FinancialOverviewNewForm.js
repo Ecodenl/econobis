@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -17,6 +17,12 @@ import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/Fina
 import FinancialOverviewsAPI from '../../../../api/financial/overview/FinancialOverviewsAPI';
 import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
 import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewNewForm {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewNewForm extends Component {
     constructor(props) {
@@ -154,7 +160,7 @@ class FinancialOverviewNewForm extends Component {
         !hasErrors &&
             FinancialOverviewDetailsAPI.newFinancialOverview(financialOverview)
                 .then(payload => {
-                    hashHistory.push(`/waardestaat/${payload.data.data.id}`);
+                    this.props.navigate(`/waardestaat/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -230,4 +236,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewNewFormWrapper);

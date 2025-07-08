@@ -2,7 +2,13 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import OrderDetailsAPI from '../../../../api/order/OrderDetailsAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const OrderCreateConfirmWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderCreateConfirm {...props} navigate={navigate} />;
+};
 
 class OrderCreateConfirm extends Component {
     constructor(props) {
@@ -23,7 +29,7 @@ class OrderCreateConfirm extends Component {
         event.preventDefault();
 
         OrderDetailsAPI.createAll(this.props.orderIds).then(payload => {
-            hashHistory.push(`/financieel/${this.props.administrationId}/notas/te-verzenden-incasso`);
+            this.props.navigate(`/financieel/${this.props.administrationId}/notas/te-verzenden-incasso`);
         });
     };
 
@@ -61,4 +67,4 @@ class OrderCreateConfirm extends Component {
     }
 }
 
-export default OrderCreateConfirm;
+export default OrderCreateConfirmWrapper;

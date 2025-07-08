@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
-class MeilgunDomainDetailsToolbar extends Component {
+// Functionele wrapper voor de class component
+const MailgunDomainDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <MailgunDomainDetailsToolbar {...props} navigate={navigate} />;
+};
+
+class MailgunDomainDetailsToolbar extends Component {
     constructor(props) {
         super(props);
         this.state = {};
@@ -15,7 +21,7 @@ class MeilgunDomainDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -34,4 +40,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(MeilgunDomainDetailsToolbar);
+export default connect(mapStateToProps, null)(MailgunDomainDetailsToolbarWrapper);

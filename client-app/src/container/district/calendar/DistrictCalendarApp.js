@@ -6,7 +6,7 @@ import './DistrictCalendar.css';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import DistrictAPI from '../../../api/district/DistrictAPI';
 import InputToggle from '../../../components/form/InputToggle';
 import InputSelect from '../../../components/form/InputSelect';
@@ -14,6 +14,9 @@ import InputSelect from '../../../components/form/InputSelect';
 moment.locale('nl');
 
 const DistrictCalendarApp = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+
     const [view, setView] = useState('week');
     const [date, setDate] = useState(new Date());
     const [events, setEvents] = useState([]);
@@ -44,16 +47,28 @@ const DistrictCalendarApp = props => {
                 .format('YYYY-MM-DD');
         }
 
-        DistrictAPI.fetchDistrictCalendarItems(props.params.id, startDate, endDate).then(data => {
-            let quotationRequests = data.quotationRequests.map(item => {
+        DistrictAPI.fetchDistrictCalendarItems(params.id, startDate, endDate).then(data => {
+            const quotationRequests = data.quotationRequests.map(item => {
+                const { id, coach, contact, datePlanned, durationMinutes, statusCodeRef } = item;
+
+                const prefixMap = {
+                    done: '✅ ',
+                    'not-made': '❌ ',
+                };
+
+                const title = `${prefixMap[statusCodeRef] || ''}${coach?.fullName || 'Onbekende coach'}`;
+                const tooltip = `\n${title}\nContact: ${contact?.fullName ||
+                    'Onbekend contact'}\nPostcode: ${contact?.postalCode || 'Onbekende postcode'}`;
+
                 return {
                     type: 'quotationRequest',
-                    id: item.id,
-                    coach: item.coach,
-                    title: item.coach.fullName,
-                    start: new Date(item.datePlanned),
-                    end: moment(item.datePlanned)
-                        .add(item.durationMinutes, 'm')
+                    id,
+                    coach,
+                    title,
+                    tooltip,
+                    start: new Date(datePlanned),
+                    end: moment(datePlanned)
+                        .add(durationMinutes, 'm')
                         .toDate(),
                 };
             });
@@ -76,7 +91,7 @@ const DistrictCalendarApp = props => {
     const selectEventHandler = event => {
         switch (event.type) {
             case 'quotationRequest':
-                hashHistory.push(`/offerteverzoek/${event.id}`);
+                navigate(`/offerteverzoek/${event.id}`);
         }
     };
 
@@ -134,7 +149,7 @@ const DistrictCalendarApp = props => {
                 <div className="row margin-10-bottom">
                     <div className="col-md-4">
                         <div className="btn-group" role="group">
-                            <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                            <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         </div>
                     </div>
                     <div className="col-md-4">
@@ -167,6 +182,7 @@ const DistrictCalendarApp = props => {
                 </div>
                 <Calendar
                     events={getFilteredEvents()}
+                    tooltipAccessor="tooltip"
                     style={{ height: 'calc(100vh - 200px)' }}
                     step={15}
                     timeslots={4}

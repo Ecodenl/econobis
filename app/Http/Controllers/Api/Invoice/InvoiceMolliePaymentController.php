@@ -8,6 +8,7 @@ use App\Helpers\Invoice\InvoiceHelper;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
+use Mollie\Api\Exceptions\ApiException;
 
 
 class InvoiceMolliePaymentController extends ApiController
@@ -85,6 +86,10 @@ class InvoiceMolliePaymentController extends ApiController
          */
         $invoiceMolliePayment = $this->createInvoiceMolliePayment($invoice);
 
+        if(!$invoiceMolliePayment){
+            return view('mollie.422');
+        }
+
         return redirect($invoiceMolliePayment->checkout_url);
     }
 
@@ -141,7 +146,11 @@ class InvoiceMolliePaymentController extends ApiController
         }
 
         $mollieApi = $invoice->administration->getMollieApiFacade();
-        $payment = $mollieApi->payments()->create($molliePostData);
+        try{
+            $payment = $mollieApi->payments->create($molliePostData);
+        } catch (ApiException $exception) {
+            return null;
+        }
 
         return InvoiceMolliePayment::create([
             'invoice_id' => $invoice->id,

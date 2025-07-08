@@ -1,7 +1,13 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardToolbar {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardToolbar extends Component {
     constructor(props) {
@@ -12,7 +18,7 @@ class PortalSettingsDashboardToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                     </div>
                 </div>
                 <div className="col-md-4">
@@ -24,4 +30,4 @@ class PortalSettingsDashboardToolbar extends Component {
     }
 }
 
-export default PortalSettingsDashboardToolbar;
+export default PortalSettingsDashboardToolbarWrapper;

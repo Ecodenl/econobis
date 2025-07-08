@@ -18,7 +18,7 @@ class checkWrongTwinfieldInvoices extends Command
      * @var string
      */
     protected $signature = 'invoice:checkWrongTwinfieldInvoices';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

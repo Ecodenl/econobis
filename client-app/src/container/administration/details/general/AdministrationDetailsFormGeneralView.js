@@ -57,7 +57,7 @@ const AdministrationDetailsFormGeneralView = props => {
         usesMollie,
         mollieApiKey,
     } = props.administrationDetails;
-    const { logoFilenameSrc } = props.administrationLogoDetails;
+    const logoFilenameSrc = props.administrationLogoDetails?.logoFilenameSrc ?? null;
 
     return (
         <div onClick={props.switchToEdit}>

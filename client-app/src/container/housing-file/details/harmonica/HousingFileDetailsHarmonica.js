@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
 import NoteHarmonica from './NoteHarmonica';
+
+// Functionele wrapper voor de class component
+const HousingFileDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class HousingFileDetailsHarmonica extends Component {
     constructor(props) {
@@ -24,7 +30,7 @@ class HousingFileDetailsHarmonica extends Component {
 
     newTask() {
         if (this.props.housingFileDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
             );
         }
@@ -32,7 +38,7 @@ class HousingFileDetailsHarmonica extends Component {
 
     newNote() {
         if (this.props.housingFileDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/taak/nieuw/afgehandeld/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
             );
         }
@@ -40,7 +46,7 @@ class HousingFileDetailsHarmonica extends Component {
 
     newDocument(type) {
         if (this.props.housingFileDetails) {
-            hashHistory.push(
+            this.props.navigate(
                 `/document/nieuw/${type}/woningdossier/${this.props.id}/contact/${this.props.housingFileDetails.address.contactId}`
             );
         }
@@ -82,4 +88,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(HousingFileDetailsHarmonica);
+export default connect(mapStateToProps)(HousingFileDetailsHarmonicaWrapper);

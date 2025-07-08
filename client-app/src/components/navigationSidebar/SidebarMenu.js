@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -476,7 +476,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         return (
                             <Nav key={i} id={`administration/${administration.id}`}>
                                 <NavText>
-                                    <Link className="sidebar-link" to={`financieel/${administration.id}`}>
+                                    <Link className="sidebar-link" to={`/financieel/${administration.id}`}>
                                         {administration.name}
                                     </Link>
                                 </NavText>

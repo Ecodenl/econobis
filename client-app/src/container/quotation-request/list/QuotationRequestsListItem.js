@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const QuotationRequestsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestsListItem {...props} navigate={navigate} />;
+};
 
 class QuotationRequestsListItem extends Component {
     constructor(props) {
@@ -30,7 +36,7 @@ class QuotationRequestsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/offerteverzoek/${id}`);
+        this.props.navigate(`/offerteverzoek/${id}`);
     }
 
     render() {
@@ -99,4 +105,4 @@ class QuotationRequestsListItem extends Component {
     }
 }
 
-export default QuotationRequestsListItem;
+export default QuotationRequestsListItemWrapper;

@@ -1,12 +1,14 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 function PortalFreeFieldsPageListItem({ id, name, isActive, showDeleteItemModal, permissions }) {
+    const navigate = useNavigate();
+
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightLine, setHighlightLine] = useState('');
 
@@ -21,7 +23,7 @@ function PortalFreeFieldsPageListItem({ id, name, isActive, showDeleteItemModal,
     }
 
     function openItem(id) {
-        hashHistory.push(`/vrije-velden-portaal-pagina/${id}`);
+        navigate(`/vrije-velden-portaal-pagina/${id}`);
     }
 
     return (

@@ -10,6 +10,13 @@ import RevenuesKwhFormGeneral from './form/RevenuesKwhFormGeneral';
 import RevenuesKwhConclusion from './conclusion/RevenuesKwhConclusion';
 import RevenuesKwhDistributionForm from './revenue-distribution/RevenuesKwhDistributionForm';
 import RevenuePartsKwhListForm from './revenue-parts/RevenuePartsKwhListForm';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhDetailsAppWrapper = props => {
+    const params = useParams();
+    return <RevenuesKwhDetailsApp {...props} params={params} />;
+};
 
 class RevenuesKwhDetailsApp extends Component {
     constructor(props) {
@@ -73,4 +80,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDetailsAppWrapper);

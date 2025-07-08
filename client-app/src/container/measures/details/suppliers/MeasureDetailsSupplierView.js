@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const MeasureDetailsSupplierView = props => {
+    const navigate = useNavigate();
+
     const { id, name, address, contactId } = props.supplier;
 
     return (
@@ -14,7 +16,7 @@ const MeasureDetailsSupplierView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/contact/${contactId}`)}>
+            <div onClick={() => navigate(`/contact/${contactId}`)}>
                 <div className="col-sm-5">{name}</div>
                 <div className="col-sm-6">{address ? address.city : 'Niet bekend'}</div>
             </div>

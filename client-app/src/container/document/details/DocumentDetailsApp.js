@@ -8,6 +8,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import fileDownload from 'js-file-download';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const DocumentDetailsAppWrapper = props => {
+    const params = useParams();
+    return <DocumentDetailsApp {...props} params={params} />;
+};
 
 class DocumentDetailsApp extends Component {
     constructor(props) {
@@ -61,4 +68,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentDetailsAppWrapper);

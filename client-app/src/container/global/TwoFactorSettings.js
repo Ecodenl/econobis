@@ -1,8 +1,14 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 
 import Modal from '../../components/modal/Modal';
-import MeAPI from "../../api/general/MeAPI";
-import {hashHistory} from "react-router";
+import MeAPI from '../../api/general/MeAPI';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const TwoFactorSettingsWrapper = props => {
+    const navigate = useNavigate();
+    return <TwoFactorSettings {...props} navigate={navigate} />;
+};
 
 class TwoFactorSettings extends Component {
     constructor(props) {
@@ -24,25 +30,26 @@ class TwoFactorSettings extends Component {
     checkPasswordHandler(event) {
         event.preventDefault();
 
-        this.setState({errorMessage: ''});
-        MeAPI.checkPassword(this.state.password).then(() => {
-            this.setState({hasValidPassword: true});
+        this.setState({ errorMessage: '' });
+        MeAPI.checkPassword(this.state.password)
+            .then(() => {
+                this.setState({ hasValidPassword: true });
 
-            this.fetchTwoFactorStatus();
-        }).catch(() => {
-            this.setState({errorMessage: 'Het wachtwoord is onjuist'});
-        });
+                this.fetchTwoFactorStatus();
+            })
+            .catch(() => {
+                this.setState({ errorMessage: 'Het wachtwoord is onjuist' });
+            });
     }
 
     fetchTwoFactorStatus() {
         MeAPI.fetchTwoFactorStatus().then(payload => {
             if (payload.data.twoFactorActivated) {
-                MeAPI.fetchTwoFactorRecoveryCodes(this.state.password)
-                    .then(payload => {
-                        this.setState({
-                            recoveryCodes: payload.data,
-                        });
+                MeAPI.fetchTwoFactorRecoveryCodes(this.state.password).then(payload => {
+                    this.setState({
+                        recoveryCodes: payload.data,
                     });
+                });
             }
 
             this.setState({
@@ -55,14 +62,18 @@ class TwoFactorSettings extends Component {
     handleTwoFactorEnable = event => {
         event.preventDefault();
 
-        if (!confirm('Weet u zeker dat u twee factor authenticatie wilt activeren? U krijgt een QR code te zien die u moet scannen met uw authenticator app.')) {
+        if (
+            !confirm(
+                'Weet u zeker dat u twee factor authenticatie wilt activeren? U krijgt een QR code te zien die u moet scannen met uw authenticator app.'
+            )
+        ) {
             return;
         }
 
         /**
          * Gebruiker heeft zojuist al wachtwoord ingevoerd, deze doorsturen naar activatie scherm zodat deze niet opnieuw hoeft te worden ingegeven.
          */
-        hashHistory.push({pathname: '/two-factor/activate', state: {password: this.state.password}});
+        this.props.navigate({ pathname: '/two-factor/activate', state: { password: this.state.password } });
     };
 
     handleTwoFactorDisable = event => {
@@ -72,12 +83,10 @@ class TwoFactorSettings extends Component {
             return;
         }
 
-        MeAPI.disableTwoFactor(this.state.password)
-            .then(() => {
-                this.fetchTwoFactorStatus();
-            });
+        MeAPI.disableTwoFactor(this.state.password).then(() => {
+            this.fetchTwoFactorStatus();
+        });
     };
-
 
     renderAlert() {
         if (this.state.errorMessage) {
@@ -135,13 +144,17 @@ class TwoFactorSettings extends Component {
                                         <div className="col-xs-3">
                                             <label>Geactiveerd</label>
                                         </div>
-                                        <div className="col-xs-3">
-                                            Ja
-                                        </div>
+                                        <div className="col-xs-3">Ja</div>
                                         <div className="col-xs-3">
                                             {!this.state.cooperationRequiresTwoFactorAuthentication && (
-                                                <a href="#" onClick={this.handleTwoFactorDisable} style={{color: '#e64a4a'}}>uitschakelen</a>
-                                                )}
+                                                <a
+                                                    href="#"
+                                                    onClick={this.handleTwoFactorDisable}
+                                                    style={{ color: '#e64a4a' }}
+                                                >
+                                                    uitschakelen
+                                                </a>
+                                            )}
                                         </div>
                                     </div>
                                     <div className="row">
@@ -149,10 +162,12 @@ class TwoFactorSettings extends Component {
                                             <label>Herstelcode</label>
                                         </div>
                                         <div className="col-xs-9">
-                                            <ul style={{listStyleType: 'none', padding: 0}}>
-                                                {this.state.recoveryCodes.map((code) => {
+                                            <ul style={{ listStyleType: 'none', padding: 0 }}>
+                                                {this.state.recoveryCodes.map(code => {
                                                     return (
-                                                        <li key={code} style={{'font-family': 'courier'}}>{code}</li>
+                                                        <li key={code} style={{ 'font-family': 'courier' }}>
+                                                            {code}
+                                                        </li>
                                                     );
                                                 })}
                                             </ul>
@@ -164,26 +179,33 @@ class TwoFactorSettings extends Component {
                                     <div className="col-xs-3">
                                         <label>Geactiveerd</label>
                                     </div>
+                                    <div className="col-xs-3">Nee</div>
                                     <div className="col-xs-3">
-                                        Nee
-                                    </div>
-                                    <div className="col-xs-3">
-                                        <a href="#" onClick={this.handleTwoFactorEnable}>activeren</a>
+                                        <a href="#" onClick={this.handleTwoFactorEnable}>
+                                            activeren
+                                        </a>
                                     </div>
                                 </div>
                             )}
                         </>
                     ) : (
                         <form onSubmit={this.checkPasswordHandler}>
-                            Voer uw wachtwoord in om de twee factor instellingen te wijzigen.<br/>
+                            Voer uw wachtwoord in om de twee factor instellingen te wijzigen.
+                            <br />
                             <div className="row">
                                 <div className="col-xs-6">
-                                    <input placeholder="Wachtwoord" className="form-control input-sm" type="password"
-                                           value={this.state.password}
-                                           onChange={(e) => this.setState({password: e.target.value})}/>
+                                    <input
+                                        placeholder="Wachtwoord"
+                                        className="form-control input-sm"
+                                        type="password"
+                                        value={this.state.password}
+                                        onChange={e => this.setState({ password: e.target.value })}
+                                    />
                                 </div>
                                 <div className="col-xs-6">
-                                    <button type="submit" className="btn btn-primary btn-sm">Ontgrendel</button>
+                                    <button type="submit" className="btn btn-primary btn-sm">
+                                        Ontgrendel
+                                    </button>
                                 </div>
                             </div>
                         </form>
@@ -194,4 +216,4 @@ class TwoFactorSettings extends Component {
     }
 }
 
-export default TwoFactorSettings;
+export default TwoFactorSettingsWrapper;

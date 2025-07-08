@@ -306,6 +306,8 @@ class PersonController extends ApiController
     {
         $this->authorize('update', $person);
 
+        $duplicateHoomAccountIdName = Contact::where('hoom_account_id', $request['hoomAccountId'])->first() ? Contact::where('hoom_account_id', $request['hoomAccountId'])->first()->full_name : '';
+
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
@@ -321,8 +323,8 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
-            'hoomAccountId' => '',
-        ]);
+            'hoomAccountId' => 'unique:contacts,hoom_account_id,'.$person->contact_id,
+        ], ['hoomAccountId' => 'Er bestaat al een gebruiker met dit Hoom account id: ' . $duplicateHoomAccountIdName]);
 
         if($request['dateOfBirth'] == null) { unset($request['dateOfBirth']); }
 

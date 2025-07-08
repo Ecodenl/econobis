@@ -14,7 +14,7 @@ class ChangeRolesPermissions extends Migration
     public function up()
     {
         // Creeer nieuwe permission menu_participation
-        Permission::create([
+        Permission::findOrCreate([
                 'name' => 'menu_participation',
                 'guard_name' => 'api',
             ]

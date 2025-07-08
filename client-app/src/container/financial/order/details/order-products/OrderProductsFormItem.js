@@ -38,7 +38,7 @@ class OrderProductsFormItem extends Component {
         this.handleInputChangeStartDate = this.handleInputChangeStartDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.orderProduct, nextProps.orderProduct)) {
             this.setState({
                 ...this.state,

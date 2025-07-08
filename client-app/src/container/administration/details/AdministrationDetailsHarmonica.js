@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
 
 function AdministrationDetailsHarmonica({ administration }) {
+    const navigate = useNavigate();
+
     const [showList, setShowList] = useState({
         documents: false,
     });
@@ -15,10 +17,10 @@ function AdministrationDetailsHarmonica({ administration }) {
     }
 
     function newDocumentNotOnPortal(type) {
-        hashHistory.push(`/document/nieuw/${type}/eco/administratie/${administration.id}`);
+        navigate(`/document/nieuw/${type}/eco/administratie/${administration.id}`);
     }
     function newDocumentOnPortal(type) {
-        hashHistory.push(`/document/nieuw/${type}/portal/administratie/${administration.id}`);
+        navigate(`/document/nieuw/${type}/portal/administratie/${administration.id}`);
     }
 
     return (

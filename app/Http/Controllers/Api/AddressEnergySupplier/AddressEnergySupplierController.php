@@ -126,7 +126,7 @@ class AddressEnergySupplierController extends ApiController
             $revenuePartsKwhRedirect = null;
             if(count($revenuePartsKwhArray) == 1){
                 if($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue'] ){
-                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
                 }
                 if($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue'] ){
                     $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId']  . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];
@@ -201,7 +201,7 @@ class AddressEnergySupplierController extends ApiController
             $revenuePartsKwhRedirect = null;
             if(count($revenuePartsKwhArray) == 1){
                 if($revenuePartsKwhArray[0]['success'] && $revenuePartsKwhArray[0]['newRevenue'] ){
-                    $revenuePartsKwhRedirect = 'project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
+                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuePartsKwhArray[0]['projectId']  . '/1';
                 }
                 if($revenuePartsKwhArray[0]['success'] && !$revenuePartsKwhArray[0]['newRevenue'] ){
                     $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuePartsKwhArray[0]['revenuesId']  . '/deelperiode/' . $revenuePartsKwhArray[0]['revenuePartsId'];

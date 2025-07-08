@@ -15,10 +15,19 @@ import ContactsListToolbar from './ContactsListToolbar';
 import filterHelper from '../../../helpers/FilterHelper';
 import ContactsAPI from '../../../api/contact/ContactsAPI';
 import fileDownload from 'js-file-download';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import ContactsListSaveAsGroup from './ContactsListSaveAsGroup';
 import ContactsListExtraFilters from './ContactsListExtraFilters';
 import CampaignsAPI from '../../../api/campaign/CampaignsAPI';
+
+// Functionele wrapper voor de class component
+const ContactsListAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    const location = useLocation();
+
+    return <ContactsListApp {...props} navigate={navigate} params={params} location={location} />;
+};
 
 class ContactsListApp extends Component {
     constructor(props) {
@@ -124,7 +133,7 @@ class ContactsListApp extends Component {
         const filters = filterHelper(this.props.contactsFilters);
 
         ContactsAPI.saveAsGroup({ filters, extraFilters, filterType }).then(payload => {
-            hashHistory.push(`/contact-groep/${payload.data.data.id}/edit`);
+            this.props.navigate(`/contact-groep/${payload.data.data.id}/edit`);
         });
     };
 
@@ -427,4 +436,4 @@ const mapDispatchToProps = dispatch =>
         dispatch
     );
 
-export default connect(mapStateToProps, mapDispatchToProps)(ContactsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ContactsListAppWrapper);

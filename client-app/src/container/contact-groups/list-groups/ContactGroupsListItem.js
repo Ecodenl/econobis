@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import LapostaIcon from '../../../images/logo/laposta-16x16.png';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const ContactGroupsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactGroupsListItem {...props} navigate={navigate} />;
+};
 
 class ContactGroupsListItem extends Component {
     constructor(props) {
@@ -32,11 +38,11 @@ class ContactGroupsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/contact-groep/${id}`);
+        this.props.navigate(`/contact-groep/${id}`);
     }
 
     openContactsInGroup(id) {
-        hashHistory.push(`/contacten-in-groep/${id}`);
+        this.props.navigate(`/contacten-in-groep/${id}`);
     }
 
     render() {
@@ -135,4 +141,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactGroupsListItem);
+export default connect(mapStateToProps)(ContactGroupsListItemWrapper);

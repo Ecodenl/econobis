@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import EnergySupplierReportNewToolbar from './EnergySupplierReportNewToolbar';
 import EnergySupplierReportNew from './EnergySupplierReportNew';
@@ -10,6 +10,13 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import axios from 'axios';
+
+// Functionele wrapper voor de class component
+const EnergySupplierReportNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <EnergySupplierReportNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class EnergySupplierReportNewApp extends Component {
     constructor(props) {
@@ -94,7 +101,7 @@ class EnergySupplierReportNewApp extends Component {
         !hasErrors &&
             RevenuesKwhAPI.createEnergySupplierReport(report.revenueId, report.templateId, report.documentName).then(
                 payload => {
-                    hashHistory.push(`/documenten`);
+                    this.props.navigate(`/documenten`);
                 }
             );
     };
@@ -129,4 +136,4 @@ class EnergySupplierReportNewApp extends Component {
     }
 }
 
-export default EnergySupplierReportNewApp;
+export default EnergySupplierReportNewAppWrapper;

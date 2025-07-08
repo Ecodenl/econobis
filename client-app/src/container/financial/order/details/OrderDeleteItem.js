@@ -1,33 +1,28 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../../components/modal/Modal';
 import { deleteOrder } from '../../../../actions/order/OrdersActions';
-import { hashHistory } from 'react-router';
 
-const OrderDeleteItem = props => {
+const OrderDeleteItem = ({ id, subject, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteOrder(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteOrder(id));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
-            Verwijder Order: <strong> {props.subject} </strong>?
+            Verwijder Order: <strong> {subject} </strong>?
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteOrder: id => {
-        dispatch(deleteOrder(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(OrderDeleteItem);
+export default OrderDeleteItem;

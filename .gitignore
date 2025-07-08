@@ -16,3 +16,6 @@ yarn-error.log
 .env.testing
 /.env.development
 _ide_helper.php
+
+# Expliciet negeren van key-bestanden, voor de zekerheid, deze wil je niet in Git hebben.
+secrets/oauth/*.key

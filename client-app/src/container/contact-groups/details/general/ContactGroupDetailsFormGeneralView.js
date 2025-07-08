@@ -64,7 +64,7 @@ const ContactGroupDetailsFormGeneralView = props => {
                 <ViewText
                     label={'Verantwoordelijke'}
                     value={responsibleUser && responsibleUser.fullName}
-                    link={responsibleUser ? 'gebruiker/' + responsibleUser.id : ''}
+                    link={responsibleUser ? '/gebruiker/' + responsibleUser.id : ''}
                 />
                 <ViewText label="Status" value={closedStatus} />
             </div>

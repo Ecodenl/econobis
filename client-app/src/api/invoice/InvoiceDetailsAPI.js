@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_INVOICE = `${URL_API}/api/invoice`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchInvoiceDetails: function(id) {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     fetchInvoiceFromTwinfieldDetails: function(twinfieldCode, twinfieldNumber) {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/from-twinfield?twinfieldCode=${twinfieldCode}&twinfieldNumber=${twinfieldNumber}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     newInvoice: invoice => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, invoice)
             .then(function(response) {
                 return response.data;
@@ -43,9 +45,10 @@ export default {
     },
 
     updateInvoice: invoice => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${invoice.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, invoice)
             .then(function(response) {
                 return response.data;
@@ -56,11 +59,12 @@ export default {
     },
 
     setInvoicesPaid: (invoiceIds, datePaid, paymentReference) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/set-multiple-paid`;
 
         document.body.style.cursor = 'wait';
 
-        let response = axiosInstance.post(requestUrl, {
+        let response = getAxiosInstance().post(requestUrl, {
             ids: invoiceIds,
             datePaid: datePaid,
             paymentReference: paymentReference,
@@ -72,9 +76,10 @@ export default {
     },
 
     sendNotification: invoiceId => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -85,9 +90,10 @@ export default {
     },
 
     sendNotifications: invoiceIds => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/send-notifications`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: invoiceIds })
             .then(function(response) {
                 return response.data;
@@ -98,27 +104,30 @@ export default {
     },
 
     sendNotificationsPost: invoiceIds => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/send-notifications-post`;
 
         document.body.style.cursor = 'wait';
-        let response = axiosInstance.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        let response = getAxiosInstance().post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     sendNotificationPost: invoiceId => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${invoiceId}/send-notification-post`;
 
         document.body.style.cursor = 'wait';
-        let response = axiosInstance.post(requestUrl, {}, { responseType: 'blob' });
+        let response = getAxiosInstance().post(requestUrl, {}, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     setIrrecoverable: invoiceId => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${invoiceId}/irrecoverable`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -129,19 +138,21 @@ export default {
     },
 
     syncOneInvoiceFromTwinfield: (administrationId, invoiceId) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${invoiceId}/sync-one-invoice-from-twinfield`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             administrationId: administrationId,
         });
     },
 
     sendAll: (invoiceIds, dateCollection) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/send-all`;
 
         document.body.style.cursor = 'wait';
 
-        let response = axiosInstance.post(
+        let response = getAxiosInstance().post(
             requestUrl,
             { ids: invoiceIds, dateCollection: dateCollection },
             { responseType: 'blob' }
@@ -153,10 +164,11 @@ export default {
     },
 
     sendAllPost: (administrationId, invoiceIds, dateCollection) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${administrationId}/send-all-post`;
 
         document.body.style.cursor = 'wait';
-        let response = axiosInstance.post(
+        let response = getAxiosInstance().post(
             requestUrl,
             { ids: invoiceIds, dateCollection: dateCollection },
             { responseType: 'blob' }
@@ -166,18 +178,20 @@ export default {
     },
 
     createSepaForInvoiceIds: invoiceIds => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/create-sepa-for-invoice-ids`;
 
         document.body.style.cursor = 'wait';
-        let response = axiosInstance.post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
+        let response = getAxiosInstance().post(requestUrl, { ids: invoiceIds }, { responseType: 'blob' });
         document.body.style.cursor = 'default';
         return response;
     },
 
     newPayment: payment => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${payment.invoiceId}/payment/new`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, payment)
             .then(function(response) {
                 return response.data;
@@ -188,9 +202,10 @@ export default {
     },
 
     updatePayment: payment => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${payment.id}/payment/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, payment)
             .then(function(response) {
                 return response.data;
@@ -201,9 +216,10 @@ export default {
     },
 
     deletePayment: paymentId => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/payment/${paymentId}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -214,9 +230,10 @@ export default {
     },
 
     deleteInvoiceProduct: invoiceProductId => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProductId}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -227,15 +244,17 @@ export default {
     },
 
     download: id => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${id}/download`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 
     getEmailPreview: id => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${id}/email-preview`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -246,26 +265,30 @@ export default {
     },
 
     newInvoiceProduct: invoiceProduct => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/invoice-product`;
 
-        return axiosInstance.post(requestUrl, invoiceProduct);
+        return getAxiosInstance().post(requestUrl, invoiceProduct);
     },
 
     newProductAndInvoiceProduct: (invoiceProduct, product) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/product-and-invoice-product`;
 
-        return axiosInstance.post(requestUrl, { invoiceProduct: invoiceProduct, product: product });
+        return getAxiosInstance().post(requestUrl, { invoiceProduct: invoiceProduct, product: product });
     },
 
     updateInvoiceProduct: invoiceProduct => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/invoice-product/${invoiceProduct.id}/update`;
 
-        return axiosInstance.post(requestUrl, invoiceProduct);
+        return getAxiosInstance().post(requestUrl, invoiceProduct);
     },
 
     deleteInvoice: id => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

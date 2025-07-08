@@ -6,6 +6,13 @@ import MailboxDetailsToolbar from './MailboxDetailsToolbar';
 import MailboxDetailsForm from './MailboxDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const MailboxDetailsAppWrapper = props => {
+    const params = useParams();
+    return <MailboxDetailsApp {...props} params={params} />;
+};
 
 class MailboxDetailsApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxDetailsAppWrapper);

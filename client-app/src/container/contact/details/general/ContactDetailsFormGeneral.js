@@ -19,7 +19,7 @@ class ContactDetailsFormGeneral extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.contactDetails.id !== nextProps.contactDetails.id) {
             this.setState({
                 showEdit: false,

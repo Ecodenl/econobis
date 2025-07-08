@@ -35,7 +35,7 @@ class EmailTemplateDetailsForm extends Component {
 
 const mapStateToProps = state => {
     return {
-        emailTemplate: state.emailTemplate,
+        emailTemplate: state.emailTemplateDetails,
         isLoading: state.loadingData.isLoading,
         hasError: state.loadingData.hasError,
     };

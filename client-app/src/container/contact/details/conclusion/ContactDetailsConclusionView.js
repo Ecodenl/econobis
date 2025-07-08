@@ -23,7 +23,7 @@ const ContactDetailsConclusionView = props => {
                 <ViewText
                     label={'Eigenaar'}
                     value={owner ? owner.fullName : 'Onbekend'}
-                    link={owner ? 'gebruiker/' + owner.id : ''}
+                    link={owner ? '/gebruiker/' + owner.id : ''}
                 />
             </div>
             <div className="row" onClick={props.switchToEdit}>
@@ -42,7 +42,7 @@ const ContactDetailsConclusionView = props => {
                         createdWith == 'portal' || createdWith == 'webform'
                             ? ''
                             : createdBy
-                            ? 'gebruiker/' + createdBy.id
+                            ? '/gebruiker/' + createdBy.id
                             : ''
                     }
                 />
@@ -61,7 +61,7 @@ const ContactDetailsConclusionView = props => {
                         updatedWith == 'portal' || updatedWith == 'webform'
                             ? ''
                             : updatedBy
-                            ? 'gebruiker/' + updatedBy.id
+                            ? '/gebruiker/' + updatedBy.id
                             : ''
                     }
                 />

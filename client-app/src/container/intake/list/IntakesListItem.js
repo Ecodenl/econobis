@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const IntakesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakesListItem {...props} navigate={navigate} />;
+};
 
 class IntakesListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class IntakesListItem extends Component {
 
     openItem(id) {
         if (!this.props.showCheckbox) {
-            hashHistory.push(`/intake/${id}`);
+            this.props.navigate(`/intake/${id}`);
         }
     }
 
@@ -89,4 +95,4 @@ class IntakesListItem extends Component {
     }
 }
 
-export default IntakesListItem;
+export default IntakesListItemWrapper;

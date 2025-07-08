@@ -18,7 +18,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
      * @var string
      */
     protected $signature = 'project:checkWrongProjectDataForLastProjectRevenue';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.
@@ -60,7 +60,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
 
             $confirmedProjectRevenuesEuro = $project->projectRevenues()->where('category_id', $projectRevenueCategoryRevenueEuro)->where('confirmed', 1)->orderBy('date_end', 'desc');
             $dateEnd = $confirmedProjectRevenuesEuro->count() > 0 ? Carbon::parse($confirmedProjectRevenuesEuro->first()->date_end) : null;
-            $dateEndPlusOneDay = $dateEnd ? $dateEnd->addDay(1)->format('Y-m-d') : 'onbekend';
+            $dateEndPlusOneDay = $dateEnd ? $dateEnd->addDay()->format('Y-m-d') : 'onbekend';
 
             //Geen date_interest_bearing maar wel confirmed projectRevenues van category 2 revenueEuro
             if (
@@ -133,7 +133,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
                 $confirmedProjectRedemptionsEuro->count() > 0
             ) {
                 $dateEnd = Carbon::parse($confirmedProjectRedemptionsEuro->first()->date_end);
-                $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
+                $dateEndPlusOneDay = $dateEnd->addDay()->format('Y-m-d');
                 if (
                     $project->date_interest_bearing_redemption !== null &&
                     $confirmedProjectRedemptionsEuro->count() > 0 &&
@@ -180,7 +180,7 @@ class checkWrongProjectDataForLastProjectRevenue extends Command
                 $confirmedRevenuesKwh->count() > 0
             ) {
                 $dateEnd = Carbon::parse($confirmedRevenuesKwh->first()->date_end);
-                $dateEndPlusOneDay = $dateEnd->addDay(1)->format('Y-m-d');
+                $dateEndPlusOneDay = $dateEnd->addDay()->format('Y-m-d');
                 if (
                     $project->date_interest_bearing_kwh !== null &&
                     Carbon::parse($project->date_interest_bearing_kwh)->format('Y-m-d') != $dateEndPlusOneDay

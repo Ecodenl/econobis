@@ -6,6 +6,13 @@ import TeamDetailsToolbar from './TeamDetailsToolbar';
 import TeamDetailsForm from './TeamDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const TeamDetailsAppWrapper = props => {
+    const params = useParams();
+    return <TeamDetailsApp {...props} params={params} />;
+};
 
 class TeamDetailsApp extends Component {
     constructor(props) {
@@ -50,4 +57,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsAppWrapper);

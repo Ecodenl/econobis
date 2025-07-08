@@ -9,7 +9,7 @@ import Modal from '../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../components/form/InputSelect';
 import DocumentTemplateAPI from '../../../../../../api/document-template/DocumentTemplateAPI';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
@@ -25,6 +25,12 @@ import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import RevenuesKwhDistributionFormList from './RevenuesKwhDistributionFormList';
 import InputToggle from '../../../../../../components/form/InputToggle';
 import RevenuesKwhAPI from '../../../../../../api/project/RevenuesKwhAPI';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhDistributionFormWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuesKwhDistributionForm {...props} navigate={navigate} />;
+};
 
 class RevenuesKwhDistributionForm extends Component {
     constructor(props) {
@@ -274,7 +280,7 @@ class RevenuesKwhDistributionForm extends Component {
                 distributionKwhIds: this.state.distributionKwhIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/rapportage`);
+            this.props.navigate(`/project/opbrengst-kwh/${this.props.revenuesKwh.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -523,4 +529,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhDistributionFormWrapper);

@@ -9,6 +9,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 
 import { fetchProject, clearProject } from '../../../actions/project/ProjectDetailsActions';
 import { setParticipantsProjectPagination } from '../../../actions/participants-project/ParticipantsProjectPaginationActions';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ProjectGeneralAppWrapper = props => {
+    const params = useParams();
+    return <ProjectGeneralApp {...props} params={params} />;
+};
 
 class ProjectGeneralApp extends Component {
     constructor(props) {
@@ -61,4 +68,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(ProjectGeneralApp);
+export default connect(null, mapDispatchToProps)(ProjectGeneralAppWrapper);

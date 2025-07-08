@@ -13,7 +13,13 @@ import PanelBody from '../../../../../components/panel/PanelBody';
 import validator from 'validator';
 import InputDate from '../../../../../components/form/InputDate';
 import Modal from '../../../../../components/modal/Modal';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const AddressDetailsFormAddressEnergySupplierNewWrapper = props => {
+    const navigate = useNavigate();
+    return <AddressDetailsFormAddressEnergySupplierNew {...props} navigate={navigate} />;
+};
 
 class AddressDetailsFormAddressEnergySupplierNew extends Component {
     constructor(props) {
@@ -448,7 +454,7 @@ class AddressDetailsFormAddressEnergySupplierNew extends Component {
                                 confirmAction={
                                     this.state.messageHasParticipationsProjectsArray.length == 1 &&
                                     this.state.messageHasParticipationsRedirect
-                                        ? () => hashHistory.push(`${this.state.messageHasParticipationsRedirect}`)
+                                        ? () => this.props.navigate(`${this.state.messageHasParticipationsRedirect}`)
                                         : {}
                                 }
                             >
@@ -492,4 +498,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierNew);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierNewWrapper);

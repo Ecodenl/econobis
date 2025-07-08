@@ -6,7 +6,7 @@ import EmailSplitviewAPI from '../../../api/email/EmailSplitviewAPI';
 import { EmailModalContext } from '../../../context/EmailModalContext';
 import Frame from 'react-frame-component';
 
-export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, deleted, folder, refetchCurrentEmails }) {
+export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, deleted, folder }) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
     const [email, setEmail] = useState({ attachments: [], toAddresses: [], contacts: [], manualContacts: [] });
     const { openEmailSendModal } = useContext(EmailModalContext);
@@ -110,7 +110,6 @@ export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, de
                 email={email}
                 updateEmailAttributes={updateEmailAttributes}
                 deleted={deleted}
-                refetchCurrentEmails={refetchCurrentEmails}
             />
 
             <div className="panel panel-default">

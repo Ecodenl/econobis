@@ -374,13 +374,6 @@ export default function EmailSplitView() {
 
                             refetchCurrentEmails();
                         }}
-                        refetchCurrentEmails={() => {
-                            localStorage.setItem('lastOpenedEmailId', null);
-
-                            setSelectedEmailId(null);
-
-                            refetchCurrentEmails();
-                        }}
                     />
                 </div>
             </div>

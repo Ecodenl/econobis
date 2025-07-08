@@ -14,8 +14,8 @@ return new class extends Migration
     public function up()
     {
         Schema::table('measure_categories', function (Blueprint $table) {
-            $table->string('calendar_background_color', 7)->default('#ffffff')->after('email_template_id_wf_create_quotation_request');
-            $table->string('calendar_text_color', 7)->default('#000000')->after('calendar_background_color');
+            $table->string('calendar_background_color', 7)->default('#265985')->after('email_template_id_wf_create_quotation_request');
+            $table->string('calendar_text_color', 7)->default('#ffffff')->after('calendar_background_color');
         });
     }
 

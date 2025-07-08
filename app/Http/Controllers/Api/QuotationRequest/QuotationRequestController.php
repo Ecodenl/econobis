@@ -8,6 +8,7 @@
 
 namespace App\Http\Controllers\Api\QuotationRequest;
 
+use App\Eco\Address\Address;
 use App\Eco\Email\Email;
 use App\Eco\Occupation\Occupation;
 use App\Eco\Occupation\OccupationContact;
@@ -16,6 +17,7 @@ use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
+use App\Helpers\Excel\AddressSpukLaiExcelHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
 use App\Helpers\Opportunity\OpportunityHelper;
 use App\Http\Controllers\Api\ApiController;
@@ -131,6 +133,21 @@ class QuotationRequestController extends ApiController
         $quotationRequestCSVHelper = new QuotationRequestCSVHelper($quotationRequests);
 
         return $quotationRequestCSVHelper->downloadCSV();
+    }
+
+    public function excel(RequestQuery $requestQuery, $type)
+    {
+        set_time_limit(0);
+//        $quotationRequests = $requestQuery->getQueryNoPagination()->get();
+
+        switch($type) {
+            case 'spuk-lai':
+                $addresses = Address::whereHas('housingFile')->get();
+                $addressExcelHelper = new AddressSpukLaiExcelHelper($addresses);
+                return $addressExcelHelper->downloadSpukLaiExcel();
+            default:
+                return null;
+        }
     }
 
     /**

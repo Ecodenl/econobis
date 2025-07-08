@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration, keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole, EnergieAdviseurRole, MarketingMedewerkerRole, BuurtaanpakManagerRole, BuurtaanpakCoordinatorRole, FinancieelMedewerkerRole, FinancieelControllerRole }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -151,7 +151,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {(permissions.menuProjects && (keyUserRole.hasRole || ProjectmanagerRole.hasRole || ParticipatiemedewerkerRole.hasRole)) && (
+            {permissions.menuProjects && (
                 <Nav id="projecten">
                     <NavIcon>
                         <SvgIcon size={20} icon={drawer} />
@@ -167,13 +167,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         </NavText>
                     </Nav>
 
-                    <Nav id="deelnemers">
-                        <NavText>
-                            <Link className="sidebar-link" to="deelnemers">
-                                Deelnemers
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {permissions.menuParticipation && (
+                        <Nav id="deelnemers">
+                            <NavText>
+                                <Link className="sidebar-link" to="deelnemers">
+                                    Deelnemers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {permissions.manageFinancial && (
                         <Nav id="waardestaten">
                             <NavText>
@@ -186,7 +188,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {(permissions.menuEnergySaving && (keyUserRole.hasRole || EnergieAdviseurRole.hasRole || MarketingMedewerkerRole.hasRole || BuurtaanpakManagerRole.hasRole || BuurtaanpakCoordinatorRole.hasRole)) && (
+            {permissions.menuEnergySaving && (
                 <Nav id="energy-saving">
                     <NavIcon>
                         <SvgIcon size={20} icon={home} />
@@ -466,7 +468,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                 </Nav>
             )}
 
-            {(permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (keyUserRole.hasRole || FinancieelMedewerkerRole.hasRole || FinancieelControllerRole.hasRole)) && (
+            {permissions.menuFinancial && permissions.manageFinancial && administrations.length > 0 && (
                 <Nav id="financial">
                     <NavIcon>
                         <SvgIcon size={20} icon={ic_business_center} />
@@ -722,15 +724,6 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
         useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        ProjectmanagerRole: state.meDetails.roles.find(role => role.name === 'Projectmanager'),
-        ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
-        EnergieAdviseurRole: state.meDetails.roles.find(role => role.name === 'Energie adviseur'),
-        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManagerRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinatorRole: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
-        FinancieelMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Financieel medewerker'),
-        FinancieelControllerRole: state.meDetails.roles.find(role => role.name === 'Financieel controller'),
     };
 };
 

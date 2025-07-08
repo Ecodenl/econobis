@@ -3877,10 +3877,10 @@ class ExternalWebformController extends Controller
             $dateUnderReviewDetermination = null; //                             susidy-request
             $dateApprovedDetermination = null;    //                             susidy-request
 
-            $quotationAmount =  null;             // quotation-request / susidy-request
-            $costAdjustment = null;               //                             susidy-request
-            $awardAmount = null;                  //                             susidy-request
-            $amountDetermination = null;          //                             susidy-request
+            $quotationAmount =  0;                //         quotation-request / susidy-request
+            $costAdjustment = 0;                  //                             susidy-request
+            $awardAmount = 0;                     //                             susidy-request
+            $amountDetermination = 0;             //                             susidy-request
 
             $coachOrOrganisationNote = null;      // visit / quotation-request / susidy-request
             $projectmanagerNote = null;           //         quotation-request / susidy-request
@@ -3924,10 +3924,10 @@ class ExternalWebformController extends Controller
                     $dateUnderReviewDetermination = $dataQuotationRequest['date_under_review_determination'] ? Carbon::make($dataQuotationRequest['date_under_review_determination']) : null;
                     $dateApprovedDetermination = $dataQuotationRequest['date_approved_determination'] ? Carbon::make($dataQuotationRequest['date_approved_determination']) : null;
 
-                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
-                    $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
-                    $awardAmount = $dataQuotationRequest['award_amount'] ?: null;
-                    $amountDetermination = $dataQuotationRequest['amount_determination'] ?: null;
+                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: 0;
+                    $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: 0;
+                    $awardAmount = $dataQuotationRequest['award_amount'] ?: 0;
+                    $amountDetermination = $dataQuotationRequest['amount_determination'] ?: 0;
 
                     $coachOrOrganisationNote = $dataQuotationRequest['coach_or_organisation_note'] ?: null;
                     $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;

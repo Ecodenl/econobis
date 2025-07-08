@@ -33,12 +33,19 @@ class ProjectNewApp extends Component {
     constructor(props) {
         super(props);
 
+        const defaultTextRegisterPageHeader = 'Inschrijven project';
+        const defaultTextRegisterCurrentBookWorth = 'Huidige boekwaarde';
+        const defaultTextRegisterParticipationSingular = 'participatie';
+        const defaultTextRegisterParticipationPlural = 'participaties';
+
         const defaultTextTransactionCosts = 'Transactiekosten';
         const defaultTextAgreeTerms =
             'Om deel te kunnen nemen dien je akkoord te gaan met de voorwaarden en dien je te bevestigen dat je de project informatie hebt gelezen en begrepen.';
         const defaultTextLinkAgreeTerms = 'Ik ga akkoord met de {voorwaarden_link}';
+        const defaultTextLinkNameAgreeTerms = 'voorwaarden';
         const defaultTextLinkUnderstandInfo =
             'Ik heb de {project_informatie_link} (inclusief de daarin beschreven risico’s) behorende bij het project gelezen en begrepen';
+        const defaultTextLinkNameUnderstandInfo = 'project informatie';
         const defaultTextAcceptAgreement =
             'Wanneer je akkoord gaat met het inschrijfformulier en in de inschrijving bevestigd, is je inschrijving definitief';
         const defaultTextAcceptAgreementQuestion = 'Ik ben akkoord met deze inschrijving';
@@ -107,10 +114,16 @@ class ProjectNewApp extends Component {
                 participationsGranted: null,
                 participationsOptioned: null,
                 participationsInterresed: null,
+                textRegisterPageHeader: defaultTextRegisterPageHeader,
+                textRegisterCurrentBookWorth: defaultTextRegisterCurrentBookWorth,
+                textRegisterParticipationSingular: defaultTextRegisterParticipationSingular,
+                textRegisterParticipationPlural: defaultTextRegisterParticipationPlural,
                 textTransactionCosts: defaultTextTransactionCosts,
                 textAgreeTerms: defaultTextAgreeTerms,
                 textLinkAgreeTerms: defaultTextLinkAgreeTerms,
+                textLinkNameAgreeTerms: defaultTextLinkNameAgreeTerms,
                 textLinkUnderstandInfo: defaultTextLinkUnderstandInfo,
+                textLinkNameUnderstandInfo: defaultTextLinkNameUnderstandInfo,
                 textAcceptAgreement: defaultTextAcceptAgreement,
                 textAcceptAgreementQuestion: defaultTextAcceptAgreementQuestion,
                 textRegistrationFinished: defaultTextRegistrationFinished,

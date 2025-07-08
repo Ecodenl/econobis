@@ -65,7 +65,12 @@ class DeleteDocumentTemplate implements DeleteInterface
 
         $projectNames = Project::where('document_template_agreement_id', $this->documentTemplate->id)->pluck('name')->toArray();
         if($projectNames){
-            abort('409','Ontkoppel template eerst in de volgende projecten: ' . implode(', ', $projectNames));
+            abort('409','Ontkoppel template inschrijfformulier eerst in de volgende projecten: ' . implode(', ', $projectNames));
+        }
+
+        $projectNames = Project::where('document_template_increase_participations_id', $this->documentTemplate->id)->pluck('name')->toArray();
+        if($projectNames){
+            abort('409','Ontkoppel template bijschrijfformulier eerst in de volgende projecten: ' . implode(', ', $projectNames));
         }
     }
 

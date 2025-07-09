@@ -20,6 +20,7 @@ import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
+import CleanupItems from './cleanup-items/CleanupItems';
 
 function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails }) {
     const [emailTemplates, setEmailTemplates] = useState([]);
@@ -65,6 +66,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             'updatedAt',
             'updatedById',
             'updatedBy',
+            'cleanupItems',
         ];
         for (const item of cleanUpFormFields) {
             delete values[item];
@@ -431,6 +433,30 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                     </PanelBody>
                 </Panel>
+
+
+
+                <Panel>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Opschonen</span>
+                    </PanelHeader>
+                    <PanelBody>
+                        <div className="row">
+                            <InputToggle
+                                label="Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?"
+                                name={'cleanupEmail'}
+                                value={values.cleanupEmail}
+                                onChangeAction={e => setFieldValue('cleanupEmail', e.target.checked)}
+                            />
+                        </div>
+                        <CleanupItems
+                            cooperationId={formData.id}
+                            showEditCooperation={false}
+                            cleanupItems={formData.cleanupItems}
+                        />
+                    </PanelBody>
+                </Panel>
+
                 <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Overig</span>

@@ -70,6 +70,9 @@ class FullCooperation extends JsonResource
             'externalUrlContacts' => $this->external_url_contacts,
             'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
             'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
+
+            'cleanupEmail' => $this->cleanup_email,
+            'cleanupItems' => FullCooperationCleanupItem::collection($this->whenLoaded('cleanupItems')),
         ];
     }
 }

@@ -30,7 +30,7 @@ class CooperationController extends ApiController
 
         $cooperation = Cooperation::first();
 
-        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns']);
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns', 'cleanupItems']);
 
         return FullCooperation::make($cooperation);
     }
@@ -73,6 +73,9 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+
+        $cooperation->cleanup_email = $request->boolean('cleanupEmail');
+
         $cooperation->save();
 
         return $this->show();
@@ -119,6 +122,9 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+
+        $cooperation->cleanup_email = $request->boolean('cleanupEmail');
+
         $cooperation->save();
 
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false

@@ -9,7 +9,9 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -37,6 +39,24 @@ class DeleteParticipation implements DeleteInterface
         $this->participation = $participation;
     }
 
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup($type)
+    {
+        $this->delete();
+
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+        if($type === 'participationsFinished') {
+            $cooperation->cleanup_participations_termination_date_last_run_at = $dateToday;
+        } elseif ($type === 'participationsWithStatus') {
+            $cooperation->cleanup_participations_change_date_last_run_at = $dateToday;
+        }
+        $cooperation->save();
+    }
     /** Main method for deleting this model and all it's relations
      *
      * @return array

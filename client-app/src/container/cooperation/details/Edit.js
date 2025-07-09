@@ -209,7 +209,10 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 name={'hoomKey'}
                                 value={values.hoomKey}
                                 onChangeAction={handleChange}
-                                disabled={meDetails.id !== 1}
+                                disabled={
+                                    meDetails.email !== "support@econobis.nl" &&
+                                    meDetails.email !== "software@xaris.nl"
+                                }
                             />
                         </div>
                         <div className="row">

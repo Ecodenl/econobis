@@ -51,6 +51,8 @@ class HousingFileController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', HousingFile::class);
+
         $housingFiles = $requestQuery->get();
 
         $housingFiles->load(['address.contact', 'buildingType', 'energyLabel']);
@@ -67,6 +69,8 @@ class HousingFileController extends ApiController
      */
     public function getStore(Contact $contact)
     {
+        $this->authorize('manage', HousingFile::class);
+
         $info[] = $contact->getPrettyAddresses();
 
         return $info;
@@ -74,6 +78,8 @@ class HousingFileController extends ApiController
 
     public function show(HousingFile $housingFile)
     {
+        $this->authorize('view', HousingFile::class);
+
         $housingFile->load([
             'address.contact',
             'housingFileSpecifications',
@@ -115,6 +121,8 @@ class HousingFileController extends ApiController
 
     public function excelHousingFiles(RequestQuery $requestQuery)
     {
+        $this->authorize('view', HousingFile::class);
+
         set_time_limit(0);
         $housingFiles = $requestQuery->getQueryNoPagination()->get();
 
@@ -460,6 +468,8 @@ class HousingFileController extends ApiController
 
     public function peek()
     {
+//        $this->authorize('view', HousingFile::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
             $housingFiles = HousingFile::whereHas('address', function($query) use($teamContactIds){

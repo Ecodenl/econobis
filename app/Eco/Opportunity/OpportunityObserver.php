@@ -9,7 +9,7 @@
 namespace App\Eco\Opportunity;
 
 use App\Eco\Campaign\CampaignWorkflow;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -25,7 +25,7 @@ class OpportunityObserver
 
         $userId = Auth::id();
         if(Auth::isPortalUser()) {
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if ($responsibleUserId) {
                 $opportunity->created_by_id = $responsibleUserId;
                 $opportunity->updated_by_id = $responsibleUserId;
@@ -46,7 +46,7 @@ class OpportunityObserver
     {
         $userId = Auth::id();
         if(Auth::isPortalUser()) {
-            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            $responsibleUserId = PortalSettings::first()?->responsible_user_id;
             if ($responsibleUserId) {
                 $opportunity->updated_by_id = $responsibleUserId;
             }

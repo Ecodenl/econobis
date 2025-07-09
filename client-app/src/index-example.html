@@ -2,17 +2,19 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <meta name="backend-url" content="https://econobis-xaris.nl">
     <title>Econobis</title>
-  </head>
-  <body>
     <script type="text/javascript">
       // Set some global JS variables
-      // var URL_APP = "https://econobis-xaris.nl";
-      var URL_API = "https://econobis-xaris.nl";
-      var CLIENT_ID ="2";
-      var CLIENT_KEY ="sdzX088pM1j3IyrzMHwcdNvAtrC134Z0eRjXkz3y";
+      // Client_id in env file ook weer even op 2 zetten!
+      window.env = {
+        URL_API: 'https://econobis-xaris.nl',
+        CLIENT_ID: "2",
+        CLIENT_KEY: "00826iFCCw8lv70taUaiUjxI5SyEhqNzQmCFjG1b",
+      };
     </script>
-    <script type="text/javascript" src="./polyfill.js"></script>
+  </head>
+  <body>
     <div id="root"></div>
   </body>
 </html>

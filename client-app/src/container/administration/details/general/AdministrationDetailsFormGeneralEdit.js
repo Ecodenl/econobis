@@ -923,7 +923,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.twinfieldOrganizationCode}
                                     />
                                     <InputText
-                                        label="Code"
+                                        label="Administratie code"
                                         name={'twinfieldOfficeCode'}
                                         value={twinfieldOfficeCode}
                                         onChangeAction={this.handleInputChange}

@@ -943,6 +943,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                                 required={'required'}
                                                 readOnly={usesTwinfield == false}
                                                 error={this.state.errors.twinfieldClientId}
+                                                disabled={!this.manageUsesTwinfield}
                                             />
                                             <InputText
                                                 label="Client Secret"
@@ -953,6 +954,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                                 required={'required'}
                                                 readOnly={usesTwinfield == false}
                                                 error={this.state.errors.twinfieldClientSecret}
+                                                disabled={!this.manageUsesTwinfield}
                                             />
                                         </div>
                                         <div className="row">

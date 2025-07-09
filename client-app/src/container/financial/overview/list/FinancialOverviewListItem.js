@@ -1,12 +1,18 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
-import Modal from "../../../../components/modal/Modal";
+import Modal from '../../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewListItem {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewListItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class FinancialOverviewListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/waardestaat/${id}`);
+        this.props.navigate(`/waardestaat/${id}`);
     }
 
     showHasNoAccessToAdministrationModal() {
@@ -53,8 +59,8 @@ class FinancialOverviewListItem extends Component {
         const { id, description, year, administration, definitive, statusId, dateProcessed, permissions } = this.props;
 
         // list of administration ids that the current user has access to
-        const administrationIds = this.props.administrations.map((administration) => administration.id);
-        let hasAccessToAdministration = (administrationIds.indexOf(administration.id) > -1);
+        const administrationIds = this.props.administrations.map(administration => administration.id);
+        let hasAccessToAdministration = administrationIds.indexOf(administration.id) > -1;
 
         let status = '';
         switch (statusId) {
@@ -77,7 +83,11 @@ class FinancialOverviewListItem extends Component {
         return (
             <tr
                 className={this.state.highlightRow}
-                onDoubleClick={permissions.manageFinancial && hasAccessToAdministration ? () => this.openItem(id) : () => this.showHasNoAccessToAdministrationModal() }
+                onDoubleClick={
+                    permissions.manageFinancial && hasAccessToAdministration
+                        ? () => this.openItem(id)
+                        : () => this.showHasNoAccessToAdministrationModal()
+                }
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
@@ -89,7 +99,8 @@ class FinancialOverviewListItem extends Component {
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial && hasAccessToAdministration ? (
                         <a role="button" onClick={() => this.openItem(id)}>
-                            <Icon className="mybtn-success" size={14} icon={pencil} />&nbsp;
+                            <Icon className="mybtn-success" size={14} icon={pencil} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
@@ -100,7 +111,8 @@ class FinancialOverviewListItem extends Component {
                     hasAccessToAdministration &&
                     statusId === 'concept' ? (
                         <a role="button" onClick={this.props.showDeleteItemModal.bind(this, id, description)}>
-                            <Icon className="mybtn-danger" size={14} icon={trash} />&nbsp;
+                            <Icon className="mybtn-danger" size={14} icon={trash} />
+                            &nbsp;
                         </a>
                     ) : (
                         ''
@@ -110,13 +122,12 @@ class FinancialOverviewListItem extends Component {
                         <Modal
                             buttonCancelText="Ok"
                             closeModal={() => this.closeHasNoAccessToAdministrationModal()}
-
                             showConfirmAction={false}
                             title="Je hebt geen recht om deze administratie in te zien"
                         >
                             <>
-                                Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe te voegen aan
-                                deze administratie via instellingen > administraties
+                                Je hebt geen recht om deze administratie in te zien. Vraag je administrator/beheerder
+                                jou toe te voegen aan deze administratie via instellingen > administraties
                             </>
                         </Modal>
                     )}
@@ -133,4 +144,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialOverviewListItem);
+export default connect(mapStateToProps)(FinancialOverviewListItemWrapper);

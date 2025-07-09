@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import LedgerDeleteItem from './LedgerDeleteItem';
+
+// Functionele wrapper voor de class component
+const LedgerDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <LedgerDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class LedgerDetailsToolbar extends Component {
     constructor(props) {
@@ -19,12 +25,12 @@ class LedgerDetailsToolbar extends Component {
     };
 
     render() {
-        let { description, id } = this.props;
+        let { description, id, navigate } = this.props;
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
                 </div>
@@ -45,6 +51,6 @@ class LedgerDetailsToolbar extends Component {
     }
 }
 
-LedgerDetailsToolbar.propTypes = { description: PropTypes.any };
+LedgerDetailsToolbarWrapper.propTypes = { description: PropTypes.any };
 
-export default LedgerDetailsToolbar;
+export default LedgerDetailsToolbarWrapper;

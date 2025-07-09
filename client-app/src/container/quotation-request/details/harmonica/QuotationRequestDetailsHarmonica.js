@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import DocumentHarmonica from './DocumentHarmonica';
@@ -8,6 +8,12 @@ import ExternalpartyAndOccupantEmailSentHarmonica from './ExternalpartyAndOccupa
 import ExternalpartyEmailSentHarmonica from './ExternalpartyEmailSentHarmonica';
 import OccupantEmailSentHarmonica from './OccupantEmailSentHarmonica';
 import CoachEmailSentHarmonica from './CoachEmailSentHarmonica';
+
+// Functionele wrapper voor de class component
+const QuotationRequestDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class QuotationRequestDetailsHarmonica extends Component {
     constructor(props) {
@@ -33,37 +39,37 @@ class QuotationRequestDetailsHarmonica extends Component {
     }
 
     newEmail() {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoachId}/occupant/${this.props.quotationRequestDetails.occupantId}`
         );
     }
 
     newOccupantEmail() {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.occupantId}`
         );
     }
 
     newCoachEmail() {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.organisationOrCoachId}`
         );
     }
 
     newExternalpartyAndOccupantEmail() {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.externalPartyId}/occupant/${this.props.quotationRequestDetails.occupantId}`
         );
     }
 
     newExternalpartyEmail() {
-        hashHistory.push(
+        this.props.navigate(
             `/email/nieuw/offerteverzoek/${this.props.id}/${this.props.quotationRequestDetails.externalPartyId}`
         );
     }
 
     newDocument(type) {
-        hashHistory.push(`/document/nieuw/${type}/offerteverzoek/${this.props.id}`);
+        this.props.navigate(`/document/nieuw/${type}/offerteverzoek/${this.props.id}`);
     }
 
     toggleShowList(name) {
@@ -149,4 +155,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(QuotationRequestDetailsHarmonica);
+export default connect(mapStateToProps)(QuotationRequestDetailsHarmonicaWrapper);

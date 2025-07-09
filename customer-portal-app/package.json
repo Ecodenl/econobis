@@ -1,6 +1,6 @@
 {
   "name": "customer-portal-app",
-  "version": "2.1.0",
+  "version": "5.1.0",
   "homepage": ".",
   "private": true,
   "dependencies": {
@@ -12,6 +12,7 @@
     "js-file-download": "^0.4.12",
     "lodash": "^4.17.21",
     "moment": "^2.29.1",
+    "pdfjs-dist": "^3.11.174",
     "react": "^18.2.0",
     "react-bootstrap": "^1.6.6",
     "react-burger-menu": "^2.6.11",
@@ -22,7 +23,7 @@
     "react-google-recaptcha-v3": "^1.4.0",
     "react-html-parser": "^2.0.2",
     "react-icons": "^3.7.0",
-    "react-pdf": "^6.2.2",
+    "react-pdf": "^7.7.3",
     "react-router-dom": "5.2.0",
     "react-scripts": "^5.0.1",
     "react-spinners": "^0.13.8",

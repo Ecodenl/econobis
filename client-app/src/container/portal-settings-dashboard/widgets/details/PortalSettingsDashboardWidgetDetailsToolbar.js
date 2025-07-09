@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 import PortalSettingsDashboardWidgetDeleteItem from './PortalSettingsDashboardWidgetDeleteItem';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardWidgetDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
     constructor(props) {
@@ -18,7 +24,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
     };
 
     render() {
-        let { portalSettingsDashboardWidget, permissions } = this.props;
+        let { portalSettingsDashboardWidget, permissions, navigate } = this.props;
         let { id, title, codeRef } = portalSettingsDashboardWidget;
 
         const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
@@ -27,7 +33,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {permissions.managePortalSettings && !staticWidgets.includes(codeRef) && (
                             <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                         )}
@@ -52,4 +58,4 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
 
 PortalSettingsDashboardWidgetDetailsToolbar.propTypes = { description: PropTypes.any };
 
-export default PortalSettingsDashboardWidgetDetailsToolbar;
+export default PortalSettingsDashboardWidgetDetailsToolbarWrapper;

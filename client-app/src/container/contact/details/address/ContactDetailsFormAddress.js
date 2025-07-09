@@ -34,6 +34,12 @@ class ContactDetailsFormAddress extends Component {
         });
     };
 
+    setAddressDongleNewOrEditOpen = falseTrue => {
+        this.setState({
+            addressDongleNewOrEditOpen: falseTrue,
+        });
+    };
+
     render() {
         return (
             <Panel>
@@ -45,12 +51,19 @@ class ContactDetailsFormAddress extends Component {
                                 <Icon size={14} icon={plus} />
                             </a>
                         )}
+                    {this.props.permissions.createContactAddress && this.state.addressDongleNewOrEditOpen == false && (
+                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
+                            <Icon size={14} icon={plus} />
+                        </a>
+                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
                         <ContactDetailsFormAddressList
                             setAddressEnergySupplierNewOrEditOpen={this.setAddressEnergySupplierNewOrEditOpen}
                             addressEnergySupplierNewOrEditOpen={this.state.addressEnergySupplierNewOrEditOpen}
+                            setAddressDongleNewOrEditOpen={this.setAddressDongleNewOrEditOpen}
+                            addressDongleNewOrEditOpen={this.state.addressDongleNewOrEditOpen}
                         />
                     </div>
                     <div className="col-md-12 margin-10-top">

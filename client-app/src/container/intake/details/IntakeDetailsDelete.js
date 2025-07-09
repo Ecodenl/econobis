@@ -1,35 +1,30 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteIntake } from '../../../actions/intake/IntakeDetailsActions';
-import { connect } from 'react-redux';
 
-const IntakeDetailsDelete = props => {
+const IntakeDetailsDelete = ({ id, contactId, fullStreet, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteIntake(props.id, props.contactId);
-
-        props.closeDeleteItemModal();
+        dispatch(deleteIntake(id, contactId));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder intake: <strong> {`${props.fullStreet}?`} </strong>
+                Verwijder intake: <strong> {`${fullStreet}?`} </strong>
             </p>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteIntake: (id, contactId) => {
-        dispatch(deleteIntake(id, contactId));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(IntakeDetailsDelete);
+export default IntakeDetailsDelete;

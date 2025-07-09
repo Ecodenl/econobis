@@ -1,4 +1,5 @@
 import React from 'react';
+import { getApiUrl } from '../../api/utils/ApiUrl';
 import { FaUser } from 'react-icons/fa';
 
 const PreviewPortalDashboardPage = ({
@@ -291,7 +292,9 @@ const PreviewPortalDashboardPage = ({
                                             const imageSrc =
                                                 widget.image && widget.image.preview
                                                     ? widget.image.preview
-                                                    : `${URL_API}/portal/images/${widget.widgetImageFileName}?${imageHash}`;
+                                                    : `${getApiUrl()}/portal/images/${
+                                                          widget.widgetImageFileName
+                                                      }?${imageHash}`;
                                             const cardStyle = {
                                                 backgroundColor: `${
                                                     widget.backgroundColor

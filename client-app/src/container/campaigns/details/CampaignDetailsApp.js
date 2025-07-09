@@ -6,8 +6,11 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
 import { INITIAL_STATE, reducer } from './CampaignReducer';
+import { useParams } from 'react-router-dom';
 
-function CampaignDetailsApp({ params }) {
+function CampaignDetailsApp() {
+    const params = useParams();
+
     const [state, dispatch] = useReducer(reducer, INITIAL_STATE);
 
     useEffect(() => {

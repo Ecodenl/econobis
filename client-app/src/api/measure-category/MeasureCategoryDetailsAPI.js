@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_MEASURE_CATEGORY = `measure-category`;
 
@@ -26,7 +26,7 @@ export default {
     fetchMeasureCategoryDetails: id => {
         const requestUrl = `jory/measure-category/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: defaultFields,
             },
@@ -35,7 +35,7 @@ export default {
 
     updateMeasureCategory: measureCategory => {
         const requestUrl = `${URL_MEASURE_CATEGORY}/${measureCategory.id}`;
-        return axiosInstance.post(requestUrl, measureCategory, {
+        return getAxiosInstance().post(requestUrl, measureCategory, {
             params: {
                 jory: defaultFields,
             },

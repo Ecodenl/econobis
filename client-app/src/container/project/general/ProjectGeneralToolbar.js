@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
+
+// Functionele wrapper voor de class component
+const ProjectGeneralToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectGeneralToolbar {...props} navigate={navigate} />;
+};
 
 class ProjectGeneralToolbar extends Component {
     constructor(props) {
@@ -13,7 +19,7 @@ class ProjectGeneralToolbar extends Component {
     }
 
     render() {
-        const { project } = this.props;
+        const { project, navigate } = this.props;
 
         return (
             <div className="row">
@@ -22,13 +28,10 @@ class ProjectGeneralToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex  margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     <ButtonText
                                         buttonText={`Open detailformulier`}
-                                        onClickAction={() => hashHistory.push(`/project/details/${this.props.id}`)}
+                                        onClickAction={() => this.props.navigate(`/project/details/${this.props.id}`)}
                                     />
                                 </div>
                             </div>
@@ -53,4 +56,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectGeneralToolbar);
+export default connect(mapStateToProps)(ProjectGeneralToolbarWrapper);

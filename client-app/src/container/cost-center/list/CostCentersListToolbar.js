@@ -1,16 +1,23 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import * as PropTypes from 'prop-types';
 
+// Functionele wrapper voor de class component
+const CostCentersListToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <CostCentersListToolbar {...props} navigate={navigate} />;
+};
+
 class CostCentersListToolbar extends Component {
+    newCostCenter = () => {
+        this.props.navigate(`/kostenplaats/nieuw`);
+    };
+
     render() {
         let { costCentersCount, refreshCostCentersData, permissions } = this.props;
-        const newCostCenter = () => {
-            hashHistory.push(`/kostenplaats/nieuw`);
-        };
 
         return (
             <div className="row">
@@ -18,7 +25,7 @@ class CostCentersListToolbar extends Component {
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'refresh'} onClickAction={refreshCostCentersData} />
                         {permissions.manageFinancial && (
-                            <ButtonIcon iconName={'plus'} onClickAction={newCostCenter} />
+                            <ButtonIcon iconName={'plus'} onClickAction={this.newCostCenter} />
                         )}
                     </div>
                 </div>
@@ -45,4 +52,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(CostCentersListToolbar);
+export default connect(mapStateToProps, null)(CostCentersListToolbarWrapper);

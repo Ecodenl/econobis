@@ -6,6 +6,13 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import InvoicePreviewForm from './InvoicePreviewForm';
 import InvoicePreviewToolbar from './InvoicePreviewToolbar';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoicePreviewAppWrapper = props => {
+    const params = useParams();
+    return <InvoicePreviewApp {...props} params={params} />;
+};
 
 class InvoicePreviewApp extends Component {
     constructor(props) {
@@ -59,4 +66,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(InvoicePreviewApp);
+export default connect(null, mapDispatchToProps)(InvoicePreviewAppWrapper);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import moment from 'moment';
 import validator from 'validator';
 import { isEmpty } from 'lodash';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import CampaignNewToolbar from './CampaignNewToolbar';
 import CampaignNew from './CampaignNew';
@@ -10,6 +10,12 @@ import CampaignNew from './CampaignNew';
 import CampaignDetailsAPI from '../../../api/campaign/CampaignDetailsAPI';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const CampaignNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <CampaignNewApp {...props} navigate={navigate} />;
+};
 
 class CampaignNewApp extends Component {
     constructor(props) {
@@ -105,7 +111,7 @@ class CampaignNewApp extends Component {
 
         !hasErrors &&
             CampaignDetailsAPI.storeCampaign(campaign).then(payload => {
-                hashHistory.push(`/campagne/${payload.data.data.id}`);
+                this.props.navigate(`/campagne/${payload.data.data.id}`);
             });
     };
 
@@ -141,4 +147,4 @@ class CampaignNewApp extends Component {
     }
 }
 
-export default CampaignNewApp;
+export default CampaignNewAppWrapper;

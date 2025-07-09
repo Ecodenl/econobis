@@ -11,7 +11,6 @@ import InputReactSelect from '../../../components/form/InputReactSelect';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 import { CooperationValidation } from './Validation';
-import CooperationUploadLogo from './UploadLogo';
 import InputToggle from '../../../components/form/InputToggle';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import { connect } from 'react-redux';
@@ -27,8 +26,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
-    const [showUploadLogo, setShowUploadLogo] = useState(false);
-    const [attachment, setAttachment] = useState(null);
     const [showActivateTwoFactorWarning, setShowActivateTwoFactorWarning] = useState(false);
 
     const { values, errors, touched, handleChange, handleSubmit, setFieldValue, handleBlur } = useFormik({
@@ -80,10 +77,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             formData.append(key, value);
         }
 
-        if (attachment) {
-            formData.append('attachment', attachment);
-        }
-
         // Send form data
         let request = null;
         if (values.id === null) request = CooperationDetailsAPI.create(formData);
@@ -106,10 +99,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
         if (e.target.checked) {
             setShowActivateTwoFactorWarning(true);
         }
-    }
-
-    function toggleShowUploadLogo() {
-        setShowUploadLogo(!showUploadLogo);
     }
 
     return (
@@ -197,26 +186,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 error={errors.website && touched.website}
                                 errorMessage={errors.website}
                             />
-                        </div>
-                        <div className="row">
-                            <div className="form-group col-sm-6">
-                                <label className="col-sm-6">Kies logo</label>
-                                <div className="col-sm-6">
-                                    <input
-                                        type="text"
-                                        className="form-control input-sm col-sm-6"
-                                        value={attachment ? attachment.name : values.logoName}
-                                        onClick={toggleShowUploadLogo}
-                                        onChange={() => {}}
-                                    />
-                                </div>
-                            </div>
-                            {showUploadLogo ? (
-                                <CooperationUploadLogo
-                                    addAttachment={setAttachment}
-                                    toggleShowUploadLogo={toggleShowUploadLogo}
-                                />
-                            ) : null}
                         </div>
                     </PanelBody>
                 </Panel>
@@ -339,59 +308,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                         </div>
                     </PanelBody>
                 </Panel>
-                {/*todo WM: opschonen inspection* velden*/}
-                {/*<Panel>*/}
-                {/*    <PanelHeader>*/}
-                {/*        <span className="h5 text-bold">*/}
-                {/*            Buurtaanpak*/}
-                {/*        </span>*/}
-                {/*    </PanelHeader>*/}
-                {/*    <PanelBody>*/}
-                {/*        <div className="row">*/}
-                {/*            <InputReactSelect*/}
-                {/*                label={'Buurtaanpak afspraak e-mail template'}*/}
-                {/*                name={'inspectionPlannedEmailTemplateId'}*/}
-                {/*                options={emailTemplates}*/}
-                {/*                value={values.inspectionPlannedEmailTemplateId}*/}
-                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
-                {/*                isLoading={isLoading}*/}
-                {/*                clearable={true}*/}
-                {/*            />*/}
-                {/*            <InputReactSelect*/}
-                {/*                label={'Mailbox afspraak/opname/uitgebracht bevestigingen'}*/}
-                {/*                name={'inspectionPlannedMailboxId'}*/}
-                {/*                options={mailboxAddresses}*/}
-                {/*                optionName={'email'}*/}
-                {/*                value={values.inspectionPlannedMailboxId}*/}
-                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
-                {/*                isLoading={isLoading}*/}
-                {/*                clearable={true}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*        <div className="row">*/}
-                {/*            <InputReactSelect*/}
-                {/*                label={'Buurtaanpak opname e-mail template'}*/}
-                {/*                name={'inspectionRecordedEmailTemplateId'}*/}
-                {/*                options={emailTemplates}*/}
-                {/*                value={values.inspectionRecordedEmailTemplateId}*/}
-                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
-                {/*                isLoading={isLoading}*/}
-                {/*                clearable={true}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*        <div className="row">*/}
-                {/*            <InputReactSelect*/}
-                {/*                label={'Buurtaanpak uitgebracht e-mail template'}*/}
-                {/*                name={'inspectionReleasedEmailTemplateId'}*/}
-                {/*                options={emailTemplates}*/}
-                {/*                value={values.inspectionReleasedEmailTemplateId}*/}
-                {/*                onChangeAction={(value, name) => setFieldValue(name, value)}*/}
-                {/*                isLoading={isLoading}*/}
-                {/*                clearable={true}*/}
-                {/*            />*/}
-                {/*        </div>*/}
-                {/*    </PanelBody>*/}
-                {/*</Panel>*/}
 
                 {(meDetails.email === 'support@econobis.nl' || meDetails.email === 'software@xaris.nl') && (
                     <Panel>
@@ -552,7 +468,62 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
 {verbruik_electriciteit_vaste_kosten_hoog}<br/>
 {verbruik_electriciteit_vaste_kosten_laag}`}
                             />
+
+                            <InputToggle
+                                label="Gebruik dongel registratie functionaliteit"
+                                name={'useDongleRegistration'}
+                                value={values.useDongleRegistration}
+                                onChangeAction={e => setFieldValue('useDongleRegistration', e.target.checked)}
+                            />
                         </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Gebruik URL externe contacten pagina'}
+                                name={'showExternalUrlForContacts'}
+                                value={values.showExternalUrlForContacts}
+                                onChangeAction={e => setFieldValue('showExternalUrlForContacts', e.target.checked)}
+                                size={'col-sm-5'}
+                                textToolTip={`Met deze knop krijg je de optie om op de Contacten pagina via een button naar een externe
+                             contactpagina te gaan zoals econobisbuurtaanpak.nl`}
+                            />
+                        </div>
+                        {values.showExternalUrlForContacts ? (
+                            <>
+                                <div className="row">
+                                    <InputText
+                                        label={'Externe contacten pagina URL'}
+                                        name={'externalUrlContacts'}
+                                        value={values.externalUrlContacts}
+                                        onChangeAction={handleChange}
+                                        onBlurAction={handleBlur}
+                                        error={errors.externalUrlContacts && touched.externalUrlContacts}
+                                        errorMessage={errors.externalUrlContacts}
+                                    />
+                                    <InputText
+                                        label={'Externe contacten pagina button tekst'}
+                                        name={'externalUrlContactsButtonText'}
+                                        value={values.externalUrlContactsButtonText}
+                                        onChangeAction={handleChange}
+                                        onBlurAction={handleBlur}
+                                        error={
+                                            errors.externalUrlContactsButtonText &&
+                                            touched.externalUrlContactsButtonText
+                                        }
+                                        errorMessage={errors.externalUrlContactsButtonText}
+                                    />
+                                </div>
+                                <div className="row">
+                                    <InputToggle
+                                        label={'Externe URL openen in een nieuw venster?'}
+                                        name={'externalUrlContactsOnNewPage'}
+                                        value={values.externalUrlContactsOnNewPage}
+                                        onChangeAction={e =>
+                                            setFieldValue('externalUrlContactsOnNewPage', e.target.checked)
+                                        }
+                                    />
+                                </div>
+                            </>
+                        ) : null}
                     </PanelBody>
 
                     <PanelBody>

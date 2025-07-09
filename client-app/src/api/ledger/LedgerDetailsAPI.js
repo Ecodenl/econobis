@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_LEDGER = `ledger`;
 
@@ -6,7 +6,7 @@ export default {
     fetchLedgerDetails: id => {
         const requestUrl = `jory/ledger/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: ['id', 'description', 'vatCodeId', 'twinfieldLedgerCode'],
@@ -23,18 +23,18 @@ export default {
             fld: ['id'],
         });
 
-        return axiosInstance.post(requestUrl, ledger);
+        return getAxiosInstance().post(requestUrl, ledger);
     },
 
     updateLedger: ledger => {
         const requestUrl = `${URL_LEDGER}/${ledger.id}`;
 
-        return axiosInstance.post(requestUrl, ledger);
+        return getAxiosInstance().post(requestUrl, ledger);
     },
 
     deleteLedger: id => {
         const requestUrl = `${URL_LEDGER}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

@@ -12,8 +12,14 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
 import InputTextArea from '../../../../components/form/InputTextArea';
 import InputText from '../../../../components/form/InputText';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import CampaignsAPI from '../../../../api/campaign/CampaignsAPI';
+
+// Functionele wrapper voor de class component
+const HousingFileSpecificationEditWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileSpecificationEdit {...props} navigate={navigate} />;
+};
 
 class HousingFileSpecificationEdit extends Component {
     constructor(props) {
@@ -278,7 +284,7 @@ class HousingFileSpecificationEdit extends Component {
                             {/*<ButtonText*/}
                             {/*    buttonText={'Maak kans'}*/}
                             {/*    onClickAction={() =>*/}
-                            {/*        hashHistory.push(`/kans/nieuw/woningdossier/${housingFileId}/campagne/0`)*/}
+                            {/*        this.props.navigate(`/kans/nieuw/woningdossier/${housingFileId}/campagne/0`)*/}
                             {/*    }*/}
                             {/*/>*/}
                             <ButtonText
@@ -317,4 +323,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationEdit);
+export default connect(mapStateToProps, mapDispatchToProps)(HousingFileSpecificationEditWrapper);

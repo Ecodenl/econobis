@@ -4,10 +4,10 @@ namespace App\Providers;
 
 use App\Eco\Administration\Administration;
 use App\Eco\Administration\AdministrationPolicy;
+use App\Eco\AddressDongle\AddressDongle;
+use App\Eco\AddressDongle\AddressDonglePolicy;
 use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
-use App\Eco\FreeFields\FreeFieldsField;
-use App\Eco\FreeFields\FreeFieldsPolicy;
 use App\Eco\Campaign\Campaign;
 use App\Eco\Campaign\CampaignPolicy;
 use App\Eco\Contact\Contact;
@@ -32,6 +32,8 @@ use App\Eco\EmailTemplate\EmailTemplate;
 use App\Eco\EmailTemplate\EmailTemplatePolicy;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewPolicy;
+use App\Eco\FreeFields\FreeFieldsField;
+use App\Eco\FreeFields\FreeFieldsPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\HousingFile\HousingFileLog;
@@ -108,9 +110,9 @@ use App\Eco\VatCode\VatCode;
 use App\Eco\VatCode\VatCodePolicy;
 use App\Eco\Webform\Webform;
 use App\Eco\Webform\WebformPolicy;
-use Illuminate\Auth\RequestGuard;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Auth;
+use Laravel\Passport\Guards\TokenGuard;
 use Laravel\Passport\Passport;
 
 class AuthServiceProvider extends ServiceProvider
@@ -123,6 +125,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         Organisation::class => OrganisationPolicy::class,
         Address::class => AddressPolicy::class,
+        AddressDongle::class => AddressDonglePolicy::class,
         AddressEnergySupplier::class => AddressEnergySupplierPolicy::class,
         Contact::class => ContactPolicy::class,
         ContactNote::class => ContactNotePolicy::class,
@@ -196,21 +199,19 @@ class AuthServiceProvider extends ServiceProvider
             'use-portal' => 'Use Econobis portal',
         ]);
 
-        Passport::routes(null, [
-            'middleware' => ['scope.app'],
-        ]);
-        Passport::routes(null, [
-            'middleware' => ['passport-portal', 'scope.portal'],
-            'prefix' => 'portal/oauth',
-        ]);
-//        Passport::routes();
+        // Laad de custom Passport routes
+        if (! $this->app->routesAreCached()) {
+            require base_path('routes/passport.php');
+        }
+
+        Passport::loadKeysFrom(__DIR__ . '/../../secrets/oauth');
 
         /**
          * Helperfuncties op Auth facade toevoegen. Zo kan via
          * \Auth::isPortalUser() snel gecheckt worden of er
          * een portal gebruiker is ingelogd.
          */
-        RequestGuard::macro('isPortalUser', function(){
+        TokenGuard::macro('isPortalUser', function () {
             return Auth::user() instanceof PortalUser;
         });
 
@@ -218,8 +219,9 @@ class AuthServiceProvider extends ServiceProvider
          * Tegenovergestelde functie om te checken of
          * het een gebruiker van Econobis zelf is.
          */
-        RequestGuard::macro('isAppUser', function(){
+        TokenGuard::macro('isAppUser', function () {
             return Auth::user() instanceof User;
         });
+
     }
 }

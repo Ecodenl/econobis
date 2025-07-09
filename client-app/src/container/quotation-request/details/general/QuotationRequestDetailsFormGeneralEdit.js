@@ -89,10 +89,14 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                       }).id
                     : null,
             opportunity: {
+                opportunityId: opportunity.id ? opportunity.id : '',
+                opportunityNumber: opportunity.number ? opportunity.number : '',
                 fullName: opportunity.intake ? opportunity.intake.contact.fullName : '',
                 fullAddress: opportunity.intake ? opportunity.intake.fullAddress : '',
                 measureNames: opportunity.measures && opportunity.measures.map(measure => measure.name).join(', '),
                 measureCategoryName: opportunity.measureCategory.name,
+                currentOpportunityStatus: opportunity.status.name,
+                newOpportunityStatus: '',
             },
             quotationRequest: {
                 id,
@@ -158,31 +162,54 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             this.state.opportunityActionCodeRef === 'visit' &&
             value == this.state.visitDefaultStatusId
         ) {
-            this.setState({
-                ...this.state,
-                quotationRequest: {
-                    ...this.state.quotationRequest,
-                    [name]: value,
-                    datePlanned: '',
-                    timePlanned: '08:00',
-                    dateRecorded: '',
-                    timeRecorded: '08:00',
+            this.setState(
+                {
+                    ...this.state,
+                    quotationRequest: {
+                        ...this.state.quotationRequest,
+                        [name]: value,
+                        datePlanned: '',
+                        timePlanned: '08:00',
+                        dateRecorded: '',
+                        timeRecorded: '08:00',
+                    },
                 },
-            });
+                function() {
+                    this.getShowUpdateOpportunityStatus();
+                }
+            );
         } else if (
-            name == 'statusId' &&
+            name === 'statusId' &&
             this.state.opportunityActionCodeRef === 'visit' &&
             value == this.state.visitDoneStatusId
         ) {
-            this.setState({
-                ...this.state,
-                quotationRequest: {
-                    ...this.state.quotationRequest,
-                    [name]: value,
-                    dateRecorded: this.state.quotationRequest.datePlanned,
-                    timeRecorded: this.state.quotationRequest.timePlanned,
+            this.setState(
+                {
+                    ...this.state,
+                    quotationRequest: {
+                        ...this.state.quotationRequest,
+                        [name]: value,
+                        dateRecorded: this.state.quotationRequest.datePlanned,
+                        timeRecorded: this.state.quotationRequest.timePlanned,
+                    },
                 },
-            });
+                function() {
+                    this.getShowUpdateOpportunityStatus();
+                }
+            );
+        } else if (name === 'statusId') {
+            this.setState(
+                {
+                    ...this.state,
+                    quotationRequest: {
+                        ...this.state.quotationRequest,
+                        [name]: value,
+                    },
+                },
+                function() {
+                    this.getShowUpdateOpportunityStatus();
+                }
+            );
         } else {
             this.setState({
                 ...this.state,
@@ -193,6 +220,28 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             });
         }
     };
+
+    getShowUpdateOpportunityStatus() {
+        let newOpportunityStatus = '';
+        QuotationRequestDetailsAPI.showUpdateOpportunityStatus(this.state.quotationRequest)
+            .then(payload => {
+                newOpportunityStatus = payload;
+                this.setStateAfterQRStatusChange(newOpportunityStatus);
+            })
+            .catch(error => {
+                newOpportunityStatus = 'Fout bij bepalen nieuwe status';
+                this.setStateAfterQRStatusChange(newOpportunityStatus);
+            });
+    }
+    setStateAfterQRStatusChange(newOpportunityStatus) {
+        this.setState({
+            ...this.state,
+            opportunity: {
+                ...this.state.opportunity,
+                newOpportunityStatus,
+            },
+        });
+    }
 
     handleInputChangeDate(value, name) {
         if (
@@ -303,7 +352,16 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             clientNote,
             relatedQuotationRequestsStatuses,
         } = this.state.quotationRequest;
-        const { fullName, fullAddress, measureNames, measureCategoryName } = this.state.opportunity;
+        const {
+            opportunityId,
+            opportunityNumber,
+            fullName,
+            fullAddress,
+            measureNames,
+            measureCategoryName,
+            currentOpportunityStatus,
+            newOpportunityStatus,
+        } = this.state.opportunity;
         const { opportunityAction } = this.props.quotationRequestDetails;
 
         return (
@@ -355,6 +413,13 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.externalParty}
                     />
+                    <ViewText
+                        label={'Kansnummer'}
+                        id={'opportunityNumber'}
+                        className={'col-sm-6 form-group'}
+                        value={opportunityNumber}
+                        link={opportunityId != '' ? '/kans/' + opportunityId : ''}
+                    />
                 </div>
 
                 <div className="row">
@@ -399,6 +464,23 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                     ) : (
                         ''
                     )}
+                </div>
+
+                <div className="row">
+                    <InputText
+                        label={'Huidige kans status'}
+                        name={'currentOpportunityStatus'}
+                        value={currentOpportunityStatus}
+                        onChange={() => {}}
+                        readOnly={true}
+                    />
+                    <InputText
+                        label={'Kans status naar'}
+                        name={'newOpportunityStatus'}
+                        value={newOpportunityStatus}
+                        onChange={() => {}}
+                        readOnly={true}
+                    />
                 </div>
 
                 <div className="row">

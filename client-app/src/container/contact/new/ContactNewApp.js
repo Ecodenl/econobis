@@ -1,9 +1,11 @@
 import React from 'react';
+import { useParams } from 'react-router-dom';
 
 import ContactNewToolbar from './ContactNewToolbar';
 import ContactNewForm from './ContactNewForm';
 
 const ContactNewApp = props => {
+    const params = useParams();
     return (
         <div className="row">
             <div className="col-md-9">
@@ -12,7 +14,7 @@ const ContactNewApp = props => {
                 </div>
 
                 <div className="col-md-12 margin-10-top">
-                    <ContactNewForm type={props.params.type} />
+                    <ContactNewForm type={params.type} />
                 </div>
             </div>
         </div>

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_CONTACT_NOTE = `${URL_API}/api/contact-note`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     newNote: note => {
+        const URL_CONTACT_NOTE = `${getApiUrl()}/api/contact-note`;
         const requestUrl = `${URL_CONTACT_NOTE}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, note)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,10 @@ export default {
     },
 
     updateNote: note => {
+        const URL_CONTACT_NOTE = `${getApiUrl()}/api/contact-note`;
         const requestUrl = `${URL_CONTACT_NOTE}/${note.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, note)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +31,10 @@ export default {
     },
 
     deleteNote: id => {
+        const URL_CONTACT_NOTE = `${getApiUrl()}/api/contact-note`;
         const requestUrl = `${URL_CONTACT_NOTE}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_INTAKE = `${URL_API}/api/intake`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchIntakeDetails: function(id) {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,9 @@ export default {
     },
 
     newIntake: intake => {
-        const requestUrl = `${URL_API}/api/contact/intake`;
+        const requestUrl = `${getApiUrl()}/api/contact/intake`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, intake)
             .then(function(response) {
                 return response.data;
@@ -30,9 +30,10 @@ export default {
     },
 
     updateIntake: intake => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/${intake.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, intake)
             .then(function(response) {
                 return response.data.data;
@@ -43,27 +44,31 @@ export default {
     },
 
     deleteIntake: id => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteBulkIntakes: ids => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/bulk-delete`;
 
-        return axiosInstance.post(requestUrl, { ids: ids });
+        return getAxiosInstance().post(requestUrl, { ids: ids });
     },
 
     updateBulkIntakes: (ids, values) => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/bulk-update`;
 
-        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+        return getAxiosInstance().post(requestUrl, { ids: ids, ...values });
     },
 
     attachMeasureRequested: (intakeId, measureId) => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/${intakeId}/${measureId}/attach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -74,8 +79,9 @@ export default {
     },
 
     detachMeasureRequested: (intakeId, measureId) => {
+        const URL_INTAKE = `${getApiUrl()}/api/intake`;
         const requestUrl = `${URL_INTAKE}/${intakeId}/${measureId}/detach`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

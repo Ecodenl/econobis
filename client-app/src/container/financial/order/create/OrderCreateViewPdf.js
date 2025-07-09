@@ -12,7 +12,7 @@ class OrderCreateViewPdf extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.orderId !== nextProps.orderId) {
             if (nextProps.orderId) {
                 this.downloadFile(nextProps.orderId);

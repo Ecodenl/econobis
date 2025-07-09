@@ -9,6 +9,7 @@
 namespace App\Eco\Opportunity;
 
 use App\Eco\Campaign\CampaignWorkflow;
+use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Workflow\OpportunityWorkflowHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
@@ -23,8 +24,16 @@ class OpportunityObserver
         $opportunity->number = 'temp';
 
         $userId = Auth::id();
-        $opportunity->created_by_id = $userId;
-        $opportunity->updated_by_id = $userId;
+        if(Auth::isPortalUser()) {
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if ($responsibleUserId) {
+                $opportunity->created_by_id = $responsibleUserId;
+                $opportunity->updated_by_id = $responsibleUserId;
+            }
+        } else {
+            $opportunity->created_by_id = $userId;
+            $opportunity->updated_by_id = $userId;
+        }
     }
 
     public function created(Opportunity $opportunity)
@@ -36,7 +45,14 @@ class OpportunityObserver
     public function updating(Opportunity $opportunity)
     {
         $userId = Auth::id();
-        $opportunity->updated_by_id = $userId;
+        if(Auth::isPortalUser()) {
+            $responsibleUserId = PortalSettings::get('responsibleUserId');
+            if ($responsibleUserId) {
+                $opportunity->updated_by_id = $responsibleUserId;
+            }
+        } else {
+            $opportunity->updated_by_id = $userId;
+        }
     }
 
     public function saving(Opportunity $opportunity)
@@ -49,7 +65,7 @@ class OpportunityObserver
             } else {
                 $days = 0;
             }
-            $mailDate = Carbon::now()->addDays($days);
+            $mailDate = Carbon::now()->addDays((int) $days);
             $opportunity->date_planned_to_send_wf_email_status = $mailDate;
         }
     }

@@ -21,7 +21,9 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class DocumentController extends Controller
 {
@@ -44,7 +46,7 @@ class DocumentController extends Controller
     public function peek(){
         $this->authorize('view', Document::class);
 
-        $documents = Document::select('id', 'filename');
+        $documents = Document::select('id', 'filename', 'created_at');
         $teamDocumentCreatedFromIds = Auth::user()->getDocumentCreatedFromIds();
         if($teamDocumentCreatedFromIds){
             $documents->whereIn('document_created_from_id', $teamDocumentCreatedFromIds);
@@ -58,7 +60,7 @@ class DocumentController extends Controller
 
         }
 
-        return $documents->get();
+        return $documents->orderByDesc('created_at')->get();
     }
 
     public function defaultEmailDocumentsPeek(){
@@ -139,8 +141,7 @@ class DocumentController extends Controller
 
         if($data['document_type'] == 'internal'){
 
-            $pdf = $this->create($document);
-
+            $pdfContent = $this->create($document);
             $time = Carbon::now();
 
             $name = '';
@@ -160,52 +161,42 @@ class DocumentController extends Controller
             //max length name 25
             $name = substr($name, 0, 25);
 
-            $document->filename = $name . substr($document->getDocumentGroup()->name, 0, 1) . (Document::where('document_group', $document->getDocumentGroup())->count() + 1) . '_' .  $time->format('Ymd') . '.pdf';
+            $fileName = $name
+                . substr($document->getDocumentGroup()->name, 0, 1)
+                . (Document::where('document_group', $document->getDocumentGroup())->count() + 1)
+                . '_'
+                .  $time->format('Ymd')
+                . '.pdf';
+            $uniqueName = Str::uuid() . '.pdf';
+            $filePathAndName = "{$document->document_group}/" .
+                Carbon::parse($document->created_at)->year .
+                "/{$uniqueName}";
+            Storage::disk('documents')->put($filePathAndName, $pdfContent);
+
+            $document->file_path_and_name = $filePathAndName;
+            $document->filename = $fileName;
+            $document->alfresco_node_id = null;
             $document->save();
 
-            $filePath = (storage_path('app' . DIRECTORY_SEPARATOR . 'documents/' . $document->filename));
-            file_put_contents($filePath, $pdf);
+        } else {
 
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath, $document->filename, $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            }else{
-                $document->alfresco_node_id = null;
-            }
-
-            $document->save();
-
-            //delete file on server, still saved on alfresco.
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                Storage::disk('documents')->delete($document->filename);
-            }
-        }else{
             $file = $request->file('attachment');
-
-            if($file == null || !$file->isValid()) abort('422', 'Error uploading file');
-
-
-            $file_tmp = $file->store('', 'documents');
-            $filePath_tmp = Storage::disk('documents')->path($file_tmp);
-
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoResponse = $alfrescoHelper->createFile($filePath_tmp, $file->getClientOriginalName(), $document->getDocumentGroup()->name);
-                $document->alfresco_node_id = $alfrescoResponse['entry']['id'];
-            } else {
-                $tmpFileName = str_replace('\\', '/', $filePath_tmp);
-                $pos = strrpos($tmpFileName, '/');
-                $tmpFileName = false === $pos ? $tmpFileName : substr($tmpFileName, $pos + 1);
-                Storage::disk('documents')->copy($tmpFileName,$file->getClientOriginalName() );
-                $document->alfresco_node_id = null;
+            if($file == null || !$file->isValid()) {
+                abort('422', 'Error uploading file');
             }
 
+            $uniqueName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            $filePath = Storage::disk('documents')->putFileAs(
+                "{$document->document_group}/" . Carbon::now()->year,
+                $file,
+                $uniqueName
+            );
+
+            $document->file_path_and_name = $filePath;
             $document->filename = $file->getClientOriginalName();
+            $document->alfresco_node_id = null;
             $document->save();
 
-            //delete file on server, still saved on alfresco.
-            Storage::disk('documents')->delete($file_tmp);
         }
 
         return FullDocument::make($document->fresh());
@@ -313,53 +304,72 @@ class DocumentController extends Controller
         $this->authorize('view', Document::class);
         $this->checkDocumentAutorized($document);
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
+
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
-            header('X-Filename:' . $document->filename);
-            header('Access-Control-Expose-Headers: X-Filename');
-            return response()->download($filePath, $document->filename);
-        }
-
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if($document->alfresco_node_id == null){
-                $filePath = Storage::disk('documents')
-                    ->path($document->filename);
-                header('X-Filename:' . $document->filename);
-                header('Access-Control-Expose-Headers: X-Filename');
-                return response()->download($filePath, $document->filename);
-            } else {
-                return null;
+            $path = Storage::disk('documents')->path($document->file_path_and_name);
+            if (!file_exists($path)) {
+                Log::error("Document niet gevonden: " . $path);
+                abort(404, 'Document niet gevonden.');
             }
+            $finfo = finfo_open(FILEINFO_MIME_TYPE);
+            $mime = finfo_file($finfo, $path);
+            finfo_close($finfo);
+//            Log::info("MIME-type gedetecteerd: " . $mime);
+
+
+            return response()->download($filePath, $document->filename, [
+                'Cache-Control' => 'no-cache, must-revalidate',
+                'Pragma' => 'no-cache',
+                'Expires' => '0',
+                'X-Filename' => $document->filename,
+                'Access-Control-Expose-Headers' => 'X-Filename',
+            ]);
+
+            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
+        } elseif ($document->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
     public function downLoadRawDocument(Document $document)
     {
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
-            return Storage::disk('documents')->get($document->file_path_and_name);
-        }
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
+        if ($document->file_path_and_name != null) {
+            $path = Storage::disk('documents')->path($document->file_path_and_name);
 
-        if (\Config::get('app.ALFRESCO_COOP_USERNAME') == 'local') {
-            if ($document->alfresco_node_id == null) {
-                return Storage::disk('documents')->get($document->filename);
-            } else {
-                return null;
+            if (!file_exists($path)) {
+                Log::error("Document niet gevonden: " . $path);
+                abort(404, 'Document niet gevonden.');
             }
+
+            $content = file_get_contents($path);
+            $mime = mime_content_type($path);
+
+            return [
+                'content' => $content,
+                'filename' => $document->filename,
+                'mime' => $mime,
+            ];
+        } elseif ($document->alfresco_node_id != null) {
+            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+//            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+            $content = $alfrescoHelper->downloadFile($document->alfresco_node_id);
+            return [
+                'content' => $content,
+                'filename' => $document->filename,
+            ];
         }
 
-        $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-
-        return $alfrescoHelper->downloadFile($document->alfresco_node_id);
+        return null;
     }
 
-    protected function translateToValidCharacterSet($field){
-
+    protected function translateToValidCharacterSet($field)
+    {
         $fieldUtf8Decoded = mb_convert_encoding($field, 'ISO-8859-1', 'UTF-8');
         $replaceFrom = mb_convert_encoding('ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝßàáâãäåæçèéêëìíîïðñòóôõöøùúûüýÿ', 'ISO-8859-1', 'UTF-8');
         $replaceTo = mb_convert_encoding('AAAAAAACEEEEIIIIDNOOOOOOUUUUYsaaaaaaaceeeeiiiionoooooouuuuyy', 'ISO-8859-1', 'UTF-8');

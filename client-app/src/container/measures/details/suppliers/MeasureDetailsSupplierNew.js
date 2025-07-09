@@ -25,7 +25,7 @@ class MeasureDetailsSupplierNew extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         OrganisationAPI.getOrganisationPeek().then(payload => {
             this.setState({
                 organisations: payload,

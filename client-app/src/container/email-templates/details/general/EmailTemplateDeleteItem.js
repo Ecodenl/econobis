@@ -1,32 +1,37 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../../components/modal/Modal';
 import { deleteEmailTemplate } from '../../../../actions/email-templates/EmailTemplateDetailsActions';
-import { connect } from 'react-redux';
 
-const EmailTemplateDeleteItem = props => {
+const EmailTemplateDeleteItem = ({ templateId, templateName, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const confirmAction = () => {
-        props.deleteEmailTemplate(props.templateId);
-        props.closeDeleteItemModal();
+        dispatch(
+            deleteEmailTemplate(templateId, () => {
+                // Eerst modal sluiten
+                closeDeleteItemModal();
+
+                // Daarna navigeren
+                navigate('/email-templates');
+            })
+        );
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
-            Verwijder e-mail template: <strong> {props.templateName} </strong>
+            Verwijder e-mail template: <strong> {templateName} </strong>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteEmailTemplate: id => {
-        dispatch(deleteEmailTemplate(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(EmailTemplateDeleteItem);
+export default EmailTemplateDeleteItem;

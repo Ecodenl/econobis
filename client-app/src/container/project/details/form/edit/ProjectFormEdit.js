@@ -102,6 +102,10 @@ class ProjectFormEdit extends Component {
                 transactionCostsPercentage2: false,
                 transactionCostsPercentage3: false,
                 questionAboutMembershipGroupId: false,
+                textRegisterPageHeader: false,
+                textRegisterCurrentBookWorth: false,
+                textRegisterParticipationSingular: false,
+                textRegisterParticipationPlural: false,
                 textIsMember: false,
                 textIsNoMember: false,
                 textBecomeMember: false,
@@ -112,13 +116,18 @@ class ProjectFormEdit extends Component {
                 linkAgreeTerms: false,
                 documentIdAgreeTerms: false,
                 textLinkAgreeTerms: false,
+                textLinkNameAgreeTerms: false,
                 linkUnderstandInfo: false,
                 documentIdUnderstandInfo: false,
                 textLinkUnderstandInfo: false,
+                textLinkNameUnderstandInfo: false,
                 textAcceptAgreement: false,
                 textAcceptAgreementQuestion: false,
                 documentTemplateAgreementId: false,
                 emailTemplateAgreementId: false,
+                allowIncreaseParticipationsInPortal: false,
+                documentTemplateIncreaseParticipationsId: false,
+                emailTemplateIncreaseParticipationsId: false,
                 textRegistrationFinished: false,
                 loanTypeId: false,
             },
@@ -149,6 +158,10 @@ class ProjectFormEdit extends Component {
                 transactionCostsPercentage2: '',
                 transactionCostsPercentage3: '',
                 questionAboutMembershipGroupId: '',
+                textRegisterPageHeader: '',
+                textRegisterCurrentBookWorth: '',
+                textRegisterParticipationSingular: '',
+                textRegisterParticipationPlural: '',
                 textIsMember: '',
                 textIsNoMember: '',
                 textBecomeMember: '',
@@ -159,13 +172,18 @@ class ProjectFormEdit extends Component {
                 linkAgreeTerms: '',
                 documentIdAgreeTerms: '',
                 textLinkAgreeTerms: '',
+                textLinkNameAgreeTerms: '',
                 linkUnderstandInfo: '',
                 documentIdUnderstandInfo: '',
                 textLinkUnderstandInfo: '',
+                textLinkNameUnderstandInfo: '',
                 textAcceptAgreement: '',
                 textAcceptAgreementQuestion: '',
                 documentTemplateAgreementId: '',
                 emailTemplateAgreementId: '',
+                allowIncreaseParticipationsInPortal: '',
+                documentTemplateIncreaseParticipationsId: '',
+                emailTemplateIncreaseParticipationsId: '',
                 textRegistrationFinished: '',
                 loanTypeId: '',
             },
@@ -635,6 +653,27 @@ class ProjectFormEdit extends Component {
             project.transactionCostsPercentage3 = null;
         }
 
+        if (validator.isEmpty('' + project.textRegisterPageHeader)) {
+            errors.textRegisterPageHeader = true;
+            errorMessages.textRegisterPageHeader = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterCurrentBookWorth)) {
+            errors.textRegisterCurrentBookWorth = true;
+            errorMessages.textRegisterCurrentBookWorth = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterParticipationSingular)) {
+            errors.textRegisterParticipationSingular = true;
+            errorMessages.textRegisterParticipationSingular = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textRegisterParticipationPlural)) {
+            errors.textRegisterParticipationPlural = true;
+            errorMessages.textRegisterParticipationPlural = 'Verplicht';
+            hasErrors = true;
+        }
+
         if (project.showQuestionAboutMembership) {
             if (!project.questionAboutMembershipGroupId) {
                 errors.questionAboutMembershipGroupId = true;
@@ -682,9 +721,19 @@ class ProjectFormEdit extends Component {
             errorMessages.textLinkAgreeTerms = 'Verplicht';
             hasErrors = true;
         }
+        if (validator.isEmpty('' + project.textLinkNameAgreeTerms)) {
+            errors.textLinkNameAgreeTerms = true;
+            errorMessages.textLinkNameAgreeTerms = 'Verplicht';
+            hasErrors = true;
+        }
         if (validator.isEmpty('' + project.textLinkUnderstandInfo)) {
             errors.textLinkUnderstandInfo = true;
             errorMessages.textLinkUnderstandInfo = 'Verplicht';
+            hasErrors = true;
+        }
+        if (validator.isEmpty('' + project.textLinkNameUnderstandInfo)) {
+            errors.textLinkNameUnderstandInfo = true;
+            errorMessages.textLinkNameUnderstandInfo = 'Verplicht';
             hasErrors = true;
         }
         if (validator.isEmpty('' + project.textAcceptAgreement)) {
@@ -817,6 +866,30 @@ class ProjectFormEdit extends Component {
             project.maxAmountLoan = project.maxAmountLoan.replace(/,/g, '.');
         }
 
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.documentTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.documentTemplateIncreaseParticipationsId))
+        ) {
+            errors.documentTemplateIncreaseParticipationsId = true;
+            errorMessages.documentTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        if (
+            project.allowIncreaseParticipationsInPortal &&
+            (project.emailTemplateIncreaseParticipationsId === null ||
+                validator.isEmpty('' + project.emailTemplateIncreaseParticipationsId))
+        ) {
+            errors.emailTemplateIncreaseParticipationsId = true;
+            errorMessages.emailTemplateIncreaseParticipationsId = 'Verplicht';
+            hasErrors = true;
+        }
+        // If allowIncreaseParticipationsInPortal is false, set documentTemplateIncreaseParticipationsId and emailTemplateIncreaseParticipationsId to null
+        if (!project.allowIncreaseParticipationsInPortal) {
+            project.documentTemplateIncreaseParticipationsId = null;
+            project.emailTemplateIncreaseParticipationsId = null;
+        }
+
         this.setState({ ...this.state, errors: errors, errorMessages: errorMessages });
 
         if (!hasErrors) {
@@ -922,6 +995,9 @@ class ProjectFormEdit extends Component {
             addressNumberSeries,
             documentTemplateAgreementId,
             emailTemplateAgreementId,
+            allowIncreaseParticipationsInPortal,
+            documentTemplateIncreaseParticipationsId,
+            emailTemplateIncreaseParticipationsId,
             linkAgreeTerms,
             linkUnderstandInfo,
             linkProjectInfo,
@@ -931,6 +1007,10 @@ class ProjectFormEdit extends Component {
             showQuestionAboutMembership,
             useTransactionCostsWithMembership,
             questionAboutMembershipGroupId,
+            textRegisterPageHeader,
+            textRegisterCurrentBookWorth,
+            textRegisterParticipationSingular,
+            textRegisterParticipationPlural,
             textIsMember,
             textIsNoMember,
             textBecomeMember,
@@ -939,7 +1019,9 @@ class ProjectFormEdit extends Component {
             noMemberGroupId,
             textAgreeTerms,
             textLinkAgreeTerms,
+            textLinkNameAgreeTerms,
             textLinkUnderstandInfo,
+            textLinkNameUnderstandInfo,
             textAcceptAgreement,
             textAcceptAgreementQuestion,
             textRegistrationFinished,
@@ -1040,10 +1122,13 @@ class ProjectFormEdit extends Component {
                     contactGroups={this.state.contactGroups}
                     staticContactGroups={this.state.staticContactGroups}
                     amountOfParticipants={amountOfParticipants}
-                    documentTemplateAgreementId={documentTemplateAgreementId}
                     documentTemplates={this.state.documentTemplates}
-                    emailTemplateAgreementId={emailTemplateAgreementId}
                     emailTemplates={this.state.emailTemplates}
+                    documentTemplateAgreementId={documentTemplateAgreementId}
+                    emailTemplateAgreementId={emailTemplateAgreementId}
+                    allowIncreaseParticipationsInPortal={allowIncreaseParticipationsInPortal}
+                    documentTemplateIncreaseParticipationsId={documentTemplateIncreaseParticipationsId}
+                    emailTemplateIncreaseParticipationsId={emailTemplateIncreaseParticipationsId}
                     linkAgreeTerms={linkAgreeTerms}
                     linkUnderstandInfo={linkUnderstandInfo}
                     linkProjectInfo={linkProjectInfo}
@@ -1060,6 +1145,10 @@ class ProjectFormEdit extends Component {
                     showQuestionAboutMembership={showQuestionAboutMembership}
                     useTransactionCostsWithMembership={useTransactionCostsWithMembership}
                     questionAboutMembershipGroupId={questionAboutMembershipGroupId}
+                    textRegisterPageHeader={textRegisterPageHeader}
+                    textRegisterCurrentBookWorth={textRegisterCurrentBookWorth}
+                    textRegisterParticipationSingular={textRegisterParticipationSingular}
+                    textRegisterParticipationPlural={textRegisterParticipationPlural}
                     textIsMember={textIsMember}
                     textIsNoMember={textIsNoMember}
                     textBecomeMember={textBecomeMember}
@@ -1070,7 +1159,9 @@ class ProjectFormEdit extends Component {
                     hasLastYearFinancialOverviewDefinitive={this.state.hasLastYearFinancialOverviewDefinitive}
                     textAgreeTerms={textAgreeTerms}
                     textLinkAgreeTerms={textLinkAgreeTerms}
+                    textLinkNameAgreeTerms={textLinkNameAgreeTerms}
                     textLinkUnderstandInfo={textLinkUnderstandInfo}
+                    textLinkNameUnderstandInfo={textLinkNameUnderstandInfo}
                     textAcceptAgreement={textAcceptAgreement}
                     textAcceptAgreementQuestion={textAcceptAgreementQuestion}
                     textRegistrationFinished={textRegistrationFinished}

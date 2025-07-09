@@ -3,6 +3,7 @@
 namespace App\Eco\Contact;
 
 use App\Eco\Address\Address;
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Campaign\Campaign;
@@ -64,11 +65,6 @@ class Contact extends Model
         'coach_max_appointments_per_week' => 'integer',
         'coach_max_appointments_per_month' => 'integer',
         'coach_min_minutes_between_appointments' => 'integer',
-    ];
-
-    protected $dates = [
-//        'member_since',
-//        'member_until',
     ];
 
     protected $encryptable = [
@@ -378,6 +374,11 @@ class Contact extends Model
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->orderBy('address_energy_suppliers.id', 'desc');
     }
 
+    public function addressDongles()
+    {
+        return $this->hasManyThrough(AddressDongle::class, Address::class)->orderBy('address_dongles.id', 'desc');
+    }
+
     public function currentAddressEnergySuppliers()
     {
         return $this->hasManyThrough(AddressEnergySupplier::class, Address::class)->where('addresses.type_id', '!=', 'old')->where('address_energy_suppliers.is_current_supplier', true)->orderBy('address_energy_suppliers.id', 'desc');
@@ -429,6 +430,22 @@ class Contact extends Model
             ->orderBy('contacts.full_name');
     }
 
+    public function organisationNamePrimaryOccupation()
+    {
+        return $this->occupations()
+            ->where(function ($query) {
+                $query->where('occupation_contact.end_date', '>=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.end_date');
+            })
+            ->where(function ($query) {
+                $query->where('occupation_contact.start_date', '<=', Carbon::today()->format('Y-m-d'))
+                    ->orWhereNull('occupation_contact.start_date');
+            })
+            ->where('contacts.type_id', ContactType::ORGANISATION)
+            ->where('occupation_contact.primary', true)
+            ->select('contacts.*', 'occupation_contact.*', 'occupation_contact.id as ocid')
+            ->orderBy('occupation_contact.created_at')->first();
+    }
     public function isPrimaryOccupant()
     {
         return $this->hasMany(OccupationContact::class, 'primary_contact_id');

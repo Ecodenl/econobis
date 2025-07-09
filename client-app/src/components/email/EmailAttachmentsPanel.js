@@ -1,48 +1,53 @@
-import React, {useContext, useState} from 'react';
-import Icon from "react-icons-kit";
-import EmailAttachmentAPI from "../../api/email/EmailAttachmentAPI";
-import fileDownload from "js-file-download";
-import {download} from 'react-icons-kit/fa/download';
-import {share} from 'react-icons-kit/fa/share';
-import {eye} from 'react-icons-kit/fa/eye';
-import {hashHistory} from "react-router";
+import React, { useContext, useState } from 'react';
+import Icon from 'react-icons-kit';
+import EmailAttachmentAPI from '../../api/email/EmailAttachmentAPI';
+import fileDownload from 'js-file-download';
+import { download } from 'react-icons-kit/fa/download';
+import { share } from 'react-icons-kit/fa/share';
+import { eye } from 'react-icons-kit/fa/eye';
+import { useNavigate } from 'react-router-dom';
 import Modal from '../modal/Modal';
 import PdfViewer from '../pdf/PdfViewer';
-import {EmailModalContext} from "../../context/EmailModalContext";
+import { EmailModalContext } from '../../context/EmailModalContext';
 
-export default function EmailAttachmentsPanel({email, allowView = true}) {
+export default function EmailAttachmentsPanel({ email, allowView = true }) {
+    const navigate = useNavigate();
+
     const [hoveredAttachmentId, setHoveredAttachmentId] = useState(null);
     const [viewedAttachment, setViewedAttachment] = useState(null);
-    const {setIsEmailDetailsModalOpen} = useContext(EmailModalContext);
+    const { setIsEmailDetailsModalOpen } = useContext(EmailModalContext);
 
-    const downloadItem = (attachment) => {
+    const downloadItem = attachment => {
         EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
             fileDownload(payload.data, attachment.name);
         });
     };
 
     const saveToAlfresco = attachment => {
-        hashHistory.push(`document/nieuw/upload/email-bijlage/${attachment.id}`);
+        navigate(`/document/nieuw/upload/email-bijlage/${attachment.id}`);
 
         setIsEmailDetailsModalOpen(false);
     };
 
-    const isImage = (attachment) => {
-        return attachment.name.toLowerCase().endsWith('.jpg')
-            || attachment.name.toLowerCase().endsWith('.png');
-    }
+    const isImage = attachment => {
+        return (
+            attachment.name.toLowerCase().endsWith('.jpg') ||
+            attachment.name.toLowerCase().endsWith('.jpeg') ||
+            attachment.name.toLowerCase().endsWith('.png')
+        );
+    };
 
-    const isPdf = (attachment) => {
+    const isPdf = attachment => {
         return attachment.name.toLowerCase().endsWith('.pdf');
-    }
+    };
 
-    const viewItem = (attachment) => {
+    const viewItem = attachment => {
         EmailAttachmentAPI.downloadAttachment(attachment.id).then(payload => {
             let item = isPdf(attachment) ? payload.data : URL.createObjectURL(payload.data);
             setViewedAttachment({
                 ...attachment,
                 item: item,
-            })
+            });
         });
     };
 
@@ -60,7 +65,9 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                         email.attachments.map(attachment => {
                             return (
                                 <div
-                                    className={`row border ${hoveredAttachmentId === attachment.id ? 'highlight-line' : ''}`}
+                                    className={`row border ${
+                                        hoveredAttachmentId === attachment.id ? 'highlight-line' : ''
+                                    }`}
                                     onMouseEnter={() => setHoveredAttachmentId(attachment.id)}
                                     onMouseLeave={() => setHoveredAttachmentId(null)}
                                     key={attachment.id}
@@ -70,21 +77,21 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                                         {hoveredAttachmentId === attachment.id && (
                                             <>
                                                 <a role="button" onClick={() => downloadItem(attachment)}>
-                                                    <Icon className="mybtn-success" size={14} icon={download}/>
+                                                    <Icon className="mybtn-success" size={14} icon={download} />
                                                 </a>
                                                 <a role="button" onClick={() => saveToAlfresco(attachment)}>
-                                                    <Icon className="mybtn-success" size={14} icon={share}/>
+                                                    <Icon className="mybtn-success" size={14} icon={share} />
                                                 </a>
                                                 {allowView && (isImage(attachment) || isPdf(attachment)) && (
                                                     <a role="button" onClick={() => viewItem(attachment)}>
-                                                        <Icon className="mybtn-success" size={14} icon={eye}/>
+                                                        <Icon className="mybtn-success" size={14} icon={eye} />
                                                     </a>
                                                 )}
                                             </>
                                         )}
                                     </div>
                                 </div>
-                            )
+                            );
                         })
                     ) : (
                         <div>Geen bijlagen bekend.</div>
@@ -101,17 +108,14 @@ export default function EmailAttachmentsPanel({email, allowView = true}) {
                     modalMainClassName={'modal-align-top'}
                 >
                     <div style={{ maxHeight: 'calc(100vh - 300px)', overflow: 'auto' }}>
-                        {
-                            isPdf(viewedAttachment) ? (
-                                <PdfViewer file={viewedAttachment.item}/>
-                            ) : (
-                                <img className={'img-responsive'} src={viewedAttachment.item} alt={name}/>
-                            )
-                        }
+                        {isPdf(viewedAttachment) ? (
+                            <PdfViewer file={viewedAttachment.item} />
+                        ) : (
+                            <img className={'img-responsive'} src={viewedAttachment.item} alt={name} />
+                        )}
                     </div>
                 </Modal>
             )}
         </div>
     );
 }
-

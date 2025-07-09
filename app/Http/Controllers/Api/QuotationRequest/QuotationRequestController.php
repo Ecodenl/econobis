@@ -17,6 +17,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
+use App\Helpers\Opportunity\OpportunityHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -109,6 +110,18 @@ class QuotationRequestController extends ApiController
 
         return FullQuotationRequest::make($quotationRequest);
     }
+
+    public function showUpdateOpportunityStatus(Request $request, QuotationRequest $quotationRequest)
+    {
+        $data = $request->validate([
+            'statusId' => 'required|exists:quotation_request_status,id',
+        ]);
+        $quotationRequest->status_id = $data['statusId'];
+        $opportunityHelper = new OpportunityHelper($quotationRequest);
+
+        return $opportunityHelper->showUpdateOpportunityStatus();
+    }
+
 
     public function csv(RequestQuery $requestQuery)
     {
@@ -267,6 +280,9 @@ class QuotationRequestController extends ApiController
         }
         if (isset($data['awardAmount'])) {
             $quotationRequest->award_amount = trim($data['awardAmount']) ?: 0;
+        }
+        if (isset($data['amountDetermination'])) {
+            $quotationRequest->amount_determination = trim($data['amountDetermination']) ?: 0;
         }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');

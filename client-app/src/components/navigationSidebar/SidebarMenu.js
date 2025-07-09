@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -255,6 +255,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                    {permissions.menuDongles && useDongleRegistration == true && (
+                        <Nav id="dongles">
+                            <NavText>
+                                <Link className="sidebar-link" to="dongels">
+                                    Dongels
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                 </Nav>
             )}
 
@@ -467,7 +476,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         return (
                             <Nav key={i} id={`administration/${administration.id}`}>
                                 <NavText>
-                                    <Link className="sidebar-link" to={`financieel/${administration.id}`}>
+                                    <Link className="sidebar-link" to={`/financieel/${administration.id}`}>
                                         {administration.name}
                                     </Link>
                                 </NavText>
@@ -712,6 +721,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
+        useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
     };
 };
 

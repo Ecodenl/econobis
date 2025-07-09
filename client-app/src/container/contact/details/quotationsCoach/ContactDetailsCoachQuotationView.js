@@ -1,8 +1,10 @@
 import React from 'react';
 import moment from 'moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const ContactDetailsCoachQuotationView = props => {
+    const navigate = useNavigate();
+
     const { opportunity, dateRecorded, dateReleased } = props.quotation;
 
     return (
@@ -11,7 +13,7 @@ const ContactDetailsCoachQuotationView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/kans/${opportunity.id}`)}>
+            <div onClick={() => navigate(`/kans/${opportunity.id}`)}>
                 <div className="col-sm-2">{opportunity ? opportunity.number : ''}</div>
                 <div className="col-sm-2">{opportunity ? opportunity.measureCategoryName : ''}</div>
                 <div className="col-sm-2">{opportunity ? opportunity.statusName : ''}</div>

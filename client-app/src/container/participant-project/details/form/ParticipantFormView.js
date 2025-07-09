@@ -42,7 +42,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={'Project'}
                     value={project ? project.name : ''}
-                    link={project ? 'project/' + project.id : ''}
+                    link={project ? '/project/' + project.id : ''}
                 />
                 <ViewText label={'Status'} value={uniqueMutationStatuses.map(item => item.name).join(', ')} />
             </div>
@@ -51,7 +51,7 @@ const ParticipantFormView = props => {
                 <ViewText
                     label={'Contact'}
                     value={contact ? contact.fullName : ''}
-                    link={contact ? 'contact/' + contact.id : ''}
+                    link={contact ? '/contact/' + contact.id : ''}
                 />
                 <ViewText label={'Administratie'} value={project ? project.administrationName : ''} />
             </div>

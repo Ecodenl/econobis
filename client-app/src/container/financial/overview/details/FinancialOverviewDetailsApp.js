@@ -7,7 +7,14 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import FinancialOverviewDetailsAPI from '../../../../api/financial/overview/FinancialOverviewDetailsAPI';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewDetailsAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <FinancialOverviewDetailsApp {...props} navigate={navigate} params={params} />;
+};
 
 class FinancialOverviewDetailsApp extends Component {
     constructor(props) {
@@ -41,7 +48,7 @@ class FinancialOverviewDetailsApp extends Component {
         // Api aanroepen met delete
         FinancialOverviewDetailsAPI.deleteFinancialOverview(id)
             .then(payload => {
-                hashHistory.push(`/waardestaten`);
+                this.props.navigate(`/waardestaten`);
             })
             .catch(error => {
                 // this.setState({ isLoading: false, hasError: true });
@@ -91,8 +98,8 @@ class FinancialOverviewDetailsApp extends Component {
                 return (
                     <div className="row">
                         <div className="col-md-9 margin-10-top text-center">
-                            Je hebt geen recht om deze administratie in te zien. Vraag je administrator/key user jou toe
-                            te voegen aan deze administratie via instellingen > administraties
+                            Je hebt geen recht om deze administratie in te zien. Vraag je administrator/beheerder jou
+                            toe te voegen aan deze administratie via instellingen > administraties
                         </div>
                     </div>
                 );
@@ -112,4 +119,4 @@ const mapStateToProps = state => {
         administrations: state.meDetails.administrations,
     };
 };
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialOverviewDetailsAppWrapper);

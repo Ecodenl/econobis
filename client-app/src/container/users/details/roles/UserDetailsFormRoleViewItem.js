@@ -13,7 +13,8 @@ class UserDetailsFormRoleViewItem extends Component {
         return (
             <div className="col-sm-6 border-bottom">
                 <label className="col-sm-6">{name}</label>
-                <span className="col-sm-6">{hasRole ? 'Ja' : 'Nee'}
+                <span className="col-sm-6">
+                    {hasRole || this.props.alwaysTrue ? 'Ja' : 'Nee'}
                     {name === 'Projectmanager' && (
                         <>
                             &nbsp;&nbsp;

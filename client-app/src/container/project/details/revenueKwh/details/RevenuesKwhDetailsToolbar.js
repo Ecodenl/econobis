@@ -59,7 +59,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                                    {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
+                                    {this.props.permissions.manageProject && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     ) : null}
                                     {revenuesKwh.confirmed == 1 ? (

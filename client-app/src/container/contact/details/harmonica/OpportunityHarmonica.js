@@ -11,13 +11,9 @@ const OpportunityHarmonica = ({
     newOpportunity,
     opportunityCount,
     permissions,
-    keyUserRole,
-    MarketingMedewerkerRole,
-    BuurtaanpakManager,
-    BuurtaanpakCoordinator
 }) => {
     return (
-        (keyUserRole?.hasRole || MarketingMedewerkerRole?.hasRole || BuurtaanpakManager?.hasRole || BuurtaanpakCoordinator?.hasRole) && (
+        permissions.viewOpportunity && (
             <Panel className={'harmonica-button'}>
                 <PanelBody>
                     <div className="col-sm-12" onClick={toggleShowList} role="button">
@@ -35,10 +31,6 @@ const OpportunityHarmonica = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

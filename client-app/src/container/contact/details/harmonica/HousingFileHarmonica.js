@@ -5,7 +5,7 @@ import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import HousingFilesList from './HousingFilesList';
 
-import Icon from "react-icons-kit";
+import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
 const HousingFileHarmonica = ({
@@ -14,13 +14,9 @@ const HousingFileHarmonica = ({
     newHousingFile,
     housingFileCount,
     permissions,
-    keyUserRole,
-    MarketingMedewerkerRole,
-    BuurtaanpakManager,
-    BuurtaanpakCoordinator
 }) => {
     return (
-        (keyUserRole?.hasRole || MarketingMedewerkerRole?.hasRole || BuurtaanpakManager?.hasRole || BuurtaanpakCoordinator?.hasRole) && (
+        permissions.viewHousingFile && (
             <Panel className={'harmonica-button'}>
                 <PanelBody>
                     <div className="col-sm-10" onClick={toggleShowList} role="button">
@@ -45,10 +41,6 @@ const HousingFileHarmonica = ({
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

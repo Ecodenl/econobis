@@ -105,31 +105,26 @@ class ProjectsListApp extends Component {
     }
 
     render() {
-        const { keyUserRole, ProjectmanagerRole, ParticipatiemedewerkerRole } = this.props;
-
         return (
-            (keyUserRole?.hasRole || ProjectmanagerRole?.hasRole || ParticipatiemedewerkerRole?.hasRole) && (
-                <div>
-                    <div className="panel panel-default col-md-12">
-                        <div className="panel-body">
-                            <div className="col-md-12 margin-10-top">
-                                <ProjectsListToolbar resetProjectFilters={() => this.resetProjectFilters()} />
-                            </div>
-                            <div className="col-md-12 margin-10-top">
-                                <ProjectsList
-                                    projects={this.props.projects}
-                                    projectsPagination={this.props.projectsPagination}
-                                    onSubmitFilter={() => this.onSubmitFilter()}
-                                    handlePageClick={this.handlePageClick}
-                                    fetchProjectsListData={this.fetchProjectsData}
-                                />
-                            </div>
+            <div>
+                <div className="panel panel-default col-md-12">
+                    <div className="panel-body">
+                        <div className="col-md-12 margin-10-top">
+                            <ProjectsListToolbar resetProjectFilters={() => this.resetProjectFilters()} />
+                        </div>
+                        <div className="col-md-12 margin-10-top">
+                            <ProjectsList
+                                projects={this.props.projects}
+                                projectsPagination={this.props.projectsPagination}
+                                onSubmitFilter={() => this.onSubmitFilter()}
+                                handlePageClick={this.handlePageClick}
+                                fetchProjectsListData={this.fetchProjectsData}
+                            />
                         </div>
                     </div>
                 </div>
-            )
+            </div>
         );
-
     }
 }
 
@@ -139,10 +134,6 @@ const mapStateToProps = state => {
         projectsFilters: state.projects.filters,
         projectsSorts: state.projects.sorts,
         projectsPagination: state.projects.pagination,
-
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        ProjectmanagerRole: state.meDetails.roles.find(role => role.name === 'Projectmanager'),
-        ParticipatiemedewerkerRole: state.meDetails.roles.find(role => role.name === 'Participatie medewerker'),
     };
 };
 

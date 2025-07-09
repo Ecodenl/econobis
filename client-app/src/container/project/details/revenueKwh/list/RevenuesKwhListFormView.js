@@ -74,7 +74,7 @@ const RevenuesKwhListFormView = ({
                 ) : (
                     ''
                 )}
-                {showActionButtons && permissions.manageFinancial && !confirmed ? (
+                {showActionButtons && permissions.manageProject && !confirmed ? (
                     <a role="button" onClick={toggleDelete}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

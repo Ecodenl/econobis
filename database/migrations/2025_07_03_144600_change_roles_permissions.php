@@ -17,16 +17,26 @@ class ChangeRolesPermissions extends Migration
         Permission::findOrCreate('menu_participations', 'api');
         Permission::findOrCreate('menu_financial_overviews', 'api');
         Permission::findOrCreate('manage_financial_overview', 'api');
+        Permission::findOrCreate('view_marketing', 'api');
+        Permission::findOrCreate('view_measure', 'api');
+        Permission::findOrCreate('view_quotation_request', 'api');
+
 
         // Voeg toe aan 'Beheerder': menu_participation, menu_financial_overviews en manage_financial_overview
+        // en Voeg toe : permission view_marketing, view_measure, en view_quotation_request
         $beheerder = Role::findByName('Beheerder');
         if ($beheerder) {
             $beheerder->givePermissionTo('menu_participations');
             $beheerder->givePermissionTo('menu_financial_overviews');
             $beheerder->givePermissionTo('manage_financial_overview');
+            $beheerder->givePermissionTo('view_marketing');
+            $beheerder->givePermissionTo('view_measure');
+            $beheerder->givePermissionTo('view_quotation_request');
         }
 
         // Verwijder van 'Medewerker': permission menu_projects, view_project, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
+        // En verwijder 'view_invoice' en 'view_order'
         $medewerker = Role::findByName('Medewerker');
         if ($medewerker) {
             $medewerker->revokePermissionTo('menu_projects');
@@ -40,9 +50,17 @@ class ChangeRolesPermissions extends Migration
             $medewerker->revokePermissionTo('menu_opportunities');
             $medewerker->revokePermissionTo('menu_quotation_requests');
             $medewerker->revokePermissionTo('menu_measures');
+            $medewerker->revokePermissionTo('view_housing_file');
+            $medewerker->revokePermissionTo('view_housing_file_log');
+            $medewerker->revokePermissionTo('view_intake');
+            $medewerker->revokePermissionTo('view_opportunity');
+            $medewerker->revokePermissionTo('view_invoice');
+            $medewerker->revokePermissionTo('view_order');
         }
 
         // Verwijder van 'Medewerker 2': permission menu_projects, view_project, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
+        // En verwijder 'view_invoice' en 'view_order'
         $medewerker2 = Role::findByName('Medewerker 2');
         if ($medewerker2) {
             $medewerker2->revokePermissionTo('menu_projects');
@@ -56,10 +74,18 @@ class ChangeRolesPermissions extends Migration
             $medewerker2->revokePermissionTo('menu_opportunities');
             $medewerker2->revokePermissionTo('menu_quotation_requests');
             $medewerker2->revokePermissionTo('menu_measures');
+            $medewerker2->revokePermissionTo('view_housing_file');
+            $medewerker2->revokePermissionTo('view_housing_file_log');
+            $medewerker2->revokePermissionTo('view_intake');
+            $medewerker2->revokePermissionTo('view_opportunity');
+            $medewerker2->revokePermissionTo('view_invoice');
+            $medewerker2->revokePermissionTo('view_order');
         }
 
         // Voeg toe aan 'Projectmanager': permission menu_participation, menu_financial_overviews, manage_project en manage_financial_overview
         // en verwijder menu_energy_saving + submenus
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
+        // En verwijder 'view_invoice' en 'view_order'
         $projectmanager = Role::findByName('Projectmanager');
         if ($projectmanager) {
             $projectmanager->givePermissionTo('menu_participations');
@@ -73,9 +99,16 @@ class ChangeRolesPermissions extends Migration
             $projectmanager->revokePermissionTo('menu_opportunities');
             $projectmanager->revokePermissionTo('menu_quotation_requests');
             $projectmanager->revokePermissionTo('menu_measures');
+            $projectmanager->revokePermissionTo('view_housing_file');
+            $projectmanager->revokePermissionTo('view_housing_file_log');
+            $projectmanager->revokePermissionTo('view_intake');
+            $projectmanager->revokePermissionTo('view_opportunity');
+            $projectmanager->revokePermissionTo('view_invoice');
+            $projectmanager->revokePermissionTo('view_order');
         }
 
         // Verwijder van 'Financieel medewerker': permission menu_projects, view_project, manage_participation, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
         $financieelMedewerker = Role::findByName('Financieel medewerker');
         if ($financieelMedewerker) {
             $financieelMedewerker->revokePermissionTo('menu_projects');
@@ -90,9 +123,14 @@ class ChangeRolesPermissions extends Migration
             $financieelMedewerker->revokePermissionTo('menu_opportunities');
             $financieelMedewerker->revokePermissionTo('menu_quotation_requests');
             $financieelMedewerker->revokePermissionTo('menu_measures');
+            $financieelMedewerker->revokePermissionTo('view_housing_file');
+            $financieelMedewerker->revokePermissionTo('view_housing_file_log');
+            $financieelMedewerker->revokePermissionTo('view_intake');
+            $financieelMedewerker->revokePermissionTo('view_opportunity');
         }
 
         // Verwijder van 'Financieel controller': permission manage_project, menu_projects, view_project, manage_participation, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
         $financieelController = Role::findByName('Financieel controller');
         if ($financieelController) {
             $financieelController->revokePermissionTo('manage_project');
@@ -108,13 +146,20 @@ class ChangeRolesPermissions extends Migration
             $financieelController->revokePermissionTo('menu_opportunities');
             $financieelController->revokePermissionTo('menu_quotation_requests');
             $financieelController->revokePermissionTo('menu_measures');
+            $financieelController->revokePermissionTo('view_housing_file');
+            $financieelController->revokePermissionTo('view_housing_file_log');
+            $financieelController->revokePermissionTo('view_intake');
+            $financieelController->revokePermissionTo('view_opportunity');
         }
 
         // Verwijder van 'Participatie medewerker': permission manage_project, view_project en menu_energy_saving + submenus
-        // en Voeg toe aan : permission menu_participation
+        // en Voeg toe : permission menu_participation en menu_financial_overviews
+        // En verwijder 'view_housing_file', 'view_housing_file_log', 'view_intake' en 'view_opportunity'
+        // En verwijder 'view_invoice' en 'view_order'
         $participatieMedewerker = Role::findByName('Participatie medewerker');
         if ($participatieMedewerker) {
             $participatieMedewerker->givePermissionTo('menu_participations');
+            $participatieMedewerker->givePermissionTo('menu_financial_overviews');
             $participatieMedewerker->revokePermissionTo('manage_project');
             $participatieMedewerker->revokePermissionTo('menu_energy_saving');
             $participatieMedewerker->revokePermissionTo('menu_marketing');
@@ -123,24 +168,59 @@ class ChangeRolesPermissions extends Migration
             $participatieMedewerker->revokePermissionTo('menu_opportunities');
             $participatieMedewerker->revokePermissionTo('menu_quotation_requests');
             $participatieMedewerker->revokePermissionTo('menu_measures');
+            $participatieMedewerker->revokePermissionTo('view_housing_file');
+            $participatieMedewerker->revokePermissionTo('view_housing_file_log');
+            $participatieMedewerker->revokePermissionTo('view_intake');
+            $participatieMedewerker->revokePermissionTo('view_opportunity');
+            $participatieMedewerker->revokePermissionTo('view_invoice');
+            $participatieMedewerker->revokePermissionTo('view_order');
         }
 
         // Verwijder van 'Energie adviseur': permission menu_projects, view_project, view_participation en view_financial_overview
+        // en Voeg toe : permission view_marketing, view_measure, en view_quotation_request
+        // En verwijder 'view_invoice' en 'view_order'
         $energieAdviseur = Role::findByName('Energie adviseur');
         if ($energieAdviseur) {
             $energieAdviseur->revokePermissionTo('menu_projects');
             $energieAdviseur->revokePermissionTo('view_project');
             $energieAdviseur->revokePermissionTo('view_participation');
             $energieAdviseur->revokePermissionTo('view_financial_overview');
+            $energieAdviseur->givePermissionTo('view_marketing');
+            $energieAdviseur->givePermissionTo('view_measure');
+            $energieAdviseur->givePermissionTo('view_quotation_request');
+            $energieAdviseur->revokePermissionTo('view_invoice');
+            $energieAdviseur->revokePermissionTo('view_order');
         }
 
         // Verwijder van 'Marketing medewerker': permission menu_projects, view_project, view_participation en view_financial_overview
+        // en Voeg toe : permission view_marketing, view_measure, en view_quotation_request
+        // En verwijder 'view_invoice' en 'view_order'
         $marketingMedewerker = Role::findByName('Marketing medewerker');
         if ($marketingMedewerker) {
             $marketingMedewerker->revokePermissionTo('menu_projects');
             $marketingMedewerker->revokePermissionTo('view_project');
             $marketingMedewerker->revokePermissionTo('view_participation');
             $marketingMedewerker->revokePermissionTo('view_financial_overview');
+            $marketingMedewerker->givePermissionTo('view_marketing');
+            $marketingMedewerker->givePermissionTo('view_measure');
+            $marketingMedewerker->givePermissionTo('view_quotation_request');
+            $marketingMedewerker->revokePermissionTo('view_invoice');
+            $marketingMedewerker->revokePermissionTo('view_order');
+        }
+
+        // Voeg toe aan 'Buurtaanpak manager' : permission view_marketing, view_measure, en view_quotation_request
+        $buurtaanpakManager = Role::findByName('Buurtaanpak manager');
+        if ($buurtaanpakManager) {
+            $buurtaanpakManager->givePermissionTo('view_marketing');
+            $buurtaanpakManager->givePermissionTo('view_measure');
+            $buurtaanpakManager->givePermissionTo('view_quotation_request');
+        }
+        // Voeg toe aan 'Buurtaanpak coördinator' : permission view_marketing, view_measure, en view_quotation_request
+        $buurtaanpakCoordinator = Role::findByName('Buurtaanpak coördinator');
+        if ($buurtaanpakCoordinator) {
+            $buurtaanpakCoordinator->givePermissionTo('view_marketing');
+            $buurtaanpakCoordinator->givePermissionTo('view_measure');
+            $buurtaanpakCoordinator->givePermissionTo('view_quotation_request');
         }
 
     }
@@ -162,6 +242,7 @@ class ChangeRolesPermissions extends Migration
         }
 
         // Voeg terug toe aan 'Medewerker': permission menu_projects, view_project, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $medewerker = Role::findByName('Medewerker');
         if ($medewerker) {
             $medewerker->givePermissionTo('menu_projects');
@@ -175,9 +256,12 @@ class ChangeRolesPermissions extends Migration
             $medewerker->givePermissionTo('menu_opportunities');
             $medewerker->givePermissionTo('menu_quotation_requests');
             $medewerker->givePermissionTo('menu_measures');
+            $medewerker->givePermissionTo('view_invoice');
+            $medewerker->givePermissionTo('view_order');
         }
 
         // Voeg terug toe aan 'Medewerker 2': permission menu_projects, view_project, view_participation, view_financial_overview en menu_energy_saving + submenus
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $medewerker2 = Role::findByName('Medewerker 2');
         if ($medewerker2) {
             $medewerker2->givePermissionTo('menu_projects');
@@ -191,10 +275,13 @@ class ChangeRolesPermissions extends Migration
             $medewerker2->givePermissionTo('menu_opportunities');
             $medewerker2->givePermissionTo('menu_quotation_requests');
             $medewerker2->givePermissionTo('menu_measures');
+            $medewerker2->givePermissionTo('view_invoice');
+            $medewerker2->givePermissionTo('view_order');
         }
 
         // Verwijder van 'Projectmanager': permission menu_participation, menu_financial_overviews, manage_project en manage_financial_overview
         // en voeg terug toe: menu_energy_saving + submenus
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $projectmanager = Role::findByName('Projectmanager');
         if ($projectmanager) {
             $projectmanager->revokePermissionTo('menu_participations');
@@ -208,6 +295,8 @@ class ChangeRolesPermissions extends Migration
             $projectmanager->givePermissionTo('menu_opportunities');
             $projectmanager->givePermissionTo('menu_quotation_requests');
             $projectmanager->givePermissionTo('menu_measures');
+            $projectmanager->givePermissionTo('view_invoice');
+            $projectmanager->givePermissionTo('view_order');
         }
 
         // Voeg terug toe aan 'Financieel medewerker': permission menu_projects, view_project, manage_participation, view_participation, view_financial_overview en menu_energy_saving + submenus
@@ -246,6 +335,7 @@ class ChangeRolesPermissions extends Migration
         }
 
         // Voeg terug toe aan 'Participatie medewerker': permission manage_project en menu_energy_saving + submenus
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $participatieMedewerker = Role::findByName('Participatie medewerker');
         if ($participatieMedewerker) {
             $participatieMedewerker->givePermissionTo('manage_project');
@@ -256,24 +346,32 @@ class ChangeRolesPermissions extends Migration
             $participatieMedewerker->givePermissionTo('menu_opportunities');
             $participatieMedewerker->givePermissionTo('menu_quotation_requests');
             $participatieMedewerker->givePermissionTo('menu_measures');
+            $participatieMedewerker->givePermissionTo('view_invoice');
+            $participatieMedewerker->givePermissionTo('view_order');
         }
 
         // Voeg terug toe aan 'Energie adviseur': permission menu_projects, view_project, view_participation en view_financial_overview
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $energieAdviseur = Role::findByName('Energie adviseur');
         if ($energieAdviseur) {
             $energieAdviseur->givePermissionTo('menu_projects');
             $energieAdviseur->givePermissionTo('view_project');
             $energieAdviseur->givePermissionTo('view_participation');
             $energieAdviseur->givePermissionTo('view_financial_overview');
+            $energieAdviseur->givePermissionTo('view_invoice');
+            $energieAdviseur->givePermissionTo('view_order');
         }
 
         // Voeg terug toe aan 'Marketing medewerker': permission menu_projects, view_project, view_participation en view_financial_overview
+        // En voeg terug toe: 'view_invoice' en 'view_order'
         $marketingMedewerker = Role::findByName('Marketing medewerker');
         if ($marketingMedewerker) {
             $marketingMedewerker->givePermissionTo('menu_projects');
             $marketingMedewerker->givePermissionTo('view_project');
             $marketingMedewerker->givePermissionTo('view_participation');
             $marketingMedewerker->givePermissionTo('view_financial_overview');
+            $marketingMedewerker->givePermissionTo('view_invoice');
+            $marketingMedewerker->givePermissionTo('view_order');
         }
 
 

@@ -8,10 +8,9 @@ import IntakesList from './IntakesList';
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
-const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCount, permissions, keyUserRole, MarketingMedewerkerRole, BuurtaanpakManager, BuurtaanpakCoordinator }) => {
+const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCount, permissions }) => {
     return (
-        permissions.menuEnergySaving &&
-        (keyUserRole?.hasRole || MarketingMedewerkerRole?.hasRole || BuurtaanpakManager?.hasRole || BuurtaanpakCoordinator?.hasRole) && (
+        permissions.viewIntake && (
             <Panel className={'harmonica-button'}>
                 <PanelBody>
                     <div className="col-sm-10" onClick={toggleShowList} role="button">
@@ -36,10 +35,6 @@ const IntakeHarmonica = ({ toggleShowList, showIntakesList, newIntake, intakeCou
 const mapStateToProps = state => {
     return {
         permissions: state.meDetails.permissions,
-        keyUserRole: state.meDetails.roles.find(role => role.name === 'Beheerder'),
-        MarketingMedewerkerRole: state.meDetails.roles.find(role => role.name === 'Marketing medewerker'),
-        BuurtaanpakManager: state.meDetails.roles.find(role => role.name === 'Buurtaanpak manager'),
-        BuurtaanpakCoordinator: state.meDetails.roles.find(role => role.name === 'Buurtaanpak coördinator'),
     };
 };
 

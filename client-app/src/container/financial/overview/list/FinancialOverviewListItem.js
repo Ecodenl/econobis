@@ -84,7 +84,7 @@ class FinancialOverviewListItem extends Component {
             <tr
                 className={this.state.highlightRow}
                 onDoubleClick={
-                    permissions.manageFinancialOverview && hasAccessToAdministration
+                    permissions.viewFinancialOverview && hasAccessToAdministration
                         ? () => this.openItem(id)
                         : () => this.showHasNoAccessToAdministrationModal()
                 }

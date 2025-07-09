@@ -32,8 +32,7 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
-        $projectsQuery = $requestQuery->getQuery();
-        $projects = $projectsQuery->whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->get();
+        $projects = $requestQuery->get();
 
         $projects->load([
             'projectType',
@@ -41,7 +40,7 @@ class ProjectController extends ApiController
 
         return GridProject::collection($projects)
             ->additional(['meta' => [
-            'total' => $projects->count(),
+            'total' => $requestQuery->total(),
             ]
         ]);
     }

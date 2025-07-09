@@ -60,7 +60,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
-            twinfieldConnectionType,
             twinfieldHasRefreshToken,
             twinfieldRedirectUri,
             twinfieldUsername,
@@ -127,7 +126,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 attachment: '',
                 mailboxId: mailboxId ? mailboxId : '',
                 usesTwinfield: usesTwinfield,
-                twinfieldConnectionType: twinfieldConnectionType ? twinfieldConnectionType : '',
                 twinfieldHasRefreshToken: twinfieldHasRefreshToken ? twinfieldHasRefreshToken : '',
                 twinfieldRedirectUri: twinfieldRedirectUri ? twinfieldRedirectUri : '',
                 twinfieldUsername: twinfieldUsername ? twinfieldUsername : '',
@@ -162,7 +160,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
-                twinfieldConnectionType: false,
                 twinfieldUsername: false,
                 twinfieldPassword: false,
                 twinfieldClientId: false,
@@ -375,22 +372,15 @@ class AdministrationDetailsFormGeneralEdit extends Component {
         }
 
         if (administration.usesTwinfield) {
-            if (validator.isEmpty(administration.twinfieldConnectionType + '')) {
-                errors.twinfieldConnectionType = true;
+            if (validator.isEmpty(administration.twinfieldClientId + '')) {
+                errors.twinfieldClientId = true;
                 hasErrors = true;
             }
 
-            if (administration.twinfieldConnectionType === 'openid') {
-                if (validator.isEmpty(administration.twinfieldClientId + '')) {
-                    errors.twinfieldClientId = true;
+            if (administration.twinfieldPasswordChange) {
+                if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
+                    errors.twinfieldClientSecret = true;
                     hasErrors = true;
-                }
-
-                if (administration.twinfieldPasswordChange) {
-                    if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
-                        errors.twinfieldClientSecret = true;
-                        hasErrors = true;
-                    }
                 }
             }
 
@@ -487,10 +477,9 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             data.append('attachment', administration.attachment);
             data.append('mailboxId', administration.mailboxId);
             data.append('usesTwinfield', administration.usesTwinfield);
-            data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             // twinfield client secret alleen toevoegen indien ingevuld op scherm.
-            if (administration.twinfieldPasswordChange && administration.twinfieldConnectionType === 'openid') {
+            if (administration.twinfieldPasswordChange) {
                 data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
             }
             data.append('twinfieldClientId', administration.twinfieldClientId);
@@ -540,7 +529,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
-            twinfieldConnectionType,
             twinfieldHasRefreshToken,
             twinfieldRedirectUri,
             twinfieldUsername,
@@ -894,20 +882,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleUsesTwinfieldChange}
                                 disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldClientId)}
                             />
-                            {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
-                                <InputSelect
-                                    label={'API connection type'}
-                                    id="twinfieldConnectionType"
-                                    size={'col-sm-6'}
-                                    name={'twinfieldConnectionType'}
-                                    options={this.props.twinfieldConnectionTypes}
-                                    optionName={'name'}
-                                    value={twinfieldConnectionType}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.errors.twinfieldConnectionType}
-                                />
-                            )}
                         </div>
 
                         {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
@@ -932,51 +906,51 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         error={this.state.errors.twinfieldOfficeCode}
                                     />
                                 </div>
-                                {twinfieldConnectionType === 'openid' && (
-                                    <React.Fragment>
-                                        <div className="row">
-                                            <InputText
-                                                label="Client Id"
-                                                name={'twinfieldClientId'}
-                                                value={twinfieldClientId}
-                                                onChangeAction={this.handleInputChange}
-                                                required={'required'}
-                                                readOnly={usesTwinfield == false}
-                                                error={this.state.errors.twinfieldClientId}
-                                                disabled={!this.manageUsesTwinfield}
-                                            />
-                                            <InputText
-                                                label="Client Secret"
-                                                name={'twinfieldClientSecret'}
-                                                value={twinfieldClientSecret}
-                                                placeholder="**********"
-                                                onChangeAction={this.handleInputChange}
-                                                required={'required'}
-                                                readOnly={usesTwinfield == false}
-                                                error={this.state.errors.twinfieldClientSecret}
-                                                disabled={!this.manageUsesTwinfield}
-                                            />
-                                        </div>
-                                        <div className="row">
-                                            <InputToggle
-                                                label={'Wijzig client secret'}
-                                                name={'twinfieldPasswordChange'}
-                                                value={twinfieldPasswordChange}
-                                                onChangeAction={this.handleInputChange}
-                                                className={'col-sm-push-6 col-sm-6'}
-                                                disabled={usesTwinfield == false}
-                                            />
-                                        </div>
-                                        <div className="row">
-                                            <ViewText
-                                                className={'col-sm-6 form-group'}
-                                                label="Heeft refresh token?"
-                                                name={'twinfieldHasRefreshToken'}
-                                                value={twinfieldHasRefreshToken}
-                                            />
-                                        </div>
-                                    </React.Fragment>
-                                )}
+
+                                <React.Fragment>
+                                    <div className="row">
+                                        <InputText
+                                            label="Client Id"
+                                            name={'twinfieldClientId'}
+                                            value={twinfieldClientId}
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                            readOnly={usesTwinfield == false}
+                                            error={this.state.errors.twinfieldClientId}
+                                            disabled={!this.manageUsesTwinfield}
+                                        />
+                                        <InputText
+                                            label="Client Secret"
+                                            name={'twinfieldClientSecret'}
+                                            value={twinfieldClientSecret}
+                                            placeholder="**********"
+                                            onChangeAction={this.handleInputChange}
+                                            required={'required'}
+                                            readOnly={usesTwinfield == false}
+                                            error={this.state.errors.twinfieldClientSecret}
+                                            disabled={!this.manageUsesTwinfield}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <InputToggle
+                                            label={'Wijzig client secret'}
+                                            name={'twinfieldPasswordChange'}
+                                            value={twinfieldPasswordChange}
+                                            onChangeAction={this.handleInputChange}
+                                            className={'col-sm-push-6 col-sm-6'}
+                                            disabled={usesTwinfield == false}
+                                        />
+                                    </div>
+                                    <div className="row">
+                                        <ViewText
+                                            className={'col-sm-6 form-group'}
+                                            label="Heeft refresh token?"
+                                            name={'twinfieldHasRefreshToken'}
+                                            value={twinfieldHasRefreshToken}
+                                        />
+                                    </div>
+                                </React.Fragment>
+
                                 <div className="row">
                                     <InputDate
                                         label={'Synchroniseer contacten vanaf'}
@@ -1104,7 +1078,6 @@ const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
-        twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
         administrationDetails: state.administrationDetails,
     };

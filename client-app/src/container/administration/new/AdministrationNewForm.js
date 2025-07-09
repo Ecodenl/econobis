@@ -71,7 +71,6 @@ class AdministrationNewForm extends Component {
                 attachment: '',
                 mailboxId: '',
                 usesTwinfield: false,
-                twinfieldConnectionType: '',
                 twinfieldUsername: '',
                 twinfieldPassword: '',
                 twinfieldClientId: '',
@@ -99,7 +98,6 @@ class AdministrationNewForm extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
-                twinfieldConnectionType: false,
                 twinfieldUsername: false,
                 twinfieldPassword: false,
                 twinfieldClientId: false,
@@ -284,21 +282,14 @@ class AdministrationNewForm extends Component {
         }
 
         if (administration.usesTwinfield) {
-            if (validator.isEmpty(administration.twinfieldConnectionType + '')) {
-                errors.twinfieldConnectionType = true;
+            if (validator.isEmpty(administration.twinfieldClientId + '')) {
+                errors.twinfieldClientId = true;
                 hasErrors = true;
             }
 
-            if (administration.twinfieldConnectionType === 'openid') {
-                if (validator.isEmpty(administration.twinfieldClientId + '')) {
-                    errors.twinfieldClientId = true;
-                    hasErrors = true;
-                }
-
-                if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
-                    errors.twinfieldClientSecret = true;
-                    hasErrors = true;
-                }
+            if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
+                errors.twinfieldClientSecret = true;
+                hasErrors = true;
             }
 
             if (validator.isEmpty(administration.twinfieldOfficeCode + '')) {
@@ -392,7 +383,6 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('attachment', administration.attachment);
             data.append('usesTwinfield', administration.usesTwinfield);
-            data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
             data.append('twinfieldUsername', administration.twinfieldUsername);
             data.append('twinfieldPassword', administration.twinfieldPassword);
             data.append('twinfieldClientId', administration.twinfieldClientId);
@@ -449,7 +439,6 @@ class AdministrationNewForm extends Component {
             ibanAttn,
             mailboxId,
             usesTwinfield,
-            twinfieldConnectionType,
             twinfieldUsername,
             twinfieldPassword,
             twinfieldClientId,
@@ -797,18 +786,6 @@ class AdministrationNewForm extends Component {
                                 value={usesTwinfield}
                                 onChangeAction={this.handleInputChange}
                             />
-                            {usesTwinfield == true && (
-                                <InputSelect
-                                    label={'API connection type'}
-                                    id="twinfieldConnectionType"
-                                    name={'twinfieldConnectionType'}
-                                    options={this.props.twinfieldConnectionTypes}
-                                    value={twinfieldConnectionType}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.errors.twinfieldConnectionType}
-                                />
-                            )}
                         </div>
 
                         {usesTwinfield == true && (
@@ -989,7 +966,6 @@ const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
-        twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
         meDetails: state.meDetails,
     };

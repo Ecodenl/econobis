@@ -216,7 +216,7 @@ class TwinfieldSalesTransactionHelper
                 $dueDateInvoice2 = new \DateTime($invoiceToProcess->date_sent); ;
                 $dueDateInvoice2->add( $daysToAdd2);
 
-                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDay($invoiceToProcess->days_to_expire);
+                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDays((int) $invoiceToProcess->days_to_expire);
             }else {
                 $datePaymentDue = $invoiceToProcess->getDatePaymentDueAttribute();
                 if ($dueDateInvoice = 0) {

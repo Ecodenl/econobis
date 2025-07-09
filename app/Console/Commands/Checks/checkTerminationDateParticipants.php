@@ -72,7 +72,7 @@ class checkTerminationDateParticipants extends Command
                     $lastmutationDateEntry = null;
                 }
                 $participantProjectDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
-                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay(1)->format('Y-m-d');
+                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
 
 //Log::info('Deelnemer: ' . $participantProject->id);
 //Log::info('Date Terminated: ' . $participantProjectDateTerminated);

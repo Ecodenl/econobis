@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../api/utils/ApiUrl';
+
 import axios from 'axios';
 
 class Forgot extends Component {
@@ -14,7 +16,7 @@ class Forgot extends Component {
         const { email } = this.state;
 
         axios
-            .post(`${URL_API}/api/password/email`, {
+            .post(`${getApiUrl()}/api/password/email`, {
                 email,
             })
             .then(response => {

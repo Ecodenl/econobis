@@ -5,8 +5,14 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import moment from 'moment/moment';
 import validator from 'validator';
 import InputDate from '../../../../components/form/InputDate';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import InputText from '../../../../components/form/InputText';
+
+// Functionele wrapper voor de class component
+const InvoiceListSetMultiplePaidWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceListSetMultiplePaid {...props} navigate={navigate} />;
+};
 
 class InvoiceListSetMultiplePaid extends Component {
     constructor(props) {
@@ -68,7 +74,7 @@ class InvoiceListSetMultiplePaid extends Component {
         // If no errors send form
         if (!hasErrors) {
             InvoiceDetailsAPI.setInvoicesPaid(invoiceIds, invoice.datePaid, invoice.paymentReference).then(payload => {
-                hashHistory.push(`/financieel/${this.props.administrationId}/notas/betaald`);
+                this.props.navigate(`/financieel/${this.props.administrationId}/notas/betaald`);
             });
         }
     };
@@ -86,7 +92,8 @@ class InvoiceListSetMultiplePaid extends Component {
                 <div className="row">
                     <div className={'col-sm-12 margin-10-bottom'}>
                         <span>
-                            Vul de betaaldatum en evt. het betalingskenmerk in en klik op Nota's betalen. Er wordt dan een betaling aangemaakt voor het openstaande bedrag.
+                            Vul de betaaldatum en evt. het betalingskenmerk in en klik op Nota's betalen. Er wordt dan
+                            een betaling aangemaakt voor het openstaande bedrag.
                         </span>
                     </div>
                 </div>
@@ -115,4 +122,4 @@ class InvoiceListSetMultiplePaid extends Component {
     }
 }
 
-export default InvoiceListSetMultiplePaid;
+export default InvoiceListSetMultiplePaidWrapper;

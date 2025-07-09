@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import RevenueNewToolbar from './RevenueNewToolbar';
 import RevenueNewForm from './RevenueNewForm';
@@ -10,6 +10,13 @@ import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
 import moment from 'moment';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const RevenueNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <RevenueNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class RevenueNewApp extends Component {
     constructor(props) {
@@ -472,16 +479,16 @@ class RevenueNewApp extends Component {
                 .then(payload => {
                     this.setState({ isLoading: false });
                     // Delete path new-project-revenue in history, so when go back the page goes to the project details
-                    hashHistory.replace(`/project/details/${this.props.params.projectId}`);
+                    this.props.navigate(`/project/details/${this.props.params.projectId}`, { replace: true });
                     // Push to new revenue
-                    hashHistory.push(`/project/opbrengst/${payload.data.data.id}`);
+                    this.props.navigate(`/project/opbrengst/${payload.data.data.id}`);
                 })
                 .catch(error => {
                     console.log(error);
                     alert(
                         'Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.'
                     );
-                    hashHistory.goBack();
+                    this.props.navigate(-1);
                 });
         }
     };
@@ -527,4 +534,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(RevenueNewApp);
+export default connect(mapStateToProps)(RevenueNewAppWrapper);

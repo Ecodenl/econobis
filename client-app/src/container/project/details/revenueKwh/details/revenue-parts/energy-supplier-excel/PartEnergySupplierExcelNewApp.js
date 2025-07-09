@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import PartEnergySupplierExcelNewToolbar from './PartEnergySupplierExcelNewToolbar';
 import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
@@ -8,6 +8,13 @@ import PartEnergySupplierExcelNew from './PartEnergySupplierExcelNew';
 import Panel from '../../../../../../../components/panel/Panel';
 import PanelBody from '../../../../../../../components/panel/PanelBody';
 import RevenuePartsKwhAPI from '../../../../../../../api/project/RevenuePartsKwhAPI';
+
+// Functionele wrapper voor de class component
+const PartEnergySupplierExcelNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <PartEnergySupplierExcelNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class PartEnergySupplierExcelNewApp extends Component {
     constructor(props) {
@@ -67,8 +74,8 @@ class PartEnergySupplierExcelNewApp extends Component {
     };
     cancel = event => {
         event.preventDefault();
-        hashHistory.push(
-            `project/opbrengst-kwh/${this.state.revenuePartsKwhForReport.revenueId}/deelperiode/${this.props.params.revenuePartId}`
+        this.props.navigate(
+            `/project/opbrengst-kwh/${this.state.revenuePartsKwhForReport.revenueId}/deelperiode/${this.props.params.revenuePartId}`
         );
     };
 
@@ -92,7 +99,7 @@ class PartEnergySupplierExcelNewApp extends Component {
             RevenuePartsKwhAPI.createEnergySupplierExcel(excel.revenuePartId, excel.documentName)
                 .then(payload => {
                     this.setState({ ...this.state, isCreating: false });
-                    hashHistory.push(`/documenten`);
+                    this.props.navigate(`/documenten`);
                 })
                 .catch(error => {
                     this.setState({ isCreating: false });
@@ -142,4 +149,4 @@ class PartEnergySupplierExcelNewApp extends Component {
     }
 }
 
-export default PartEnergySupplierExcelNewApp;
+export default PartEnergySupplierExcelNewAppWrapper;

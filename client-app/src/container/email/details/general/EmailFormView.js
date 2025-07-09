@@ -2,7 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 import ViewText from '../../../../components/form/ViewText';
 import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
@@ -52,7 +52,7 @@ const EmailFormView = props => {
                         <ViewText
                             label={'Verwijderd door'}
                             value={removedBy ? removedBy.fullName : 'Onbekend'}
-                            link={removedBy ? 'gebruiker/' + removedBy.id : ''}
+                            link={removedBy ? '/gebruiker/' + removedBy.id : ''}
                         />
                         <ViewText
                             label={'Datum verwijderd'}
@@ -115,7 +115,7 @@ const EmailFormView = props => {
                 <ViewText
                     label={'Intake'}
                     value={intake ? intake.name : ''}
-                    link={intake ? 'intake/' + intake.id : ''}
+                    link={intake ? '/intake/' + intake.id : ''}
                 />
             </div>
             {manyContacts && props.showContacten && (
@@ -135,11 +135,11 @@ const EmailFormView = props => {
             )}
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Taak'} value={task ? task.noteSummary : ''} link={task ? 'taak/' + task.id : ''} />
+                <ViewText label={'Taak'} value={task ? task.noteSummary : ''} link={task ? '/taak/' + task.id : ''} />
                 <ViewText
                     label={'Kansactie'}
                     value={quotationRequest ? quotationRequest.name : ''}
-                    link={quotationRequest ? 'offerteverzoek/' + quotationRequest.id : ''}
+                    link={quotationRequest ? '/offerteverzoek/' + quotationRequest.id : ''}
                 />
             </div>
 
@@ -147,21 +147,21 @@ const EmailFormView = props => {
                 <ViewText
                     label={'Maatregel'}
                     value={measure ? measure.name : ''}
-                    link={measure ? 'maatregel/' + measure.id : ''}
+                    link={measure ? '/maatregel/' + measure.id : ''}
                 />
                 <ViewText
                     label={'Kans'}
                     value={opportunity ? opportunity.name : ''}
-                    link={opportunity ? 'kans/' + opportunity.id : ''}
+                    link={opportunity ? '/kans/' + opportunity.id : ''}
                 />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>
-                <ViewText label={'Order'} value={order ? order.name : ''} link={order ? 'order/' + order.id : ''} />
+                <ViewText label={'Order'} value={order ? order.name : ''} link={order ? '/order/' + order.id : ''} />
                 <ViewText
                     label={'Nota'}
                     value={invoice ? invoice.name : ''}
-                    link={invoice ? 'nota/' + invoice.id : ''}
+                    link={invoice ? '/nota/' + invoice.id : ''}
                 />
             </div>
 
@@ -192,14 +192,14 @@ const EmailFormView = props => {
                         <ViewText
                             label={'Afgehandeld door'}
                             value={closedBy ? closedBy.fullName : ''}
-                            link={closedBy ? 'gebruiker/' + closedBy.id : ''}
+                            link={closedBy ? '/gebruiker/' + closedBy.id : ''}
                         />
                         {responsibleUser || responsibleTeam ? (
                             <ViewText
                                 label={'Verantwoordelijke'}
                                 value={responsibleUser ? responsibleUser.fullName : responsibleTeam.name}
                                 link={
-                                    responsibleUser ? 'gebruiker/' + responsibleUser.id : 'team/' + responsibleTeam.id
+                                    responsibleUser ? '/gebruiker/' + responsibleUser.id : '/team/' + responsibleTeam.id
                                 }
                             />
                         ) : (

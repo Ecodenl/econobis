@@ -10,7 +10,7 @@ import Modal from '../../../../../../components/modal/Modal';
 import InputSelect from '../../../../../../components/form/InputSelect';
 import DocumentTemplateAPI from '../../../../../../api/document-template/DocumentTemplateAPI';
 import validator from 'validator';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ViewText from '../../../../../../components/form/ViewText';
 import EmailTemplateAPI from '../../../../../../api/email-template/EmailTemplateAPI';
 import InputText from '../../../../../../components/form/InputText';
@@ -22,6 +22,12 @@ import InputDate from '../../../../../../components/form/InputDate';
 import ButtonIcon from '../../../../../../components/button/ButtonIcon';
 import ErrorModal from '../../../../../../components/modal/ErrorModal';
 import InputToggle from '../../../../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const RevenueDistributionFormWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenueDistributionForm {...props} navigate={navigate} />;
+};
 
 class RevenueDistributionForm extends Component {
     constructor(props) {
@@ -280,7 +286,7 @@ class RevenueDistributionForm extends Component {
                 distributionIds: this.state.distributionIds,
                 showOnPortal: this.state.showOnPortal,
             });
-            hashHistory.push(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
+            this.props.navigate(`/project/opbrengst/${this.props.projectRevenue.id}/rapportage`);
         } else if (!error) {
             this.setState({
                 showModal: true,
@@ -723,4 +729,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionForm);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenueDistributionFormWrapper);

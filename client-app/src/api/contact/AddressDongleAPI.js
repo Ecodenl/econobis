@@ -1,9 +1,9 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADDRESS_DONGLE = `${URL_API}/api/address-dongle`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     // validateAddressDongleForm: addressDongle => {
+    // const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
     //     let requestUrl = '';
     //     if (addressDongle.id) {
     //         requestUrl = `${URL_ADDRESS_DONGLE}-validate/${addressDongle.id}`;
@@ -11,24 +11,27 @@ export default {
     //         requestUrl = `${URL_ADDRESS_DONGLE}-validate`;
     //     }
     //
-    //     return axiosInstance.post(requestUrl, addressDongle);
+    //     return getAxiosInstance().post(requestUrl, addressDongle);
     // },
 
     newAddressDongle: addressDongle => {
+        const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
         const requestUrl = `${URL_ADDRESS_DONGLE}`;
 
-        return axiosInstance.post(requestUrl, addressDongle);
+        return getAxiosInstance().post(requestUrl, addressDongle);
     },
 
     updateAddressDongle: addressDongle => {
+        const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
         const requestUrl = `${URL_ADDRESS_DONGLE}/${addressDongle.id}`;
 
-        return axiosInstance.post(requestUrl, addressDongle);
+        return getAxiosInstance().post(requestUrl, addressDongle);
     },
 
     deleteAddressDongle: id => {
+        const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
         const requestUrl = `${URL_ADDRESS_DONGLE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

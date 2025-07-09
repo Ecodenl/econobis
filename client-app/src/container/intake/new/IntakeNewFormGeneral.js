@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 moment.locale('nl');
 
@@ -11,6 +11,12 @@ import InputSelect from '../../../components/form/InputSelect';
 import InputMultiSelect from '../../../components/form/InputMultiSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import InputText from '../../../components/form/InputText';
+
+// Functionele wrapper voor de class component
+const IntakeNewFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeNewFormGeneral {...props} navigate={navigate} />;
+};
 
 class IntakeNewFormGeneral extends Component {
     constructor(props) {
@@ -97,7 +103,7 @@ class IntakeNewFormGeneral extends Component {
         }
 
         IntakeDetailsAPI.newIntake(intake).then(payload => {
-            hashHistory.push(`/intake/${payload.data.id}`);
+            this.props.navigate(`/intake/${payload.data.id}`);
         });
     };
 
@@ -238,4 +244,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(IntakeNewFormGeneral);
+export default connect(mapStateToProps, null)(IntakeNewFormGeneralWrapper);

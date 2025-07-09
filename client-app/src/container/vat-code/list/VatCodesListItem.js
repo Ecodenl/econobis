@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const VatCodesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <VatCodesListItem {...props} navigate={navigate} />;
+};
 
 class VatCodesListItem extends Component {
     constructor(props) {
@@ -31,7 +37,7 @@ class VatCodesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/btw-code/${id}`);
+        this.props.navigate(`/btw-code/${id}`);
     }
 
     render() {
@@ -67,4 +73,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(VatCodesListItem);
+export default connect(mapStateToProps)(VatCodesListItemWrapper);

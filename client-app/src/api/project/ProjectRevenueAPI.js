@@ -1,4 +1,5 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 const URL_REVENUE = `project/revenue`;
 
@@ -6,7 +7,7 @@ export default {
     fetchProjectRevenue: id => {
         const requestUrl = `${URL_REVENUE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -17,7 +18,7 @@ export default {
     updateProjectRevenue: (id, data) => {
         const requestUrl = `${URL_REVENUE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -28,13 +29,13 @@ export default {
     storeProjectRevenue: data => {
         const requestUrl = `${URL_REVENUE}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     deleteProjectRevenue: id => {
         const requestUrl = `${URL_REVENUE}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -43,9 +44,9 @@ export default {
     },
 
     createRevenueReport: (templateId, emailTemplateId, subject, distributionIds, showOnPortal) => {
-        const requestUrl = `${URL_API}/api/distribution/create-revenue-report`;
+        const requestUrl = `${getApiUrl()}/api/distribution/create-revenue-report`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             documentTemplateId: templateId,
             emailTemplateId: emailTemplateId,
             distributionIds: distributionIds,
@@ -55,9 +56,9 @@ export default {
     },
 
     createPaymentInvoices: (datePayout, distributionIds, description) => {
-        const requestUrl = `${URL_API}/api/distribution/create-payment-invoices`;
+        const requestUrl = `${getApiUrl()}/api/distribution/create-payment-invoices`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             distributionIds: distributionIds,
             datePayout: datePayout,
             description: description,
@@ -67,7 +68,7 @@ export default {
     previewPDF: (id, subject, documentTemplateId) => {
         const requestUrl = `distribution/${id}/preview-pdf`;
 
-        return axiosInstance.post(
+        return getAxiosInstance().post(
             requestUrl,
             { subject: subject, documentTemplateId: documentTemplateId },
             { responseType: 'blob' }
@@ -77,7 +78,7 @@ export default {
     previewEmail: (id, subject, emailTemplateId) => {
         const requestUrl = `distribution/${id}/preview-email`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             subject: subject,
             emailTemplateId: emailTemplateId,
         });
@@ -86,12 +87,12 @@ export default {
     fetchProjectRevenueDistribution: (id, page) => {
         const requestUrl = `${URL_REVENUE}/${id}/distribution`;
 
-        return axiosInstance.post(requestUrl, { page: page });
+        return getAxiosInstance().post(requestUrl, { page: page });
     },
 
     getCSV: id => {
         const requestUrl = `${URL_REVENUE}/${id}/csv`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

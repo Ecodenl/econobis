@@ -6,8 +6,15 @@ import MailgunDomainDetailsToolbar from './MailgunDomainDetailsToolbar';
 import MailgunDomainDetailsForm from './MailgunDomainDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import MailgunDomainDetailsBounces from "./MailgunDomainDetailsBounces";
-import MailgunDomainDetailsComplaints from "./MailgunDomainDetailsComplaints";
+import MailgunDomainDetailsBounces from './MailgunDomainDetailsBounces';
+import MailgunDomainDetailsComplaints from './MailgunDomainDetailsComplaints';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const MailgunDomainDetailsAppWrapper = props => {
+    const params = useParams();
+    return <MailgunDomainDetailsApp {...props} params={params} />;
+};
 
 class MailgunDomainDetailsApp extends Component {
     constructor(props) {
@@ -60,4 +67,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainDetailsApp);
+export default connect(mapStateToProps, mapDispatchToProps)(MailgunDomainDetailsAppWrapper);

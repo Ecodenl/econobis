@@ -1,59 +1,67 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_TEAM = `${URL_API}/api/team`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchTeamDetails: id => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     newTeam: team => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = URL_TEAM;
 
-        return axiosInstance.post(requestUrl, team);
+        return getAxiosInstance().post(requestUrl, team);
     },
 
     updateTeam: team => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${team.id}`;
 
-        return axiosInstance.post(requestUrl, team);
+        return getAxiosInstance().post(requestUrl, team);
     },
 
     newTeamUser: ({ teamId, userId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${userId}/attach`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteTeamUser: ({ teamId, userId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${userId}/detach`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/attach-contact-group`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteTeamContactGroup: ({ teamId, contactGroupId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${contactGroupId}/detach-contact-group`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/attach-document-created-from`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteTeamDocumentCreatedFrom: ({ teamId, documentCreatedFromId }) => {
+        const URL_TEAM = `${getApiUrl()}/api/team`;
         const requestUrl = `${URL_TEAM}/${teamId}/${documentCreatedFromId}/detach-document-created-from`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

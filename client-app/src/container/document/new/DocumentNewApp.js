@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import DocumentNewForm from './DocumentNewForm';
@@ -28,6 +28,13 @@ import DocumentNewFormProject from './DocumentNewFormProject';
 import DocumentNewFormAdministration from './DocumentNewFormAdministration';
 import DocumentNewFormParticipant from './DocumentNewFormParticipant';
 import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
+
+// Functionele wrapper voor de class component
+const DocumentNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <DocumentNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class DocumentNewApp extends Component {
     constructor(props) {
@@ -541,9 +548,9 @@ class DocumentNewApp extends Component {
             DocumentDetailsAPI.newDocument(data)
                 .then(payload => {
                     if (payload.data.data.filename.toLowerCase().endsWith('.pdf')) {
-                        hashHistory.push(`/document/inzien/${payload.data.data.id}`);
+                        this.props.navigate(`/document/inzien/${payload.data.data.id}`);
                     } else {
-                        hashHistory.push(`/document/${payload.data.data.id}`);
+                        this.props.navigate(`/document/${payload.data.data.id}`);
                     }
                 })
                 .catch(error => {
@@ -665,4 +672,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentNewAppWrapper);

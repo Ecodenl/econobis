@@ -1,11 +1,13 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
 const TasksList = ({ relatedTasks }) => {
+    const navigate = useNavigate();
+
     const openItem = id => {
-        hashHistory.push(`/taak/${id}`);
+        navigate(`/taak/${id}`);
     };
 
     return (

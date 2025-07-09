@@ -1,9 +1,11 @@
 import React from 'react';
 import moment from 'moment';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const IntakeDetailsOpportunityView = props => {
+    const navigate = useNavigate();
+
     const { id, number, createdAt, measureCategory, measures, status, quotationRequests } = props.opportunity;
 
     return (
@@ -12,7 +14,7 @@ const IntakeDetailsOpportunityView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div onClick={() => hashHistory.push(`/kans/${id}`)}>
+            <div onClick={() => navigate(`/kans/${id}`)}>
                 <div className="col-sm-2">{number}</div>
                 <div className="col-sm-2">{createdAt ? moment(createdAt).format('L') : ''}</div>
                 <div className="col-sm-2">{measureCategory ? measureCategory.name : ''}</div>

@@ -363,7 +363,7 @@ class ExternalWebformController extends Controller
                         $data['contact']['collect_mandate_signature_date'] = Carbon::now();
                     }
                     if($data['contact']['collect_mandate_first_run_date'] == '' && $contact->collect_mandate_first_run_date == null) {
-                        $data['contact']['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                        $data['contact']['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
                     }
                     if($data['contact']['collect_mandate_collection_schema'] == '' && $contact->collect_mandate_collection_schema == '') {
                         $data['contact']['collect_mandate_collection_schema'] = 'core';
@@ -1503,7 +1503,7 @@ class ExternalWebformController extends Controller
                 $data['collect_mandate_signature_date'] = Carbon::now();
             }
             if($data['collect_mandate_first_run_date'] == '') {
-                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
             }
             if($data['collect_mandate_collection_schema'] == '') {
                 $data['collect_mandate_collection_schema'] = 'core';
@@ -1701,7 +1701,7 @@ class ExternalWebformController extends Controller
                     $data['collect_mandate_signature_date'] = Carbon::now();
                 }
                 if ($data['collect_mandate_first_run_date'] == '') {
-                    $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                    $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
                 }
                 if ($data['collect_mandate_collection_schema'] == '') {
                     $data['collect_mandate_collection_schema'] = 'core';
@@ -3328,7 +3328,7 @@ class ExternalWebformController extends Controller
         elseif(strlen( $data['days_planned_finish'] ) > 0) {
             // Default today + requested days planned finish
             $today = Carbon::today();
-            $datePlannedFinish = $today->addDay($data['days_planned_finish']);
+            $datePlannedFinish = $today->addDays((int) $data['days_planned_finish']);
             $this->log('Datum einddatum bepaald op : ' . $datePlannedFinish);
         }
 

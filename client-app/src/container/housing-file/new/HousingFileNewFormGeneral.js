@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -10,6 +10,12 @@ import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const HousingFileNewFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileNewFormGeneral {...props} navigate={navigate} />;
+};
 
 class HousingFileNewFormGeneral extends Component {
     constructor(props) {
@@ -53,7 +59,7 @@ class HousingFileNewFormGeneral extends Component {
         const { housingFile } = this.state;
 
         HousingFileDetailsAPI.newHousingFile(housingFile).then(payload => {
-            hashHistory.push(`/woningdossier/${payload.data.id}`);
+            this.props.navigate(`/woningdossier/${payload.data.id}`);
         });
     };
 
@@ -223,4 +229,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileNewFormGeneral);
+export default connect(mapStateToProps, null)(HousingFileNewFormGeneralWrapper);

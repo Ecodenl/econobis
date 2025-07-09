@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import { hashHistory, Link } from 'react-router';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -10,6 +11,12 @@ import { fileText } from 'react-icons-kit/fa/fileText';
 import { fileO } from 'react-icons-kit/fa/fileO';
 
 import FinancialSidebarHelper from '../../helpers/FinancialSidebarHelper';
+
+// Functionele wrapper voor de class component
+const FinancialTreeWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialTree {...props} navigate={navigate} />;
+};
 
 class FinancialTree extends Component {
     constructor(props) {
@@ -26,7 +33,7 @@ class FinancialTree extends Component {
         this.onItemClick = this.onItemClick.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (
             this.props.currentRouteParams.type !== nextProps.currentRouteParams.type ||
             this.props.currentRouteParams.filter !== nextProps.currentRouteParams.filter
@@ -79,7 +86,7 @@ class FinancialTree extends Component {
                             <NavText>
                                 <Link
                                     className="financial-tree-link-header"
-                                    to={`financieel/${this.state.currentAdminisrationId}/orders`}
+                                    to={`/financieel/${this.state.currentAdminisrationId}/orders`}
                                 >
                                     Alle orders ({this.props.totalsInfoAdministration.totalOrders})
                                 </Link>
@@ -88,7 +95,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/orders/concepten`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/orders/concepten`}
                                     >
                                         Concept orders ({this.props.totalsInfoAdministration.totalOrdersConcepts})
                                     </Link>
@@ -98,7 +105,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/orders/aankomend`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/orders/aankomend`}
                                     >
                                         Actief - toekomstig orders (
                                         {this.props.totalsInfoAdministration.totalOrdersUpcoming})
@@ -109,7 +116,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/orders/te-factureren`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/orders/te-factureren`}
                                     >
                                         {' '}
                                         Actief - te factureren orders (
@@ -121,7 +128,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/orders/te-verzenden`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/orders/te-verzenden`}
                                     >
                                         {' '}
                                         Actief - te verzenden orders (
@@ -133,7 +140,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/orders/beeindigd`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/orders/beeindigd`}
                                     >
                                         Beëindigde orders ({this.props.totalsInfoAdministration.totalOrdersClosed})
                                     </Link>
@@ -147,7 +154,7 @@ class FinancialTree extends Component {
                             <NavText>
                                 <Link
                                     className="financial-tree-link-header"
-                                    to={`financieel/${this.state.currentAdminisrationId}/notas`}
+                                    to={`/financieel/${this.state.currentAdminisrationId}/notas`}
                                 >
                                     Alle nota's ({this.props.totalsInfoAdministration.totalInvoices})
                                 </Link>
@@ -156,7 +163,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/te-verzenden-incasso`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/te-verzenden-incasso`}
                                     >
                                         Te verzenden - incasso nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesToSendCollection})
@@ -167,7 +174,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/te-verzenden-overboeken`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/te-verzenden-overboeken`}
                                     >
                                         Te verzenden - overboek nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesToSendTransfer})
@@ -178,7 +185,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/fout-verzenden-incasso`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/fout-verzenden-incasso`}
                                     >
                                         Opnieuw te verzenden - incasso nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesErrorSendingCollection})
@@ -189,7 +196,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/fout-verzenden-overboeken`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/fout-verzenden-overboeken`}
                                     >
                                         Opnieuw te verzenden - overboek nota's(
                                         {this.props.totalsInfoAdministration.totalInvoicesErrorSendingTransfer})
@@ -200,7 +207,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/verzonden`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/verzonden`}
                                     >
                                         Verzonden ({this.props.totalsInfoAdministration.totalInvoicesSent})
                                     </Link>
@@ -212,7 +219,7 @@ class FinancialTree extends Component {
                                     <NavText>
                                         <Link
                                             className="financial-tree-link"
-                                            to={`financieel/${this.state.currentAdminisrationId}/notas/geexporteerd`}
+                                            to={`/financieel/${this.state.currentAdminisrationId}/notas/geexporteerd`}
                                         >
                                             Verzonden geboekt(
                                             {this.props.totalsInfoAdministration.totalInvoicesExported})
@@ -224,7 +231,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/herinnering`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/herinnering`}
                                     >
                                         Herinnering ({this.props.totalsInfoAdministration.totalInvoicesReminder})
                                     </Link>
@@ -234,7 +241,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/aanmaning`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/aanmaning`}
                                     >
                                         Aanmaning ({this.props.totalsInfoAdministration.totalInvoicesExhortation})
                                     </Link>
@@ -244,7 +251,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/betaald`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/betaald`}
                                     >
                                         Betaald ({this.props.totalsInfoAdministration.totalInvoicesPaid})
                                     </Link>
@@ -254,7 +261,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/notas/oninbaar`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/notas/oninbaar`}
                                     >
                                         Oninbaar ({this.props.totalsInfoAdministration.totalInvoicesIrrecoverable})
                                     </Link>
@@ -268,7 +275,7 @@ class FinancialTree extends Component {
                             <NavText>
                                 <Link
                                     className="financial-tree-link-header"
-                                    to={`financieel/${this.state.currentAdminisrationId}/uitkering-notas`}
+                                    to={`/financieel/${this.state.currentAdminisrationId}/uitkering-notas`}
                                 >
                                     Uitkering nota's ({this.props.totalsInfoAdministration.totalPaymentInvoices})
                                 </Link>
@@ -277,7 +284,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/uitkering-notas/verzonden`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/uitkering-notas/verzonden`}
                                     >
                                         Verzonden ({this.props.totalsInfoAdministration.totalPaymentInvoicesSent})
                                     </Link>
@@ -287,7 +294,7 @@ class FinancialTree extends Component {
                                 <NavText>
                                     <Link
                                         className="financial-tree-link"
-                                        to={`financieel/${this.state.currentAdminisrationId}/uitkering-notas/niet-betaald`}
+                                        to={`/financieel/${this.state.currentAdminisrationId}/uitkering-notas/niet-betaald`}
                                     >
                                         Niet betaald ({this.props.totalsInfoAdministration.totalPaymentInvoicesNotPaid})
                                     </Link>
@@ -301,7 +308,7 @@ class FinancialTree extends Component {
                             <NavText>
                                 <Link
                                     className="financial-tree-link-header"
-                                    to={`administratie/${this.state.currentAdminisrationId}`}
+                                    to={`/administratie/${this.state.currentAdminisrationId}`}
                                 >
                                     Instellingen
                                 </Link>
@@ -322,4 +329,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialTree);
+export default connect(mapStateToProps)(FinancialTreeWrapper);

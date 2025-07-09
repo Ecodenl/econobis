@@ -15,6 +15,22 @@ class UserDetailsFormRolesEdit extends Component {
     render() {
         const { id, roles = {} } = this.props.userDetails;
 
+        const additionalRolesList = [
+            'Beheerder webformulier',
+            'Beheerder Mailgun domeinen',
+            'Beheerder Portal Settings',
+            'Beheerder coöperatie instellingen',
+            'Data opschoner',
+        ];
+
+        // Rollen die vallen onder "extra beheerrechten"
+        const rolesAdditionalPermissions = roles.filter(role => additionalRolesList.includes(role.name));
+
+        // De overige rollen
+        const rolesUserPermissions = roles.filter(role => !additionalRolesList.includes(role.name));
+
+        const hasKeyUserRole = this.props.keyUserRole && Boolean(this.props.keyUserRole.hasRole) === true;
+
         return (
             <div>
                 <PanelBody>
@@ -22,13 +38,34 @@ class UserDetailsFormRolesEdit extends Component {
                         <span className="h5 text-bold">Gebruikers rollen</span>
                     </PanelHeader>
                     <div className="row">
-                        {roles.length === 0 ? (
+                        {rolesUserPermissions.length === 0 ? (
                             <tr>
                                 <td colSpan={7}>Geen rollen beschikbaar!</td>
                             </tr>
                         ) : (
-                            roles.map((role, i) => {
-                                return <UserDetailsFormRoleEditItem key={i} role={role} id={id} />;
+                            rolesUserPermissions.map((role, i) => {
+                                return <UserDetailsFormRoleEditItem key={i} role={role} id={id} alwaysTrue={false} />;
+                            })
+                        )}
+                    </div>
+                    <PanelHeader>
+                        <span className="h5 text-bold">Gebruikers aanvullende rechten</span>
+                    </PanelHeader>
+                    <div className="row">
+                        {rolesAdditionalPermissions.length === 0 ? (
+                            <tr>
+                                <td colSpan={7}>Geen aanvullende rechten beschikbaar!</td>
+                            </tr>
+                        ) : (
+                            rolesAdditionalPermissions.map((role, i) => {
+                                return (
+                                    <UserDetailsFormRoleEditItem
+                                        key={i}
+                                        role={role}
+                                        id={id}
+                                        alwaysTrue={hasKeyUserRole}
+                                    />
+                                );
                             })
                         )}
                     </div>
@@ -50,6 +87,7 @@ class UserDetailsFormRolesEdit extends Component {
 const mapStateToProps = state => {
     return {
         userDetails: state.userDetails,
+        keyUserRole: state.userDetails.roles.find(role => role.name === 'Beheerder'),
     };
 };
 

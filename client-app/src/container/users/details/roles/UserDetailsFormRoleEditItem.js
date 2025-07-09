@@ -11,6 +11,7 @@ class UserDetailsFormRoleListItem extends Component {
 
         this.state = {
             ...props.role,
+            alwaysTrue: props.alwaysTrue,
         };
     }
 
@@ -44,10 +45,17 @@ class UserDetailsFormRoleListItem extends Component {
     };
 
     render() {
-        const { id, name, hasRole } = this.state;
+        const { id, name, hasRole, alwaysTrue } = this.state;
 
         return (
-            <InputToggle label={name} id={id} name={'name'} value={hasRole} onChangeAction={this.handleInputChange} />
+            <InputToggle
+                label={name}
+                id={id}
+                name={'name'}
+                value={hasRole || alwaysTrue}
+                disabled={alwaysTrue}
+                onChangeAction={this.handleInputChange}
+            />
         );
     }
 }

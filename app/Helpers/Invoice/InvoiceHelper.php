@@ -424,8 +424,13 @@ class InvoiceHelper
         $contactName = null;
 
         if ($invoice->order->contact->type_id == 'person') {
+            $initials = $invoice->order->contact->person->initials ? $invoice->order->contact->person->initials : ($invoice->order->contact->person->first_name ? substr($invoice->order->contact->person->first_name, 0, 1) . "." : "");
             $prefix = $invoice->order->contact->person->last_name_prefix;
-            $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
+            $salutation = $invoice->order->contact->person->title->salutation;
+            if ($salutation) {
+                $contactName = $salutation . ' ';
+            }
+            $contactName .= $prefix ? $initials . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $initials . ' ' . $invoice->order->contact->person->last_name;
         } elseif ($invoice->order->contact->type_id == 'organisation') {
             $contactName = optional($invoice->order->contact->organisation)->statutory_name ? $invoice->order->contact->organisation->statutory_name : $invoice->order->contact->full_name;
         }

@@ -108,8 +108,6 @@ class ProjectRevenueController extends ApiController
 
     public function store(RequestInput $requestInput)
     {
-        // todo WM: check of dit nog juist is. Nu: manage_financial permissie nodig.
-        //  wellicht: manage_project nodig? of 1 van beide of allebei ???
         $this->authorize('manage', ProjectRevenue::class);
 
         $data = $requestInput
@@ -157,8 +155,6 @@ class ProjectRevenueController extends ApiController
     }
     public function storeForParticipant(RequestInput $requestInput, ParticipantProject $participantProject): void
     {
-        // todo WM: check of dit nog juist is. Nu: manage_financial permissie nodig.
-        //  wellicht: manage_project nodig? of 1 van beide of allebei ???
         $this->authorize('manage', ProjectRevenue::class);
 
         $projectRevenueCategoryParticipant = ProjectRevenueCategory::where('code_ref', 'revenueParticipant' )->first()->id;
@@ -208,8 +204,6 @@ class ProjectRevenueController extends ApiController
         ProjectRevenue $projectRevenue
     )
     {
-        // todo WM: check of dit nog juist is. Nu: manage_financial permissie nodig.
-        //  wellicht: manage_project nodig? of 1 van beide of allebei ???
         $this->authorize('manage', ProjectRevenue::class);
 
         $data = $requestInput
@@ -277,8 +271,6 @@ class ProjectRevenueController extends ApiController
 
     public function destroy(ProjectRevenue $projectRevenue)
     {
-        // todo WM: check of dit nog juist is. Nu: manage_financial permissie nodig.
-        //  wellicht: manage_project nodig? of 1 van beide of allebei ???
         $this->authorize('manage', ProjectRevenue::class);
 
         try {
@@ -302,8 +294,6 @@ class ProjectRevenueController extends ApiController
 
     public function peekDistributionByIds(Request $request)
     {
-        // todo WM: check of dit nog juist is. Nu: manage_financial permissie nodig.
-        //  wellicht: manage_project nodig? of 1 van beide of allebei ???
         $this->authorize('manage', ProjectRevenue::class);
 
         $ids = $request->input('ids') ? $request->input('ids') : [];

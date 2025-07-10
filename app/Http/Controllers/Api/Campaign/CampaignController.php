@@ -360,6 +360,7 @@ class CampaignController extends ApiController
     public function associateOwner(Campaign $campaign, User $user)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->ownedBy()->associate($user);
         $campaign->save();
     }

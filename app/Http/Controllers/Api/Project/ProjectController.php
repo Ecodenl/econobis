@@ -32,6 +32,7 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
+        // Check op geauthoriseerde administratie gaat via ProjectBuilder !
         $projects = $requestQuery->get();
 
         $projects->load([

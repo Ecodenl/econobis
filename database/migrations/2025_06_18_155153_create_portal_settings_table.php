@@ -91,7 +91,7 @@ return new class extends Migration
                     'show_new_at_cooperative_link' => $showNewAtCooperativeLink,
                     'new_at_cooperative_link_text' => !empty($this->get('newAtCooperativeLinkText')) ? $this->get('newAtCooperativeLinkText') : null,
                     'show_allow_request_for_delete' => false,
-                    'allow_request_for_delete_text' => null,
+                    'allow_request_for_delete_button_text' => null,
                     'pcr_power_kwh_consumption_percentage' => !empty($this->get('pcrPowerKwhConsumptionPercentage')) ? $this->get('pcrPowerKwhConsumptionPercentage') * 100 : null,
                     'pcr_generating_capacity_one_solor_panel' => !empty($this->get('pcrGeneratingCapacityOneSolorPanel')) ? $this->get('pcrGeneratingCapacityOneSolorPanel') : null,
                     'default_contact_group_member_id' => !empty($this->get('defaultContactGroupMemberId')) ? $this->get('defaultContactGroupMemberId') : null,

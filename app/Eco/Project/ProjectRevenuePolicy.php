@@ -11,6 +11,6 @@ class ProjectRevenuePolicy
 
         public function manage(User $user)
     {
-        return $user->hasPermissionTo('manage_financial', 'api');
+        return $user->hasPermissionTo('manage_project', 'api');
     }
 }

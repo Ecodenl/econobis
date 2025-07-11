@@ -167,14 +167,16 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         </NavText>
                     </Nav>
 
-                    <Nav id="deelnemers">
-                        <NavText>
-                            <Link className="sidebar-link" to="deelnemers">
-                                Deelnemers
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    {permissions.manageFinancial && (
+                    {permissions.menuParticipations && (
+                        <Nav id="deelnemers">
+                            <NavText>
+                                <Link className="sidebar-link" to="deelnemers">
+                                    Deelnemers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuFinancialOverviews && (
                         <Nav id="waardestaten">
                             <NavText>
                                 <Link className="sidebar-link" to="waardestaten">

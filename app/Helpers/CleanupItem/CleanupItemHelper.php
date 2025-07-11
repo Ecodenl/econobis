@@ -20,6 +20,7 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Product\Product;
 use App\Helpers\Settings\Request;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Log;
 
 class CleanupItemHelper
 {
@@ -103,15 +104,24 @@ class CleanupItemHelper
 
                     break;
 
-                case "participationsWithStatus":
-                    $participationsWithStatusCleanupYears = $cleanupItem->years_for_delete;
-                    $participationsWithStatusCleanupOlderThen = $dateToday->copy()->subYears($participationsWithStatusCleanupYears);
+                case "participationsWithoutStatusDefinitive":
+                    $participationsWithoutStatusDefinitiveCleanupYears = $cleanupItem->years_for_delete;
+                    $participationsWithoutStatusDefinitiveCleanupOlderThen = $dateToday->copy()->subYears($participationsWithoutStatusDefinitiveCleanupYears);
 
-                    $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
+                    $mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
 
-                    $participationsWithStatus = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $participationsWithStatusCleanupOlderThen)->count();
+                    $participationsWithoutStatusDefinitive = ParticipantProject::whereNull('date_terminated')
+                        // géén mutatie met status 'final'
+                        ->whereDoesntHave('mutations', function ($query) use ($mutationStatusFinal) {
+                            $query->where('status_id', $mutationStatusFinal);
+                        })
+                        // wel mutaties, maar allemaal ouder dan 1 jaar
+                        ->whereHas('mutations', function ($query) use ($participationsWithoutStatusDefinitiveCleanupOlderThen) {
+                            $query->where('updated_at', '<', $participationsWithoutStatusDefinitiveCleanupOlderThen);
+                        })
+                        ->count();
 
-                    $cleanupItem->number_of_items_to_delete = $participationsWithStatus;
+                    $cleanupItem->number_of_items_to_delete = $participationsWithoutStatusDefinitive;
                     $cleanupItem->date_determined = Carbon::now();
                     $cleanupItem->save();
 
@@ -121,7 +131,17 @@ class CleanupItemHelper
                     $participationsFinishedCleanupYears = $cleanupItem->years_for_delete;
                     $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
 
-                    $participationsFinished = ParticipantProject::whereNotNull('date_terminated')->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)->count();
+                    $participationsFinished = ParticipantProject::whereNotNull('date_terminated')
+                        ->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)
+                        // participation mag niet voorkomen in projectRevenue die nog geen status processed heeft.
+                        ->whereDoesntHave('projectRevenues', function ($query) {
+                            $query->where('project_revenues.status', '!=', 'processed');
+                        })
+                        // participation mag niet voorkomen in revenuesKwh die nog geen status processed heeft.
+                        ->whereDoesntHave('revenuesKwh', function ($query) {
+                            $query->where('revenues_kwh.status', '!=', 'processed');
+                        })
+                        ->count();
 
                     $cleanupItem->number_of_items_to_delete = $participationsFinished;
                     $cleanupItem->date_determined = Carbon::now();

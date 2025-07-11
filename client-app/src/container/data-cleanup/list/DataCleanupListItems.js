@@ -20,7 +20,7 @@ class DataCleanupListItems extends Component {
             ordersPeriodic: [],
             intakes: [],
             opportunities: [],
-            participationsWithStatus: [],
+            participationsWithoutStatusDefinitive: [],
             participationsFinished: [],
         };
     }
@@ -34,7 +34,7 @@ class DataCleanupListItems extends Component {
                 ordersPeriodic: payload['ordersPeriodic'],
                 intakes: payload['intakes'],
                 opportunities: payload['opportunities'],
-                participationsWithStatus: payload['participationsWithStatus'],
+                participationsWithoutStatusDefinitive: payload['participationsWithoutStatusDefinitive'],
                 participationsFinished: payload['participationsFinished'],
             });
         });
@@ -45,7 +45,7 @@ class DataCleanupListItems extends Component {
     }
 
     // Open modal and set which cleanup type
-    openModal = (cleanupType) => {
+    openModal = cleanupType => {
         this.setState({
             showModal: true,
             modalCleanupType: cleanupType,
@@ -70,7 +70,7 @@ class DataCleanupListItems extends Component {
                     this.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
-                        modalErrorMessage: payload
+                        modalErrorMessage: payload,
                     });
                 }
             })
@@ -79,7 +79,7 @@ class DataCleanupListItems extends Component {
             });
     };
 
-    handleRefresh = (cleanupType) => {
+    handleRefresh = cleanupType => {
         DataCleanupAPI.updateAmounts(cleanupType)
             .then(payload => {
                 if (payload.length === 0) {
@@ -87,14 +87,14 @@ class DataCleanupListItems extends Component {
                     this.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
-                        modalErrorMessage: payload
+                        modalErrorMessage: payload,
                     });
                 }
             })
             .catch(error => {
                 // this.props.setError(error.response.status, error.response.data.message);
             });
-    }
+    };
 
     render() {
         const { showModal, modalCleanupType } = this.state;
@@ -105,8 +105,8 @@ class DataCleanupListItems extends Component {
             'ordersPeriodic',
             'intakes',
             'opportunities',
-            'participationsWithStatus',
-            'participationsFinished'
+            'participationsWithoutStatusDefinitive',
+            'participationsFinished',
         ];
 
         return (
@@ -122,13 +122,15 @@ class DataCleanupListItems extends Component {
                     >
                         {modalCleanupType ? (
                             <div>
-                                Weet u zeker dat
-                                u <strong>{this.state[modalCleanupType]['name']}</strong>, <strong>ouder
-                                dan {this.state[modalCleanupType]['years_for_delete']} jaar</strong> wilt opschonen?<br />
+                                Weet u zeker dat u <strong>{this.state[modalCleanupType]['name']}</strong>,{' '}
+                                <strong>ouder dan {this.state[modalCleanupType]['years_for_delete']} jaar</strong> wilt
+                                opschonen?
+                                <br />
                                 <br />
                                 Deze verwijderactie is niet terug te draaien.
-                                <br /><br />
-                                <div id='cleanupModalWarning' style={{ color: '#e64a4a' }}>
+                                <br />
+                                <br />
+                                <div id="cleanupModalWarning" style={{ color: '#e64a4a' }}>
                                     {this.state.modalErrorMessage != '' && (
                                         <ul>
                                             {this.state.modalErrorMessage.map((item, idx) => (
@@ -154,17 +156,27 @@ class DataCleanupListItems extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                        {itemsTypes.map((item) => (
+                        {itemsTypes.map(item => (
                             <tr>
                                 <td className="col-sm-1"></td>
-                                <td className="col-sm-4">{this.state[item]['name']} ouder dan {this.state[item]['years_for_delete']} jaar</td>
+                                <td className="col-sm-4">
+                                    {this.state[item]['name']} ouder dan {this.state[item]['years_for_delete']} jaar
+                                </td>
                                 <td className="col-sm-1">{this.state[item]['number_of_items_to_delete']}</td>
                                 <td className="col-sm-1">
-                                    <a role="button" onClick={() => this.openModal(item)} title={`verwijder ${this.state[item]['name']}`}>
+                                    <a
+                                        role="button"
+                                        onClick={() => this.openModal(item)}
+                                        title={`verwijder ${this.state[item]['name']}`}
+                                    >
                                         <Icon size={14} icon={trash} />
                                     </a>
                                     &nbsp;&nbsp;&nbsp;
-                                    <a role="button" onClick={() => this.handleRefresh(item)} title={`herbereken op te schonen ${this.state[item]['name']}`}>
+                                    <a
+                                        role="button"
+                                        onClick={() => this.handleRefresh(item)}
+                                        title={`herbereken op te schonen ${this.state[item]['name']}`}
+                                    >
                                         <Icon size={14} icon={refresh} />
                                     </a>
                                 </td>

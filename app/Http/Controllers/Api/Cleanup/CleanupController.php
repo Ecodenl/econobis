@@ -119,13 +119,13 @@ class CleanupController extends Controller
             }
         }
 
-        if($cleanupType === 'participationsWithStatus') {
+        if($cleanupType === 'participationsWithoutStatusDefinitive') {
             $participationsStatusses = ParticipantMutationStatus::whereIn('code_ref', ['interest','option','granted'])->pluck('id');
             $participantProjects = ParticipantProject::whereIn('status_id', $participationsStatusses)->whereDate('updated_at', '<', $cleanupDate)->get();
 
             foreach($participantProjects as $participantProject) {
                 $deleteParticipation = new DeleteParticipation($participantProject);
-                $errorMessage = $deleteParticipation->cleanup('participationsWithStatus');
+                $errorMessage = $deleteParticipation->cleanup('participationsWithoutStatusDefinitive');
                 if(is_array($errorMessage)) {
                     $errorMessageArray = array_merge($errorMessageArray,$errorMessage);
                 }

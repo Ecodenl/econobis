@@ -52,7 +52,7 @@ class DeleteParticipation implements DeleteInterface
         $cooperation = Cooperation::first();
         if($type === 'participationsFinished') {
             $cooperation->cleanup_participations_termination_date_last_run_at = $dateToday;
-        } elseif ($type === 'participationsWithStatus') {
+        } elseif ($type === 'participationsWithoutStatusDefinitive') {
             $cooperation->cleanup_participations_change_date_last_run_at = $dateToday;
         }
         $cooperation->save();

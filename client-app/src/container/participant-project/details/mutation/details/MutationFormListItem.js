@@ -322,7 +322,7 @@ class MutationFormListItem extends Component {
 
     render() {
         const readOnly =
-            this.props.participantMutation.financialOverviewDefinitive || !this.props.permissions.manageFinancial;
+            this.props.participantMutation.financialOverviewDefinitive || !this.props.permissions.manageParticipation;
 
         return (
             <React.Fragment>
@@ -351,7 +351,7 @@ class MutationFormListItem extends Component {
                     )}
                     {this.state.showDelete &&
                         !this.props.participantMutation.financialOverviewDefinitive &&
-                        this.props.permissions.manageFinancial && (
+                        this.props.permissions.manageParticipation && (
                             <MutationFormDelete
                                 closeDeleteItemModal={this.toggleDelete}
                                 handleSubmitDelete={this.handleSubmitDelete}

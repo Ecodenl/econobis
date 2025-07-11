@@ -77,7 +77,7 @@ const RevenuePartsKwhListFormView = ({
                     ''
                 )}
                 {/* Laatste deelperiode met nog status new mag je verwijderen */}
-                {showActionButtons && permissions.manageFinancial && isLastRevenuePartsKwh && status === 'new' ? (
+                {showActionButtons && permissions.manageProject && isLastRevenuePartsKwh && status === 'new' ? (
                     <a role="button" onClick={toggleDelete}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

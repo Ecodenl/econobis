@@ -9,42 +9,13 @@ import Modal from '../../../components/modal/Modal';
 class DataCleanupListItems extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             showModal: false,
             modalCleanupType: null,
             modalErrorMessage: '',
-
-            invoices: [],
-            ordersOneoff: [],
-            ordersPeriodic: [],
-            intakes: [],
-            opportunities: [],
-            participationsWithStatus: [],
-            participationsFinished: [],
         };
     }
 
-    // New method to fetch all cleanup data
-    fetchCleanupData = () => {
-        DataCleanupAPI.getCleanupItems().then(payload => {
-            this.setState({
-                invoices: payload['invoices'],
-                ordersOneoff: payload['ordersOneoff'],
-                ordersPeriodic: payload['ordersPeriodic'],
-                intakes: payload['intakes'],
-                opportunities: payload['opportunities'],
-                participationsWithStatus: payload['participationsWithStatus'],
-                participationsFinished: payload['participationsFinished'],
-            });
-        });
-    };
-
-    componentDidMount() {
-        this.fetchCleanupData();
-    }
-
-    // Open modal and set which cleanup type
     openModal = (cleanupType) => {
         this.setState({
             showModal: true,
@@ -52,7 +23,6 @@ class DataCleanupListItems extends Component {
         });
     };
 
-    // Close modal
     closeModal = () => {
         this.setState({
             showModal: false,
@@ -61,13 +31,13 @@ class DataCleanupListItems extends Component {
         });
     };
 
-    // Confirm action based on type
     confirmCleanup = () => {
-        DataCleanupAPI.cleanupItems(this.state.modalCleanupType)
+        const { modalCleanupType } = this.state;
+        DataCleanupAPI.cleanupItems(modalCleanupType)
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.fetchCleanupData(); // Refresh the data after cleanup
+                    this.props.fetchCleanupData();
                 } else {
                     this.setState({
                         modalErrorMessage: payload
@@ -75,30 +45,12 @@ class DataCleanupListItems extends Component {
                 }
             })
             .catch(error => {
-                // this.props.setError(error.response.status, error.response.data.message);
+                // Optionally handle error
             });
     };
 
-    handleRefresh = (cleanupType) => {
-        DataCleanupAPI.updateAmounts(cleanupType)
-            .then(payload => {
-                if (payload.length === 0) {
-                    this.closeModal();
-                    this.fetchCleanupData(); // Refresh the data after cleanup
-                } else {
-                    this.setState({
-                        modalErrorMessage: payload
-                    });
-                }
-            })
-            .catch(error => {
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    }
-
     render() {
-        const { showModal, modalCleanupType } = this.state;
-
+        const { showModal, modalCleanupType, modalErrorMessage } = this.state;
         const itemsTypes = [
             'invoices',
             'ordersOneoff',
@@ -109,6 +61,8 @@ class DataCleanupListItems extends Component {
             'participationsFinished'
         ];
 
+        const data = this.props.data;
+
         return (
             <div>
                 {showModal && (
@@ -118,20 +72,22 @@ class DataCleanupListItems extends Component {
                         confirmAction={this.confirmCleanup}
                         buttonConfirmText="Opschonen"
                         buttonClassName={'btn-danger'}
-                        title={`Bevestig opschonen ${this.state[modalCleanupType]['name']}`}
+                        title={
+                            modalCleanupType && data[modalCleanupType]
+                                ? `Bevestig opschonen ${data[modalCleanupType]['name']}`
+                                : ''
+                        }
                     >
-                        {modalCleanupType ? (
+                        {modalCleanupType && data[modalCleanupType] ? (
                             <div>
-                                Weet u zeker dat
-                                u <strong>{this.state[modalCleanupType]['name']}</strong>, <strong>ouder
-                                dan {this.state[modalCleanupType]['years_for_delete']} jaar</strong> wilt opschonen?<br />
+                                Weet u zeker dat u <strong>{data[modalCleanupType]['name']}</strong>, <strong>ouder dan {data[modalCleanupType]['years_for_delete']} jaar</strong> wilt opschonen?<br />
                                 <br />
                                 Deze verwijderactie is niet terug te draaien.
                                 <br /><br />
                                 <div id='cleanupModalWarning' style={{ color: '#e64a4a' }}>
-                                    {this.state.modalErrorMessage != '' && (
+                                    {modalErrorMessage !== '' && Array.isArray(modalErrorMessage) && (
                                         <ul>
-                                            {this.state.modalErrorMessage.map((item, idx) => (
+                                            {modalErrorMessage.map((item, idx) => (
                                                 <li key={idx}>{item}</li>
                                             ))}
                                         </ul>
@@ -143,36 +99,38 @@ class DataCleanupListItems extends Component {
                 )}
                 <table className="table">
                     <thead>
-                        <tr>
-                            <th className="col-sm-1"></th>
-                            <th className="col-sm-4">Onderdeel</th>
-                            <th className="col-sm-1">Items</th>
-                            <th className="col-sm-1">Acties</th>
-                            <th className="col-sm-2">Laatst opgeschoond</th>
-                            <th className="col-sm-2">Laatst bepaald</th>
-                            <th className="col-sm-1"></th>
-                        </tr>
+                    <tr>
+                        <th className="col-sm-1"></th>
+                        <th className="col-sm-4">Onderdeel</th>
+                        <th className="col-sm-1">Items</th>
+                        <th className="col-sm-1">Acties</th>
+                        <th className="col-sm-2">Laatst opgeschoond</th>
+                        <th className="col-sm-2">Laatst bepaald</th>
+                        <th className="col-sm-1"></th>
+                    </tr>
                     </thead>
                     <tbody>
-                        {itemsTypes.map((item) => (
-                            <tr>
-                                <td className="col-sm-1"></td>
-                                <td className="col-sm-4">{this.state[item]['name']} ouder dan {this.state[item]['years_for_delete']} jaar</td>
-                                <td className="col-sm-1">{this.state[item]['number_of_items_to_delete']}</td>
-                                <td className="col-sm-1">
-                                    <a role="button" onClick={() => this.openModal(item)} title={`verwijder ${this.state[item]['name']}`}>
-                                        <Icon size={14} icon={trash} />
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;
-                                    <a role="button" onClick={() => this.handleRefresh(item)} title={`herbereken op te schonen ${this.state[item]['name']}`}>
-                                        <Icon size={14} icon={refresh} />
-                                    </a>
-                                </td>
-                                <td className="col-sm-2">{this.state[item]['date_cleaned_up']}</td>
-                                <td className="col-sm-2">{this.state[item]['date_determined']}</td>
-                                <td className="col-sm-1"></td>
-                            </tr>
-                        ))}
+                    {itemsTypes.map((item) => (
+                        <tr key={item}>
+                            <td className="col-sm-1"></td>
+                            <td className="col-sm-4">
+                                {data[item]?.name} ouder dan {data[item]?.years_for_delete} jaar
+                            </td>
+                            <td className="col-sm-1">{data[item]?.number_of_items_to_delete}</td>
+                            <td className="col-sm-1">
+                                <a role="button" onClick={() => this.openModal(item)} title={`verwijder ${data[item]?.name}`}>
+                                    <Icon size={14} icon={trash} />
+                                </a>
+                                &nbsp;&nbsp;&nbsp;
+                                <a role="button" onClick={() => this.props.handleRefresh(item)} title={`herbereken op te schonen ${data[item]?.name}`}>
+                                    <Icon size={14} icon={refresh} />
+                                </a>
+                            </td>
+                            <td className="col-sm-2">{data[item]?.date_cleaned_up}</td>
+                            <td className="col-sm-2">{data[item]?.date_determined}</td>
+                            <td className="col-sm-1"></td>
+                        </tr>
+                    ))}
                     </tbody>
                 </table>
             </div>
@@ -180,10 +138,8 @@ class DataCleanupListItems extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
+const mapStateToProps = state => ({
+    permissions: state.meDetails.permissions,
+});
 
 export default connect(mapStateToProps, null)(DataCleanupListItems);

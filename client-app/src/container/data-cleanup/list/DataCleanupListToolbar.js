@@ -2,7 +2,6 @@ import React from 'react';
 import { connect } from 'react-redux';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
-import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
 const DataCleanupListToolbar = props => {
     return (

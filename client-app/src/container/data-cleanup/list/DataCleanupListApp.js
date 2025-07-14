@@ -33,7 +33,17 @@ class DataCleanupListApp extends Component {
             participationsFinished: [],
             incomingEmails: [],
             outgoingEmails: [],
+            isLoading: true,
         };
+
+        this.setLoading = this.setLoading.bind(this);
+    }
+
+    setLoading(isLoading) {
+        this.setState({
+            ...this.state,
+            isLoading: isLoading,
+        });
     }
 
     componentDidMount() {
@@ -41,6 +51,7 @@ class DataCleanupListApp extends Component {
     }
 
     fetchCleanupData = () => {
+        this.setLoading(true);
         DataCleanupAPI.getCleanupItems().then(payload => {
             this.setState({
                 invoices: payload['invoices'],
@@ -52,6 +63,7 @@ class DataCleanupListApp extends Component {
                 participationsFinished: payload['participationsFinished'],
                 incomingEmails: payload['incomingEmails'],
                 outgoingEmails: payload['outgoingEmails'],
+                isLoading: false,
             });
         });
     };
@@ -98,6 +110,7 @@ class DataCleanupListApp extends Component {
                             }}
                             handleRefresh={this.handleRefresh}
                             fetchCleanupData={this.fetchCleanupData}
+                            isLoading={this.state.isLoading}
                         />
                     );
                 case 'e-mail':
@@ -108,6 +121,7 @@ class DataCleanupListApp extends Component {
                         }}
                         handleRefresh={this.handleRefresh}
                         fetchCleanupData={this.fetchCleanupData}
+                        isLoading={this.state.isLoading}
                     />;
                 case 'contacten':
                     return <DataCleanupListContacts />;
@@ -120,7 +134,7 @@ class DataCleanupListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <DataCleanupListToolbar handleRefresh={this.handleRefresh} title={dataCleanupTypeText} />
+                        <DataCleanupListToolbar handleRefresh={this.handleRefresh} title={dataCleanupTypeText} setLoading={this.setLoading} />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {renderContent()}

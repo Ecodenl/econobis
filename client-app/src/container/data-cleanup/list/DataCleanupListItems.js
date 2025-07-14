@@ -97,6 +97,7 @@ class DataCleanupListItems extends Component {
                         ) : null}
                     </Modal>
                 )}
+
                 <table className="table">
                     <thead>
                     <tr>
@@ -109,29 +110,38 @@ class DataCleanupListItems extends Component {
                         <th className="col-sm-1"></th>
                     </tr>
                     </thead>
-                    <tbody>
-                    {itemsTypes.map((item) => (
-                        <tr key={item}>
+
+                    {this.props.isLoading ? (
+                        <tr>
                             <td className="col-sm-1"></td>
-                            <td className="col-sm-4">
-                                {data[item]?.name} ouder dan {data[item]?.years_for_delete} jaar
-                            </td>
-                            <td className="col-sm-1">{data[item]?.number_of_items_to_delete}</td>
-                            <td className="col-sm-1">
-                                <a role="button" onClick={() => this.openModal(item)} title={`verwijder ${data[item]?.name}`}>
-                                    <Icon size={14} icon={trash} />
-                                </a>
-                                &nbsp;&nbsp;&nbsp;
-                                <a role="button" onClick={() => this.props.handleRefresh(item)} title={`herbereken op te schonen ${data[item]?.name}`}>
-                                    <Icon size={14} icon={refresh} />
-                                </a>
-                            </td>
-                            <td className="col-sm-2">{data[item]?.date_cleaned_up}</td>
-                            <td className="col-sm-2">{data[item]?.date_determined}</td>
+                            <td className="col-sm-10" colSpan={5}>Gegevens aan het laden</td>
                             <td className="col-sm-1"></td>
                         </tr>
-                    ))}
-                    </tbody>
+                    ) : (
+                        <tbody>
+                        {itemsTypes.map((item) => (
+                            <tr key={item}>
+                                <td className="col-sm-1"></td>
+                                <td className="col-sm-4">
+                                    {data[item]?.name} ouder dan {data[item]?.years_for_delete} jaar
+                                </td>
+                                <td className="col-sm-1">{data[item]?.number_of_items_to_delete}</td>
+                                <td className="col-sm-1">
+                                    <a role="button" onClick={() => this.openModal(item)} title={`verwijder ${data[item]?.name}`}>
+                                        <Icon size={14} icon={trash} />
+                                    </a>
+                                    &nbsp;&nbsp;&nbsp;
+                                    <a role="button" onClick={() => this.props.handleRefresh(item)} title={`herbereken op te schonen ${data[item]?.name}`}>
+                                        <Icon size={14} icon={refresh} />
+                                    </a>
+                                </td>
+                                <td className="col-sm-2">{data[item]?.date_cleaned_up}</td>
+                                <td className="col-sm-2">{data[item]?.date_determined}</td>
+                                <td className="col-sm-1"></td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    )}
                 </table>
             </div>
         );

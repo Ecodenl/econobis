@@ -7,10 +7,21 @@ import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 import CleanupItems from './cleanup-items/CleanupItems';
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
 
-function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
+function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRefresh, refreshing }) {
+    // Disable click-to-edit while refreshing
+    const handleSectionClick = e => {
+        if (refreshing) {
+            e.stopPropagation();
+        } else {
+            toggleEdit();
+        }
+    };
+
     return (
-        <section className={'panel-hover'} onClick={toggleEdit}>
+        <section className={'panel-hover'} onClick={handleSectionClick} style={refreshing ? { pointerEvents: 'none', opacity: 0.6 } : {}}>
             {formData.createContactsForReportTableInProgress == true && (
                 <Panel>
                     <PanelHeader>
@@ -153,36 +164,28 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                 </PanelBody>
             </Panel>
 
-            {/*<Panel>*/}
-            {/*    <PanelHeader>*/}
-            {/*        <span className="h5 text-bold">Items opschonen</span>*/}
-            {/*    </PanelHeader>*/}
-            {/*    <PanelBody>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText label={'Nota’s - Datum verstuurd'} value={formData.cleanupYearsInvoicesDateSend + ' jaar'} />*/}
-            {/*            <ViewText label={'Eenmalige orders - Ingangsdatum'} value={formData.cleanupYearsOneoffOrdersStartDate + ' jaar'} />*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText label={'Periodieke orders - Beëindigingsdatum'} value={formData.cleanupYearsPeriodicOrdersTerminationDate + ' jaar'} />*/}
-            {/*            <ViewText label={'Intakes – Mutatiedatum'} value={formData.cleanupYearsIntakesMutationDate + ' jaar'} />*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText label={'Kansen – Mutatiedatum'} value={formData.cleanupYearsOpportunitiesMutationDate + ' jaar'} />*/}
-            {/*            <ViewText label={'Deelnames met status Interesse, Ingeschreven of toegekend – Mutatiedatum'} value={formData.cleanupYearsParticipationsChangeDate + ' jaar'} />*/}
-            {/*        </div>*/}
-            {/*        <div className="row">*/}
-            {/*            <ViewText label={'Deelnames met status Beëindigd – Beëindigingsdatum'} value={formData.cleanupYearsParticipationsTerminationDate + ' jaar'} />*/}
-            {/*        </div>*/}
-            {/*    </PanelBody>*/}
-            {/*</Panel>*/}
-
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Opschonen</span>
                 </PanelHeader>
                 <PanelBody>
                     <div className="row">
-                        <ViewText label={'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?'} value={formData.cleanupEmail ? 'Ja' : 'Nee'} />
+                        <ViewText
+                            label={'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?'}
+                            value={formData.cleanupEmail ? 'Ja' : 'Nee'} />
+                        <span className="form-group col-sm-6">
+                            <span className="form-group col-sm-12">
+                                <a
+                                    role="button"
+                                    onClick={refreshing ? e => e.preventDefault() : handleRefresh}
+                                    title={`herbereken alle op te schonen`}
+                                    style={refreshing ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+                                >
+                                    <Icon size={14} icon={refresh} />
+                                    {refreshing && <span style={{ marginLeft: 8 }}>Bezig...</span>}
+                                </a>
+                            </span>
+                        </span>
                     </div>
 
                     <CleanupItems
@@ -190,11 +193,6 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                         showEditCooperation={false}
                         cleanupItems={formData.cleanupItems}
                     />
-
-                    {/*<div className="row">*/}
-                    {/*    <ViewText label={'Verplaats binnengekomen e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'} value={formData.cleanupYearsEmailIncoming + ' jaar'} />*/}
-                    {/*    <ViewText label={'Verplaats uitgaande e-mailcorrespondentie naar de e-mailarchief map indien deze ouder is dan'} value={formData.cleanupYearsEmailOutgoing + ' jaar'} />*/}
-                    {/*</div>*/}
                 </PanelBody>
             </Panel>
 

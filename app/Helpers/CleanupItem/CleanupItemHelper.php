@@ -29,7 +29,7 @@ class CleanupItemHelper
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        if($cleanupType) {
+        if($cleanupType != "undefined") {
             $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
         } else {
             $cleanupItems = $cooperation->cleanupItems;

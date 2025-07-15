@@ -4,7 +4,6 @@ import { useParams } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
 import DataCleanupListToolbar from './DataCleanupListToolbar';
-
 import DataCleanupListItems from './DataCleanupListItems';
 import DataCleanupListEmails from './DataCleanupListEmails';
 import DataCleanupListContacts from './DataCleanupListContacts';
@@ -13,14 +12,72 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
+import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
-// Functionele wrapper voor de class component
+// Functional wrapper for the class component
 const DataCleanupListAppWrapper = props => {
     const params = useParams();
     return <DataCleanupListApp {...props} params={params} />;
 };
 
 class DataCleanupListApp extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            invoices: [],
+            ordersOneoff: [],
+            ordersPeriodic: [],
+            intakes: [],
+            opportunities: [],
+            participationsWithStatus: [],
+            participationsFinished: [],
+            incomingEmails: [],
+            outgoingEmails: [],
+            isLoading: true,
+        };
+
+        this.setLoading = this.setLoading.bind(this);
+    }
+
+    setLoading(isLoading) {
+        this.setState({
+            ...this.state,
+            isLoading: isLoading,
+        });
+    }
+
+    componentDidMount() {
+        this.fetchCleanupData();
+    }
+
+    fetchCleanupData = () => {
+        this.setLoading(true);
+        DataCleanupAPI.getCleanupItems().then(payload => {
+            this.setState({
+                invoices: payload['invoices'],
+                ordersOneoff: payload['ordersOneoff'],
+                ordersPeriodic: payload['ordersPeriodic'],
+                intakes: payload['intakes'],
+                opportunities: payload['opportunities'],
+                participationsWithStatus: payload['participationsWithStatus'],
+                participationsFinished: payload['participationsFinished'],
+                incomingEmails: payload['incomingEmails'],
+                outgoingEmails: payload['outgoingEmails'],
+                isLoading: false,
+            });
+        });
+    };
+
+    handleRefresh = (cleanupType) => {
+        DataCleanupAPI.updateAmounts(cleanupType)
+            .then(() => {
+                this.fetchCleanupData();
+            })
+            .catch(error => {
+                // Optionally handle error
+            });
+    }
+
     render() {
         const dataCleanupType = this.props.params.type;
 
@@ -32,17 +89,44 @@ class DataCleanupListApp extends Component {
                     return 'e-mailcorrespondentie';
                 case 'contacten':
                     return 'contacten';
+                default:
+                    return '';
             }
         };
 
         const renderContent = () => {
             switch (dataCleanupType) {
                 case 'items':
-                    return <DataCleanupListItems />;
+                    return (
+                        <DataCleanupListItems
+                            data={{
+                                invoices: this.state.invoices,
+                                ordersOneoff: this.state.ordersOneoff,
+                                ordersPeriodic: this.state.ordersPeriodic,
+                                intakes: this.state.intakes,
+                                opportunities: this.state.opportunities,
+                                participationsWithStatus: this.state.participationsWithStatus,
+                                participationsFinished: this.state.participationsFinished,
+                            }}
+                            handleRefresh={this.handleRefresh}
+                            fetchCleanupData={this.fetchCleanupData}
+                            isLoading={this.state.isLoading}
+                        />
+                    );
                 case 'e-mail':
-                    return <DataCleanupListEmails />;
+                    return <DataCleanupListEmails
+                        data={{
+                            incomingEmails: this.state.incomingEmails,
+                            outgoingEmails: this.state.outgoingEmails,
+                        }}
+                        handleRefresh={this.handleRefresh}
+                        fetchCleanupData={this.fetchCleanupData}
+                        isLoading={this.state.isLoading}
+                    />;
                 case 'contacten':
                     return <DataCleanupListContacts />;
+                default:
+                    return null;
             }
         };
 
@@ -50,9 +134,8 @@ class DataCleanupListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <DataCleanupListToolbar title={dataCleanupTypeText} />
+                        <DataCleanupListToolbar handleRefresh={this.handleRefresh} title={dataCleanupTypeText} setLoading={this.setLoading} />
                     </div>
-
                     <div className="col-md-12 margin-10-top">
                         {renderContent()}
                     </div>
@@ -62,20 +145,16 @@ class DataCleanupListApp extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
+const mapStateToProps = state => ({
+    permissions: state.meDetails.permissions,
+});
 
-const mapDispatchToProps = dispatch => {
-    return bindActionCreators(
-        {
-            blockUI,
-            unblockUI,
-        },
-        dispatch
-    );
-};
+const mapDispatchToProps = dispatch => bindActionCreators(
+    {
+        blockUI,
+        unblockUI,
+    },
+    dispatch
+);
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataCleanupListAppWrapper);

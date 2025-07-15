@@ -1,9 +1,12 @@
 <?php
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\User\User;
+use Carbon\Carbon;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -109,7 +112,30 @@ class AddNewCleanupItems extends Migration
      */
     private function fillCooperationCleanupItems(): void
     {
+        // haal cooperation op, als die nog niet bestaat maken we er alvast 1 aan met naam = cooperatie naam uit ENV file
         $cooperation = Cooperation::first();
+        if(!$cooperation){
+            $cooperation = new Cooperation();
+            $cooperation->name = config('app.APP_COOP_NAME');
+            $cooperation->send_email = false;
+            $cooperation->use_laposta = false;
+            $cooperation->use_export_address_consumption = false;
+            $cooperation->show_external_url_for_contacts = false;
+            $cooperation->external_url_contacts_button_text = '';
+            $cooperation->external_url_contacts_on_new_page = false;
+            $cooperation->external_url_contacts = '';
+            $cooperation->use_dongle_registration = false;
+            $cooperation->require_two_factor_authentication = false;
+            $cooperation->create_contacts_for_report_table = false;
+            $cooperation->create_contacts_for_report_table_in_progress = false;
+            $adminUser = User::where('email', config('app.admin_user.email'))->first();
+            $cooperation->created_by_id = $adminUser ? $adminUser->id : 1;
+            $cooperation->updated_by_id = $adminUser ? $adminUser->id : 1;
+            $cooperation->created_at = Carbon::now();
+            $cooperation->updated_at = Carbon::now();
+
+            $cooperation->saveQuietly();
+        }
 
         $cleanupItems = [
             [

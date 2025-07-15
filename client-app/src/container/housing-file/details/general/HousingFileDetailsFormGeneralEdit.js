@@ -319,18 +319,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
-                        // <InputToggle
-                        //     label={'Monument'}
-                        //     name={'isMonument'}
-                        //     value={isMonument}
-                        //     onChangeAction={this.handleInputChange}
-                        //     disabled={hasHoomDossierLink}
-                        // />
                         <InputSelect
                             label={'Monument'}
                             name={'isMonument'}
                             value={isMonument}
                             options={this.state.noYesUnknownOptions}
+                            emptyOption={false}
                             onChangeAction={this.handleInputChange}
                             disabled={hasHoomDossierLink}
                         />
@@ -344,18 +338,12 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                         value={hoomBuildingId && hoomBuildingId}
                     />
                     {showFields.some(showField => showField.econobisFieldName === 'is_house_for_sale') ? (
-                        // <InputToggle
-                        //     label={'Koophuis'}
-                        //     name={'isHouseForSale'}
-                        //     value={isHouseForSale}
-                        //     onChangeAction={this.handleInputChange}
-                        //     disabled={hasHoomDossierLink}
-                        // />
                         <InputSelect
                             label={'Koophuis'}
                             name={'isHouseForSale'}
                             value={isHouseForSale}
                             options={this.state.noYesUnknownOptions}
+                            emptyOption={false}
                             onChangeAction={this.handleInputChange}
                             disabled={hasHoomDossierLink}
                         />

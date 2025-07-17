@@ -439,6 +439,9 @@ class ExternalWebformController extends Controller
     protected function getDataFromRequest(Request $request)
     {
         $mapping = [
+            'general' => [
+                'decimaal_scheidingsteken' => 'decimal_seperator' //seperator is spelled wrong (should be separator), but it is used in this file many times with the wrong spelling
+            ],
             'responsible_ids' => [
                 'verantwoordelijke_gebruiker_id' => 'responsible_user_id',
                 'verantwoordelijke_team_id' => 'responsible_team_id',
@@ -728,36 +731,36 @@ class ExternalWebformController extends Controller
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
-        $data['quotation_request']['quotation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['quotation_amount'])));
-        $data['quotation_request']['cost_adjustment'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['cost_adjustment'])));
-        $data['quotation_request']['award_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['award_amount'])));
-        $data['quotation_request']['amount_determination'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['amount_determination'])));
+        $data['quotation_request']['quotation_amount'] = $this->sanitizeDecimals($data['quotation_request']['quotation_amount'], $data['general']['decimal_seperator']);
+        $data['quotation_request']['cost_adjustment'] = $this->sanitizeDecimals($data['quotation_request']['cost_adjustment'], $data['general']['decimal_seperator']);
+        $data['quotation_request']['award_amount'] = $this->sanitizeDecimals($data['quotation_request']['award_amount'], $data['general']['decimal_seperator']);
+        $data['quotation_request']['amount_determination'] = $this->sanitizeDecimals($data['quotation_request']['amount_determination'], $data['general']['decimal_seperator']);
 
-        $data['address_energy_consumption_gas']['proposed_variable_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_variable_rate'])));
-        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_fixed_rate'])));
-        $data['address_energy_consumption_gas']['total_variable_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_variable_costs'])));
-        $data['address_energy_consumption_gas']['total_fixed_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_fixed_costs'])));
+        $data['address_energy_consumption_gas']['proposed_variable_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_variable_rate'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_fixed_rate'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_gas']['total_variable_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_variable_costs'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_gas']['total_fixed_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_fixed_costs'], $data['general']['decimal_seperator']);
 
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_high'])));
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_low'])));
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'])));
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'])));
-        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_high'])));
-        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_low'])));
-        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_high'])));
-        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_high'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_low'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_high'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_low'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_high'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_low'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_high'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_low'], $data['general']['decimal_seperator']);
 
-        $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
+        $data['participation']['participation_mutation_amount'] = $this->sanitizeDecimals($data['participation']['participation_mutation_amount'], $data['general']['decimal_seperator']);
 
         if($data['order']['variable_price']) {
-            $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+            $data['order']['variable_price'] = $this->sanitizeDecimals($data['order']['variable_price'], $data['general']['decimal_seperator']);
         }
 
         if($data['housing_file']['amount_electricity']) {
-            $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+            $data['housing_file']['amount_electricity'] = $this->sanitizeDecimals($data['housing_file']['amount_electricity'], $data['general']['decimal_seperator']);
         }
         if($data['housing_file']['amount_gas']) {
-            $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+            $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas'], $data['general']['decimal_seperator']);
         }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
@@ -4150,6 +4153,36 @@ class ExternalWebformController extends Controller
         $document->file_path_and_name = $filePathAndName;
 
         $document->save();
+    }
+
+    /**
+     * @param $value
+     * @param $decimalSeperator
+     * @return null
+     * @throws WebformException
+     */
+    private function sanitizeDecimals($value, $decimalSeparator)
+    {
+        // Treat empty decimalSeparator as comma
+        if (empty($decimalSeparator)) {
+            $decimalSeparator = ',';
+        }
+
+        if (!in_array($decimalSeparator, [',', '.'])) {
+            throw new InvalidArgumentException('Invalid decimal separator');
+        }
+
+        //If $decimalSeparator is a dot (.), then $thousandSeparator will be set to a comma (,) and the other way around
+        $thousandSeparator = $decimalSeparator === '.' ? ',' : '.';
+
+        // Remove thousand separators
+        $value = str_replace($thousandSeparator, '', $value);
+
+        // Replace decimal separator with dot for float conversion
+        $value = str_replace($decimalSeparator, '.', $value);
+
+        // Convert to float
+        return floatval($value);
     }
 
     /**

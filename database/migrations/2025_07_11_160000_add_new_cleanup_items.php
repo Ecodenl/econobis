@@ -184,8 +184,13 @@ class AddNewCleanupItems extends Migration
                 'date_ref' => ''
             ],
             [
+                'name' => 'Contacten die reeds handmatig verwijderd zijn',
+                'code_ref' => 'contactsSoftDeleted',
+                'date_ref' => ''
+            ],
+            [
                 'name' => 'Contacten',
-                'code_ref' => 'contacts',
+                'code_ref' => 'contactsToDelete',
                 'date_ref' => ''
             ],
         ];

@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { trash } from 'react-icons-kit/fa/trash';
-import { plus } from 'react-icons-kit/fa/plus';
+import { trash, plus, refresh } from 'react-icons-kit/fa';
 import Icon from 'react-icons-kit';
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 import Modal from '../../../components/modal/Modal';
@@ -13,35 +12,17 @@ class DataCleanupListContacts extends Component {
         super(props);
 
         this.state = {
-            amountOfContactsToCleanup: '-',
-            amountOfContactsToCleanupNet: '-',
-            contactsLastCleanupDate: '-',
             showModal: false,
             showModal2: false,
             modalCleanupType: null,
             modalErrorMessage: '',
-            excludedGroups: [],
+
             contactGroups: [],
             contactGroupToAttachId: null,
         };
     }
 
-    // New method to fetch all cleanup data
-    fetchCleanupData = () => {
-        DataCleanupAPI.getCleanupItems().then(payload => {
-            console.log(payload);
-            this.setState({
-                amountOfContactsToCleanup: payload.contacts.number_of_items_to_delete,
-                // amountOfContactsToCleanupNet: payload['contactsNet'],
-                contactsLastCleanupDate: payload?.contacts?.date_cleaned_up ?? '-',
-                // excludedGroups: payload,
-            });
-        });
-    };
-
     componentDidMount() {
-        this.fetchCleanupData();
-
         GroupAPI.peekActiveContactGroups().then(payload => {
             this.setState({ contactGroups: payload });
         });
@@ -80,11 +61,12 @@ class DataCleanupListContacts extends Component {
 
     // Confirm action based on type
     confirmCleanup = () => {
-        DataCleanupAPI.cleanupContacts(this.state.modalCleanupType)
+        const { modalCleanupType } = this.state;
+        DataCleanupAPI.cleanupContacts(modalCleanupType)
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.fetchCleanupData(); // Refresh the data after cleanup
+                    this.props.fetchCleanupData();
                 } else {
                     this.setState({
                         modalErrorMessage: payload,
@@ -99,9 +81,7 @@ class DataCleanupListContacts extends Component {
     deleteExcludedGroup = groupId => {
         DataCleanupAPI.deleteExcludedGroup(groupId)
             .then(payload => {
-                this.setState({
-                    excludedGroups: payload,
-                });
+                this.props.fetchCleanupData();
             })
             .catch(error => {
                 // this.props.setError(error.response.status, error.response.data.message);
@@ -111,8 +91,8 @@ class DataCleanupListContacts extends Component {
     addExcludedGroup = groupId => {
         DataCleanupAPI.addExcludedGroup(groupId)
             .then(payload => {
+                this.props.fetchCleanupData();
                 this.setState({
-                    excludedGroups: payload,
                     showModal2: false,
                 });
             })
@@ -133,22 +113,18 @@ class DataCleanupListContacts extends Component {
 
     render() {
         const {
-            amountOfContactsToCleanup,
-            amountOfContactsToCleanupNet,
-            contactsLastCleanupDate,
             showModal,
             showModal2,
             modalCleanupType,
             modalErrorMessage,
-            excludedGroups,
             contactGroups,
             contactGroupToAttachId,
         } = this.state;
 
-        // Map cleanupType to readable label for modal
-        const cleanupLabels = {
-            contacts: 'Contacten',
-        };
+        const itemsTypes = ['contactsToDelete', 'contactsSoftDeleted'];
+
+        const data = this.props.data;
+        const excludedGroups = this.props.excludedGroups;
 
         return (
             <div>
@@ -160,10 +136,16 @@ class DataCleanupListContacts extends Component {
                         buttonConfirmText="Opschonen"
                         buttonClassName={'btn-danger'}
                         title={'Bevestig opschonen ' + cleanupLabels[modalCleanupType].toLowerCase()}
+                        title={
+                            modalCleanupType && data[modalCleanupType]
+                                ? `Bevestig opschonen ${data[modalCleanupType]['name']}`
+                                : ''
+                        }
                     >
-                        {modalCleanupType ? (
+                        {modalCleanupType && data[modalCleanupType] ? (
                             <div>
-                                Weet u zeker dat u <strong>{cleanupLabels[modalCleanupType].toLowerCase()}</strong> wilt
+                                Weet u zeker dat u <strong>{data[modalCleanupType]['name']}</strong>,{' '}
+                                <strong>ouder dan {data[modalCleanupType]['years_for_delete']} jaar</strong> wilt
                                 opschonen?
                                 <br />
                                 <br />
@@ -171,7 +153,7 @@ class DataCleanupListContacts extends Component {
                                 <br />
                                 <br />
                                 <div id="cleanupModalWarning" style={{ color: '#e64a4a' }}>
-                                    {modalErrorMessage != '' && (
+                                    {modalErrorMessage !== '' && Array.isArray(modalErrorMessage) && (
                                         <ul>
                                             {modalErrorMessage.map((item, idx) => (
                                                 <li key={idx}>{item}</li>
@@ -210,88 +192,126 @@ class DataCleanupListContacts extends Component {
                 <table className="table">
                     <thead>
                         <tr>
-                            <th className="col-sm-2"></th>
+                            <th className="col-sm-1"></th>
                             <th className="col-sm-4">Onderdeel</th>
                             <th className="col-sm-1">Items</th>
                             <th className="col-sm-1">Acties</th>
                             <th className="col-sm-2">Laatst opgeschoond</th>
-                            <th className="col-sm-2"></th>
+                            <th className="col-sm-2">Laatst bepaald</th>
+                            <th className="col-sm-1"></th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr>
-                            <td className="col-sm-2"></td>
-                            <td className="col-sm-4">
-                                Contacten die geen orders, nota's, deelnames, intakes, kansen en e-mailcorrespondentie
-                                hebben
-                            </td>
-                            <td className="col-sm-1">{amountOfContactsToCleanup}</td>
-                            <td className="col-sm-1"></td>
-                            <td className="col-sm-2"></td>
-                            <td className="col-sm-2"></td>
-                        </tr>
 
+                    {this.props.isLoading ? (
                         <tr>
-                            <td className="col-sm-2"></td>
-                            <td className="col-sm-4">
-                                Contacten in deze groepen moeten worden uitgezonderd van opschonen
+                            <td></td>
+                            <td colSpan={5}>
+                                Gegevens aan het laden
                             </td>
-                            <td className="col-sm-1"></td>
-                            <td className="col-sm-1">
-                                <a role="button" onClick={() => this.openModal2()}>
-                                    <Icon size={14} icon={plus} />
-                                </a>
-                            </td>
-                            <td className="col-sm-2"></td>
-                            <td className="col-sm-2"></td>
+                            <td></td>
                         </tr>
-
-                        {excludedGroups.length === 0 ? (
-                            <tr>
-                                <td className="col-sm-2" style={{ borderTop: '0px' }}></td>
-                                <td className="col-sm-10" style={{ borderTop: '0px' }}>
-                                    Geen
-                                </td>
-                            </tr>
-                        ) : (
-                            excludedGroups &&
-                            excludedGroups.map((group, idx) => (
-                                <tr>
-                                    <td className="col-sm-2" style={{ borderTop: '0px' }}>
-                                        {excludedGroups.length}
+                    ) : (
+                        <tbody>
+                            {itemsTypes.map(item => (
+                                <tr key={item}>
+                                    <td></td>
+                                    <td>
+                                        {data[item]?.name} ouder dan {data[item]?.years_for_delete} jaar
                                     </td>
-                                    <td className="col-sm-4" style={{ borderTop: '0px' }}>
-                                        {' '}
-                                        - {group.name}
-                                    </td>
-                                    <td className="col-sm-1" style={{ borderTop: '0px' }}></td>
-                                    <td className="col-sm-1" style={{ borderTop: '0px' }}>
-                                        <a role="button" onClick={() => this.deleteExcludedGroup(group.id)}>
-                                            <Icon size={14} icon={trash} />
+                                    <td>{data[item]?.number_of_items_to_delete}</td>
+                                    <td>
+                                        {item === 'contactsSoftDeleted' ? (
+                                            <a
+                                                role="button"
+                                                onClick={() => this.openModal(item)}
+                                                title={`verwijder ${data[item]?.name}`}
+                                            >
+                                                <Icon size={14} icon={trash} />
+                                            </a>
+                                        ) : null}
+                                        &nbsp;&nbsp;&nbsp;
+                                        <a
+                                            role="button"
+                                            onClick={() => this.props.handleRefresh(item)}
+                                            title={`herbereken op te schonen ${data[item]?.name}`}
+                                        >
+                                            <Icon size={14} icon={refresh} />
                                         </a>
                                     </td>
-                                    <td className="col-sm-2" style={{ borderTop: '0px' }}></td>
-                                    <td className="col-sm-2" style={{ borderTop: '0px' }}></td>
+                                    <td>{data[item]?.date_cleaned_up}</td>
+                                    <td>{data[item]?.date_determined}</td>
+                                    <td></td>
                                 </tr>
-                            ))
-                        )}
+                            ))}
+                            <tr>
+                                <td></td>
+                                <td>
+                                    Contacten in deze groepen moeten worden uitgezonderd van opschonen
+                                </td>
+                                <td></td>
+                                <td>
+                                    <a role="button" onClick={() => this.openModal2()}>
+                                        <Icon size={14} icon={plus} />
+                                    </a>
+                                </td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            </tr>
 
-                        <tr>
-                            <td className="col-sm-2"></td>
-                            <td className="col-sm-4">
-                                Netto contacten die geen orders, nota's, deelnames, intakes, kansen en
-                                e-mailcorrespondentie hebben
-                            </td>
-                            <td className="col-sm-1">{amountOfContactsToCleanupNet}</td>
-                            <td className="col-sm-1">
-                                <a role="button" onClick={() => this.openModal('contacts')}>
-                                    <Icon size={14} icon={trash} />
-                                </a>
-                            </td>
-                            <td className="col-sm-2">{contactsLastCleanupDate}</td>
-                            <td className="col-sm-2"></td>
-                        </tr>
-                    </tbody>
+                            {excludedGroups.length === 0 ? (
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        Geen uitzonderingsgroepen
+                                    </td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            ) : (
+                                excludedGroups &&
+                                excludedGroups.map((group, idx) => (
+                                    <tr>
+                                        <td></td>
+                                        <td>
+                                            {' '}
+                                            - {group.name}
+                                        </td>
+                                        <td></td>
+                                        <td>
+                                            <a role="button" onClick={() => this.deleteExcludedGroup(group.id)}>
+                                                <Icon size={14} icon={trash} />
+                                            </a>
+                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
+                                    </tr>
+                                ))
+                            )}
+                            <tr>
+                                <td></td>
+                                <td>
+                                    Netto contacten die geen orders, nota's, deelnames, intakes, kansen en
+                                    e-mailcorrespondentie hebben
+                                </td>
+                                {/*<td>{amountOfContactsToCleanupNet}</td>*/}
+                                <td>@@nog</td>
+                                <td>
+                                    <a role="button" onClick={() => this.openModal('contacts')}>
+                                        <Icon size={14} icon={trash} />
+                                    </a>
+                                </td>
+                                {/*<td className="col-sm-2">{contactsLastCleanupDate}</td>*/}
+                                <td>@@nog</td>
+                                <td>@@nog</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    )}
                 </table>
             </div>
         );

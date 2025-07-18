@@ -25,25 +25,6 @@ class DataCleanupListItems extends Component {
         };
     }
 
-    // New method to fetch all cleanup data
-    fetchCleanupData = () => {
-        DataCleanupAPI.getCleanupItems().then(payload => {
-            this.setState({
-                invoices: payload['invoices'],
-                ordersOneoff: payload['ordersOneoff'],
-                ordersPeriodic: payload['ordersPeriodic'],
-                intakes: payload['intakes'],
-                opportunities: payload['opportunities'],
-                participationsWithoutStatusDefinitive: payload['participationsWithoutStatusDefinitive'],
-                participationsFinished: payload['participationsFinished'],
-            });
-        });
-    };
-
-    componentDidMount() {
-        this.fetchCleanupData();
-    }
-
     // Open modal and set which cleanup type
     openModal = cleanupType => {
         this.setState({
@@ -67,7 +48,7 @@ class DataCleanupListItems extends Component {
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.fetchCleanupData(); // Refresh the data after cleanup
+                    this.props.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
                         modalErrorMessage: payload,
@@ -84,7 +65,7 @@ class DataCleanupListItems extends Component {
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.fetchCleanupData(); // Refresh the data after cleanup
+                    this.props.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
                         modalErrorMessage: payload,

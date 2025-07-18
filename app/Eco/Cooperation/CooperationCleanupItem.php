@@ -2,8 +2,6 @@
 
 namespace App\Eco\Cooperation;
 
-use App\Eco\Campaign\Campaign;
-use App\Eco\Measure\Measure;
 use Illuminate\Database\Eloquent\Model;
 use Venturecraft\Revisionable\RevisionableTrait;
 

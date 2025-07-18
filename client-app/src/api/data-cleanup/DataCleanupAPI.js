@@ -2,7 +2,7 @@ import getAxiosInstance from '../default-setup/AxiosInstance';
 import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
-    updateAmounts: (cleanupType) => {
+    updateAmounts: cleanupType => {
         const requestUrl = `${getApiUrl()}/api/cleanup/update-amounts/${cleanupType}`;
 
         return getAxiosInstance()
@@ -13,11 +13,12 @@ export default {
             });
     },
 
-    getCleanupItems: (netContacts) => {
+    getCleanupItems: netContacts => {
         const requestUrl = `${getApiUrl()}/api/cleanup/items`;
 
         return getAxiosInstance()
-            .get(requestUrl
+            .get(
+                requestUrl
                 // , {
                 //     params: {
                 //         netContacts: netContacts,
@@ -41,8 +42,8 @@ export default {
             });
     },
 
-    deleteExcludedGroup: (groupId) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/delete/`+groupId;
+    deleteExcludedGroup: groupId => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/delete/` + groupId;
         return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
@@ -51,8 +52,8 @@ export default {
             });
     },
 
-    addExcludedGroup: (groupId) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/add/`+groupId;
+    addExcludedGroup: groupId => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/add/` + groupId;
         return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
@@ -62,7 +63,7 @@ export default {
     },
 
     updateCleanupItem: (cleanupItemId, payload) => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/item/`+cleanupItemId;
+        const requestUrl = `${getApiUrl()}/api/cleanup/item/${cleanupItemId}`;
 
         return getAxiosInstance().post(requestUrl, payload);
     },

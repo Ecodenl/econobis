@@ -9,6 +9,7 @@
 namespace App\Helpers\CleanupItem;
 
 
+use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Email\Email;
 use App\Eco\Intake\Intake;
@@ -173,7 +174,25 @@ class CleanupItemHelper
 
                     break;
 
-                case "contacts":
+                case "contactsToDelete":
+                    $contactsToDelete = 0;
+//                    $contactsToDelete = Contacts::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
+
+                    $cleanupItem->number_of_items_to_delete = $contactsToDelete;
+                    $cleanupItem->date_determined = Carbon::now();
+                    $cleanupItem->save();
+
+                    break;
+
+                case "contactsSoftDeleted":
+                    $contactsSoftDeletedCleanupYears = $cleanupItem->years_for_delete;
+                    $contactsSoftDeletedCleanupOlderThen = $dateToday->copy()->subYears($contactsSoftDeletedCleanupYears);
+
+                    $contactsSoftDeleted = Contact::onlyTrashed()->whereDate('deleted_at', '<', $contactsSoftDeletedCleanupOlderThen)->count();
+
+                    $cleanupItem->number_of_items_to_delete = $contactsSoftDeleted;
+                    $cleanupItem->date_determined = Carbon::now();
+                    $cleanupItem->save();
 
                     break;
 

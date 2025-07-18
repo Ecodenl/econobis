@@ -59,16 +59,20 @@ class DataCleanupListApp extends Component {
                 ordersPeriodic: payload['ordersPeriodic'],
                 intakes: payload['intakes'],
                 opportunities: payload['opportunities'],
-                participationsWithStatus: payload['participationsWithStatus'],
+                participationsWithoutStatusDefinitive: payload['participationsWithoutStatusDefinitive'],
                 participationsFinished: payload['participationsFinished'],
                 incomingEmails: payload['incomingEmails'],
                 outgoingEmails: payload['outgoingEmails'],
+                contactsToDelete: payload['contactsToDelete'],
+                contactsSoftDeleted: payload['contactsSoftDeleted'],
+                excludedGroups: payload['excludedGroups'],
                 isLoading: false,
             });
         });
     };
 
-    handleRefresh = (cleanupType) => {
+    handleRefresh = cleanupType => {
+        console.log('updateAmounts: ' + cleanupType);
         DataCleanupAPI.updateAmounts(cleanupType)
             .then(() => {
                 this.fetchCleanupData();
@@ -76,7 +80,7 @@ class DataCleanupListApp extends Component {
             .catch(error => {
                 // Optionally handle error
             });
-    }
+    };
 
     render() {
         const dataCleanupType = this.props.params.type;
@@ -105,7 +109,7 @@ class DataCleanupListApp extends Component {
                                 ordersPeriodic: this.state.ordersPeriodic,
                                 intakes: this.state.intakes,
                                 opportunities: this.state.opportunities,
-                                participationsWithStatus: this.state.participationsWithStatus,
+                                participationsWithoutStatusDefinitive: this.state.participationsWithoutStatusDefinitive,
                                 participationsFinished: this.state.participationsFinished,
                             }}
                             handleRefresh={this.handleRefresh}
@@ -114,17 +118,30 @@ class DataCleanupListApp extends Component {
                         />
                     );
                 case 'e-mail':
-                    return <DataCleanupListEmails
-                        data={{
-                            incomingEmails: this.state.incomingEmails,
-                            outgoingEmails: this.state.outgoingEmails,
-                        }}
-                        handleRefresh={this.handleRefresh}
-                        fetchCleanupData={this.fetchCleanupData}
-                        isLoading={this.state.isLoading}
-                    />;
+                    return (
+                        <DataCleanupListEmails
+                            data={{
+                                incomingEmails: this.state.incomingEmails,
+                                outgoingEmails: this.state.outgoingEmails,
+                            }}
+                            handleRefresh={this.handleRefresh}
+                            fetchCleanupData={this.fetchCleanupData}
+                            isLoading={this.state.isLoading}
+                        />
+                    );
                 case 'contacten':
-                    return <DataCleanupListContacts />;
+                    return (
+                        <DataCleanupListContacts
+                            data={{
+                                contactsToDelete: this.state.contactsToDelete,
+                                contactsSoftDeleted: this.state.contactsSoftDeleted,
+                            }}
+                            excludedGroups={this.state.excludedGroups}
+                            handleRefresh={this.handleRefresh}
+                            fetchCleanupData={this.fetchCleanupData}
+                            isLoading={this.state.isLoading}
+                        />
+                    );
                 default:
                     return null;
             }
@@ -134,11 +151,13 @@ class DataCleanupListApp extends Component {
             <Panel>
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <DataCleanupListToolbar handleRefresh={this.handleRefresh} title={dataCleanupTypeText} setLoading={this.setLoading} />
+                        <DataCleanupListToolbar
+                            handleRefresh={this.handleRefresh}
+                            title={dataCleanupTypeText}
+                            setLoading={this.setLoading}
+                        />
                     </div>
-                    <div className="col-md-12 margin-10-top">
-                        {renderContent()}
-                    </div>
+                    <div className="col-md-12 margin-10-top">{renderContent()}</div>
                 </PanelBody>
             </Panel>
         );
@@ -149,12 +168,13 @@ const mapStateToProps = state => ({
     permissions: state.meDetails.permissions,
 });
 
-const mapDispatchToProps = dispatch => bindActionCreators(
-    {
-        blockUI,
-        unblockUI,
-    },
-    dispatch
-);
+const mapDispatchToProps = dispatch =>
+    bindActionCreators(
+        {
+            blockUI,
+            unblockUI,
+        },
+        dispatch
+    );
 
 export default connect(mapStateToProps, mapDispatchToProps)(DataCleanupListAppWrapper);

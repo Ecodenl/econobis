@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Cleanup;
 
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationCleanupItem;
 use App\Eco\Email\Email;
 use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
@@ -32,17 +33,15 @@ class CleanupController extends Controller
         $helper->updateAmounts($cleanupType);
     }
 
-    public function updateCleanupItem(Request $request, RequestInput $requestInput, $cleanupItemId)
+    public function updateCleanupItem(Request $request, RequestInput $requestInput, CooperationCleanupItem $cooperationCleanupItem)
     {
-        $cooperation = Cooperation::first();
+        $cooperationCleanupItem->years_for_delete = $request->yearsForDelete;
+        $cooperationCleanupItem->save();
 
-        $cleanupItem = $cooperation->cleanupItems()->where('id', $cleanupItemId)->first();
-        $cleanupItem->years_for_delete = $request->yearsForDelete;
-        $this->getCleanupItem($cleanupItem)->save();
-
-        return $cleanupItem;
+        return $cooperationCleanupItem;
     }
 
+    // todo WM: opsplitsen naar items, emails en contacts
     public function getCleanupItems(){
 
         $cooperation = Cooperation::first();
@@ -57,6 +56,9 @@ class CleanupController extends Controller
             $cleanupItems[$cleanupItem->code_ref]['date_cleaned_up'] = $cleanupItem->date_cleaned_up;
             $cleanupItems[$cleanupItem->code_ref]['date_determined'] = $cleanupItem->date_determined;
         }
+
+        // todo WM: aparte get voor maken
+        $cleanupItems['excludedGroups'] = $this->excludedGroups();
 
         return $cleanupItems;
     }
@@ -191,6 +193,7 @@ class CleanupController extends Controller
         return $errorMessageArray;
     }
 
+    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
     public function excludedGroups(){
         $cooporation = Cooperation::first();
 
@@ -202,6 +205,7 @@ class CleanupController extends Controller
         return $excludedGroups;
     }
 
+    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
     public function excludedGroupDelete($groupId){
         $cooporation = Cooperation::first();
 
@@ -220,6 +224,7 @@ class CleanupController extends Controller
         return $excludedGroups;
     }
 
+    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
     public function excludedGroupAdd($groupId){
         $cooporation = Cooperation::first();
 
@@ -239,12 +244,4 @@ class CleanupController extends Controller
         return $excludedGroups;
     }
 
-    /**
-     * @param $cleanupItem
-     * @return mixed
-     */
-    public function getCleanupItem($cleanupItem)
-    {
-        return $cleanupItem;
-    }
 }

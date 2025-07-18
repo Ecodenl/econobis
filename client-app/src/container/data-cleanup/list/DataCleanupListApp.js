@@ -72,7 +72,7 @@ class DataCleanupListApp extends Component {
     };
 
     handleRefresh = cleanupType => {
-        console.log('updateAmounts: ' + cleanupType);
+        // console.log('cleanupType: ' + cleanupType);
         DataCleanupAPI.updateAmounts(cleanupType)
             .then(() => {
                 this.fetchCleanupData();

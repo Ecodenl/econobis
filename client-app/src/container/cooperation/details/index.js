@@ -126,7 +126,7 @@ function CooperationDetailsApp({ permissions }) {
     }
 
     function handleRefresh() {
-        DataCleanupAPI.updateAmounts();
+        DataCleanupAPI.updateAmounts('all');
     }
 
     return (
@@ -156,7 +156,11 @@ function CooperationDetailsApp({ permissions }) {
                                         handleRefresh={handleRefresh}
                                     />
                                 ) : (
-                                    <CooperationDetailsFormView formData={state.result} toggleEdit={toggleEdit} handleRefresh={handleRefresh} />
+                                    <CooperationDetailsFormView
+                                        formData={state.result}
+                                        toggleEdit={toggleEdit}
+                                        handleRefresh={handleRefresh}
+                                    />
                                 )}
                             </>
                         </div>

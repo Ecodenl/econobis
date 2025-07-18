@@ -20,12 +20,37 @@ class AddContactsToDelete extends Migration
      */
     public function up()
     {
-//        Schema::create('contacts_to_delete', function (Blueprint $table) {
-//            $table->increments('id');
-//            $table->unsignedInteger('contact_id')->nullable();
-//            $table->foreign('contact_id')->references('id')->on('contacts');
-//            $table->datetime('date_last_invoice')->nullable();
-//        });
+        Schema::create('contacts_to_delete', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('contact_id')->nullable();
+            $table->foreign('contact_id')->references('id')->on('contacts');
+            $table->date('date_last_invoice')->nullable();
+            $table->date('date_last_orders_one_off')->nullable();
+            $table->date('date_last_orders_periodic')->nullable();
+            $table->date('date_last_intakes')->nullable();
+            $table->date('date_last_opportunities')->nullable();
+            $table->date('date_last_participations_without_status_definitive')->nullable();
+            $table->date('date_last_participations_finished')->nullable();
+            $table->date('date_last_incoming_emails')->nullable();
+            $table->date('date_last_outgoing_emails')->nullable();
+            $table->date('date_last_contacts_soft_deleted')->nullable();
+            $table->boolean('has_passed_checks_for_deletion')->default(0);
+            $table->boolean('blocked_for_deletion')->default(0);
+            $table->date('blocked_for_deletion_date')->nullable();
+            $table->string('blocked_for_deletion_reason')->nullable();
+            $table->unsignedInteger('blocked_for_deletion_by');
+            $table->foreign('blocked_for_deletion_by')
+                ->references('id')->on('users')
+                ->onDelete('restrict');
+            $table->boolean('portal_request_for_deletion')->default(0);
+            $table->date('portal_request_deletion_date')->nullable();
+            $table->boolean('portal_request_cancel_planned_visit')->default(0);
+            $table->boolean('portal_request_cancel_open_quotation_request')->default(0);
+            $table->boolean('deletion_failed')->default(0);
+            $table->date('deletion_failed_date')->nullable();
+            $table->string('deletion_failed_message')->nullable();
+        });
+
 
         Schema::table('cooperations', function (Blueprint $table) {
             $table->unsignedInteger('contact_id_deleted_contacts');
@@ -61,7 +86,7 @@ class AddContactsToDelete extends Migration
             $table->dropColumn('contact_id_deleted_contacts');
         });
 
-//        Schema::dropIfExists('contacts_to_delete');
+        Schema::dropIfExists('contacts_to_delete');
     }
 
     /**

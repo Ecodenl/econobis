@@ -25,181 +25,167 @@ use Illuminate\Support\Facades\Log;
 
 class CleanupItemHelper
 {
+    public function updateAmountsAll()
+    {
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+
+        $cleanupTypes = [
+            'invoices',
+            'ordersOneoff',
+            'ordersPeriodic',
+            'intakes',
+            'opportunities',
+            'participationsWithoutStatusDefinitive',
+            'participationsFinished',
+            'incomingEmails',
+            'outgoingEmails',
+        ];
+        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', $cleanupTypes)->get();
+
+        foreach($cleanupItems as $cleanupItem) {
+            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
+            $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
+        }
+
+        return true;
+
+    }
     public function updateAmounts($cleanupType = null)
     {
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        if($cleanupType != "undefined") {
-            $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
-        } else {
-            $cleanupItems = $cooperation->cleanupItems;
+        Log::info('cleanupType');
+        Log::info($cleanupType);
+
+        if(!$cleanupType) {
+            return false;
         }
 
+        $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
+
         foreach($cleanupItems as $cleanupItem) {
-            switch($cleanupItem->code_ref) {
-                case "invoices":
-                    $invoicesCleanupYears = $cleanupItem->years_for_delete;
-                    $invoicesCleanupOlderThen = $dateToday->copy()->subYears($invoicesCleanupYears);
-                    $invoices = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $invoices;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "ordersOneoff":
-                    $ordersOneoffCleanupYears = $cleanupItem->years_for_delete;
-                    $ordersOneoffCleanupOlderThen = $dateToday->copy()->subYears($ordersOneoffCleanupYears);
-
-                    $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
-
-                    $ordersOneoff = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-                        $query->whereIn('id', $exceptionProductIds);
-                    })->count();
-
-                    $cleanupItem->number_of_items_to_delete = $ordersOneoff;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "ordersPeriodic":
-                    $ordersPeriodicCleanupYears = $cleanupItem->years_for_delete;
-                    $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
-
-                    $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
-
-                    $ordersPeriodic = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->whereDoesntHave('orderProducts', function($query) use ($exceptionProductIds) {
-                        $query->whereIn('id', $exceptionProductIds);
-                    })->count();
-
-                    $cleanupItem->number_of_items_to_delete = $ordersPeriodic;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "intakes":
-                    $intakesCleanupYears = $cleanupItem->years_for_delete;
-                    $intakesCleanupOlderThen = $dateToday->copy()->subYears($intakesCleanupYears);
-
-                    $intakes = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $intakes;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "opportunities":
-                    $opportunitiesCleanupYears = $cleanupItem->years_for_delete;
-                    $opportunitiesCleanupOlderThen = $dateToday->copy()->subYears($opportunitiesCleanupYears);
-
-                    $opportunities = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $opportunities;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "participationsWithoutStatusDefinitive":
-                    $participationsWithoutStatusDefinitiveCleanupYears = $cleanupItem->years_for_delete;
-                    $participationsWithoutStatusDefinitiveCleanupOlderThen = $dateToday->copy()->subYears($participationsWithoutStatusDefinitiveCleanupYears);
-
-                    $mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
-
-                    $participationsWithoutStatusDefinitive = ParticipantProject::whereNull('date_terminated')
-                        // géén mutatie met status 'final'
-                        ->whereDoesntHave('mutations', function ($query) use ($mutationStatusFinal) {
-                            $query->where('status_id', $mutationStatusFinal);
-                        })
-                        // wel mutaties, maar allemaal ouder dan 1 jaar
-                        ->whereHas('mutations', function ($query) use ($participationsWithoutStatusDefinitiveCleanupOlderThen) {
-                            $query->where('updated_at', '<', $participationsWithoutStatusDefinitiveCleanupOlderThen);
-                        })
-                        ->count();
-
-                    $cleanupItem->number_of_items_to_delete = $participationsWithoutStatusDefinitive;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "participationsFinished":
-                    $participationsFinishedCleanupYears = $cleanupItem->years_for_delete;
-                    $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
-
-                    $participationsFinished = ParticipantProject::whereNotNull('date_terminated')
-                        ->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)
-                        // participation mag niet voorkomen in projectRevenue die nog geen status processed heeft.
-                        ->whereDoesntHave('projectRevenues', function ($query) {
-                            $query->where('project_revenues.status', '!=', 'processed');
-                        })
-                        // participation mag niet voorkomen in revenuesKwh die nog geen status processed heeft.
-                        ->whereDoesntHave('revenuesKwh', function ($query) {
-                            $query->where('revenues_kwh.status', '!=', 'processed');
-                        })
-                        ->count();
-
-                    $cleanupItem->number_of_items_to_delete = $participationsFinished;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "incomingEmails":
-                    $incomingMailsCleanupYears = $cleanupItem->years_for_delete;
-                    $incomingMailsCleanupOlderThen = $dateToday->copy()->subYears($incomingMailsCleanupYears);
-
-                    $incomingMails = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $incomingMails;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "outgoingEmails":
-                    $outgoingMailsCleanupYears = $cleanupItem->years_for_delete;
-                    $outgoingMailsCleanupOlderThen = $dateToday->copy()->subYears($outgoingMailsCleanupYears);
-
-                    $outgoingMails = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $outgoingMails;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "contactsToDelete":
-                    $contactsToDelete = 0;
-//                    $contactsToDelete = Contacts::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $contactsToDelete;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-                case "contactsSoftDeleted":
-                    $contactsSoftDeletedCleanupYears = $cleanupItem->years_for_delete;
-                    $contactsSoftDeletedCleanupOlderThen = $dateToday->copy()->subYears($contactsSoftDeletedCleanupYears);
-
-                    $contactsSoftDeleted = Contact::onlyTrashed()->whereDate('deleted_at', '<', $contactsSoftDeletedCleanupOlderThen)->count();
-
-                    $cleanupItem->number_of_items_to_delete = $contactsSoftDeleted;
-                    $cleanupItem->date_determined = Carbon::now();
-                    $cleanupItem->save();
-
-                    break;
-
-            }
+            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
+            $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
         }
 
         return true;
+    }
+
+    /**
+     * @param int $numberItemsToDelete
+     * @param mixed $cleanupItem
+     * @return void
+     */
+    private function updateCleanupItem(int $numberItemsToDelete, mixed $cleanupItem): void
+    {
+        $cleanupItem->number_of_items_to_delete = $numberItemsToDelete;
+        $cleanupItem->date_determined = Carbon::now();
+        $cleanupItem->save();
+    }
+
+    /**
+     * @param mixed $cleanupItem
+     * @param Carbon $dateToday
+     * @return int
+     */
+    private function getNumberItemsToDelete(mixed $cleanupItem, Carbon $dateToday): int
+    {
+        switch ($cleanupItem->code_ref) {
+            case "invoices":
+                $invoicesCleanupYears = $cleanupItem->years_for_delete;
+                $invoicesCleanupOlderThen = $dateToday->copy()->subYears($invoicesCleanupYears);
+                $numberItemsToDelete = Invoice::whereDate('date_sent', '<', $invoicesCleanupOlderThen)->count();
+                break;
+
+            case "ordersOneoff":
+                $ordersOneoffCleanupYears = $cleanupItem->years_for_delete;
+                $ordersOneoffCleanupOlderThen = $dateToday->copy()->subYears($ordersOneoffCleanupYears);
+
+                $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+
+                $numberItemsToDelete = Order::where('collection_frequency_id', 'once')->whereDate('date_next_invoice', '<', $ordersOneoffCleanupOlderThen)->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
+                    $query->whereIn('id', $exceptionProductIds);
+                })->count();
+                break;
+
+            case "ordersPeriodic":
+                $ordersPeriodicCleanupYears = $cleanupItem->years_for_delete;
+                $ordersPeriodicCleanupOlderThen = $dateToday->copy()->subYears($ordersPeriodicCleanupYears);
+
+                $exceptionProductIds = Product::where('cleanup_exception', 1)->pluck('id');
+
+                $numberItemsToDelete = Order::whereNot('collection_frequency_id', 'once')->where('status_id', 'closed')->whereDate('date_next_invoice', '<', $ordersPeriodicCleanupOlderThen)->whereDoesntHave('orderProducts', function ($query) use ($exceptionProductIds) {
+                    $query->whereIn('id', $exceptionProductIds);
+                })->count();
+                break;
+
+            case "intakes":
+                $intakesCleanupYears = $cleanupItem->years_for_delete;
+                $intakesCleanupOlderThen = $dateToday->copy()->subYears($intakesCleanupYears);
+
+                $numberItemsToDelete = Intake::whereDate('updated_at', '<', $intakesCleanupOlderThen)->count();
+                break;
+
+            case "opportunities":
+                $opportunitiesCleanupYears = $cleanupItem->years_for_delete;
+                $opportunitiesCleanupOlderThen = $dateToday->copy()->subYears($opportunitiesCleanupYears);
+
+                $numberItemsToDelete = Opportunity::whereDate('updated_at', '<', $opportunitiesCleanupOlderThen)->count();
+                break;
+
+            case "participationsWithoutStatusDefinitive":
+                $participationsWithoutStatusDefinitiveCleanupYears = $cleanupItem->years_for_delete;
+                $participationsWithoutStatusDefinitiveCleanupOlderThen = $dateToday->copy()->subYears($participationsWithoutStatusDefinitiveCleanupYears);
+
+                $mutationStatusFinal = ParticipantMutationStatus::where('code_ref', 'final')->first()->id;
+
+                $numberItemsToDelete = ParticipantProject::whereNull('date_terminated')
+                    // géén mutatie met status 'final'
+                    ->whereDoesntHave('mutations', function ($query) use ($mutationStatusFinal) {
+                        $query->where('status_id', $mutationStatusFinal);
+                    })
+                    // wel mutaties, maar allemaal ouder dan 1 jaar
+                    ->whereHas('mutations', function ($query) use ($participationsWithoutStatusDefinitiveCleanupOlderThen) {
+                        $query->where('updated_at', '<', $participationsWithoutStatusDefinitiveCleanupOlderThen);
+                    })
+                    ->count();
+                break;
+
+            case "participationsFinished":
+                $participationsFinishedCleanupYears = $cleanupItem->years_for_delete;
+                $participationsFinishedCleanupOlderThen = $dateToday->copy()->subYears($participationsFinishedCleanupYears);
+
+                $numberItemsToDelete = ParticipantProject::whereNotNull('date_terminated')
+                    ->whereDate('date_terminated', '<', $participationsFinishedCleanupOlderThen)
+                    // participation mag niet voorkomen in projectRevenue die nog geen status processed heeft.
+                    ->whereDoesntHave('projectRevenues', function ($query) {
+                        $query->where('project_revenues.status', '!=', 'processed');
+                    })
+                    // participation mag niet voorkomen in revenuesKwh die nog geen status processed heeft.
+                    ->whereDoesntHave('revenuesKwh', function ($query) {
+                        $query->where('revenues_kwh.status', '!=', 'processed');
+                    })
+                    ->count();
+                break;
+
+            case "incomingEmails":
+                $incomingMailsCleanupYears = $cleanupItem->years_for_delete;
+                $incomingMailsCleanupOlderThen = $dateToday->copy()->subYears($incomingMailsCleanupYears);
+
+                $numberItemsToDelete = Email::whereNull('date_removed')->where('folder', 'inbox')->whereDate('created_at', '<', $incomingMailsCleanupOlderThen)->count();
+                break;
+
+            case "outgoingEmails":
+                $outgoingMailsCleanupYears = $cleanupItem->years_for_delete;
+                $outgoingMailsCleanupOlderThen = $dateToday->copy()->subYears($outgoingMailsCleanupYears);
+
+                $numberItemsToDelete = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
+                break;
+
+        }
+        return $numberItemsToDelete;
     }
 
 }

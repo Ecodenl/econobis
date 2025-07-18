@@ -27,6 +27,11 @@ use Illuminate\Http\Request;
 
 class CleanupController extends Controller
 {
+    public function updateAmountsAll()
+    {
+        $helper = new CleanupItemHelper();
+        $helper->updateAmountsAll();
+    }
     public function updateAmounts($cleanupType)
     {
         $helper = new CleanupItemHelper();

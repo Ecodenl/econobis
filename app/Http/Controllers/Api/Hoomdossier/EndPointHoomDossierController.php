@@ -118,8 +118,8 @@ class EndPointHoomDossierController extends Controller
                     $housingFile->hoom_building_id = $buildingId;
                     $housingFile->number_of_residents = 0;
                     $housingFile->revenue_solar_panels = 0;
-                    $housingFile->is_house_for_sale = 0;
-                    $housingFile->is_monument = 0;
+                    $housingFile->is_house_for_sale = '2';
+                    $housingFile->is_monument = '2';
                     $housingFile->remark = '';
                     $housingFile->remark_coach = '';
                     $housingFile->save();

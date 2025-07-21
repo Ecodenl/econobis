@@ -65,7 +65,6 @@ class DataCleanupListApp extends Component {
                 outgoingEmails: payload['outgoingEmails'],
                 contactsToDelete: payload['contactsToDelete'],
                 contactsSoftDeleted: payload['contactsSoftDeleted'],
-                excludedGroups: payload['excludedGroups'],
                 isLoading: false,
             });
         });
@@ -136,7 +135,6 @@ class DataCleanupListApp extends Component {
                                 contactsToDelete: this.state.contactsToDelete,
                                 contactsSoftDeleted: this.state.contactsSoftDeleted,
                             }}
-                            excludedGroups={this.state.excludedGroups}
                             handleRefresh={this.handleRefresh}
                             fetchCleanupData={this.fetchCleanupData}
                             isLoading={this.state.isLoading}

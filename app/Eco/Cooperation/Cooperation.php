@@ -54,6 +54,11 @@ class Cooperation extends Model
         return $this->hasMany(CooperationHoomCampaign::class, );
     }
 
+    public function cleanupContactsExcludedGroups()
+    {
+        return $this->hasMany(CooperationCleanupContactsExcludedGroup::class, );
+    }
+
     public function cleanupItems()
     {
         return $this->hasMany(CooperationCleanupItem::class, );

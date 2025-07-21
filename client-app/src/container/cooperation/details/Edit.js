@@ -20,6 +20,7 @@ import ViewText from '../../../components/form/ViewText';
 import moment from 'moment';
 import InputTextColorPicker from '../../../components/form/InputTextColorPicker';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
+import CleanupContactsExcludedGroups from './cleanup-contacts-excluded-groups/CleanupContactsExcludedGroups';
 import CleanupItems from './cleanup-items/CleanupItems';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
@@ -62,6 +63,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
             'hoomGroup',
             'hoomEmailTemplate',
             'hoomCampaigns',
+            'cleanupContactsExcludedGroups',
             'createdAt',
             'createdBy',
             'createdById',
@@ -436,8 +438,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                     </PanelBody>
                 </Panel>
 
-
-
                 <Panel>
                     <PanelHeader>
                         <span className="h5 text-bold">Opschonen</span>
@@ -462,6 +462,11 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                             cooperationId={formData.id}
                             showEditCooperation={false}
                             cleanupItems={formData.cleanupItems}
+                        />
+                        <CleanupContactsExcludedGroups
+                            cooperationId={formData.id}
+                            showEditCooperation={true}
+                            cleanupContactsExcludedGroups={formData.cleanupContactsExcludedGroups}
                         />
                     </PanelBody>
                 </Panel>

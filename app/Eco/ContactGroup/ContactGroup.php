@@ -3,6 +3,7 @@
 namespace App\Eco\ContactGroup;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Cooperation\CooperationCleanupContactsExcludedGroup;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -95,6 +96,11 @@ class ContactGroup extends Model
     public function documents()
     {
         return $this->hasMany(Document::class)->orderBy('documents.id', 'desc');
+    }
+
+    public function cleanupContactsExcludedGroups()
+    {
+        return $this->hasMany(CooperationCleanupContactsExcludedGroup::class);
     }
 
     public function getType()

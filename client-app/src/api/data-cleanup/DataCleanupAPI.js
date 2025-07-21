@@ -17,44 +17,6 @@ export default {
         const requestUrl = `${getApiUrl()}/api/cleanup/items`;
 
         return getAxiosInstance()
-            .get(
-                requestUrl
-                // , {
-                //     params: {
-                //         netContacts: netContacts,
-                //     },
-                // }
-            )
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    getExcludedGroups: () => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups`;
-
-        return getAxiosInstance()
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    deleteExcludedGroup: groupId => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/delete/` + groupId;
-        return getAxiosInstance()
-            .get(requestUrl)
-            .then(response => response.data)
-            .catch(error => {
-                console.log(error);
-            });
-    },
-
-    addExcludedGroup: groupId => {
-        const requestUrl = `${getApiUrl()}/api/cleanup/excluded-groups/add/` + groupId;
-        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {

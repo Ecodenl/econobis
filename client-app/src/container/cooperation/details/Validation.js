@@ -38,3 +38,7 @@ export const CreateCooperationHoomCampaignValidation = Yup.object().shape({
     campaignId: Yup.string().required('Verplicht'),
 });
 export const UpdateCooperationHoomCampaignValidation = Yup.object().shape({});
+
+export const CreateCooperationCleanupContactsExcludedGroupValidation = Yup.object().shape({
+    contactGroupId: Yup.string().required('Verplicht'),
+});

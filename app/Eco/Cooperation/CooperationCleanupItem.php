@@ -3,12 +3,9 @@
 namespace App\Eco\Cooperation;
 
 use Illuminate\Database\Eloquent\Model;
-use Venturecraft\Revisionable\RevisionableTrait;
 
 class CooperationCleanupItem extends Model
 {
-    use RevisionableTrait;
-
     protected $table = 'cooperation_cleanup_items';
 
     /**

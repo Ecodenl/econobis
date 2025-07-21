@@ -62,9 +62,6 @@ class CleanupController extends Controller
             $cleanupItems[$cleanupItem->code_ref]['date_determined'] = $cleanupItem->date_determined;
         }
 
-        // todo WM: aparte get voor maken
-        $cleanupItems['excludedGroups'] = $this->excludedGroups();
-
         return $cleanupItems;
     }
 
@@ -198,55 +195,5 @@ class CleanupController extends Controller
         return $errorMessageArray;
     }
 
-    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
-    public function excludedGroups(){
-        $cooporation = Cooperation::first();
-
-        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
-        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
-
-        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
-
-        return $excludedGroups;
-    }
-
-    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
-    public function excludedGroupDelete($groupId){
-        $cooporation = Cooperation::first();
-
-        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
-        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
-
-        while(($i = array_search($groupId, $excludedGroupIdsArray)) !== false) {
-            unset($excludedGroupIdsArray[$i]);
-        }
-
-        $cooporation->cleanup_excluded_group_ids = implode(',', $excludedGroupIdsArray);
-        $cooporation->save();
-
-        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
-
-        return $excludedGroups;
-    }
-
-    // todo WM: aparte tabel voor maken, niet opslaan als comma gescheiden waarde in cooperation veld.
-    public function excludedGroupAdd($groupId){
-        $cooporation = Cooperation::first();
-
-        $excludedGroupIds = $cooporation->cleanup_excluded_group_ids;
-        $excludedGroupIdsArray = explode(",", $excludedGroupIds);
-
-        // Check if $newId is already in the array
-        if (!in_array($groupId, $excludedGroupIdsArray)) {
-            $excludedGroupIdsArray[] = $groupId; // Add the new ID
-        }
-
-        $cooporation->cleanup_excluded_group_ids = implode(',', $excludedGroupIdsArray);
-        $cooporation->save();
-
-        $excludedGroups = ContactGroup::whereIn('id', $excludedGroupIdsArray)->get();
-
-        return $excludedGroups;
-    }
 
 }

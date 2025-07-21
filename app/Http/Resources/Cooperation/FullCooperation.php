@@ -33,6 +33,7 @@ class FullCooperation extends JsonResource
             'hoomConnectCoachLink' => $this->hoom_connect_coach_link ? $this->hoom_connect_coach_link : '',
             'hoomKey' => $this->hoom_key,
             'hoomCampaigns' => FullCooperationHoomCampaign::collection($this->whenLoaded('hoomCampaigns')),
+            'cleanupContactsExcludedGroups' => FullCooperationCleanupContactsExcludedGroup::collection($this->whenLoaded('cleanupContactsExcludedGroups')),
             'sendEmail' => $this->send_email,
             'hoomEmailTemplateId' => $this->hoom_email_template_id ? $this->hoom_email_template_id : '',
             'hoomEmailTemplate' => ['name' => $this->emailTemplate ? $this->emailTemplate->name : ''],

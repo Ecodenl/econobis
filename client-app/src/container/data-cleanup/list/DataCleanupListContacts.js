@@ -4,8 +4,7 @@ import { trash, plus, refresh } from 'react-icons-kit/fa';
 import Icon from 'react-icons-kit';
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 import Modal from '../../../components/modal/Modal';
-import InputSelect from '../../../components/form/InputSelect';
-import GroupAPI from '../../../api/contact-group/ContactGroupAPI';
+import CooperationDetailsAPI from '../../../api/cooperation/CooperationDetailsAPI';
 
 class DataCleanupListContacts extends Component {
     constructor(props) {
@@ -13,18 +12,17 @@ class DataCleanupListContacts extends Component {
 
         this.state = {
             showModal: false,
-            showModal2: false,
             modalCleanupType: null,
             modalErrorMessage: '',
 
-            contactGroups: [],
-            contactGroupToAttachId: null,
+            excludedGroups: [],
         };
     }
 
     componentDidMount() {
-        GroupAPI.peekActiveContactGroups().then(payload => {
-            this.setState({ contactGroups: payload });
+        CooperationDetailsAPI.getExcludedGroups().then(payload => {
+            // console.log(payload);
+            this.setState({ excludedGroups: payload.data.data });
         });
     }
 
@@ -36,26 +34,12 @@ class DataCleanupListContacts extends Component {
         });
     };
 
-    // Open modal and set which cleanup type
-    openModal2 = () => {
-        this.setState({
-            showModal2: true,
-        });
-    };
-
     // Close modal
     closeModal = () => {
         this.setState({
             showModal: false,
             modalCleanupType: null,
             modalErrorMessage: '',
-        });
-    };
-
-    // Close modal
-    closeModal2 = () => {
-        this.setState({
-            showModal2: false,
         });
     };
 
@@ -78,29 +62,6 @@ class DataCleanupListContacts extends Component {
             });
     };
 
-    deleteExcludedGroup = groupId => {
-        DataCleanupAPI.deleteExcludedGroup(groupId)
-            .then(payload => {
-                this.props.fetchCleanupData();
-            })
-            .catch(error => {
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    };
-
-    addExcludedGroup = groupId => {
-        DataCleanupAPI.addExcludedGroup(groupId)
-            .then(payload => {
-                this.props.fetchCleanupData();
-                this.setState({
-                    showModal2: false,
-                });
-            })
-            .catch(error => {
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    };
-
     handleInputChange = event => {
         const target = event.target;
         const value = target.type === 'checkbox' ? target.checked : target.value;
@@ -114,17 +75,14 @@ class DataCleanupListContacts extends Component {
     render() {
         const {
             showModal,
-            showModal2,
             modalCleanupType,
             modalErrorMessage,
-            contactGroups,
-            contactGroupToAttachId,
+            excludedGroups,
         } = this.state;
 
         const itemsTypes = ['contactsToDelete', 'contactsSoftDeleted'];
 
         const data = this.props.data;
-        const excludedGroups = this.props.excludedGroups;
 
         return (
             <div>
@@ -135,7 +93,6 @@ class DataCleanupListContacts extends Component {
                         confirmAction={this.confirmCleanup}
                         buttonConfirmText="Opschonen"
                         buttonClassName={'btn-danger'}
-                        title={'Bevestig opschonen ' + cleanupLabels[modalCleanupType].toLowerCase()}
                         title={
                             modalCleanupType && data[modalCleanupType]
                                 ? `Bevestig opschonen ${data[modalCleanupType]['name']}`
@@ -163,29 +120,6 @@ class DataCleanupListContacts extends Component {
                                 </div>
                             </div>
                         ) : null}
-                    </Modal>
-                )}
-
-                {showModal2 && (
-                    <Modal
-                        buttonConfirmText="Toevoegen"
-                        closeModal={this.closeModal2}
-                        confirmAction={() => this.addExcludedGroup(contactGroupToAttachId)}
-                        title={`Groep toevoegen aan uitzonderingen`}
-                    >
-                        <form className="form-horizontal">
-                            <div className="row">
-                                <InputSelect
-                                    size={'col-md-12'}
-                                    label={'Groep'}
-                                    name="contactGroupToAttachId"
-                                    options={contactGroups}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    value={contactGroupToAttachId}
-                                />
-                            </div>
-                        </form>
                     </Modal>
                 )}
 
@@ -249,17 +183,13 @@ class DataCleanupListContacts extends Component {
                                     Contacten in deze groepen moeten worden uitgezonderd van opschonen
                                 </td>
                                 <td></td>
-                                <td>
-                                    <a role="button" onClick={() => this.openModal2()}>
-                                        <Icon size={14} icon={plus} />
-                                    </a>
-                                </td>
+                                <td></td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
                             </tr>
 
-                            {excludedGroups.length === 0 ? (
+                            {!excludedGroups ? (
                                 <tr>
                                     <td></td>
                                     <td>
@@ -278,14 +208,10 @@ class DataCleanupListContacts extends Component {
                                         <td></td>
                                         <td>
                                             {' '}
-                                            - {group.name}
+                                            - {group.contactGroupName}
                                         </td>
                                         <td></td>
-                                        <td>
-                                            <a role="button" onClick={() => this.deleteExcludedGroup(group.id)}>
-                                                <Icon size={14} icon={trash} />
-                                            </a>
-                                        </td>
+                                        <td></td>
                                         <td></td>
                                         <td></td>
                                         <td></td>

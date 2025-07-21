@@ -41,6 +41,8 @@ class AddNewCleanupItems extends Migration
             $table->foreign('cooperation_id', 'ccuc_excluded_group_cooperation_foreign')->references('id')->on('cooperations');
             $table->unsignedInteger('contact_group_id');
             $table->foreign('contact_group_id', 'ccuc_excluded_group_contact_group_foreign')->references('id')->on('contact_groups')->onDelete('restrict');
+
+            $table->timestamps();
         });
 
         $this->fillCooperationCleanupItems();
@@ -48,7 +50,6 @@ class AddNewCleanupItems extends Migration
         Schema::table('cooperations', function (Blueprint $table) {
             $table->boolean('cleanup_email')->default(0);
             $table->datetime('cleanup_years_contact_date_last_run_at')->nullable();
-            $table->string('cleanup_excluded_group_ids')->nullable();
         });
 
         Schema::table('products', function (Blueprint $table) {

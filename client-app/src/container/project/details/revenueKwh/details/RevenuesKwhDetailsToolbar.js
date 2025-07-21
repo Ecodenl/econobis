@@ -47,9 +47,9 @@ class RevenuesKwhdetailsToolbar extends Component {
 
     render() {
         const { revenuesKwh, navigate } = this.props;
-        const pdfLinkLedenverklaring = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
-        const pdfLinkProductieSpecificatie = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie%20specificatie`;
-        const excelLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
+        const pdfLinkLedenverklaring = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
+        const pdfLinkProductieSpecificatie = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie_specificatie`;
+        const excelLink = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
 
         return (
             <div className="row">

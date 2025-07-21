@@ -295,8 +295,13 @@ class ContactGroupController extends Controller
 
         $contactGroup->contacts()->detach($contact);
 
-        //now check if the contact is in any groups, if not set the inspection_person_type_id column to null again
-        if($contact->groups()->count() === 0) {
+        //now check if the contact is still in any inspection_person_type_group,
+        // if so set the inspection_person_type_id column to first found
+        // if not set the inspection_person_type_id column to null again
+        if($contact->groups()->whereNotNull('inspection_person_type_id')->exists()) {
+            $contact->inspection_person_type_id = $contact->groups()->whereNotNull('inspection_person_type_id')->first()->inspection_person_type_id;
+            $contact->save();
+        } else {
             $contact->inspection_person_type_id = null;
             $contact->save();
         }

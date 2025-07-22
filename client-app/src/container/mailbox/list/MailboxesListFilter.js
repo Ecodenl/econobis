@@ -14,10 +14,10 @@ const MailboxesListFilter = props => {
                     className="form-control input-sm"
                     onChange={e => props.refreshData(e.target.value)}
                 >
-                    <option key={1} value="ja">
+                    <option key={1} value="1">
                         ja
                     </option>
-                    <option key={0} value="nee">
+                    <option key={0} value="0">
                         nee
                     </option>
                 </select>

@@ -8,7 +8,7 @@ export default {
 
         return getAxiosInstance().get(requestUrl, {
             params: {
-                onlyActive: JSON.stringify(onlyActive),
+                onlyActive: onlyActive,
             },
         });
     },

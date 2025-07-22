@@ -47,11 +47,11 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $active = trim($requestQuery->getRequest()->onlyActive);
+        $active = $requestQuery->getRequest()->onlyActive;
 
-        if ($active == "\"ja\"") {
+        if ($active == 1) {
             $mailboxes = Mailbox::where('is_active', 1)->get();
-        } elseif($active == "\"nee\"") {
+        } elseif($active == 0) {
             $mailboxes = Mailbox::where('is_active', 0)->get();
         } else {
             $mailboxes = Mailbox::get();

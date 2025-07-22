@@ -10,9 +10,6 @@ import MailboxesListToolbar from './MailboxesListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import { bindActionCreators } from 'redux';
-import {
-    setActiveMailboxFilter,
-} from '../../../actions/mailbox/MailboxesFiltersActions';
 
 class MailboxesListApp extends Component {
     constructor(props) {
@@ -20,7 +17,7 @@ class MailboxesListApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchMailboxes("ja");
+        this.props.fetchMailboxes(1);
     }
 
     componentWillUnmount() {
@@ -58,7 +55,6 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
         {
-            setActiveMailboxFilter,
             clearMailboxes,
             fetchMailboxes,
         },

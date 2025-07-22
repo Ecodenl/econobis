@@ -6,11 +6,16 @@ import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import MailboxesListItem from './MailboxesListItem';
+import MailboxesListFilter from './MailboxesListFilter';
 
 class MailboxesList extends Component {
     constructor(props) {
         super(props);
     }
+
+    onSubmitFilter = () => {
+        this.props.refreshData();
+    };
 
     render() {
         let loadingText = '';
@@ -41,6 +46,7 @@ class MailboxesList extends Component {
                             <DataTableHeadTitle title={'Actief'} width={'5%'} />
                             <DataTableHeadTitle title={''} width={'5%'} />
                         </tr>
+                        <MailboxesListFilter refreshData={this.props.refreshData} />
                     </DataTableHead>
                     <DataTableBody>
                         {loading ? (

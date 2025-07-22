@@ -1,11 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { fetchMailboxes, clearMailboxes } from '../../../actions/mailbox/MailboxesActions';
+import {
+    fetchMailboxes,
+    clearMailboxes,
+} from '../../../actions/mailbox/MailboxesActions';
 import MailboxesList from './MailboxesList';
 import MailboxesListToolbar from './MailboxesListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+import { bindActionCreators } from 'redux';
+import {
+    setActiveMailboxFilter,
+} from '../../../actions/mailbox/MailboxesFiltersActions';
 
 class MailboxesListApp extends Component {
     constructor(props) {
@@ -13,16 +20,16 @@ class MailboxesListApp extends Component {
     }
 
     componentDidMount() {
-        this.props.fetchMailboxes();
+        this.props.fetchMailboxes("ja");
     }
 
     componentWillUnmount() {
         this.props.clearMailboxes();
     }
 
-    refreshData = () => {
+    refreshData = (selectedValue) => {
         this.props.clearMailboxes();
-        this.props.fetchMailboxes();
+        this.props.fetchMailboxes(selectedValue);
     };
 
     render() {
@@ -30,11 +37,11 @@ class MailboxesListApp extends Component {
             <Panel className="col-md-12">
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
-                        <MailboxesListToolbar refreshData={() => this.refreshData()} />
+                        <MailboxesListToolbar refreshData={() => this.refreshData()}/>
                     </div>
 
                     <div className="col-md-12 margin-10-top">
-                        <MailboxesList />
+                        <MailboxesList refreshData={this.refreshData} />
                     </div>
                 </PanelBody>
             </Panel>
@@ -42,13 +49,21 @@ class MailboxesListApp extends Component {
     }
 }
 
-const mapDispatchToProps = dispatch => ({
-    fetchMailboxes: () => {
-        dispatch(fetchMailboxes());
-    },
-    clearMailboxes: () => {
-        dispatch(clearMailboxes());
-    },
-});
+const mapStateToProps = state => {
+    return {
+        mailboxesFilters: state.mailboxes.filters,
+    };
+};
 
-export default connect(null, mapDispatchToProps)(MailboxesListApp);
+const mapDispatchToProps = dispatch => {
+    return bindActionCreators(
+        {
+            setActiveMailboxFilter,
+            clearMailboxes,
+            fetchMailboxes,
+        },
+        dispatch
+    );
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(MailboxesListApp);

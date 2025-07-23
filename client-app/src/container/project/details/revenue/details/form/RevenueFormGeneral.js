@@ -6,6 +6,9 @@ import PanelBody from '../../../../../../components/panel/PanelBody';
 
 import RevenueFormEdit from './RevenueFormEdit';
 import RevenueFormView from './RevenueFormView';
+import RevenueFormSetConfirmModal from './RevenueFormSetConfirmModal';
+
+import ErrorModal from '../../../../../../components/modal/ErrorModal';
 
 class RevenueFormGeneral extends Component {
     constructor(props) {
@@ -13,13 +16,27 @@ class RevenueFormGeneral extends Component {
 
         this.state = {
             showEdit: false,
+            showModalConfirm: false,
             activeDiv: '',
+            showErrorModal: false,
+            modalErrorMessage: '',
         };
     }
 
     switchToEdit = () => {
         this.setState({
             showEdit: true,
+        });
+    };
+
+    setConfirmModal = () => {
+        this.setState({
+            showModalConfirm: true,
+        });
+    };
+    closeModalConfirm = () => {
+        this.setState({
+            showModalConfirm: false,
         });
     };
 
@@ -44,6 +61,16 @@ class RevenueFormGeneral extends Component {
         }
     }
 
+    setErrorModal = errorMessage => {
+        this.setState({
+            showErrorModal: true,
+            modalErrorMessage: errorMessage,
+        });
+    };
+    closeErrorModal = () => {
+        this.setState({ showErrorModal: false, modalErrorMessage: '' });
+    };
+
     render() {
         return (
             <Panel
@@ -52,11 +79,32 @@ class RevenueFormGeneral extends Component {
                 onMouseLeave={() => this.onDivLeave()}
             >
                 <PanelBody>
-                    {this.state.showEdit && !this.props.revenue.confirmed && this.props.permissions.manageProject ? (
-                        <RevenueFormEdit switchToView={this.switchToView} />
-                    ) : (
-                        <RevenueFormView switchToEdit={this.switchToEdit} />
-                    )}
+                    <>
+                        {this.state.showEdit &&
+                        !this.props.revenue.confirmed &&
+                        this.props.permissions.manageProject ? (
+                            <RevenueFormEdit switchToView={this.switchToView} />
+                        ) : (
+                            <RevenueFormView switchToEdit={this.switchToEdit} setConfirmModal={this.setConfirmModal} />
+                        )}
+                        {this.state.showModalConfirm &&
+                        !this.props.revenue.confirmed &&
+                        this.props.permissions.manageProject ? (
+                            <RevenueFormSetConfirmModal
+                                // revenue={this.props.revenue}
+                                closeModalConfirm={this.closeModalConfirm}
+                                setErrorModal={this.setErrorModal}
+                                closeDeleteItemModal={this.toggleTerminate}
+                            />
+                        ) : null}
+                        {this.state.showErrorModal && (
+                            <ErrorModal
+                                closeModal={this.closeErrorModal}
+                                title={'Fout bij opslaan'}
+                                errorMessage={this.state.modalErrorMessage}
+                            />
+                        )}
+                    </>
                 </PanelBody>
             </Panel>
         );

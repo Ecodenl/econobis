@@ -312,11 +312,7 @@ const RevenueFormView = props => {
             {statusConcept ? (
                 <PanelFooter>
                     <div className="pull-right btn-group" role="group">
-                        <ButtonText
-                            buttonClassName={'btn-default'}
-                            buttonText={'Definitief maken'}
-                            onClickAction={props.setConfirmModal}
-                        />
+                        <ButtonText buttonText={'Definitief maken'} onClickAction={props.setConfirmModal} />
                     </div>
                 </PanelFooter>
             ) : null}

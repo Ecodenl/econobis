@@ -5,10 +5,10 @@ import moment from 'moment';
 import InputDate from '../../../../../../components/form/InputDate';
 import validator from 'validator';
 import ProjectRevenueAPI from '../../../../../../api/project//ProjectRevenueAPI';
-import { fetchRevenue } from '../../../../../../actions/project/ProjectDetailsActions';
+import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
 import { connect } from 'react-redux';
 
-const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm, fetchRevenue }) => {
+const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm, fetchRevenue, getDistribution }) => {
     const [dateConfirmed, setDateConfirmed] = useState(null);
     const [isSaving, setIsSaving] = useState(false);
 
@@ -32,7 +32,7 @@ const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm,
         };
         let hasErrors = false;
 
-        if (validator.isEmpty(dateConfirmed)) {
+        if (!dateConfirmed || validator.isEmpty(dateConfirmed)) {
             errors.dateConfirmed = true;
             errorMessages.dateConfirmed = 'Ongeldige datum';
             hasErrors = true;
@@ -47,6 +47,10 @@ const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm,
             ProjectRevenueAPI.updateProjectRevenueConfirm(revenue.id, { dateConfirmed })
                 .then(payload => {
                     fetchRevenue(revenue.id);
+                    setTimeout(() => {
+                        getDistribution(revenue.id, 0);
+                    }, 250);
+
                     closeModalConfirm();
                     setIsSaving(false);
                 })
@@ -84,6 +88,9 @@ const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm,
                     name={'dateConfirmed'}
                     value={dateConfirmed}
                     onChangeAction={onChangeDateConfirmed}
+                    required={true}
+                    error={errors.dateConfirmed}
+                    errorMessage={errorMessages.dateConfirmed}
                 />
             </div>
 
@@ -124,6 +131,9 @@ const RevenueFormSetConfirmModal = ({ revenue, setErrorModal, closeModalConfirm,
 const mapDispatchToProps = dispatch => ({
     fetchRevenue: id => {
         dispatch(fetchRevenue(id));
+    },
+    getDistribution: (id, page) => {
+        dispatch(getDistribution({ id, page }));
     },
 });
 

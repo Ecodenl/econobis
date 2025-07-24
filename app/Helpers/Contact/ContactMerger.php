@@ -52,7 +52,7 @@ class ContactMerger
         $toHoomAccountId = $this->toContact->hoom_account_id;
         $fromHoomAccountId = $this->fromContact->hoom_account_id;
         if ($toHoomAccountId && $fromHoomAccountId && $toHoomAccountId !== $fromHoomAccountId) {
-            throw new ContactMergeException('Contacten hebben een verschillende Hoom account id\'s, wijzig eerst één van de twee Hoom account id\'s handmatig. Vervolgens moet het contact id ook in het Hoomdossier worden aangepast');
+            throw new ContactMergeException('Contacten hebben een verschillende Hoom account id\'s, wijzig eerst één van de twee Hoom account id\'s handmatig. Vervolgens moet het contact id ook handmatig in het Hoomdossier worden aangepast.');
         }
 
         if ($this->toContact->twinfieldNumbers()->exists() && $this->fromContact->twinfieldNumbers()->exists()) {

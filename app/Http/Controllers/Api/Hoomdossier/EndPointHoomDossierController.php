@@ -98,7 +98,7 @@ class EndPointHoomDossierController extends Controller
         }
         $contact = Contact::find($contactId);
         if(!$contact) {
-            $this->error('Contact ' . $contactId . ' is in Econobis verwijderd', 404);
+            $this->error('Contact ' . $contactId . ' not found or removed in Econobis', 404);
         }
         if(!$accountId){
             $this->error('Account_id missing', 404);

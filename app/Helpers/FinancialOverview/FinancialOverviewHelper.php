@@ -65,11 +65,23 @@ class FinancialOverviewHelper
         $contactName = null;
 
         if ($financialOverviewContact->contact->type_id == 'person') {
-            $title = $financialOverviewContact->contact->person->title ? $financialOverviewContact->contact->person->title->address . ' ' : '';
-            $initials = $financialOverviewContact->contact->person->initials ? $financialOverviewContact->contact->person->initials : ($financialOverviewContact->contact->person->first_name ? substr($financialOverviewContact->contact->person->first_name, 0, 1).".": "");
-            $prefix = $financialOverviewContact->contact->person->last_name_prefix ? $financialOverviewContact->contact->person->last_name_prefix . ' ' : '';
+            $titleAddress = $financialOverviewContact->contact?->person?->title?->address;
+            $initials = $financialOverviewContact->contact?->person?->initials ? $financialOverviewContact->contact?->person?->initials : ($financialOverviewContact->contact?->person?->first_name ? substr($financialOverviewContact->contact?->person?->first_name, 0, 1) . "." : "");
+            $prefix = $financialOverviewContact->contact?->person->last_name_prefix;
 
-            $contactName = $title . ( $initials . ' ' . $prefix . $financialOverviewContact->contact->person->last_name );
+            $contactName = '';
+            // Als er een title address is beginnen we daarmee
+            if ($titleAddress) {
+                $contactName .= $titleAddress . ' ';
+            }
+            // Hierna voegen we toe: initials + ' '
+            $contactName .= $initials . ' ';
+            // Als er een prefix is, dan voegen we die toe: prefix + ' '
+            if ($prefix) {
+                $contactName .= $prefix . ' ';
+            }
+            // Tenslotte voegen we toe: last_name
+            $contactName .= $financialOverviewContact->contact?->person->last_name;
 
         } elseif ($financialOverviewContact->contact->type_id == 'organisation') {
             $contactName = optional($financialOverviewContact->contact->organisation)->statutory_name ? $financialOverviewContact->contact->organisation->statutory_name : $financialOverviewContact->contact->full_name;

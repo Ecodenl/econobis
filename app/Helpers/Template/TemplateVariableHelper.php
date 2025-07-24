@@ -1831,9 +1831,17 @@ class TemplateVariableHelper
             case 'aantal_bouwlagen':
                 return $model->floors;
             case 'monument':
-                return $model->is_monument ? 'Ja' : 'Nee';
+                return match ($model->is_monument) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
             case 'koophuis':
-                return $model->is_house_for_sale ? 'Ja' : 'Nee';
+                return match ($model->is_house_for_sale) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
             default:
                 return '';
         }

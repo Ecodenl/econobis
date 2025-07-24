@@ -30,7 +30,7 @@ class ObligationNumberForm extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Obligatienummers</span>
-                    {this.props.permissions.manageFinancial && (
+                    {this.props.permissions.manageParticipation && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <Icon size={14} icon={plus} />
                         </a>

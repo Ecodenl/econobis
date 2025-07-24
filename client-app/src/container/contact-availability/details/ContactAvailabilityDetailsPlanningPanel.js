@@ -140,8 +140,8 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                     if (firstActiveIndex !== false) {
                         availabilities.push({
                             day: i, // Van de dag slaan we de index op, want de dagen zijn altijd hetzelfde. 0 = maandag, 1 = dinsdag, etc.
-                            from: formatMinutesToTime(timeslots[firstActiveIndex]),
-                            to: formatMinutesToTime(timeslots[j - 1] + intervalMinutes), // Het "to" in de database is "tot" (en dus niet "tot en met"), dus als je tijdslot 8:00 hebt geselecteerd, dan is het "from" 8:00 en "to" 8:30. Dus intervalMinutes erbij optellen.
+                            from: formatMinutesToTime(timeslots[firstActiveIndex], false),
+                            to: formatMinutesToTime(timeslots[j - 1] + intervalMinutes, false), // Het "to" in de database is "tot" (en dus niet "tot en met"), dus als je tijdslot 8:00 hebt geselecteerd, dan is het "from" 8:00 en "to" 8:30. Dus intervalMinutes erbij optellen.
                         });
                         firstActiveIndex = false;
                     }
@@ -153,8 +153,8 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                 if (j === timeslots.length - 1 && firstActiveIndex) {
                     availabilities.push({
                         day: i,
-                        from: formatMinutesToTime(timeslots[firstActiveIndex]),
-                        to: formatMinutesToTime(timeslots[j] + intervalMinutes),
+                        from: formatMinutesToTime(timeslots[firstActiveIndex], false),
+                        to: formatMinutesToTime(timeslots[j] + intervalMinutes, false),
                     });
                 }
             }
@@ -171,13 +171,25 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
     /**
      * Formatteer een aantal minuten vanaf middernacht naar een tijd in het formaat HH:mm.
      */
-    const formatMinutesToTime = (minutes) => {
+    const formatMinutesToTime = (minutes, withEndTime = false) => {
         let hours = Math.floor(minutes / 60);
         let minutesLeft = minutes % 60;
+        let endHours = hours;
+        let endMinutes = '00';
 
         // Voorloop en achterloop nul toevoegen als dat nodig is.
         hours = hours < 10 ? '0' + hours : hours;
         minutesLeft = minutesLeft < 10 ? '0' + minutesLeft : minutesLeft;
+
+        if(minutesLeft == 30) {
+            endHours = endHours + 1;
+        } else {
+            endMinutes = '30';
+        }
+
+        if(withEndTime === true) {
+            return hours + ':' + minutesLeft + ' - ' + endHours + ':' + endMinutes;
+        }
 
         return hours + ':' + minutesLeft;
     }
@@ -274,7 +286,7 @@ export default function ContactAvailabilityDetailsPlanningPanel({contactId}) {
                                                 {
                                                     days.map((day, j) => {
                                                         return (
-                                                            <td key={j}>{formatMinutesToTime(timeslot)}</td>
+                                                            <td key={j} >{formatMinutesToTime(timeslot, true)}</td>
                                                         );
                                                     })
                                                 }

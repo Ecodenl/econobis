@@ -39,6 +39,8 @@ class QuotationRequestController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         $quotationRequests = $requestQuery->get();
 
         $quotationRequests->load([
@@ -63,6 +65,8 @@ class QuotationRequestController extends ApiController
 
     public function show(QuotationRequest $quotationRequest)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         $quotationRequest->load([
             'organisationOrCoach.contactPerson.contact',
             'projectManager',
@@ -125,6 +129,8 @@ class QuotationRequestController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         set_time_limit(0);
         $quotationRequests = $requestQuery->getQueryNoPagination()->get();
 
@@ -138,6 +144,8 @@ class QuotationRequestController extends ApiController
      */
     public function getStore(Opportunity $opportunity, OpportunityAction $opportunityAction)
     {
+        $this->authorize('manage', QuotationRequest::class);
+
         $opportunity->load([
             'intake.address',
             'measures',
@@ -555,6 +563,8 @@ class QuotationRequestController extends ApiController
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', QuotationRequest::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = QuotationRequest::query()->orderBy('id');

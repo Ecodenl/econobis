@@ -47,9 +47,9 @@ class RevenuesKwhdetailsToolbar extends Component {
 
     render() {
         const { revenuesKwh, navigate } = this.props;
-        const pdfLinkLedenverklaring = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
-        const pdfLinkProductieSpecificatie = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie%20specificatie`;
-        const excelLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
+        const pdfLinkLedenverklaring = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
+        const pdfLinkProductieSpecificatie = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie_specificatie`;
+        const excelLink = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
 
         return (
             <div className="row">
@@ -59,7 +59,7 @@ class RevenuesKwhdetailsToolbar extends Component {
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
                                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                                    {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
+                                    {this.props.permissions.manageProject && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     ) : null}
                                     {revenuesKwh.confirmed == 1 ? (

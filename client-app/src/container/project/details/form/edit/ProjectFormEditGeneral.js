@@ -265,6 +265,7 @@ const ProjectFormEditGeneral = ({
                         className={'form-group col-sm-6'}
                         label={'Benodigd aantal deelnemende leden'}
                         value={requiredParticipants}
+                        textToolTip={`Dit aantal wordt berekend door het opgesteld vermogen kWp door 5 te delen. Dit om aan de voorwaarden van het RVO te voldoen. Zie https://www.rvo.nl/subsidies-financiering/sce/voorwaarden`}
                     />
                 ) : null}
             </div>

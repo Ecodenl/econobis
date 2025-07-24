@@ -9,7 +9,12 @@ class OpportunityPolicy
 {
     use HandlesAuthorization;
 
-        public function manage(User $user)
+    public function view(User $user)
+    {
+        return $user->hasPermissionTo('view_opportunity', 'api');
+    }
+
+    public function manage(User $user)
     {
         return $user->hasPermissionTo('manage_opportunity', 'api');
     }

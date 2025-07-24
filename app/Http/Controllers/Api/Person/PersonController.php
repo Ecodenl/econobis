@@ -13,6 +13,7 @@ use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
@@ -284,7 +285,13 @@ class PersonController extends ApiController
     {
         $this->authorize('update', $person);
 
-        $duplicateHoomAccountIdName = Contact::where('hoom_account_id', $request['hoomAccountId'])->first() ? Contact::where('hoom_account_id', $request['hoomAccountId'])->first()->full_name : '';
+        $contact = Contact::where('hoom_account_id', $request['hoomAccountId'])
+            ->where('type_id', ContactType::PERSON)->first();
+        $duplicateHoomAccountIdErrorMessage = '';
+        if ($contact) {
+            $duplicateHoomAccountIdErrorMessage = 'Er bestaat al een gebruiker met dit Hoom account id: '
+                . $contact->full_name . ' (' . $contact->number . ').';
+        }
 
         $contactData = $request->validate([
             'memberSince' => 'date',
@@ -302,7 +309,7 @@ class PersonController extends ApiController
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
             'hoomAccountId' => 'unique:contacts,hoom_account_id,'.$person->contact_id,
-        ], ['hoomAccountId' => 'Er bestaat al een gebruiker met dit Hoom account id: ' . $duplicateHoomAccountIdName]);
+        ], ['hoomAccountId' => $duplicateHoomAccountIdErrorMessage]);
 
         $personData = $request->validate([
             'initials' => '',

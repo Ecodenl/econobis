@@ -52,6 +52,7 @@ class CampaignController extends ApiController
     public function show(Campaign $campaign)
     {
         $this->authorize('view', Campaign::class);
+
         $campaign->load([
             'measureCategories',
             'opportunityActions',
@@ -146,7 +147,6 @@ class CampaignController extends ApiController
 
     public function update(Request $request, RequestInput $requestInput, Campaign $campaign)
     {
-
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
@@ -182,7 +182,6 @@ class CampaignController extends ApiController
     }
     public function updateInspection(Request $request, RequestInput $requestInput, Campaign $campaign)
     {
-
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
@@ -205,7 +204,6 @@ class CampaignController extends ApiController
 
     public function updateWorkflowSetting(Request $request, RequestInput $requestInput, Campaign $campaign)
     {
-
         $this->authorize('manage', Campaign::class);
 
         $data = $requestInput
@@ -246,6 +244,7 @@ class CampaignController extends ApiController
     public function attachResponse(Campaign $campaign, Contact $contact)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaignResponse = new CampaignResponse([
             'campaign_id' => $campaign->id,
             'contact_id' => $contact->id,
@@ -257,6 +256,7 @@ class CampaignController extends ApiController
     public function detachResponse(Campaign $campaign, Contact $contact)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->responses()->where('contact_id', $contact->id)->delete();
         $campaign->save();
     }
@@ -264,53 +264,63 @@ class CampaignController extends ApiController
     public function attachOrganisation(Campaign $campaign, Organisation $organisation)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->organisations()->attach($organisation);
     }
 
     public function detachOrganisation(Campaign $campaign, Organisation $organisation)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->organisations()->detach($organisation);
     }
 
     public function attachCoach(Campaign $campaign, Contact $coach)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->coaches()->attach($coach);
     }
 
     public function detachCoach(Campaign $campaign, Contact $coach)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->coaches()->detach($coach);
     }
 
     public function attachProjectManager(Campaign $campaign, Contact $projectManager)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->projectManagers()->attach($projectManager);
     }
 
     public function detachProjectManager(Campaign $campaign, Contact $projectManager)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->projectManagers()->detach($projectManager);
     }
 
     public function attachExternalParty(Campaign $campaign, Contact $externalParty)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->externalParties()->attach($externalParty);
     }
 
     public function detachExternalParty(Campaign $campaign, Contact $externalParty)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->externalParties()->detach($externalParty);
     }
 
     public function peek()
     {
+//        $this->authorize('view', Campaign::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
         if ($teamContactIds){
             $campaigns = Campaign::whereHas('intakes', function($query) use($teamContactIds){
@@ -340,6 +350,8 @@ class CampaignController extends ApiController
 
     public function peekNotFinished()
     {
+//        $this->authorize('view', Campaign::class);
+
         $campaigns = Campaign::whereNull('status_id')->orWhere('status_id', '!=', Campaign::STATUS_CLOSED)->orderBy('id')->get();
 
         return CampaignPeek::collection($campaigns);
@@ -348,6 +360,7 @@ class CampaignController extends ApiController
     public function associateOwner(Campaign $campaign, User $user)
     {
         $this->authorize('manage', Campaign::class);
+
         $campaign->ownedBy()->associate($user);
         $campaign->save();
     }

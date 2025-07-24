@@ -84,7 +84,7 @@ class FinancialOverviewListItem extends Component {
             <tr
                 className={this.state.highlightRow}
                 onDoubleClick={
-                    permissions.manageFinancial && hasAccessToAdministration
+                    permissions.viewFinancialOverview && hasAccessToAdministration
                         ? () => this.openItem(id)
                         : () => this.showHasNoAccessToAdministrationModal()
                 }
@@ -97,7 +97,9 @@ class FinancialOverviewListItem extends Component {
                 <td>{status}</td>
                 <td>{dateProcessedFormated}</td>
                 <td>
-                    {this.state.showActionButtons && permissions.manageFinancial && hasAccessToAdministration ? (
+                    {this.state.showActionButtons &&
+                    permissions.manageFinancialOverview &&
+                    hasAccessToAdministration ? (
                         <a role="button" onClick={() => this.openItem(id)}>
                             <Icon className="mybtn-success" size={14} icon={pencil} />
                             &nbsp;
@@ -106,7 +108,7 @@ class FinancialOverviewListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons &&
-                    permissions.manageFinancial &&
+                    permissions.manageFinancialOverview &&
                     !definitive &&
                     hasAccessToAdministration &&
                     statusId === 'concept' ? (

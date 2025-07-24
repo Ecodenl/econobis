@@ -6,7 +6,13 @@ import EmailSplitviewAPI from '../../../api/email/EmailSplitviewAPI';
 import { EmailModalContext } from '../../../context/EmailModalContext';
 import Frame from 'react-frame-component';
 
-export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, deleted, folder, refetchCurrentEmails }) {
+export default function EmailSplitViewDetails({
+    emailId,
+    folder,
+    updatedEmailHandler,
+    revertFromRemovedHandler,
+    deletedHandler,
+}) {
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, modalEmailId } = useContext(EmailModalContext);
     const [email, setEmail] = useState({ attachments: [], toAddresses: [], contacts: [], manualContacts: [] });
     const { openEmailSendModal } = useContext(EmailModalContext);
@@ -53,6 +59,16 @@ export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, de
             updatedEmailHandler();
         });
     };
+    const revertFromRemoved = attributes => {
+        setEmail({
+            ...email,
+            ...attributes,
+        });
+
+        EmailGenericAPI.update(emailId, attributes).then(() => {
+            revertFromRemovedHandler();
+        });
+    };
 
     // FIXME : captureMailtoLinks werkt niet goed (ook niet in EmailDetailsModalLayout.js).
     //  voorlopig even geen captureMailtoLinks click event
@@ -86,7 +102,7 @@ export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, de
 
     return (
         <div>
-            {email.folder === 'removed' && folder !== 'removed' && (
+            {email.folder === 'removed' && (
                 <div className="panel panel-default">
                     <div className="panel-body panel-small">
                         <div className="row" style={{ marginLeft: '-5px' }}>
@@ -95,7 +111,7 @@ export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, de
                                     Deze e-mail is verwijderd.&nbsp;
                                     <a
                                         style={{ color: '#e64a4a', cursor: 'pointer' }}
-                                        onClick={() => updateEmailAttributes({ folder: folder })}
+                                        onClick={() => revertFromRemoved({ folder: email.originalFolder })}
                                     >
                                         <strong>Klik hier om verwijderen ongedaan te maken.</strong>
                                     </a>
@@ -109,8 +125,7 @@ export default function EmailSplitViewDetails({ emailId, updatedEmailHandler, de
             <EmailSplitViewDetailsHeaderPanel
                 email={email}
                 updateEmailAttributes={updateEmailAttributes}
-                deleted={deleted}
-                refetchCurrentEmails={refetchCurrentEmails}
+                deletedHandler={deletedHandler}
             />
 
             <div className="panel panel-default">

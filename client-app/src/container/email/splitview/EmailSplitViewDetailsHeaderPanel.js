@@ -4,7 +4,6 @@ import { mailReply } from 'react-icons-kit/fa/mailReply';
 import { mailReplyAll } from 'react-icons-kit/fa/mailReplyAll';
 import { mailForward } from 'react-icons-kit/fa/mailForward';
 import { trash } from 'react-icons-kit/fa/trash';
-import { rotateLeft } from 'react-icons-kit/fa/rotateLeft';
 import { externalLink } from 'react-icons-kit/fa/externalLink';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { Link } from 'react-router-dom';
@@ -16,7 +15,7 @@ import ResponsibleInputSelect from '../../../components/email/ResponsibleInputSe
 import { EmailModalContext } from '../../../context/EmailModalContext';
 import { mapEmojiToStatuses } from '../../../helpers/EmailStatusHelpers';
 
-export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAttributes, deleted, refetchCurrentEmails }) {
+export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAttributes, deletedHandler }) {
     const { openEmailDetailsModal, openEmailSendModal } = useContext(EmailModalContext);
     const statusses = useSelector(state => mapEmojiToStatuses(state.systemData.emailStatuses));
 
@@ -44,16 +43,8 @@ export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAtt
         }
 
         EmailGenericAPI.deleteMultiple([email.id]).then(() => {
-            deleted();
+            deletedHandler();
         });
-    };
-
-    const refetchEmail = () => {
-        if (!confirm('Weet je zeker dat je dit e-mailbericht wilt terugzetten naar de inbox?')) {
-            return;
-        }
-
-        refetchCurrentEmails();
     };
 
     return (
@@ -116,21 +107,6 @@ export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAtt
                             >
                                 <Icon icon={trash} size={13} />
                             </button>
-
-                            {email.folder === 'removed' && (
-                                <button
-                                    type="button"
-                                    title="Verwijderen ongedaan maken"
-                                    className={'btn btn-sm btn-success'}
-                                    onClick={() => {
-                                        updateEmailAttributes({ folder: 'inbox' });
-                                        refetchEmail();
-                                    }}
-                                >
-                                    <Icon icon={rotateLeft} size={13} />
-                                </button>
-                            )}
-
                             {email.folder !== 'concept' && (
                                 <button
                                     type="button"

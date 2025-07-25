@@ -162,6 +162,7 @@ class ExternalWebformController extends Controller
     private $createOpportunityToEmail = [];
     private $processWorkflowCreateOpportunity = false;
     private $onlyCheckLastName = false;
+    private $decimalSeparator = ',';
 
     public function post(string $apiKey, Request $request)
     {
@@ -440,7 +441,7 @@ class ExternalWebformController extends Controller
     {
         $mapping = [
             'general' => [
-                'decimaal_scheidingsteken' => 'decimal_seperator' //seperator is spelled wrong (should be separator), but it is used in this file many times with the wrong spelling
+                'decimaal_scheidingsteken' => 'decimal_separator'
             ],
             'responsible_ids' => [
                 'verantwoordelijke_gebruiker_id' => 'responsible_user_id',
@@ -736,36 +737,47 @@ class ExternalWebformController extends Controller
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
-        $data['quotation_request']['quotation_amount'] = $this->sanitizeDecimals($data['quotation_request']['quotation_amount'], $data['general']['decimal_seperator']);
-        $data['quotation_request']['cost_adjustment'] = $this->sanitizeDecimals($data['quotation_request']['cost_adjustment'], $data['general']['decimal_seperator']);
-        $data['quotation_request']['award_amount'] = $this->sanitizeDecimals($data['quotation_request']['award_amount'], $data['general']['decimal_seperator']);
-        $data['quotation_request']['amount_determination'] = $this->sanitizeDecimals($data['quotation_request']['amount_determination'], $data['general']['decimal_seperator']);
+        // Treat empty decimalSeparator as comma
+        if (!empty($data['general']['decimal_separator'])) {
+            if (!in_array($data['general']['decimal_separator'], [',', '.'])) {
+                $this->log('Ongeldige scheidingsteken: ' . $data['general']['decimal_separator'] . ' meegegeven. Default , (komma) gebruiken als scheidingsteken.');
+            } else {
+                $this->decimalSeparator = $data['general']['decimal_separator'];
+                $this->log('Gebruikte scheidingsteken: ' . $this->decimalSeparator);
+            }
+        }
 
-        $data['address_energy_consumption_gas']['proposed_variable_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_variable_rate'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_fixed_rate'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_gas']['total_variable_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_variable_costs'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_gas']['total_fixed_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_fixed_costs'], $data['general']['decimal_seperator']);
 
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_high'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_low'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_high'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_low'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_high'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_low'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_high'], $data['general']['decimal_seperator']);
-        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_low'], $data['general']['decimal_seperator']);
+        $data['quotation_request']['quotation_amount'] = $this->sanitizeDecimals($data['quotation_request']['quotation_amount']);
+        $data['quotation_request']['cost_adjustment'] = $this->sanitizeDecimals($data['quotation_request']['cost_adjustment']);
+        $data['quotation_request']['award_amount'] = $this->sanitizeDecimals($data['quotation_request']['award_amount']);
+        $data['quotation_request']['amount_determination'] = $this->sanitizeDecimals($data['quotation_request']['amount_determination']);
 
-        $data['participation']['participation_mutation_amount'] = $this->sanitizeDecimals($data['participation']['participation_mutation_amount'], $data['general']['decimal_seperator']);
+        $data['address_energy_consumption_gas']['proposed_variable_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_variable_rate']);
+        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_fixed_rate']);
+        $data['address_energy_consumption_gas']['total_variable_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_variable_costs']);
+        $data['address_energy_consumption_gas']['total_fixed_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_fixed_costs']);
+
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_high']);
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_low']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_high']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_low']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_high']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_low']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_high']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_low']);
+
+        $data['participation']['participation_mutation_amount'] = $this->sanitizeDecimals($data['participation']['participation_mutation_amount']);
 
         if($data['order']['variable_price']) {
-            $data['order']['variable_price'] = $this->sanitizeDecimals($data['order']['variable_price'], $data['general']['decimal_seperator']);
+            $data['order']['variable_price'] = $this->sanitizeDecimals($data['order']['variable_price']);
         }
 
         if($data['housing_file']['amount_electricity']) {
-            $data['housing_file']['amount_electricity'] = $this->sanitizeDecimals($data['housing_file']['amount_electricity'], $data['general']['decimal_seperator']);
+            $data['housing_file']['amount_electricity'] = $this->sanitizeDecimals($data['housing_file']['amount_electricity']);
         }
         if($data['housing_file']['amount_gas']) {
-            $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas'], $data['general']['decimal_seperator']);
+            $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas']);
         }
         // woondossier_koophuis leeg meegegeven, dan default '0' = Nee
         if(empty($data['housing_file']['is_house_for_sale'])) {
@@ -1989,23 +2001,20 @@ class ExternalWebformController extends Controller
                         break;
                     case 'double_2_dec':
                     case 'amount_euro':
-                        $formattedField = str_replace(',', '.', $fieldValue);
+//                        $formattedField = str_replace(',', '.', $fieldValue);
+                        $formattedField = $this->sanitizeDecimals($fieldValue);
                         $formattedFieldArray = explode(".", $formattedField);
 
-//                        if(!is_numeric($formattedField) || (isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) != $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
-//                            $this->error("Opgegeven waarde moet een cijfer zijn met twee getallen achter de comma of punt");
-//                            $formattedField = "";
-//                        }
                         if(!is_numeric($formattedField)) {
                             $this->error("Opgegeven waarde moet een cijfer zijn.");
                             $formattedField = "";
                         }
 
                         // Check max lengte voor de decimaal verdeler (is format_lengte - 1 - format_decimals)
-                        $maxLengteBeforeDecimalSeperator = $freeFieldsField->freeFieldsFieldFormat->format_length - 1 - $freeFieldsField->freeFieldsFieldFormat->format_decimals;
+                        $maxLengteBeforeDecimalSeparator = $freeFieldsField->freeFieldsFieldFormat->format_length - 1 - $freeFieldsField->freeFieldsFieldFormat->format_decimals;
                         if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0
-                            && strlen($formattedFieldArray[0]) > $maxLengteBeforeDecimalSeperator ) {
-                            $this->error("Opgegeven waarde is te lang, maximaal " . $maxLengteBeforeDecimalSeperator . " cijfers voor decimaal verdeler  toegestaan");
+                            && strlen($formattedFieldArray[0]) > $maxLengteBeforeDecimalSeparator ) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $maxLengteBeforeDecimalSeparator . " cijfers voor decimaal verdeler  toegestaan");
                         }
                         // Check max lengte na de decimaal verdeler (format_decimals)
                         if ((isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) > $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
@@ -4170,29 +4179,20 @@ class ExternalWebformController extends Controller
 
     /**
      * @param $value
-     * @param $decimalSeperator
+     * @param $decimalSeparator
      * @return null
      * @throws WebformException
      */
-    private function sanitizeDecimals($value, $decimalSeparator)
+    private function sanitizeDecimals($value)
     {
-        // Treat empty decimalSeparator as comma
-        if (empty($decimalSeparator)) {
-            $decimalSeparator = ',';
-        }
-
-        if (!in_array($decimalSeparator, [',', '.'])) {
-            throw new InvalidArgumentException('Invalid decimal separator');
-        }
-
         //If $decimalSeparator is a dot (.), then $thousandSeparator will be set to a comma (,) and the other way around
-        $thousandSeparator = $decimalSeparator === '.' ? ',' : '.';
+        $thousandSeparator = $this->decimalSeparator === '.' ? ',' : '.';
 
         // Remove thousand separators
         $value = str_replace($thousandSeparator, '', $value);
 
         // Replace decimal separator with dot for float conversion
-        $value = str_replace($decimalSeparator, '.', $value);
+        $value = str_replace($this->decimalSeparator, '.', $value);
 
         // Convert to float
         return floatval($value);

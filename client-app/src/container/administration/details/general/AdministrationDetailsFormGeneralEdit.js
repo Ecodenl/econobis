@@ -31,6 +31,10 @@ class AdministrationDetailsFormGeneralEdit extends Component {
             this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
                 ? true
                 : false;
+        this.manageUsesMollie =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         const {
             id,
@@ -848,8 +852,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                             />
                         </div>
 
-                        {(this.props.meDetails.email === 'support@econobis.nl' ||
-                            this.props.meDetails.email === 'software@xaris.nl') && (
+                        {this.manageUsesMollie == true && (
                             <div className="row">
                                 <InputToggle
                                     label={'Gebruikt Mollie'}
@@ -880,11 +883,11 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                 name={'usesTwinfield'}
                                 value={usesTwinfield}
                                 onChangeAction={this.handleUsesTwinfieldChange}
-                                disabled={!this.manageUsesTwinfield && !isEmpty(twinfieldClientId)}
+                                disabled={this.manageUsesTwinfield == false || !isEmpty(twinfieldClientId)}
                             />
                         </div>
 
-                        {(usesTwinfield == true || !isEmpty(twinfieldUsername)) && (
+                        {usesTwinfield == true && (
                             <React.Fragment>
                                 <div className="row">
                                     <InputText
@@ -893,7 +896,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldOrganizationCode}
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
-                                        readOnly={usesTwinfield == false}
+                                        readOnly={this.manageUsesTwinfield == false}
                                         error={this.state.errors.twinfieldOrganizationCode}
                                     />
                                     <InputText
@@ -902,7 +905,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         value={twinfieldOfficeCode}
                                         onChangeAction={this.handleInputChange}
                                         required={'required'}
-                                        readOnly={usesTwinfield == false}
+                                        readOnly={this.manageUsesTwinfield == false}
                                         error={this.state.errors.twinfieldOfficeCode}
                                     />
                                 </div>
@@ -915,9 +918,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                             value={twinfieldClientId}
                                             onChangeAction={this.handleInputChange}
                                             required={'required'}
-                                            readOnly={usesTwinfield == false}
+                                            readOnly={this.manageUsesTwinfield == false}
                                             error={this.state.errors.twinfieldClientId}
-                                            disabled={!this.manageUsesTwinfield}
                                         />
                                         <InputText
                                             label="Client Secret"
@@ -926,9 +928,8 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                             placeholder="**********"
                                             onChangeAction={this.handleInputChange}
                                             required={'required'}
-                                            readOnly={usesTwinfield == false}
+                                            readOnly={this.manageUsesTwinfield == false}
                                             error={this.state.errors.twinfieldClientSecret}
-                                            disabled={!this.manageUsesTwinfield}
                                         />
                                     </div>
                                     <div className="row">
@@ -938,7 +939,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                             value={twinfieldPasswordChange}
                                             onChangeAction={this.handleInputChange}
                                             className={'col-sm-push-6 col-sm-6'}
-                                            disabled={usesTwinfield == false}
+                                            disabled={this.manageUsesTwinfield == false}
                                         />
                                     </div>
                                     <div className="row">
@@ -959,7 +960,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldContacts}
                                         disabledAfter={dateSyncTwinfieldInvoices}
-                                        readOnly={usesTwinfield == false}
+                                        readOnly={this.manageUsesTwinfield == false}
                                         error={this.state.errors.dateSyncTwinfieldContacts}
                                         size={'col-sm-5'}
                                         textToolTip={`Na het maken van de koppeling worden contacten met een nota in Econobis
@@ -988,7 +989,7 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                         onChangeAction={this.handleInputChangeDate}
                                         disabledBefore={disableBeforeDateSyncTwinfieldInvoices}
                                         disabledAfter={oldestTwinfieldInvoiceDate}
-                                        readOnly={usesTwinfield == false || pendingInvoicesPresent}
+                                        readOnly={this.manageUsesTwinfield == false || pendingInvoicesPresent}
                                         error={this.state.errors.dateSyncTwinfieldInvoices}
                                         size={'col-sm-5'}
                                         textToolTip={`Niet betaalde nota’s, incl. de contacten worden vanaf deze datum (op basis van
@@ -1006,21 +1007,6 @@ class AdministrationDetailsFormGeneralEdit extends Component {
                                     />
                                 </div>
                                 <div className="row">
-                                    {/*todo WM: opschonen*/}
-                                    {/*<InputDate*/}
-                                    {/*    label={'Synchroniseer betalingen vanaf'}*/}
-                                    {/*    name={'dateSyncTwinfieldPayments'}*/}
-                                    {/*    value={dateSyncTwinfieldPayments}*/}
-                                    {/*    onChangeAction={this.handleInputChangeDate}*/}
-                                    {/*    disabledBefore={disableBeforeDateSyncTwinfieldPayments}*/}
-                                    {/*    disabledAfter={oldestUnpaidInvoiceDate}*/}
-                                    {/*    readOnly={usesTwinfield == false || pendingInvoicesPresent}*/}
-                                    {/*    error={this.state.errors.dateSyncTwinfieldPayments}*/}
-                                    {/*    size={'col-sm-5'}*/}
-                                    {/*    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op*/}
-                                    {/*        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog*/}
-                                    {/*        niet betaalde nota.`}*/}
-                                    {/*/>*/}
                                     <div className={'col-sm-6 form-group'} />
                                     <ViewText
                                         className={'col-sm-6 form-group'}

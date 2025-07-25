@@ -69,6 +69,7 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('view', ParticipantProject::class);
 
+        // Check op geauthoriseerde administratie gaat via ParticipantProjectBuilder !
         $participantProject = $requestQuery->get();
         $participantProject->load([
             'address.currentAddressEnergySupplierElectricity.energySupplier',

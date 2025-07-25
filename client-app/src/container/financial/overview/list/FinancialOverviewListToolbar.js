@@ -23,7 +23,7 @@ class FinancialOverviewListToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'refresh'} onClickAction={refreshFinancialOverviewsData} />
-                        {permissions.manageFinancial && (
+                        {permissions.manageFinancialOverview && (
                             <ButtonIcon iconName={'plus'} onClickAction={newFinancialOverview} />
                         )}
                     </div>

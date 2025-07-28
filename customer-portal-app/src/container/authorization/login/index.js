@@ -21,6 +21,7 @@ export default props => {
 
     const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
+    const [portalLoginInfoText, setPortalLoginInfoText] = useState(false);
     const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState('');
     const [imageHash, setImageHash] = useState(Date.now());
 
@@ -34,6 +35,16 @@ export default props => {
                 .catch(error => {
                     // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setIsLoading(false);
+                });
+        })();
+
+        (function callFetchPortalLoginInfoText() {
+            PortalSettingsAPI.fetchPortalLoginInfoText()
+                .then(payload => {
+                    setPortalLoginInfoText(payload.data);
+                })
+                .catch(error => {
+                    // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 });
         })();
 
@@ -113,6 +124,14 @@ export default props => {
                                         </React.Fragment>
                                     ) : !isLoading ? (
                                         <React.Fragment>
+                                            {portalLoginInfoText != "" ? (
+                                                <>
+                                                    <Row className="justify-content-center text-center">
+                                                        {portalLoginInfoText}
+                                                    </Row>
+                                                    <br />
+                                                </>
+                                            ) : null}
                                             <LoginForm handleSubmit={handleSubmit} login={login} />
                                             {showError ? (
                                                 <Row className="justify-content-center">

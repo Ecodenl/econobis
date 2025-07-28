@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Log;
 
 class ParticipantProjectBuilder extends Builder
 {
-    public function whereAdministrationIds(User $user)
+    public function whereAdministrationIds($user)
     {
         if($user instanceof User && $user->administrations){
             $this->whereHas('project', function ($q) use($user) {

@@ -384,8 +384,21 @@ class ContactController extends Controller
 //            $fromContact = $temp;
 //        }
 
+        //we store the Hoom account id in a separate variable because later it will be updated and we can't compair anymore
+        $toContactHoomAccountId = $toContact->hoom_account_id;
+        $fromContactHoomAccountId = $fromContact->hoom_account_id;
+
         try{
+
             (new ContactMerger($toContact, $fromContact))->merge();
+
+            if (!$toContactHoomAccountId && $fromContactHoomAccountId) {
+//                Log::info('in de if:  ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Het Hoom account id van het oude contact is overgenomen naar het nieuwe contact, u moet het contact_id ook handmatig in het Hoomdossier aanpassen'], 200);
+            } else {
+//                Log::info('in de else: ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Contacten zijn succesvol samengevoegd'], 200);
+            }
         }catch (ValidationException $e){
             return response()->json([
                 'status'=> 'error',

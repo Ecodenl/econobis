@@ -68,6 +68,7 @@ class Modal extends Component {
             title,
             draggableDisabled,
             loading,
+            loadText,
             headerRight,
         } = this.props;
         const bounds = {
@@ -89,9 +90,9 @@ class Modal extends Component {
                     <div className={`modal-dialog ${modalClassName}`} ref={this.divModalDialog}>
                         <div className="modal-content">
                             <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
-                                <div style={{display: 'flex', justifyContent: 'space-between'}}>
+                                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                                     <h4 className="modal-title">{title}</h4>
-                                    { headerRight ? headerRight : null }
+                                    {headerRight ? headerRight : null}
                                 </div>
                             </div>
                             <div className={`modal-body ${modalBodyClassName}`}>{children}</div>
@@ -101,9 +102,16 @@ class Modal extends Component {
                                         buttonClassName={extraButtonClass}
                                         onClickAction={extraButtonAction}
                                         buttonText={extraButtonLabel}
+                                        loading={loading}
+                                        loadText={loadText}
                                     />
                                 )}
-                                <button type="button" className="btn btn-default" onClick={closeModal}>
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    onClick={closeModal}
+                                    disabled={loading}
+                                >
                                     {buttonCancelText}
                                 </button>
                                 {this.props.showConfirmAction && (
@@ -112,6 +120,7 @@ class Modal extends Component {
                                         onClickAction={confirmAction}
                                         buttonText={buttonConfirmText}
                                         loading={loading}
+                                        loadText={loadText}
                                     />
                                 )}
                             </div>
@@ -134,6 +143,7 @@ Modal.defaultProps = {
     confirmAction: () => {},
     draggableDisabled: false,
     loading: false,
+    loadText: 'Aan het laden',
     headerRight: null,
 };
 
@@ -150,6 +160,7 @@ Modal.propTypes = {
     extraButtonAction: PropTypes.func,
     draggableDisabled: PropTypes.bool,
     loading: PropTypes.bool,
+    loadText: PropTypes.string,
     headerRight: PropTypes.any,
 };
 

@@ -212,7 +212,6 @@ class ProjectRevenueController extends ApiController
             ->date('dateBegin')->validate('nullable|date')->alias('date_begin')->next()
             ->date('dateEnd')->validate('nullable|date')->alias('date_end')->next()
             ->date('dateReference')->validate('required|date')->alias('date_reference')->next()
-            ->date('dateConfirmed')->validate('nullable|date')->onEmpty(null)->alias('date_confirmed')->next()
             ->integer('kwhStart')->alias('kwh_start')->onEmpty(null)->next()
             ->integer('kwhEnd')->alias('kwh_end')->onEmpty(null)->next()
             ->integer('kwhStartHigh')->alias('kwh_start_high')->onEmpty(null)->next()
@@ -262,6 +261,27 @@ class ProjectRevenueController extends ApiController
         $projectRevenue->save();
 
         if($recalculateDistribution) $this->saveParticipantsOfDistribution($projectRevenue);
+
+        return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
+            $projectRevenue->project_id)
+            ->with('createdBy', 'project', 'type', 'distribution')
+            ->orderBy('date_begin')->get());
+    }
+
+
+    public function confirm(RequestInput $requestInput, ProjectRevenue $projectRevenue)
+    {
+        $this->authorize('manage', ProjectRevenue::class);
+
+        $data = $requestInput
+            ->date('dateConfirmed')->validate('date')->alias('date_confirmed')->next()
+            ->get();
+
+        // Set terminated date
+        $projectRevenue->date_confirmed = Carbon::parse($data['date_confirmed'])->format('Y-m-d');
+        $projectRevenue->confirmed = true;
+
+        $projectRevenue->save();
 
         return FullProjectRevenue::collection(ProjectRevenue::where('project_id',
             $projectRevenue->project_id)

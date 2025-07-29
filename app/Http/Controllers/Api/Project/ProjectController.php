@@ -32,6 +32,7 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
+        // Check op geauthoriseerde administratie gaat via ProjectBuilder !
         $projects = $requestQuery->get();
 
         $projects->load([
@@ -50,6 +51,9 @@ class ProjectController extends ApiController
         set_time_limit(60);
 
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $project->load([
             'projectStatus',
@@ -377,6 +381,9 @@ class ProjectController extends ApiController
     {
         $this->authorize('manage', Project::class);
 
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         try {
             DB::beginTransaction();
 
@@ -398,9 +405,8 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-//        $this->authorize('view', Project::class);
         if(Auth::user()->hasPermissionTo('view_project', 'api')){
-            $projects = Project::orderBy('name')->orderBy('id')->get();
+            $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
         } else {
             $projects = new Collection();
         }
@@ -414,6 +420,9 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $obligationNumbers = [];
 
         foreach ($project->participantsProject as $participation){
@@ -425,6 +434,9 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
+        // todo WM: dit moet wellicht anders
+        if (!in_array(Project::find($id)->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $this->authorize('view', Project::class);
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
@@ -433,11 +445,14 @@ class ProjectController extends ApiController
     public function getActive(){
         $this->authorize('view', Project::class);
 
-        return Project::whereIn('project_status_id', [1,2])->pluck('id');
+        return Project::whereIn('project_status_id', [1,2])->whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->pluck('id');
     }
 
     public function getChartData(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
@@ -456,6 +471,9 @@ class ProjectController extends ApiController
 
     public function getChartDataParticipations(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
@@ -481,6 +499,9 @@ class ProjectController extends ApiController
 
     public function getChartDataStatus(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 

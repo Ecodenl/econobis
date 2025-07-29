@@ -54,7 +54,7 @@ class RevenuesKwhFormGeneral extends Component {
                 <PanelBody>
                     {this.state.showEdit &&
                     !this.props.revenuesKwh.confirmed &&
-                    this.props.permissions.manageFinancial ? (
+                    this.props.permissions.manageProject ? (
                         <RevenuesKwhFormEdit switchToView={this.switchToView} />
                     ) : (
                         <RevenuesKwhFormView switchToEdit={this.switchToEdit} />

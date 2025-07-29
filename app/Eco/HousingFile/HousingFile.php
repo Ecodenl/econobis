@@ -27,10 +27,10 @@ class HousingFile extends Model
         'id'
     ];
 
-    protected $casts = [
-        'is_house_for_sale' => 'boolean',
-        'is_monument' => 'boolean',
-    ];
+//    protected $casts = [
+//        'is_house_for_sale' => 'boolean',
+//        'is_monument' => 'boolean',
+//    ];
 
     public function address()
     {

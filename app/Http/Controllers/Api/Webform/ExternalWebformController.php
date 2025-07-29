@@ -711,8 +711,13 @@ class ExternalWebformController extends Controller
                 // Op deze manier hoeven we later alleen op lege string te checken...
                 // ... ipv bijv. if(!isset() || is_null($var) || $var = '')
                 // Niet voor vrije velden, daar willen we wel op lege string kunnen checken.
-                if($groupname === 'free_field_contact' || $groupname === 'free_field_address'){
+                if($groupname === 'free_field_contact' || $groupname === 'free_field_address') {
                     $data[$groupname][$outputName] = $request->get($inputName);
+                }
+                elseif($groupname === 'housing_file'
+                    && ( $outputName === 'is_house_for_sale' || $outputName === 'is_monument') ){
+                    // geen woondossier_koophuis of woondossier_monument meegegeven, dan default '2' = onbekend
+                    $data[$groupname][$outputName] = $request->get($inputName, '2');
                 } else {
                     $data[$groupname][$outputName] = trim($request->get($inputName, ''));
                 }
@@ -758,6 +763,14 @@ class ExternalWebformController extends Controller
         }
         if($data['housing_file']['amount_gas']) {
             $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+        }
+        // woondossier_koophuis leeg meegegeven, dan default '0' = Nee
+        if(empty($data['housing_file']['is_house_for_sale'])) {
+            $data['housing_file']['is_house_for_sale'] = '0';
+        }
+        // woondossier_monument leeg meegegeven, dan default '0' = Nee
+        if(empty($data['housing_file']['is_monument'])) {
+            $data['housing_file']['is_monument'] = '0';
         }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
@@ -2753,13 +2766,13 @@ class ExternalWebformController extends Controller
                 'address_id' =>  $address->id,
                 'building_type_id' => $buildingType ? $buildingType->id : null,
                 'build_year' => $buildYear ? $buildYear : null,
-                'is_house_for_sale' => $data['is_house_for_sale'] == '0' || empty($data['is_house_for_sale']) ? false : true,
+                'is_house_for_sale' => $data['is_house_for_sale'],
                 'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
                 'roof_type_id' => $rofeType ? $rofeType->id : null,
                 'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,
                 'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
                 'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
-                'is_monument' => $data['is_monument'] == '1' ? true : false,
+                'is_monument' => $data['is_monument'],
                 'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
@@ -2819,13 +2832,13 @@ class ExternalWebformController extends Controller
 
             $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
             $housingFile->build_year = $buildYear ? $buildYear : null;
-            $housingFile->is_house_for_sale = $data['is_house_for_sale'] == '0' ? false : true;
+            $housingFile->is_house_for_sale = $data['is_house_for_sale'];
             $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
             $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
             $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
             $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
             $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = $data['is_monument'] == '1' ? true : false;
+            $housingFile->is_monument = $data['is_monument'];
             $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];

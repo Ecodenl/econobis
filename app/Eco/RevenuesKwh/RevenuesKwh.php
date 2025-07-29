@@ -149,6 +149,9 @@ class RevenuesKwh extends Model
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');
         $yearEnd = Carbon::parse($this->date_end)->format('Y');
 
+        // Vervangen _ in reporttype met spatie
+        $reportType = str_replace('_', ' ', $reportType);
+
         if($yearEnd === $yearBegin) {
             $year = $yearBegin;
             $maxProjectNameLength = 179 - strlen($reportType);

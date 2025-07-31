@@ -9,6 +9,7 @@ const PortalSettingsFormGeneralView = ({
     portalName,
     cooperativeName,
     portalWebsite,
+    portalLoginInfoText,
     portalUrl,
     responsibleUser,
     checkContactTaskResponsibleUser,
@@ -181,6 +182,14 @@ const PortalSettingsFormGeneralView = ({
                             label={'Coöperatie website'}
                             divSize={'col-sm-8'}
                             value={portalWebsite}
+                            className={'col-sm-8 form-group'}
+                        />
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Portaal login informatie tekst'}
+                            divSize={'col-sm-8'}
+                            value={portalLoginInfoText}
                             className={'col-sm-8 form-group'}
                         />
                     </div>

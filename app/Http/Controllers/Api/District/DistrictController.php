@@ -119,6 +119,8 @@ class DistrictController
                     'datePlanned' => $quotationRequest->date_planned,
                     'durationMinutes' => $quotationRequest->duration_minutes,
                     'statusCodeRef' => $quotationRequest->status->code_ref,
+                    'color' => $quotationRequest->opportunity?->measureCategory->calendar_text_color,
+                    'backgroundColor' => $quotationRequest->opportunity?->measureCategory->calendar_background_color,
                 ];
             }),
             'availabilities' => $district->coaches->reduce(function ($carry, $coach) use ($startDate, $endDate) {

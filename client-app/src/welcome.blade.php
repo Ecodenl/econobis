@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="backend-url" content="{{ config('app.url') }}">
 
-    <title>Econobis test security</title>
+    <title>Econobis</title>
 
 </head>
 <body>

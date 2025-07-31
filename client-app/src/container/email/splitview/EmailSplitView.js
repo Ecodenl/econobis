@@ -365,13 +365,16 @@ export default function EmailSplitView() {
                 <div className="col-md-8 margin-10-top">
                     <EmailSplitViewDetails
                         emailId={selectedEmailId}
-                        updatedEmailHandler={refetchCurrentEmails}
                         folder={params.folder}
-                        deleted={() => {
+                        updatedEmailHandler={refetchCurrentEmails}
+                        revertFromRemovedHandler={() => {
                             localStorage.setItem('lastOpenedEmailId', null);
-
                             setSelectedEmailId(null);
-
+                            refetchCurrentEmails();
+                        }}
+                        deletedHandler={() => {
+                            localStorage.setItem('lastOpenedEmailId', null);
+                            setSelectedEmailId(null);
                             refetchCurrentEmails();
                         }}
                     />

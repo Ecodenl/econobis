@@ -27,19 +27,33 @@ class HousingFileNewFormGeneral extends Component {
                 addressId: props.addressId,
                 buildingTypeId: '',
                 buildYear: '',
-                isHouseForSale: '',
+                isHouseForSale: '2',
                 surface: '',
                 roofTypeId: '',
                 energyLabelId: '',
                 floors: 0,
                 energyLabelStatusId: '',
-                isMonument: false,
+                isMonument: '2',
                 numberOfResidents: 0,
                 wozValue: '',
             },
             errors: {
                 wozValue: false,
             },
+            noYesUnknownOptions: [
+                {
+                    id: '0',
+                    name: 'Nee',
+                },
+                {
+                    id: '1',
+                    name: 'Ja',
+                },
+                {
+                    id: '2',
+                    name: 'Onbekend',
+                },
+            ],
         };
     }
 
@@ -108,7 +122,7 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Contact'}
                         name={'fullName'}
                         value={fullName}
-                        onChange={() => {}}
+                        onChangeAction={() => {}}
                         readOnly={true}
                     />
                     <div className="form-group col-sm-6">
@@ -207,10 +221,12 @@ class HousingFileNewFormGeneral extends Component {
                         options={this.props.energyLabelStatus}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputToggle
+                    <InputSelect
                         label={'Monument'}
                         name={'isMonument'}
                         value={isMonument}
+                        options={this.state.noYesUnknownOptions}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -223,10 +239,12 @@ class HousingFileNewFormGeneral extends Component {
                         min={0}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputToggle
+                    <InputSelect
                         label={'Koophuis'}
                         name={'isHouseForSale'}
                         value={isHouseForSale}
+                        options={this.state.noYesUnknownOptions}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>

@@ -11,7 +11,7 @@ class CampaignPolicy
 
     public function view(User $user)
     {
-        return $user->hasPermissionTo('manage_marketing', 'api');
+        return $user->hasPermissionTo('view_marketing', 'api');
     }
 
     public function manage(User $user)

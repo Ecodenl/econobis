@@ -494,6 +494,7 @@ Route::namespace('Api')
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
+        Route::post('project/revenue/{projectRevenue}/confirm', 'Project\ProjectRevenueController@confirm');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
         Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');

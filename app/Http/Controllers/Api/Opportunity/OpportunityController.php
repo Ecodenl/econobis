@@ -66,11 +66,12 @@ class OpportunityController extends ApiController
             'intake.contact',
             'intake.campaign',
             'intake.address',
+            'intake.address.housingFile',
             'intake.campaign.opportunityActions',
             'tasks',
             'notes',
             'documents',
-            'measures'
+            'measures',
         ]);
 
         $opportunity->relatedEmailsSent = $this->getRelatedEmails($opportunity->id, 'sent');
@@ -109,6 +110,8 @@ class OpportunityController extends ApiController
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->onEmpty(null)->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->onEmpty(null)->next()
             ->get();
 
         $opportunity = new Opportunity();
@@ -140,6 +143,8 @@ class OpportunityController extends ApiController
             ->string('desiredDate')->validate('date')->onEmpty(null)->alias('desired_date')->next()
             ->string('amount')->alias('amount')->onEmpty(null)->next()
             ->string('evaluationAgreedDate')->validate('date')->onEmpty(null)->alias('evaluation_agreed_date')->next()
+            ->string('belowWozLimit')->alias('below_woz_limit')->onEmpty(null)->next()
+            ->string('exceptionDebtRelief')->alias('exception_debt_relief')->onEmpty(null)->next()
             ->get();
 
         $opportunity->fill($data);

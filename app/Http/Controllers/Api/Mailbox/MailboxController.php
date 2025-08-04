@@ -20,7 +20,7 @@ use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
-use App\Http\RequestQueries\Invoice\Grid\RequestQuery;
+use App\Http\RequestQueries\Mailbox\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
@@ -47,19 +47,16 @@ class MailboxController extends Controller
     {
         $this->authorize('view', Mailbox::class);
 
-        $active = $requestQuery->getRequest()->onlyActive;
-
-        if ($active == 1) {
-            $mailboxes = Mailbox::where('is_active', 1)->get();
-        } elseif($active == 0) {
-            $mailboxes = Mailbox::where('is_active', 0)->get();
-        } else {
-            $mailboxes = Mailbox::get();
-        }
+        $mailboxes = $requestQuery->get();
 
         $mailboxes->load(['mailgunDomain']);
 
-        return GridMailbox::collection($mailboxes);
+        return GridMailbox::collection($mailboxes)
+            ->additional([
+                'meta' => [
+                    'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
     public function store(Request $request, RequestInput $input, MailgunHelper $mailgunHelper)

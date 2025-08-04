@@ -1,30 +1,41 @@
 import React from 'react';
-import { connect } from 'react-redux';
 
-const MailboxesListFilter = props => {
-    return (
-        <tr className="thead-filter">
-            <th />
-            <th />
-            <th />
-            <th />
-            <th />
-            <th>
-                <select
-                    className="form-control input-sm"
-                    onChange={e => props.refreshData(e.target.value)}
-                >
-                    <option key={1} value="1">
-                        ja
-                    </option>
-                    <option key={0} value="0">
-                        nee
-                    </option>
-                </select>
-            </th>
-            <th />
-        </tr>
+function MailboxesListFilter({ filter, handleChangeFilter }) {
+    let tr = (
+        <>
+            <tr className="thead-filter">
+                <th>
+                    <input
+                        type="text"
+                        className="form-control input-sm"
+                        value={filter.name}
+                        onChange={e => handleChangeFilter('name', e.target.value)}
+                    />
+                </th>
+                <th />
+                <th />
+                <th />
+                <th />
+                <th>
+                    <select
+                        className="form-control input-sm"
+                        value={filter.isActive}
+                        onChange={e => handleChangeFilter('isActive', e.target.value)}
+                    >
+                        <option />
+                        <option key={1} value={1}>
+                            Ja
+                        </option>
+                        <option key={0} value={0}>
+                            Nee
+                        </option>
+                    </select>
+                </th>
+                <th />
+            </tr>
+        </>
     );
-};
+    return tr;
+}
 
-export default connect(null, null)(MailboxesListFilter);
+export default MailboxesListFilter;

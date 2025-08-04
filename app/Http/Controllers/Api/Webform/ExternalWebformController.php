@@ -718,11 +718,10 @@ class ExternalWebformController extends Controller
                 if($groupname === 'free_field_contact' || $groupname === 'free_field_address') {
                     $data[$groupname][$outputName] = $request->get($inputName);
                 }
+                // en ook niet voor woondossier velden koophuis en monument.
                 elseif($groupname === 'housing_file'
                     && ( $outputName === 'is_house_for_sale' || $outputName === 'is_monument') ){
-                    // geen woondossier_koophuis of woondossier_monument meegegeven, dan default '2' = onbekend
-                    // todo WM: wellicht herzien voor wens: niet meegegeven woondossier gegevens niet wijzigen
-                    $data[$groupname][$outputName] = $request->get($inputName, '2');
+                    $data[$groupname][$outputName] = $request->get($inputName);
                 } else {
                     $data[$groupname][$outputName] = trim($request->get($inputName, ''));
                 }
@@ -779,16 +778,6 @@ class ExternalWebformController extends Controller
         }
         if($data['housing_file']['amount_gas']) {
             $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas']);
-        }
-        // woondossier_koophuis leeg meegegeven, dan default '0' = Nee
-        // todo WM: wellicht herzien voor wens: niet meegegeven woondossier gegevens niet wijzigen
-        if(empty($data['housing_file']['is_house_for_sale'])) {
-            $data['housing_file']['is_house_for_sale'] = '0';
-        }
-        // woondossier_monument leeg meegegeven, dan default '0' = Nee
-        // todo WM: wellicht herzien voor wens: niet meegegeven woondossier gegevens niet wijzigen
-        if(empty($data['housing_file']['is_monument'])) {
-            $data['housing_file']['is_monument'] = '0';
         }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
@@ -2635,6 +2624,7 @@ class ExternalWebformController extends Controller
 
     protected function addHousingFileToAddress(Address $address, array $data, Webform $webform)
     {
+        // todo WM: hier even debuggen wat waarden van is_house_for_sale en is_monument zijn
         if($data['building_type_id'] == ''
             && $data['build_year'] == ''
             && $data['is_house_for_sale'] == ''
@@ -2777,7 +2767,20 @@ class ExternalWebformController extends Controller
         if (!$housingFile) {
             $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
 
+            // todo WM: hier debuggen waarden
+            $this->log('Add - Waarde is_house_for_sale : ' . $data['is_house_for_sale']);
+            $this->log('Add - Waarde is_monument : ' . $data['is_monument']);
+
             // todo WM: wellicht herzien voor wens: niet meegegeven woondossier gegevens niet wijzigen
+            // Bij nieuw toevoegen: indien woondossier_koophuis (is_house_for_sale) niet is meegeven of leeg: dan default: 2 = Onbekend
+            if(empty($data['is_house_for_sale'])) {
+                $data['is_house_for_sale'] = '2';
+            }
+            // Bij nieuw toevoegen: indien woondossier_monument (is_monument) niet is meegeven of leeg: dan default: 2 = Onbekend
+            if(empty($data['is_monument'])) {
+                $data['is_monument'] = '2';
+            }
+
             $housingFile = HousingFile::create([
                 'address_id' =>  $address->id,
                 'building_type_id' => $buildingType ? $buildingType->id : null,
@@ -2846,16 +2849,42 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is een woondossier met ' . $housingFile->id . ' gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier bijwerken.');
 
+            // todo WM: hier debuggen waarden
+            $this->log('Change - Waarde is_house_for_sale : ' . $data['is_house_for_sale']);
+            $this->log('Change - Waarde is_monument : ' . $data['is_monument']);
+
             // todo WM: wellicht herzien voor wens: niet meegegeven woondossier gegevens niet wijzigen
+            // Indien woondossier_koophuis (is_house_for_sale) niet meegegeven, dan huidige waarde niet wijzigen, indien leeg meegegeven dan default '0' = Nee
+            $isHouseForSale = $housingFile->is_house_for_sale;
+            if(!isset($data['is_house_for_sale'])) {
+                if (empty($data['is_house_for_sale'])) {
+                    $isHouseForSale = '0';
+                } else {
+                    $isHouseForSale = $data['is_house_for_sale']    ;
+                }
+            }
+            // Indien woondossier_monument (is_monument) niet meegegeven, dan huidige waarde niet wijzigen, indien leeg meegegeven dan default '0' = Nee
+            $isMonument = $housingFile->is_monument;
+            if(!isset($data['is_house_for_sale'])) {
+                if (empty($data['is_house_for_sale'])) {
+                    $isMonument = '0';
+                } else {
+                    $isMonument = $data['is_monument'];
+                }
+            }
+            // todo WM: hier debuggen waarden
+            $this->log('Change to - Waarde is_house_for_sale : ' .$isHouseForSale);
+            $this->log('Change to - Waarde is_monument : ' . $isMonument);
+
             $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
             $housingFile->build_year = $buildYear ? $buildYear : null;
-            $housingFile->is_house_for_sale = $data['is_house_for_sale'];
+            $housingFile->is_house_for_sale = $isHouseForSale;
             $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
             $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
             $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
             $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
             $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = $data['is_monument'];
+            $housingFile->is_monument = $isMonument;
             $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];

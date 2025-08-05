@@ -641,12 +641,19 @@ class ExternalWebformController extends Controller
                 'woondossier_woningtype_id' => 'building_type_id',
                 'woondossier_bouwjaar' => 'build_year',
                 'woondossier_koophuis' => 'is_house_for_sale',
+                'woondossier_monument' => 'is_monument',
                 'woondossier_gebruiksoppervlakte' => 'surface',
                 'woondossier_daktype_id' => 'roof_type_id',
                 'woondossier_energielabel_id' => 'energy_label_id',
                 'woondossier_aantal_bouwlagen' => 'floors',
                 'woondossier_status_energielabel_id' => 'energy_label_status_id',
-                'woondossier_monument' => 'is_monument',
+                'woondossier_aantal_bewoners' => 'number_of_residents',
+                'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
+                'woondossier_opmerking' => 'remark',
+                'woondossier_opmerking_coach' => 'remark_coach',
+                'woondossier_verbruik_elektriciteit' => 'amount_electricity',
+                'woondossier_verbruik_gas' => 'amount_gas',
+                'woondossier_stooktemperatuur' => 'boiler_setting_comfort_heat',
                 'woondossier_maatregelen_ids' => 'measure_ids',
                 'woondossier_maatregelen_campagne_id' => 'measure_campaign_id',
                 'woondossier_maatregelen_datums_realisatie' => 'measure_dates',
@@ -655,13 +662,6 @@ class ExternalWebformController extends Controller
                 'woondossier_maatregelen_verdieping_ids' => 'measure_floors_ids',
                 'woondossier_maatregelen_zijde_ids' => 'measure_sides_ids',
                 'woondossier_maatregelen_type_merken' => 'measure_type_brands',
-                'woondossier_aantal_bewoners' => 'number_of_residents',
-                'woondossier_opbrengst_zonnepanelen' => 'revenue_solar_panels',
-                'woondossier_opmerking' => 'remark',
-                'woondossier_opmerking_coach' => 'remark_coach',
-                'woondossier_verbruik_elektriciteit' => 'amount_electricity',
-                'woondossier_verbruik_gas' => 'amount_gas',
-                'woondossier_stooktemperatuur' => 'boiler_setting_comfort_heat',
             ],
             'quotation_request_visit' => [
                 'kansactie_update_afspraak_status' => 'status_id',
@@ -714,14 +714,11 @@ class ExternalWebformController extends Controller
                 // Alle input standaard waarde '' meegeven.
                 // Op deze manier hoeven we later alleen op lege string te checken...
                 // ... ipv bijv. if(!isset() || is_null($var) || $var = '')
-                // Niet voor vrije velden, daar willen we wel op lege string kunnen checken.
-                if($groupname === 'free_field_contact' || $groupname === 'free_field_address') {
+                // Niet voor vrije velden, daar willen we wel op niet gezet kunnen checken.
+                // en ook voor woondossier velden
+                // hier moeten we namelijk ook onderscheid maken tussen niet meegegeven (behoud van gegevens) of leeg meegeven (wel wijzigen).
+                if($groupname === 'free_field_contact' || $groupname === 'free_field_address' || $groupname === 'housing_file') {
                     $data[$groupname][$outputName] = $request->get($inputName);
-                }
-                elseif($groupname === 'housing_file'
-                    && ( $outputName === 'is_house_for_sale' || $outputName === 'is_monument') ){
-                    // geen woondossier_koophuis of woondossier_monument meegegeven, dan default '2' = onbekend
-                    $data[$groupname][$outputName] = $request->get($inputName, '2');
                 } else {
                     $data[$groupname][$outputName] = trim($request->get($inputName, ''));
                 }
@@ -778,14 +775,6 @@ class ExternalWebformController extends Controller
         }
         if($data['housing_file']['amount_gas']) {
             $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas']);
-        }
-        // woondossier_koophuis leeg meegegeven, dan default '0' = Nee
-        if(empty($data['housing_file']['is_house_for_sale'])) {
-            $data['housing_file']['is_house_for_sale'] = '0';
-        }
-        // woondossier_monument leeg meegegeven, dan default '0' = Nee
-        if(empty($data['housing_file']['is_monument'])) {
-            $data['housing_file']['is_monument'] = '0';
         }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
@@ -1886,7 +1875,7 @@ class ExternalWebformController extends Controller
 
     protected function setFreeFieldsFieldRecords($parent, ?array $data, $tableId): void
     {
-//    todo WM: opschonen
+//     Voor als je wilt debuggen:
 //        $this->log('data:');
 //        $this->log(json_encode($data));
         // Helemaal geen freefields voor webformulieren in gebruik, dan doen we niets
@@ -2632,30 +2621,31 @@ class ExternalWebformController extends Controller
 
     protected function addHousingFileToAddress(Address $address, array $data, Webform $webform)
     {
-        if($data['building_type_id'] == ''
-            && $data['build_year'] == ''
-            && $data['is_house_for_sale'] == ''
-            && $data['surface'] == ''
-            && $data['roof_type_id'] == ''
-            && $data['energy_label_id'] == ''
-            && $data['floors'] == ''
-            && $data['energy_label_status_id'] == ''
-            && $data['is_monument'] == ''
-            && $data['measure_ids'] == ''
-            && $data['measure_campaign_id'] == ''
-            && $data['measure_dates'] == ''
-            && $data['measure_answers'] == ''
-            && $data['measure_status_ids'] == ''
-            && $data['measure_floors_ids'] == ''
-            && $data['measure_sides_ids'] == ''
-            && $data['measure_type_brands'] == ''
-            && $data['number_of_residents'] == ''
-            && $data['revenue_solar_panels'] == ''
-            && $data['remark'] == ''
-            && $data['remark_coach'] == ''
-            && $data['amount_electricity'] == ''
-            && $data['amount_gas'] == ''
-            && $data['boiler_setting_comfort_heat'] == ''
+        // Is er een housingfile veld meegegeven
+        if(!isset($data['building_type_id'])
+            && !isset($data['build_year'])
+            && !isset($data['is_house_for_sale'])
+            && !isset($data['is_monument'])
+            && !isset($data['surface'])
+            && !isset($data['roof_type_id'])
+            && !isset($data['energy_label_id'])
+            && !isset($data['floors'])
+            && !isset($data['energy_label_status_id'])
+            && !isset($data['number_of_residents'])
+            && !isset($data['revenue_solar_panels'])
+            && !isset($data['remark'])
+            && !isset($data['remark_coach'])
+            && !isset($data['amount_electricity'])
+            && !isset($data['amount_gas'])
+            && !isset($data['boiler_setting_comfort_heat'])
+            && !isset($data['measure_campaign_id'])
+            && !isset($data['measure_ids'])
+            && !isset($data['measure_dates'])
+            && !isset($data['measure_answers'])
+            && !isset($data['measure_status_ids'])
+            && !isset($data['measure_floors_ids'])
+            && !isset($data['measure_sides_ids'])
+            && !isset($data['measure_type_brands'])
         ){
             $this->log('Er zijn geen woondossiergegevens meegegeven.');
             return null;
@@ -2678,72 +2668,169 @@ class ExternalWebformController extends Controller
             }
         }
 
-        $buildYear = null;
-        if (isset($data['build_year']) && is_numeric($data['build_year']) && (1500 <= $data['build_year']) && ($data['build_year'] <= 3000) ) {
-            $buildYear = $data['build_year'];
+        // init values
+        // check of housingfile al bestaat
+        $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
+
+        // Als woondossier al bestaat en gegeven is niet meegegeven dan bestaande behouden
+        if ($housingFile) {
+            $buildingTypeId = isset($data['building_type_id']) ? $data['building_type_id'] : $housingFile->building_type_id;
+            $buildYear = isset($data['build_year']) ? $data['build_year'] : $housingFile->build_year;
+            $isHouseForSale = isset($data['is_house_for_sale']) ? $data['is_house_for_sale'] : $housingFile->is_house_for_sale;
+            $isMonument = isset($data['is_monument']) ? $data['is_monument'] : $housingFile->is_monument;
+            $surface = isset($data['surface']) ? $data['surface'] : $housingFile->surface;
+            $roofTypeId = isset($data['roof_type_id']) ? $data['roof_type_id'] : $housingFile->roof_type_id;
+            $energyLabelId = isset($data['energy_label_id']) ? $data['energy_label_id'] : $housingFile->energy_label_id;
+            $floors = isset($data['floors']) ? $data['floors'] : $housingFile->floors;
+            $energyLabelStatusId = isset($data['energy_label_status_id']) ? $data['energy_label_status_id'] : $housingFile->energy_label_status_id;
+            $numberOfResidents = isset($data['number_of_residents']) ? $data['number_of_residents'] : $housingFile->number_of_residents;
+            $revenueSolarPanels = isset($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : $housingFile->revenue_solar_panels;
+            $remark = isset($data['remark']) ? $data['remark'] : $housingFile->remark;
+            $remarkCoach = isset($data['remark_coach']) ? $data['remark_coach'] : $housingFile->remark_coach;
+            $amountElectricity = isset($data['amount_electricity']) ? $data['amount_electricity'] : $housingFile->amount_electricity;
+            $amountGas = isset($data['amount_gas']) ? $data['amount_gas'] : $housingFile->amount_gas;
+            $boilerSettingComfortHeatValue = isset($data['boiler_setting_comfort_heat']) ? $data['boiler_setting_comfort_heat'] : $housingFile->boiler_setting_comfort_heat;
+        } else {
+            $buildingTypeId = isset($data['building_type_id']) ? $data['building_type_id'] : null;
+            $buildYear = isset($data['build_year']) ? $data['build_year'] : null;
+            $isHouseForSale = isset($data['is_house_for_sale']) ? $data['is_house_for_sale'] : "2";
+            $isMonument = isset($data['is_monument']) ? $data['is_monument'] : "2";
+            $surface = isset($data['surface']) ? $data['surface'] : null;
+            $roofTypeId = isset($data['roof_type_id']) ? $data['roof_type_id'] : null;
+            $energyLabelId = isset($data['energy_label_id']) ? $data['energy_label_id'] : null;
+            $floors = isset($data['floors']) ? $data['floors'] : null;
+            $energyLabelStatusId = isset($data['energy_label_status_id']) ? $data['energy_label_status_id'] : null;
+            $numberOfResidents = isset($data['number_of_residents']) ? $data['number_of_residents'] : 0;
+            $revenueSolarPanels = isset($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
+            $remark = isset($data['remark']) ? $data['remark'] : "";
+            $remarkCoach = isset($data['remark_coach']) ? $data['remark_coach'] : "";
+            $amountElectricity = isset($data['amount_electricity']) ? $data['amount_electricity'] : null;
+            $amountGas = isset($data['amount_gas']) ? $data['amount_gas'] : null;
+            $boilerSettingComfortHeatValue = isset($data['boiler_setting_comfort_heat']) ? $data['boiler_setting_comfort_heat'] : null;
         }
 
-        $buildingType = BuildingType::find($data['building_type_id']);
-        if (!$buildingType) {
-            $this->log('Er is geen bekende waarde voor woning type meegegeven, default naar "geen"');
-            $buildingType = null;
+        if ($buildingTypeId !== null) {
+            $buildingType = BuildingType::find($buildingTypeId);
+            if (!$buildingType) {
+                $this->log('Er is geen bekende waarde voor woning type meegegeven, default naar "geen"');
+                $buildingTypeId = null;
+            }
         }
 
-        $eneryLabel = EnergyLabel::find($data['energy_label_id']);
-        if (!$eneryLabel) {
-            $this->log('Er is geen bekende waarde voor energie label meegegeven, default naar "geen"');
-            $eneryLabel = null;
+        if ($buildYear !== null) {
+            if( !is_numeric($buildYear) || ($buildYear < 1000) || ($buildYear > 3000) ) {
+                $this->log('Er is geen geldig bouwjaar (tussen 1000 en 3000) meegegeven, default naar "Onbekend"');
+                $buildYear = null;
+            }
         }
 
-        $eneryLabelStatus = EnergyLabelStatus::find($data['energy_label_status_id']);
-        if (!$eneryLabelStatus) {
-            $this->log('Er is geen bekende waarde voor status energie label meegegeven, default naar "geen"');
-            $eneryLabelStatus = null;
+        // Indien woondossier_koophuis (is_house_for_sale) leeg dan default: 0 = Nee, indien ongeldige waarde: dan default: 2 = Onbekend
+        if(!in_array($isHouseForSale, ['0', '1', '2'])) {
+            if(empty($isHouseForSale)){
+                $isHouseForSale = '0';
+                $this->log('Lege waarde voor woondossier_koophuis meegegeven, default naar "Nee"');
+            } else {
+                $isHouseForSale = '2';
+                $this->log('Geen geldige waarde voor woondossier_koophuis meegegeven, default naar "Onbekend"');
+            }
+        }
+        // Indien woondossier_monument (is_monument) leeg dan default: 0 = Nee, indien ongeldige waarde: dan default: 2 = Onbekend
+        if(!in_array($isMonument, ['0', '1', '2'])) {
+            if(empty($isMonument)){
+                $isMonument = '0';
+                $this->log('Lege waarde voor woondossier_monument meegegeven, default naar "Nee"');
+            } else {
+                $isMonument = '2';
+                $this->log('Geen geldige waarde voor woondossier_monument meegegeven, default naar "Onbekend"');
+            }
         }
 
-        $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', $data['boiler_setting_comfort_heat'])->first();
-        if (!$boilerSettingComfortHeat) {
-            $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
-            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', 'unsure')->first();
+        if($surface !== null && !is_numeric($surface)) {
+            $this->log('Waarde woondossier_gebruiksoppervlakte is niet numeriek, default naar "Onbekend"');
+            $surface = null;
         }
 
-        $rofeType = RoofType::find($data['roof_type_id']);
-        if (!$rofeType) {
-            $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
-            $rofeType = null;
+        if($roofTypeId !== null) {
+            $rofeType = RoofType::find($roofTypeId);
+            if (!$rofeType) {
+                $this->log('Er is geen bekende waarde voor dak type meegegeven, default naar "geen"');
+                $roofTypeId = null;
+            }
+        }
+
+        if($energyLabelId !== null){
+            $eneryLabel = EnergyLabel::find($energyLabelId);
+            if (!$eneryLabel) {
+                $this->log('Er is geen bekende waarde voor energie label meegegeven, default naar "geen"');
+                $energyLabelId = null;
+            }
+        }
+
+        if($floors !== null && !is_numeric($floors)) {
+            $this->log('Waarde woondossier_aantal_bouwlagen is niet numeriek, default naar "Onbekend"');
+            $floors = null;
+        }
+
+        if($energyLabelStatusId !== null) {
+            $eneryLabelStatus = EnergyLabelStatus::find($energyLabelStatusId);
+            if (!$eneryLabelStatus) {
+                $this->log('Er is geen bekende waarde voor status energie label meegegeven, default naar "geen"');
+                $energyLabelStatusId = null;
+            }
+        }
+
+        if($numberOfResidents !== null && !is_numeric($numberOfResidents)) {
+            $this->log('Waarde woondossier_aantal_bouwlagen is niet numeriek, default naar 0');
+            $numberOfResidents = 0;
+        }
+
+        if($revenueSolarPanels !== null && !is_numeric($revenueSolarPanels)) {
+            $this->log('Waarde woondossier_aantal_bouwlagen is niet numeriek, default naar 0');
+            $revenueSolarPanels = 0;
+        }
+
+        if($boilerSettingComfortHeatValue !== null) {
+            $boilerSettingComfortHeat = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', $boilerSettingComfortHeatValue);
+            if (!$boilerSettingComfortHeat->exists()) {
+                $this->log('Er is geen bekende waarde voor woondossier stooktemperatuur meegegeven, default naar "Weet ik niet"');
+                $boilerSettingComfortHeatValue = HousingFileHoomHousingStatus::where('external_hoom_short_name', 'boiler-setting-comfort-heat')->where('hoom_status_value', 'unsure')->first()->hoom_status_value;
+            }
         }
 
         $housingFileSpecificationCampaignId = null;
-        if ($data['measure_campaign_id']) {
+        if (isset($data['measure_campaign_id'])) {
             $housingFileSpecificationCampaign = Campaign::find($data['measure_campaign_id']);
             if ($housingFileSpecificationCampaign && $housingFileSpecificationCampaign->status_id !== Campaign::STATUS_CLOSED) {
                 $this->log('housingFileSpecificationCampaign->id: ' . $housingFileSpecificationCampaign->id );
                 $housingFileSpecificationCampaignId = $housingFileSpecificationCampaign->id;
+            } else {
+                $this->log('Er is geen bekende waarde voor de campagne meegegeven, default naar "geen"');
             }
-        }
-        if ($housingFileSpecificationCampaignId === null) {
-            $this->log('Er is geen bekende waarde voor de campagne meegegeven, default naar "geen"');
         }
 
 //        $measures = Measure::whereIn('id', explode(',', $data['measure_ids']))->get();
         $measures = [];
-        $measuresIds = $data['measure_ids'] ? explode(',', $data['measure_ids']) : null;
+        $measuresIds = isset($data['measure_ids']) ? explode(',', $data['measure_ids']) : null;
         if($measuresIds) {
-            foreach ($measuresIds as $measuresId){
+            foreach ($measuresIds as $measuresId) {
                 $measureFound = Measure::find($measuresId);
-                if($measureFound){
+                if ($measureFound) {
                     $measures[] = $measureFound;
+//                    $this->log('Woondossier maatregel id ' . $measuresId . ' gevonden!');
                 } else {
                     $this->log('Woondossier maatregel id ' . $measuresId . ' niet gevonden!');
                 }
             }
+        } else {
+//            $this->log('Geen maatregelen ids meegeven bij woondossier !');
         }
-        $measureDates = $data['measure_dates'] ? explode(',', $data['measure_dates']) : null;
-        $measureAnswers = $data['measure_answers'] ? explode(',', $data['measure_answers']) : null;
-        $measureStatusIds = $data['measure_status_ids'] ? explode(',', $data['measure_status_ids']) : null;
-        $measureFloorsIds = $data['measure_floors_ids'] ? explode(',', $data['measure_floors_ids']) : null;
-        $measureSidesids = $data['measure_sides_ids'] ? explode(',', $data['measure_sides_ids']) : null;
-        $measureTypeBrands = $data['measure_type_brands'] ? explode(',', $data['measure_type_brands']) : null;
+
+        $measureDates = isset($data['measure_dates']) ? explode(',', $data['measure_dates']) : null;
+        $measureAnswers = isset($data['measure_answers']) ? explode(',', $data['measure_answers']) : null;
+        $measureStatusIds = isset($data['measure_status_ids']) ? explode(',', $data['measure_status_ids']) : null;
+        $measureFloorsIds = isset($data['measure_floors_ids']) ? explode(',', $data['measure_floors_ids']) : null;
+        $measureSidesids = isset($data['measure_sides_ids']) ? explode(',', $data['measure_sides_ids']) : null;
+        $measureTypeBrands = isset($data['measure_type_brands']) ? explode(',', $data['measure_type_brands']) : null;
 
         if(!$measuresIds){
             if($measureDates || $measureAnswers || $measureStatusIds || $measureFloorsIds || $measureSidesids || $measureTypeBrands){
@@ -2769,29 +2856,28 @@ class ExternalWebformController extends Controller
                 $this->log('Aantal woondossier maatregelen type merken (' . count($measureTypeBrands) . ') komt niet overeen met aantal maatregelen ids (' . count($measuresIds) . ').');
             }
         }
-        $housingFile = HousingFile::where('address_id', $address->id)->orderBy('id', 'desc')->first();
         // Nog geen woondossier op adres, nieuw aanmaken
         if (!$housingFile) {
-            $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
 
+            $this->log('Er is geen woondossier gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier aanmaken.');
             $housingFile = HousingFile::create([
                 'address_id' =>  $address->id,
-                'building_type_id' => $buildingType ? $buildingType->id : null,
-                'build_year' => $buildYear ? $buildYear : null,
-                'is_house_for_sale' => $data['is_house_for_sale'],
-                'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
-                'roof_type_id' => $rofeType ? $rofeType->id : null,
-                'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,
-                'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
-                'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
-                'is_monument' => $data['is_monument'],
-                'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
-                'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
-                'remark' => $data['remark'],
-                'remark_coach' => $data['remark_coach'],
-                'amount_electricity' => $data['amount_electricity'],
-                'amount_gas' => $data['amount_gas'],
-                'boiler_setting_comfort_heat' => $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null,
+                'building_type_id' => $buildingTypeId,
+                'build_year' => $buildYear,
+                'is_house_for_sale' => $isHouseForSale,
+                'is_monument' => $isMonument,
+                'surface' => $surface,
+                'roof_type_id' => $roofTypeId,
+                'energy_label_id' => $energyLabelId,
+                'floors' => $floors,
+                'energy_label_status_id' => $energyLabelStatusId,
+                'number_of_residents' => $numberOfResidents,
+                'revenue_solar_panels' => $revenueSolarPanels,
+                'remark' => $remark,
+                'remark_coach' => $remarkCoach,
+                'amount_electricity' => $amountElectricity,
+                'amount_gas' => $amountGas,
+                'boiler_setting_comfort_heat' => $boilerSettingComfortHeatValue,
             ]);
             $this->log("Woondossier met id " . $housingFile->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
 
@@ -2827,8 +2913,8 @@ class ExternalWebformController extends Controller
                         'measure_date' => $measureDate,
                         'answer' => $measureAnswer,
                         'status_id' => $measureStatusId,
-                        'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
-                        'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
+                        'floor_id' => empty(trim($measureFloorId)) ? null : $measureFloorId,
+                        'side_id' => empty(trim($measureSidesid)) ? null : $measureSidesid,
                         'type_brand' => $measureTypeBrand,
                         'campaign_id' => $housingFileSpecificationCampaignId,
                     ]);
@@ -2842,23 +2928,24 @@ class ExternalWebformController extends Controller
         } else {
             $this->log('Er is een woondossier met ' . $housingFile->id . ' gevonden op adres met postcode: ' . ($address->postal_code . ' nummer: ' . $address->number . ' toevoeging: ' . $address->addition ) .'. woondossier bijwerken.');
 
-            $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
-            $housingFile->build_year = $buildYear ? $buildYear : null;
-            $housingFile->is_house_for_sale = $data['is_house_for_sale'];
-            $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
-            $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
-            $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
-            $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
-            $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = $data['is_monument'];
-            $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
-            $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
-            $housingFile->remark = $data['remark'];
-            $housingFile->remark_coach = $data['remark_coach'];
-            $housingFile->amount_electricity = $data['amount_electricity'];
-            $housingFile->amount_gas = $data['amount_gas'];
-            $housingFile->boiler_setting_comfort_heat = $boilerSettingComfortHeat ? $boilerSettingComfortHeat->hoom_status_value : null;
-            $housingFile->save();
+            $housingFile->update([
+                'building_type_id' => $buildingTypeId,
+                'build_year' => $buildYear,
+                'is_house_for_sale' => $isHouseForSale,
+                'is_monument' => $isMonument,
+                'surface' => $surface,
+                'roof_type_id' => $roofTypeId,
+                'energy_label_id' => $energyLabelId,
+                'floors' => $floors,
+                'energy_label_status_id' => $energyLabelStatusId,
+                'number_of_residents' => $numberOfResidents,
+                'revenue_solar_panels' => $revenueSolarPanels,
+                'remark' => $remark,
+                'remark_coach' => $remarkCoach,
+                'amount_electricity' => $amountElectricity,
+                'amount_gas' => $amountGas,
+                'boiler_setting_comfort_heat' => $boilerSettingComfortHeatValue,
+            ]);
             $this->log("Woondossier met id " . $housingFile->id . " is gewijzigd voor adres id " . $address->id . ".");
 
             if(isset($measures)){
@@ -2895,21 +2982,21 @@ class ExternalWebformController extends Controller
                             'measure_date' => $measureDate,
                             'answer' => $measureAnswer,
                             'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
-                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
+                            'floor_id' => empty(trim($measureFloorId)) ? null : $measureFloorId,
+                            'side_id' => empty(trim($measureSidesid)) ? null : $measureSidesid,
                             'type_brand' => $measureTypeBrand,
                             'campaign_id' => $housingFileSpecificationCampaignId,
                         ]);
 //                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " nieuw aangemaakt met id: " . $housingFileSpecification->id . ".");
                     } else {
                         $housingFileSpecification->update([
-                            'measure_date' => $measureDate,
-                            'answer' => $measureAnswer,
-                            'status_id' => $measureStatusId,
-                            'floor_id' => $measureFloorId == ' ' ? null : $measureFloorId,
-                            'side_id' => $measureSidesid == ' ' ? null : $measureSidesid,
-                            'type_brand' => $measureTypeBrand,
-                            'campaign_id' => $housingFileSpecificationCampaignId,
+                            'measure_date' => isset($data['measure_dates']) ? $measureDate : $housingFileSpecification->measure_date,
+                            'answer' => isset($data['measure_answers']) ? $measureAnswer : $housingFileSpecification->answer,
+                            'status_id' => isset($data['measure_status_ids']) ? $measureStatusId : $housingFileSpecification->status_id,
+                            'floor_id' => isset($data['measure_floors_ids']) ? (empty(trim($measureFloorId)) ? null : $measureFloorId) : $housingFileSpecification->floor_id,
+                            'side_id' => isset($data['measure_sides_ids']) ? (empty(trim($measureSidesid)) ? null : $measureSidesid) : $housingFileSpecification->side_id,
+                            'type_brand' => isset($data['measure_type_brands']) ? $measureTypeBrand : $housingFileSpecification->type_brand,
+                            'campaign_id' => isset($data['measure_campaign_id']) ? $housingFileSpecificationCampaignId : $housingFileSpecification->campaign_id,
                         ]);
 //                        $this->log("Woondossierspecificatie met woondossier id " . $housingFile->id . " en maatregel id " . $measure->id . " gewijzigd voor id: " . $housingFileSpecification->id . ".");
                     }

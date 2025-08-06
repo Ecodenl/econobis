@@ -1,82 +1,57 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
 
 import ContactDetailsFormAddressList from './ContactDetailsFormAddressList';
 import ContactDetailsFormAddressNew from './ContactDetailsFormAddressNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
-import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
-class ContactDetailsFormAddress extends Component {
-    constructor(props) {
-        super(props);
+function ContactDetailsFormAddress() {
+    const [showNew, setShowNew] = useState(false);
+    const [addressEnergySupplierNewOrEditOpen, setAddressEnergySupplierNewOrEditOpen] = useState(false);
+    const [addressDongleNewOrEditOpen, setAddressDongleNewOrEditOpen] = useState(false);
 
-        this.state = {
-            showNew: false,
-            addressEnergySupplierNewOrEditOpen: false,
-        };
-    }
+    const permissions = useSelector(state => state.meDetails.permissions);
 
-    toggleShowNew = () => {
-        const currentShowNew = this.state.showNew;
-        this.setState({
-            showNew: !currentShowNew,
-        });
-        this.setAddressEnergySupplierNewOrEditOpen(!currentShowNew);
+    const toggleShowNew = () => {
+        const newState = !showNew;
+        setShowNew(newState);
+        setAddressEnergySupplierNewOrEditOpen(newState);
     };
 
-    setAddressEnergySupplierNewOrEditOpen = falseTrue => {
-        this.setState({
-            addressEnergySupplierNewOrEditOpen: falseTrue,
-        });
-    };
-
-    setAddressDongleNewOrEditOpen = falseTrue => {
-        this.setState({
-            addressDongleNewOrEditOpen: falseTrue,
-        });
-    };
-
-    render() {
-        return (
-            <Panel>
-                <PanelHeader>
-                    <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
-                    {this.props.permissions.createContactAddress &&
-                        this.state.addressEnergySupplierNewOrEditOpen == false &&
-                        this.state.addressDongleNewOrEditOpen == false && (
-                            <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                                <Icon size={14} icon={plus} />
-                            </a>
-                        )}
-                </PanelHeader>
-                <PanelBody>
-                    <div className="col-md-12">
-                        <ContactDetailsFormAddressList
-                            setAddressEnergySupplierNewOrEditOpen={this.setAddressEnergySupplierNewOrEditOpen}
-                            addressEnergySupplierNewOrEditOpen={this.state.addressEnergySupplierNewOrEditOpen}
-                            setAddressDongleNewOrEditOpen={this.setAddressDongleNewOrEditOpen}
-                            addressDongleNewOrEditOpen={this.state.addressDongleNewOrEditOpen}
-                        />
-                    </div>
-                    <div className="col-md-12 margin-10-top">
-                        {this.props.permissions.createContactAddress && this.state.showNew && (
-                            <ContactDetailsFormAddressNew toggleShowNew={this.toggleShowNew} />
-                        )}
-                    </div>
-                </PanelBody>
-            </Panel>
-        );
-    }
+    return (
+        <Panel>
+            <PanelHeader>
+                <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
+                {permissions.createContactAddress &&
+                    !addressEnergySupplierNewOrEditOpen &&
+                    !addressDongleNewOrEditOpen && (
+                        <a role="button" className="pull-right" onClick={toggleShowNew}>
+                            <Icon size={14} icon={plus} />
+                        </a>
+                    )}
+            </PanelHeader>
+            <PanelBody>
+                <div className="col-md-12">
+                    <ContactDetailsFormAddressList
+                        setAddressEnergySupplierNewOrEditOpen={setAddressEnergySupplierNewOrEditOpen}
+                        addressEnergySupplierNewOrEditOpen={addressEnergySupplierNewOrEditOpen}
+                        setAddressDongleNewOrEditOpen={setAddressDongleNewOrEditOpen}
+                        addressDongleNewOrEditOpen={addressDongleNewOrEditOpen}
+                    />
+                </div>
+                <div className="col-md-12 margin-10-top">
+                    {permissions.createContactAddress && showNew && (
+                        <ContactDetailsFormAddressNew toggleShowNew={toggleShowNew} />
+                    )}
+                </div>
+            </PanelBody>
+        </Panel>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
-
-export default connect(mapStateToProps, null)(ContactDetailsFormAddress);
+export default ContactDetailsFormAddress;

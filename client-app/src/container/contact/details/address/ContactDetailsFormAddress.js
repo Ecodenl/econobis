@@ -46,16 +46,12 @@ class ContactDetailsFormAddress extends Component {
                 <PanelHeader>
                     <span className="h5 text-bold">Adres / Energieleverancier gegevens</span>
                     {this.props.permissions.createContactAddress &&
-                        this.state.addressEnergySupplierNewOrEditOpen == false && (
+                        this.state.addressEnergySupplierNewOrEditOpen == false &&
+                        this.state.addressDongleNewOrEditOpen == false && (
                             <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                                 <Icon size={14} icon={plus} />
                             </a>
                         )}
-                    {this.props.permissions.createContactAddress && this.state.addressDongleNewOrEditOpen == false && (
-                        <a role="button" className="pull-right" onClick={this.toggleShowNew}>
-                            <Icon size={14} icon={plus} />
-                        </a>
-                    )}
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">

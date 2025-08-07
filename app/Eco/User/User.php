@@ -169,7 +169,7 @@ class User extends Authenticatable
         if ($this->teamContactids !== null) {
             return $this->teamContactids;
         }
-        if (!$this->teams){
+        if (!$this->teams || $this->teams()->count() === 0) {
             return false;
         }
 

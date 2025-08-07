@@ -3,6 +3,7 @@
 namespace App\Eco\User;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
@@ -163,31 +164,41 @@ class User extends Authenticatable
     }
 
 // todo WM: deze getTeamContactIds() net als getTeamContactGroupIds() verplaatsen, maar dan naar contact builder?
-    public function getTeamContactIds(){
-        if(!$this->teamContactids == null){
-            return $this->teamContactids;
-        } else {
-            if (!$this->teams){
-                return false;
-            }
-
-            $teamContactIds = [];
-            $hasContactGroup = false;
-            foreach ($this->teams as $team){
-                foreach($team->contactGroups as $contactGroup){
-                    $hasContactGroup = true;
-                    $teamContactIds = array_unique(array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray()));
-                }
-            }
-            if($hasContactGroup && count($teamContactIds) == 0){
-                $this->teamContactids = [-1];
-            } else {
-                $this->teamContactids = $teamContactIds;
-            }
-
+    public function getTeamContactIds()
+    {
+        if ($this->teamContactids !== null) {
             return $this->teamContactids;
         }
+        if (!$this->teams){
+            return false;
+        }
+
+        $teamContactIds = [];
+        $hasContactGroup = false;
+
+        foreach ($this->teams as $team) {
+            foreach ($team->contactGroups as $contactGroup) {
+                $hasContactGroup = true;
+                $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
+            }
+        }
+
+        // Voeg contacten toe die door deze gebruiker zijn aangemaakt
+        $createdByIds = Contact::where('created_by_id', $this->id)->pluck('id')->toArray();
+
+        // Combineer en maak uniek
+        $combinedIds = array_unique(array_merge($teamContactIds, $createdByIds));
+
+        // Als er contactgroepen waren maar er zijn geen contacten in, gebruik [-1] als fallback
+        if ($hasContactGroup && count($combinedIds) === 0) {
+            $this->teamContactids = [-1];
+        } else {
+            $this->teamContactids = $combinedIds;
+        }
+
+        return $this->teamContactids;
     }
+
     public function getDocumentCreatedFromIds(){
         if(!$this->teamDocumentCreatedFromIds == null){
             return $this->teamDocumentCreatedFromIds;

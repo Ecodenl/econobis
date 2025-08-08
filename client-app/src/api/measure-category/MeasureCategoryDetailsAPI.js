@@ -13,6 +13,8 @@ const defaultFields = {
         'organisationIdWfCreateQuotationRequest',
         'usesWfEmailQuotationRequest',
         'emailTemplateIdWfCreateQuotationRequest',
+        'calendarBackgroundColor',
+        'calendarTextColor'
     ],
     rlt: {
         measureWorkflowCreateOpportunity: [],

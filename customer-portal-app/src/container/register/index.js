@@ -88,6 +88,7 @@ function RegisterProject({ match, currentSelectedContact }) {
         const keys =
             '?keys[]=portalName' +
             '&keys[]=portalWebsite' +
+            '&keys[]=portalLoginInfoText' +
             '&keys[]=portalUrl' +
             '&keys[]=responsibleUserId' +
             '&keys[]=checkContactTaskResponsibleUserId' +

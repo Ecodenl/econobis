@@ -46,6 +46,8 @@ class MeasureCategoriesListItem extends Component {
             usesWfCreateOpportunity,
             usesWfCreateQuotationRequest,
             usesWfEmailQuotationRequest,
+            calendarBackgroundColor,
+            calendarTextColor,
             permissions,
         } = this.props;
 
@@ -60,6 +62,7 @@ class MeasureCategoriesListItem extends Component {
                 <td>{usesWfCreateOpportunity ? 'Ja' : 'Nee'}</td>
                 <td>{usesWfCreateOpportunity ? (usesWfCreateQuotationRequest ? 'Ja' : 'Nee') : ''}</td>
                 <td>{usesWfCreateQuotationRequest ? (usesWfEmailQuotationRequest ? 'Ja' : 'Nee') : ''}</td>
+                <td style={{ backgroundColor: calendarBackgroundColor }}><span style={{ color: calendarTextColor }}>Kalender item</span></td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

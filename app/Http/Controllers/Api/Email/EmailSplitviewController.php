@@ -62,6 +62,19 @@ class EmailSplitviewController extends Controller
     {
         $this->authorize('manage', $email);
 
+        $originalFolder = $email->folder;
+        if ($email->folder === 'removed') {
+            if ($email->imap_id === null && $email->msoauth_message_id === null && $email->message_id === null) {
+                if ($email->date_sent === null) {
+                    $originalFolder = 'concept';
+                } else {
+                    $originalFolder = 'sent';
+                }
+            } else {
+                $originalFolder = 'inbox';
+            }
+        }
+
         return response()->json([
             'id' => $email->id,
             'status' => $email->status,
@@ -84,6 +97,7 @@ class EmailSplitviewController extends Controller
             'ccAddresses' => $email->getCcRecipients()->toReactArray(),
             'htmlBodyWithEmbeddedImages' => $email->inlineImagesService()->getHtmlBodyWithCidsConvertedToEmbeddedImages(),
             'folder' => $email->folder,
+            'originalFolder' => $originalFolder,
             'note' => $email->note,
             'contactGroup' => $email->contactGroup ? [
                 'id' => $email->contactGroup->id,

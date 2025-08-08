@@ -18,6 +18,7 @@ import OrganisationAPI from '../../../../api/contact/OrganisationAPI';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import validator from 'validator';
 import MeasuresOfCategory from '../../../../selectors/MeasuresOfCategory';
+import InputTextColorPicker from '../../../../components/form/InputTextColorPicker';
 
 class MeasureCategoryDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -38,6 +39,8 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                 organisationIdWfCreateQuotationRequest: false,
                 usesWfEmailQuotationRequest: false,
                 emailTemplateIdWfCreateQuotationRequest: false,
+                calendarBackgroundColor: false,
+                calendarTextColor: false,
             },
             peekLoading: {
                 measures: true,
@@ -160,6 +163,8 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
             organisationIdWfCreateQuotationRequest,
             usesWfEmailQuotationRequest,
             emailTemplateIdWfCreateQuotationRequest,
+            calendarBackgroundColor,
+            calendarTextColor,
         } = this.state.measureCategory;
 
         const measuresMatchToCategory = MeasuresOfCategory(this.state.measures, this.state.measureCategory.id);
@@ -295,6 +300,68 @@ class MeasureCategoryDetailsFormGeneralEdit extends Component {
                                 )}
                             </React.Fragment>
                         )}
+
+                        <div className="row">
+                            <InputTextColorPicker
+                                label="Kalender item achtergrond kleur"
+                                divSize={'col-sm-8'}
+                                name={'calendarBackgroundColor'}
+                                value={calendarBackgroundColor}
+                                size={'col-sm-4'}
+                                required={'required'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.calendarBackgroundColor}
+                                disabled={'disabled'}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: calendarBackgroundColor,
+                                    color: calendarTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
+
+                        <div className="row">
+                            <InputTextColorPicker
+                                label="Kalender item tekst kleur"
+                                divSize={'col-sm-8'}
+                                name={'calendarTextColor'}
+                                value={calendarTextColor}
+                                size={'col-sm-4'}
+                                required={'required'}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.calendarTextColor}
+                                disabled={'disabled'}
+                            />
+                            <span
+                                className="rc-color-picker-trigger"
+                                unselectable="unselectable"
+                                style={{
+                                    backgroundColor: calendarBackgroundColor,
+                                    color: calendarTextColor,
+                                    border: '1px solid #999',
+                                    display: 'inline-block',
+                                    padding: '2px',
+                                    borderRadius: '2px',
+                                    width: '50px',
+                                    height: '30px',
+                                    boxShadow: '0 0 0 2px #fff inset',
+                                }}
+                            >
+                                Tekst
+                            </span>
+                        </div>
                     </PanelBody>
 
                     <PanelBody>

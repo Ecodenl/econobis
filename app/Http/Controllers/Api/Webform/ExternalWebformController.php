@@ -162,6 +162,7 @@ class ExternalWebformController extends Controller
     private $createOpportunityToEmail = [];
     private $processWorkflowCreateOpportunity = false;
     private $onlyCheckLastName = false;
+    private $decimalSeparator = ',';
 
     public function post(string $apiKey, Request $request)
     {
@@ -363,7 +364,7 @@ class ExternalWebformController extends Controller
                         $data['contact']['collect_mandate_signature_date'] = Carbon::now();
                     }
                     if($data['contact']['collect_mandate_first_run_date'] == '' && $contact->collect_mandate_first_run_date == null) {
-                        $data['contact']['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                        $data['contact']['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
                     }
                     if($data['contact']['collect_mandate_collection_schema'] == '' && $contact->collect_mandate_collection_schema == '') {
                         $data['contact']['collect_mandate_collection_schema'] = 'core';
@@ -439,6 +440,9 @@ class ExternalWebformController extends Controller
     protected function getDataFromRequest(Request $request)
     {
         $mapping = [
+            'general' => [
+                'decimaal_scheidingsteken' => 'decimal_separator'
+            ],
             'responsible_ids' => [
                 'verantwoordelijke_gebruiker_id' => 'responsible_user_id',
                 'verantwoordelijke_team_id' => 'responsible_team_id',
@@ -711,8 +715,13 @@ class ExternalWebformController extends Controller
                 // Op deze manier hoeven we later alleen op lege string te checken...
                 // ... ipv bijv. if(!isset() || is_null($var) || $var = '')
                 // Niet voor vrije velden, daar willen we wel op lege string kunnen checken.
-                if($groupname === 'free_field_contact' || $groupname === 'free_field_address'){
+                if($groupname === 'free_field_contact' || $groupname === 'free_field_address') {
                     $data[$groupname][$outputName] = $request->get($inputName);
+                }
+                elseif($groupname === 'housing_file'
+                    && ( $outputName === 'is_house_for_sale' || $outputName === 'is_monument') ){
+                    // geen woondossier_koophuis of woondossier_monument meegegeven, dan default '2' = onbekend
+                    $data[$groupname][$outputName] = $request->get($inputName, '2');
                 } else {
                     $data[$groupname][$outputName] = trim($request->get($inputName, ''));
                 }
@@ -728,36 +737,55 @@ class ExternalWebformController extends Controller
         $data['contact']['address_postal_code'] = strtoupper(str_replace(' ', '', $data['contact']['address_postal_code']));
 
         // Amount values with decimals. Remove thousand points first, than replace decimal comma with point. 1.234,56 => 1234.56
-        $data['quotation_request']['quotation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['quotation_amount'])));
-        $data['quotation_request']['cost_adjustment'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['cost_adjustment'])));
-        $data['quotation_request']['award_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['award_amount'])));
-        $data['quotation_request']['amount_determination'] = floatval(str_replace(',', '.', str_replace('.', '', $data['quotation_request']['amount_determination'])));
+        // Treat empty decimalSeparator as comma
+        if (!empty($data['general']['decimal_separator'])) {
+            if (!in_array($data['general']['decimal_separator'], [',', '.'])) {
+                $this->log('Ongeldige scheidingsteken: ' . $data['general']['decimal_separator'] . ' meegegeven. Default , (komma) gebruiken als scheidingsteken.');
+            } else {
+                $this->decimalSeparator = $data['general']['decimal_separator'];
+                $this->log('Gebruikte scheidingsteken: ' . $this->decimalSeparator);
+            }
+        }
 
-        $data['address_energy_consumption_gas']['proposed_variable_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_variable_rate'])));
-        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['proposed_fixed_rate'])));
-        $data['address_energy_consumption_gas']['total_variable_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_variable_costs'])));
-        $data['address_energy_consumption_gas']['total_fixed_costs'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_gas']['total_fixed_costs'])));
 
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_high'])));
-        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_variable_rate_low'])));
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'])));
-        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'])));
-        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_high'])));
-        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_variable_costs_low'])));
-        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_high'])));
-        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = floatval(str_replace(',', '.', str_replace('.', '', $data['address_energy_consumption_electricity']['total_fixed_costs_low'])));
+        $data['quotation_request']['quotation_amount'] = $this->sanitizeDecimals($data['quotation_request']['quotation_amount']);
+        $data['quotation_request']['cost_adjustment'] = $this->sanitizeDecimals($data['quotation_request']['cost_adjustment']);
+        $data['quotation_request']['award_amount'] = $this->sanitizeDecimals($data['quotation_request']['award_amount']);
+        $data['quotation_request']['amount_determination'] = $this->sanitizeDecimals($data['quotation_request']['amount_determination']);
 
-        $data['participation']['participation_mutation_amount'] = floatval(str_replace(',', '.', str_replace('.', '', $data['participation']['participation_mutation_amount'])));
+        $data['address_energy_consumption_gas']['proposed_variable_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_variable_rate']);
+        $data['address_energy_consumption_gas']['proposed_fixed_rate'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['proposed_fixed_rate']);
+        $data['address_energy_consumption_gas']['total_variable_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_variable_costs']);
+        $data['address_energy_consumption_gas']['total_fixed_costs'] = $this->sanitizeDecimals($data['address_energy_consumption_gas']['total_fixed_costs']);
+
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_high']);
+        $data['address_energy_consumption_electricity']['proposed_variable_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_variable_rate_low']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_high']);
+        $data['address_energy_consumption_electricity']['proposed_fixed_rate_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['proposed_fixed_rate_low']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_high']);
+        $data['address_energy_consumption_electricity']['total_variable_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_variable_costs_low']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_high'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_high']);
+        $data['address_energy_consumption_electricity']['total_fixed_costs_low'] = $this->sanitizeDecimals($data['address_energy_consumption_electricity']['total_fixed_costs_low']);
+
+        $data['participation']['participation_mutation_amount'] = $this->sanitizeDecimals($data['participation']['participation_mutation_amount']);
 
         if($data['order']['variable_price']) {
-            $data['order']['variable_price'] = floatval(str_replace(',', '.', str_replace('.', '', $data['order']['variable_price'])));
+            $data['order']['variable_price'] = $this->sanitizeDecimals($data['order']['variable_price']);
         }
 
         if($data['housing_file']['amount_electricity']) {
-            $data['housing_file']['amount_electricity'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_electricity'])));
+            $data['housing_file']['amount_electricity'] = $this->sanitizeDecimals($data['housing_file']['amount_electricity']);
         }
         if($data['housing_file']['amount_gas']) {
-            $data['housing_file']['amount_gas'] = floatval(str_replace(',', '.', str_replace('.', '', $data['housing_file']['amount_gas'])));
+            $data['housing_file']['amount_gas'] = $this->sanitizeDecimals($data['housing_file']['amount_gas']);
+        }
+        // woondossier_koophuis leeg meegegeven, dan default '0' = Nee
+        if(empty($data['housing_file']['is_house_for_sale'])) {
+            $data['housing_file']['is_house_for_sale'] = '0';
+        }
+        // woondossier_monument leeg meegegeven, dan default '0' = Nee
+        if(empty($data['housing_file']['is_monument'])) {
+            $data['housing_file']['is_monument'] = '0';
         }
 
         // Validatie op addressNummer (numeriek), indien nodig herstellen door evt. toevoeging eruit te halen.
@@ -1503,7 +1531,7 @@ class ExternalWebformController extends Controller
                 $data['collect_mandate_signature_date'] = Carbon::now();
             }
             if($data['collect_mandate_first_run_date'] == '') {
-                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
             }
             if($data['collect_mandate_collection_schema'] == '') {
                 $data['collect_mandate_collection_schema'] = 'core';
@@ -1701,7 +1729,7 @@ class ExternalWebformController extends Controller
                     $data['collect_mandate_signature_date'] = Carbon::now();
                 }
                 if ($data['collect_mandate_first_run_date'] == '') {
-                    $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth(1)->startOfMonth();
+                    $data['collect_mandate_first_run_date'] = Carbon::now()->addMonth()->startOfMonth();
                 }
                 if ($data['collect_mandate_collection_schema'] == '') {
                     $data['collect_mandate_collection_schema'] = 'core';
@@ -1973,23 +2001,20 @@ class ExternalWebformController extends Controller
                         break;
                     case 'double_2_dec':
                     case 'amount_euro':
-                        $formattedField = str_replace(',', '.', $fieldValue);
+//                        $formattedField = str_replace(',', '.', $fieldValue);
+                        $formattedField = $this->sanitizeDecimals($fieldValue);
                         $formattedFieldArray = explode(".", $formattedField);
 
-//                        if(!is_numeric($formattedField) || (isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) != $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
-//                            $this->error("Opgegeven waarde moet een cijfer zijn met twee getallen achter de comma of punt");
-//                            $formattedField = "";
-//                        }
                         if(!is_numeric($formattedField)) {
                             $this->error("Opgegeven waarde moet een cijfer zijn.");
                             $formattedField = "";
                         }
 
                         // Check max lengte voor de decimaal verdeler (is format_lengte - 1 - format_decimals)
-                        $maxLengteBeforeDecimalSeperator = $freeFieldsField->freeFieldsFieldFormat->format_length - 1 - $freeFieldsField->freeFieldsFieldFormat->format_decimals;
+                        $maxLengteBeforeDecimalSeparator = $freeFieldsField->freeFieldsFieldFormat->format_length - 1 - $freeFieldsField->freeFieldsFieldFormat->format_decimals;
                         if ($freeFieldsField->freeFieldsFieldFormat->format_length != null && $freeFieldsField->freeFieldsFieldFormat->format_length > 0
-                            && strlen($formattedFieldArray[0]) > $maxLengteBeforeDecimalSeperator ) {
-                            $this->error("Opgegeven waarde is te lang, maximaal " . $maxLengteBeforeDecimalSeperator . " cijfers voor decimaal verdeler  toegestaan");
+                            && strlen($formattedFieldArray[0]) > $maxLengteBeforeDecimalSeparator ) {
+                            $this->error("Opgegeven waarde is te lang, maximaal " . $maxLengteBeforeDecimalSeparator . " cijfers voor decimaal verdeler  toegestaan");
                         }
                         // Check max lengte na de decimaal verdeler (format_decimals)
                         if ((isset($formattedFieldArray[1]) && strlen($formattedFieldArray[1]) > $freeFieldsField->freeFieldsFieldFormat->format_decimals)) {
@@ -2103,7 +2128,7 @@ class ExternalWebformController extends Controller
                 $this->error('Ongeldige waarde voor energie id meegegeven. Moet numeric zijn');
             }
 
-                // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
+            // Voor aanmaak van Dongel worden created by and updated by via observers altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
             $responsibleUser = User::find($webform->responsible_user_id);
             if($responsibleUser){
@@ -2753,13 +2778,13 @@ class ExternalWebformController extends Controller
                 'address_id' =>  $address->id,
                 'building_type_id' => $buildingType ? $buildingType->id : null,
                 'build_year' => $buildYear ? $buildYear : null,
-                'is_house_for_sale' => $data['is_house_for_sale'] == '0' ? false : true,
+                'is_house_for_sale' => $data['is_house_for_sale'],
                 'surface' => is_numeric($data['surface']) ? $data['surface'] : null,
                 'roof_type_id' => $rofeType ? $rofeType->id : null,
                 'energy_label_id' => $eneryLabel ? $eneryLabel->id : null,
                 'floors' => is_numeric($data['floors']) ? $data['floors'] : null,
                 'energy_label_status_id' => $eneryLabelStatus ? $eneryLabelStatus->id : null,
-                'is_monument' => $data['is_monument'] == '1' ? true : false,
+                'is_monument' => $data['is_monument'],
                 'number_of_residents' => is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0,
                 'revenue_solar_panels' => is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0,
                 'remark' => $data['remark'],
@@ -2819,13 +2844,13 @@ class ExternalWebformController extends Controller
 
             $housingFile->building_type_id = $buildingType ? $buildingType->id : null;
             $housingFile->build_year = $buildYear ? $buildYear : null;
-            $housingFile->is_house_for_sale = $data['is_house_for_sale'] == '0' ? false : true;
+            $housingFile->is_house_for_sale = $data['is_house_for_sale'];
             $housingFile->surface = is_numeric($data['surface']) ? $data['surface'] : null;
             $housingFile->roof_type_id = $rofeType ? $rofeType->id : null;
             $housingFile->energy_label_id = $eneryLabel ? $eneryLabel->id : null;
             $housingFile->floors = is_numeric($data['floors']) ? $data['floors'] : null;
             $housingFile->energy_label_status_id = $eneryLabelStatus ? $eneryLabelStatus->id : null;
-            $housingFile->is_monument = $data['is_monument'] == '1' ? true : false;
+            $housingFile->is_monument = $data['is_monument'];
             $housingFile->number_of_residents = is_numeric($data['number_of_residents']) ? $data['number_of_residents'] : 0;
             $housingFile->revenue_solar_panels = is_numeric($data['revenue_solar_panels']) ? $data['revenue_solar_panels'] : 0;
             $housingFile->remark = $data['remark'];
@@ -3328,7 +3353,7 @@ class ExternalWebformController extends Controller
         elseif(strlen( $data['days_planned_finish'] ) > 0) {
             // Default today + requested days planned finish
             $today = Carbon::today();
-            $datePlannedFinish = $today->addDay($data['days_planned_finish']);
+            $datePlannedFinish = $today->addDays((int) $data['days_planned_finish']);
             $this->log('Datum einddatum bepaald op : ' . $datePlannedFinish);
         }
 
@@ -3877,10 +3902,10 @@ class ExternalWebformController extends Controller
             $dateUnderReviewDetermination = null; //                             susidy-request
             $dateApprovedDetermination = null;    //                             susidy-request
 
-            $quotationAmount =  null;             // quotation-request / susidy-request
-            $costAdjustment = null;               //                             susidy-request
-            $awardAmount = null;                  //                             susidy-request
-            $amountDetermination = null;          //                             susidy-request
+            $quotationAmount =  0;                //         quotation-request / susidy-request
+            $costAdjustment = 0;                  //                             susidy-request
+            $awardAmount = 0;                     //                             susidy-request
+            $amountDetermination = 0;             //                             susidy-request
 
             $coachOrOrganisationNote = null;      // visit / quotation-request / susidy-request
             $projectmanagerNote = null;           //         quotation-request / susidy-request
@@ -3924,10 +3949,10 @@ class ExternalWebformController extends Controller
                     $dateUnderReviewDetermination = $dataQuotationRequest['date_under_review_determination'] ? Carbon::make($dataQuotationRequest['date_under_review_determination']) : null;
                     $dateApprovedDetermination = $dataQuotationRequest['date_approved_determination'] ? Carbon::make($dataQuotationRequest['date_approved_determination']) : null;
 
-                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: null;
-                    $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: null;
-                    $awardAmount = $dataQuotationRequest['award_amount'] ?: null;
-                    $amountDetermination = $dataQuotationRequest['amount_determination'] ?: null;
+                    $quotationAmount = $dataQuotationRequest['quotation_amount'] ?: 0;
+                    $costAdjustment = $dataQuotationRequest['cost_adjustment'] ?: 0;
+                    $awardAmount = $dataQuotationRequest['award_amount'] ?: 0;
+                    $amountDetermination = $dataQuotationRequest['amount_determination'] ?: 0;
 
                     $coachOrOrganisationNote = $dataQuotationRequest['coach_or_organisation_note'] ?: null;
                     $projectmanagerNote = $dataQuotationRequest['projectmanager_note'] ?: null;
@@ -4150,6 +4175,27 @@ class ExternalWebformController extends Controller
         $document->file_path_and_name = $filePathAndName;
 
         $document->save();
+    }
+
+    /**
+     * @param $value
+     * @param $decimalSeparator
+     * @return null
+     * @throws WebformException
+     */
+    private function sanitizeDecimals($value)
+    {
+        //If $decimalSeparator is a dot (.), then $thousandSeparator will be set to a comma (,) and the other way around
+        $thousandSeparator = $this->decimalSeparator === '.' ? ',' : '.';
+
+        // Remove thousand separators
+        $value = str_replace($thousandSeparator, '', $value);
+
+        // Replace decimal separator with dot for float conversion
+        $value = str_replace($this->decimalSeparator, '.', $value);
+
+        // Convert to float
+        return floatval($value);
     }
 
     /**

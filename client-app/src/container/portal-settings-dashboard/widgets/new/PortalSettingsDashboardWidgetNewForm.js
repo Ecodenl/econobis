@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
+import { getApiUrl } from '../../../../api/utils/ApiUrl';
+
 import { connect } from 'react-redux';
 import Image from 'react-bootstrap/lib/Image';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import validator from 'validator';
 
@@ -18,6 +20,12 @@ import PortalSettingsDashboardAPI from '../../../../api/portal-settings-dashboar
 import ContactGroupAPI from '../../../../api/contact-group/ContactGroupAPI';
 import InputReactSelect from '../../../../components/form/InputReactSelect';
 import InputTextColorPicker from '../../../../components/form/InputTextColorPicker';
+
+// Functionele wrapper voor de class component
+const PortalSettingsDashboardWidgetNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsDashboardWidgetNewForm {...props} navigate={navigate} />;
+};
 
 class PortalSettingsDashboardWidgetNewForm extends Component {
     constructor(props) {
@@ -198,7 +206,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
 
         PortalSettingsDashboardAPI.addPortalSettingsDashboardWidget(data)
             .then(response => {
-                hashHistory.push(`/portal-instellingen-dashboard`);
+                this.props.navigate(`/portal-instellingen-dashboard`);
             })
             .catch(error => {
                 console.log(error);
@@ -209,7 +217,7 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
     render() {
         const { widget, errors, errorMessage } = this.state;
 
-        const imageUrl = `${URL_API}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
+        const imageUrl = `${getApiUrl()}/portal/images/${widget.widgetImageFileName}?${this.props.imageHash}`;
         const { managePortalSettings = {} } = this.props.permissions;
 
         return (
@@ -305,6 +313,8 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                                 label={'Zichtbaar voor groep'}
                                 divSize={'col-sm-8'}
                                 name={'showGroupId'}
+                                size={'col-sm-5'}
+                                textToolTip={`Je kan maar één groep kiezen, als je meerdere groepen deze widget wil laten tonen kan je onder groepenbeheer > + knop een samengestelde groep maken.`}
                                 options={this.state.contactGroups}
                                 value={widget.showGroupId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -316,6 +326,8 @@ class PortalSettingsDashboardWidgetNewForm extends Component {
                                 label={'Verborgen voor groep'}
                                 divSize={'col-sm-8'}
                                 name={'hideGroupId'}
+                                size={'col-sm-5'}
+                                textToolTip={`Je kan maar één groep kiezen, als je meerdere groepen deze widget wil laten verbergen kan je onder groepenbeheer > + knop een samengestelde groep maken.`}
                                 options={this.state.contactGroups}
                                 value={widget.hideGroupId}
                                 onChangeAction={this.handleReactSelectChange}
@@ -407,4 +419,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = null;
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsDashboardWidgetNewFormWrapper);

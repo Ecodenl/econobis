@@ -24,7 +24,7 @@ import {
 import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonText from '../../../../components/button/ButtonText';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
@@ -49,6 +49,12 @@ const initialState = {
         id: '',
         fullName: '',
     },
+};
+
+// Functionele wrapper voor de class component
+const InvoicesListWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoicesList {...props} navigate={navigate} />;
 };
 
 class InvoicesList extends Component {
@@ -233,7 +239,7 @@ class InvoicesList extends Component {
 
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
-            hashHistory.push(
+            this.props.navigate(
                 `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         } else {
@@ -255,7 +261,7 @@ class InvoicesList extends Component {
         } else {
             if (this.state.invoiceIds.length > 0) {
                 this.props.previewSend(this.state.invoiceIds);
-                hashHistory.push(
+                this.props.navigate(
                     `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
                 );
             } else {
@@ -813,4 +819,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoicesList);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicesListWrapper);

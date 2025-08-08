@@ -1,13 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_EMAIL = `${URL_API}/api/email`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchEmails: ({ folder, filters, sorts, pagination }) => {
-        const requestUrl = `${URL_EMAIL}/grid/in-folder/${folder}`;
+        const requestUrl = `${getApiUrl()}/api/email/grid/in-folder/${folder}`;
 
-
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -18,9 +16,9 @@ export default {
     },
 
     fetchEmail: id => {
-        const requestUrl = `${URL_EMAIL}/${id}`;
+        const requestUrl = `${getApiUrl()}/api/email/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -29,9 +27,9 @@ export default {
     },
 
     fetchEmailByType: (id, type) => {
-        const requestUrl = `${URL_EMAIL}/${id}/${type}`;
+        const requestUrl = `${getApiUrl()}/api/email/${id}/${type}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -40,9 +38,9 @@ export default {
     },
 
     fetchEmailGroup: id => {
-        const requestUrl = `${URL_EMAIL}/group/${id}`;
+        const requestUrl = `${getApiUrl()}/api/email/group/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -51,9 +49,9 @@ export default {
     },
 
     setStatus: (emailId, status) => {
-        const requestUrl = `${URL_EMAIL}/${emailId}/status/${status}`;
+        const requestUrl = `${getApiUrl()}/api/email/${emailId}/status/${status}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -62,74 +60,74 @@ export default {
     },
 
     newConcept: (email, mailbox_id) => {
-        const requestUrl = `${URL_EMAIL}/concept/${mailbox_id}/store`;
+        const requestUrl = `${getApiUrl()}/api/email/concept/${mailbox_id}/store`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     newConcept2: (email, mailbox_id, email_id) => {
-        const requestUrl = `${URL_EMAIL}/concept/${mailbox_id}/${email_id}/store2`;
+        const requestUrl = `${getApiUrl()}/api/email/concept/${mailbox_id}/${email_id}/store2`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     newEmail: (email, mailbox_id, email_id) => {
-        const requestUrl = `${URL_EMAIL}/send/${mailbox_id}/${email_id}`;
+        const requestUrl = `${getApiUrl()}/api/email/send/${mailbox_id}/${email_id}`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     downloadAttachment: id => {
-        const requestUrl = `${URL_EMAIL}/email-attachment/${id}/download`;
+        const requestUrl = `${getApiUrl()}/api/email/email-attachment/${id}/download`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 
     storeAttachment: (email_id, data) => {
-        const requestUrl = `${URL_EMAIL}/email-attachment/${email_id}/store`;
+        const requestUrl = `${getApiUrl()}/api/email/email-attachment/${email_id}/store`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     deleteAttachment: email_attachment_id => {
-        const requestUrl = `${URL_EMAIL}/email-attachment/${email_attachment_id}/delete`;
+        const requestUrl = `${getApiUrl()}/api/email/email-attachment/${email_attachment_id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     updateConcept: (email, email_id) => {
-        const requestUrl = `${URL_EMAIL}/concept/${email_id}/update`;
+        const requestUrl = `${getApiUrl()}/api/email/concept/${email_id}/update`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     updateConcept2: (email, email_id) => {
-        const requestUrl = `${URL_EMAIL}/concept/${email_id}/update2`;
+        const requestUrl = `${getApiUrl()}/api/email/concept/${email_id}/update2`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     sendConcept: (email, email_id) => {
-        const requestUrl = `${URL_EMAIL}/concept/${email_id}/send`;
+        const requestUrl = `${getApiUrl()}/api/email/concept/${email_id}/send`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     updateEmail: email => {
-        const requestUrl = `${URL_EMAIL}/${email.id}`;
+        const requestUrl = `${getApiUrl()}/api/email/${email.id}`;
 
-        return axiosInstance.post(requestUrl, email);
+        return getAxiosInstance().post(requestUrl, email);
     },
 
     moveToFolder: (emailId, folder) => {
-        const requestUrl = `${URL_EMAIL}/${emailId}/move-to-folder`;
+        const requestUrl = `${getApiUrl()}/api/email/${emailId}/move-to-folder`;
 
-        return axiosInstance.post(requestUrl, { folder: folder });
+        return getAxiosInstance().post(requestUrl, { folder: folder });
     },
 
     deleteEmail: emailId => {
-        const requestUrl = `${URL_EMAIL}/${emailId}/delete`;
+        const requestUrl = `${getApiUrl()}/api/email/${emailId}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 };

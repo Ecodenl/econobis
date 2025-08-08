@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
@@ -10,6 +10,12 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { check } from 'react-icons-kit/fa/check';
 
 import { setTaskFinished } from '../../../actions/task/TasksActions';
+
+// Functionele wrapper voor de class component
+const TasksListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <TasksListItem {...props} navigate={navigate} />;
+};
 
 class TasksListItem extends Component {
     constructor(props) {
@@ -39,7 +45,7 @@ class TasksListItem extends Component {
     }
 
     openItem() {
-        hashHistory.push(`/taak/${this.props.id}`);
+        this.props.navigate(`/taak/${this.props.id}`);
     }
 
     setItemFinished() {
@@ -127,4 +133,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TasksListItem);
+export default connect(mapStateToProps, mapDispatchToProps)(TasksListItemWrapper);

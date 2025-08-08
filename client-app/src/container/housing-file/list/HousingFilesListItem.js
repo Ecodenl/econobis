@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const HousingFilesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFilesListItem {...props} navigate={navigate} />;
+};
 
 class HousingFilesListItem extends Component {
     constructor(props) {
@@ -30,11 +36,22 @@ class HousingFilesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/woningdossier/${id}`);
+        this.props.navigate(`/woningdossier/${id}`);
     }
 
     render() {
-        const { id, fullName, createdAt, fullAddress, postalCode, city, buildYear, buildingType, isHouseForSale, energyLabel } = this.props;
+        const {
+            id,
+            fullName,
+            createdAt,
+            fullAddress,
+            postalCode,
+            city,
+            buildYear,
+            buildingType,
+            isHouseForSale,
+            energyLabel,
+        } = this.props;
 
         return (
             <tr
@@ -67,4 +84,4 @@ class HousingFilesListItem extends Component {
     }
 }
 
-export default HousingFilesListItem;
+export default HousingFilesListItemWrapper;

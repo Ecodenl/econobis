@@ -15,6 +15,13 @@ import { isEmpty } from 'lodash';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import filterHelper from '../../../helpers/FilterHelper';
 import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const EmailsInListAppWrapper = props => {
+    const params = useParams();
+    return <EmailsInListApp {...props} params={params} />;
+};
 
 class EmailsInListApp extends Component {
     constructor(props) {
@@ -40,7 +47,7 @@ class EmailsInListApp extends Component {
         this.props.clearEmails();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.clearFilterEmail();
@@ -172,4 +179,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListAppWrapper);

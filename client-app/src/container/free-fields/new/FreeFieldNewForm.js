@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
@@ -14,6 +14,12 @@ import { checkFieldRecord } from '../../../helpers/FreeFieldsHelpers';
 import ViewText from '../../../components/form/ViewText';
 import FreeFieldsDefaultValueEdit from '../defaultValue/FreeFieldsDefaultValueEdit';
 import moment from 'moment';
+
+// Functionele wrapper voor de class component
+const FreeFieldNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <FreeFieldNewForm {...props} navigate={navigate} />;
+};
 
 class FreeFieldNewForm extends Component {
     constructor(props) {
@@ -244,7 +250,7 @@ class FreeFieldNewForm extends Component {
             // If no errors send form
             FreeFieldsAPI.newFreeFieldsField(freeField)
                 .then(payload => {
-                    hashHistory.push(`/vrije-velden/${payload.data.id}`);
+                    this.props.navigate(`/vrije-velden/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -500,4 +506,4 @@ class FreeFieldNewForm extends Component {
     }
 }
 
-export default FreeFieldNewForm;
+export default FreeFieldNewFormWrapper;

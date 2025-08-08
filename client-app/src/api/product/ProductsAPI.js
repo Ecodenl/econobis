@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_PRODUCT = `${URL_API}/api/product`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchProducts: ({ filters, filterType }) => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 filterType: filterType,
@@ -15,9 +15,10 @@ export default {
     },
 
     peekProducts: () => {
+        const URL_PRODUCT = `${getApiUrl()}/api/product`;
         const requestUrl = `${URL_PRODUCT}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

@@ -11,7 +11,13 @@ import AddressDetailsFormAddressEnergySupplierEdit from './AddressDetailsFormAdd
 import AddressDetailsFormAddressEnergySupplierDelete from './AddressDetailsFormAddressEnergySupplierDelete';
 import { isEqual } from 'lodash';
 import Modal from '../../../../../components/modal/Modal';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const AddressDetailsFormAddressEnergySupplierItemWrapper = props => {
+    const navigate = useNavigate();
+    return <AddressDetailsFormAddressEnergySupplierItem {...props} navigate={navigate} />;
+};
 
 class AddressDetailsFormAddressEnergySupplierItem extends Component {
     constructor(props) {
@@ -45,7 +51,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.addressEnergySupplier, nextProps.addressEnergySupplier)) {
             this.setState({
                 ...this.state,
@@ -392,7 +398,7 @@ class AddressDetailsFormAddressEnergySupplierItem extends Component {
                         confirmAction={
                             this.state.messageHasParticipationsProjectsArray.length == 1 &&
                             this.state.messageHasParticipationsRedirect
-                                ? () => hashHistory.push(`${this.state.messageHasParticipationsRedirect}`)
+                                ? () => this.props.navigate(`${this.state.messageHasParticipationsRedirect}`)
                                 : {}
                         }
                     >
@@ -431,4 +437,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierItem);
+export default connect(mapStateToProps, mapDispatchToProps)(AddressDetailsFormAddressEnergySupplierItemWrapper);

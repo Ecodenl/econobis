@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -10,6 +10,12 @@ import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import InputText from '../../../components/form/InputText';
 import InputToggle from '../../../components/form/InputToggle';
+
+// Functionele wrapper voor de class component
+const HousingFileNewFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <HousingFileNewFormGeneral {...props} navigate={navigate} />;
+};
 
 class HousingFileNewFormGeneral extends Component {
     constructor(props) {
@@ -21,15 +27,29 @@ class HousingFileNewFormGeneral extends Component {
                 addressId: props.addressId,
                 buildingTypeId: '',
                 buildYear: '',
-                isHouseForSale: '',
+                isHouseForSale: '2',
                 surface: '',
                 roofTypeId: '',
                 energyLabelId: '',
                 floors: 0,
                 energyLabelStatusId: '',
-                isMonument: false,
+                isMonument: '2',
                 numberOfResidents: 0,
             },
+            noYesUnknownOptions: [
+                {
+                    id: '0',
+                    name: 'Nee',
+                },
+                {
+                    id: '1',
+                    name: 'Ja',
+                },
+                {
+                    id: '2',
+                    name: 'Onbekend',
+                },
+            ],
         };
     }
 
@@ -53,7 +73,7 @@ class HousingFileNewFormGeneral extends Component {
         const { housingFile } = this.state;
 
         HousingFileDetailsAPI.newHousingFile(housingFile).then(payload => {
-            hashHistory.push(`/woningdossier/${payload.data.id}`);
+            this.props.navigate(`/woningdossier/${payload.data.id}`);
         });
     };
 
@@ -80,7 +100,7 @@ class HousingFileNewFormGeneral extends Component {
                         label={'Contact'}
                         name={'fullName'}
                         value={fullName}
-                        onChange={() => {}}
+                        onChangeAction={() => {}}
                         readOnly={true}
                     />
                     <div className="form-group col-sm-6">
@@ -179,10 +199,12 @@ class HousingFileNewFormGeneral extends Component {
                         options={this.props.energyLabelStatus}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputToggle
+                    <InputSelect
                         label={'Monument'}
                         name={'isMonument'}
                         value={isMonument}
+                        options={this.state.noYesUnknownOptions}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -195,10 +217,12 @@ class HousingFileNewFormGeneral extends Component {
                         min={0}
                         onChangeAction={this.handleInputChange}
                     />
-                    <InputToggle
+                    <InputSelect
                         label={'Koophuis'}
                         name={'isHouseForSale'}
                         value={isHouseForSale}
+                        options={this.state.noYesUnknownOptions}
+                        emptyOption={false}
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
@@ -223,4 +247,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(HousingFileNewFormGeneral);
+export default connect(mapStateToProps, null)(HousingFileNewFormGeneralWrapper);

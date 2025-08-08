@@ -9,10 +9,10 @@ class FinancialOverviewContact extends Model
 {
     protected $guarded = ['id'];
 
-    protected $dates = [
-        'date_sent',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'date_sent' => 'date',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function contact()

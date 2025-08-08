@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_QUOTATION_REQUEST_STATUS = `quotation-request-status`;
 
@@ -10,7 +10,7 @@ export default {
     fetchQuotationRequestStatusDetails: id => {
         const requestUrl = `jory/quotation-request-status/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: defaultFields,
             },
@@ -19,7 +19,7 @@ export default {
 
     updateQuotationRequestStatus: quotationRequestStatus => {
         const requestUrl = `${URL_QUOTATION_REQUEST_STATUS}/${quotationRequestStatus.id}`;
-        return axiosInstance.post(requestUrl, quotationRequestStatus, {
+        return getAxiosInstance().post(requestUrl, quotationRequestStatus, {
             params: {
                 jory: defaultFields,
             },

@@ -18,7 +18,7 @@ class Update2020MeasuresTable extends Migration
         foreach ($measuresToUpdate as $measureToUpdate) {
             // Get the category
             $measureToUpdate->number = 'M2020-' . $id;
-            $measureToUpdate->save();
+            $measureToUpdate->saveQuietly();
             $id++;
         }
 

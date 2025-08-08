@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 
@@ -7,6 +7,12 @@ import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import Modal from '../../../../components/modal/Modal';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewListItem {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewListItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class FinancialOverviewListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/waardestaat/${id}`);
+        this.props.navigate(`/waardestaat/${id}`);
     }
 
     showHasNoAccessToAdministrationModal() {
@@ -78,7 +84,7 @@ class FinancialOverviewListItem extends Component {
             <tr
                 className={this.state.highlightRow}
                 onDoubleClick={
-                    permissions.manageFinancial && hasAccessToAdministration
+                    permissions.viewFinancialOverview && hasAccessToAdministration
                         ? () => this.openItem(id)
                         : () => this.showHasNoAccessToAdministrationModal()
                 }
@@ -91,7 +97,9 @@ class FinancialOverviewListItem extends Component {
                 <td>{status}</td>
                 <td>{dateProcessedFormated}</td>
                 <td>
-                    {this.state.showActionButtons && permissions.manageFinancial && hasAccessToAdministration ? (
+                    {this.state.showActionButtons &&
+                    permissions.manageFinancialOverview &&
+                    hasAccessToAdministration ? (
                         <a role="button" onClick={() => this.openItem(id)}>
                             <Icon className="mybtn-success" size={14} icon={pencil} />
                             &nbsp;
@@ -100,7 +108,7 @@ class FinancialOverviewListItem extends Component {
                         ''
                     )}
                     {this.state.showActionButtons &&
-                    permissions.manageFinancial &&
+                    permissions.manageFinancialOverview &&
                     !definitive &&
                     hasAccessToAdministration &&
                     statusId === 'concept' ? (
@@ -138,4 +146,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(FinancialOverviewListItem);
+export default connect(mapStateToProps)(FinancialOverviewListItemWrapper);

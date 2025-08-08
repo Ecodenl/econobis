@@ -30,6 +30,7 @@ class PortalSettingsApp extends Component {
             '&keys[]=portalName' +
             '&keys[]=cooperativeName' +
             '&keys[]=portalWebsite' +
+            '&keys[]=portalLoginInfoText' +
             '&keys[]=portalUrl' +
             // '&keys[]=backgroundColor' +
             // '&keys[]=backgroundTextColor' +

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
@@ -10,7 +10,7 @@ import ButtonIcon from '../../../components/button/ButtonIcon';
 import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 
 function ContactDetailsToolbar({
     permissions,
@@ -25,11 +25,18 @@ function ContactDetailsToolbar({
     isLoading,
     occupations,
 }) {
+    const navigate = useNavigate();
+
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
-    function toggleDelete() {
-        setShowDelete(!showDelete);
+    function showDeleteModal() {
+        setShowDelete(true);
+    }
+
+    function hideDeleteModal() {
+        setShowDelete(false);
+        navigate('/contacten');
     }
 
     function toggleShowMakeHoomdossier() {
@@ -43,15 +50,15 @@ function ContactDetailsToolbar({
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 {type &&
                                     type.id === 'organisation' &&
                                     permissions &&
                                     permissions.deleteOrganisation && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                     )}
                                 {type && type.id === 'person' && permissions && permissions.deletePerson && (
-                                    <ButtonIcon iconName={'trash'} onClickAction={toggleDelete} />
+                                    <ButtonIcon iconName={'trash'} onClickAction={showDeleteModal} />
                                 )}
                                 {type &&
                                 type.id === 'person' &&
@@ -97,7 +104,7 @@ function ContactDetailsToolbar({
 
             {showDelete && (
                 <ContactDetailsDelete
-                    closeDeleteItemModal={toggleDelete}
+                    closeDeleteItemModal={hideDeleteModal}
                     type={type}
                     fullName={fullName}
                     id={id}

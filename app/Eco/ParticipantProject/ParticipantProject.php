@@ -3,7 +3,6 @@
 namespace App\Eco\ParticipantProject;
 
 use App\Eco\Address\Address;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Contact\Contact;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
@@ -41,12 +40,15 @@ class ParticipantProject extends Model
         'id'
     ];
 
-    protected $dates = [
-    ];
-
     protected $encryptable = [
         'iban_payout'
     ];
+
+    public function newEloquentBuilder($query)
+    {
+        return new ParticipantProjectBuilder($query);
+    }
+
 
     //relations
     public function contact()

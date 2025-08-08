@@ -4,7 +4,7 @@
   "homepage": ".",
   "private": true,
   "dependencies": {
-    "axios": "^0.21.4",
+    "axios": "^0.30.0",
     "bootstrap": "^5.0.0",
     "buffer": "^6.0.3",
     "formik": "^2.2.9",

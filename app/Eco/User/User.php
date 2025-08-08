@@ -61,7 +61,6 @@ class User extends Authenticatable
         'alfresco_password'
     ];
 
-    protected $teamContactGroupids = null;
     protected $teamContactIds = null;
     protected $teamDocumentCreatedFromIds = null;
 
@@ -165,19 +164,16 @@ class User extends Authenticatable
 
     public function getTeamContactIds()
     {
-        if ($this->teamContactids !== null) {
-            return $this->teamContactids;
+        if ($this->teamContactIds !== null) {
+            return $this->teamContactIds;
         }
         if (!$this->teams || $this->teams()->count() === 0) {
             return false;
         }
 
         $teamContactIds = [];
-        $hasContactGroup = false;
-
         foreach ($this->teams as $team) {
             foreach ($team->contactGroups as $contactGroup) {
-                $hasContactGroup = true;
                 $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
             }
         }
@@ -189,40 +185,36 @@ class User extends Authenticatable
         $combinedIds = array_unique(array_merge($teamContactIds, $createdByIds));
 
         // Als er contactgroepen waren maar er zijn geen contacten in, gebruik [-1] als fallback
-        if ($hasContactGroup && count($combinedIds) === 0) {
-            $this->teamContactids = [-1];
+        if (count($combinedIds) === 0) {
+            $this->teamContactIds = [-1];
         } else {
-            $this->teamContactids = $combinedIds;
+            $this->teamContactIds = $combinedIds;
         }
 
-        return $this->teamContactids;
+        return $this->teamContactIds;
     }
 
     public function getDocumentCreatedFromIds(){
-        if(!$this->teamDocumentCreatedFromIds == null){
-            return $this->teamDocumentCreatedFromIds;
-        } else {
-            if (!$this->teams){
-                return false;
-            }
-
-            $teamDocumentCreatedFromIds = [];
-            $hasDocumentCreatedFrom = false;
-            foreach ($this->teams as $team){
-                $thisTeamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
-                if(count($teamDocumentCreatedFromIds) > 0) {
-                    $hasDocumentCreatedFrom = true;
-                }
-                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $thisTeamDocumentCreatedFromIds));
-            }
-            if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
-                $this->teamDocumentCreatedFromIds = [-1];
-            } else {
-                $this->teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
-            }
-
+        if($this->teamDocumentCreatedFromIds !== null){
             return $this->teamDocumentCreatedFromIds;
         }
+        if (!$this->teams || $this->teams()->count() === 0) {
+            return false;
+        }
+
+        $teamDocumentCreatedFromIds = [];
+        foreach ($this->teams as $team){
+            $teamDocumentCreatedFromIds = array_merge($teamDocumentCreatedFromIds, $team->documentCreatedFroms->pluck('id')->toArray());
+        }
+        $teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
+
+        if(count($teamDocumentCreatedFromIds) === 0){
+            $this->teamDocumentCreatedFromIds = [-1];
+        } else {
+            $this->teamDocumentCreatedFromIds = $teamDocumentCreatedFromIds;
+        }
+
+        return $this->teamDocumentCreatedFromIds;
     }
 
     public function getDefaultMailboxWithFallback()

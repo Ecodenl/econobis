@@ -163,13 +163,12 @@ class User extends Authenticatable
         );
     }
 
-// todo WM: deze getTeamContactIds() net als getTeamContactGroupIds() verplaatsen, maar dan naar contact builder?
     public function getTeamContactIds()
     {
         if ($this->teamContactids !== null) {
             return $this->teamContactids;
         }
-        if (!$this->teams){
+        if (!$this->teams || $this->teams()->count() === 0) {
             return false;
         }
 

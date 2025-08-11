@@ -47,6 +47,8 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
+        set_time_limit(60);
+
         $this->authorize('view', Opportunity::class);
 
         $opportunity->load([

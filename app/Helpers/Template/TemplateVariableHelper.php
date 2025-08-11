@@ -20,6 +20,7 @@ use App\Eco\Project\ProjectValueCourse;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class TemplateVariableHelper
@@ -287,6 +288,8 @@ class TemplateVariableHelper
                     }
                 }
                 return '';
+            case 'organisatie_naam_primair_contact_persoon':
+                return $model->organisationNamePrimaryOccupation()?->full_name ?? '';
             case 'iban':
                 return $model->iban;
             case 'iban_gedeeltelijk':
@@ -578,12 +581,12 @@ class TemplateVariableHelper
                 return $model->ean_supply;
             case 'nominale_waarde':
             case 'participatie_waarde':
-                return number_format($model->participation_worth, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->participation_worth);
             case 'huidige_boekwaarde':
             case 'huidige_hoofdsom':
-                return number_format($model->currentBookWorth(), 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->currentBookWorth());
             case 'huidige_overdrachtswaarde':
-                return number_format($model->currentTransferWorth(), 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->currentTransferWorth());
             case 'opgesteld_vermogen':
                 return $model->power_kw_available;
             case 'total_participations':
@@ -601,11 +604,11 @@ class TemplateVariableHelper
                 }
             case 'amount_of_loan_needed':
             case 'bedrag_lening_nodig':
-                return $model->amount_of_loan_needed;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->amount_of_loan_needed);
             case 'min_bedrag_lening':
-                return $model->min_amount_loan;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->min_amount_loan);
             case 'max_bedrag_lening':
-                return $model->max_amount_loan;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $model->max_amount_loan);
             case 'aanwijzing_belastingdienst':
                 return $model->tax_referral;
             case 'aantal_interesse':
@@ -620,32 +623,32 @@ class TemplateVariableHelper
                 return  $model->total_participations - $model->participations_definitive;
             case 'bedrag_interesse':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_interessed, 2, ',', '');
+                    $amount = $model->amount_interessed;
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_interessed * $model->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $amount);
             case 'bedrag_ingeschreven':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_optioned, 2, ',', '');
+                    $amount = $model->amount_optioned;
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_optioned * $model->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $amount);
             case 'bedrag_toegekend':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_granted, 2, ',', '');
+                    $amount = $model->amount_granted;
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_granted * $model->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $amount);
             case 'bedrag_definitief':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_definitive, 2, ',', '');
+                    $amount = $model->amount_definitive;
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_definitive * $model->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('project_' . $varname), $amount);
             case 'transactiekosten_naam_op_de_portal':
                 return $model->text_transaction_costs;
             case 'aantal_participanten':
@@ -761,55 +764,55 @@ class TemplateVariableHelper
                 return '';
             case 'bedrag_interesse':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_interessed, 2, ',', '');
+                    $amount = $model->amount_interessed;
                 }else{
-                    $amount = number_format(($model->participations_interessed * $model->project->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_interessed * $model->project->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
             case 'bedrag_ingeschreven':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_optioned, 2, ',', '');
+                    $amount = $model->amount_optioned;
                 }else{
-                    $amount = number_format(($model->participations_optioned * $model->project->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_optioned * $model->project->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
             case 'bedrag_toegekend':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_granted, 2, ',', '');
+                    $amount = $model->amount_granted;
                 }else{
-                    $amount = number_format(($model->participations_granted * $model->project->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_granted * $model->project->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
             case 'bedrag_definitief':
                 if($projectTypeCodeRef == 'loan') {
-                    $amount = number_format($model->amount_definitive, 2, ',', '');
+                    $amount = $model->amount_definitive;
                 }else{
-                    $amount = number_format(($model->participations_definitive * $model->project->currentBookWorth()), 2, ',', '');
+                    $amount = $model->participations_definitive * $model->project->currentBookWorth();
                 }
-                return $amount;
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
             case 'saldo_kapitaal_rekening':
             case 'huidig_saldo_kapitaal_rekening':
-                return number_format($model->participations_capital_worth, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->participations_capital_worth);
             case 'saldo_lening_rekening':
             case 'huidig_saldo_lening_rekening':
-                return number_format($model->amount_definitive, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->amount_definitive);
             case 'totale_opbrengsten':
-                return number_format($model->participationsReturnsTotal, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->participationsReturnsTotal);
             case 'waarde_totaal':
             case 'huidige_totale_waarde':
-                return number_format($model->participations_definitive_worth, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->participations_definitive_worth);
             case 'nominale_waarde':
                 // deze waarde is bij project vastgelegd!
-                return number_format($model->project->participation_worth, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->project->participation_worth);
             case 'huidige_boekwaarde':
             case 'huidige_hoofdsom':
                 // deze waarde wordt bij project bepaald!
-                return number_format($model->project->currentBookWorth(), 2, ',', '');
+               return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->project->currentBookWorth());
             case 'totale_opbrengsten_kwh':
-                return number_format($model->participationsReturnsKwhTotal, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->participationsReturnsKwhTotal);
             case 'totale_teruggave_eb':
             case 'totale_indicatie_teruggave_energie_belasting':
-                return number_format($model->participationsIndicationOfRestitutionEnergyTaxTotal, 2, ',', '');
+               return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->participationsIndicationOfRestitutionEnergyTaxTotal);
             case 'akkoord_reglement':
                 return $model->did_accept_agreement ? 'Ja' : 'Nee';
             case 'geschonken_door':
@@ -883,36 +886,40 @@ class TemplateVariableHelper
                 return '';
             case 'bedrag_overdracht_interesse':
                 if ($projectTypeCodeRef == 'loan') {
-                    return 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), 0);
                 } else {
                     $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['interest', 'option', 'granted', 'final'])->pluck('id')->toArray());
                     // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                     $lastMutation = $model->mutations->whereNotNull('date_interest')->whereIn('status_id', $mutationStatusIds)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                    return $lastMutation ? number_format( ($model->project->currentTransferWorth() * $lastMutation->quantity_interest * -1), 2, ',', '') : 0;
+                    $amount = $lastMutation ? ($model->project->currentTransferWorth() * $lastMutation->quantity_interest * -1) : 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
                 }
             case 'bedrag_overdracht_ingeschreven':
                 if ($projectTypeCodeRef == 'loan') {
-                    return 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), 0);
                 } else {
                     $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['option', 'granted', 'final'])->pluck('id')->toArray());
                     $lastMutation = $model->mutations->whereNotNull('date_interest')->whereIn('status_id', $mutationStatusIds)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                    return $lastMutation ? number_format( ($model->project->currentTransferWorth() * $lastMutation->quantity_option * -1), 2, ',', '') : 0;
+                    $amount = $lastMutation ? ($model->project->currentTransferWorth() * $lastMutation->quantity_option * -1) : 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
                 }
             case 'bedrag_overdracht_toegekend':
                 if ($projectTypeCodeRef == 'loan') {
-                    return 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), 0);
                 } else {
                     $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['granted', 'final'])->pluck('id')->toArray());
                     $lastMutation = $model->mutations->whereNotNull('date_interest')->whereIn('status_id', $mutationStatusIds)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                    return $lastMutation ? number_format( ($model->project->currentTransferWorth() * $lastMutation->quantity_granted * -1), 2, ',', '') : 0;
+                    $amount = $lastMutation ? ($model->project->currentTransferWorth() * $lastMutation->quantity_granted * -1) : 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
                 }
             case 'bedrag_overdracht_definitief':
                 if ($projectTypeCodeRef == 'loan') {
-                    return 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), 0);
                 } else {
                     $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['final'])->pluck('id')->toArray());
                     $lastMutation = $model->mutations->whereNotNull('date_interest')->whereIn('status_id', $mutationStatusIds)->whereIn('type_id', $mutationWithDrawalTypes)->first();
-                    return $lastMutation ? number_format( ($model->project->currentTransferWorth() * $lastMutation->quantity_final * -1), 2, ',', '') : 0;
+                    $amount = $lastMutation ? ($model->project->currentTransferWorth() * $lastMutation->quantity_final * -1) : 0;
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $amount);
                 }
             case 'iban_uitkeren':
                 return $model->iban_payout ? $model->iban_payout : $model->contact->iban;
@@ -965,7 +972,7 @@ class TemplateVariableHelper
             case 'bedrag_inleg_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes) as $mutation) {
@@ -975,12 +982,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_inleg_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes) as $mutation) {
@@ -990,12 +997,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_inleg_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes) as $mutation) {
@@ -1005,12 +1012,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_inleg_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationDepositTypes) as $mutation) {
@@ -1020,7 +1027,7 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'aantal_opname_mutatie_interesse':
                 if($projectTypeCodeRef == 'loan'){
@@ -1053,7 +1060,7 @@ class TemplateVariableHelper
             case 'bedrag_opname_mutatie_interesse':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'interest')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes) as $mutation) {
@@ -1063,12 +1070,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_opname_mutatie_ingeschreven':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'option')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes) as $mutation) {
@@ -1078,12 +1085,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_opname_mutatie_toegekend':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'granted')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes) as $mutation) {
@@ -1093,12 +1100,12 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'bedrag_opname_mutatie_definitief':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 if($projectTypeCodeRef == 'loan'){
-                    return $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes)->sum('amount'));
                 }else{
                     $firstMutationAmount = 0;
                     foreach($model->mutations->where('status_id', $mutationStatus)->whereIn('type_id', $mutationWithDrawalTypes) as $mutation) {
@@ -1108,7 +1115,7 @@ class TemplateVariableHelper
                             ->value('book_worth');
                         $firstMutationAmount = $firstMutationAmount + ( $bookWorth * $mutation->quantity );
                     }
-                    return number_format($firstMutationAmount, 2, ',', '');
+                    return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $firstMutationAmount);
                 }
             case 'datum_laatste_mutatie_interesse':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['interest', 'option', 'granted', 'final'])->pluck('id')->toArray());
@@ -1183,7 +1190,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_interest ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_mutatie_ingeschreven':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['option', 'granted', 'final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1201,7 +1208,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_option ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_mutatie_toegekend':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['granted', 'final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1219,7 +1226,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_granted ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_mutatie_definitief':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1237,7 +1244,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_final ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'datum_laatste_opname_interesse':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['interest', 'option', 'granted', 'final'])->pluck('id')->toArray());
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
@@ -1312,7 +1319,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_interest ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_opname_ingeschreven':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['option', 'granted', 'final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1330,7 +1337,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_option) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_opname_toegekend':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['granted', 'final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1348,7 +1355,7 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_granted ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'bedrag_laatste_opname_definitief':
                 $mutationStatusIds = (ParticipantMutationStatus::whereIn('code_ref', ['final'])->pluck('id')->toArray());
                 $lastMutationAmount = 0;
@@ -1366,12 +1373,12 @@ class TemplateVariableHelper
                         $lastMutationAmount = $bookWorth ? ( $bookWorth * $lastMutation->quantity_final ) : 0;
                     }
                 }
-                return number_format($lastMutationAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationAmount);
             case 'transactiekosten_laatste_mutatie':
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
                 $lastMutation = $model->mutations->whereIn('type_id', $mutationDepositTypes)->first();
                 $lastMutationTransactionCostsAmount = $lastMutation ? $lastMutation->transaction_costs_amount : 0;
-                return number_format($lastMutationTransactionCostsAmount, 2, ',', '');
+                return TemplateVariableHelper::formatFinancial(('deelname_' . $varname), $lastMutationTransactionCostsAmount);
             case 'mutatie_datum_betaald':
                 $mutationStatus = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
                 // mutations zijn gesorteerd op ID, descending. Dus eerste is de laatste!
@@ -1824,9 +1831,17 @@ class TemplateVariableHelper
             case 'aantal_bouwlagen':
                 return $model->floors;
             case 'monument':
-                return $model->is_monument ? 'Ja' : 'Nee';
+                return match ($model->is_monument) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
             case 'koophuis':
-                return $model->is_house_for_sale ? 'Ja' : 'Nee';
+                return match ($model->is_house_for_sale) {
+                    '1' => 'Ja',
+                    '0' => 'Nee',
+                    default => 'Onbekend',
+                };
             default:
                 return '';
         }
@@ -2046,23 +2061,35 @@ class TemplateVariableHelper
             case 'datum_afspraak_zonder_tijdstip':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y') : null;
             case 'tijdstip_afspraak_30_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_60_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(60)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(60)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_90_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(90)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(90)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_120_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(120)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(120)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_150_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(150)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(150)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
             case 'tijdstip_afspraak_180_min_later':
-                $tijdStip30MinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(180)->format('H:i') : null;
-                return $tijdStip30MinutenLater ?: null;
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(180)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_210_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(210)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_240_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(240)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_270_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(270)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
+            case 'tijdstip_afspraak_300_min_later':
+                $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(300)->format('H:i') : null;
+                return $tijdStipXMinutenLater ?: null;
 //            verwijderd ivm dubbele case, dit is de tweede dus zou nooit aangeroepen kunnen worden. verschil met de andere case is H:i in de format
 //            case 'datum_opname':
 //                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
@@ -2380,4 +2407,15 @@ class TemplateVariableHelper
 
         return $html;
     }
+
+    private static function formatFinancial($field, $amount){
+        if (!is_numeric($amount)) {
+            // Bijv. loggen of defaulten:
+//             Log::warning("Ongeldig bedrag in TemplateVariableHelper formatFinancial voor samenvoegveld " . $field . " formatFinancial : " . var_export($amount, true));
+            return '0,00';
+        }
+
+        return number_format((float) $amount, 2, ',', '.');
+    }
+
 }

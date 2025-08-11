@@ -3,6 +3,13 @@ import React, { Component } from 'react';
 import QuotationRequestNewForm from './QuotationRequestNewForm';
 import QuotationRequestNewToolbar from './QuotationRequestNewToolbar';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const QuotationRequestNewAppWrapper = props => {
+    const params = useParams();
+    return <QuotationRequestNewApp {...props} params={params} />;
+};
 
 class QuotationRequestNewApp extends Component {
     constructor(props) {
@@ -44,4 +51,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(QuotationRequestNewApp);
+export default connect(mapStateToProps, null)(QuotationRequestNewAppWrapper);

@@ -16,7 +16,7 @@ class FinancialOverviewCreateViewEmail extends Component {
     //     this.downloadEmail(this.props.financialOverviewContactId);
     // }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.financialOverviewContactId !== nextProps.financialOverviewContactId) {
             if (nextProps.financialOverviewContactId) {
                 this.downloadEmail(nextProps.financialOverviewContactId);

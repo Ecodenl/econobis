@@ -13,8 +13,14 @@ import InputText from '../../../components/form/InputText';
 import { Alert } from 'react-bootstrap';
 import { get, isEmpty } from 'lodash';
 import calculateTransactionCosts from '../../../helpers/CalculateTransactionCosts';
+import textMethodeTransactionCosts from '../../../helpers/TextMethodeTransactionCosts';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function StepOneCapital({ next, project, contactProjectData, initialRegisterValues, handleSubmitRegisterValues }) {
+    const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige boekwaarde';
+    const textRegisterParticipationSingular = project.textRegisterParticipationSingular ?? 'participatie';
+    const textRegisterParticipationPlural = project.textRegisterParticipationPlural ?? 'participaties';
+
     const validationSchema = Yup.object({
         participationsOptioned: Yup.number()
             .integer('Alleen gehele aantallen')
@@ -37,6 +43,22 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
     function calculateAmount(participationsOptioned) {
         return participationsOptioned ? participationsOptioned * project.currentBookWorth : 0;
     }
+
+    function getMethodeTransactionCosts(participationsOptioned, choiceMembership) {
+        if (!project.useTransactionCostsWithMembership) {
+            if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+            if (project.showQuestionAboutMembership && choiceMembership === 1) {
+                return [project.textTransactionCosts + ': geen'];
+            }
+        }
+        return textMethodeTransactionCosts(
+            project,
+            calculateTransactionCostsAmount(participationsOptioned, choiceMembership)
+        );
+    }
+
     function calculateTransactionCostsAmount(participationsOptioned, choiceMembership) {
         if (!project.useTransactionCostsWithMembership) {
             if (project.showQuestionAboutMembership && contactProjectData.belongsToMembershipGroup) {
@@ -78,20 +100,29 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                     <Form>
                         <Row>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Minimale aantal participaties</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    Minimale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </FormLabel>
                                 <TextBlock>{project.minParticipations}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Maximale aantal participaties</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    Maximale aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </FormLabel>
                                 <TextBlock>{project.maxParticipations}</TextBlock>
                             </Col>
 
                             <Col xs={12} md={6}>
-                                <FormLabel className={'field-label'}>Huidige boekwaarde per participatie</FormLabel>
+                                <FormLabel className={'field-label'}>
+                                    {capitalizeFirstLetter(textRegisterCurrentBookWorth)} per{' '}
+                                    {lowerCaseFirstLetter(textRegisterParticipationSingular)}
+                                </FormLabel>
                                 <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                             </Col>
                             <Col xs={12} md={6}>
-                                <Form.Label className={'field-label'}>Gewenst aantal participaties</Form.Label>
+                                <Form.Label className={'field-label'}>
+                                    Gewenst aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)}
+                                </Form.Label>
                                 <Field name="participationsOptioned">
                                     {({ field }) => (
                                         <InputText
@@ -176,7 +207,17 @@ function StepOneCapital({ next, project, contactProjectData, initialRegisterValu
                                 <hr />
                                 <Row>
                                     <Col xs={12} md={6}>
-                                        <FormLabel className={'field-label'}>{project.textTransactionCosts}</FormLabel>
+                                        <FormLabel className={'field-label'}>
+                                            {getMethodeTransactionCosts(
+                                                values.participationsOptioned,
+                                                values.choiceMembership
+                                            ).map((line, index) => (
+                                                <React.Fragment key={index}>
+                                                    {line}
+                                                    <br />
+                                                </React.Fragment>
+                                            ))}
+                                        </FormLabel>
                                         <TextBlock>
                                             {MoneyPresenter(
                                                 calculateTransactionCostsAmount(

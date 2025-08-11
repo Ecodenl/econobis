@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_CONTACT_GROUP = `${URL_API}/api/contact-group`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchContactGroups: ({ filters, sorts, pagination }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -17,15 +17,16 @@ export default {
     },
 
     deleteContactGroup: id => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     fetchGroupsByContact: contactId => {
-        const requestUrl = `${URL_API}/api/contact/${contactId}/groups`;
+        const requestUrl = `${getApiUrl()}/api/contact/${contactId}/groups`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -34,18 +35,20 @@ export default {
     },
 
     addContactToGroup: ({ groupId, contactId }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add/${contactId}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
     newContactGroup: contactGroup => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, contactGroup)
             .then(function(response) {
                 return response.data.data;
@@ -56,9 +59,10 @@ export default {
     },
 
     updateContactGroup: contactGroup => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${contactGroup.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, contactGroup)
             .then(function(response) {
                 return response.data.data;
@@ -69,9 +73,10 @@ export default {
     },
 
     fetchContactGroupDetails: id => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -82,9 +87,10 @@ export default {
     },
 
     fetchContactGroup: id => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -95,9 +101,10 @@ export default {
     },
 
     deleteContactFromGroup: (groupId, contactId) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/remove/${contactId}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -108,9 +115,10 @@ export default {
     },
 
     addManyContactsToGroup: (contactIds, groupId) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/contacts/add-many`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, contactIds)
             .then(function(response) {
                 return response.data;
@@ -121,9 +129,9 @@ export default {
     },
 
     peekContactGroups: () => {
-        const requestUrl = `${URL_API}/api/contact-group/peek`;
+        const requestUrl = `${getApiUrl()}/api/contact-group/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -134,9 +142,9 @@ export default {
     },
 
     peekActiveContactGroups: () => {
-        const requestUrl = `${URL_API}/api/contact-group/peek/active`;
+        const requestUrl = `${getApiUrl()}/api/contact-group/peek/active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -147,9 +155,9 @@ export default {
     },
 
     peekStaticContactGroups: () => {
-        const requestUrl = `${URL_API}/api/contact-group/peek/static`;
+        const requestUrl = `${getApiUrl()}/api/contact-group/peek/static`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -160,9 +168,9 @@ export default {
     },
 
     peekStaticActiveContactGroups: () => {
-        const requestUrl = `${URL_API}/api/contact-group/peek/static/active`;
+        const requestUrl = `${getApiUrl()}/api/contact-group/peek/static/active`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -173,48 +181,54 @@ export default {
     },
 
     getCsv: groupId => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/${groupId}/csv`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     getExcelExportGroupReport: () => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/excel/group-report`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 
     deleteComposedGroup: ({ contactGroupId, contactGroupToDetachId }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
     attachComposedGroup: ({ contactGroupId, contactGroupToAttachId }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
     deleteComposedExceptGroup: ({ contactGroupId, contactGroupToDetachId }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToDetachId}/detach/except`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
     },
 
     attachComposedExceptGroup: ({ contactGroupId, contactGroupToAttachId }) => {
+        const URL_CONTACT_GROUP = `${getApiUrl()}/api/contact-group`;
         const requestUrl = `${URL_CONTACT_GROUP}/composed/${contactGroupId}/${contactGroupToAttachId}/attach/except`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => error.response);
@@ -223,12 +237,12 @@ export default {
     syncLapostaList: id => {
         const requestUrl = `contact-group/${id}/sync-laposta-list`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     deActivateLapostaList: id => {
         const requestUrl = `contact-group/${id}/deactivate-laposta-list`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 };

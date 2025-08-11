@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
-import { Link } from 'react-router';
 import DocumentDeleteItem from './DocumentDeleteItem';
+
+// Functionele wrapper voor de class component
+const DocumentDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <DocumentDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class DocumentDetailsToolbar extends Component {
     constructor(props) {
@@ -20,23 +25,23 @@ class DocumentDetailsToolbar extends Component {
     };
 
     render() {
-        const { documentFilename = '' } = this.props;
+        const { documentFilename = '', navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'download'} onClickAction={this.props.download} />
                         {documentFilename.toLowerCase().endsWith('.pdf') && (
                             <ButtonIcon
                                 iconName={'eye'}
-                                onClickAction={() => hashHistory.push(`/document/inzien/${this.props.documentId}`)}
+                                onClickAction={() => this.props.navigate(`/document/inzien/${this.props.documentId}`)}
                             />
                         )}
                         <ButtonIcon
                             iconName={'envelopeO'}
-                            onClickAction={() => hashHistory.push(`/email/nieuw/document/${this.props.documentId}`)}
+                            onClickAction={() => this.props.navigate(`/email/nieuw/document/${this.props.documentId}`)}
                         />
                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                     </div>
@@ -81,4 +86,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(DocumentDetailsToolbar);
+export default connect(mapStateToProps, null)(DocumentDetailsToolbarWrapper);

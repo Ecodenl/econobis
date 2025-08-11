@@ -1,40 +1,49 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 
-const ContactDetailsDelete = props => {
+const ContactDetailsDelete = ({
+    id,
+    fullName,
+    type,
+    numberOfActions,
+    isOrganisationOrCoach,
+    inspectionPersonTypeId,
+    closeDeleteItemModal,
+}) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteContact(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteContact(id));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder contact ({`${props.type.name}`}): <strong> {`${props.fullName}`} </strong>
+                Verwijder contact ({`${type.name}`}): <strong> {`${fullName}`} </strong>
             </p>
-            {props.numberOfActions > 0 ? (
+            {numberOfActions > 0 ? (
                 <>
                     <p>
-                        Er {props.numberOfActions == 1 ? `is` : `zijn`} nog{' '}
-                        <strong>{`${props.numberOfActions}`}</strong> gekoppelde Acties op kans voor deze{' '}
-                        <strong>{`${props.type.name}`}</strong>.
+                        Er {numberOfActions == 1 ? `is` : `zijn`} nog <strong>{`${numberOfActions}`}</strong> gekoppelde
+                        Acties op kans voor deze <strong>{`${type.name}`}</strong>.
                     </p>
                     <p>
                         <span className="error-span">
-                            {props.isOrganisationOrCoach
+                            {isOrganisationOrCoach
                                 ? `Deze gekoppelde Acties op kans zullen ontkoppeld worden!`
-                                : props.inspectionPersonTypeId === 'projectmanager'
+                                : inspectionPersonTypeId === 'projectmanager'
                                 ? `Contact is projectleider bij deze Acties op kans en zal hiervan ontkoppeld worden.`
-                                : props.inspectionPersonTypeId === 'externalparty'
+                                : inspectionPersonTypeId === 'externalparty'
                                 ? `Contact is externe partij bij deze Acties op kans en zal hiervan ontkoppeld worden.`
                                 : `Onbekende koppeling met Acties op kans`}
                         </span>
@@ -45,10 +54,4 @@ const ContactDetailsDelete = props => {
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteContact: id => {
-        dispatch(deleteContact(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(ContactDetailsDelete);
+export default ContactDetailsDelete;

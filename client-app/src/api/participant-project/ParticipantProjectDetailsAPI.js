@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_PARTICIPANT_PROJECT = `project/participant`;
 
@@ -8,7 +8,7 @@ export default {
 
         if (id === undefined) return null;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -19,7 +19,7 @@ export default {
     updateParticipantProject: (id, data) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -30,13 +30,13 @@ export default {
     storeParticipantProject: data => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     transferParticipation: data => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/transfer`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -47,13 +47,13 @@ export default {
     deleteParticipantProject: id => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     getContactsMembershipPeek: participantId => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${participantId}/peek-members`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -66,7 +66,7 @@ export default {
     getAdditionalInfoForTerminatingOrChangeEntryDate: participantId => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${participantId}/additional-info-for-terminating-or-change-entry-date`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -79,16 +79,16 @@ export default {
     terminateParticipantProject: (id, payload) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate`;
 
-        return axiosInstance.post(requestUrl, payload);
+        return getAxiosInstance().post(requestUrl, payload);
     },
     terminateParticipantProjectLoanOrObligation: (id, payload) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/terminate-loan-or-obligation`;
 
-        return axiosInstance.post(requestUrl, payload);
+        return getAxiosInstance().post(requestUrl, payload);
     },
     undoTerminateParticipantProject: (id, payload) => {
         const requestUrl = `${URL_PARTICIPANT_PROJECT}/${id}/undo-terminate`;
 
-        return axiosInstance.post(requestUrl, payload);
+        return getAxiosInstance().post(requestUrl, payload);
     },
 };

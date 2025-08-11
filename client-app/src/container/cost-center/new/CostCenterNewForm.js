@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -14,6 +14,12 @@ import Panel from '../../../components/panel/Panel';
 import CostCenterDetailsAPI from '../../../api/cost-center/CostCenterDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import InputSelect from '../../../components/form/InputSelect';
+
+// Functionele wrapper voor de class component
+const CostCenterNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <CostCenterNewForm {...props} navigate={navigate} />;
+};
 
 class CostCenterNewForm extends Component {
     constructor(props) {
@@ -84,7 +90,7 @@ class CostCenterNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/kostenplaats/${payload.data.data.id}`);
+                    this.props.navigate(`/kostenplaats/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -144,4 +150,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(CostCenterNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(CostCenterNewFormWrapper);

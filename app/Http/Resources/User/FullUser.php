@@ -49,6 +49,7 @@ class FullUser extends JsonResource
             'showTwoFactorNotification' => $this->show_two_factor_notification,
             'defaultMailboxId' => $this->default_mailbox_id,
             'defaultMailbox' => MailboxPeek::make($this->whenLoaded('defaultMailbox')),
+            'defaultMailboxWithFallback' => MailboxPeek::make($this->getDefaultMailboxWithFallback()),
 //            'mailboxes' =>$this->whenLoaded('mailboxes'),
         ];
     }

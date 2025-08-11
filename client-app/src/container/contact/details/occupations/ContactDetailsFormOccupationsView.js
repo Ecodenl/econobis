@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment/moment';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 moment.locale('nl');
 

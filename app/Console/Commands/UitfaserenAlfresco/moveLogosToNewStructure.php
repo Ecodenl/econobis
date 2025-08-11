@@ -9,7 +9,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 
-class MoveLogosToNewStructure extends Command
+class moveLogosToNewStructure extends Command
 {
     protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true} {--withLog=false}';
     protected bool $hasErrors = false;

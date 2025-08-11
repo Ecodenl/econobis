@@ -2,10 +2,16 @@ import React, { Component } from 'react';
 
 import Modal from '../../../../components/modal/Modal';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import fileDownload from 'js-file-download';
 import { setError } from '../../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewCreateConfirmWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialOverviewCreateConfirm {...props} navigate={navigate} />;
+};
 
 class FinancialOverviewCreateConfirm extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class FinancialOverviewCreateConfirm extends Component {
             }
         });
 
-        hashHistory.push(`/waardestaat/${this.props.financialOverviewId}`);
+        this.props.navigate(`/waardestaat/${this.props.financialOverviewId}`);
     };
 
     handleInputChangeDate = (value, name) => {
@@ -70,4 +76,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(null, mapDispatchToProps)(FinancialOverviewCreateConfirm);
+export default connect(null, mapDispatchToProps)(FinancialOverviewCreateConfirmWrapper);

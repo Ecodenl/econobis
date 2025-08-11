@@ -1,10 +1,12 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 function TaskList({ relatedTasks }) {
+    const navigate = useNavigate();
+
     function openItem(id) {
-        hashHistory.push(`/taak/${id}`);
+        navigate(`/taak/${id}`);
     }
 
     if (relatedTasks.length === 0) return <div>Geen taken gevonden.</div>;

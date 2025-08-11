@@ -9,6 +9,13 @@ import InvoiceViewToolbar from './InvoiceViewToolbar';
 import InvoiceViewForm from './InvoiceViewForm';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import fileDownload from 'js-file-download';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const InvoiceViewAppWrapper = props => {
+    const params = useParams();
+    return <InvoiceViewApp {...props} params={params} />;
+};
 
 class InvoiceViewApp extends Component {
     constructor(props) {
@@ -95,4 +102,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceViewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceViewAppWrapper);

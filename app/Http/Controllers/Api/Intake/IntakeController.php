@@ -36,6 +36,8 @@ class IntakeController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Intake::class);
+
         $intakes = $requestQuery->get();
 
         $intakes->load(['contact', 'address', 'campaign', 'measuresRequested', 'status']);
@@ -53,6 +55,8 @@ class IntakeController extends ApiController
      */
     public function getStore(Contact $contact)
     {
+        $this->authorize('manage', Intake::class);
+
         $info[] = $contact->getPrettyAddresses();
 
         return $info;
@@ -60,6 +64,8 @@ class IntakeController extends ApiController
 
     public function show(Intake $intake)
     {
+        $this->authorize('view', Intake::class);
+
         $intake->load([
             'contact',
             'address.housingFile',
@@ -103,6 +109,8 @@ class IntakeController extends ApiController
 
     public function showWithCustomCampaigns(Intake $intake)
     {
+        $this->authorize('view', Intake::class);
+
         $intake->load([
             'contact',
             'address.housingFile',
@@ -146,6 +154,8 @@ class IntakeController extends ApiController
 
     public function excel(RequestQuery $requestQuery, Request $request)
     {
+        $this->authorize('view', Intake::class);
+
         set_time_limit(0);
         $intakes = $requestQuery->getQueryNoPagination()->get();
 
@@ -378,6 +388,8 @@ class IntakeController extends ApiController
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', Intake::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = Intake::query();

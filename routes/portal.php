@@ -6,6 +6,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
+Route::get('setting/portal-login-info-text', 'Setting\PortalSettingController@getPortalLoginInfoText');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
 Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
 
@@ -39,12 +40,14 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
+        Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
 
         Route::get('/project/{project}/document/{document}/download', 'Project\ProjectController@documentDownload');
 
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
-        Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::get('/project/participant/{participantProject}/document/{document}/download', 'ParticipationProject\ParticipationProjectController@documentDownload');
+        Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
+        Route::post('/project/participant/{participantProject}/update', 'ParticipationProject\ParticipationProjectController@update');
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
@@ -89,3 +92,4 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
     });
 
 Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');
+Route::get('mollie/test-webhook/{participantMutationCode}', [ParticipantMutationMolliePaymentController::class, 'testWebhook'])->name('portal.mollie.testWebhook');

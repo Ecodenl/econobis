@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import OrderDeleteItem from './OrderDeleteItem';
 import ButtonText from '../../../../components/button/ButtonText';
 import { previewCreate } from '../../../../actions/order/OrdersActions';
+
+// Functionele wrapper voor de class component
+const OrderToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <OrderToolbar {...props} navigate={navigate} />;
+};
 
 class OrderToolbar extends Component {
     constructor(props) {
@@ -17,17 +23,22 @@ class OrderToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     preview = () => {
-        hashHistory.push(`/order/inzien/${this.props.orderDetails.id}`);
+        this.props.navigate(`/order/inzien/${this.props.orderDetails.id}`);
     };
 
     newInvoice = () => {
         this.props.previewCreate([this.props.orderDetails.id]);
-        hashHistory.push(`/financieel/${this.props.orderDetails.administrationId}/orders/aanmaken`);
+        this.props.navigate(`/financieel/${this.props.orderDetails.administrationId}/orders/aanmaken`);
     };
 
     render() {
@@ -35,7 +46,7 @@ class OrderToolbar extends Component {
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => this.props.navigate(-1)} />
                         {!this.props.orderDetails.canCreateInvoice && (
                             <ButtonIcon iconName={'eye'} onClickAction={this.preview} />
                         )}
@@ -51,7 +62,7 @@ class OrderToolbar extends Component {
                                     title={'Deze order heeft nog geen orderregels'}
                                 />
                             )}
-                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
                 {!this.props.isLoading && (
@@ -64,7 +75,7 @@ class OrderToolbar extends Component {
                 <div className="col-md-4" />
                 {this.state.showDelete && (
                     <OrderDeleteItem
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         subject={this.props.orderDetails.subject}
                         id={this.props.orderDetails.id}
                         administrationId={this.props.administrationId}
@@ -89,4 +100,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(OrderToolbarWrapper);

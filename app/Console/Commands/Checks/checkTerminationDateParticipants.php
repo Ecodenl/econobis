@@ -20,7 +20,7 @@ class checkTerminationDateParticipants extends Command
      * @var string
      */
     protected $signature = 'participants:checkTerminationDate';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.
@@ -65,7 +65,7 @@ class checkTerminationDateParticipants extends Command
                     $lastmutationDateEntry = null;
                 }
                 $participantProjectDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
-                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay(1)->format('Y-m-d');
+                $participantProjectDateTerminatedDayAfter = Carbon::parse($participantProject->date_terminated)->addDay()->format('Y-m-d');
 
 //Log::info('Deelnemer: ' . $participantProject->id);
 //Log::info('Date Terminated: ' . $participantProjectDateTerminated);

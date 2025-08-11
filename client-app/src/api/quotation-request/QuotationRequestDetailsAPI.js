@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_QUOTATION_REQUEST = `${URL_API}/api/quotation-request`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchQuotationRequestDetails: function(id) {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,9 @@ export default {
     },
 
     fetchNewQuotationRequest: (opportunityId, opportunityActionId) => {
-        const requestUrl = `${URL_API}/api/opportunity/${opportunityId}/${opportunityActionId}/quotation-request`;
+        const requestUrl = `${getApiUrl()}/api/opportunity/${opportunityId}/${opportunityActionId}/quotation-request`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -30,9 +30,10 @@ export default {
     },
 
     showUpdateOpportunityStatus: quotationRequest => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/${quotationRequest.id}/show-update-opportunity-status`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, quotationRequest)
             .then(function(response) {
                 return response.data;
@@ -43,20 +44,24 @@ export default {
     },
 
     newQuotationRequest: quotationRequest => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}`;
 
-        return axiosInstance.post(requestUrl, quotationRequest).then(function(response) {
-            return response.data;
-        });
+        return getAxiosInstance()
+            .post(requestUrl, quotationRequest)
+            .then(function(response) {
+                return response.data;
+            });
         // .catch(function(error) {
         //     console.log(error);
         // });
     },
 
     updateQuotationRequest: quotationRequest => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/${quotationRequest.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, quotationRequest)
             .then(function(response) {
                 return response.data.data;
@@ -67,20 +72,23 @@ export default {
     },
 
     deleteQuotationRequest: id => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteBulkQuotationRequests: ids => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-delete`;
 
-        return axiosInstance.post(requestUrl, { ids: ids });
+        return getAxiosInstance().post(requestUrl, { ids: ids });
     },
 
     updateBulkQuotationRequests: (ids, values) => {
+        const URL_QUOTATION_REQUEST = `${getApiUrl()}/api/quotation-request`;
         const requestUrl = `${URL_QUOTATION_REQUEST}/bulk-update`;
 
-        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+        return getAxiosInstance().post(requestUrl, { ids: ids, ...values });
     },
 };

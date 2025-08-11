@@ -14,14 +14,14 @@ use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
-use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
+//use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Mollie\Laravel\Wrappers\MollieApiWrapper;
+use Mollie\Api\MollieApiClient;
 use Venturecraft\Revisionable\RevisionableTrait;
 
 class Administration extends Model
@@ -47,12 +47,12 @@ class Administration extends Model
         return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
-    public function getTwinfieldConnectionTypeWithIdAndName()
-    {
-        if(!$this->twinfield_connection_type) return null;
-
-        return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
-    }
+//    public function getTwinfieldConnectionTypeWithIdAndName()
+//    {
+//        if(!$this->twinfield_connection_type) return null;
+//
+//        return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
+//    }
 
     public function users()
     {
@@ -463,14 +463,12 @@ class Administration extends Model
      */
     public function getMollieApiFacade()
     {
-        if(!$this->uses_mollie){
-            return;
+        if (!$this->uses_mollie) {
+            return null;
         }
 
-        $config = app()['config'];
+        $mollie = new MollieApiClient();
+        $mollie->setApiKey($this->mollie_api_key);
 
-        $config->set('mollie.key', $this->mollie_api_key);
-
-        return new MollieApiWrapper($config, app()['mollie.api.client']);
-    }
-}
+        return $mollie;
+    }}

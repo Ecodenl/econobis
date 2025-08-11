@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
 import { deleteWebform } from '../../../actions/webform/WebformsActions';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 const WebformDetailsDelete = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         props.deleteWebform(props.id);
         props.closeDeleteItemModal();
-        hashHistory.push(`/webformulieren`);
+        navigate(`/webformulieren`);
     };
 
     return (

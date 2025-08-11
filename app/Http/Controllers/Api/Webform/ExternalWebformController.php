@@ -24,6 +24,7 @@ use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\ContactNote\ContactNote;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\Country\Country;
+use App\Eco\District\District;
 use App\Eco\Document\Document;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\EmailAddress\EmailAddress;
@@ -635,6 +636,8 @@ class ExternalWebformController extends Controller
                 'kansactie_datum_vaststelling_in_behandeling' => 'date_under_review_determination',
                 'kansactie_datum_akkoord_vaststelling' => 'date_approved_determination',
                 'kansactie_bedrag_vaststelling' => 'amount_determination',
+                'kansactie_afspraak_kalender_id' => 'opportunity_action_district_id',
+                'kansactie_kalender_duratie' => 'duration_minutes',
             ],
             'housing_file' => [
                 // HousingFile
@@ -4056,6 +4059,20 @@ class ExternalWebformController extends Controller
                     break;
             }
 
+            // indien opportunity_action_type_code_ref = 'visit', opportunity_action_district_id en coach_or_organisation_id gevuld zijn.
+            // bepaal duration minutes
+            $usesPlanning = false;
+            $districtId = null;
+            $durationMinutes = null;
+            if (mb_strtolower((string)$dataQuotationRequest['opportunity_action_type_code_ref']) === 'visit' &&
+                is_numeric($dataQuotationRequest['opportunity_action_district_id']) &&
+                $coachOrOrganisation) {
+                $districtId = $dataQuotationRequest['opportunity_action_district_id'] ?? null;
+                $durationMinutes = $this->durationMinutesToUse($dataQuotationRequest['opportunity_action_district_id'], $dataQuotationRequest['duration_minutes']) ?? null;
+                $usesPlanning = $durationMinutes !== null;
+//                $this->log('Result durationMinutes ' . $durationMinutes);
+            }
+
             $quotationRequest = QuotationRequest::create([
                 'contact_id' => $coachOrOrganisation ? $coachOrOrganisation->id : null,
                 'opportunity_id' => $opportunity->id,
@@ -4084,6 +4101,9 @@ class ExternalWebformController extends Controller
                 'projectmanager_note' => $projectmanagerNote,
                 'externalparty_note' => $externalpartyNote,
                 'client_note' => $clientNote,
+                'uses_planning' => $usesPlanning,
+                'district_id' => $districtId,
+                'duration_minutes' => $durationMinutes,
             ]);
 
             // Indien kansactie bijlage url meegegeven deze als document opslaan
@@ -4100,6 +4120,50 @@ class ExternalWebformController extends Controller
             $this->log("Kansactie " . $opportunityAction->name . " met id " . $quotationRequest->id . " aangemaakt voor kans '" . $opportunity->number . "' en coach/organisatie '" . ($coachOrOrganisation ? $coachOrOrganisation->full_name : 'geen') . "'.");
 
         }
+    }
+
+    /**
+     * Bepaalt de te gebruiken duur in minuten volgens de gestelde regels.
+     *
+     * @param int $districtId
+     * @param string|int|null $durationMinutes bijv. 15 (mag leeg)
+     *
+     * @return int|null  Alleen: null, 30, 60, 90, ..., 300
+     */
+    private function durationMinutesToUse(int $districtId, string|int|null $durationMinutes): ?int
+    {
+        // opportunity_action_district_id moet een bestaand district zijn
+        $district = District::find($districtId);
+        if(!$district){
+            $this->log("Onbekend kalender id meegegeven.");
+            return null;
+        }
+        // indien $durationMinutes niet geldig, dan zetten op we hem op default duration minutes van district
+        if (
+            $durationMinutes === null ||
+            $durationMinutes === '' ||
+            false === filter_var($durationMinutes, FILTER_VALIDATE_INT, ['options' => ['min_range' => 1, 'max_range' => 300]])
+        ) {
+            if(!$district->default_duration_minutes){
+                $this->log("Kansactie afspraak duratie is niet geldig. Moet een getal (aantal minuten) zijn tussen de 1 en 300. Er is ook geen default duratie bij afspraakkalender aanwezig, daarom niet opgenomen in planning.");
+                return null;
+            } else {
+                $this->log("Kansactie afspraak duratie is niet geldig. Moet een getal (aantal minuten) zijn tussen de 1 en 300. Duratie met default gezet: " . $district->default_duration_minutes . " minuten");
+                return $district->default_duration_minutes;
+            }
+        }
+
+        // Afronden naar boven op halve uren (30-min stappen)
+        //    0..30 => 30, 31..60 => 60, etc. max 300
+        $durationMinutes = (int)$durationMinutes;
+        $durationRoundedOn30minutes = (int)ceil($durationMinutes / 30) * 30;
+        if ($durationRoundedOn30minutes > 300) {
+            // Als rawMinutes binnen marge is, kan hier alleen gebeuren als rawMinutes=0 (nee) of 1..300 (ceil kan 300 max)
+            // Maar voor de zekerheid:
+            $durationRoundedOn30minutes = 300;
+        }
+
+        return $durationRoundedOn30minutes;
     }
 
     /**

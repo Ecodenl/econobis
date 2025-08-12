@@ -17,6 +17,7 @@ import {
     setFilterOpportunityName,
     setFilterOpportunityNumber,
     setFilterOpportunityAddress,
+    setFilterOpportunityPostalCode,
     setFilterOpportunityStatusId,
 } from '../../../actions/opportunity/OpportunitiesFiltersActions';
 import DataTableFilterDateStartEndTwoRows from '../../../components/dataTable/DataTableFilterDateStartEndTwoRows';
@@ -28,6 +29,10 @@ const OpportunitiesListFilter = props => {
 
     const onAddressChange = e => {
         props.setFilterOpportunityAddress(e.target.value);
+    };
+
+    const onPostalCodeChange = e => {
+        props.setFilterOpportunityPostalCode(e.target.value);
     };
 
     const onCreatedAtStartChange = selectedDay => {
@@ -143,6 +148,14 @@ const OpportunitiesListFilter = props => {
                 <input
                     type="text"
                     className="form-control input-sm"
+                    value={props.filters.postalCode.data}
+                    onChange={onPostalCodeChange}
+                />
+            </th>
+            <th>
+                <input
+                    type="text"
+                    className="form-control input-sm"
                     value={props.filters.measureCategory.data}
                     onChange={onMeasureCategoryChange}
                 />
@@ -221,6 +234,7 @@ const mapDispatchToProps = dispatch => {
             setFilterOpportunityName,
             setFilterOpportunityNumber,
             setFilterOpportunityAddress,
+            setFilterOpportunityPostalCode,
             setFilterOpportunityStatusId,
         },
         dispatch

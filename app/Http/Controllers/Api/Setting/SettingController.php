@@ -116,6 +116,7 @@ class SettingController extends Controller
             'portalName',
             'cooperativeName',
             'portalWebsite',
+            'portalLoginInfoText',
             'portalUrl',
             'responsibleUserId',
             'contactResponsibleOwnerUserId',

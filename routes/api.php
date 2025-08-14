@@ -29,7 +29,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
-    'as' => 'password.reset',
+    'as' => 'api.password.reset',
     'uses' => 'Auth\ResetPasswordController@showResetForm'
 ]);
 
@@ -492,6 +492,7 @@ Route::namespace('Api')
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
+        Route::post('project/revenue/{projectRevenue}/confirm', 'Project\ProjectRevenueController@confirm');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
         Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');

@@ -20,6 +20,7 @@ use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\RequestQueries\Mailbox\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
@@ -42,15 +43,20 @@ class MailboxController extends Controller
         $this->middleware([EncryptCookies::class, StartSession::class])->only('update');
     }
 
-    public function grid()
+    public function grid(RequestQuery $requestQuery)
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailboxes = Mailbox::get();
+        $mailboxes = $requestQuery->get();
 
         $mailboxes->load(['mailgunDomain']);
 
-        return GridMailbox::collection($mailboxes);
+        return GridMailbox::collection($mailboxes)
+            ->additional([
+                'meta' => [
+                    'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
     public function store(Request $request, RequestInput $input, MailgunHelper $mailgunHelper)

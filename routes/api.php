@@ -684,6 +684,10 @@ Route::namespace('Api')
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
 
+        Route::get('source/jory', 'Source\SourceController@jory');
+        Route::post('source', 'Source\SourceController@store');
+        Route::post('source/{source}', 'Source\SourceController@update');
+
         Route::get('task-type/jory', 'Task\TaskTypeController@jory');
         Route::post('task-type/{taskType}', 'Task\TaskTypeController@update');
         Route::get('quotation-request-status/jory', 'QuotationRequest\QuotationRequestStatusController@jory');

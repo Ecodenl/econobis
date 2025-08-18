@@ -70,7 +70,7 @@ class SourceDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name } = this.state.source;
+        const { name, nameCustom } = this.state.source;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -84,6 +84,15 @@ class SourceDetailsFormGeneralEdit extends Component {
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
                                 error={this.state.errors.name}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputText
+                                label="Aangepaste naam"
+                                name={'nameCustom'}
+                                value={nameCustom}
+                                onChangeAction={this.handleInputChange}
+                                required={'required'}
                             />
                         </div>
                     </PanelBody>

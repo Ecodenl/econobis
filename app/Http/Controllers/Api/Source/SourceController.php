@@ -24,6 +24,7 @@ class SourceController extends Controller
         //$this->authorize('manage', Source::class);
 
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
+            ->string('nameCustom')->alias('name_custom')->next()
             ->get();
 
         $source = new Source($data);
@@ -36,6 +37,7 @@ class SourceController extends Controller
     {
         //$this->authorize('manage', Source::class);
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
+            ->string('nameCustom')->alias('name_custom')->next()
             ->get();
 
         $source->fill($data);

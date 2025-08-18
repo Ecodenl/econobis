@@ -58,6 +58,7 @@ class SourceDetailsApp extends Component {
                             <PanelBody className={'panel-small'}>
                                 <SourceDetailsToolbar
                                     name={this.state.source.name || ''}
+                                    nameCustom={this.state.source.nameCustom || ''}
                                     id={this.state.source.id}
                                 />
                             </PanelBody>

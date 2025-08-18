@@ -9,7 +9,7 @@ export default {
         return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'name'],
+                    fld: ['id', 'name', 'nameCustom'],
                 },
             },
         });

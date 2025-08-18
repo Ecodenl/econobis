@@ -17,6 +17,7 @@ class FullSource extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
+            'nameCustom' => $this->name_custom,
         ];
     }
 }

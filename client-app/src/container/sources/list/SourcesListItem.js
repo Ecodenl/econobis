@@ -41,7 +41,7 @@ class SourcesListItem extends Component {
     }
 
     render() {
-        const { id, name, permissions } = this.props;
+        const { id, name, nameCustom, permissions } = this.props;
 
         return (
             <tr
@@ -51,6 +51,7 @@ class SourcesListItem extends Component {
                 onMouseLeave={() => this.onRowLeave()}
             >
                 <td>{name}</td>
+                <td>{nameCustom}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

@@ -13,7 +13,6 @@ class SourcesList extends Component {
         super(props);
 
         this.state = {
-            showDeleteItem: false,
             deleteItem: {
                 id: '',
                 name: '',
@@ -41,7 +40,8 @@ class SourcesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Naam'} width={'90%'} />
+                            <DataTableHeadTitle title={'Naam'} width={'45%'} />
+                            <DataTableHeadTitle title={'Aangepaste naam'} width={'45%'} />
                             <DataTableHeadTitle title={''} width={'10%'} />
                         </tr>
                     </DataTableHead>
@@ -55,7 +55,6 @@ class SourcesList extends Component {
                                 return (
                                     <SourcesListItem
                                         key={source.id}
-                                        showDeleteItemModal={this.showDeleteItemModal}
                                         {...source}
                                     />
                                 );

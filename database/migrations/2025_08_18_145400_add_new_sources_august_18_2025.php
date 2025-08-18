@@ -39,7 +39,7 @@ class AddNewSourcesAugust182025 extends Migration
 
         foreach ($intakeSources as $source) {
             DB::table('sources')->insert([
-                    ['name' => $source],
+                    ['name' => $source, 'visible' => 0],
                 ]
             );
         }

@@ -33,8 +33,9 @@ class SourcesList extends Component {
                 <DataTable>
                     <DataTableHead>
                         <tr className="thead-title">
-                            <DataTableHeadTitle title={'Naam'} width={'45%'} />
-                            <DataTableHeadTitle title={'Aangepaste naam'} width={'45%'} />
+                            <DataTableHeadTitle title={'Naam'} width={'40%'} />
+                            <DataTableHeadTitle title={'Aangepaste naam'} width={'40%'} />
+                            <DataTableHeadTitle title={'Zichtbaar'} width={'10%'} />
                             <DataTableHeadTitle title={''} width={'10%'} />
                         </tr>
                     </DataTableHead>

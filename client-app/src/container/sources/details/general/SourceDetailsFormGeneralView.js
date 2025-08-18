@@ -4,7 +4,7 @@ import ViewText from '../../../../components/form/ViewText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-const SourceDetailsFormGeneralView = ({ name, nameCustom, switchToEdit }) => {
+const SourceDetailsFormGeneralView = ({ name, nameCustom, visible, switchToEdit }) => {
     return (
         <div onClick={switchToEdit}>
             <Panel>
@@ -14,6 +14,9 @@ const SourceDetailsFormGeneralView = ({ name, nameCustom, switchToEdit }) => {
                     </div>
                     <div className="row">
                         <ViewText label={'Aangepaste naam'} value={nameCustom} />
+                    </div>
+                    <div className="row">
+                        <ViewText label={'Zichtbaar'} value={visible ? 'Ja' : 'Nee'} />
                     </div>
                 </PanelBody>
             </Panel>

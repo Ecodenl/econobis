@@ -41,7 +41,7 @@ class SourcesListItem extends Component {
     }
 
     render() {
-        const { id, name, nameCustom, permissions } = this.props;
+        const { id, name, nameCustom, visible, permissions } = this.props;
 
         return (
             <tr
@@ -52,6 +52,7 @@ class SourcesListItem extends Component {
             >
                 <td>{name}</td>
                 <td>{nameCustom}</td>
+                <td>{visible ? 'Ja' : 'Nee'}</td>
                 <td>
                     {this.state.showActionButtons && permissions.manageFinancial ? (
                         <a role="button" onClick={() => this.openItem(id)}>

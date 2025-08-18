@@ -7,7 +7,7 @@ export default {
         return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
-                    fld: ['id', 'name', 'nameCustom'],
+                    fld: ['id', 'name', 'nameCustom', 'visible'],
                 },
             },
         });

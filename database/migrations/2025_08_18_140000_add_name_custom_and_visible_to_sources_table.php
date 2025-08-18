@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('sources', function (Blueprint $table) {
             $table->string('name_custom', 191)->nullable()->after('name');
+            $table->boolean('visible')->default(true)->after('code_ref');
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('sources', function (Blueprint $table) {
             $table->dropColumn('name_custom');
+            $table->dropColumn('visible');
         });
     }
 };

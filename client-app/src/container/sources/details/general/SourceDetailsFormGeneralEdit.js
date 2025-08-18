@@ -11,6 +11,7 @@ import PanelBody from '../../../../components/panel/PanelBody';
 import SourceDetailsAPI from '../../../../api/source/SourceDetailsAPI';
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class SourceDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -70,7 +71,7 @@ class SourceDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        const { name, nameCustom } = this.state.source;
+        const { name, nameCustom, visible } = this.state.source;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -93,6 +94,17 @@ class SourceDetailsFormGeneralEdit extends Component {
                                 value={nameCustom}
                                 onChangeAction={this.handleInputChange}
                                 required={'required'}
+                            />
+                        </div>
+                        <div className="row">
+                            <InputToggle
+                                label={'Zichtbaar'}
+                                name={'visible'}
+                                value={visible}
+                                onChangeAction={event => {
+                                    event.persist();
+                                    this.handleInputChange(event);
+                                }}
                             />
                         </div>
                     </PanelBody>

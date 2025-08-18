@@ -22,6 +22,7 @@ class SourceJoryResource extends JoryResource
         $this->field('id')->filterable()->sortable();
         $this->field('name')->filterable()->sortable();
         $this->field('name_custom')->filterable()->sortable();
+        $this->field('visible')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
         $this->field('deleted_at')->filterable()->sortable();

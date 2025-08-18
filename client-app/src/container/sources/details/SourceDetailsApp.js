@@ -59,6 +59,7 @@ class SourceDetailsApp extends Component {
                                 <SourceDetailsToolbar
                                     name={this.state.source.name || ''}
                                     nameCustom={this.state.source.nameCustom || ''}
+                                    visible={this.state.source.visible || ''}
                                     id={this.state.source.id}
                                 />
                             </PanelBody>

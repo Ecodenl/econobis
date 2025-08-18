@@ -13,10 +13,6 @@ const SourceDetailsToolbarWrapper = props => {
 class SourceDetailsToolbar extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            showDelete: false,
-        };
     }
 
     render() {

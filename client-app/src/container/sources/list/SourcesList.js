@@ -11,13 +11,6 @@ import * as PropTypes from 'prop-types';
 class SourcesList extends Component {
     constructor(props) {
         super(props);
-
-        this.state = {
-            deleteItem: {
-                id: '',
-                name: '',
-            },
-        };
     }
 
     render() {

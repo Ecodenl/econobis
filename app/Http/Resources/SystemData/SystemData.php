@@ -218,7 +218,7 @@ class SystemData extends JsonResource
             'industries' => FullIndustry::collection(Industry::all()),
             'inspectionPersonTypes' => FullEnumWithIdAndName::collection(InspectionPersonType::collection()),
             'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
-            'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
+            'intakeSources' => IntakeSource::select(['id', 'name', 'name_custom'])->get(),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
             'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
             'ledgers' => FullLedger::collection(Ledger::all()),

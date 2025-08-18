@@ -52,7 +52,7 @@ const IntakeDetailsFormGeneralView = props => {
             </div>
 
             <div className="row">
-                <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.name).join(', ')} />
+                <ViewText label={'Aanmeldingsbron'} value={sources && sources.map(source => source.nameCustom ?? source.name).join(', ')} />
                 <ViewText label="Status" value={status && status.name} />
             </div>
 

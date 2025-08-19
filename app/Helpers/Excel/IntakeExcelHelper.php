@@ -81,7 +81,7 @@ class IntakeExcelHelper
                 $intake->sources_string = '';
                 $sources = [];
                 foreach ($intake->sources as $source) {
-                    array_push($sources, $source->name);
+                    array_push($sources, $source->name_custom ? $source->name_custom : $source->name);
                 }
 
                 if (count($sources) > 0) {

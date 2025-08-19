@@ -12,6 +12,7 @@ import {
     setFilterIntakeAreaName,
     setFilterIntakeCampaign,
     setFilterMeasureRequested,
+    setFilterSource,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
@@ -121,6 +122,8 @@ const IntakesListFilter = props => {
                     })}
                 </select>
             </th>
+
+            <th></th>
 
             <th>
                 <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>

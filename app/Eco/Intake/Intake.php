@@ -53,7 +53,8 @@ class Intake extends Model
 
     public function sources()
     {
-        return $this->belongsToMany(IntakeSource::class, 'intake_source', 'intake_id', 'source_id');
+        return $this->belongsToMany(IntakeSource::class, 'intake_source', 'intake_id', 'source_id')
+            ->orderBy('id');
     }
 
     public function reasons()

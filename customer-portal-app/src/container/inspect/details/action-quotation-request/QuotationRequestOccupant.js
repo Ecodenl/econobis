@@ -156,7 +156,7 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                                 type="date"
                                                 id="date_approved_client"
                                                 placeholder={'Datum akkoord bewoner'}
-                                                readOnly={true}
+                                                readOnly={initialQuotationRequest.status.codeRef === "under-review-occupant" ? false : true}
                                             />
                                         )}
                                     </Field>

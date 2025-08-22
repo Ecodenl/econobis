@@ -11,12 +11,12 @@ class SourcePolicy
 
     public function view(User $user)
     {
-        return $user->hasPermissionTo('view_intake', 'api');
+        return $user->hasPermissionTo('menu_sources', 'api');
     }
 
     public function manage(User $user)
     {
-        return $user->hasPermissionTo('manage_intake', 'api');
+        return $user->hasPermissionTo('manage_sources', 'api');
     }
 
 }

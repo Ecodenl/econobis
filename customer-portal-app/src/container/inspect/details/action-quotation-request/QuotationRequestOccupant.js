@@ -8,15 +8,23 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
+import moment from 'moment';
 
 function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
-    const [pmApproved, setPmApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'pm-approved'
+    const [approved, setApproved] = useState(
+        initialQuotationRequest.status?.codeRef === 'approved'
             ? true
-            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
+            : initialQuotationRequest.status?.codeRef === 'not-approved'
             ? false
             : null
     );
+    // const [pmApproved, setPmApproved] = useState(
+    //     initialQuotationRequest.status?.codeRef === 'pm-approved'
+    //         ? true
+    //         : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
+    //         ? false
+    //         : null
+    // );
 
     const validationSchema = Yup.object().shape({});
 
@@ -149,17 +157,59 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                     <FormLabel htmlFor="date_approved_client" className={'field-label'}>
                                         Datum akkoord bewoner
                                     </FormLabel>
-                                    <Field name="dateApprovedClient">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                id="date_approved_client"
-                                                placeholder={'Datum akkoord bewoner'}
-                                                readOnly={initialQuotationRequest.status.codeRef === "under-review-occupant" ? false : true}
-                                            />
-                                        )}
-                                    </Field>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>
+                                            <Field name="dateApprovedClient">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_approved_client"
+                                                        readOnly={
+                                                            initialQuotationRequest.status.codeRef ===
+                                                            'under-review-occupant'
+                                                                ? false
+                                                                : true
+                                                        }
+                                                        placeholder={'Datum akkoord bewoner'}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+                                        {initialQuotationRequest.status.codeRef === 'under-review-occupant' ||
+                                        approved !== null ? (
+                                            <div>
+                                                <Button
+                                                    variant={true === approved ? 'dark' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(true);
+                                                        setFieldValue(
+                                                            'dateApprovedClient',
+                                                            moment().format('YYYY-MM-DD')
+                                                        );
+                                                    }}
+                                                >
+                                                    {true === approved ? 'Goedgekeurd' : 'Goedkeuren'}
+                                                </Button>
+                                                <Button
+                                                    variant={
+                                                        false === initialQuotationRequest ? 'dark' : 'outline-dark'
+                                                    }
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(false);
+                                                        setFieldValue('dateApprovedClient', '');
+                                                    }}
+                                                >
+                                                    {false === approved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                                </Button>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                     <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
                                         Datum akkoord projectleider
                                     </FormLabel>

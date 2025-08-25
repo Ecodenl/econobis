@@ -29,13 +29,14 @@ const OpportunityFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Maatregel - categorie'} value={measureCategory && measureCategory.name} />
-                <ViewText label={'Campagne'} value={intake && intake.campaign ? intake.campaign.name : ''} />
+                <ViewText label={'Postcode'} value={(intake && intake.address) && intake.address.postalCode} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
                     label={'Maatregel - specifiek'}
                     value={measures && measures.map(measure => measure.name).join(', ')}
                 />
+                <ViewText label={'Campagne'} value={intake && intake.campaign ? intake.campaign.name : ''} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Status'} value={status && status.name} />

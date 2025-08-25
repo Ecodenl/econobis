@@ -31,7 +31,6 @@ class Sort extends RequestSort
 
     protected $mapping = [
         'number' => 'opportunities.number',
-        //'postalCode' => 'opportunities.postal_code',
         'createdAt' => 'opportunities.created_at',
         'desiredDate' => 'opportunities.desired_date',
         'name' => 'contacts.full_name',

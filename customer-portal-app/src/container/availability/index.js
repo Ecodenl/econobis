@@ -1,6 +1,7 @@
 import React from 'react';
 import ContactAvailabilityDetailsPlanningPanel from './ContactAvailabilityDetailsPlanningPanel';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
+import ErrorUnauthorized from '../../components/general/ErrorUnauthorized';
 
 function AvailabilityDetails({ user }) {
     return (
@@ -8,7 +9,9 @@ function AvailabilityDetails({ user }) {
             <div className="content-container w-container">
                 {user.inspectionPersonTypeId === 'coach' ? (
                     <ContactAvailabilityDetailsPlanningPanel />
-                ) : null}
+                ) : (
+                    <ErrorUnauthorized />
+                )}
             </div>
         </div>
     );

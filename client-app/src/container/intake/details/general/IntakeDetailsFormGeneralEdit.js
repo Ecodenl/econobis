@@ -160,14 +160,15 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <InputMultiSelect
                         label="Aanmeldingsbron"
                         name="sourceIds"
-                        value={sourceIdsSelected.map(source => ({
+                        value={sourceIdsSelected && sourceIdsSelected.map(source => ({
                             ...source,
                             name: source.nameCustom ? source.nameCustom : source.name,   // ✅ override name
                         }))}
                         options={this.props.intakeSources
+                            .filter(source => source.visible === 1)
                             .map(source => ({
                                 ...source,
-                                name: source.name_custom ? source.name_custom : source.name,   // ✅ override name
+                                name: source.name_custom ? source.name_custom : source.name, // ✅ override name
                             }))
                             .sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}

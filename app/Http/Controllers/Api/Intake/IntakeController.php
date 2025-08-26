@@ -254,6 +254,8 @@ class IntakeController extends ApiController
         //relations
         if ($data['sourceIds']) {
             $intake->sources()->sync($data['sourceIds']);
+        } else {
+            $intake->sources()->detach(); //should this also be done for intakeReasonIds?
         }
 
         if ($data['intakeReasonIds']) {

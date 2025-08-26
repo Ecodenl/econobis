@@ -121,6 +121,11 @@ class QuotationRequestObserver
                     if($approvedStatus){
                         $quotationRequest->status_id = $approvedStatus->id;
                     }
+                } else {
+                    $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                    if($notApprovedStatus){
+                        $quotationRequest->status_id = $notApprovedStatus->id;
+                    }
                 }
             }
         }

@@ -4,7 +4,7 @@ import SourceDetailsToolbar from './SourceDetailsToolbar';
 import SourceDetailsForm from './SourceDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import SourceDetailsAPI from '../../../api/source/SourceDetailsAPI';
+import IntakeSourceDetailsAPI from '../../../api/intake/IntakeSourceDetailsAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -33,7 +33,7 @@ class SourceDetailsApp extends Component {
 
     callFetchSourceDetails = () => {
         this.setState({ isLoading: true, hasError: false });
-        SourceDetailsAPI.fetchSourceDetails(this.props.params.id)
+        IntakeSourceDetailsAPI.fetchSourceDetails(this.props.params.id)
             .then(payload => {
                 this.setState({
                     isLoading: false,
@@ -41,6 +41,7 @@ class SourceDetailsApp extends Component {
                 });
             })
             .catch(error => {
+                console.log(error);
                 this.setState({ isLoading: false, hasError: true });
             });
     };

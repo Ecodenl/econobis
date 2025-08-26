@@ -6,11 +6,11 @@
  * Time: 11:49
  */
 
-namespace App\Http\Resources\Source;
+namespace App\Http\Resources\Intake;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullSource extends JsonResource
+class FullIntakeSource extends JsonResource
 {
     public function toArray($request)
     {

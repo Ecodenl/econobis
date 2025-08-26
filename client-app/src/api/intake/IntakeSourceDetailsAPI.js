@@ -1,8 +1,10 @@
 import getAxiosInstance from '../default-setup/AxiosInstance';
 
+const URL_SOURCE = `source`;
+
 export default {
-    fetchSources: () => {
-        const requestUrl = `jory/source`;
+    fetchSourceDetails: id => {
+        const requestUrl = `jory/intake-source/${id}`;
 
         return getAxiosInstance().get(requestUrl, {
             params: {
@@ -11,5 +13,11 @@ export default {
                 },
             },
         });
+    },
+
+    updateSource: source => {
+        const requestUrl = `${URL_SOURCE}/${source.id}`;
+
+        return getAxiosInstance().post(requestUrl, source);
     },
 };

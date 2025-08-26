@@ -4,8 +4,7 @@ import SourcesList from './SourcesList';
 import SourcesListToolbar from './SourcesListToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
-import SourceAPI from '../../../api/source/SourceAPI';
-import SourceDetailsAPI from '../../../api/source/SourceDetailsAPI';
+import IntakeSourceAPI from '../../../api/intake/IntakeSourceAPI';
 import { setError } from '../../../actions/general/ErrorActions';
 import { connect } from 'react-redux';
 
@@ -23,10 +22,10 @@ class SourcesListApp extends Component {
     componentDidMount() {
         this.callFetchSourcesData();
     }
-
     callFetchSourcesData = () => {
         this.setState({ isLoading: true, hasError: false });
-        SourceAPI.fetchSources()
+        IntakeSourceAPI.fetchSources()
+
             .then(payload => {
                 this.setState({ isLoading: false, sources: payload.data.data });
             })

@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Eco\Source;
+namespace App\Eco\Intake;
 
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class SourcePolicy
+class IntakeSourcePolicy
 {
     use HandlesAuthorization;
 

@@ -2,7 +2,6 @@
 
 namespace App\Eco\Intake;
 
-use App\Eco\Intake\Intake;
 use Illuminate\Database\Eloquent\Model;
 
 class IntakeSource extends Model
@@ -16,6 +15,11 @@ class IntakeSource extends Model
      */
     protected $guarded = [
         'id', 'name'
+    ];
+
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function intakes()

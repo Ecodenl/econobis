@@ -12,7 +12,6 @@ import {
     setFilterIntakeAreaName,
     setFilterIntakeCampaign,
     setFilterMeasureRequested,
-    setFilterSource,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';

@@ -2,18 +2,18 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\Source\Source;
-use App\Http\Controllers\Api\Source\SourceController;
+use \App\Eco\Intake\IntakeSource;
+use App\Http\Controllers\Api\Intake\IntakeSourceController;
 use App\Http\JoryResources\Base\JoryResource;
 
-class SourceJoryResource extends JoryResource
+class IntakeSourceJoryResource extends JoryResource
 {
-    protected $modelClass = Source::class;
+    protected $modelClass = IntakeSource::class;
 
     protected function checkAuthorize(): void
     {
-        $sourceController = new SourceController();
-        //$sourceController->authorize('view', Source::class);
+        $sourceController = new IntakeSourceController();
+        //$sourceController->authorize('view', IntakeSource::class);
     }
 
     protected function configureForApp(): void

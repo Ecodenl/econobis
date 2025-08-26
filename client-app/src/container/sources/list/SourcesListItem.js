@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
-import { trash } from 'react-icons-kit/fa/trash';
 
 // Functionele wrapper voor de class component
 const SourcesListItemWrapper = props => {

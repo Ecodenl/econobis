@@ -8,7 +8,7 @@ import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
-import SourceDetailsAPI from '../../../../api/source/SourceDetailsAPI';
+import IntakeSourceDetailsAPI from '../../../../api/intake/IntakeSourceDetailsAPI';
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputToggle from '../../../../components/form/InputToggle';
@@ -59,7 +59,7 @@ class SourceDetailsFormGeneralEdit extends Component {
 
         // If no errors send form
         !hasErrors &&
-            SourceDetailsAPI.updateSource(source)
+            IntakeSourceDetailsAPI.updateSource(source)
                 .then(payload => {
                     this.props.updateState(source);
                     this.props.fetchSystemData();

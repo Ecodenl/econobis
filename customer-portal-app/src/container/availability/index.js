@@ -1,7 +1,8 @@
 import React from 'react';
 import ContactAvailabilityDetailsPlanningPanel from './ContactAvailabilityDetailsPlanningPanel';
 import { PortalUserConsumer } from '../../context/PortalUserContext';
-import ErrorUnauthorized from '../../components/general/ErrorUnauthorized';
+// import ErrorUnauthorized from '../../components/general/ErrorUnauthorized';
+import ErrorPage from '../../components/general/ErrorPage';
 
 function AvailabilityDetails({ user }) {
     return (
@@ -10,7 +11,7 @@ function AvailabilityDetails({ user }) {
                 {user.inspectionPersonTypeId === 'coach' ? (
                     <ContactAvailabilityDetailsPlanningPanel />
                 ) : (
-                    <ErrorUnauthorized />
+                    <ErrorPage message={'Geen toegang'} />
                 )}
             </div>
         </div>

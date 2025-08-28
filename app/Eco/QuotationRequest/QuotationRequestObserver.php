@@ -117,22 +117,29 @@ class QuotationRequestObserver
         if($dateApprovedClient != $dateApprovedClientOriginal || $notApprovedClient != $notApprovedClientOriginal)
         {
             $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
-            if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
-                if($notApprovedClient) {
-                    $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
-                    if($notApprovedStatus){
-                        $quotationRequest->status_id = $notApprovedStatus->id;
-                        $quotationRequest->date_approved_client = null;
-                    }
-                } elseif($quotationRequest->date_approved_client){
-                    $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
-                    if($approvedStatus){
+            if($notApprovedClient) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                }
+                if($notApprovedStatus){
+                    $quotationRequest->date_approved_client = null;
+                }
+            } elseif($quotationRequest->date_approved_client){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
+                if($approvedStatus){
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
                         $quotationRequest->status_id = $approvedStatus->id;
-                        $quotationRequest->not_approved_client = false;
                     }
-                } else {
-                    $underReviewOccupantStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-occupant')->first();
-                    if($underReviewOccupantStatus) {
+                    $quotationRequest->not_approved_client = false;
+                }
+            } else {
+                $underReviewOccupantStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-occupant')->first();
+                if($underReviewOccupantStatus) {
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
                         $quotationRequest->status_id = $underReviewOccupantStatus->id;
                     }
                 }

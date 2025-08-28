@@ -186,6 +186,11 @@ class OpportunityFormEdit extends Component {
                 </div>
 
                 <div className="row">
+                    <div className="form-group col-sm-6"></div>
+                    <InputText label={'Postcode'} name={''} value={(intake && intake.address) && intake.address.postalCode} readOnly={true} />
+                </div>
+
+                <div className="row">
                     <InputText
                         label={'Maatregel - categorie'}
                         name={'measureCategory'}

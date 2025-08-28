@@ -86,6 +86,15 @@ class InvoiceHelper
                 }
             }
 
+            $vatPercentage = null;
+            if($orderProduct->product->currentPrice) {
+                $vatPercentage = $orderProduct->product->currentPrice->vat_percentage;
+            } else {
+                if ($orderProduct->product->ledger && $orderProduct->product->ledger->vatCode) {
+                    $vatPercentage = $orderProduct->product->ledger->vatCode->percentage;
+                }
+            }
+
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;
@@ -95,7 +104,7 @@ class InvoiceHelper
             $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->price_incl_vat = $priceInclVat;
-            $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
+            $invoiceProduct->vat_percentage = $vatPercentage;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;

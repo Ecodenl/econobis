@@ -47,7 +47,7 @@ class QuotationRequestStatusDetailsFormGeneral extends Component {
         const explanationWf = (
             <span>
                 Als gebruik workflow bij deze status is aangezet, dan zal er automatisch eenmalig een e-mail verstuurd
-                gaan worden naar contact en/of coach (verzoek voor bewoner) als kansactie op deze status is gezet.
+                gaan worden naar contact en/of organisatie/coach (verzoek voor bewoner) als kansactie op deze status is gezet.
                 <br />
                 De verzenddatum wordt dan bepaald, rekening houdend met het opgegeven aantal dagen.
                 <br />

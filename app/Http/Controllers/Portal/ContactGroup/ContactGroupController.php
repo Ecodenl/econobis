@@ -10,7 +10,9 @@ class ContactGroupController extends ApiController
 
     public function index()
     {
-        $contactGroups = ContactGroup::get();
+        $contactGroups = ContactGroup::orderByRaw('portal_sort_order IS NULL, portal_sort_order ASC')
+            ->orderBy('name', 'ASC')
+            ->get();
 
         return $contactGroups;
     }

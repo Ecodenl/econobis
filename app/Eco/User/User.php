@@ -167,7 +167,15 @@ class User extends Authenticatable
         if ($this->teamContactIds !== null) {
             return $this->teamContactIds;
         }
+
+        // Geen teams? Volledige toegang.
         if (!$this->teams || $this->teams()->count() === 0) {
+            return false;
+        }
+
+        // Teams zonder enige contactGroups? Ook volledige toegang.
+        $hasAnyContactGroup = $this->teams()->whereHas('contactGroups')->exists();
+        if (!$hasAnyContactGroup) {
             return false;
         }
 

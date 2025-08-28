@@ -15,6 +15,7 @@ import ContactDetails from './container/contact-details';
 // import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterProject from './container/register';
 import ProjectList from './container/project/list';
+import ContactGroupList from './container/contact-group/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
@@ -54,6 +55,7 @@ function App() {
                             <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                             <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                             <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
+                            <ProtectedRoute path="/groepen-beheer" component={ContactGroupList} />
                             <ProtectedRoute path="/project-deelname/:id" component={RegistrationDetails} />
                             <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                             <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />

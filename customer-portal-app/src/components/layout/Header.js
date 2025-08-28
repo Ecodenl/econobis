@@ -30,6 +30,7 @@ function Header({ location, history }) {
     // const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
     const buttonTextOverOns = getWidgetButtonTextByCodeRef(widgets, 'over-ons');
     const buttonTextInschrijvenProjecten = getWidgetButtonTextByCodeRef(widgets, 'project-schrijf-je-in');
+    const buttonTextGroepenBeheer = getWidgetButtonTextByCodeRef(widgets, 'groepen-beheer');
     const buttonTextHuidigeDeelnames = getWidgetButtonTextByCodeRef(widgets, 'huidige-deelnames');
 
     useEffect(() => {
@@ -302,6 +303,15 @@ function Header({ location, history }) {
                                         onClick={closeMenu}
                                     >
                                         {buttonTextInschrijvenProjecten || 'Inschrijven projecten'}
+                                    </Link>
+                                    <Link
+                                        to={'/groepen-beheer'}
+                                        className={`nav-link w-nav-link w--nav-link-open ${
+                                            location.pathname === '/groepen-beheer' ? 'w--current' : ''
+                                        }`}
+                                        onClick={closeMenu}
+                                    >
+                                        {buttonTextGroepenBeheer || 'Groepen beheer'}
                                     </Link>
                                     {currentSelectedContact && currentSelectedContact.hasFinancialOverviews ? (
                                         <Link

@@ -9,22 +9,11 @@ import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment';
+import { isEmpty } from 'lodash';
 
 function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
-    const [approved, setApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'approved'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'not-approved'
-            ? false
-            : null
-    );
-    // const [pmApproved, setPmApproved] = useState(
-    //     initialQuotationRequest.status?.codeRef === 'pm-approved'
-    //         ? true
-    //         : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
-    //         ? false
-    //         : null
-    // );
+    const [approved, setApproved] = useState(!isEmpty(initialQuotationRequest.dateApprovedClient));
+    const [notApproved, setNotApproved] = useState(initialQuotationRequest.notApprovedClient);
 
     const validationSchema = Yup.object().shape({});
 
@@ -169,21 +158,24 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_client"
                                                         readOnly={
-                                                            initialQuotationRequest.status.codeRef ===
-                                                            'under-review-occupant'
-                                                                ? false
-                                                                : true
+                                                            ![
+                                                                'under-review-occupant',
+                                                                'approved',
+                                                                'not-approved',
+                                                            ].includes(initialQuotationRequest.status.codeRef) ||
+                                                            notApproved
                                                         }
                                                         placeholder={'Datum akkoord bewoner'}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
-                                        {initialQuotationRequest.status.codeRef === 'under-review-occupant' ||
-                                        approved !== null ? (
+                                        {['under-review-occupant', 'approved', 'not-approved'].includes(
+                                            initialQuotationRequest.status.codeRef
+                                        ) ? (
                                             <div>
                                                 <Button
-                                                    variant={true === approved ? 'dark' : 'outline-dark'}
+                                                    variant={true === approved ? 'success' : 'outline-dark'}
                                                     size="sm"
                                                     onClick={() => {
                                                         setApproved(true);
@@ -191,21 +183,25 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                                             'dateApprovedClient',
                                                             moment().format('YYYY-MM-DD')
                                                         );
+                                                        setNotApproved(false);
+                                                        setFieldValue('notApprovedClient', false);
                                                     }}
+                                                    disabled={approved}
                                                 >
                                                     {true === approved ? 'Goedgekeurd' : 'Goedkeuren'}
                                                 </Button>
                                                 <Button
-                                                    variant={
-                                                        false === initialQuotationRequest ? 'dark' : 'outline-dark'
-                                                    }
+                                                    variant={true === notApproved ? 'danger' : 'outline-dark'}
                                                     size="sm"
                                                     onClick={() => {
                                                         setApproved(false);
                                                         setFieldValue('dateApprovedClient', '');
+                                                        setNotApproved(true);
+                                                        setFieldValue('notApprovedClient', true);
                                                     }}
+                                                    disabled={notApproved}
                                                 >
-                                                    {false === approved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                                    {true === notApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
                                                 </Button>
                                             </div>
                                         ) : null}

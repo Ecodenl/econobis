@@ -139,7 +139,7 @@ class HousingFileController extends ApiController
 
         $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
-            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1000,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
             ->string('isHouseForSale')->alias('is_house_for_sale')->whenMissing('1')->next()
             ->numeric('surface')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()
@@ -184,7 +184,7 @@ class HousingFileController extends ApiController
 
         $data = $requestInput->integer('addressId')->validate('required|exists:addresses,id')->alias('address_id')->next()
             ->integer('buildingTypeId')->validate('nullable|exists:building_types,id')->onEmpty(null)->whenMissing(null)->alias('building_type_id')->next()
-            ->integer('buildYear')->validate('nullable|integer|between:1500,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
+            ->integer('buildYear')->validate('nullable|integer|between:1000,3000')->onEmpty(null)->whenMissing(null)->alias('build_year')->next()
             ->string('isHouseForSale')->alias('is_house_for_sale')->whenMissing('1')->next()
             ->numeric('surface')->validate('nullable|numeric')->onEmpty(null)->whenMissing(null)->alias('surface')->next()
             ->integer('roofTypeId')->validate('nullable|exists:roof_types,id')->onEmpty(null)->whenMissing(null)->alias('roof_type_id')->next()

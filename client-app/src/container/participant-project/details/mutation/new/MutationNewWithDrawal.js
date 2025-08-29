@@ -44,7 +44,6 @@ const MutationNewWithDrawal = ({
             }
         );
     }
-
     const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
 
     return (
@@ -211,6 +210,7 @@ const MutationNewWithDrawal = ({
                             disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
+                            errorMessage={errorMessage.dateEntry}
                         />
                         <InputDate
                             label={'Betaaldatum'}

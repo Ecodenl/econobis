@@ -27,7 +27,6 @@ const MutationNewDeposit = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
-    projectDateInterestBearingKwh,
 }) => {
     useEffect(() => {
         getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
@@ -46,15 +45,7 @@ const MutationNewDeposit = ({
             }
         );
     }
-
     const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
-
-    // let disableBeforeEntryDate = '';
-    // if (projectTypeCodeRef === 'postalcode_link_capital') {
-    //     if (projectDateInterestBearingKwh) {
-    //         disableBeforeEntryDate = moment(projectDateInterestBearingKwh).format('YYYY-MM-DD');
-    //     }
-    // }
 
     return (
         <React.Fragment>
@@ -233,6 +224,7 @@ const MutationNewDeposit = ({
                             disabledBefore={disableBeforeEntryDate}
                             required={'required'}
                             error={errors.dateEntry}
+                            errorMessage={errorMessage.dateEntry}
                         />
                         <InputText
                             label={'Betalingskenmerk'}

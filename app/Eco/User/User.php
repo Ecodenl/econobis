@@ -206,7 +206,14 @@ class User extends Authenticatable
         if($this->teamDocumentCreatedFromIds !== null){
             return $this->teamDocumentCreatedFromIds;
         }
+        // Geen teams? Volledige toegang.
         if (!$this->teams || $this->teams()->count() === 0) {
+            return false;
+        }
+
+        // Teams zonder enige documentCreatedFroms? Ook volledige toegang.
+        $hasAnyDocumentCreatedFroms = $this->teams()->whereHas('documentCreatedFroms')->exists();
+        if (!$hasAnyDocumentCreatedFroms) {
             return false;
         }
 

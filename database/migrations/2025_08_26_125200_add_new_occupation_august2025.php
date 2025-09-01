@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         $occupations = [
-            'VvE lid' => 'VvE',
+            'VvE' => 'VvE lid',
         ];
 
         foreach ($occupations as $po => $so) {

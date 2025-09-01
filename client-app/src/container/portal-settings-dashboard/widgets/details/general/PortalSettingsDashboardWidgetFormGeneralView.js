@@ -15,6 +15,8 @@ function getDefaultButtonTextByCodeRef(codeRef) {
             return 'Inschrijven projecten';
         case 'huidige-deelnames':
             return 'Huidige deelnames';
+        case 'groepen-beheer':
+            return 'Groepenbeheer';
     }
     return '**onbekend**';
 }
@@ -41,7 +43,7 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     const imageUrl = widgetImageFileName && `${getApiUrl()}/portal/images/${widgetImageFileName}?${imageHash}`;
 
     const textButtonText = () => {
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
         if (staticWidgets.includes(codeRef)) {
             console.log('variable tekst', getDefaultButtonTextByCodeRef(codeRef));
             return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${getDefaultButtonTextByCodeRef(

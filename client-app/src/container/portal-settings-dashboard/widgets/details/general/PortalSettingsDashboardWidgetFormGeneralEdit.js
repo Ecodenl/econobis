@@ -240,7 +240,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
     };
 
     textButtonText = () => {
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
         if (staticWidgets.includes(this.state.widget.codeRef)) {
             return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${this.getDefaultButtonTextByCodeRef(
                 this.state.widget.codeRef
@@ -257,6 +257,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                 return 'Inschrijven projecten';
             case 'huidige-deelnames':
                 return 'Huidige deelnames';
+            case 'groepen-beheer':
+                return 'Groepenbeheer';
         }
         return '**onbekend**';
     }
@@ -270,7 +272,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
         const logoHeaderUrl = `${getApiUrl()}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${getApiUrl()}/portal/images/background-header.png?${this.props.imageHash}`;
 
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>

@@ -31,6 +31,7 @@ class OrderProductsFormNewProduct extends Component {
                 dateEnd: '',
                 datePeriodStartFirstInvoice: moment().format('YYYY-MM-DD'),
             },
+            vatCodeId: '',
             product: {
                 code: '',
                 name: '',
@@ -87,11 +88,13 @@ class OrderProductsFormNewProduct extends Component {
 
     handleLedgerChange = selectedOption => {
         let selectedLedger = this.props.ledgers.find(ledger => ledger.id === selectedOption);
+        let vatCodeId = selectedLedger.vatCode && selectedLedger.vatCode.id;
         let vatPercentage = selectedLedger.vatCode && selectedLedger.vatCode.percentage;
 
         this.setState(
             {
                 ...this.state,
+                vatCodeId,
                 product: {
                     ...this.state.product,
                     ledgerId: selectedOption,
@@ -548,6 +551,7 @@ class OrderProductsFormNewProduct extends Component {
             ledgerId,
             costCenterId,
         } = this.state.product;
+        const { vatCodeId } = this.state;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -616,11 +620,11 @@ class OrderProductsFormNewProduct extends Component {
                             />
                             <InputSelect
                                 label={'BTW percentage'}
-                                name={'vatPercentage'}
+                                name={'vatCodeId'}
                                 options={this.props.vatCodes}
-                                optionValue={'percentage'}
+                                optionValue={'id'}
                                 optionName={'description'}
-                                value={vatPercentage}
+                                value={vatCodeId}
                                 onChangeAction={this.props.usesTwinfield ? null : this.handleInputChangeProductVat}
                                 placeholder={'Geen'}
                                 readOnly={this.props.usesTwinfield}

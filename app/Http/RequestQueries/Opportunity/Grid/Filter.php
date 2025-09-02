@@ -17,6 +17,7 @@ class Filter extends RequestFilter
     protected $fields = [
         'number',
         'address',
+        'postalCode',
         'createdAtStart',
         'createdAtEnd',
         'desiredDateStart',
@@ -45,6 +46,7 @@ class Filter extends RequestFilter
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
         'address' => 'address',
+        'postalCode' => 'address',
     ];
 
     protected $defaultTypes = [
@@ -106,6 +108,18 @@ class Filter extends RequestFilter
             $query->where(function($query) use ($term) {
                 $query->where('addresses.street', 'LIKE', '%' . $term . '%');
                 $query->orWhere('addresses.number', 'LIKE', '%' . $term . '%');
+            });
+        }
+
+        return false;
+    }
+
+    protected function applyPostalCodeFilter($query, $type, $data) {
+        $terms = explode(' ', $data);
+
+        foreach ($terms as $term){
+            $query->where(function($query) use ($term) {
+                $query->where('addresses.postal_code', 'LIKE', '%' . $term . '%');
             });
         }
 

@@ -26,25 +26,11 @@ const MutationNewWithDrawal = ({
     handleInputChange,
     handleInputChangeDate,
     projectTypeCodeRef,
+    disableBeforeEntryDate,
 }) => {
     useEffect(() => {
         getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
     }, [participationId]);
-
-    function getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId) {
-        ParticipantProjectDetailsAPI.getAdditionalInfoForTerminatingOrChangeEntryDate(participantProjectId).then(
-            payload => {
-                setDisableBeforeEntryDate(
-                    payload.dateTerminatedAllowedFrom
-                        ? moment(payload.dateTerminatedAllowedFrom)
-                              .add(1, 'day')
-                              .format('YYYY-MM-DD')
-                        : ''
-                );
-            }
-        );
-    }
-    const [disableBeforeEntryDate, setDisableBeforeEntryDate] = useState('');
 
     return (
         <React.Fragment>

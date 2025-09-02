@@ -11,12 +11,12 @@ class IntakeSourcePolicy
 
     public function view(User $user)
     {
-        return $user->hasPermissionTo('menu_sources', 'api');
+        return $user->hasPermissionTo('menu_intake_sources', 'api');
     }
 
     public function manage(User $user)
     {
-        return $user->hasPermissionTo('manage_sources', 'api');
+        return $user->hasPermissionTo('manage_intake_sources', 'api');
     }
 
 }

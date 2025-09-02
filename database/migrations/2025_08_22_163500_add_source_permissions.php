@@ -15,12 +15,12 @@ class AddSourcePermissions extends Migration
     {
 
         Permission::create([
-            'name' => 'menu_sources',
+            'name' => 'menu_intake_sources',
             'guard_name' => 'api',
         ]);
 
         Permission::create([
-            'name' => 'manage_sources',
+            'name' => 'manage_intake_sources',
             'guard_name' => 'api',
         ]);
 

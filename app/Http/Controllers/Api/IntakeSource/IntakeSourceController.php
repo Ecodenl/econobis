@@ -7,6 +7,7 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class IntakeSourceController extends Controller
@@ -14,14 +15,12 @@ class IntakeSourceController extends Controller
 
     public function jory()
     {
-        //$this->authorize('view', IntakeSource::class);
-
         return Jory::on(IntakeSource::class);
     }
 
     public function store(RequestInput $input, Request $request)
     {
-        //$this->authorize('manage', IntakeSource::class);
+        $this->authorize('manage_intake_sources');
 
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('nameCustom')->alias('name_custom')->next()
@@ -36,7 +35,8 @@ class IntakeSourceController extends Controller
 
     public function update(RequestInput $input, IntakeSource $source)
     {
-        //$this->authorize('manage', IntakeSource::class);
+        $this->authorize('manage_intake_sources');
+
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('nameCustom')->alias('name_custom')->next()
             ->string('visible')->whenMissing(0)->onEmpty(0)->next()

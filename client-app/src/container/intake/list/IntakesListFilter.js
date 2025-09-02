@@ -12,6 +12,7 @@ import {
     setFilterIntakeAreaName,
     setFilterIntakeCampaign,
     setFilterMeasureRequested,
+    setFilterIntakeSource,
     setFilterIntakeStatus,
 } from '../../../actions/intake/IntakesFiltersActions';
 import DataTableFilterDateStartEnd from '../../../components/dataTable/DataTableFilterDateStartEnd';
@@ -50,6 +51,14 @@ const IntakesListFilter = props => {
 
     const onMeasureRequestedChange = e => {
         props.setFilterMeasureRequested(e.target.value);
+
+        setTimeout(() => {
+            props.onSubmitFilter();
+        }, 100);
+    };
+
+    const onIntakeSourceChange = e => {
+        props.setFilterIntakeSource(e.target.value);
 
         setTimeout(() => {
             props.onSubmitFilter();
@@ -122,7 +131,24 @@ const IntakesListFilter = props => {
                 </select>
             </th>
 
-            <th></th>
+            <th>
+                <select
+                    className="form-control input-sm"
+                    value={props.filters.intakeSource.data}
+                    onChange={onIntakeSourceChange}
+                >
+                    <option />
+                    {props.intakeSources
+                        .filter(intakeSource => intakeSource.visible === 1)
+                        .map(intakeSource => {
+                            return (
+                                <option key={intakeSource.id} value={intakeSource.id}>
+                                    {intakeSource.name_custom ? intakeSource.name_custom : intakeSource.name}
+                                </option>
+                            );
+                        })}
+                </select>
+            </th>
 
             <th>
                 <select className="form-control input-sm" value={props.filters.statusId.data} onChange={onStatusChange}>
@@ -151,6 +177,7 @@ const IntakesListFilter = props => {
 
 const mapStateToProps = state => ({
     filters: state.intakes.filters,
+    intakeSources: state.systemData.intakeSources,
     intakeStatuses: state.systemData.intakeStatuses,
     measureCategories: state.systemData.measureCategories,
 });
@@ -165,6 +192,7 @@ const mapDispatchToProps = dispatch => {
             setFilterIntakeAreaName,
             setFilterIntakeCampaign,
             setFilterMeasureRequested,
+            setFilterIntakeSource,
             setFilterIntakeStatus,
         },
         dispatch

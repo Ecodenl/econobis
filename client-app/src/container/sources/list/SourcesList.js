@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import SourcesListItem from './SourcesListItem';
-
-import * as PropTypes from 'prop-types';
 
 class SourcesList extends Component {
     constructor(props) {
@@ -46,12 +45,7 @@ class SourcesList extends Component {
                             </tr>
                         ) : (
                             sources.map(source => {
-                                return (
-                                    <SourcesListItem
-                                        key={source.id}
-                                        {...source}
-                                    />
-                                );
+                                return <SourcesListItem key={source.id} {...source} />;
                             })
                         )}
                     </DataTableBody>

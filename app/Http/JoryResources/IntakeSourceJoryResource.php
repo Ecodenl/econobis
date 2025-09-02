@@ -2,8 +2,7 @@
 
 namespace App\Http\JoryResources;
 
-use \App\Eco\Intake\IntakeSource;
-use App\Http\Controllers\Api\Intake\IntakeSourceController;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Http\JoryResources\Base\JoryResource;
 
 class IntakeSourceJoryResource extends JoryResource
@@ -12,8 +11,7 @@ class IntakeSourceJoryResource extends JoryResource
 
     protected function checkAuthorize(): void
     {
-        $sourceController = new IntakeSourceController();
-        //$sourceController->authorize('view', IntakeSource::class);
+        // TODO: Implement checkAuthorize() method.
     }
 
     protected function configureForApp(): void
@@ -25,7 +23,6 @@ class IntakeSourceJoryResource extends JoryResource
         $this->field('visible')->filterable()->sortable();
         $this->field('created_at')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();
-        $this->field('deleted_at')->filterable()->sortable();
     }
 
     protected function configureForPortal(): void

@@ -37,8 +37,8 @@ use App\Eco\HousingFile\RoofType;
 use App\Eco\Industry\Industry;
 use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\Intake\IntakeReason;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\IncomingServerType;
@@ -85,7 +85,6 @@ use App\Eco\User\User;
 use App\Eco\VatCode\VatCode;
 use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\CostCenter\FullCostCenter;
-use App\Http\Resources\Intake\FullIntakeSource;
 use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
@@ -197,7 +196,6 @@ class SystemData extends JsonResource
             'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication', 'use_dongle_registration'])->first(),
             'cooperationExternalUrlContacts' => Cooperation::select(['id', 'show_external_url_for_contacts', 'external_url_contacts', 'external_url_contacts_button_text', 'external_url_contacts_on_new_page'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
-            'sources' => FullIntakeSource::collection(IntakeSource::all()),
             'countries' => GenericResource::collection(Country::all()),
             'documentCreatedFroms' => FullDocumentCreatedFrom::collection(DocumentCreatedFrom::all()),
             'documentGroups' => FullEnumWithIdAndName::collection(DocumentGroup::collection()),

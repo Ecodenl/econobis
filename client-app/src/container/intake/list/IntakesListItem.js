@@ -80,7 +80,7 @@ class IntakesListItem extends Component {
                 <td>{fullAddress}</td>
                 <td>{areaName}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>
-                <td>{sourcesNames.length > 0 ? sourcesNames[sourcesNames.length - 1] : ''} {sourcesNames.length > 1 ? ', ..' : ''}</td>
+                <td>{sourcesNames.join(', ')}</td>
                 <td>{status}</td>
                 <td>{campaign.name}</td>
                 <td>

@@ -255,11 +255,13 @@ class IntakeController extends ApiController
         if ($data['sourceIds']) {
             $intake->sources()->sync($data['sourceIds']);
         } else {
-            $intake->sources()->detach(); //should this also be done for intakeReasonIds?
+            $intake->sources()->detach();
         }
 
         if ($data['intakeReasonIds']) {
             $intake->reasons()->sync($data['intakeReasonIds']);
+        } else {
+            $intake->reasons()->detach();
         }
 
         return $this->show($intake);

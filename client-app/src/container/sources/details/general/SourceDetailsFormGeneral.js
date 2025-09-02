@@ -69,7 +69,7 @@ const mapStateToProps = state => {
     return {
         meDetails: state.meDetails,
         permissions: state.meDetails.permissions,
-        sources: state.systemData.sources,
+        sources: state.systemData.intakeSources,
     };
 };
 

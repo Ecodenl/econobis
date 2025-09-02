@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Api\Intake;
+namespace App\Http\Controllers\Api\IntakeSource;
 
-use App\Eco\Intake\IntakeSource;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;

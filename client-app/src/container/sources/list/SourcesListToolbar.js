@@ -12,9 +12,9 @@ const SourcesListToolbarWrapper = props => {
 };
 
 class SourcesListToolbar extends Component {
-    newSource = () => {
-        this.props.navigate(`/aanmeldingsbron/nieuw`);
-    };
+    // newSource = () => {
+    //     this.props.navigate(`/aanmeldingsbron/nieuw`);
+    // };
 
     render() {
         let { sourcesCount, refreshSourcesData, permissions } = this.props;

@@ -189,16 +189,18 @@ class OrderProductsFormNewProduct extends Component {
     };
 
     handleInputChangeProductVat = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+        const vatCodeId = event.target.value;
+
+        let selectedVatCode = this.props.vatCodes.find(vatCode => vatCode.id == vatCodeId);
+        let vatPercentage = selectedVatCode?.percentage ?? null;
 
         this.setState(
             {
                 ...this.state,
+                vatCodeId,
                 product: {
                     ...this.state.product,
-                    [name]: value,
+                    vatPercentage,
                 },
             },
             this.updatePrice
@@ -543,7 +545,6 @@ class OrderProductsFormNewProduct extends Component {
             code,
             name,
             durationId,
-            vatPercentage,
             inputInclVat,
             priceNumberOfDecimals,
             price,

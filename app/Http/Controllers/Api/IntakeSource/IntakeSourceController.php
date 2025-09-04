@@ -7,7 +7,6 @@ use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\GenericResource;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use JosKolenberg\LaravelJory\Facades\Jory;
 
 class IntakeSourceController extends Controller

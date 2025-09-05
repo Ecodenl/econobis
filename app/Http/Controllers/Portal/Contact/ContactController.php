@@ -970,6 +970,7 @@ class ContactController extends ApiController
         $mutationToPay = null;
         foreach ($participantProjects as $participantProject) {
             $mutationToPay = $participantProject->mutationsAsc()
+                ->whereNull('date_payment')
                 ->get() // Retrieve all mutations in ascending order
                 ->first(fn($mutation) => !$mutation->is_paid_by_mollie); // Filter by the dynamic attribute
 

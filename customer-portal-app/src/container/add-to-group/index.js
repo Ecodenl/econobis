@@ -11,26 +11,13 @@ function AddContactToGroup({ match, history }) {
     useEffect(
         function() {
             if (currentSelectedContact.id) {
-                GroupAPI.addContactToGroup(match.params.id, currentSelectedContact.id)
-                    .then(payload => {
-                        history.push('/dashboard');
-                    });
+                GroupAPI.addContactToGroup(match.params.id, currentSelectedContact.id).then(payload => {
+                    history.push('/dashboard');
+                });
             }
         },
         [currentSelectedContact.id]
     );
-
-    function downloadFile(e) {
-        e.preventDefault();
-
-        QuotationRequestAPI.quotationRequestDownloadDocument(match.params.quotationRequestId, match.params.id)
-            .then(payload => {
-                fileDownload(payload.data, initialDocument.filename);
-            })
-            .catch(() => {
-                alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-            });
-    }
 
     return true;
 }

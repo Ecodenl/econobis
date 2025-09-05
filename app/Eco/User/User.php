@@ -3,6 +3,7 @@
 namespace App\Eco\User;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Contact\Contact;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Mailbox\Mailbox;
@@ -60,7 +61,6 @@ class User extends Authenticatable
         'alfresco_password'
     ];
 
-    protected $teamContactGroupids = null;
     protected $teamContactIds = null;
     protected $teamDocumentCreatedFromIds = null;
 
@@ -162,57 +162,74 @@ class User extends Authenticatable
         );
     }
 
-// todo WM: deze getTeamContactIds() net als getTeamContactGroupIds() verplaatsen, maar dan naar contact builder?
-    public function getTeamContactIds(){
-        if(!$this->teamContactids == null){
-            return $this->teamContactids;
-        } else {
-            if (!$this->teams){
-                return false;
-            }
-
-            $teamContactIds = [];
-            $hasContactGroup = false;
-            foreach ($this->teams as $team){
-                foreach($team->contactGroups as $contactGroup){
-                    $hasContactGroup = true;
-                    $teamContactIds = array_unique(array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray()));
-                }
-            }
-            if($hasContactGroup && count($teamContactIds) == 0){
-                $this->teamContactids = [-1];
-            } else {
-                $this->teamContactids = $teamContactIds;
-            }
-
-            return $this->teamContactids;
+    public function getTeamContactIds()
+    {
+        if ($this->teamContactIds !== null) {
+            return $this->teamContactIds;
         }
+
+        // Geen teams? Volledige toegang.
+        if (!$this->teams || $this->teams()->count() === 0) {
+            return false;
+        }
+
+        // Teams zonder enige contactGroups? Ook volledige toegang.
+        $hasAnyContactGroup = $this->teams()->whereHas('contactGroups')->exists();
+        if (!$hasAnyContactGroup) {
+            return false;
+        }
+
+        $teamContactIds = [];
+        foreach ($this->teams as $team) {
+            foreach ($team->contactGroups as $contactGroup) {
+                $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
+            }
+        }
+
+        // Voeg contacten toe die door deze gebruiker zijn aangemaakt
+        $createdByIds = Contact::where('created_by_id', $this->id)->pluck('id')->toArray();
+
+        // Combineer en maak uniek
+        $combinedIds = array_unique(array_merge($teamContactIds, $createdByIds));
+
+        // Als er contactgroepen waren maar er zijn geen contacten in, gebruik [-1] als fallback
+        if (count($combinedIds) === 0) {
+            $this->teamContactIds = [-1];
+        } else {
+            $this->teamContactIds = $combinedIds;
+        }
+
+        return $this->teamContactIds;
     }
+
     public function getDocumentCreatedFromIds(){
-        if(!$this->teamDocumentCreatedFromIds == null){
-            return $this->teamDocumentCreatedFromIds;
-        } else {
-            if (!$this->teams){
-                return false;
-            }
-
-            $teamDocumentCreatedFromIds = [];
-            $hasDocumentCreatedFrom = false;
-            foreach ($this->teams as $team){
-                $thisTeamDocumentCreatedFromIds = $team->documentCreatedFroms->pluck('id')->toArray();
-                if(count($teamDocumentCreatedFromIds) > 0) {
-                    $hasDocumentCreatedFrom = true;
-                }
-                $teamDocumentCreatedFromIds = array_unique(array_merge($teamDocumentCreatedFromIds, $thisTeamDocumentCreatedFromIds));
-            }
-            if($hasDocumentCreatedFrom && count($teamDocumentCreatedFromIds) == 0){
-                $this->teamDocumentCreatedFromIds = [-1];
-            } else {
-                $this->teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
-            }
-
+        if($this->teamDocumentCreatedFromIds !== null){
             return $this->teamDocumentCreatedFromIds;
         }
+        // Geen teams? Volledige toegang.
+        if (!$this->teams || $this->teams()->count() === 0) {
+            return false;
+        }
+
+        // Teams zonder enige documentCreatedFroms? Ook volledige toegang.
+        $hasAnyDocumentCreatedFroms = $this->teams()->whereHas('documentCreatedFroms')->exists();
+        if (!$hasAnyDocumentCreatedFroms) {
+            return false;
+        }
+
+        $teamDocumentCreatedFromIds = [];
+        foreach ($this->teams as $team){
+            $teamDocumentCreatedFromIds = array_merge($teamDocumentCreatedFromIds, $team->documentCreatedFroms->pluck('id')->toArray());
+        }
+        $teamDocumentCreatedFromIds = array_unique($teamDocumentCreatedFromIds);
+
+        if(count($teamDocumentCreatedFromIds) === 0){
+            $this->teamDocumentCreatedFromIds = [-1];
+        } else {
+            $this->teamDocumentCreatedFromIds = $teamDocumentCreatedFromIds;
+        }
+
+        return $this->teamDocumentCreatedFromIds;
     }
 
     public function getDefaultMailboxWithFallback()

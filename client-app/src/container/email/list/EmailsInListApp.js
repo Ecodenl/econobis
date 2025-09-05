@@ -28,6 +28,7 @@ class EmailsInListApp extends Component {
         super(props);
 
         if (!isEmpty(props.params)) {
+            // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
             if (props.params.type === 'eigen') {
                 this.props.setFilterMe(true);
             }
@@ -59,6 +60,7 @@ class EmailsInListApp extends Component {
 
         if (this.props.params.type !== nextProps.params.type) {
             if (!isEmpty(nextProps.params)) {
+                // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
                 if (nextProps.params.type === 'eigen') {
                     this.props.setFilterMe(true);
                 } else {
@@ -136,6 +138,7 @@ class EmailsInListApp extends Component {
 
         let me = false;
 
+        // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
         if (this.props.params.type == 'eigen') {
             me = true;
         }

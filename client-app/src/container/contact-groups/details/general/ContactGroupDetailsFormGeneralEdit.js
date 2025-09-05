@@ -33,6 +33,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             sendEmailNewContactLink,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
+            portalSortOrder,
             inspectionPersonType,
         } = props.contactGroupDetails;
 
@@ -57,6 +58,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                 sendEmailNewContactLink: sendEmailNewContactLink ? sendEmailNewContactLink : false,
                 emailTemplateIdNewContactLink: emailTemplateIdNewContactLink ? emailTemplateIdNewContactLink : '',
                 includeIntoExportGroupReport: includeIntoExportGroupReport ? includeIntoExportGroupReport : false,
+                portalSortOrder: portalSortOrder ? portalSortOrder : null,
                 inspectionPersonTypeId: inspectionPersonType ? inspectionPersonType.id : '',
             },
             errors: {
@@ -257,6 +259,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
             lapostaListCreatedAt,
             emailTemplateIdNewContactLink,
             includeIntoExportGroupReport,
+            portalSortOrder,
             numberOfContacts,
             inspectionPersonTypeId,
         } = this.state.contactGroup;
@@ -417,6 +420,17 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                         onChangeAction={this.handleInputChange}
                     />
                 </div>
+
+                {(type === 'static' && editPortal && showPortal) && (
+                    <div className="row">
+                        <InputText
+                            label={'Volgorde op portaal'}
+                            name={'portalSortOrder'}
+                            value={portalSortOrder}
+                            onChangeAction={this.handleInputChange}
+                        />
+                    </div>
+                )}
 
                 <div className="row">
                     <InputToggle

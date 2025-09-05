@@ -11,11 +11,20 @@ use Illuminate\Support\Carbon;
 
 class ContactGroupController extends Controller
 {
+    public function index()
+    {
+        $contactGroups = ContactGroup::orderByRaw('portal_sort_order IS NULL, portal_sort_order ASC')
+            ->orderBy('name', 'ASC')
+            ->get();
+
+        return $contactGroups;
+    }
+
     public function addContact(ContactGroup $contactGroup, Contact $contact, $collectMessages = false)
     {
         if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
 
-           $contactGroup->contacts()->attach([$contact->id => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            $contactGroup->contacts()->attach([$contact->id => ['member_created_at' => Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
             if($contactGroup->laposta_list_id){
                 $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact, $collectMessages);
                 $lapostaMemberHelper->createMember();

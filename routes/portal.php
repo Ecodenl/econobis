@@ -37,7 +37,12 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
         Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
         Route::get('/contact/{contact}/related-administrations', 'Contact\ContactController@relatedAdministrations');
+        Route::get('/contact/{contact}/contact-group/{contactGroup}/add', 'Contact\ContactController@addContactToContactGroup');
+        Route::get('/contact/{contact}/contact-group/{contactGroup}/remove', 'Contact\ContactController@removeContactFromContactGroup');
         Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
+
+        Route::get('/contact-groups', 'ContactGroup\ContactGroupController@index');
+        
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
         Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
@@ -59,6 +64,7 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('/contact/{contact}/contact-free-fields', 'Contact\ContactController@getContactFreeFields');
         Route::get('/contact/{contact}/contact-portal-free-fields', 'Contact\ContactController@getContactPortalFreeFields');
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
+        Route::get('/contact/{contact}/contact-groups', 'Contact\ContactController@getContactGroups');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
 
         Route::get('/portal-free-fields-page/{contact}/{urlPageRef}', 'PortalFreeFieldsPage\PortalFreeFieldsPageController@show');

@@ -106,6 +106,7 @@ const Dashboard = function(props) {
                                         buttonLink={widget.buttonLink}
                                         backgroundColorUsed={widget.backgroundColorUsed}
                                         textColorUsed={widget.textColorUsed}
+                                        hideGroupId={widget.hideGroupId}
                                     />
                                 </Col>
                             ))}

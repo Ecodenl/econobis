@@ -29,7 +29,9 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Document\DocumentHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
@@ -249,6 +251,13 @@ class ContactController extends ApiController
         return response()->json(ProjectRegister::collection($projects));
     }
 
+    public function getContactGroups(Contact $contact)
+    {
+        $groups = $contact->groups()->select('name', 'id')->get();
+
+        return $groups;
+    }
+
     public function getContactProjectData(Contact $contact, Project $project)
     {
         $this->setContactProjectIndicators($project, $contact, null, 0);
@@ -379,6 +388,56 @@ class ContactController extends ApiController
         }
 
         return AdministrationResource::collection($administrations);
+    }
+
+    public function addContactToContactGroup(Contact $contact, ContactGroup $contactGroup)
+    {
+        if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+
+            $contactGroup->contacts()->attach([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            if($contactGroup->laposta_list_id){
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                $lapostaMemberHelper->createMember();
+            }
+
+            if($contactGroup->send_email_new_contact_link){
+                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
+                $contactGroupHelper->processEmailNewContactToGroup();
+            }
+            if($contactGroup->inspection_person_type_id !== null){
+                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
+                $contact->save();
+            }
+        }
+    }
+
+    public function removeContactFromContactGroup(Contact $contact, ContactGroup $contactGroup)
+    {
+        if($contactGroup->laposta_list_id){
+            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+                $contactGroupPivot = $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
+                if($contactGroupPivot->laposta_member_id !== null
+                    && $contactGroupPivot->laposta_member_state !== 'unknown'
+                    && $contactGroupPivot->laposta_member_state !== 'inprogress'
+                ){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                    $lapostaMemberHelper->deleteMember();
+                }
+            }
+        }
+
+        $contactGroup->contacts()->detach($contact);
+
+        //now check if the contact is still in any inspection_person_type_group,
+        // if so set the inspection_person_type_id column to first found
+        // if not set the inspection_person_type_id column to null again
+        if($contact->groups()->whereNotNull('inspection_person_type_id')->exists()) {
+            $contact->inspection_person_type_id = $contact->groups()->whereNotNull('inspection_person_type_id')->first()->inspection_person_type_id;
+            $contact->save();
+        } else {
+            $contact->inspection_person_type_id = null;
+            $contact->save();
+        }
     }
 
     protected function updatePerson($contact, Request $request)

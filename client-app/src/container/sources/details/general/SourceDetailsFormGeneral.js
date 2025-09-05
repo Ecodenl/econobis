@@ -50,7 +50,7 @@ class SourceDetailsFormGeneral extends Component {
                 onMouseEnter={() => this.onDivEnter()}
                 onMouseLeave={() => this.onDivLeave()}
             >
-                {this.state.showEdit && permissions.manageFinancial ? (
+                {this.state.showEdit && permissions.manageIntakeSources ? (
                     <SourceDetailsFormGeneralEdit
                         source={this.props.source}
                         sources={this.props.sources}

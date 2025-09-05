@@ -115,8 +115,8 @@ class IntakeDetailsFormGeneralEdit extends Component {
         } = this.state.intake;
 
         function compareIntakeSources(a, b) {
-            const sourceA = a.name_custom ? a.name_custom.toLowerCase() : a.name.toLowerCase();
-            const sourceB = b.name_custom ? b.name_custom.toLowerCase() : b.name.toLowerCase();
+            const sourceA = a.name.toLowerCase();
+            const sourceB = b.name.toLowerCase();
 
             let result = 0;
             if (sourceA > sourceB) {
@@ -160,17 +160,8 @@ class IntakeDetailsFormGeneralEdit extends Component {
                     <InputMultiSelect
                         label="Aanmeldingsbron"
                         name="sourceIds"
-                        value={sourceIdsSelected && sourceIdsSelected.map(source => ({
-                            ...source,
-                            name: source.nameCustom ? source.nameCustom : source.name,   // ✅ override name
-                        }))}
-                        options={this.props.intakeSources
-                            .filter(source => source.visible === 1)
-                            .map(source => ({
-                                ...source,
-                                name: source.name_custom ? source.name_custom : source.name, // ✅ override name
-                            }))
-                            .sort(compareIntakeSources)}
+                        value={sourceIdsSelected}
+                        options={this.props.intakeSources.sort(compareIntakeSources)}
                         onChangeAction={this.handleSourceIds}
                     />
                     <InputSelect

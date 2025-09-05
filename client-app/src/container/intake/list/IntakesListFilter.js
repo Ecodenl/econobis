@@ -138,15 +138,13 @@ const IntakesListFilter = props => {
                     onChange={onIntakeSourceChange}
                 >
                     <option />
-                    {props.intakeSources
-                        .filter(intakeSource => intakeSource.visible === 1)
-                        .map(intakeSource => {
-                            return (
-                                <option key={intakeSource.id} value={intakeSource.id}>
-                                    {intakeSource.name_custom ? intakeSource.name_custom : intakeSource.name}
-                                </option>
-                            );
-                        })}
+                    {props.intakeSources.map(intakeSource => {
+                        return (
+                            <option key={intakeSource.id} value={intakeSource.id}>
+                                {intakeSource.name}
+                            </option>
+                        );
+                    })}
                 </select>
             </th>
 

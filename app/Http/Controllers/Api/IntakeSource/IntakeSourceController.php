@@ -17,24 +17,9 @@ class IntakeSourceController extends Controller
         return Jory::on(IntakeSource::class);
     }
 
-    public function store(RequestInput $input, Request $request)
-    {
-        $this->authorize('manage_intake_sources');
-
-        $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
-            ->string('nameCustom')->alias('name_custom')->next()
-            ->string('visible')->next()
-            ->get();
-
-        $source = new IntakeSource($data);
-        $source->save();
-
-        return Jory::on($source);
-    }
-
     public function update(RequestInput $input, IntakeSource $source)
     {
-        $this->authorize('manage_intake_sources');
+        $this->authorize('manage', IntakeSource::class);
 
         $data = $input->string('name')->whenMissing('')->onEmpty('')->next()
             ->string('nameCustom')->alias('name_custom')->next()

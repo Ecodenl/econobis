@@ -28,4 +28,12 @@ class IntakeSource extends Model
         return $this->belongsToMany(Intake::class);
     }
 
+    public function getNameSourceAttribute()
+    {
+        if($this->name_custom) {
+            return $this->name_custom;
+        } else {
+            return $this->name;
+        }
+    }
 }

@@ -685,7 +685,6 @@ Route::namespace('Api')
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
 
         Route::get('source/jory', 'IntakeSource\IntakeSourceController@jory');
-        Route::post('source', 'IntakeSource\IntakeSourceController@store');
         Route::post('source/{source}', 'IntakeSource\IntakeSourceController@update');
 
         Route::get('task-type/jory', 'Task\TaskTypeController@jory');

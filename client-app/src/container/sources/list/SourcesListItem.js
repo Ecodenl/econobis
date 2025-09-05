@@ -45,7 +45,7 @@ class SourcesListItem extends Component {
         return (
             <tr
                 className={this.state.highlightRow}
-                onDoubleClick={permissions.manageFinancial ? () => this.openItem(id) : null}
+                onDoubleClick={permissions.manageIntakeSources ? () => this.openItem(id) : null}
                 onMouseEnter={() => this.onRowEnter()}
                 onMouseLeave={() => this.onRowLeave()}
             >
@@ -53,7 +53,7 @@ class SourcesListItem extends Component {
                 <td>{nameCustom}</td>
                 <td>{visible ? 'Ja' : 'Nee'}</td>
                 <td>
-                    {this.state.showActionButtons && permissions.manageFinancial ? (
+                    {this.state.showActionButtons && permissions.manageIntakeSources ? (
                         <a role="button" onClick={() => this.openItem(id)}>
                             <Icon className="mybtn-success" size={14} icon={pencil} />
                         </a>

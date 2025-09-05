@@ -42,6 +42,8 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
         Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
 
+        Route::post('/contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
+
         Route::get('/project/{project}/document/{document}/download', 'Project\ProjectController@documentDownload');
 
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');

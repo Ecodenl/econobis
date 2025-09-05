@@ -8,12 +8,29 @@ use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Auth;
 
 class ContactGroupController extends Controller
 {
     public function index()
     {
-        $contactGroups = ContactGroup::orderByRaw('portal_sort_order IS NULL, portal_sort_order ASC')
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // Ophalen alle groepen met show_portal = true
+        $contactGroups = ContactGroup::where('show_portal', true)
+            ->where('type_id', 'static')
+            ->where('closed', false)
+            ->where(function ($q) use ($portalUser) {
+                $q->where('edit_portal', true)
+                    ->orWhereHas('contacts', function ($q2) use ($portalUser) {
+                        $q2->where('contacts.id', $portalUser->contact->id);
+                    });
+            })
+            ->orderByRaw('portal_sort_order IS NULL, portal_sort_order ASC')
             ->orderBy('name', 'ASC')
             ->get();
 

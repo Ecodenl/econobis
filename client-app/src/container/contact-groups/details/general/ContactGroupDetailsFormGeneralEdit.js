@@ -421,7 +421,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                     />
                 </div>
 
-                {(type === 'static' && editPortal && showPortal) && (
+                {type === 'static' && showPortal ? (
                     <div className="row">
                         <InputText
                             label={'Volgorde op portaal'}
@@ -430,7 +430,7 @@ class ContactGroupDetailsFormGeneralEdit extends Component {
                             onChangeAction={this.handleInputChange}
                         />
                     </div>
-                )}
+                ) : null}
 
                 <div className="row">
                     <InputToggle

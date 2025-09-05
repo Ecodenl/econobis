@@ -15,8 +15,6 @@ function getDefaultButtonTextByCodeRef(codeRef) {
             return 'Inschrijven projecten';
         case 'huidige-deelnames':
             return 'Huidige deelnames';
-        case 'groepen-beheer':
-            return 'Groepenbeheer';
     }
     return '**onbekend**';
 }
@@ -43,9 +41,8 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
     const imageUrl = widgetImageFileName && `${getApiUrl()}/portal/images/${widgetImageFileName}?${imageHash}`;
 
     const textButtonText = () => {
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
-        if (staticWidgets.includes(codeRef)) {
-            console.log('variable tekst', getDefaultButtonTextByCodeRef(codeRef));
+        const menuWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        if (menuWidgets.includes(codeRef)) {
             return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${getDefaultButtonTextByCodeRef(
                 codeRef
             )}” ook mee veranderen.`;
@@ -145,7 +142,9 @@ const PortalSettingsDashboardWidgetFormGeneralView = ({
                     </div>
                     <div className="row">
                         <ViewText
-                            label={'Verborgen voor groep'}
+                            label={
+                                buttonLink === 'toevoegen-aan-groep' ? 'Aanmelden voor groep' : 'Verborgen voor groep'
+                            }
                             value={hideForContactGroup ? hideForContactGroup.name : 'Geen'}
                             divSize={'col-sm-8'}
                             className={'col-sm-8 form-group'}

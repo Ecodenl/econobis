@@ -7,6 +7,7 @@ import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import { PortalUserConsumer } from '../../../context/PortalUserContext';
 import ContactAPI from '../../../api/contact/ContactAPI';
 import rebaseContact from '../../../helpers/RebaseContact';
+import { Button } from 'react-bootstrap';
 
 function RegistrationList(props) {
     const [contact, setContact] = useState({});
@@ -104,34 +105,45 @@ function RegistrationList(props) {
                         ) : (
                             <Table responsive>
                                 <thead>
-                                <tr>
-                                    <th>Groep</th>
-                                    <th>Deelname</th>
-                                </tr>
+                                    <tr>
+                                        <th style={{ width: '50%' }}>Groep</th>
+                                        <th style={{ width: '25%' }}>Gekoppeld</th>
+                                        <th style={{ width: '25%' }}></th>
+                                    </tr>
                                 </thead>
                                 <tbody>
-                                {contactGroups.filter(cg =>
-                                    !cg.closed &&
-                                    cg.show_portal &&
-                                    cg.edit_portal &&
-                                    cg.type_id === 'static' &&
-                                    (cg.date_finished === null || new Date(cg.date_finished) >= new Date()) &&
-                                    (cg.date_started === null || new Date(cg.date_started) <= new Date())
-                                ).map(contactGroup => {
-                                    return (
-                                        <tr key={contactGroup.id}>
-                                            <td>{contactGroup.name}</td>
-                                            <td>
-                                                <input
-                                                    type="checkbox"
-                                                    value={contactGroup.id}
-                                                    checked={Array.isArray(contactContactGroups) && contactContactGroups.some(obj => obj.id === contactGroup.id)}
-                                                    onChange={e => changeContactContactGroup(e.target.value, Array.isArray(contactContactGroups) && contactContactGroups.some(obj => obj.id === contactGroup.id))}
-                                                />
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
+                                    {contactGroups
+                                        // .filter(
+                                        .map(contactGroup => {
+                                            let isMemberOfGroup =
+                                                Array.isArray(contactContactGroups) &&
+                                                contactContactGroups.some(obj => obj.id === contactGroup.id);
+
+                                            return (
+                                                <tr key={contactGroup.id}>
+                                                    <td>{contactGroup.name}</td>
+                                                    <td>{isMemberOfGroup ? `✅` : `❌`}</td>
+                                                    <td>
+                                                        {contactGroup.edit_portal ? (
+                                                            <Button
+                                                                variant={
+                                                                    true === isMemberOfGroup ? 'danger' : 'success'
+                                                                }
+                                                                size="sm"
+                                                                onClick={e =>
+                                                                    changeContactContactGroup(
+                                                                        contactGroup.id,
+                                                                        isMemberOfGroup
+                                                                    )
+                                                                }
+                                                            >
+                                                                {false === isMemberOfGroup ? 'Koppelen' : 'Ontkoppelen'}
+                                                            </Button>
+                                                        ) : null}
+                                                    </td>
+                                                </tr>
+                                            );
+                                        })}
                                 </tbody>
                             </Table>
                         )}

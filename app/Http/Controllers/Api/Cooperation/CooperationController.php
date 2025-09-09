@@ -9,14 +9,17 @@
 namespace App\Http\Controllers\Api\Cooperation;
 
 use App\Eco\Cooperation\Cooperation;
+use App\Eco\Cooperation\CooperationCleanupContactsExcludedGroup;
 use App\Eco\Cooperation\CooperationHoomCampaign;
 use App\Helpers\Laposta\LapostaHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Requests\Cooperation\CreateCooperation;
+use App\Http\Requests\Cooperation\CreateCooperationCleanupContactsExcludedGroup;
 use App\Http\Requests\Cooperation\CreateCooperationHoomCampaign;
 use App\Http\Requests\Cooperation\UpdateCooperation;
 use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
+use App\Http\Resources\Cooperation\FullCooperationCleanupContactsExcludedGroup;
 use App\Http\Resources\Cooperation\FullCooperationHoomCampaign;
 use Illuminate\Support\Facades\DB;
 
@@ -30,7 +33,7 @@ class CooperationController extends ApiController
 
         $cooperation = Cooperation::first();
 
-        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns']);
+        $cooperation->load(['createdBy', 'updatedBy', 'contactGroup', 'emailTemplate', 'hoomCampaigns', 'cleanupContactsExcludedGroups', 'cleanupItems']);
 
         return FullCooperation::make($cooperation);
     }
@@ -73,6 +76,9 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+
+        $cooperation->cleanup_email = $request->boolean('cleanupEmail');
+
         $cooperation->save();
 
         return $this->show();
@@ -119,6 +125,9 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+
+        $cooperation->cleanup_email = $request->boolean('cleanupEmail');
+
         $cooperation->save();
 
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
@@ -163,9 +172,32 @@ class CooperationController extends ApiController
         $cooperationHoomCampaign->delete();
     }
 
+    public function storeCleanupContactsExcludedGroup(CreateCooperationCleanupContactsExcludedGroup $request)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $cooperationCleanupContactsExcludedGroup = new CooperationCleanupContactsExcludedGroup($request->validatedSnake());
+        $cooperationCleanupContactsExcludedGroup->save();
+
+        return FullCooperationCleanupContactsExcludedGroup::make($cooperationCleanupContactsExcludedGroup);
+    }
+    public function destroyCleanupContactsExcludedGroup(CooperationCleanupContactsExcludedGroup $excludedGroup)
+    {
+        $this->authorize('manage', Cooperation::class);
+
+        $excludedGroup->delete();
+    }
+
     public function syncAllWithLaposta(Cooperation $cooperation){
         $LapostaHelper = new LapostaHelper();
         return $LapostaHelper->syncAllWithLaposta();
+    }
+
+    public function getExcludedGroups()
+    {
+        $cooporation = Cooperation::first();
+
+        return FullCooperationCleanupContactsExcludedGroup::collection($cooporation->cleanupContactsExcludedGroups);
     }
 
 

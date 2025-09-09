@@ -9,7 +9,9 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -27,6 +29,28 @@ class DeleteOrder implements DeleteInterface
 
     private $errorMessage = [];
     private $order;
+
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup()
+    {
+        $this->delete();
+
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+
+        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', ['ordersOneoff','ordersPeriodic'])->get();
+
+        foreach($cleanupItems as $cleanupItem) {
+            $cleanupItem->number_of_items_to_delete = 0;
+            $cleanupItem->date_cleaned_up = $dateToday;
+            $cleanupItem->save();
+        }
+    }
 
     /** Sets the model to delete
      *

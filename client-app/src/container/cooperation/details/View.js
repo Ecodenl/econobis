@@ -6,10 +6,27 @@ import PanelHeader from '../../../components/panel/PanelHeader';
 import moment from 'moment/moment';
 import { connect } from 'react-redux';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
+import CleanupContactsExcludedGroups from './cleanup-contacts-excluded-groups/CleanupContactsExcludedGroups';
+import CleanupItems from './cleanup-items/CleanupItems';
+import Icon from 'react-icons-kit';
+import { refresh } from 'react-icons-kit/fa/refresh';
 
-function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
+function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRefresh, refreshing }) {
+    // Disable click-to-edit while refreshing
+    const handleSectionClick = e => {
+        if (refreshing) {
+            e.stopPropagation();
+        } else {
+            toggleEdit();
+        }
+    };
+
     return (
-        <section className={'panel-hover'} onClick={toggleEdit}>
+        <section
+            className={'panel-hover'}
+            onClick={handleSectionClick}
+            style={refreshing ? { pointerEvents: 'none', opacity: 0.6 } : {}}
+        >
             {formData.createContactsForReportTableInProgress == true && (
                 <Panel>
                     <PanelHeader>
@@ -149,6 +166,47 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails }) {
                     <div className="row">
                         <ViewText label={'Letterkleur'} value={formData.fontColorDefault} />
                     </div>
+                </PanelBody>
+            </Panel>
+
+            <Panel>
+                <PanelHeader>
+                    <span className="h5 text-bold">Opschonen</span>
+                </PanelHeader>
+                <PanelBody>
+                    <div className="row">
+                        <ViewText
+                            label={
+                                'Wil je de e-mailcorrespondentie van contacten die geen order, nota, deelname, intake of kans hebben naar de e-mailarchief map verplaatsen?'
+                            }
+                            value={formData.cleanupEmail ? 'Ja' : 'Nee'}
+                        />
+                        <span className="form-group col-sm-6">
+                            <span className="form-group col-sm-12">
+                                <a
+                                    role="button"
+                                    onClick={refreshing ? e => e.preventDefault() : handleRefresh}
+                                    title={`herbereken alle op te schonen`}
+                                    style={refreshing ? { pointerEvents: 'none', opacity: 0.5 } : {}}
+                                >
+                                    <Icon size={14} icon={refresh} />
+                                    {refreshing && <span style={{ marginLeft: 8 }}>Bezig...</span>}
+                                </a>
+                            </span>
+                        </span>
+                    </div>
+
+                    <CleanupItems
+                        cooperationId={formData.id}
+                        showEditCooperation={false}
+                        cleanupItems={formData.cleanupItems}
+                    />
+
+                    <CleanupContactsExcludedGroups
+                        cooperationId={formData.id}
+                        showEditCooperation={false}
+                        cleanupContactsExcludedGroups={formData.cleanupContactsExcludedGroups}
+                    />
                 </PanelBody>
             </Panel>
 

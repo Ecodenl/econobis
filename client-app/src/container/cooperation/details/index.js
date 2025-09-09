@@ -7,6 +7,7 @@ import CooperationDetailsFormEdit from './Edit';
 import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
+import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
 // todo WM: opschonen inspection* velden
 const INITIAL_STATE = {
@@ -31,6 +32,7 @@ const INITIAL_STATE = {
         hoomEmailTemplateId: '',
         hoomGroupId: '',
         hoomMailboxId: '',
+        cleanupItems: {},
         useLaposta: false,
         lapostaKey: '',
         useExportAddressConsumption: false,
@@ -51,6 +53,7 @@ const INITIAL_STATE = {
         externalUrlContacts: '',
         externalUrlContactsButtonText: '',
         externalUrlContactsOnNewPage: true,
+        cleanupEmail: '',
     },
     isLoading: true,
     showEdit: false,
@@ -122,6 +125,10 @@ function CooperationDetailsApp({ permissions }) {
         });
     }
 
+    function handleRefresh() {
+        DataCleanupAPI.updateAmounts('all');
+    }
+
     return (
         <div className="row">
             <div className="col-md-9">
@@ -146,9 +153,14 @@ function CooperationDetailsApp({ permissions }) {
                                         formData={state.result}
                                         toggleEdit={toggleEdit}
                                         updateResult={updateResult}
+                                        handleRefresh={handleRefresh}
                                     />
                                 ) : (
-                                    <CooperationDetailsFormView formData={state.result} toggleEdit={toggleEdit} />
+                                    <CooperationDetailsFormView
+                                        formData={state.result}
+                                        toggleEdit={toggleEdit}
+                                        handleRefresh={handleRefresh}
+                                    />
                                 )}
                             </>
                         </div>

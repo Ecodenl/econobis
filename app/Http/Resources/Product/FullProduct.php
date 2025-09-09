@@ -46,6 +46,7 @@ class FullProduct extends JsonResource
                 'createdById' => $this->created_by_id,
                 'createdBy' => FullUser::make($this->whenLoaded('createdBy')),
                 'active' => $this->active,
+                'cleanupException' => $this->cleanup_exception,
                 'ledger' => GenericResource::make($this->whenLoaded('ledger')),
                 'ledgerId' => $this->ledger_id,
                 'costCenter' => GenericResource::make($this->whenLoaded('costCenter')),

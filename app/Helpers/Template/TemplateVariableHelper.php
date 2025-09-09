@@ -13,7 +13,7 @@ use App\Eco\Document\Document;
 use App\Eco\Project\ProjectLoanType;
 use App\Eco\Project\ProjectRevenueDistributionType;
 use App\Eco\RevenuesKwh\RevenueValuesKwh;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\ParticipantMutation\ParticipantMutationType;
 use App\Eco\Project\ProjectValueCourse;
@@ -320,7 +320,7 @@ class TemplateVariableHelper
             case 'portal_registratie_link':
                 if($model->portal_registration_code)
                 {
-                    return 'https://' . PortalSettings::get("portalUrl") . '/#/activeer-registratie/' . $model->portal_registration_code . '/' . optional($model->primaryEmailAddress)->email;
+                    return 'https://' . PortalSettings::first()?->portal_url . '/#/activeer-registratie/' . $model->portal_registration_code . '/' . optional($model->primaryEmailAddress)->email;
                 }
                 return '';
             case 'portal_email':
@@ -2301,10 +2301,10 @@ class TemplateVariableHelper
     }
 
     public static function getPortalVar($varname){
-        $portalUrl = PortalSettings::get('portalUrl');
-        $portalName = PortalSettings::get('portalName');
-        $pcrPowerKwhConsumptionPercentage = PortalSettings::get('pcrPowerKwhConsumptionPercentage');
-        $pcrGeneratingCapacityOneSolorPanel = PortalSettings::get('pcrGeneratingCapacityOneSolorPanel');
+        $portalUrl = PortalSettings::first()?->portal_url;
+        $portalName = PortalSettings::first()?->portal_name;
+        $pcrPowerKwhConsumptionPercentage = PortalSettings::first()?->pcr_power_kwh_consumption_percentage;
+        $pcrGeneratingCapacityOneSolorPanel = PortalSettings::first()?->pcr_generating_capacity_one_solor_panel;
 
         switch ($varname) {
             case 'url':
@@ -2312,7 +2312,8 @@ class TemplateVariableHelper
             case 'naam':
                 return $portalName;
             case 'advies_percentage_dekking_zonnepanelen':
-                return $pcrPowerKwhConsumptionPercentage;
+                // Todo WM: navragen of ze hier niet gewoon 80 willen zien ipv 0.8 ???
+                return $pcrPowerKwhConsumptionPercentage / 100;
             case 'capaciteit_van_een_zonnepaneel':
                 return $pcrGeneratingCapacityOneSolorPanel;
             default:
@@ -2331,9 +2332,9 @@ class TemplateVariableHelper
     }
 
     public static function getCooperativeVar($varname){
-        $cooperativePortalName = PortalSettings::get('portalName');
-        $cooperativeName = PortalSettings::get('cooperativeName');
-        $cooperativeWebsite = PortalSettings::get('portalWebsite');
+        $cooperativePortalName = PortalSettings::first()?->portal_name;;
+        $cooperativeName = PortalSettings::first()?->cooperative_name;
+        $cooperativeWebsite = PortalSettings::first()?->portal_website;
 
         switch ($varname) {
             case 'portal_naam':

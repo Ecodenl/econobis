@@ -63,6 +63,7 @@ use App\Eco\PaymentInvoice\PaymentInvoiceStatus;
 use App\Eco\PersonType\PersonType;
 use App\Eco\PhoneNumber\PhoneNumberType;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Eco\Product\Product;
 use App\Eco\Product\ProductDuration;
 use App\Eco\Product\ProductInvoiceFrequency;
@@ -100,6 +101,7 @@ use App\Http\Resources\OrganisationType\FullOrganisationType;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationStatus;
 use App\Http\Resources\ParticipantMutation\FullParticipantMutationType;
 use App\Http\Resources\PersonType\FullPersonType;
+use App\Http\Resources\PortalSettings\FullPortalSettings;
 use App\Http\Resources\Product\FullProduct;
 use App\Http\Resources\QuotationRequest\FullQuotationRequestStatus;
 use App\Http\Resources\Team\FullTeam;
@@ -240,6 +242,7 @@ class SystemData extends JsonResource
             'permissions' => FullEnumWithIdAndName::collection(Permission::all()),
             'personTypes' => FullPersonType::collection(PersonType::all()),
             'phoneNumberTypes' => FullEnumWithIdAndName::collection(PhoneNumberType::collection()),
+            'portalSettings' => FullPortalSettings::collection(PortalSettings::all())->first(),
             'portalSettingsLayouts' => PortalSettingsLayout::select(['id', 'description'])->get(),
             'primaryOccupations' => PrimaryOccupation::collection(Occupation::all()),
             'productDurations' => FullEnumWithIdAndName::collection(ProductDuration::collection()),

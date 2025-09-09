@@ -54,6 +54,8 @@ class PortalSettingsFormGeneralEdit extends Component {
                 linkPrivacyPolicy: false,
                 showNewAtCooperativeLink: false,
                 newAtCooperativeLinkText: false,
+                showAllowRequestForDelete: false,
+                allowRequestForDeleteButtonText: false,
                 defaultContactGroupMemberId: false,
                 defaultContactGroupNoMemberId: false,
                 pcrPowerKwhConsumptionPercentage: false,
@@ -97,7 +99,7 @@ class PortalSettingsFormGeneralEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(portalSettings.portalUrl)) {
+        if (!portalSettings.portalUrl || validator.isEmpty(portalSettings.portalUrl + '')) {
             errors.portalUrl = true;
             hasErrors = true;
         }
@@ -113,8 +115,20 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.checkContactTaskResponsible = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.newAtCooperativeLinkText)) {
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.newAtCooperativeLinkText === null ||
+                validator.isEmpty(portalSettings.newAtCooperativeLinkText))
+        ) {
             errors.newAtCooperativeLinkText = true;
+            hasErrors = true;
+        }
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.allowRequestForDeleteButtonText === null ||
+                validator.isEmpty(portalSettings.allowRequestForDeleteButtonText))
+        ) {
+            errors.allowRequestForDeleteButtonText = true;
             hasErrors = true;
         }
         if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')) {
@@ -125,15 +139,18 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.defaultContactGroupNoMemberId = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.linkPrivacyPolicy)) {
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.linkPrivacyPolicy === null || validator.isEmpty(portalSettings.linkPrivacyPolicy))
+        ) {
             errors.linkPrivacyPolicy = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrPowerKwhConsumptionPercentage + '')) {
+        if (portalSettings.portalActive && portalSettings.pcrPowerKwhConsumptionPercentage === null) {
             errors.pcrPowerKwhConsumptionPercentage = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.pcrGeneratingCapacityOneSolorPanel)) {
+        if (portalSettings.portalActive && portalSettings.pcrGeneratingCapacityOneSolorPanel === null) {
             errors.pcrGeneratingCapacityOneSolorPanel = true;
             hasErrors = true;
         }
@@ -141,15 +158,24 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.emailTemplateNewAccountId = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.portalName)) {
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.portalName === null || validator.isEmpty(portalSettings.portalName))
+        ) {
             errors.portalName = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.cooperativeName)) {
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.cooperativeName === null || validator.isEmpty(portalSettings.cooperativeName))
+        ) {
             errors.cooperativeName = true;
             hasErrors = true;
         }
-        if (portalSettings.portalActive && validator.isEmpty(portalSettings.portalWebsite)) {
+        if (
+            portalSettings.portalActive &&
+            (portalSettings.portalWebsite === null || validator.isEmpty(portalSettings.portalWebsite))
+        ) {
             errors.portalWebsite = true;
             hasErrors = true;
         }
@@ -175,79 +201,30 @@ class PortalSettingsFormGeneralEdit extends Component {
             hasErrors = true;
         }
 
-        const data = new FormData();
-
-        data.append('portalActive', portalSettings.portalActive ? portalSettings.portalActive : false);
-        data.append('portalName', portalSettings.portalName ? portalSettings.portalName : '');
-        data.append('cooperativeName', portalSettings.cooperativeName ? portalSettings.cooperativeName : '');
-        data.append('portalWebsite', portalSettings.portalWebsite ? portalSettings.portalWebsite : '');
-        data.append('portalLoginInfoText', portalSettings.portalLoginInfoText ? portalSettings.portalLoginInfoText : '');
-        data.append('portalUrl', portalSettings.portalUrl);
-        data.append('responsibleUserId', portalSettings.responsibleUserId ? portalSettings.responsibleUserId : '');
-        data.append(
-            'checkContactTaskResponsibleUserId',
-            portalSettings.checkContactTaskResponsibleUserId ? portalSettings.checkContactTaskResponsibleUserId : ''
-        );
-        data.append(
-            'checkContactTaskResponsibleTeamId',
-            portalSettings.checkContactTaskResponsibleTeamId ? portalSettings.checkContactTaskResponsibleTeamId : ''
-        );
-        data.append(
-            'contactResponsibleOwnerUserId',
-            portalSettings.contactResponsibleOwnerUserId ? portalSettings.contactResponsibleOwnerUserId : ''
-        );
-        data.append(
-            'emailTemplateNewAccountId',
-            portalSettings.emailTemplateNewAccountId ? portalSettings.emailTemplateNewAccountId : ''
-        );
-        data.append('linkPrivacyPolicy', portalSettings.linkPrivacyPolicy ? portalSettings.linkPrivacyPolicy : '');
-        data.append(
-            'showNewAtCooperativeLink',
-            portalSettings.showNewAtCooperativeLink ? portalSettings.showNewAtCooperativeLink : false
-        );
-        data.append(
-            'newAtCooperativeLinkText',
-            portalSettings.newAtCooperativeLinkText ? portalSettings.newAtCooperativeLinkText : ''
-        );
-        data.append(
-            'defaultContactGroupMemberId',
-            portalSettings.defaultContactGroupMemberId ? portalSettings.defaultContactGroupMemberId : ''
-        );
-        data.append(
-            'defaultContactGroupNoMemberId',
-            portalSettings.defaultContactGroupNoMemberId ? portalSettings.defaultContactGroupNoMemberId : ''
-        );
-        data.append(
-            'pcrPowerKwhConsumptionPercentage',
-            portalSettings.pcrPowerKwhConsumptionPercentage
-                ? parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100
-                : 0
-        );
-        data.append(
-            'pcrGeneratingCapacityOneSolorPanel',
-            portalSettings.pcrGeneratingCapacityOneSolorPanel ? portalSettings.pcrGeneratingCapacityOneSolorPanel : 0
-        );
-        data.append(
-            'defaultAdministrationId',
-            portalSettings.defaultAdministrationId ? portalSettings.defaultAdministrationId : ''
-        );
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
-        !hasErrors &&
-            PortalSettingsAPI.updatePortalSettings(data)
+        if (!hasErrors) {
+            // pcrPowerKwhConsumptionPercentage als factor opslaan (04-07-2025 WM: niet meer)
+            // portalSettings.pcrPowerKwhConsumptionPercentage =
+            //     parseInt(portalSettings.pcrPowerKwhConsumptionPercentage) / 100;
+            PortalSettingsAPI.updatePortalSettings(portalSettings)
                 .then(payload => {
-                    this.props.updateState(payload.data);
+                    this.props.updateState(payload.data.data);
                     this.props.fetchSystemData();
                     this.props.peekAdministrations();
                     this.props.fetchStaticContactGroups();
                     this.props.switchToView();
                 })
                 .catch(error => {
-                    console.log(error);
-                    alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    if (error.response) {
+                        this.props.setError(error.response.status, error.response.data.message);
+                    } else {
+                        console.log(error);
+                        alert('Er is iets misgegaan bij opslaan. Herlaad de pagina en probeer het nogmaals.');
+                    }
                 });
+        }
     };
 
     render() {
@@ -265,6 +242,8 @@ class PortalSettingsFormGeneralEdit extends Component {
             linkPrivacyPolicy,
             showNewAtCooperativeLink,
             newAtCooperativeLinkText,
+            showAllowRequestForDelete,
+            allowRequestForDeleteButtonText,
             defaultContactGroupMemberId,
             defaultContactGroupNoMemberId,
             pcrPowerKwhConsumptionPercentage,
@@ -369,6 +348,31 @@ class PortalSettingsFormGeneralEdit extends Component {
                                     onChangeAction={this.handleInputChange}
                                     required={portalActive ? 'required' : ''}
                                     error={this.state.errors.newAtCooperativeLinkText}
+                                />
+                            </div>
+                        ) : null}
+
+                        <div className="row">
+                            <InputToggle
+                                label="Verwijderen via portaal toestaan"
+                                divSize={'col-sm-8'}
+                                name={'showAllowRequestForDelete'}
+                                value={showAllowRequestForDelete}
+                                onChangeAction={this.handleInputChange}
+                            />
+                        </div>
+
+                        {showAllowRequestForDelete ? (
+                            <div className="row">
+                                <InputText
+                                    label="Knoptekst voor verwijderen via portaal"
+                                    divSize={'col-sm-8'}
+                                    name={'allowRequestForDeleteButtonText'}
+                                    value={allowRequestForDeleteButtonText}
+                                    maxLength={50}
+                                    onChangeAction={this.handleInputChange}
+                                    required={portalActive ? 'required' : ''}
+                                    error={this.state.errors.allowRequestForDeleteButtonText}
                                 />
                             </div>
                         ) : null}
@@ -502,7 +506,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.defaultAdministrationId}
                             />
                         </div>
-
                     </PanelBody>
 
                     <PanelBody>

@@ -267,6 +267,13 @@ Route::namespace('Api')
 
         Route::get('contact-group/{contactGroup}/tasks', 'ContactGroup\ContactGroupController@tasks');
 
+        Route::get('cleanup/items', 'Cleanup\CleanupController@getCleanupItems');
+        Route::post('cleanup/item/{cooperationCleanupItem}', 'Cleanup\CleanupController@updateCleanupItem');
+        Route::get('cleanup/update-amounts/all', 'Cleanup\CleanupController@updateAmountsAll');
+        Route::get('cleanup/update-amounts/{cleanupType}', 'Cleanup\CleanupController@updateAmounts');
+
+        Route::get('cleanup/cleanup-items/{cleanupType}', 'Cleanup\CleanupController@cleanupItems');
+
         Route::get('task/grid/tasks', 'Task\TaskController@gridTask');
         Route::get('task/grid/notes', 'Task\TaskController@gridNote');
         Route::get('task/peek', 'Task\TaskController@peek');
@@ -690,10 +697,6 @@ Route::namespace('Api')
         Route::get('opportunity-status/jory', 'Opportunity\OpportunityStatusController@jory');
         Route::post('opportunity-status/{opportunityStatus}', 'Opportunity\OpportunityStatusController@update');
 
-        Route::get('setting', 'Setting\SettingController@get');
-        Route::get('setting/multiple', 'Setting\SettingController@multiple');
-        Route::post('setting', 'Setting\SettingController@store');
-
         Route::get('financial-overview/jory', 'FinancialOverview\FinancialOverviewController@jory');
         Route::post('financial-overview', 'FinancialOverview\FinancialOverviewController@store');
         Route::post('financial-overview/{financialOverview}', 'FinancialOverview\FinancialOverviewController@update');
@@ -721,14 +724,17 @@ Route::namespace('Api')
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');
         Route::post('financial-overview-post/{financialOverviewPost}/delete', 'FinancialOverview\FinancialOverviewPostController@deleteFinancialOverviewPost');
 
+        Route::get('portal-settings/jory', 'PortalSettings\PortalSettingsController@jory');
+        Route::post('portal-settings/{portalSettings}', 'PortalSettings\PortalSettingsController@update');
+
+        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
+        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
+
         Route::get('portal-settings-layout/jory', 'PortalSettingsLayout\PortalSettingsLayoutController@jory');
         Route::get('portal-settings-layout/default', 'PortalSettingsLayout\PortalSettingsLayoutController@getDefault');
         Route::post('portal-settings-layout', 'PortalSettingsLayout\PortalSettingsLayoutController@store');
         Route::post('portal-settings-layout/{portalSettingsLayout}', 'PortalSettingsLayout\PortalSettingsLayoutController@update');
         Route::post('portal-settings-layout/{portalSettingsLayout}/delete', 'PortalSettingsLayout\PortalSettingsLayoutController@destroy');
-
-        Route::get('portal-settings-dashboard/jory', 'PortalSettingsDashboard\PortalSettingsDashboardController@jory');
-        Route::post('portal-settings-dashboard/{portalSettingsDashboard}', 'PortalSettingsDashboard\PortalSettingsDashboardController@update');
 
         Route::get('portal-settings-dashboard-widget/jory', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@jory');
         Route::post('portal-settings-dashboard-widget', 'PortalSettingsDashboard\PortalSettingsDashboardWidgetController@store');
@@ -742,6 +748,9 @@ Route::namespace('Api')
         Route::post('cooperation-hoom-campaign', 'Cooperation\CooperationController@storeHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}', 'Cooperation\CooperationController@updateHoomCampaign');
         Route::post('cooperation-hoom-campaign/{cooperationHoomCampaign}/delete', 'Cooperation\CooperationController@destroyHoomCampaign');
+        Route::get('cooperation-cleanup-contacts-excluded-group', 'Cooperation\CooperationController@getExcludedGroups');
+        Route::post('cooperation-cleanup-contacts-excluded-group', 'Cooperation\CooperationController@storeCleanupContactsExcludedGroup');
+        Route::post('cooperation-cleanup-contacts-excluded-group/{excludedGroup}/delete', 'Cooperation\CooperationController@destroyCleanupContactsExcludedGroup');
 
         // Free fields general
         Route::get('free-fields-field/get-for-filter/{tableType}', 'FreeFields\FreeFieldsFieldController@getForFilter');

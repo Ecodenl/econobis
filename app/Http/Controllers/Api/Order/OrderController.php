@@ -253,6 +253,7 @@ class OrderController extends ApiController
         $product->ledger_id ?: $product->ledger_id = null;
         $product->cost_center_id = $productData['costCenterId'];
         $product->cost_center_id ?: $product->cost_center_id = null;
+        $product->cleanup_exception = $productData['cleanupException'];
 
         $priceHistory = new PriceHistory();
         $priceHistory->date_start = Carbon::today();
@@ -301,6 +302,7 @@ class OrderController extends ApiController
         $product->ledger_id ?: $product->ledger_id = null;
         $product->cost_center_id = $productData['costCenterId'];
         $product->cost_center_id ?: $product->cost_center_id = null;
+        $product->cleanup_exception = $productData['cleanupException'];
 
         $orderProductData = $request->input('orderProduct');
 

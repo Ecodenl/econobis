@@ -23,6 +23,7 @@ use App\Console\Commands\setIsCurrentSupplier;
 use Config;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Console\Commands\updateCleanupItems;
 
 //use App\Console\Commands\deleteFloatingAttachmentFiles;
 
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         processWorkflowEmailQuotationRequestStatus::class,
         checkWrongTwinfieldInvoices::class,
         contactGroupsContactsForReport::class,
+        updateCleanupItems::class,
     ];
 
     /**

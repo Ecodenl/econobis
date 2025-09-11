@@ -8,7 +8,11 @@ const DataCleanupListToolbar = props => {
         <div className="row">
             <div className="col-sm-1"></div>
             <div className="col-sm-2">
-                <a role="button" onClick={() => props.handleRefresh('all')} title={`herbereken alle op te schonen`}>
+                <a
+                    role="button"
+                    onClick={() => props.handleDataCleanupUpdateAmounts('all')}
+                    title={`herbereken alle op te schonen`}
+                >
                     <Icon size={14} icon={refresh} />
                 </a>
             </div>

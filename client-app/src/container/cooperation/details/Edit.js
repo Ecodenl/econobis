@@ -25,7 +25,14 @@ import CleanupItems from './cleanup-items/CleanupItems';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
 
-function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchSystemData, meDetails, handleRefresh }) {
+function CooperationDetailsFormEdit({
+    formData,
+    toggleEdit,
+    updateResult,
+    fetchSystemData,
+    meDetails,
+    // handleDataCleanupUpdateAmounts,
+}) {
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [staticContactGroups, setStaticContactGroups] = useState([]);
     const [mailboxAddresses, setMailboxAddresses] = useState([]);
@@ -216,8 +223,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 value={values.hoomKey}
                                 onChangeAction={handleChange}
                                 disabled={
-                                    meDetails.email !== "support@econobis.nl" &&
-                                    meDetails.email !== "software@xaris.nl"
+                                    meDetails.email !== 'support@econobis.nl' && meDetails.email !== 'software@xaris.nl'
                                 }
                             />
                         </div>
@@ -454,13 +460,21 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 value={values.cleanupEmail}
                                 onChangeAction={e => setFieldValue('cleanupEmail', e.target.checked)}
                             />
-                            <span className="form-group col-sm-6">
-                                <span className="form-group col-sm-12">
-                                    <a role="button" onClick={handleRefresh} title={`herbereken alle op te schonen`}>
-                                        <Icon size={14} icon={refresh} />
-                                    </a>
-                                </span>
-                            </span>
+                            {/*<span className="form-group col-sm-6">*/}
+                            {/*    <span className="form-group col-sm-12">*/}
+                            {/*        <a role="button" onClick={handleRefresh} title={`herbereken alle op te schonen`}>*/}
+                            {/*            <Icon size={14} icon={refresh} />*/}
+                            {/*        </a>*/}
+                            {/*    </span>*/}
+                            {/*</span>*/}
+                            {/*<ButtonText*/}
+                            {/*    loading={false}*/}
+                            {/*    loadText={'Herbepalen...'}*/}
+                            {/*    buttonText={'Opnieuw bepalen'}*/}
+                            {/*    onClickAction={handleDataCleanupUpdateAmounts}*/}
+                            {/*    type={'submit'}*/}
+                            {/*    value={'Submit'}*/}
+                            {/*/>{' '}*/}
                         </div>
                         <CleanupItems
                             cooperationId={formData.id}

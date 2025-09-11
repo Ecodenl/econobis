@@ -5,10 +5,7 @@ import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import { useFormik } from 'formik';
-import axios from 'axios';
 import CooperationDetailsAPI from '../../../../api/cooperation/CooperationDetailsAPI';
-import InputText from '../../../../components/form/InputText';
-import DataCleanupAPI from '../../../../api/data-cleanup/DataCleanupAPI';
 
 function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
     const formData = {
@@ -16,7 +13,7 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
         yearsForDelete: cleanupItem.yearsForDelete,
     };
 
-    const { values, handleChange, handleSubmit  } = useFormik({
+    const { values, handleChange, handleSubmit } = useFormik({
         initialValues: formData,
         onSubmit: values => {
             processSubmit(values);
@@ -38,7 +35,7 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
         }
 
         // Send form data
-        DataCleanupAPI.updateCleanupItem(cleanupItem.id, formData)
+        CooperationDetailsAPI.updateCleanupItem(cleanupItem.id, formData)
             .then(payload => {
                 payload.data.yearsForDelete = payload.data.years_for_delete;
                 updateResult(payload.data);
@@ -52,13 +49,6 @@ function CleanupItemEdit({ cleanupItem, cancelEdit, updateResult }) {
             <Panel className={'panel-grey'}>
                 <PanelBody>
                     <div className="row">
-                        <InputText
-                            label={'Naam'}
-                            size={'col-sm-6'}
-                            name={'name'}
-                            value={values.name}
-                            readOnly={true}
-                        />
                         <InputSelect
                             label={'Ouder dan'}
                             size={'col-sm-6'}

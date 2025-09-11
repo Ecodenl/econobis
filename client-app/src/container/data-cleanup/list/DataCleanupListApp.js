@@ -70,7 +70,7 @@ class DataCleanupListApp extends Component {
         });
     };
 
-    handleRefresh = cleanupType => {
+    handleDataCleanupUpdateAmounts = cleanupType => {
         // console.log('cleanupType: ' + cleanupType);
         DataCleanupAPI.updateAmounts(cleanupType)
             .then(() => {
@@ -111,7 +111,7 @@ class DataCleanupListApp extends Component {
                                 participationsWithoutStatusDefinitive: this.state.participationsWithoutStatusDefinitive,
                                 participationsFinished: this.state.participationsFinished,
                             }}
-                            handleRefresh={this.handleRefresh}
+                            handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
                             fetchCleanupData={this.fetchCleanupData}
                             isLoading={this.state.isLoading}
                         />
@@ -123,7 +123,7 @@ class DataCleanupListApp extends Component {
                                 incomingEmails: this.state.incomingEmails,
                                 outgoingEmails: this.state.outgoingEmails,
                             }}
-                            handleRefresh={this.handleRefresh}
+                            handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
                             fetchCleanupData={this.fetchCleanupData}
                             isLoading={this.state.isLoading}
                         />
@@ -135,7 +135,7 @@ class DataCleanupListApp extends Component {
                                 contactsToDelete: this.state.contactsToDelete,
                                 contactsSoftDeleted: this.state.contactsSoftDeleted,
                             }}
-                            handleRefresh={this.handleRefresh}
+                            handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
                             fetchCleanupData={this.fetchCleanupData}
                             isLoading={this.state.isLoading}
                         />
@@ -150,7 +150,7 @@ class DataCleanupListApp extends Component {
                 <PanelBody>
                     <div className="col-md-12 margin-10-top">
                         <DataCleanupListToolbar
-                            handleRefresh={this.handleRefresh}
+                            handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
                             title={dataCleanupTypeText}
                             setLoading={this.setLoading}
                         />

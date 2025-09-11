@@ -37,20 +37,20 @@ export default {
         return getAxiosInstance().post(requestUrl);
     },
 
+    updateCleanupItem: (cleanupItemId, payload) => {
+        const requestUrl = `${getApiUrl()}/api/cleanup/item/${cleanupItemId}`;
+
+        return getAxiosInstance().post(requestUrl, payload);
+    },
+
     getExcludedGroups: function() {
-        const requestUrl = `cooperation-cleanup-contacts-excluded-group`;
+        const requestUrl = `cooperation-cleanup-contacts-excluded-groups`;
 
         return getAxiosInstance().get(requestUrl);
     },
 
     createCleanupContactsExcludedGroup: payload => {
         const requestUrl = `cooperation-cleanup-contacts-excluded-group`;
-
-        return getAxiosInstance().post(requestUrl, payload);
-    },
-
-    updateCleanupContactsExcludedGroup: (hoomCampaignId, payload) => {
-        const requestUrl = `cooperation-cleanup-contacts-excluded-group/${hoomCampaignId}`;
 
         return getAxiosInstance().post(requestUrl, payload);
     },

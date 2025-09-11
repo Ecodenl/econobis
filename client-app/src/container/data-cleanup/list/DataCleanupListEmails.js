@@ -37,7 +37,7 @@ class DataCleanupListItems extends Component {
     // Confirm action based on type
     confirmCleanup = () => {
         const { modalCleanupType } = this.state;
-        DataCleanupAPI.cleanupItems(modalCleanupType)
+        DataCleanupAPI.executeCleanupItems(modalCleanupType)
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
@@ -106,8 +106,8 @@ class DataCleanupListItems extends Component {
                             <th className="col-sm-4">Onderdeel</th>
                             <th className="col-sm-1">Items</th>
                             <th className="col-sm-1">Acties</th>
-                            <th className="col-sm-2">Laatst opgeschoond</th>
                             <th className="col-sm-2">Laatst bepaald</th>
+                            <th className="col-sm-2">Laatst opgeschoond</th>
                             <th className="col-sm-1"></th>
                         </tr>
                     </thead>
@@ -132,22 +132,22 @@ class DataCleanupListItems extends Component {
                                     <td className="col-sm-1">
                                         <a
                                             role="button"
+                                            onClick={() => this.props.handleDataCleanupUpdateAmounts(item)}
+                                            title={`herbereken op te schonen ${data[item]?.name}`}
+                                        >
+                                            <Icon size={14} icon={refresh} />
+                                        </a>
+                                        &nbsp;&nbsp;&nbsp;
+                                        <a
+                                            role="button"
                                             onClick={() => this.openModal(item)}
                                             title={`verwijder ${data[item]?.name}`}
                                         >
                                             <Icon size={14} icon={trash} />
                                         </a>
-                                        &nbsp;&nbsp;&nbsp;
-                                        <a
-                                            role="button"
-                                            onClick={() => this.props.handleRefresh(item)}
-                                            title={`herbereken op te schonen ${data[item]?.name}`}
-                                        >
-                                            <Icon size={14} icon={refresh} />
-                                        </a>
                                     </td>
-                                    <td className="col-sm-2">{data[item]?.date_cleaned_up}</td>
                                     <td className="col-sm-2">{data[item]?.date_determined}</td>
+                                    <td className="col-sm-2">{data[item]?.date_cleaned_up}</td>
                                     <td className="col-sm-1"></td>
                                 </tr>
                             ))}

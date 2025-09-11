@@ -8,10 +8,11 @@ import { connect } from 'react-redux';
 import HoomCampaigns from './hoom-campaigns/HoomCampaigns';
 import CleanupContactsExcludedGroups from './cleanup-contacts-excluded-groups/CleanupContactsExcludedGroups';
 import CleanupItems from './cleanup-items/CleanupItems';
-import Icon from 'react-icons-kit';
-import { refresh } from 'react-icons-kit/fa/refresh';
+// import Icon from 'react-icons-kit';
+// import { refresh } from 'react-icons-kit/fa/refresh';
 
-function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRefresh, refreshing }) {
+// function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRefresh, refreshing }) {
+function CooperationDetailsFormView({ formData, toggleEdit, meDetails, refreshing }) {
     // Disable click-to-edit while refreshing
     const handleSectionClick = e => {
         if (refreshing) {
@@ -181,19 +182,20 @@ function CooperationDetailsFormView({ formData, toggleEdit, meDetails, handleRef
                             }
                             value={formData.cleanupEmail ? 'Ja' : 'Nee'}
                         />
-                        <span className="form-group col-sm-6">
-                            <span className="form-group col-sm-12">
-                                <a
-                                    role="button"
-                                    onClick={refreshing ? e => e.preventDefault() : handleRefresh}
-                                    title={`herbereken alle op te schonen`}
-                                    style={refreshing ? { pointerEvents: 'none', opacity: 0.5 } : {}}
-                                >
-                                    <Icon size={14} icon={refresh} />
-                                    {refreshing && <span style={{ marginLeft: 8 }}>Bezig...</span>}
-                                </a>
-                            </span>
-                        </span>
+                        {/*<span className="form-group col-sm-6">*/}
+                        {/*    <span className="form-group col-sm-12">*/}
+                        {/*        <a*/}
+                        {/*            role="button"*/}
+                        {/*            onClick={refreshing ? e => e.preventDefault() : handleRefresh}*/}
+                        {/*            title={`herbereken alle op te schonen`}*/}
+                        {/*            style={refreshing ? { pointerEvents: 'none', opacity: 0.5 } : {}}*/}
+                        {/*        >*/}
+                        {/*            Herberekenen*/}
+                        {/*            /!*<Icon size={14} icon={refresh} />*!/*/}
+                        {/*            {refreshing && <span style={{ marginLeft: 8 }}>Bezig...</span>}*/}
+                        {/*        </a>*/}
+                        {/*    </span>*/}
+                        {/*</span>*/}
                     </div>
 
                     <CleanupItems

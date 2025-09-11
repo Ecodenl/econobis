@@ -130,8 +130,8 @@ class DataCleanupListContacts extends Component {
                             <th className="col-sm-4">Onderdeel</th>
                             <th className="col-sm-1">Items</th>
                             <th className="col-sm-1">Acties</th>
-                            <th className="col-sm-2">Laatst opgeschoond</th>
                             <th className="col-sm-2">Laatst bepaald</th>
+                            <th className="col-sm-2">Laatst opgeschoond</th>
                             <th className="col-sm-1"></th>
                         </tr>
                     </thead>
@@ -166,7 +166,7 @@ class DataCleanupListContacts extends Component {
                                         &nbsp;&nbsp;&nbsp;
                                         <a
                                             role="button"
-                                            onClick={() => this.props.handleRefresh(item)}
+                                            onClick={() => this.props.handleDataCleanupUpdateAmounts(item)}
                                             title={`herbereken op te schonen ${data[item]?.name}`}
                                         >
                                             <Icon size={14} icon={refresh} />
@@ -230,6 +230,7 @@ class DataCleanupListContacts extends Component {
                                     <a role="button" onClick={() => this.openModal('contacts')}>
                                         <Icon size={14} icon={trash} />
                                     </a>
+                                    &nbsp;&nbsp;&nbsp;
                                 </td>
                                 {/*<td className="col-sm-2">{contactsLastCleanupDate}</td>*/}
                                 <td>@@nog</td>

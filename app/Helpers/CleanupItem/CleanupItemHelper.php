@@ -25,6 +25,25 @@ use Illuminate\Support\Facades\Log;
 
 class CleanupItemHelper
 {
+    public function updateAmounts($cleanupType = null)
+    {
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+
+        if(!$cleanupType) {
+            return false;
+        }
+
+        $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
+
+        foreach($cleanupItems as $cleanupItem) {
+            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
+            $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
+        }
+
+        return true;
+    }
+
     public function updateAmountsAll()
     {
         $dateToday = Carbon::now();
@@ -50,27 +69,6 @@ class CleanupItemHelper
 
         return true;
 
-    }
-    public function updateAmounts($cleanupType = null)
-    {
-        $dateToday = Carbon::now();
-        $cooperation = Cooperation::first();
-
-        Log::info('cleanupType');
-        Log::info($cleanupType);
-
-        if(!$cleanupType) {
-            return false;
-        }
-
-        $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
-
-        foreach($cleanupItems as $cleanupItem) {
-            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
-            $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
-        }
-
-        return true;
     }
 
     /**

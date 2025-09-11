@@ -7,7 +7,6 @@ import CooperationDetailsFormEdit from './Edit';
 import CooperationDetailsFormView from './View';
 import { connect } from 'react-redux';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
-import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 
 // todo WM: opschonen inspection* velden
 const INITIAL_STATE = {
@@ -125,9 +124,9 @@ function CooperationDetailsApp({ permissions }) {
         });
     }
 
-    function handleRefresh() {
-        DataCleanupAPI.updateAmounts('all');
-    }
+    // function handleDataCleanupUpdateAmounts() {
+    //     DataCleanupAPI.updateAmounts('all');
+    // }
 
     return (
         <div className="row">
@@ -153,13 +152,13 @@ function CooperationDetailsApp({ permissions }) {
                                         formData={state.result}
                                         toggleEdit={toggleEdit}
                                         updateResult={updateResult}
-                                        handleRefresh={handleRefresh}
+                                        // handleDataCleanupUpdateAmounts={handleDataCleanupUpdateAmounts}
                                     />
                                 ) : (
                                     <CooperationDetailsFormView
                                         formData={state.result}
                                         toggleEdit={toggleEdit}
-                                        handleRefresh={handleRefresh}
+                                        // handleDataCleanupUpdateAmounts={handleDataCleanupUpdateAmounts}
                                     />
                                 )}
                             </>

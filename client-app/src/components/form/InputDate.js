@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import { DayPicker } from 'react-day-picker';
+import { nl } from 'react-day-picker/locale';
 import moment from 'moment';
+import 'moment/locale/nl';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
@@ -11,55 +12,104 @@ moment.locale('nl');
 class InputDate extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             errorDateFormat: false,
+            isOpen: false,
         };
+        this.inputRef = React.createRef();
+        this.popoverRef = React.createRef();
     }
 
+    componentDidMount() {
+        // klik buiten popover sluit hem
+        document.addEventListener('mousedown', this.handleDocumentClick);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('mousedown', this.handleDocumentClick);
+    }
+
+    handleDocumentClick = e => {
+        if (!this.state.isOpen) return;
+        const pop = this.popoverRef.current;
+        const inp = this.inputRef.current;
+        if (pop && !pop.contains(e.target) && inp && !inp.contains(e.target)) {
+            this.setState({ isOpen: false });
+        }
+    };
+
+    openCalendar = () => {
+        if (!this.props.readOnly) this.setState({ isOpen: true });
+    };
+
     validateDate = event => {
-        const date = moment(event.target.value, 'DD-MM-YYYY', true);
+        const str = event.target.value;
+        const date = moment(str, 'DD-MM-YYYY', true);
         let errorDateFormat = false;
 
-        if (!date.isValid() && event.target.value !== '') {
+        if (!date.isValid() && str !== '') {
             errorDateFormat = true;
         }
 
-        if (this.props.disabledBefore) {
-            if (date.isBefore(this.props.disabledBefore)) {
-                errorDateFormat = true;
-            }
-        }
-
-        if (this.props.disabledAfter) {
-            if (date.isAfter(this.props.disabledAfter)) {
-                errorDateFormat = true;
-            }
+        const { disabledBefore, disabledAfter } = this.props;
+        if (!errorDateFormat && str !== '') {
+            if (disabledBefore && date.isBefore(disabledBefore)) errorDateFormat = true;
+            if (disabledAfter && date.isAfter(disabledAfter)) errorDateFormat = true;
         }
 
         this.setState({ errorDateFormat });
     };
 
-    onDateChange = date => {
-        // Convert date in correct value for database
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
+    onInputChange = e => {
+        // alleen visueel; database-waarde wordt in onDateSelect/blur gezet via onChangeAction
+        const str = e.target.value;
+        // live validatie optioneel; we laten validateDate op blur doen
+        // maar als je direct validatie wil, uncomment:
+        // this.validateDate(e);
+        // Als je bij direct typen ook onChangeAction wil aanroepen (wanneer geldig), kun je dat hier doen.
+    };
+
+    onInputBlur = e => {
+        this.validateDate(e);
+        const { onChangeAction, name, disabledBefore, disabledAfter } = this.props;
+
+        const str = e.target.value;
+        const date = moment(str, 'DD-MM-YYYY', true);
+
+        if (date.isValid()) {
+            let invalid = false;
+            if (disabledBefore && date.isBefore(disabledBefore)) invalid = true;
+            if (disabledAfter && date.isAfter(disabledAfter)) invalid = true;
+
+            if (!invalid) {
+                const formattedForDb = date.format('Y-MM-DD');
+                onChangeAction && onChangeAction(formattedForDb, name);
+            }
+        }
+    };
+
+    onDateSelect = date => {
+        const { onChangeAction, name, disabledBefore, disabledAfter } = this.props;
+
         let errorDateFormat = false;
+        if (date) {
+            const m = moment(date);
+            if (disabledBefore && m.isBefore(disabledBefore)) errorDateFormat = true;
+            if (disabledAfter && m.isAfter(disabledAfter)) errorDateFormat = true;
 
-        if (formattedDate && this.props.disabledBefore) {
-            if (moment(formattedDate).isBefore(this.props.disabledBefore)) {
-                errorDateFormat = true;
+            const formattedForDb = m.format('Y-MM-DD');
+            if (!errorDateFormat) {
+                onChangeAction && onChangeAction(formattedForDb, name);
+                // input tonen als DD-MM-YYYY
+                if (this.inputRef.current) {
+                    this.inputRef.current.value = m.format('DD-MM-YYYY');
+                }
+                this.setState({ errorDateFormat: false, isOpen: false });
+                return;
             }
         }
 
-        if (formattedDate && this.props.disabledAfter) {
-            if (moment(formattedDate).isAfter(this.props.disabledAfter)) {
-                errorDateFormat = true;
-            }
-        }
-
-        this.setState({ errorDateFormat });
-
-        !errorDateFormat && this.props.onChangeAction(formattedDate, this.props.name);
+        this.setState({ errorDateFormat: true });
     };
 
     render() {
@@ -81,47 +131,69 @@ class InputDate extends Component {
             placeholder,
         } = this.props;
 
-        const formattedDate = value ? moment(value).format('L') : '';
-        let disabledDays = {};
-        if (disabledBefore) disabledDays.before = new Date(disabledBefore);
-        if (disabledAfter) disabledDays.after = new Date(disabledAfter);
+        // waarde uit DB ('Y-MM-DD' of Date) → tonen als 'DD-MM-YYYY'
+        const formattedDate = value ? moment(value).format('DD-MM-YYYY') : '';
+
+        // DayPicker v9: disabled = { before: Date, after: Date }
+        const disabled = {};
+        if (disabledBefore) disabled.before = new Date(disabledBefore);
+        if (disabledAfter) disabled.after = new Date(disabledAfter);
+
+        // v9: showWeekNumber direct als prop; weekstart via locale (nl = maandag)
+        const dayPicker = (
+            <div
+                ref={this.popoverRef}
+                style={{
+                    position: 'absolute',
+                    zIndex: 1000,
+                    background: '#fff',
+                    boxShadow: '0 6px 24px rgba(0,0,0,.2)',
+                    borderRadius: 8,
+                    marginTop: 6,
+                }}
+            >
+                <DayPicker
+                    mode="single"
+                    locale={nl}
+                    showWeekNumber
+                    selected={formattedDate ? moment(formattedDate, 'DD-MM-YYYY').toDate() : undefined}
+                    onSelect={this.onDateSelect}
+                    disabled={disabled}
+                />
+            </div>
+        );
 
         return (
-            <div className={`form-group ${divSize}`}>
+            <div className={`form-group ${divSize}`} style={{ position: 'relative' }}>
                 <div>
                     <label htmlFor={id} className={`col-sm-6 ${required}`}>
                         {label}
                     </label>
                 </div>
-                <div className={`${size}`}>
-                    <DayPickerInput
+                <div className={size}>
+                    <input
+                        ref={this.inputRef}
                         id={id}
-                        value={formattedDate}
-                        formatDate={formatDate}
-                        parseDate={parseDate}
-                        onDayChange={this.onDateChange}
-                        dayPickerProps={{
-                            showWeekNumbers: true,
-                            locale: 'nl',
-                            firstDayOfWeek: 1,
-                            localeUtils: MomentLocaleUtils,
-                            disabledDays: disabledDays,
-                        }}
-                        inputProps={{
-                            className:
-                                `form-control input-sm ${className}` +
-                                (this.state.errorDateFormat || error ? ' has-error' : ''),
-                            name: name,
-                            onBlur: this.validateDate,
-                            autoComplete: 'off',
-                            readOnly: readOnly,
-                            disabled: readOnly,
-                        }}
-                        required={required}
+                        name={name}
+                        type="text"
+                        className={
+                            `form-control input-sm ${className}` +
+                            (this.state.errorDateFormat || error ? ' has-error' : '')
+                        }
+                        placeholder={placeholder || 'DD-MM-YYYY'}
+                        defaultValue={formattedDate}
+                        onFocus={this.openCalendar}
+                        onClick={this.openCalendar}
+                        onChange={this.onInputChange}
+                        onBlur={this.onInputBlur}
+                        autoComplete="off"
                         readOnly={readOnly}
-                        placeholder={placeholder}
+                        disabled={readOnly}
+                        required={!!required}
                     />
+                    {this.state.isOpen && dayPicker}
                 </div>
+
                 {textToolTip && (
                     <div className="col-sm-1">
                         <FaInfoCircle
@@ -134,14 +206,18 @@ class InputDate extends Component {
                             id={`tooltip-${name}`}
                             effect="float"
                             place="right"
-                            multiline={true}
+                            multiline
                             aria-haspopup="true"
                         />
                     </div>
                 )}
-                {error && (
+
+                {(error || this.state.errorDateFormat) && (
                     <div className="col-sm-offset-6 col-sm-6">
-                        <span className="has-error-message"> {errorMessage}</span>
+                        <span className="has-error-message">
+                            {' '}
+                            {error ? errorMessage : 'Ongeldige datum of buiten toegestane range.'}
+                        </span>
                     </div>
                 )}
             </div>
@@ -175,11 +251,11 @@ InputDate.propTypes = {
     textToolTip: PropTypes.string,
     value: PropTypes.oneOfType([PropTypes.string, PropTypes.object]),
     onChangeAction: PropTypes.func,
-    required: PropTypes.string,
+    required: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
     readOnly: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    disabledBefore: PropTypes.string,
+    disabledBefore: PropTypes.string, // 'YYYY-MM-DD' zoals in je oude code
     disabledAfter: PropTypes.string,
     placeholder: PropTypes.string,
 };

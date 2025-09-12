@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import TimePicker from 'react-bootstrap-time-picker';
 import moment from 'moment';
-import DayPickerInput from 'react-day-picker/DayPickerInput';
-import MomentLocaleUtils, { formatDate, parseDate } from 'react-day-picker/moment';
+import { DayPicker } from 'react-day-picker';
+import { nl } from 'react-day-picker/locale';
+import 'moment/locale/nl';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
@@ -34,80 +35,101 @@ const InputDateTime = props => {
     } = props;
 
     const [errorDateFormat, setErrorDateFormat] = useState(false);
+    const [isOpen, setIsOpen] = useState(false);
+    const inputRef = useRef(null);
+    const popoverRef = useRef(null);
 
-    const validateDate = event => {
-        const date = moment(event.target.value, 'DD-MM-YYYY', true);
-        let errorDateFormat = false;
+    // init locale
+    moment.locale('nl');
 
-        if (!date.isValid() && event.target.value !== '') {
-            errorDateFormat = true;
-        }
-
-        if (disabledBefore) {
-            if (date.isBefore(disabledBefore)) {
-                errorDateFormat = true;
-            }
-        }
-
-        if (disabledAfter) {
-            if (date.isAfter(disabledAfter)) {
-                errorDateFormat = true;
-            }
-        }
-
-        setErrorDateFormat(errorDateFormat);
-    };
-
-    const onDateChange = date => {
-        // Convert date in correct value for database
-        const formattedDate = date ? moment(date).format('Y-MM-DD') : '';
-        let errorDateFormat = false;
-
-        if (formattedDate && disabledBefore) {
-            if (moment(formattedDate).isBefore(disabledBefore)) {
-                errorDateFormat = true;
-            }
-        }
-
-        if (formattedDate && disabledAfter) {
-            if (moment(formattedDate).isAfter(disabledAfter)) {
-                errorDateFormat = true;
-            }
-        }
-
-        setErrorDateFormat(errorDateFormat);
-
-        !errorDateFormat && onChangeActionDate(formattedDate, name);
-    };
-
-    const formattedDate = value ? moment(value).format('L') : '';
-    const formattedTime = value ? moment(value).format('HH:mm') : '';
-
-    const [disabledDays, setDisabledDays] = useState({
-        before: disabledBefore ? new Date(disabledBefore) : '',
-        after: disabledAfter ? new Date(disabledAfter) : '',
-    });
-
-    const onTimeChange = timeInSeconds => {
-        // Workaround for converting seconds to HH:mm:ss
-        const formattedTime = moment('1900-01-01 00:00:00')
-            .add(timeInSeconds, 'seconds')
-            .format('HH:mm');
-        onChangeActionTime(formattedTime, name);
-    };
-
+    // init checkbox (onbekend)
     const [nullableChecked, setNullableChecked] = useState(value == '00:00');
 
-    const handleChangeNullableChecked = event => {
-        const target = event.target;
-        const changedValue = target.type === 'checkbox' ? target.checked : target.value;
+    // map disabledBefore/After naar DayPicker v9
+    const disabled = {};
+    if (disabledBefore) disabled.before = new Date(disabledBefore);
+    if (disabledAfter) disabled.after = new Date(disabledAfter);
 
-        setNullableChecked(changedValue);
-        if (changedValue) {
-            onChangeActionTime('00:00', name);
-        } else {
-            onChangeActionTime('08:00', name);
+    const formattedDate = value ? moment(value).format('DD-MM-YYYY') : '';
+    const formattedTime = value ? moment(value).format('HH:mm') : '';
+
+    useEffect(() => {
+        const onDocClick = e => {
+            if (!isOpen) return;
+            const pop = popoverRef.current;
+            const inp = inputRef.current;
+            if (pop && !pop.contains(e.target) && inp && !inp.contains(e.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', onDocClick);
+        return () => document.removeEventListener('mousedown', onDocClick);
+    }, [isOpen]);
+
+    const openCalendar = () => {
+        if (!readOnly) setIsOpen(true);
+    };
+
+    const validateDate = event => {
+        const str = event.target.value;
+        const date = moment(str, 'DD-MM-YYYY', true);
+        let invalid = false;
+
+        if (!date.isValid() && str !== '') invalid = true;
+        if (!invalid && str !== '') {
+            if (disabledBefore && date.isBefore(disabledBefore)) invalid = true;
+            if (disabledAfter && date.isAfter(disabledAfter)) invalid = true;
         }
+        setErrorDateFormat(invalid);
+    };
+
+    const onInputBlur = e => {
+        validateDate(e);
+        const str = e.target.value;
+        const date = moment(str, 'DD-MM-YYYY', true);
+
+        if (date.isValid()) {
+            let invalid = false;
+            if (disabledBefore && date.isBefore(disabledBefore)) invalid = true;
+            if (disabledAfter && date.isAfter(disabledAfter)) invalid = true;
+
+            if (!invalid) {
+                onChangeActionDate && onChangeActionDate(date.format('Y-MM-DD'), name);
+            }
+        }
+    };
+
+    const onDateSelect = date => {
+        if (!date) {
+            setErrorDateFormat(false);
+            return;
+        }
+        const m = moment(date);
+        let invalid = false;
+        if (disabledBefore && m.isBefore(disabledBefore)) invalid = true;
+        if (disabledAfter && m.isAfter(disabledAfter)) invalid = true;
+
+        if (!invalid) {
+            onChangeActionDate && onChangeActionDate(m.format('Y-MM-DD'), name);
+            if (inputRef.current) inputRef.current.value = m.format('DD-MM-YYYY');
+            setErrorDateFormat(false);
+            setIsOpen(false);
+        } else {
+            setErrorDateFormat(true);
+        }
+    };
+
+    const onTimeChange = timeInSeconds => {
+        const hhmm = moment('1900-01-01 00:00:00')
+            .add(timeInSeconds, 'seconds')
+            .format('HH:mm');
+        onChangeActionTime && onChangeActionTime(hhmm, name);
+    };
+
+    const handleChangeNullableChecked = e => {
+        const checked = e.target.checked;
+        setNullableChecked(checked);
+        onChangeActionTime && onChangeActionTime(checked ? '00:00' : '08:00', name);
     };
 
     return (
@@ -115,45 +137,68 @@ const InputDateTime = props => {
             <label htmlFor={id} className={`col-sm-6 ${required}`}>
                 {label}
             </label>
-            <div className={`${sizeDate}`}>
-                <DayPickerInput
+
+            {/* Datum */}
+            <div className={sizeDate} style={{ position: 'relative' }}>
+                <input
+                    ref={inputRef}
                     id={id}
-                    value={formattedDate}
-                    formatDate={formatDate}
-                    parseDate={parseDate}
-                    onDayChange={onDateChange}
-                    dayPickerProps={{
-                        showWeekNumbers: true,
-                        locale: 'nl',
-                        firstDayOfWeek: 1,
-                        localeUtils: MomentLocaleUtils,
-                        disabledDays: disabledDays,
-                    }}
-                    inputProps={{
-                        className:
-                            `form-control input-sm ${className}` + (errorDateFormat || error ? ' has-error' : ''),
-                        name: name,
-                        onBlur: validateDate,
-                        autoComplete: 'off',
-                        readOnly: readOnly,
-                        disabled: readOnly,
-                    }}
-                    required={required}
+                    name={name}
+                    type="text"
+                    className={`form-control input-sm ${className}${errorDateFormat || error ? ' has-error' : ''}`}
+                    placeholder=""
+                    defaultValue={formattedDate}
+                    onFocus={openCalendar}
+                    onClick={openCalendar}
+                    onBlur={onInputBlur}
+                    autoComplete="off"
                     readOnly={readOnly}
-                    placeholder={''}
+                    disabled={readOnly}
+                    required={!!required}
                 />
+                {isOpen && (
+                    <div
+                        ref={popoverRef}
+                        style={{
+                            position: 'absolute',
+                            zIndex: 1000,
+                            background: '#fff',
+                            boxShadow: '0 6px 24px rgba(0,0,0,.2)',
+                            borderRadius: 8,
+                            marginTop: 6,
+                        }}
+                    >
+                        <DayPicker
+                            mode="single"
+                            locale={nl}
+                            showWeekNumber
+                            selected={formattedDate ? moment(formattedDate, 'DD-MM-YYYY').toDate() : undefined}
+                            onSelect={onDateSelect}
+                            disabled={disabled}
+                        />
+                    </div>
+                )}
             </div>
-            <div className={`${sizeTime}`}>
+
+            {/* Tijd */}
+            <div className={sizeTime}>
+                {nullable && (
+                    <label style={{ display: 'block', marginBottom: 6 }}>
+                        <input
+                            type="checkbox"
+                            name="nullableChecked"
+                            checked={nullableChecked}
+                            onChange={handleChangeNullableChecked}
+                            title={nullableChecked ? 'Vink uit: tijdstip zetten' : 'Vink aan: tijdstip onbekend'}
+                        />{' '}
+                        {nullableLabel}
+                    </label>
+                )}
+
                 {nullableChecked ? (
                     <span>Onbekend</span>
                 ) : readOnly ? (
-                    <input
-                        name={name}
-                        value={formattedTime}
-                        className={'form-control input-sm'}
-                        readOnly={true}
-                        disabled={true}
-                    />
+                    <input name={name} value={formattedTime} className="form-control input-sm" readOnly disabled />
                 ) : (
                     <TimePicker
                         name={name}
@@ -163,47 +208,33 @@ const InputDateTime = props => {
                         end={end}
                         step={step}
                         format={24}
-                        className={'input-sm'}
+                        className="input-sm"
                     />
                 )}
             </div>
-            <div className={'col-sm-1'}>
-                {nullable ? (
-                    <label>
-                        <input
-                            type={'checkbox'}
-                            name={'nullableChecked'}
-                            value={true}
-                            title={nullableChecked ? 'Vink uit: tijdstip zetten' : 'Vink aan: tijdstip onbekend'}
-                            checked={nullableChecked}
-                            onChange={handleChangeNullableChecked}
-                        />
-                        &nbsp;{nullableLabel}
-                    </label>
-                ) : (
-                    ''
-                )}
+
+            {/* Tooltip + fouten */}
+            <div className="col-sm-1">
                 {textToolTip && (
                     <>
-                        <FaInfoCircle
-                            color={'blue'}
-                            size={'15px'}
-                            data-tip={textToolTip}
-                            data-for={`tooltip-${name}`}
-                        />
+                        <FaInfoCircle color="blue" size="15px" data-tip={textToolTip} data-for={`tooltip-${name}`} />
                         <ReactTooltip
                             id={`tooltip-${name}`}
                             effect="float"
                             place="right"
-                            multiline={true}
+                            multiline
                             aria-haspopup="true"
                         />
                     </>
                 )}
             </div>
-            {error && (
+
+            {(error || errorDateFormat) && (
                 <div className="col-sm-offset-6 col-sm-6">
-                    <span className="has-error-message"> {errorMessage}</span>
+                    <span className="has-error-message">
+                        {' '}
+                        {error ? errorMessage : 'Ongeldige datum of buiten toegestane range.'}
+                    </span>
                 </div>
             )}
         </div>
@@ -250,7 +281,7 @@ InputDateTime.propTypes = {
     textToolTip: PropTypes.string,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    disabledBefore: PropTypes.string,
+    disabledBefore: PropTypes.string, // 'YYYY-MM-DD'
     disabledAfter: PropTypes.string,
     nullable: PropTypes.bool,
     nullableLabel: PropTypes.string,

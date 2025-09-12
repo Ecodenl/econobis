@@ -1,8 +1,8 @@
 import React, { useState, useEffect, Suspense } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Outlet } from 'react-router-dom';
-import BlockUi from 'react-block-ui';
-import 'react-block-ui/style.css';
+import BlockUi from '@availity/block-ui';
+import '@availity/block-ui/dist/index.css';
 import { fetchMeDetails } from '../../actions/general/MeDetailsActions';
 import { fetchSystemData } from '../../actions/general/SystemDataActions';
 import LoadingPage from './LoadingPage';

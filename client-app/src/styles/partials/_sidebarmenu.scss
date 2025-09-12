@@ -1,99 +1,107 @@
-/* ---------------------------------------
-   link-styling die je al had (laten staan)
----------------------------------------- */
-.sidebar-link {
-  text-overflow: ellipsis;
-  width: 200px;
-  white-space: nowrap;
-  overflow: hidden;
-  position: absolute;
-  left: 12px;
-  margin-top: -12px;
-}
+/* ===================================================
+   _sidebarmenu.scss – voor @trendmicro/react-sidenav
+   =================================================== */
 
-.sidebar-link-header {
-  padding-left: 4em;
-  padding-right: 8em;
-  margin-left: -4em;
-  margin-right: -8em;
-}
-
+/* Basis link-styling die je al had */
 .sidebar-link,
 .sidebar-link-header {
   color: #fff;
+  text-decoration: none;
+  display: inline-block;
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
   &:hover,
-  &:focus { color: #fff; text-decoration: none; }
+  &:focus {
+    color: #fff;
+    text-decoration: none;
+  }
 }
 
-.sidebar__alert { color: $brand-quinary; font-weight: bold; }
+.sidebar__alert {
+  color: $brand-quinary;
+  font-weight: bold;
+}
 
 /* ---------------------------------------
-   basis kleuren als variabelen
+   Basiskleuren als variabelen
 ---------------------------------------- */
-$eco-sidenav-bg: #27AE60;
-$eco-sidenav-fg: #fff;
+$eco-sidenav-bg: #27AE60;   // groen
+$eco-sidenav-fg: #fff;      // tekst wit
 $eco-sidenav-hover-bg: #F1EFF0;
 
-$financial-bg: #e5e5e5;
+$financial-bg: #e5e5e5;     // lichtgrijs
 $financial-fg: $brand-primary;
 
 /* ---------------------------------------
-   algemene SideNav (gebruik className="eco-sidenav")
+   Algemene SideNav (className="eco-sidenav")
 ---------------------------------------- */
+/* ---- Algemene eco sidenav ---- */
 .eco-sidenav {
   width: 240px;
-  background-color: $eco-sidenav-bg;
-  color: $eco-sidenav-fg;
+  background-color: $brand-primary; // #30815f
+  color: #fff;
 
-  /* tekst/links binnen de sidenav */
+  /* Tekst */
+  [class*="sidenav---navtext---"],
+  [class*="sidenav---navtext---"] *,
+  a,
   .sidebar-link,
-  .sidebar-link-header,
-  .financial-tree-link,
-  .financial-tree-link-header,
-  .send-invoices-list-link,
-  .send-invoices-list-link-error {
-    color: $eco-sidenav-fg;
+  .sidebar-link-header {
+    color: #fff !important;
     text-decoration: none;
-    &:hover, &:focus { color: $eco-sidenav-fg; text-decoration: none; }
   }
 
-  /* geselecteerd item — gebruik contains zodat hash-classes geen probleem zijn */
-  [class*="sidenav---navitem---selected"] {
-    background-color: $eco-sidenav-bg !important;
-    color: $eco-sidenav-fg !important;
-  }
-
-  /* hover op items */
-  [class*="sidenav---navitem---"]:hover {
-    background-color: $eco-sidenav-hover-bg !important;
-    color: #000 !important;
-  }
-
-  /* iconen in items */
+  /* Iconen */
   [class*="sidenav---navicon---"] {
-    color: $eco-sidenav-fg !important;
+    color: #fff !important;
+  }
+
+  /* Selected */
+  [class*="sidenav---navitem---selected"] {
+    background-color: darken($brand-primary, 8%) !important;
+    color: #fff !important;
+  }
+
+  /* Hover */
+  [class*="sidenav---navitem---"]:hover {
+    background-color: lighten($brand-primary, 5%) !important;
+    color: #fff !important;
   }
 }
 
-/* ---------------------------------------
-   financiële variant (andere kleuren)
-   gebruik wrapper .financial-tree-sidebar-menu
----------------------------------------- */
+/* ---- Variant voor financial sidebar ---- */
 .financial-tree-sidebar-menu .eco-sidenav {
-  background-color: $financial-bg;
-  color: $financial-fg;
+  background-color: #e5e5e5;
+  color: $brand-primary;
+
+  [class*="sidenav---navtext---"],
+  [class*="sidenav---navtext---"] *,
+  a {
+    color: $brand-primary !important;
+  }
+
+  [class*="sidenav---navicon---"] {
+    color: $brand-primary !important;
+  }
 
   [class*="sidenav---navitem---selected"] {
-    background-color: $financial-bg !important;
-    color: $financial-fg !important;
+    background-color: darken(#e5e5e5, 5%) !important;
+    color: $brand-primary !important;
   }
 
   [class*="sidenav---navitem---"]:hover {
     background-color: #F1EFF0 !important;
-    color: $financial-fg !important;
+    color: $brand-primary !important;
   }
-
-  [class*="sidenav---navicon---"] {
-    color: $financial-fg !important;
-  }
+}
+/* ---------------------------------------
+   Tekst-blok styling voor leesbaarheid
+---------------------------------------- */
+.eco-sidenav [class*="sidenav---navtext---"] {
+  display: block;
+  padding: 8px 12px;
+  line-height: 1.3;
 }

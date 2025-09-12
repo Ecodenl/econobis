@@ -6,8 +6,12 @@
 
 // Bootstrap
 @import "node_modules/bootstrap-sass/assets/stylesheets/bootstrap";
-@import "node_modules/react-day-picker/lib/style";
-//@import url(https://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css);
+
+// Component-vendor CSS (na bootstrap)
+@import '~@trendmicro/react-sidenav/dist/react-sidenav.css';
+
+// Let op: react-day-picker v9:
+@import '~react-day-picker/dist/style.css';
 
 @import "./partials/button";
 @import "./partials/calendar";

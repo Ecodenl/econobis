@@ -9,6 +9,8 @@
   ],
   "rules": {
     "jsx-a11y/label-has-for": 0,
+    "react/prop-types": "off",
+    "react/no-unescaped-entities": "off"
   },
   "plugins": [
     "react",

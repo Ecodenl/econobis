@@ -1,53 +1,52 @@
 import React, { Component } from 'react';
-import { isEmpty } from 'lodash';
 
-import SideNav, { Nav, NavText } from 'react-sidenav';
+import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import { Link } from 'react-router-dom';
 
-class CreateRevenuesKwhReportList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
+class CreateRevenuePartsKwhReportList extends Component {
     render() {
+        const { distributions = [], isLoading, changeDistribution } = this.props;
+
         return (
-            <nav className={'payment-invoices-list open sticky'}>
+            <nav className="payment-invoices-list open sticky">
                 <div className="send-payment-invoices-sidebar-menu" style={{ color: '$brand-primary' }}>
                     <SideNav
-                        highlightColor="$brand-primary"
-                        highlightBgColor="#e5e5e5"
-                        hoverBgColor="#F1EFF0"
-                        defaultSelected="order"
+                        className="eco-sidenav"
+                        defaultSelected={distributions.length > 0 ? `distribution-${distributions[0].id}` : 'order'}
+                        onSelect={selected => {
+                            if (selected?.startsWith('distribution-')) {
+                                const id = selected.split('distribution-')[1];
+                                if (id) changeDistribution(Number(id));
+                            }
+                        }}
                     >
-                        {this.props.distributions.length > 0 ? (
-                            this.props.distributions.map((distribution, i) => {
-                                return (
-                                    <Nav
-                                        onNavClick={() => this.props.changeDistribution(distribution.id)}
-                                        key={i}
-                                        id={`administration-${distribution.id}`}
-                                    >
+                        <SideNav.Nav>
+                            {distributions.length > 0 ? (
+                                distributions.map((distribution, i) => (
+                                    <NavItem key={i} eventKey={`distribution-${distribution.id}`}>
                                         <NavText>
-                                            <Link className="send-payment-invoices-list-link">
+                                            <span className="send-payment-invoices-list-link">
                                                 {distribution.id} - {distribution.contactName}
-                                            </Link>
+                                            </span>
                                         </NavText>
-                                    </Nav>
-                                );
-                            })
-                        ) : (
-                            <Nav id="order">
-                                <NavText>
-                                    {this.props.isLoading ? (
-                                        <Link className="send-payment-invoices-list-link">Gegevens aan het laden.</Link>
-                                    ) : (
-                                        <Link className="send-payment-invoices-list-link">
-                                            Geen opbrengstverdeling beschikbaar.
-                                        </Link>
-                                    )}
-                                </NavText>
-                            </Nav>
-                        )}
+                                    </NavItem>
+                                ))
+                            ) : (
+                                <NavItem eventKey="order">
+                                    <NavText>
+                                        {isLoading ? (
+                                            <span className="send-payment-invoices-list-link">
+                                                Gegevens aan het laden.
+                                            </span>
+                                        ) : (
+                                            <span className="send-payment-invoices-list-link">
+                                                Geen opbrengstverdeling beschikbaar.
+                                            </span>
+                                        )}
+                                    </NavText>
+                                </NavItem>
+                            )}
+                        </SideNav.Nav>
                     </SideNav>
                 </div>
             </nav>
@@ -55,4 +54,4 @@ class CreateRevenuesKwhReportList extends Component {
     }
 }
 
-export default CreateRevenuesKwhReportList;
+export default CreateRevenuePartsKwhReportList;

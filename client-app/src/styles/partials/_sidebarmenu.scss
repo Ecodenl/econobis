@@ -1,8 +1,11 @@
+/* ---------------------------------------
+   link-styling die je al had (laten staan)
+---------------------------------------- */
 .sidebar-link {
-  text-overflow: ellipsis; /* will make [...] at the end */
+  text-overflow: ellipsis;
   width: 200px;
-  white-space: nowrap; /* paragraph to one line */
-  overflow:hidden; /* older browsers */
+  white-space: nowrap;
+  overflow: hidden;
   position: absolute;
   left: 12px;
   margin-top: -12px;
@@ -15,20 +18,82 @@
   margin-right: -8em;
 }
 
-.sidebar-link, .sidebar-link-header {
+.sidebar-link,
+.sidebar-link-header {
   color: #fff;
-  &:hover {
-    color: #fff;
+  &:hover,
+  &:focus { color: #fff; text-decoration: none; }
+}
+
+.sidebar__alert { color: $brand-quinary; font-weight: bold; }
+
+/* ---------------------------------------
+   basis kleuren als variabelen
+---------------------------------------- */
+$eco-sidenav-bg: #27AE60;
+$eco-sidenav-fg: #fff;
+$eco-sidenav-hover-bg: #F1EFF0;
+
+$financial-bg: #e5e5e5;
+$financial-fg: $brand-primary;
+
+/* ---------------------------------------
+   algemene SideNav (gebruik className="eco-sidenav")
+---------------------------------------- */
+.eco-sidenav {
+  width: 240px;
+  background-color: $eco-sidenav-bg;
+  color: $eco-sidenav-fg;
+
+  /* tekst/links binnen de sidenav */
+  .sidebar-link,
+  .sidebar-link-header,
+  .financial-tree-link,
+  .financial-tree-link-header,
+  .send-invoices-list-link,
+  .send-invoices-list-link-error {
+    color: $eco-sidenav-fg;
     text-decoration: none;
+    &:hover, &:focus { color: $eco-sidenav-fg; text-decoration: none; }
   }
 
-  &:focus {
-    color: #fff;
-    text-decoration: none;
+  /* geselecteerd item — gebruik contains zodat hash-classes geen probleem zijn */
+  [class*="sidenav---navitem---selected"] {
+    background-color: $eco-sidenav-bg !important;
+    color: $eco-sidenav-fg !important;
+  }
+
+  /* hover op items */
+  [class*="sidenav---navitem---"]:hover {
+    background-color: $eco-sidenav-hover-bg !important;
+    color: #000 !important;
+  }
+
+  /* iconen in items */
+  [class*="sidenav---navicon---"] {
+    color: $eco-sidenav-fg !important;
   }
 }
 
-.sidebar__alert {
-  color: $brand-quinary;
-  font-weight: bold;
+/* ---------------------------------------
+   financiële variant (andere kleuren)
+   gebruik wrapper .financial-tree-sidebar-menu
+---------------------------------------- */
+.financial-tree-sidebar-menu .eco-sidenav {
+  background-color: $financial-bg;
+  color: $financial-fg;
+
+  [class*="sidenav---navitem---selected"] {
+    background-color: $financial-bg !important;
+    color: $financial-fg !important;
+  }
+
+  [class*="sidenav---navitem---"]:hover {
+    background-color: #F1EFF0 !important;
+    color: $financial-fg !important;
+  }
+
+  [class*="sidenav---navicon---"] {
+    color: $financial-fg !important;
+  }
 }

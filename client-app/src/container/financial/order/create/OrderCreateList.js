@@ -1,54 +1,51 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { isEmpty } from 'lodash';
 
-import SideNav, { Nav, NavText } from 'react-sidenav';
+import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import { Link } from 'react-router-dom';
 
 class OrderCreateList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
+        const { orders = [], changeOrder } = this.props;
+
         return (
-            <nav className={'orders-list open sticky'}>
+            <nav className="orders-list open sticky">
                 <div className="send-orders-sidebar-menu" style={{ color: '$brand-primary' }}>
                     <SideNav
-                        highlightColor="$brand-primary"
-                        highlightBgColor="#e5e5e5"
-                        hoverBgColor="#F1EFF0"
-                        defaultSelected="order"
+                        className="eco-sidenav"
+                        defaultSelected={orders.length > 0 ? `administration-${orders[0].id}` : 'order'}
+                        onSelect={selected => {
+                            if (selected?.startsWith('administration-')) {
+                                const id = selected.split('administration-')[1];
+                                if (id) changeOrder(Number(id));
+                            }
+                        }}
                     >
-                        {this.props.orders.length > 0 ? (
-                            this.props.orders.map((order, i) => {
-                                return (
-                                    <Nav
-                                        onNavClick={() => this.props.changeOrder(order.id)}
-                                        key={i}
-                                        id={`administration-${order.id}`}
-                                    >
+                        <SideNav.Nav>
+                            {orders.length > 0 ? (
+                                orders.map((order, i) => (
+                                    <NavItem key={i} eventKey={`administration-${order.id}`}>
                                         <NavText>
-                                            <Link
-                                                className={`${
+                                            <span
+                                                className={
                                                     order.totalInclVatInclReduction < 0
                                                         ? 'send-orders-list-link-error'
                                                         : 'send-orders-list-link'
-                                                }`}
+                                                }
                                             >
                                                 {order.number} - {order.contactName}
-                                            </Link>
+                                            </span>
                                         </NavText>
-                                    </Nav>
-                                );
-                            })
-                        ) : (
-                            <Nav id="order">
-                                <NavText>
-                                    <Link className="send-orders-list-link">Geen orders beschikbaar.</Link>
-                                </NavText>
-                            </Nav>
-                        )}
+                                    </NavItem>
+                                ))
+                            ) : (
+                                <NavItem eventKey="order">
+                                    <NavText>
+                                        <span className="send-orders-list-link">Geen orders beschikbaar.</span>
+                                    </NavText>
+                                </NavItem>
+                            )}
+                        </SideNav.Nav>
                     </SideNav>
                 </div>
             </nav>
@@ -56,10 +53,8 @@ class OrderCreateList extends Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        administrationDetails: state.administrationDetails,
-    };
-};
+const mapStateToProps = state => ({
+    administrationDetails: state.administrationDetails,
+});
 
 export default connect(mapStateToProps)(OrderCreateList);

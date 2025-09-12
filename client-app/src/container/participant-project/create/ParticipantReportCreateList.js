@@ -1,52 +1,52 @@
 import React, { Component } from 'react';
 
-import SideNav, { Nav, NavText } from 'react-sidenav';
+import SideNav, { NavItem, NavText } from '@trendmicro/react-sidenav';
 import { Link } from 'react-router-dom';
 
 class ParticipantReportCreateList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
     render() {
+        const { participants = [], isLoading, changeParticipant } = this.props;
+
         return (
-            <nav className={'payment-invoices-list open sticky'}>
+            <nav className="payment-invoices-list open sticky">
                 <div className="send-payment-invoices-sidebar-menu" style={{ color: '$brand-primary' }}>
                     <SideNav
-                        highlightColor="$brand-primary"
-                        highlightBgColor="#e5e5e5"
-                        hoverBgColor="#F1EFF0"
-                        defaultSelected="order"
+                        className="eco-sidenav"
+                        defaultSelected={participants.length > 0 ? `participant-${participants[0].id}` : 'order'}
+                        onSelect={selected => {
+                            if (selected?.startsWith('participant-')) {
+                                const id = selected.split('participant-')[1];
+                                if (id) changeParticipant(Number(id));
+                            }
+                        }}
                     >
-                        {this.props.participants.length > 0 ? (
-                            this.props.participants.map((participant, i) => {
-                                return (
-                                    <Nav
-                                        onNavClick={() => this.props.changeParticipant(participant.id)}
-                                        key={i}
-                                        id={`administration-${participant.id}`}
-                                    >
+                        <SideNav.Nav>
+                            {participants.length > 0 ? (
+                                participants.map((participant, i) => (
+                                    <NavItem key={i} eventKey={`participant-${participant.id}`}>
                                         <NavText>
-                                            <Link className="send-payment-invoices-list-link">
+                                            <span className="send-payment-invoices-list-link">
                                                 {participant.id} - {participant.name}
-                                            </Link>
+                                            </span>
                                         </NavText>
-                                    </Nav>
-                                );
-                            })
-                        ) : (
-                            <Nav id="order">
-                                <NavText>
-                                    {this.props.isLoading ? (
-                                        <Link className="send-payment-invoices-list-link">Gegevens aan het laden.</Link>
-                                    ) : (
-                                        <Link className="send-payment-invoices-list-link">
-                                            Geen opbrengstverdeling beschikbaar.
-                                        </Link>
-                                    )}
-                                </NavText>
-                            </Nav>
-                        )}
+                                    </NavItem>
+                                ))
+                            ) : (
+                                <NavItem eventKey="order">
+                                    <NavText>
+                                        {isLoading ? (
+                                            <span className="send-payment-invoices-list-link">
+                                                Gegevens aan het laden.
+                                            </span>
+                                        ) : (
+                                            <span className="send-payment-invoices-list-link">
+                                                Geen opbrengstverdeling beschikbaar.
+                                            </span>
+                                        )}
+                                    </NavText>
+                                </NavItem>
+                            )}
+                        </SideNav.Nav>
                     </SideNav>
                 </div>
             </nav>

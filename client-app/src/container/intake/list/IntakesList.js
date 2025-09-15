@@ -161,7 +161,7 @@ function IntakesList({
                     <DataTableBody>
                         {loading ? (
                             <tr>
-                                <td colSpan={multiSelectEnabled ? 7 : 6}>{loadingText}</td>
+                                <td colSpan={multiSelectEnabled ? 10 : 9}>{loadingText}</td>
                             </tr>
                         ) : (
                             data.map(intake => {

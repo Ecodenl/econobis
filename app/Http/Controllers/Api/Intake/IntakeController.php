@@ -254,10 +254,14 @@ class IntakeController extends ApiController
         //relations
         if ($data['sourceIds']) {
             $intake->sources()->sync($data['sourceIds']);
+        } else {
+            $intake->sources()->detach();
         }
 
         if ($data['intakeReasonIds']) {
             $intake->reasons()->sync($data['intakeReasonIds']);
+        } else {
+            $intake->reasons()->detach();
         }
 
         return $this->show($intake);

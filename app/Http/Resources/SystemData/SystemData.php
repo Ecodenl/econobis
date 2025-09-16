@@ -37,8 +37,8 @@ use App\Eco\HousingFile\RoofType;
 use App\Eco\Industry\Industry;
 use App\Eco\InspectionPersonType\InspectionPersonType;
 use App\Eco\Intake\IntakeReason;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Ledger\Ledger;
 use App\Eco\Mailbox\IncomingServerType;
@@ -89,6 +89,7 @@ use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\EnumWithIdAndName\FullEnumWithIdAndName;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Industry\FullIndustry;
+use App\Http\Resources\Intake\FullIntakeSource;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Ledger\FullLedger;
 use App\Http\Resources\Measure\MeasurePeek;
@@ -215,7 +216,7 @@ class SystemData extends JsonResource
             'industries' => FullIndustry::collection(Industry::all()),
             'inspectionPersonTypes' => FullEnumWithIdAndName::collection(InspectionPersonType::collection()),
             'intakeReasons' => IntakeReason::select(['id', 'name'])->get(),
-            'intakeSources' => IntakeSource::select(['id', 'name'])->get(),
+            'intakeSources' => FullIntakeSource::collection(IntakeSource::where('visible', true)->get()),
             'intakeStatuses' => IntakeStatus::select(['id', 'name'])->get(),
             'lastNamePrefixes' => FullLastNamePrefix::collection(LastNamePrefix::all()),
             'ledgers' => FullLedger::collection(Ledger::all()),

@@ -94,8 +94,11 @@ class QuotationRequestController
             'dateRecorded' => ['nullable', 'date'],
             'dateReleased' => ['nullable', 'date'],
             'dateApprovedClient' => ['nullable', 'date'],
+            'nulApprovedClient' => ['boolean'],
             'dateApprovedProjectManager' => ['nullable', 'date'],
+            'nulApprovedProjectManager' => ['boolean'],
             'dateApprovedExternal' => ['nullable', 'date'],
+            'nulApprovedExternal' => ['boolean'],
             'opportunityStatusId' => ['integer'],
             'coachOrOrganisationNote' => ['nullable', 'string'],
             'projectmanagerNote' => ['nullable', 'string'],
@@ -106,6 +109,7 @@ class QuotationRequestController
             'dateExecuted' => ['nullable', 'date'],
             'dateUnderReviewDetermination' => ['nullable', 'date'],
             'dateApprovedDetermination' => ['nullable', 'date'],
+            'notApprovedDetermination' => ['boolean'],
             'quotationAmount' => ['nullable', 'string'],
             'costAdjustment' => ['nullable', 'string'],
             'awardAmount' => ['nullable', 'string'],
@@ -122,8 +126,11 @@ class QuotationRequestController
         $quotationRequest->date_recorded = $request->input('dateRecorded') ?: null;
         $quotationRequest->date_released = $request->input('dateReleased') ?: null;
         $quotationRequest->date_approved_client = $request->input('dateApprovedClient') ?: null;
+        $quotationRequest->not_approved_client = $request->input('notApprovedClient') ?: false;
         $quotationRequest->date_approved_external = $request->input('dateApprovedExternal') ?: null;
+        $quotationRequest->not_approved_external = $request->input('notApprovedExternal') ?: false;
         $quotationRequest->date_approved_project_manager = $request->input('dateApprovedProjectManager') ?: null;
+        $quotationRequest->not_approved_project_manager = $request->input('notApprovedProjectManager') ?: false;
         $quotationRequest->updated_by_id = $responsibleUserId;
         $quotationRequest->coach_or_organisation_note = $request->input('coachOrOrganisationNote');
         $quotationRequest->projectmanager_note = $request->input('projectmanagerNote');
@@ -134,6 +141,7 @@ class QuotationRequestController
         $quotationRequest->date_executed = $request->input('dateExecuted') ?: null;
         $quotationRequest->date_under_review_determination = $request->input('dateUnderReviewDetermination') ?: null;
         $quotationRequest->date_approved_determination = $request->input('dateApprovedDetermination') ?: null;
+        $quotationRequest->not_approved_determination = $request->input('notApprovedDetermination') ?: false;
         $quotationRequest->quotation_amount = $request->input('quotationAmount') ?: 0;
         $quotationRequest->cost_adjustment = $request->input('costAdjustment') ?: 0;
         $quotationRequest->award_amount = $request->input('awardAmount') ?: 0;
@@ -318,12 +326,16 @@ class QuotationRequestController
             'dateRecorded' => $quotationRequest->date_recorded ? $quotationRequest->date_recorded : '',
             'dateReleased' => $quotationRequest->date_released ? $quotationRequest->date_released : '',
             'dateApprovedExternal' => $quotationRequest->date_approved_external ? $quotationRequest->date_approved_external : '',
+            'notApprovedExternal' => $quotationRequest->not_approved_external ? $quotationRequest->not_approved_external : false,
             'dateApprovedProjectManager' => $quotationRequest->date_approved_project_manager ? $quotationRequest->date_approved_project_manager : '',
+            'notApprovedProjectManager' => $quotationRequest->not_approved_project_manager ? $quotationRequest->not_approved_project_manager : false,
             'dateApprovedClient' => $quotationRequest->date_approved_client ? $quotationRequest->date_approved_client : '',
+            'notApprovedClient' => $quotationRequest->not_approved_client ? $quotationRequest->not_approved_client : false,
             'dateUnderReview' => $quotationRequest->date_under_review ? $quotationRequest->date_under_review : '',
             'dateExecuted' => $quotationRequest->date_executed ? $quotationRequest->date_executed : '',
             'dateUnderReviewDetermination' => $quotationRequest->date_under_review_determination ? $quotationRequest->date_under_review_determination : '',
             'dateApprovedDetermination' => $quotationRequest->date_approved_determination ? $quotationRequest->date_approved_determination : '',
+            'notApprovedDetermination' => $quotationRequest->not_approved_determination ? $quotationRequest->not_approved_determination : false,
             'quotationText' => $quotationRequest->quotation_text,
             'coachOrOrganisationNote' => $quotationRequest->coach_or_organisation_note,
             'projectmanagerNote' => $quotationRequest->projectmanager_note,

@@ -1,171 +1,67 @@
 // PdfViewer.js
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
+// import ButtonGroup from 'react-bootstrap/ButtonGroup';
+import { FiArrowLeft, FiArrowRight } from 'react-icons/all';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
 
-function isDataUri(str) {
-    return typeof str === 'string' && str.startsWith('data:');
-}
-
-function base64ToUint8Array(base64) {
-    const binary = atob(base64);
-    const len = binary.length;
-    const bytes = new Uint8Array(len);
-    for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
-    return bytes;
-}
-
-function dataUriToBytes(dataUri) {
-    const [, base64] = dataUri.split(',');
-    return base64ToUint8Array(base64);
-}
-
 export default function PdfViewer({ file, scale = 1.0 }) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
-    const [docFileProp, setDocFileProp] = useState(null); // wat we aan <Document file={...} /> doorgeven
-    const [objectUrl, setObjectUrl] = useState(null); // om later te revoken
-
-    // Normaliseer 'file' naar iets wat react-pdf begrijpt:
-    // - { url: string } of
-    // - { data: Uint8Array | ArrayBuffer }
-    useEffect(() => {
-        let revoked = false;
-
-        async function normalize() {
-            // opruimen vorige blob url
-            if (objectUrl) {
-                URL.revokeObjectURL(objectUrl);
-                setObjectUrl(null);
-            }
-
-            if (!file) {
-                setDocFileProp(null);
-                return;
-            }
-
-            // 1) String URL
-            if (typeof file === 'string' && !isDataUri(file)) {
-                setDocFileProp({ url: file });
-                return;
-            }
-
-            // 2) Data-URI string -> Blob URL
-            if (typeof file === 'string' && isDataUri(file)) {
-                const bytes = dataUriToBytes(file);
-                const blob = new Blob([bytes], { type: 'application/pdf' });
-                const url = URL.createObjectURL(blob);
-                setObjectUrl(url);
-                setDocFileProp({ url });
-                return;
-            }
-            // 3) Base64 string (zonder data: prefix) — optioneel, als dat bij jullie voorkomt
-            if (typeof file === 'string' && /^[A-Za-z0-9+/=\s]+$/.test(file) && file.length > 100) {
-                const bytes = base64ToUint8Array(file.replace(/\s+/g, ''));
-                setDocFileProp({ data: bytes });
-                return;
-            }
-
-            // 4) Blob/File -> Blob URL
-            if (file instanceof Blob) {
-                const url = URL.createObjectURL(file);
-                setObjectUrl(url);
-                setDocFileProp({ url });
-                return;
-            }
-
-            // 5) ArrayBuffer / Uint8Array -> Blob URL
-            if (file instanceof ArrayBuffer) {
-                const blob = new Blob([file], { type: 'application/pdf' });
-                const url = URL.createObjectURL(blob);
-                setObjectUrl(url);
-                setDocFileProp({ url });
-                return;
-            }
-
-            if (file?.byteLength && file?.buffer) {
-                // bijv. Uint8Array
-                const bytes = new Uint8Array(file).slice(); // kopie (niet strikt nodig maar netjes)
-                const blob = new Blob([bytes], { type: 'application/pdf' });
-                const url = URL.createObjectURL(blob);
-                setObjectUrl(url);
-                setDocFileProp({ url });
-                return;
-            }
-
-            console.warn('Onbekend PDF file type voor react-pdf:', file);
-            setDocFileProp(null);
-        }
-
-        normalize();
-
-        return () => {
-            revoked = true;
-            if (objectUrl) {
-                URL.revokeObjectURL(objectUrl);
-            }
-        };
-    }, [file]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
-        setPageNumber(1);
+        // behoud huidige pagina en clamp binnen bereik
+        setPageNumber(p => Math.max(1, Math.min(p || 1, numPages)));
     }
 
     return (
         <div className="pdf_viewer_wrapper">
-            {docFileProp && (
-                <>
-                    <Document
-                        file={docFileProp}
-                        onLoadSuccess={onDocumentLoadSuccess}
-                        onLoadError={e => console.error('PDF load error', e)}
-                        loading={<div>PDF laden…</div>}
-                        error={<div>Kan PDF niet laden.</div>}
-                        options={
-                            {
-                                // eventueel extra pdf.js opties
-                                // cMapUrl: '/cmaps/', cMapPacked: true,
-                            }
-                        }
+            <Document
+                file={file} // verwacht een URL (aanrader)
+                onLoadSuccess={onDocumentLoadSuccess}
+                onLoadError={e => console.error('PDF load error', e)}
+                loading={<div>PDF laden…</div>}
+                error={<div>Kan PDF niet laden.</div>}
+            >
+                <Page
+                    key={pageNumber} // forceer remount bij paginawissel
+                    className="pdf-viewer-page"
+                    pageNumber={pageNumber}
+                    scale={scale}
+                    renderAnnotationLayer={false}
+                    renderTextLayer={false}
+                />
+            </Document>
+
+            <div className="text-center" style={{ marginTop: 8 }}>
+                Pagina {pageNumber} van {numPages ?? '…'}
+            </div>
+
+            {numPages > 1 && (
+                <div>
+                    <Button
+                        className="w-button btn-sm text-left"
+                        disabled={!numPages || pageNumber === 1}
+                        onClick={() => setPageNumber(p => p - 1)}
+                        title="Vorige pagina"
                     >
-                        <Page
-                            className="pdf-viewer-page"
-                            pageNumber={pageNumber}
-                            scale={scale}
-                            renderAnnotationLayer={false}
-                            renderTextLayer={false}
-                        />
-                    </Document>
-
-                    <div style={{ marginTop: 8 }}>
-                        <h3 style={{ display: 'inline-block', marginTop: 0 }}>
-                            Pagina {pageNumber} van {numPages ?? '…'}
-                        </h3>
-                    </div>
-
-                    <div>
-                        <Button
-                            disabled={!numPages || pageNumber === 1}
-                            onClick={() => setPageNumber(p => p - 1)}
-                            title="Ga naar vorige pagina"
-                        >
-                            &lt;
-                        </Button>
-                        <Button
-                            disabled={!numPages || pageNumber === numPages}
-                            onClick={() => setPageNumber(p => p + 1)}
-                            title="Ga naar volgende pagina"
-                            style={{ marginLeft: 8 }}
-                        >
-                            &gt;
-                        </Button>
-                    </div>
-                </>
+                        <FiArrowLeft />
+                        &nbsp;Vorige pagina&nbsp;
+                    </Button>
+                    <Button
+                        className="w-button btn-sm"
+                        disabled={!numPages || pageNumber === numPages}
+                        onClick={() => setPageNumber(p => p + 1)}
+                        title="Volgende pagina"
+                    >
+                        &nbsp;Volgende pagina&nbsp;
+                        <FiArrowRight />
+                    </Button>
+                </div>
             )}
-            {!docFileProp && <div>Geen PDF-bestand beschikbaar.</div>}
         </div>
     );
 }

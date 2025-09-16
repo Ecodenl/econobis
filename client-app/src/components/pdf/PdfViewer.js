@@ -1,8 +1,8 @@
 // PdfViewer.js
 import React, { useState } from 'react';
 import { Button } from 'react-bootstrap';
-// import ButtonGroup from 'react-bootstrap/ButtonGroup';
-import { FiArrowLeft, FiArrowRight } from 'react-icons/all';
+
+import { FiArrowLeft, FiArrowRight } from 'react-icons/fi';
 import { Document, Page, pdfjs } from 'react-pdf';
 
 pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';

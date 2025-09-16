@@ -19,9 +19,12 @@ const QuotationRequestDetailsFormGeneralView = props => {
         datePlannedAttempt2,
         datePlannedAttempt3,
         datePlanned,
+        statusApprovedExternal,
         dateApprovedExternal,
         dateUnderReview,
+        statusApprovedProjectManager,
         dateApprovedProjectManager,
+        statusApprovedClient,
         dateApprovedClient,
         dateExecuted,
         quotationText,
@@ -29,6 +32,7 @@ const QuotationRequestDetailsFormGeneralView = props => {
         costAdjustment,
         awardAmount,
         dateUnderReviewDetermination,
+        statusApprovedDetermination,
         dateApprovedDetermination,
         amountDetermination,
         opportunity,
@@ -193,11 +197,19 @@ const QuotationRequestDetailsFormGeneralView = props => {
                             label={'Datum akkoord bewoner'}
                             value={dateApprovedClient ? moment(dateApprovedClient).format('L ') : ''}
                         />
+                        <ViewText
+                            label={'Status akkoord bewoner'}
+                            value={statusApprovedClient}
+                        />
                     </div>
                     <div className="row">
                         <ViewText
                             label={'Datum akkoord projectleider'}
                             value={dateApprovedProjectManager ? moment(dateApprovedProjectManager).format('L') : ''}
+                        />
+                        <ViewText
+                            label={'Status akkoord projectleider'}
+                            value={statusApprovedProjectManager}
                         />
                     </div>
                 </>
@@ -208,6 +220,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Datum akkoord toekenning'}
                             value={dateApprovedExternal ? moment(dateApprovedExternal).format('L') : ''}
+                        />
+                        <ViewText
+                            label={'Status akkoord toekenning'}
+                            value={statusApprovedExternal}
                         />
                     </div>
                     <div className="row">
@@ -257,6 +273,10 @@ const QuotationRequestDetailsFormGeneralView = props => {
                         <ViewText
                             label={'Datum akkoord vaststelling'}
                             value={dateApprovedDetermination && moment(dateApprovedDetermination).format('L')}
+                        />
+                        <ViewText
+                            label={'Status akkoord vaststelling'}
+                            value={statusApprovedDetermination}
                         />
                     </div>
                     <div className="row">

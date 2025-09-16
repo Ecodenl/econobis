@@ -27,7 +27,7 @@ class PortalSettingsDashboardWidgetDetailsToolbar extends Component {
         let { portalSettingsDashboardWidget, permissions, navigate } = this.props;
         let { id, title, codeRef } = portalSettingsDashboardWidget;
 
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
 
         return (
             <div className="row">

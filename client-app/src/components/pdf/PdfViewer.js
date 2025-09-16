@@ -52,13 +52,15 @@ export default function PdfViewer({ file, scale = 1.0 }) {
                 return;
             }
 
-            // 2) Data-URI string
+            // 2) Data-URI string -> Blob URL
             if (typeof file === 'string' && isDataUri(file)) {
                 const bytes = dataUriToBytes(file);
-                setDocFileProp({ data: bytes });
+                const blob = new Blob([bytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                setObjectUrl(url);
+                setDocFileProp({ url });
                 return;
             }
-
             // 3) Base64 string (zonder data: prefix) — optioneel, als dat bij jullie voorkomt
             if (typeof file === 'string' && /^[A-Za-z0-9+/=\s]+$/.test(file) && file.length > 100) {
                 const bytes = base64ToUint8Array(file.replace(/\s+/g, ''));
@@ -66,31 +68,30 @@ export default function PdfViewer({ file, scale = 1.0 }) {
                 return;
             }
 
-            // 4) Blob/File
-            // if (file instanceof Blob) {
-            //     // Optie A: direct als bytes (meest CSP-onafhankelijk)
-            //     // const bytes = new Uint8Array(await file.arrayBuffer());
-            //     // setDocFileProp({ data: bytes });
-            //
-            //     // Optie B: blob: URL (ook prima; let op revoke bij unmount/prop-wijziging)
-            //     const url = URL.createObjectURL(file);
-            //     if (!revoked) {
-            //         setObjectUrl(url);
-            //         setDocFileProp({ url });
-            //     }
-            //     return;
-            // }
-
-            // 4) Blob/File → direct als bytes doorgeven
+            // 4) Blob/File -> Blob URL
             if (file instanceof Blob) {
-                const bytes = new Uint8Array(await file.arrayBuffer());
-                setDocFileProp({ data: bytes });
+                const url = URL.createObjectURL(file);
+                setObjectUrl(url);
+                setDocFileProp({ url });
                 return;
             }
 
-            // 5) ArrayBuffer/Uint8Array
-            if (file instanceof ArrayBuffer || file?.byteLength) {
-                setDocFileProp({ data: file });
+            // 5) ArrayBuffer / Uint8Array -> Blob URL
+            if (file instanceof ArrayBuffer) {
+                const blob = new Blob([file], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                setObjectUrl(url);
+                setDocFileProp({ url });
+                return;
+            }
+
+            if (file?.byteLength && file?.buffer) {
+                // bijv. Uint8Array
+                const bytes = new Uint8Array(file).slice(); // kopie (niet strikt nodig maar netjes)
+                const blob = new Blob([bytes], { type: 'application/pdf' });
+                const url = URL.createObjectURL(blob);
+                setObjectUrl(url);
+                setDocFileProp({ url });
                 return;
             }
 

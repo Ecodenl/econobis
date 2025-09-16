@@ -1,92 +1,163 @@
-import React, { useEffect, useState } from 'react';
+// PdfViewer.js
+import React, { useEffect, useMemo, useState } from 'react';
 import { Button } from 'react-bootstrap';
-
 import { Document, Page, pdfjs } from 'react-pdf';
+
 pdfjs.GlobalWorkerOptions.workerSrc = '/js/pdf.worker.min.js';
 
-/**
- * Import pdf library dynamically based on support
- */
-const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
-const supportsPdfViewer = !isSafari;
+function isDataUri(str) {
+    return typeof str === 'string' && str.startsWith('data:');
+}
 
-function PdfViewer(props) {
+function base64ToUint8Array(base64) {
+    const binary = atob(base64);
+    const len = binary.length;
+    const bytes = new Uint8Array(len);
+    for (let i = 0; i < len; i++) bytes[i] = binary.charCodeAt(i);
+    return bytes;
+}
+
+function dataUriToBytes(dataUri) {
+    const [, base64] = dataUri.split(',');
+    return base64ToUint8Array(base64);
+}
+
+export default function PdfViewer({ file, scale = 1.0 }) {
     const [numPages, setNumPages] = useState(null);
     const [pageNumber, setPageNumber] = useState(1);
-    const [base64, setBase64] = useState(null);
-    const { file, scale } = props;
+    const [docFileProp, setDocFileProp] = useState(null); // wat we aan <Document file={...} /> doorgeven
+    const [objectUrl, setObjectUrl] = useState(null); // om later te revoken
+
+    // Normaliseer 'file' naar iets wat react-pdf begrijpt:
+    // - { url: string } of
+    // - { data: Uint8Array | ArrayBuffer }
+    useEffect(() => {
+        let revoked = false;
+
+        async function normalize() {
+            // opruimen vorige blob url
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+                setObjectUrl(null);
+            }
+
+            if (!file) {
+                setDocFileProp(null);
+                return;
+            }
+
+            // 1) String URL
+            if (typeof file === 'string' && !isDataUri(file)) {
+                setDocFileProp({ url: file });
+                return;
+            }
+
+            // 2) Data-URI string
+            if (typeof file === 'string' && isDataUri(file)) {
+                const bytes = dataUriToBytes(file);
+                setDocFileProp({ data: bytes });
+                return;
+            }
+
+            // 3) Base64 string (zonder data: prefix) — optioneel, als dat bij jullie voorkomt
+            if (typeof file === 'string' && /^[A-Za-z0-9+/=\s]+$/.test(file) && file.length > 100) {
+                const bytes = base64ToUint8Array(file.replace(/\s+/g, ''));
+                setDocFileProp({ data: bytes });
+                return;
+            }
+
+            // 4) Blob/File
+            if (file instanceof Blob) {
+                // Optie A: direct als bytes (meest CSP-onafhankelijk)
+                // const bytes = new Uint8Array(await file.arrayBuffer());
+                // setDocFileProp({ data: bytes });
+
+                // Optie B: blob: URL (ook prima; let op revoke bij unmount/prop-wijziging)
+                const url = URL.createObjectURL(file);
+                if (!revoked) {
+                    setObjectUrl(url);
+                    setDocFileProp({ url });
+                }
+                return;
+            }
+
+            // 5) ArrayBuffer/Uint8Array
+            if (file instanceof ArrayBuffer || file?.byteLength) {
+                setDocFileProp({ data: file });
+                return;
+            }
+
+            console.warn('Onbekend PDF file type voor react-pdf:', file);
+            setDocFileProp(null);
+        }
+
+        normalize();
+
+        return () => {
+            revoked = true;
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+            }
+        };
+    }, [file]); // eslint-disable-line react-hooks/exhaustive-deps
 
     function onDocumentLoadSuccess({ numPages }) {
         setNumPages(numPages);
+        setPageNumber(1);
     }
-
-    const blobToBase64 = function(blob, callback) {
-        var reader = new FileReader();
-        reader.onload = function() {
-            var dataUrl = reader.result;
-            var base64 = dataUrl.split(',')[1];
-            callback(base64);
-        };
-        reader.readAsDataURL(blob);
-    };
-
-    useEffect(() => {
-        if (!file || supportsPdfViewer) {
-            return;
-        }
-
-        blobToBase64(file, function(base64) {
-            setBase64(base64);
-        });
-    }, [file]);
 
     return (
         <div className="pdf_viewer_wrapper">
-            {isSafari && base64 && (
-                <iframe
-                    src={'data:application/pdf;base64,' + base64}
-                    style={{ height: 'calc(100vh - 500px)' }}
-                    title={'PDF viewer'}
-                />
-            )}
-
-            {supportsPdfViewer && (
+            {docFileProp && (
                 <>
-                    <Document file={file} onLoadSuccess={onDocumentLoadSuccess}>
+                    <Document
+                        file={docFileProp}
+                        onLoadSuccess={onDocumentLoadSuccess}
+                        onLoadError={e => console.error('PDF load error', e)}
+                        loading={<div>PDF laden…</div>}
+                        error={<div>Kan PDF niet laden.</div>}
+                        options={
+                            {
+                                // eventueel extra pdf.js opties
+                                // cMapUrl: '/cmaps/', cMapPacked: true,
+                            }
+                        }
+                    >
                         <Page
-                            className={'pdf-viewer-page'}
-                            renderAnnotationLayer={false}
-                            renderTextLayer={false}
+                            className="pdf-viewer-page"
                             pageNumber={pageNumber}
                             scale={scale}
+                            renderAnnotationLayer={false}
+                            renderTextLayer={false}
                         />
                     </Document>
-                    <div>
-                        <div></div>
-                        <h3 style={{ display: 'inline-block', marginTop: '0px' }}>
-                            Pagina {pageNumber} van {numPages}
+
+                    <div style={{ marginTop: 8 }}>
+                        <h3 style={{ display: 'inline-block', marginTop: 0 }}>
+                            Pagina {pageNumber} van {numPages ?? '…'}
                         </h3>
                     </div>
+
                     <div>
                         <Button
-                            disabled={pageNumber === 1}
-                            onClick={() => setPageNumber(pageNumber - 1)}
-                            title={'Ga naar vorige pagina'}
+                            disabled={!numPages || pageNumber === 1}
+                            onClick={() => setPageNumber(p => p - 1)}
+                            title="Ga naar vorige pagina"
                         >
                             &lt;
                         </Button>
                         <Button
-                            disabled={pageNumber === numPages}
-                            onClick={() => setPageNumber(pageNumber + 1)}
-                            title={'Ga naar volgende pagina'}
+                            disabled={!numPages || pageNumber === numPages}
+                            onClick={() => setPageNumber(p => p + 1)}
+                            title="Ga naar volgende pagina"
+                            style={{ marginLeft: 8 }}
                         >
                             &gt;
                         </Button>
                     </div>
                 </>
             )}
+            {!docFileProp && <div>Geen PDF-bestand beschikbaar.</div>}
         </div>
     );
 }
-
-export default PdfViewer;

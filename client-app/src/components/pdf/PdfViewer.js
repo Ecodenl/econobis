@@ -67,17 +67,24 @@ export default function PdfViewer({ file, scale = 1.0 }) {
             }
 
             // 4) Blob/File
-            if (file instanceof Blob) {
-                // Optie A: direct als bytes (meest CSP-onafhankelijk)
-                // const bytes = new Uint8Array(await file.arrayBuffer());
-                // setDocFileProp({ data: bytes });
+            // if (file instanceof Blob) {
+            //     // Optie A: direct als bytes (meest CSP-onafhankelijk)
+            //     // const bytes = new Uint8Array(await file.arrayBuffer());
+            //     // setDocFileProp({ data: bytes });
+            //
+            //     // Optie B: blob: URL (ook prima; let op revoke bij unmount/prop-wijziging)
+            //     const url = URL.createObjectURL(file);
+            //     if (!revoked) {
+            //         setObjectUrl(url);
+            //         setDocFileProp({ url });
+            //     }
+            //     return;
+            // }
 
-                // Optie B: blob: URL (ook prima; let op revoke bij unmount/prop-wijziging)
-                const url = URL.createObjectURL(file);
-                if (!revoked) {
-                    setObjectUrl(url);
-                    setDocFileProp({ url });
-                }
+            // 4) Blob/File → direct als bytes doorgeven
+            if (file instanceof Blob) {
+                const bytes = new Uint8Array(await file.arrayBuffer());
+                setDocFileProp({ data: bytes });
                 return;
             }
 

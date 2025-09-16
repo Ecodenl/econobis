@@ -240,8 +240,8 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
     };
 
     textButtonText = () => {
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
-        if (staticWidgets.includes(this.state.widget.codeRef)) {
+        const menuWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        if (menuWidgets.includes(this.state.widget.codeRef)) {
             return `Als je de naam van deze knop aanpast zal de naam in het menu (rechts boven op de gebruikers portal website) van “${this.getDefaultButtonTextByCodeRef(
                 this.state.widget.codeRef
             )}” ook mee veranderen.`;
@@ -270,7 +270,7 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
         const logoHeaderUrl = `${getApiUrl()}/portal/images/logo-header.png?${this.props.imageHash}`;
         const imageBgHeaderUrl = `${getApiUrl()}/portal/images/background-header.png?${this.props.imageHash}`;
 
-        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+        const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -405,7 +405,11 @@ class PortalSettingsDashboardWidgetFormGeneralEdit extends Component {
                         </div>
                         <div className="row">
                             <InputReactSelect
-                                label={'Verborgen voor groep'}
+                                label={
+                                    widget.buttonLink === 'toevoegen-aan-groep'
+                                        ? 'Aanmelden voor groep'
+                                        : 'Verborgen voor groep'
+                                }
                                 divSize={'col-sm-8'}
                                 name={'hideGroupId'}
                                 size={'col-sm-5'}

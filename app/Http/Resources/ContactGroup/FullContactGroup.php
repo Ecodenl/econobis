@@ -60,6 +60,7 @@ class FullContactGroup extends JsonResource
             'lapostaListId' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_id : $this->laposta_list_id,
             'lapostaListCreatedAt' => $this->simulatedGroup ? $this->simulatedGroup->laposta_list_created_at : $this->laposta_list_created_at,
             'includeIntoExportGroupReport' => $this->include_into_export_group_report,
+            'portalSortOrder' => $this->portal_sort_order,
             'inspectionPersonTypeId' => $this->inspection_person_type_id,
             'inspectionPersonType' => FullEnumWithIdAndName::make($this->getInspectionPersonType()),
         ];

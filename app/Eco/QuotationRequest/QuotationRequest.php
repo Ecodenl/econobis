@@ -33,6 +33,10 @@ class QuotationRequest extends Model
 
     protected $casts = [
         'duration_minutes' => 'integer',
+        'not_approved_client' => 'boolean',
+        'not_approved_project_manager' => 'boolean',
+        'not_approved_external' => 'boolean',
+        'not_approved_determination' => 'boolean',
         'uses_planning' => 'boolean',
     ];
 

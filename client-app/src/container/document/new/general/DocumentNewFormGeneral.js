@@ -111,6 +111,25 @@ const DocumentNewFormGeneral = ({
                 {/*/>*/}
                 <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
             </div>
+            {documentCreatedFrom.codeRef === 'emailattachment' ? (
+                <div className="row">
+                    <AsyncSelectSet
+                        label={'Contacten uit email'}
+                        name={'contactIdEmail'}
+                        id={'contactIdEmail'}
+                        size={'col-sm-6'}
+                        loadOptions={getContactOptions}
+                        optionName={'fullName'}
+                        value={selectedContact}
+                        onChangeAction={handleInputChangeContactId}
+                        required={'required'}
+                        error={errors.docLinkedAtAny}
+                        isLoading={isLoadingContact}
+                        handleInputChange={handleInputSearchChange}
+                        multi={false}
+                    />
+                </div>
+            ) : null}
             <div className="row">
                 <AsyncSelectSet
                     label={'Contact'}

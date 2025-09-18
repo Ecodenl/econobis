@@ -28,10 +28,6 @@ const MutationNewWithDrawal = ({
     projectTypeCodeRef,
     disableBeforeEntryDate,
 }) => {
-    useEffect(() => {
-        getAdditionalInfoForTerminatingOrChangeEntryDate(participationId);
-    }, [participationId]);
-
     return (
         <React.Fragment>
             {statusCodeRef === 'interest' ? (

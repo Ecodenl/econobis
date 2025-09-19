@@ -70,6 +70,7 @@ class FullDocument extends JsonResource
             'participant' => ParticipantProjectPeek::make($this->whenLoaded('participant')),
             'orderId' => $this->order_id,
             'order' => OrderPeek::make($this->whenLoaded('order')),
+            'contactGroupId' => $this->administration_id,
             'administrationId' => $this->administration_id,
             'administration' => AdministrationPeek::make($this->whenLoaded('administration')),
             'sentBy' => FullUser::make($this->whenLoaded('sentBy')),

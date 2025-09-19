@@ -49,7 +49,7 @@ function ContactListAddAreaToExtraFilter(props) {
                     <AsyncSelectSet
                         label={'Voeg buurt aan filter toe'}
                         divSize={'col-sm-12'}
-                        size={'col-sm-8'}
+                        valueSize={'col-sm-8'}
                         name={'id'}
                         id={'id'}
                         loadOptions={getContactAreaOptions}

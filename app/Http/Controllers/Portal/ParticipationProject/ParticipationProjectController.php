@@ -81,6 +81,7 @@ class ParticipationProjectController extends Controller
             if ($participantProject->project->uses_mollie) {
                 // Check if any mutation meets the criteria
                 $hasUnpaidMutation = $participantProject->mutations()
+                    ->whereNull('date_payment')
                     ->get() // Retrieve all mutations
                     ->contains(fn($mutation) => !$mutation->is_paid_by_mollie); // Check dynamically
 

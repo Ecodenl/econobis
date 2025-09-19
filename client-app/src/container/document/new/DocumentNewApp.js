@@ -7,7 +7,7 @@ import DocumentNewToolbar from './DocumentNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
-import { isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
@@ -159,7 +159,7 @@ class DocumentNewApp extends Component {
         if (this.props.params.emailAttachmentId && this.props.params.emailAttachmentId > 0) {
             // fetchContacts uit email waar bijlage bij hoort
             EmailAttachmentAPI.fetchContacts(this.props.params.emailAttachmentId).then(payload => {
-                if (payload.data.data) {
+                if (!isEmpty(payload.data.data)) {
                     this.setState({ hasPreSelectedContacts: true });
                     this.setState({ preSelectedContacts: payload.data.data });
                 }

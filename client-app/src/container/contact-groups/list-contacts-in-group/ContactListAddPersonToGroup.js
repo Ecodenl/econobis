@@ -68,7 +68,7 @@ function ContactListAddPersonToGroup(props) {
                     <AsyncSelectSet
                         label={'Voeg bestaand contact toe'}
                         divSize={'col-sm-12'}
-                        size={'col-sm-8'}
+                        valueSize={'col-sm-8'}
                         name={'personId'}
                         id={'personId'}
                         loadOptions={getContactOptions}

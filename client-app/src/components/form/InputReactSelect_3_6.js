@@ -1,13 +1,11 @@
-import React, { useState } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import AsyncCreatableSelect from 'react-select/async-creatable';
-import { FaInfoCircle } from 'react-icons/fa';
+import Select from 'react-select';
+import { FaInfoCircle, FaTimesCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import ButtonText from '../button/ButtonText';
 
-const AsyncSelectSet = props => {
-    const [isLoading, setIsLoading] = useState(false);
-
+const InputReactSelect_3_6 = props => {
     const {
         label,
         divSize,
@@ -17,16 +15,14 @@ const AsyncSelectSet = props => {
         id,
         name,
         value,
-        loadOptions,
+        options,
         optionId,
         optionName,
         onChangeAction,
-        handleInputChange,
         required,
-        allowCreate,
-        multi,
         error,
         errorMessage,
+        isLoading,
         disabled,
         placeholder,
         clearable,
@@ -34,10 +30,6 @@ const AsyncSelectSet = props => {
         buttonText,
         buttonAction,
     } = props;
-
-    const onPromptTextCreator = label => {
-        return `Maak optie "${label}" aan`;
-    };
 
     const customStyles = {
         option: provided => ({ ...provided, fontSize: '12px' }),
@@ -54,53 +46,29 @@ const AsyncSelectSet = props => {
                     </label>
                 </div>
                 <div className={`${valueSize}`}>
-                    <AsyncCreatableSelect
+                    <Select
                         id={id}
                         name={name}
-                        onChange={option => onChangeAction(option)}
-                        value={value}
-                        loadOptions={async searchTerm => {
-                            if (searchTerm.length <= 1) {
-                                return;
-                            }
-
-                            setIsLoading(true);
-
-                            let result = await loadOptions(searchTerm);
-
-                            setIsLoading(false);
-
-                            return result;
-                        }}
-                        onInputChange={handleInputChange}
+                        value={options && value ? options.find(option => option[optionId] === value) : ''}
+                        onChange={option => onChangeAction(option ? option[optionId] : '', name)}
+                        options={options}
                         getOptionLabel={option => option[optionName]}
                         getOptionValue={option => option[optionId]}
                         placeholder={placeholder}
                         noOptionsMessage={function() {
-                            return 'Geen opties gevonden (tik om te zoeken minimaal 2 tekens)';
+                            return 'Geen opties gevonden';
                         }}
                         loadingMessage={function() {
                             return 'Laden';
                         }}
-                        isMulti={multi}
+                        isMulti={false}
                         simpleValue
                         removeSelected
                         className={error ? ' has-error' : ''}
                         isLoading={isLoading}
-                        // allowCreateWhileLoading={true}
                         isDisabled={disabled}
                         styles={customStyles}
                         isClearable={clearable}
-                        formatCreateLabel={onPromptTextCreator}
-                        getNewOptionData={(optionId, optionName) =>
-                            allowCreate
-                                ? {
-                                      id: optionName,
-                                      name: optionName,
-                                      __isNew__: true,
-                                  }
-                                : {}
-                        }
                         theme={theme => ({
                             ...theme,
                             colors: {
@@ -155,13 +123,11 @@ const AsyncSelectSet = props => {
     );
 };
 
-AsyncSelectSet.defaultProps = {
+InputReactSelect_3_6.defaultProps = {
     divSize: 'col-sm-12',
     labelSize: 'col-sm-3',
-    valueSize: 'col-sm-8',
-    buttonSize: 'col-sm-1',
-    allowCreate: false,
-    className: '',
+    valueSize: 'col-sm-6',
+    buttonSize: 'col-sm-3',
     optionId: 'id',
     optionName: 'name',
     disabled: false,
@@ -169,34 +135,32 @@ AsyncSelectSet.defaultProps = {
     error: false,
     errorMessage: '',
     value: '',
-    multi: true,
+    isLoading: false,
     placeholder: '',
     clearable: false,
     textToolTip: '',
     buttonText: '',
 };
 
-AsyncSelectSet.propTypes = {
-    allowCreate: PropTypes.bool,
+InputReactSelect_3_6.propTypes = {
     label: PropTypes.string.isRequired,
     divSize: PropTypes.string,
     labelSize: PropTypes.string,
     valueSize: PropTypes.string,
     buttonSize: PropTypes.string,
-    className: PropTypes.string,
     id: PropTypes.string,
     name: PropTypes.string.isRequired,
-    loadOptions: PropTypes.func,
+    options: PropTypes.array,
     optionId: PropTypes.string,
     optionName: PropTypes.string,
-    value: PropTypes.oneOfType([PropTypes.email, PropTypes.number]),
+    value: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     onChangeAction: PropTypes.func,
-    handleInputChange: PropTypes.func,
+    onBlurAction: PropTypes.func,
     required: PropTypes.string,
     disabled: PropTypes.bool,
     error: PropTypes.bool,
     errorMessage: PropTypes.string,
-    multi: PropTypes.bool,
+    isLoading: PropTypes.bool,
     placeholder: PropTypes.string,
     clearable: PropTypes.bool,
     textToolTip: PropTypes.string,
@@ -204,4 +168,4 @@ AsyncSelectSet.propTypes = {
     buttonAction: PropTypes.func,
 };
 
-export default AsyncSelectSet;
+export default InputReactSelect_3_6;

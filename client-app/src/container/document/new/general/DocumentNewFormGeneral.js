@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+
 import { connect } from 'react-redux';
 
 import InputSelect from '../../../../components/form/InputSelect';
@@ -6,11 +7,15 @@ import InputText from '../../../../components/form/InputText';
 import InputToggle from '../../../../components/form/InputToggle';
 import AsyncSelectSet from '../../../../components/form/AsyncSelectSet';
 import ContactsAPI from '../../../../api/contact/ContactsAPI';
+import InputReactSelect_3_6 from '../../../../components/form/InputReactSelect_3_6';
 
 const DocumentNewFormGeneral = ({
     document,
     errors,
     errorMessage,
+    hasPreSelectedContacts,
+
+    preSelectedContacts = [],
     contactGroups = [],
     intakes = [],
     opportunities = [],
@@ -27,11 +32,24 @@ const DocumentNewFormGeneral = ({
     documentTypes,
     administrations,
     handleInputChangeContactId,
+    handleInputChangeContactEmailId,
     searchTermContact,
     isLoadingContact,
     setSearchTermContact,
     setLoadingContact,
 }) => {
+    const [showPreSelectedContacts, setShowPreSelectedContacts] = useState(false);
+    useEffect(
+        function() {
+            setShowPreSelectedContacts(hasPreSelectedContacts);
+        },
+        [hasPreSelectedContacts]
+    );
+
+    function toggleShowPreSelectedContacts() {
+        setShowPreSelectedContacts(!showPreSelectedContacts);
+    }
+
     const {
         documentCreatedFrom,
         administrationId,
@@ -89,6 +107,19 @@ const DocumentNewFormGeneral = ({
         setSearchTermContact(value);
     };
 
+    const testButton = hasPreSelectedContacts
+        ? `<div className="pull-left btn-group" role="group">
+               <ButtonText
+                   buttonText={
+                       showPreSelectedContacts ? 'Zoek in alle contacten' : 'Zoek in email contacten'
+                   }
+                   onClickAction={toggleShowPreSelectedContacts}
+                   type={'submit'}
+                   value={'Submit'}
+               />
+           </div>`
+        : '';
+
     return (
         <div className={'margin-30-bottom'}>
             {errors.docLinkedAtAny && (
@@ -99,25 +130,31 @@ const DocumentNewFormGeneral = ({
                 </div>
             )}
             <div className="row">
-                {/*<InputSelect*/}
-                {/*    label="Contact"*/}
-                {/*    name={'contactId'}*/}
-                {/*    value={contactId}*/}
-                {/*    options={contacts}*/}
-                {/*    optionName={'fullName'}*/}
-                {/*    onChangeAction={handleInputChange}*/}
-                {/*    required={oneOfFieldRequired && 'required'}*/}
-                {/*    error={errors.docLinkedAtAny}*/}
-                {/*/>*/}
                 <InputText label="Type" name={'documentTypeName'} value={documentTypeName} readOnly={true} />
             </div>
-            {documentCreatedFrom.codeRef === 'emailattachment' ? (
-                <div className="row">
+
+            <div className="row">
+                {showPreSelectedContacts ? (
+                    <InputReactSelect_3_6
+                        label="Contacten uit email"
+                        name={'contactId'}
+                        value={contactId}
+                        options={preSelectedContacts}
+                        optionName={'fullName'}
+                        onChangeAction={handleInputChangeContactEmailId}
+                        required={'required'}
+                        error={!!errors.docLinkedAtAny}
+                        errorMessage={errors.docLinkedAtAny}
+                        buttonText={'Zoek in alle contacten'}
+                        buttonAction={toggleShowPreSelectedContacts}
+                    />
+                ) : (
                     <AsyncSelectSet
-                        label={'Contacten uit email'}
-                        name={'contactIdEmail'}
-                        id={'contactIdEmail'}
-                        size={'col-sm-6'}
+                        label={'Contact'}
+                        name={'contactId'}
+                        id={'contactId'}
+                        valueSize={'col-sm-6'}
+                        buttonSize={'col-sm-3'}
                         loadOptions={getContactOptions}
                         optionName={'fullName'}
                         value={selectedContact}
@@ -127,33 +164,18 @@ const DocumentNewFormGeneral = ({
                         isLoading={isLoadingContact}
                         handleInputChange={handleInputSearchChange}
                         multi={false}
+                        disabled={[
+                            'contact',
+                            'intake',
+                            'opportunity',
+                            'quotationrequest',
+                            'housingfile',
+                            'participant',
+                        ].includes(documentCreatedFrom.codeRef)}
+                        buttonText={hasPreSelectedContacts ? 'Zoek in e-mail contacten' : null}
+                        buttonAction={toggleShowPreSelectedContacts}
                     />
-                </div>
-            ) : null}
-            <div className="row">
-                <AsyncSelectSet
-                    label={'Contact'}
-                    name={'contactId'}
-                    id={'contactId'}
-                    size={'col-sm-6'}
-                    loadOptions={getContactOptions}
-                    optionName={'fullName'}
-                    value={selectedContact}
-                    onChangeAction={handleInputChangeContactId}
-                    required={'required'}
-                    error={errors.docLinkedAtAny}
-                    isLoading={isLoadingContact}
-                    handleInputChange={handleInputSearchChange}
-                    multi={false}
-                    disabled={[
-                        'contact',
-                        'intake',
-                        'opportunity',
-                        'quotationrequest',
-                        'housingfile',
-                        'participant',
-                    ].includes(documentCreatedFrom.codeRef)}
-                />
+                )}
             </div>
             <div className="row">
                 <InputSelect

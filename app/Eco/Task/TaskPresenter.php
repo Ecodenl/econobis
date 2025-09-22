@@ -16,6 +16,6 @@ class TaskPresenter extends Presenter
     public function noteSummary()
     {
         // Make summary from note, if string is longer then 40 characters
-        return str_limit($this->note, 100);
+        return str_limit($this->note, 160);
     }
 }

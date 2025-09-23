@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
-export default function EmailSplitViewFiltersPanel({ filters, setFilters, activeMailboxes }) {
+export default function EmailSplitViewFiltersPanel({ filters, setFilters, activeMailboxes, eigenOpenstaand }) {
     const statuses = useSelector(state => state.systemData.emailStatuses);
     const teams = useSelector(state => state.systemData.teams);
     const users = useSelector(state => state.systemData.users);
@@ -204,36 +204,47 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                             }}
                                         >
                                             <option></option>
-                                            {statuses.map(status => (
-                                                <option key={status.id} value={status.id}>
-                                                    {status.name}
+                                            {statuses
+                                                .filter(status => status.id !== 'closed')
+                                                .map(status => (
+                                                    <option key={status.id} value={status.id}>
+                                                        {status.name}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </th>
+
+                                    {eigenOpenstaand ? (
+                                        <th style={{ color: 'red', verticalAlign: 'middle' }}>
+                                            <span>Eigen</span>
+                                        </th>
+                                    ) : (
+                                        <th>
+                                            <select
+                                                className="form-control input-sm"
+                                                name={'responsible'}
+                                                value={getResponsibleValue()}
+                                                onChange={e => setResponsibleValue(e.target.value)}
+                                            >
+                                                <option value=""></option>
+                                                <option style={{ fontWeight: 'normal' }} value="noResponsible">
+                                                    Zonder verantwoordelijke
                                                 </option>
-                                            ))}
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select
-                                            className="form-control input-sm"
-                                            name={'responsible'}
-                                            value={getResponsibleValue()}
-                                            onChange={e => setResponsibleValue(e.target.value)}
-                                        >
-                                            <option value=""></option>
-                                            <option style={{ fontWeight: 'normal' }} value="noResponsible">
-                                                Zonder verantwoordelijke
-                                            </option>
-                                            <optgroup label={'Gebruikers'}>
-                                                {users.map(user => {
-                                                    return <option value={'user' + user.id}>{user['fullName']}</option>;
-                                                })}
-                                            </optgroup>
-                                            <optgroup label={'Teams'}>
-                                                {teams.map(team => {
-                                                    return <option value={'team' + team.id}>{team['name']}</option>;
-                                                })}
-                                            </optgroup>
-                                        </select>
-                                    </th>
+                                                <optgroup label={'Gebruikers'}>
+                                                    {users.map(user => {
+                                                        return (
+                                                            <option value={'user' + user.id}>{user['fullName']}</option>
+                                                        );
+                                                    })}
+                                                </optgroup>
+                                                <optgroup label={'Teams'}>
+                                                    {teams.map(team => {
+                                                        return <option value={'team' + team.id}>{team['name']}</option>;
+                                                    })}
+                                                </optgroup>
+                                            </select>
+                                        </th>
+                                    )}
                                     <th>
                                         <select
                                             className="form-control input-sm"

@@ -27,7 +27,7 @@ class ButtonEmails extends Component {
 
     render() {
         return (
-            <div className={this.props.size} onClick={() => this.props.navigate(`/mailclient/inbox`)}>
+            <div className={this.props.size} onClick={() => this.props.navigate(`/mailclient/inbox?eigen=1`)}>
                 <div className="panel panel-default" id="dashboardbutton-1">
                     <div className="panel-body">
                         <h4 className="text-center text-bold">E-MAIL</h4>

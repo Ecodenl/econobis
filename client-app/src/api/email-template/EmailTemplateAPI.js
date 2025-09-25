@@ -77,4 +77,11 @@ export default {
 
         return getAxiosInstance().post(requestUrl);
     },
+
+    duplicateTemplate: id => {
+        const URL_EMAIL_TEMPLATE = `${getApiUrl()}/api/email-template`;
+        const requestUrl = `${URL_EMAIL_TEMPLATE}/${id}/duplicate`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
 };

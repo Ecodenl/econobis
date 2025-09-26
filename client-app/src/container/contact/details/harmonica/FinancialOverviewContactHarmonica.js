@@ -12,16 +12,20 @@ const FinancialOverviewContactHarmonica = ({
     permissions,
 }) => {
     return (
-        <Panel className={'harmonica-button'}>
-            <PanelBody>
-                <div className="col-sm-10" onClick={toggleShowList} role="button">
-                    <span>
-                        WAARDESTATEN <span className="badge">{financialOverviewContactCount}</span>
-                    </span>
-                </div>
-                <div className="col-sm-12">{showFinancialOverviewContactList && <FinancialOverviewContactList />}</div>
-            </PanelBody>
-        </Panel>
+        permissions.viewFinancialOverview && (
+            <Panel className={'harmonica-button'}>
+                <PanelBody>
+                    <div className="col-sm-10" onClick={toggleShowList} role="button">
+                        <span>
+                            WAARDESTATEN <span className="badge">{financialOverviewContactCount}</span>
+                        </span>
+                    </div>
+                    <div className="col-sm-12">
+                        {showFinancialOverviewContactList && <FinancialOverviewContactList />}
+                    </div>
+                </PanelBody>
+            </Panel>
+        )
     );
 };
 

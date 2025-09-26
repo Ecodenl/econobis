@@ -1,7 +1,7 @@
 import React from 'react';
 
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
@@ -18,6 +18,8 @@ const RevenuesListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
+    const navigate = useNavigate();
+
     const { revenueId, categoryName, dateBegin, dateEnd, status, statusRevenue } = revenueDetails;
 
     const statusName = status => {
@@ -81,7 +83,7 @@ const RevenuesListFormView = ({
             </div>
             <div className="col-sm-1">
                 {showActionButtons && permissions.menuProjects ? (
-                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${revenueId}`)}>
+                    <a role="button" onClick={() => navigate(`/project/opbrengst/${revenueId}`)}>
                         <Icon className="mybtn-success" size={14} icon={eye} />
                     </a>
                 ) : (

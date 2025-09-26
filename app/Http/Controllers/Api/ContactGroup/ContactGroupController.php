@@ -105,6 +105,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
+            ->integer('portalSortOrder')->alias('portal_sort_order')->whenMissing(null)->onEmpty(null)->next()
             ->string('inspectionPersonTypeId')->validate('string')->alias('inspection_person_type_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
@@ -153,6 +154,7 @@ class ContactGroupController extends Controller
             ->boolean('sendEmailNewContactLink')->validate('boolean')->alias('send_email_new_contact_link')->whenMissing(false)->next()
             ->integer('emailTemplateIdNewContactLink')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_new_contact_link')->next()
             ->boolean('includeIntoExportGroupReport')->validate('boolean')->alias('include_into_export_group_report')->whenMissing(false)->next()
+            ->integer('portalSortOrder')->alias('portal_sort_order')->whenMissing(null)->onEmpty(null)->next()
             ->string('inspectionPersonTypeId')->validate('string')->alias('inspection_person_type_id')->whenMissing(null)->onEmpty(null)->next()
             ->get();
 
@@ -295,8 +297,13 @@ class ContactGroupController extends Controller
 
         $contactGroup->contacts()->detach($contact);
 
-        //now check if the contact is in any groups, if not set the inspection_person_type_id column to null again
-        if($contact->groups()->count() === 0) {
+        //now check if the contact is still in any inspection_person_type_group,
+        // if so set the inspection_person_type_id column to first found
+        // if not set the inspection_person_type_id column to null again
+        if($contact->groups()->whereNotNull('inspection_person_type_id')->exists()) {
+            $contact->inspection_person_type_id = $contact->groups()->whereNotNull('inspection_person_type_id')->first()->inspection_person_type_id;
+            $contact->save();
+        } else {
             $contact->inspection_person_type_id = null;
             $contact->save();
         }

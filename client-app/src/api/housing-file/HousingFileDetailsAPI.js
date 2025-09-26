@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_HOUSING_FILE = `${URL_API}/api/housing-file`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchHousingFilesDetails: function(id) {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -17,9 +17,9 @@ export default {
     },
 
     newHousingFile: housingFile => {
-        const requestUrl = `${URL_API}/api/contact/housing-file`;
+        const requestUrl = `${getApiUrl()}/api/contact/housing-file`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, housingFile)
             .then(function(response) {
                 return response.data;
@@ -30,9 +30,10 @@ export default {
     },
 
     updateHousingFile: housingFile => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, housingFile)
             .then(function(response) {
                 return response.data.data;
@@ -43,9 +44,10 @@ export default {
     },
 
     updateHousingFileUse: housingFile => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${housingFile.id}/update-use`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, housingFile)
             .then(function(response) {
                 return response.data.data;
@@ -56,27 +58,31 @@ export default {
     },
 
     deleteHousingFile: id => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     addHousingFileSpecification: housingFileSpecification => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification`;
 
-        return axiosInstance.post(requestUrl, housingFileSpecification);
+        return getAxiosInstance().post(requestUrl, housingFileSpecification);
     },
 
     updateHousingFileSpecification: housingFileSpecification => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecification.id}/update`;
 
-        return axiosInstance.post(requestUrl, housingFileSpecification);
+        return getAxiosInstance().post(requestUrl, housingFileSpecification);
     },
 
     deleteHousingFileSpecification: housingFileSpecificationId => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-specification/${housingFileSpecificationId}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -87,21 +93,24 @@ export default {
     },
 
     addHousingFileHousingStatus: housingFileHousingStatus => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status`;
 
-        return axiosInstance.post(requestUrl, housingFileHousingStatus);
+        return getAxiosInstance().post(requestUrl, housingFileHousingStatus);
     },
 
     updateHousingFileHousingStatus: housingFileHousingStatus => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status/${housingFileHousingStatus.id}/update`;
 
-        return axiosInstance.post(requestUrl, housingFileHousingStatus);
+        return getAxiosInstance().post(requestUrl, housingFileHousingStatus);
     },
 
     deleteHousingFileHousingStatus: housingFileHousingStatusId => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/housing-file-housing-status/${housingFileHousingStatusId}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -112,9 +121,10 @@ export default {
     },
 
     createOpportunitiesFromSpecifications: (housingFileId, specificationIds, campaignId) => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/campaign/${campaignId}/create-opportunities`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: specificationIds })
             .then(function(response) {
                 return response.data;
@@ -125,9 +135,10 @@ export default {
     },
 
     createQuotationRequestsFromSpecifications: (housingFileId, opportunityIds, organisationOrCoachId) => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/${housingFileId}/contact/${organisationOrCoachId}/create-quotation-requests`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: opportunityIds })
             .then(function(response) {
                 return response.data;
@@ -138,9 +149,10 @@ export default {
     },
 
     fetchHousingFileSelectionPerType: $selectionType => {
+        const URL_HOUSING_FILE = `${getApiUrl()}/api/housing-file`;
         const requestUrl = `${URL_HOUSING_FILE}/selection/${$selectionType}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;

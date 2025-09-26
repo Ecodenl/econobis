@@ -9,12 +9,14 @@ import moment from 'moment/moment';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 
 import EmailGenericAPI from '../../../api/email/EmailGenericAPI';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { EmailModalContext } from '../../../context/EmailModalContext';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import ErrorModal from '../../../components/modal/ErrorModal';
 
 const ContactsInGroupListToolbar = ({ contactGroupDetails, blockUI, unblockUI, refreshContactsInGroupData }) => {
+    const navigate = useNavigate();
+
     const [showModalError, setShowModalError] = useState(false);
     const { openEmailSendModal } = useContext(EmailModalContext);
 
@@ -56,7 +58,7 @@ const ContactsInGroupListToolbar = ({ contactGroupDetails, blockUI, unblockUI, r
     };
 
     const openGroupDetails = () => {
-        hashHistory.push(`/contact-groep/${contactGroupDetails.id}`);
+        navigate(`/contact-groep/${contactGroupDetails.id}`);
     };
 
     return (

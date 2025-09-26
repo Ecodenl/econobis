@@ -127,7 +127,7 @@ class AddressController extends ApiController
                 abort(412, implode(';', $messages));
             }
         }
-        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'addressDongles', 'country'));
     }
 
     public function destroy(Address $address)

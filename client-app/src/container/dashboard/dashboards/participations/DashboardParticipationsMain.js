@@ -16,7 +16,7 @@ class DashboardParticipationsMain extends Component {
         };
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         ProjectsAPI.getActive().then(payload => {
             this.setState({
                 activeProjectsIds: payload,

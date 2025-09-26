@@ -46,10 +46,15 @@ class QuotationRequestCSVHelper
                 $quotationRequest->date_planned = $this->formatDateTime($quotationRequest->date_planned);
                 $quotationRequest->date_recorded = $this->formatDateTime($quotationRequest->date_recorded);
                 $quotationRequest->date_released = $this->formatDate($quotationRequest->date_released);
+                $quotationRequest->statusApprovedClient = $quotationRequest->not_approved_client ? 'Afgekeurd' : ($quotationRequest->date_approved_client ? 'Goedgekeurd' : '');
+                $quotationRequest->statusApprovedProjectManager = $quotationRequest->not_approved_project_manager ? 'Afgekeurd' : ($quotationRequest->date_approved_project_manager ? 'Goedgekeurd' : '');
+                $quotationRequest->statusApprovedExternal = $quotationRequest->not_approved_external ? 'Afgekeurd' : ($quotationRequest->date_approved_external ? 'Goedgekeurd' : '');
+                $quotationRequest->statusApprovedDetermination = $quotationRequest->not_approved_determination ? 'Afgekeurd' : ($quotationRequest->date_approved_determination ? 'Goedgekeurd' : '');
                 $quotationRequest->date_approved_client = $this->formatDate($quotationRequest->date_approved_client);
                 $quotationRequest->date_approved_project_manager = $this->formatDate($quotationRequest->date_approved_project_manager);
                 $quotationRequest->date_under_review = $this->formatDate($quotationRequest->date_under_review);
                 $quotationRequest->date_approved_external = $this->formatDate($quotationRequest->date_approved_external);
+                $quotationRequest->date_approved_determination = $this->formatDate($quotationRequest->date_approved_determination);
                 $quotationRequest->measures = '';
 
                 $quotationRequest->opportunityActionName = $quotationRequest->opportunityAction ? $quotationRequest->opportunityAction->name : '';
@@ -100,10 +105,15 @@ class QuotationRequestCSVHelper
                 'date_planned' => 'Datum afspraak',
                 'date_recorded' => 'Datum opname',
                 'date_released' => 'Datum uitgebracht',
+                'statusApprovedClient' => 'Status akkoord bewoner',
                 'date_approved_client' => 'Datum akkoord bewoner',
+                'statusApprovedProjectManager' => 'Status akkoord projectleider',
                 'date_approved_project_manager' => 'Datum akkoord projectleider',
                 'date_under_review' => 'Datum toekenning in behandeling',
+                'statusApprovedExternal' => 'Status akkoord toekenning',
                 'date_approved_external' => 'Datum akkoord toekenning',
+                'statusApprovedDetermination' => 'Status akkoord vaststelling',
+                'date_approved_determination' => 'Datum akkoord vaststelling',
                 'quotation_text' => 'Offerte omschrijving',
                 'quotation_amount' => 'Offerte bedrag',
                 'opportunity.intake.contact.full_name' => 'Contact',

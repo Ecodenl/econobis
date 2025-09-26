@@ -72,7 +72,7 @@ class HousingFileSpecificationsListItem extends Component {
             <>
                 <tr
                     className={this.state.highlightRow}
-                    // onDoubleClick={permissions.manageFinancial ? () => this.openItem(id) : null}
+                    // onDoubleClick={permissions.manageHousingFile ? () => this.openItem(id) : null}
                     onMouseEnter={() => this.onRowEnter()}
                     onMouseLeave={() => this.onRowLeave()}
                     onClick={() => this.toggleShowMore()}

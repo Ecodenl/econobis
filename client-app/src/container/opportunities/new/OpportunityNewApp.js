@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import OpportunityNewToolbar from './OpportunityNewToolbar';
 import OpportunityNew from './OpportunityNew';
@@ -10,6 +10,13 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import validator from 'validator';
 import { connect } from 'react-redux';
+
+// Functionele wrapper voor de class component
+const OppportunitiesNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <OppportunitiesNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class OppportunitiesNewApp extends Component {
     constructor(props) {
@@ -39,7 +46,7 @@ class OppportunitiesNewApp extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         IntakeDetailsAPI.fetchIntakeDetails(this.props.params.intakeId).then(payload => {
             this.setState({
                 ...this.state,
@@ -105,7 +112,7 @@ class OppportunitiesNewApp extends Component {
 
         !hasErrors &&
             OpportunityDetailsAPI.storeOpportunity(opportunity).then(payload => {
-                hashHistory.push('/kans/' + payload.id);
+                this.props.navigate('/kans/' + payload.id);
             });
     };
 
@@ -161,4 +168,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(OppportunitiesNewApp);
+export default connect(mapStateToProps)(OppportunitiesNewAppWrapper);

@@ -1,4 +1,4 @@
-import axiosInstance from '../../default-setup/AxiosInstance';
+import getAxiosInstance from '../../default-setup/AxiosInstance';
 
 const URL_FINANCIAL_OVERVIEW = `financial-overview`;
 
@@ -6,7 +6,7 @@ export default {
     fetchFinancialOverviewDetails: id => {
         const requestUrl = `jory/financial-overview/${id}`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
                     fld: [
@@ -37,30 +37,30 @@ export default {
             fld: ['id'],
         });
 
-        return axiosInstance.post(requestUrl, financialOverview);
+        return getAxiosInstance().post(requestUrl, financialOverview);
     },
 
     updateFinancialOverview: financialOverview => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}`;
 
-        return axiosInstance.post(requestUrl, financialOverview);
+        return getAxiosInstance().post(requestUrl, financialOverview);
     },
 
     deleteFinancialOverview: id => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     fetchNewProjectsForFinancialOverview: financialOverview => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/projects-for-financial-overview`;
 
-        return axiosInstance.get(requestUrl, financialOverview);
+        return getAxiosInstance().get(requestUrl, financialOverview);
     },
 
     fetchTotalsInfoFinancialOverview: financialOverview => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW}/${financialOverview.id}/totals-info-financial-overview`;
 
-        return axiosInstance.get(requestUrl, financialOverview);
+        return getAxiosInstance().get(requestUrl, financialOverview);
     },
 };

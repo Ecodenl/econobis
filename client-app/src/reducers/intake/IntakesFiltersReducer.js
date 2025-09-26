@@ -27,6 +27,10 @@ const filtersReducerDefaultState = {
         field: 'measureRequestedId',
         data: '',
     },
+    intakeSource: {
+        field: 'intakeSourceId',
+        data: '',
+    },
     statusId: {
         field: 'statusId',
         data: '',
@@ -89,6 +93,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 measureRequested: {
                     ...state.measureRequested,
                     data: action.measureRequested,
+                },
+            };
+        case 'SET_FILTER_INTAKE_SOURCE':
+            return {
+                ...state,
+                intakeSource: {
+                    ...state.intakeSource,
+                    data: action.intakeSource,
                 },
             };
         case 'SET_FILTER_INTAKE_STATUS':

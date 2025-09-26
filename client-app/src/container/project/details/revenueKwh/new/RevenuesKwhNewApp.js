@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -8,6 +8,13 @@ import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
 import RevenuesKwhNewToolbar from './RevenuesKwhNewToolbar';
 import RevenuesKwhNewForm from './RevenuesKwhNewForm';
 import ProjectDetailsAPI from '../../../../../api/project/ProjectDetailsAPI';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <RevenuesKwhNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class RevenuesKwhNewApp extends Component {
     constructor(props) {
@@ -335,16 +342,16 @@ class RevenuesKwhNewApp extends Component {
                 .then(payload => {
                     this.setState({ isLoading: false });
                     // Delete path new-project-revenue in history, so when go back the page goes to the project details
-                    hashHistory.replace(`/project/details/${this.props.params.projectId}`);
+                    this.props.navigate(`/project/details/${this.props.params.projectId}`, { replace: true });
                     // Push to new revenue
-                    hashHistory.push(`/project/opbrengst-kwh/${payload.data.data.id}`);
+                    this.props.navigate(`/project/opbrengst-kwh/${payload.data.data.id}`);
                 })
                 .catch(error => {
                     console.log(error);
                     alert(
                         'Er is iets misgegaan bij opslaan. Probeer nogmaals een nieuwe opbrengstverdeling te maken vanuit het project.'
                     );
-                    hashHistory.goBack();
+                    this.props.navigate(-1);
                 });
         }
     };
@@ -384,4 +391,4 @@ class RevenuesKwhNewApp extends Component {
     }
 }
 
-export default RevenuesKwhNewApp;
+export default RevenuesKwhNewAppWrapper;

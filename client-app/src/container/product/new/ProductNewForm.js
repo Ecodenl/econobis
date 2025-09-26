@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 
 import InputText from '../../../components/form/InputText';
@@ -11,6 +11,12 @@ import { connect } from 'react-redux';
 import InputSelect from '../../../components/form/InputSelect';
 import AdministrationsAPI from '../../../api/administration/AdministrationsAPI';
 import InputReactSelect from '../../../components/form/InputReactSelect';
+
+// Functionele wrapper voor de class component
+const ProductNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <ProductNewForm {...props} navigate={navigate} />;
+};
 
 class ProductNewForm extends Component {
     constructor(props) {
@@ -202,7 +208,7 @@ class ProductNewForm extends Component {
         if (!hasErrors) {
             ProductDetailsAPI.newProduct(product)
                 .then(payload => {
-                    hashHistory.push(`/product/${payload.data.id}`);
+                    this.props.navigate(`/product/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -365,4 +371,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProductNewForm);
+export default connect(mapStateToProps)(ProductNewFormWrapper);

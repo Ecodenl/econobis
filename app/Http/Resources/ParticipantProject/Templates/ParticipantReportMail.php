@@ -6,6 +6,7 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Http\Controllers\Api\Document\DocumentController;
 use Illuminate\Mail\Mailable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class ParticipantReportMail extends Mailable
@@ -54,9 +55,20 @@ class ParticipantReportMail extends Mailable
             $defaultAttachmentDocument = Document::find($this->defaultAttachmentDocumentId);
             if ($defaultAttachmentDocument) {
                 $documentController = new DocumentController();
-                $this->attachData($documentController->downLoadRawDocument($defaultAttachmentDocument), $defaultAttachmentDocument->filename, [
-                    'as' => $defaultAttachmentDocument->filename
-                ]);
+
+                $attachment = $documentController->downLoadRawDocument($defaultAttachmentDocument);
+                if ($attachment && isset($attachment['content'])) {
+                    $this->attachData(
+                        $attachment['content'],
+                        $attachment['filename'],
+                        [
+                            'as' => $attachment['filename'],
+                            'mime' => $attachment['mime'] ?? 'application/octet-stream',
+                        ]
+                    );
+                } else {
+                    Log::error("Failed to retrieve raw data for attachment: {$defaultAttachmentDocument->filename}");
+                }
             }
         }
 

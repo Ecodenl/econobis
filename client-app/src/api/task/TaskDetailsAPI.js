@@ -1,70 +1,84 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_TASK = `${URL_API}/api/task`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchTaskDetails: id => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/${id}`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
     },
 
     newTask: task => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = URL_TASK;
 
-        return axiosInstance.post(requestUrl, task);
+        return getAxiosInstance().post(requestUrl, task);
     },
 
     updateTask: task => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/${task.id}`;
 
-        return axiosInstance.post(requestUrl, task);
+        return getAxiosInstance().post(requestUrl, task);
     },
 
     duplicateTask: id => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/${id}/duplicate`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteTask: id => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteBulkTasks: ids => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/bulk-delete`;
 
-        return axiosInstance.post(requestUrl, { ids: ids });
+        return getAxiosInstance().post(requestUrl, { ids: ids });
     },
 
     updateBulkTasks: (ids, values) => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/bulk-update`;
 
-        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+        return getAxiosInstance().post(requestUrl, { ids: ids, ...values });
     },
 
     storeTaskProperty: (id, data) => {
-        const requestUrl = `${URL_API}/api/task/${id}/properties`;
+        const requestUrl = `${getApiUrl()}/api/task/${id}/properties`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
     updateTaskProperty: (id, data) => {
-        const requestUrl = `${URL_API}/api/task-property-value/${id}`;
+        const requestUrl = `${getApiUrl()}/api/task-property-value/${id}`;
 
-        return axiosInstance.post(requestUrl, data);
+        return getAxiosInstance().post(requestUrl, data);
     },
 
     uploadTaskFile: (id, file) => {
+        const URL_TASK = `${getApiUrl()}/api/task`;
         const requestUrl = `${URL_TASK}/${id}/attachments`;
 
-        return axiosInstance.post(requestUrl, file);
+        return getAxiosInstance().post(requestUrl, file);
     },
 
     downloadAttachment: id => {
-        const requestUrl = `${URL_API}/api/task-attachment/${id}/download`;
+        const requestUrl = `${getApiUrl()}/api/task-attachment/${id}/download`;
 
-        return axiosInstance.get(requestUrl, { responseType: 'blob' });
+        return getAxiosInstance().get(requestUrl, { responseType: 'blob' });
     },
 };

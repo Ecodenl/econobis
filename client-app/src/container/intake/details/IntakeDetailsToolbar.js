@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import IntakeDetailsDelete from './IntakeDetailsDelete';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
+
+// Functionele wrapper voor de class component
+const IntakeDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class IntakeDetailsToolbar extends Component {
     constructor(props) {
@@ -16,12 +22,21 @@ class IntakeDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        if (this.props.contact.id == 0) {
+            this.props.navigate('/intakes');
+        } else {
+            this.props.navigate(`/contact/` + this.props.contact.id);
+        }
     };
 
     render() {
-        const { intakeAddress = {} } = this.props;
+        const { intakeAddress = {}, navigate } = this.props;
         let fullStreet = '';
         intakeAddress &&
             (fullStreet = `${intakeAddress.street || ''} ${intakeAddress.number || ''}${intakeAddress.addition || ''}`);
@@ -37,12 +52,9 @@ class IntakeDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageIntake && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -55,7 +67,7 @@ class IntakeDetailsToolbar extends Component {
                 </div>
                 {this.state.showDelete && (
                     <IntakeDetailsDelete
-                        closeDeleteItemModal={this.toggleDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                         fullStreet={fullStreet}
                         id={this.props.id}
                         contactId={this.props.contact.id}
@@ -76,4 +88,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(IntakeDetailsToolbar);
+export default connect(mapStateToProps)(IntakeDetailsToolbarWrapper);

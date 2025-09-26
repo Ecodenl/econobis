@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { isEmpty } from 'lodash';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate, useParams } from 'react-router-dom';
 import validator from 'validator';
 
 import ContactsAPI from '../../../api/contact/ContactsAPI';
@@ -19,6 +19,13 @@ import ProjectsAPI from '../../../api/project/ProjectsAPI';
 import ParticipantsProjectAPI from '../../../api/participant-project/ParticipantsProjectAPI';
 import OrdersAPI from '../../../api/order/OrdersAPI';
 import InvoicesAPI from '../../../api/invoice/InvoicesAPI';
+
+// Functionele wrapper voor de class component
+const TaskNewAppWrapper = props => {
+    const navigate = useNavigate();
+    const params = useParams();
+    return <TaskNewApp {...props} navigate={navigate} params={params} />;
+};
 
 class TaskNewApp extends Component {
     constructor(props) {
@@ -192,7 +199,7 @@ class TaskNewApp extends Component {
         });
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.id !== nextProps.params.id || this.props.params.type !== nextProps.params.type) {
             this.updateStateByChangeParams(nextProps.params);
         }
@@ -408,7 +415,7 @@ class TaskNewApp extends Component {
             TaskDetailsAPI.newTask(task)
                 .then(payload => {
                     const { id } = payload.data.data;
-                    hashHistory.push(`/taak/${id}`);
+                    this.props.navigate(`/taak/${id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -465,4 +472,4 @@ class TaskNewApp extends Component {
     }
 }
 
-export default TaskNewApp;
+export default TaskNewAppWrapper;

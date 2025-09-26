@@ -12,7 +12,9 @@ function ContactDetailHoomdossier({ closeModal, id, updateContactHoomAccount }) 
         ContactDetailsAPI.makeHoomDossier(id)
             .then(payload => {
                 setMessage('Hoomdossier is succesvol aangemaakt');
-                updateContactHoomAccount(1);
+                if (payload && payload.data) {
+                    updateContactHoomAccount(payload.data);
+                }
                 setTimeout(closeModal, 2000);
             })
             .catch(error => {

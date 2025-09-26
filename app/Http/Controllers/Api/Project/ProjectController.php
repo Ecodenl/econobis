@@ -32,6 +32,7 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
+        // Check op geauthoriseerde administratie gaat via ProjectBuilder !
         $projects = $requestQuery->get();
 
         $projects->load([
@@ -50,6 +51,9 @@ class ProjectController extends ApiController
         set_time_limit(60);
 
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         $project->load([
             'projectStatus',
@@ -74,6 +78,8 @@ class ProjectController extends ApiController
             'documentUnderstandInfo',
             'documentProjectInfo',
             'emailTemplateAgreement',
+            'documentTemplateIncreaseParticipations',
+            'emailTemplateIncreaseParticipations',
             'questionAboutMembershipGroup',
             'memberGroup',
             'noMemberGroup',
@@ -135,6 +141,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
@@ -144,6 +153,10 @@ class ProjectController extends ApiController
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textRegisterPageHeader')->alias('text_register_page_header')->next()
+            ->string('textRegisterCurrentBookWorth')->alias('text_register_current_book_worth')->next()
+            ->string('textRegisterParticipationSingular')->alias('text_register_participation_singular')->next()
+            ->string('textRegisterParticipationPlural')->alias('text_register_participation_plural')->next()
             ->string('textIsMember')->alias('text_is_member')->next()
             ->string('textIsNoMember')->alias('text_is_no_member')->next()
             ->string('textBecomeMember')->alias('text_become_member')->next()
@@ -152,7 +165,9 @@ class ProjectController extends ApiController
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->string('textAgreeTerms')->alias('text_agree_terms')->next()
             ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkNameAgreeTerms')->alias('text_link_name_agree_terms')->next()
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textLinkNameUnderstandInfo')->alias('text_link_name_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
@@ -258,6 +273,9 @@ class ProjectController extends ApiController
             ->double('maxAmountLoan')->onEmpty(null)->alias('max_amount_loan')->next()
             ->integer('documentTemplateAgreementId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->alias('document_template_agreement_id')->next()
             ->integer('emailTemplateAgreementId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->alias('email_template_agreement_id')->next()
+            ->boolean('allowIncreaseParticipationsInPortal')->alias('allow_increase_participations_in_portal')->next()
+            ->integer('documentTemplateIncreaseParticipationsId')->validate('nullable|exists:document_templates,id')->onEmpty(null)->whenMissing(null)->alias('document_template_increase_participations_id')->next()
+            ->integer('emailTemplateIncreaseParticipationsId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_increase_participations_id')->next()
             ->string('linkAgreeTerms')->alias('link_agree_terms')->next()
             ->string('linkUnderstandInfo')->alias('link_understand_info')->next()
             ->string('linkProjectInfo')->alias('link_project_info')->next()
@@ -267,6 +285,10 @@ class ProjectController extends ApiController
             ->boolean('showQuestionAboutMembership')->whenMissing(false)->onEmpty(false)->alias('show_question_about_membership')->next()
             ->boolean('useTransactionCostsWithMembership')->whenMissing(false)->onEmpty(false)->alias('use_transaction_costs_with_membership')->next()
             ->integer('questionAboutMembershipGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('question_about_membership_group_id')->next()
+            ->string('textRegisterPageHeader')->alias('text_register_page_header')->next()
+            ->string('textRegisterCurrentBookWorth')->alias('text_register_current_book_worth')->next()
+            ->string('textRegisterParticipationSingular')->alias('text_register_participation_singular')->next()
+            ->string('textRegisterParticipationPlural')->alias('text_register_participation_plural')->next()
             ->string('textIsMember')->alias('text_is_member')->next()
             ->string('textIsNoMember')->alias('text_is_no_member')->next()
             ->string('textBecomeMember')->alias('text_become_member')->next()
@@ -275,7 +297,9 @@ class ProjectController extends ApiController
             ->integer('noMemberGroupId')->validate('nullable|exists:contact_groups,id')->onEmpty(null)->alias('no_member_group_id')->next()
             ->string('textAgreeTerms')->alias('text_agree_terms')->next()
             ->string('textLinkAgreeTerms')->alias('text_link_agree_terms')->next()
+            ->string('textLinkNameAgreeTerms')->alias('text_link_name_agree_terms')->next()
             ->string('textLinkUnderstandInfo')->alias('text_link_understand_info')->next()
+            ->string('textLinkNameUnderstandInfo')->alias('text_link_name_understand_info')->next()
             ->string('textAcceptAgreement')->alias('text_accept_agreement')->next()
             ->string('textAcceptAgreementQuestion')->alias('text_accept_agreement_question')->next()
             ->string('textRegistrationFinished')->alias('text_registration_finished')->next()
@@ -357,6 +381,9 @@ class ProjectController extends ApiController
     {
         $this->authorize('manage', Project::class);
 
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         try {
             DB::beginTransaction();
 
@@ -378,9 +405,8 @@ class ProjectController extends ApiController
 
     public function peek()
     {
-//        $this->authorize('view', Project::class);
         if(Auth::user()->hasPermissionTo('view_project', 'api')){
-            $projects = Project::orderBy('name')->orderBy('id')->get();
+            $projects = Project::whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->orderBy('name')->orderBy('id')->get();
         } else {
             $projects = new Collection();
         }
@@ -394,6 +420,9 @@ class ProjectController extends ApiController
     {
         $this->authorize('view', Project::class);
 
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $obligationNumbers = [];
 
         foreach ($project->participantsProject as $participation){
@@ -405,6 +434,9 @@ class ProjectController extends ApiController
 
     public function getRelatedEmails($id, $folder)
     {
+        // todo WM: dit moet wellicht anders
+        if (!in_array(Project::find($id)->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
+
         $this->authorize('view', Project::class);
 
         return Email::where('project_id', $id)->where('folder', $folder)->get();
@@ -413,11 +445,14 @@ class ProjectController extends ApiController
     public function getActive(){
         $this->authorize('view', Project::class);
 
-        return Project::whereIn('project_status_id', [1,2])->pluck('id');
+        return Project::whereIn('project_status_id', [1,2])->whereIn('administration_id', Auth::user()->administrations()->pluck('administrations.id'))->pluck('id');
     }
 
     public function getChartData(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
@@ -436,6 +471,9 @@ class ProjectController extends ApiController
 
     public function getChartDataParticipations(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 //        $participantProjectStatuses = ParticipantProjectStatus::all();
@@ -461,6 +499,9 @@ class ProjectController extends ApiController
 
     public function getChartDataStatus(Project $project){
         $this->authorize('view', Project::class);
+
+        // todo WM: dit moet wellicht anders
+        if (!in_array($project->administration_id, Auth::user()->administrations()->pluck('administrations.id')->toArray())) abort(403);
 
         //TODO fixing chart data
 

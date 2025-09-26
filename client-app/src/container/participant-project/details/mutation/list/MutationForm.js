@@ -28,7 +28,7 @@ class MutationForm extends Component {
 
     render() {
         let allowAddMutation = false;
-        if (this.props.permissions.manageFinancial && !this.props.isTerminated) {
+        if (this.props.permissions.manageParticipation && !this.props.isTerminated) {
             if (this.props.projectTypeCodeRef !== 'loan') {
                 allowAddMutation = true;
             } else if (this.props.loanTypeCodeRef === 'lineair') {

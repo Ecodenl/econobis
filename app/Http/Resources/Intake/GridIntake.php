@@ -24,6 +24,9 @@ class GridIntake extends JsonResource
                 'areaName' => optional($this->address)->shared_area_name,
                 'campaign' => CampaignByIntake::make($this->whenLoaded('campaign')),
                 'measuresRequestedNames' => $this->measuresRequested()->pluck('name'),
+                'sourcesNames' => $this->sources->map(function($source) {
+                    return $source->name_source;
+                })->values(),
                 'status' => optional($this->status)->name,
                 'contactId' => $this->contact->id,
             ];

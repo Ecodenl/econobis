@@ -498,6 +498,11 @@ class ContactsListExtraFilters extends Component {
                 type: 'dropdownHas',
                 dropDownOptions: this.props.measureCategories,
             },
+            intakeSource: {
+                name: 'Intake aanmeldingsbron',
+                type: 'dropdownHas',
+                dropDownOptions: this.props.intakeSources,
+            },
             opportunityMeasureCategory: {
                 name: 'Kans maatregel categorie',
                 type: 'dropdownHas',
@@ -789,6 +794,7 @@ const mapStateToProps = state => {
         staticContactGroups: state.systemData.staticContactGroups,
         primaryOccupations: state.systemData.primaryOccupations,
         measureCategories: state.systemData.measureCategories,
+        intakeSources: state.systemData.intakeSources,
         measures: state.systemData.measures,
         opportunityStatus: state.systemData.opportunityStatus,
         opportunityEvaluationStatuses: state.systemData.opportunityEvaluationStatuses,

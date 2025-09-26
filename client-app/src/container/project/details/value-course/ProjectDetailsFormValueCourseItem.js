@@ -147,7 +147,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                     toggleDelete={this.toggleDelete}
                     valueCourse={this.state.valueCourse}
                 />
-                {this.state.showEdit && this.props.permissions.manageFinancial && (
+                {this.state.showEdit && this.props.permissions.manageProject && (
                     <ProjectDetailsFormValueCourseEdit
                         valueCourse={this.state.valueCourse}
                         handleInputChange={this.handleInputChange}
@@ -159,7 +159,7 @@ class ProjectDetailsFormValueCourseItem extends Component {
                         lastYearFinancialOverviewDefinitive={this.props.lastYearFinancialOverviewDefinitive}
                     />
                 )}
-                {this.state.showDelete && this.props.permissions.manageFinancial && (
+                {this.state.showDelete && this.props.permissions.manageProject && (
                     <ProjectDetailsFormValueCourseDelete
                         closeDeleteItemModal={this.toggleDelete}
                         {...this.props.valueCourse}

@@ -1,18 +1,22 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 import axios from 'axios';
+import { getApiUrl } from '../utils/ApiUrl';
 
-axiosInstance.CancelToken = axios.CancelToken;
-axiosInstance.isCancel = axios.isCancel;
-
+// try {
+//     getAxiosInstance().CancelToken = axios.CancelToken;
+//     getAxiosInstance().isCancel = axios.isCancel;
+// } catch (e) {
+//     console.warn('Axios instance is nog niet beschikbaar bij load time:', e.message);
+// }
+//
 let cancelToken;
-
-const URL_EMAIL_ADDRESS = `${URL_API}/api/email-address`;
 
 export default {
     newEmailAddress: emailAddress => {
+        const URL_EMAIL_ADDRESS = `${getApiUrl()}/api/email-address`;
         const requestUrl = `${URL_EMAIL_ADDRESS}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, emailAddress)
             .then(function(response) {
                 return response.data.data;
@@ -23,9 +27,10 @@ export default {
     },
 
     updateEmailAddress: emailAddress => {
+        const URL_EMAIL_ADDRESS = `${getApiUrl()}/api/email-address`;
         const requestUrl = `${URL_EMAIL_ADDRESS}/${emailAddress.id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, emailAddress)
             .then(function(response) {
                 return response.data.data;
@@ -36,9 +41,10 @@ export default {
     },
 
     deleteEmailAddress: id => {
+        const URL_EMAIL_ADDRESS = `${getApiUrl()}/api/email-address`;
         const requestUrl = `${URL_EMAIL_ADDRESS}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -49,7 +55,9 @@ export default {
     },
 
     fetchEmailAddressessSearch: searchTermContact => {
-        const requestUrl = `${URL_API}/api/email/search?searchTerm=${searchTermContact}`;
+        const requestUrl = `${getApiUrl()}/api/email/search?searchTerm=${searchTermContact}`;
+        getAxiosInstance().CancelToken = axios.CancelToken;
+        getAxiosInstance().isCancel = axios.isCancel;
 
         if (typeof cancelToken != typeof undefined) {
             //Check if there are any previous pending requests
@@ -57,17 +65,17 @@ export default {
         }
 
         //Save the cancel token for the current request
-        cancelToken = axiosInstance.CancelToken.source();
+        cancelToken = getAxiosInstance().CancelToken.source();
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             cancelToken: cancelToken.token,
         });
     },
 
     fetchPrimaryEmailAddressId: contactIds => {
-        const requestUrl = `${URL_API}/api/contact/get-primary-email-addresses-id`;
+        const requestUrl = `${getApiUrl()}/api/contact/get-primary-email-addresses-id`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: contactIds,

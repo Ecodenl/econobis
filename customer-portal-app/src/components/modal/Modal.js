@@ -1,8 +1,7 @@
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 class Modal extends Component {
-
     render() {
         const {
             modalClassName,
@@ -15,28 +14,29 @@ class Modal extends Component {
             confirmAction,
             title,
             draggableDisabled,
+            showConfirmAction,
         } = this.props;
         return (
-                <div className={`modal ${modalMainClassName}`} style={{display: 'block'}}>
-                    <div className={`modal-dialog ${modalClassName}`}>
-                        <div className="modal-content">
-                            <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
-                                <h4 className="modal-title">{title}</h4>
-                            </div>
-                            <div className="modal-body">{children}</div>
-                            <div className="modal-footer">
-                                <button type="button" className="btn btn-default" onClick={closeModal}>
-                                    {buttonCancelText}
+            <div className={`modal ${modalMainClassName}`} style={{ display: 'block' }}>
+                <div className={`modal-dialog ${modalClassName}`}>
+                    <div className="modal-content">
+                        <div className={`modal-header` + (draggableDisabled ? '' : ' draggable-header')}>
+                            <h4 className="modal-title">{title}</h4>
+                        </div>
+                        <div className="modal-body">{children}</div>
+                        <div className="modal-footer">
+                            <button type="button" className="btn btn-default" onClick={closeModal}>
+                                {buttonCancelText}
+                            </button>
+                            {showConfirmAction && (
+                                <button type="button" className={buttonClassName} onClick={confirmAction}>
+                                    {buttonConfirmText}
                                 </button>
-                                {this.props.showConfirmAction && (
-                                    <button type="button" className={buttonClassName} onClick={confirmAction}>
-                                        {buttonConfirmText}
-                                    </button>
-                                )}
-                            </div>
+                            )}
                         </div>
                     </div>
                 </div>
+            </div>
         );
     }
 }

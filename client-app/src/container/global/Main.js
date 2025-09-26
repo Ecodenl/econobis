@@ -1,167 +1,107 @@
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-import {bindActionCreators} from 'redux';
+import React, { useState, useEffect, Suspense } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Outlet } from 'react-router-dom';
 import BlockUi from 'react-block-ui';
 import 'react-block-ui/style.css';
-
-import {toggleSidebarClose, toggleSidebarOpen} from '../../actions/general/SidebarActions';
-import {fetchMeDetails} from '../../actions/general/MeDetailsActions';
-import {fetchSystemData} from '../../actions/general/SystemDataActions';
-import NavHeader from '../../components/navigationHeader/NavHeader';
-import Sidebar from '../../components/navigationSidebar/Sidebar';
+import { fetchMeDetails } from '../../actions/general/MeDetailsActions';
+import { fetchSystemData } from '../../actions/general/SystemDataActions';
 import LoadingPage from './LoadingPage';
 import ErrorPage from './ErrorPage';
-import Content from './Content';
-import {EmailModalProvider} from "../../context/EmailModalContext";
+import { EmailModalProvider } from '../../context/EmailModalContext';
 
-class Main extends Component {
-    constructor(props) {
-        super(props);
+// Dynamische imports voor de componenten
+const NavHeader = React.lazy(() => import('../../components/navigationHeader/NavHeader'));
+const Sidebar = React.lazy(() => import('../../components/navigationSidebar/Sidebar'));
+const Content = React.lazy(() => import('./Content'));
 
-        this.state = {
-            menuActive: false,
-            menuStuck: false,
-            changePasswordActive: false,
-            twoFactorSettingsActive: false,
-            showAboutUs: false,
-        };
+const Main = ({ children }) => {
+    const [menuActive, setMenuActive] = useState(false);
+    const [menuStuck, setMenuStuck] = useState(false);
+    const [changePasswordActive, setChangePasswordActive] = useState(false);
+    const [twoFactorSettingsActive, setTwoFactorSettingsActive] = useState(false);
+    const [showAboutUs, setShowAboutUs] = useState(false);
 
-        const token = localStorage.getItem('access_token');
+    const dispatch = useDispatch();
+    const { authenticated } = useSelector(state => state.auth);
 
-        if (this.props.authenticated && token) {
-            props.fetchMeDetails();
+    const systemDataLoaded = useSelector(state => state.systemData.isLoaded);
+    const systemDataHasError = useSelector(state => state.systemData.hasError);
+    const meDetailsLoaded = useSelector(state => state.meDetails.isLoaded);
+    const meDetailsHasError = useSelector(state => state.meDetails.hasError);
+
+    useEffect(() => {
+        if (authenticated) {
+            dispatch(fetchMeDetails());
+            dispatch(fetchSystemData());
         }
+    }, [authenticated, dispatch]);
 
-        this.onMenuEnter = this.onMenuEnter.bind(this);
-        this.onMenuLeave = this.onMenuLeave.bind(this);
-        this.toggleMenu = this.toggleMenu.bind(this);
-        this.toggleChangePassword = this.toggleChangePassword.bind(this);
-        this.toggleTwoFactorSettings = this.toggleTwoFactorSettings.bind(this);
-        this.toggleAboutUs = this.toggleAboutUs.bind(this);
-        this.toggleMenuStuck = this.toggleMenuStuck.bind(this);
+    const toggleMenu = () => setMenuActive(prevState => !prevState);
+    const toggleMenuStuck = () => setMenuStuck(prevState => !prevState);
+    const toggleChangePassword = () => setChangePasswordActive(prevState => !prevState);
+    const toggleTwoFactorSettings = () => setTwoFactorSettingsActive(prevState => !prevState);
+    const toggleAboutUs = () => setShowAboutUs(prevState => !prevState);
+
+    if (systemDataHasError || meDetailsHasError) {
+        return <ErrorPage />;
     }
 
-    componentDidMount() {
-        const token = localStorage.getItem('access_token');
-
-        if (this.props.authenticated && token) {
-            this.props.fetchSystemData();
-        }
+    if (!systemDataLoaded || !meDetailsLoaded) {
+        return <LoadingPage />;
     }
 
-    onMenuEnter() {
-        this.setState({
-            menuActive: true,
-        });
-    }
+    const contentClass = menuActive ? 'content open' : 'content';
 
-    onMenuLeave() {
-        this.setState({
-            menuActive: false,
-        });
-    }
+    return (
+        <BlockUi
+            tag="div"
+            blocking={false}
+            className={'full-screen-loading'}
+            message={'Moment geduld, de gegevens worden opgehaald'}
+        >
+            <EmailModalProvider>
+                <div className="wrapper">
+                    <div>
+                        {/* Gebruik Suspense om dynamisch geladen componenten in te sluiten */}
+                        <Suspense fallback={<LoadingPage />}>
+                            <NavHeader
+                                menuStuck={menuStuck}
+                                toggleMenuStuck={toggleMenuStuck}
+                                toggleChangePassword={toggleChangePassword}
+                                toggleTwoFactorSettings={toggleTwoFactorSettings}
+                                toggleAboutUs={toggleAboutUs}
+                            />
+                            <Sidebar
+                                onMenuEnter={() => setMenuActive(true)}
+                                onMenuLeave={() => setMenuActive(false)}
+                                menuActive={menuActive}
+                                menuStuck={menuStuck}
+                            />
+                        </Suspense>
+                    </div>
 
-    toggleMenu() {
-        this.setState({
-            menuActive: !this.state.menuActive,
-        });
-    }
-
-    toggleMenuStuck() {
-        this.setState({
-            menuStuck: !this.state.menuStuck,
-        });
-    }
-
-    toggleChangePassword() {
-        this.setState({
-            changePasswordActive: !this.state.changePasswordActive,
-        });
-    }
-
-    toggleTwoFactorSettings() {
-        this.setState({
-            twoFactorSettingsActive: !this.state.twoFactorSettingsActive,
-        });
-    }
-
-    toggleAboutUs() {
-        this.setState({
-            showAboutUs: !this.state.showAboutUs,
-        });
-    }
-
-    render() {
-        const contentClass = this.state.menuActive ? 'content open' : 'content';
-
-        return (
-            <div>
-                {this.props.systemDataHasError || this.props.meDetailsHasError ? (
-                    <ErrorPage/>
-                ) : this.props.systemDataLoaded && this.props.meDetailsLoaded ? (
-                    <BlockUi
-                        tag="div"
-                        blocking={this.props.blockUI}
-                        className={'full-screen-loading'}
-                        message={'Moment geduld, de gegevens worden opgehaald'}
-                    >
-                        <EmailModalProvider>
-                            <div className="wrapper">
-                                <div>
-                                    <NavHeader
-                                        menuStuck={this.state.menuStuck}
-                                        toggleMenuStuck={this.toggleMenuStuck}
-                                        toggleChangePassword={this.toggleChangePassword}
-                                        toggleTwoFactorSettings={this.toggleTwoFactorSettings}
-                                        toggleAboutUs={this.toggleAboutUs}
-                                    />
-                                    <Sidebar
-                                        onMenuEnter={this.onMenuEnter}
-                                        onMenuLeave={this.onMenuLeave}
-                                        menuActive={this.state.menuActive}
-                                        menuStuck={this.state.menuStuck}
-                                    />
-                                </div>
-
-                                <div className={contentClass}>
-                                    <div className="container-fluid">
-                                        <div className="col-md-12">
-                                            <Content
-                                                children={this.props.children}
-                                                toggleChangePassword={this.toggleChangePassword}
-                                                toggleTwoFactorSettings={this.toggleTwoFactorSettings}
-                                                changePasswordActive={this.state.changePasswordActive}
-                                                twoFactorSettingsActive={this.state.twoFactorSettingsActive}
-                                                toggleAboutUs={this.toggleAboutUs}
-                                                showAboutUs={this.state.showAboutUs}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
+                    <div className={contentClass}>
+                        <div className="container-fluid">
+                            <div className="col-md-12">
+                                <Suspense fallback={<LoadingPage />}>
+                                    <Content
+                                        toggleChangePassword={toggleChangePassword}
+                                        toggleTwoFactorSettings={toggleTwoFactorSettings}
+                                        changePasswordActive={changePasswordActive}
+                                        twoFactorSettingsActive={twoFactorSettingsActive}
+                                        toggleAboutUs={toggleAboutUs}
+                                        showAboutUs={showAboutUs}
+                                    >
+                                        <Outlet />
+                                    </Content>
+                                </Suspense>
                             </div>
-                        </EmailModalProvider>
-                    </BlockUi>
-                ) : (
-                    <LoadingPage/>
-                )}
-            </div>
-        );
-    }
-}
+                        </div>
+                    </div>
+                </div>
+            </EmailModalProvider>
+        </BlockUi>
+    );
+};
 
-function mapStateToProps(state) {
-    return {
-        authenticated: state.auth.authenticated,
-        systemDataLoaded: state.systemData.isLoaded,
-        systemDataHasError: state.systemData.hasError,
-        meDetailsLoaded: state.meDetails.isLoaded,
-        meDetailsHasError: state.meDetails.hasError,
-        blockUI: state.blockUI.blocked,
-        appName: state.systemData.appName,
-    };
-}
-
-const mapDispatchToProps = dispatch =>
-    bindActionCreators({fetchMeDetails, fetchSystemData, toggleSidebarClose, toggleSidebarOpen}, dispatch);
-
-export default connect(mapStateToProps, mapDispatchToProps)(Main);
+export default Main;

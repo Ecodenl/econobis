@@ -15,12 +15,20 @@ import { isEmpty } from 'lodash';
 import MailboxAPI from '../../../api/mailbox/MailboxAPI';
 import filterHelper from '../../../helpers/FilterHelper';
 import { bindActionCreators } from 'redux';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const EmailsInListAppWrapper = props => {
+    const params = useParams();
+    return <EmailsInListApp {...props} params={params} />;
+};
 
 class EmailsInListApp extends Component {
     constructor(props) {
         super(props);
 
         if (!isEmpty(props.params)) {
+            // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
             if (props.params.type === 'eigen') {
                 this.props.setFilterMe(true);
             }
@@ -40,7 +48,7 @@ class EmailsInListApp extends Component {
         this.props.clearEmails();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.folder !== nextProps.params.folder) {
             if (!isEmpty(nextProps.params.folder)) {
                 this.props.clearFilterEmail();
@@ -52,6 +60,7 @@ class EmailsInListApp extends Component {
 
         if (this.props.params.type !== nextProps.params.type) {
             if (!isEmpty(nextProps.params)) {
+                // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
                 if (nextProps.params.type === 'eigen') {
                     this.props.setFilterMe(true);
                 } else {
@@ -129,6 +138,7 @@ class EmailsInListApp extends Component {
 
         let me = false;
 
+        // todo WM: volgens mij wordt mailclient/email/eigen niet meer gebruikt en kan dit weg (voor nu nog even laten staan)
         if (this.props.params.type == 'eigen') {
             me = true;
         }
@@ -172,4 +182,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(EmailsInListAppWrapper);

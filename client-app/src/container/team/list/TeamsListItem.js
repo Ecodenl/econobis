@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 import { check } from 'react-icons-kit/fa/check';
+
+// Functionele wrapper voor de class component
+const TeamsListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <TeamsListItem {...props} navigate={navigate} />;
+};
 
 class TeamsListItem extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class TeamsListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/team/${id}`);
+        this.props.navigate(`/team/${id}`);
     }
 
     render() {
@@ -78,4 +84,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(TeamsListItem);
+export default connect(mapStateToProps, null)(TeamsListItemWrapper);

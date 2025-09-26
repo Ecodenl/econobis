@@ -1,5 +1,8 @@
+import moment from 'moment';
+
 export default function(
     participantMutation,
+    disableBeforeEntryDate,
     errors,
     errorMessage,
     hasErrors,
@@ -170,6 +173,27 @@ export default function(
             if (!participantMutation.dateEntry) {
                 errors.dateEntry = true;
                 hasErrors = true;
+            }
+
+            if (
+                disableBeforeEntryDate &&
+                participantMutation.dateEntry &&
+                moment(participantMutation.dateEntry).isBefore(disableBeforeEntryDate)
+            ) {
+                if (errors) errors.dateEntry = true;
+                if (errorMessage) {
+                    errorMessage.dateEntry =
+                        'De ingangsdatum moet na ' +
+                        moment(disableBeforeEntryDate)
+                            .subtract(1, 'days')
+                            .format('DD-MM-YYYY') +
+                        ' liggen.';
+                    errors.dateEntry = true;
+                    hasErrors = true;
+                }
+            } else if (errors && errors.dateEntry) {
+                errors.dateEntry = false;
+                if (errorMessage) errorMessage.dateEntry = '';
             }
         }
     }

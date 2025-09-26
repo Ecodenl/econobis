@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchQuotationRequests: ({ filters, sorts, pagination }) => {
-        const requestUrl = `${URL_API}/api/quotation-request/grid`;
+        const requestUrl = `${getApiUrl()}/api/quotation-request/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -15,9 +16,9 @@ export default {
     },
 
     peekQuotationRequests: () => {
-        const requestUrl = `${URL_API}/api/quotation-request/peek`;
+        const requestUrl = `${getApiUrl()}/api/quotation-request/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -27,14 +28,14 @@ export default {
             });
     },
 
-    peekQuotationRequestsForContacts: (contactIds) => {
-        const requestUrl = `${URL_API}/api/quotation-request/peek`;
+    peekQuotationRequestsForContacts: contactIds => {
+        const requestUrl = `${getApiUrl()}/api/quotation-request/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     contactIds: JSON.stringify(contactIds),
-                }
+                },
             })
             .then(function(response) {
                 return response.data.data;
@@ -42,9 +43,9 @@ export default {
     },
 
     getAmountActive: () => {
-        const requestUrl = `${URL_API}/api/quotation-request/amount-open`;
+        const requestUrl = `${getApiUrl()}/api/quotation-request/amount-open`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -53,9 +54,9 @@ export default {
     },
 
     getCSV: ({ filters, sorts }) => {
-        const requestUrl = `${URL_API}/api/quotation-request/csv`;
+        const requestUrl = `${getApiUrl()}/api/quotation-request/csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),

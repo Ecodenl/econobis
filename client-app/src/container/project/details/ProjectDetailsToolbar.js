@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ProjectDetailsDelete from './ProjectDetailsDelete';
+
+// Functionele wrapper voor de class component
+const ProjectDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ProjectDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class ProjectDetailsToolbar extends Component {
     constructor(props) {
@@ -16,12 +22,17 @@ class ProjectDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate('/projecten');
     };
 
     render() {
-        const { project } = this.props;
+        const { project, navigate } = this.props;
 
         return (
             <div className="row">
@@ -30,12 +41,9 @@ class ProjectDetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon
-                                        iconName={'arrowLeft'}
-                                        onClickAction={browserHistory.goBack}
-                                    />
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                     {this.props.permissions.manageProject && (
-                                        <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                        <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                     )}
                                 </div>
                             </div>
@@ -50,7 +58,7 @@ class ProjectDetailsToolbar extends Component {
                 </div>
 
                 {this.state.showDelete && (
-                    <ProjectDetailsDelete closeDeleteItemModal={this.toggleDelete} id={project.id} />
+                    <ProjectDetailsDelete closeDeleteItemModal={this.hideDeleteModal} id={project.id} />
                 )}
             </div>
         );
@@ -64,4 +72,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ProjectDetailsToolbar);
+export default connect(mapStateToProps)(ProjectDetailsToolbarWrapper);

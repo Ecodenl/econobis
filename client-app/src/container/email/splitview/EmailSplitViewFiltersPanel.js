@@ -18,7 +18,16 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
         setResponsibleUserId('');
         setResponsibleTeamId('');
 
-        if (val.indexOf('user') !== 0 && val.indexOf('team') !== 0) {
+        if (val === 'noResponsible') {
+            setFilters({
+                ...filters,
+                responsibleUserId: 'noResponsible',
+                responsibleTeamId: '',
+                fetch: true,
+            });
+        }
+
+        if (val !== 'noResponsible' && val.indexOf('user') !== 0 && val.indexOf('team') !== 0) {
             setFilters({
                 ...filters,
                 responsibleUserId: '',
@@ -26,7 +35,7 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                 fetch: true,
             });
         }
-        if (val.indexOf('user') === 0) {
+        if (val !== 'noResponsible' && val.indexOf('user') === 0) {
             setResponsibleUserId(val.replace('user', ''));
             setFilters({
                 ...filters,
@@ -36,7 +45,7 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
             });
         }
 
-        if (val.indexOf('team') === 0) {
+        if (val !== 'noResponsible' && val.indexOf('team') === 0) {
             setResponsibleTeamId(val.replace('team', ''));
             setFilters({
                 ...filters,
@@ -48,6 +57,9 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
     };
 
     const getResponsibleValue = () => {
+        if (filters.responsibleUserId === 'noResponsible') {
+            return 'noResponsible';
+        }
         if (filters.responsibleUserId) {
             return 'user' + filters.responsibleUserId;
         }
@@ -207,22 +219,17 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                             onChange={e => setResponsibleValue(e.target.value)}
                                         >
                                             <option value=""></option>
-                                            <optgroup key={1} label={'Gebruikers'}>
+                                            <option style={{ fontWeight: 'normal' }} value="noResponsible">
+                                                Zonder verantwoordelijke
+                                            </option>
+                                            <optgroup label={'Gebruikers'}>
                                                 {users.map(user => {
-                                                    return (
-                                                        <option key={user.id} value={'user' + user.id}>
-                                                            {user['fullName']}
-                                                        </option>
-                                                    );
+                                                    return <option value={'user' + user.id}>{user['fullName']}</option>;
                                                 })}
                                             </optgroup>
-                                            <optgroup key={1} label={'Teams'}>
+                                            <optgroup label={'Teams'}>
                                                 {teams.map(team => {
-                                                    return (
-                                                        <option key={team.id} value={'team' + team.id}>
-                                                            {team['name']}
-                                                        </option>
-                                                    );
+                                                    return <option value={'team' + team.id}>{team['name']}</option>;
                                                 })}
                                             </optgroup>
                                         </select>

@@ -38,7 +38,7 @@ class ContactDetailsFormOccupationsItem extends Component {
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (!isEqual(this.state.occupation, nextProps.occupation)) {
             this.setState({
                 ...this.state,

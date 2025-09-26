@@ -100,34 +100,14 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
-            ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
-            ->string('twinfieldRefreshToken')->whenMissing(null)->onEmpty(null)->alias('twinfield_refresh_token')->next()
-            ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
-            ->string('twinfieldPassword')->whenMissing(null)->onEmpty(null)->alias('twinfield_password')->next()
-            ->string('twinfieldClientId')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_id')->next()
-            ->string('twinfieldClientSecret')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_secret')->next()
-            ->string('twinfieldOrganizationCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_organization_code')->next()
-            ->string('twinfieldOfficeCode')->whenMissing(null)->onEmpty(null)->alias('twinfield_office_code')->next()
-            ->string('dateSyncTwinfieldContacts')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_contacts')->next()
-            ->string('dateSyncTwinfieldPayments')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_payments')->next()
-            ->string('dateSyncTwinfieldInvoices')->whenMissing(null)->onEmpty(null)->alias('date_sync_twinfield_invoices')->next()
+            ->boolean('usesTwinfield')->whenMissing(false)->onEmpty(false)->alias('uses_twinfield')->next()
+            ->boolean('twinfieldIsValid')->whenMissing(false)->onEmpty(false)->alias('twinfield_is_valid')->next()
+            ->string('twinfieldConnectionType')->whenMissing('openid')->onEmpty('openid')->alias('twinfield_connection_type')->next()
             ->string('prefixInvoiceNumber')->whenMissing(null)->onEmpty(null)->alias('prefix_invoice_number')->next()
             ->string('emailBccNotas')->whenMissing(null)->onEmpty(null)->alias('email_bcc_notas')->next()
             ->integer('portalSettingsLayoutId')->validate('nullable|exists:portal_settings_layouts,id')->onEmpty(null)->whenMissing(null)->alias('portal_settings_layout_id')->next()
             ->string('logoName')->whenMissing(null)->onEmpty(null)->alias('logo_name')->next()
             ->get();
-
-        //bool als string? waarschijnlijk door formdata
-        $usesTwinfield = $request->input('usesTwinfield');
-
-        if($usesTwinfield == 'false' || $usesTwinfield == '0'){
-            $usesTwinfield = false;
-        }
-        if($usesTwinfield == 'true' || $usesTwinfield == '1'){
-            $usesTwinfield = true;
-        }
-
-        $data['uses_twinfield'] = $usesTwinfield;
 
         //bool als string? waarschijnlijk door formdata
         $usesVat = $request->input('usesVat');
@@ -149,19 +129,6 @@ class AdministrationController extends ApiController
         }
 
         $administration = new Administration($data);
-
-        if($administration->uses_twinfield) {
-            $twinfieldHelper = new TwinfieldHelper($administration);
-            try {
-                $administration->twinfield_is_valid = $twinfieldHelper->testConnection();
-            }
-            catch(\Exception $e){
-                Log::error($e->getMessage());
-                $administration->twinfield_is_valid = 0;
-            }
-        }else{
-            $administration->twinfield_is_valid = 0;
-        }
 
         $administration->save();
 
@@ -207,7 +174,7 @@ class AdministrationController extends ApiController
             ->integer('emailTemplateExhortationId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_exhortation_id')->next()
             ->integer('emailTemplateFinancialOverviewId')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_financial_overview_id')->next()
             ->integer('mailboxId')->validate('nullable|exists:mailboxes,id')->onEmpty(null)->whenMissing(null)->alias('mailbox_id')->next()
-            ->string('twinfieldConnectionType')->whenMissing(null)->onEmpty(null)->alias('twinfield_connection_type')->next()
+            ->string('twinfieldConnectionType')->whenMissing('openid')->onEmpty('openid')->alias('twinfield_connection_type')->next()
             ->string('twinfieldUsername')->whenMissing(null)->onEmpty(null)->alias('twinfield_username')->next()
             ->string('twinfieldPassword')->whenMissing($administration->twinfield_password)->onEmpty($administration->twinfield_password)->alias('twinfield_password')->next()
             ->string('twinfieldClientId')->whenMissing(null)->onEmpty(null)->alias('twinfield_client_id')->next()

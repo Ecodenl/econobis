@@ -8,16 +8,12 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
-import moment from 'moment/moment';
+import moment from 'moment';
+import { isEmpty } from 'lodash';
 
 function QuotationRequestProjectManager({ redirectBack, initialQuotationRequest, handleSubmit }) {
-    const [pmApproved, setPmApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'pm-approved'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
-            ? false
-            : null
-    );
+    const [pmApproved, setPmApproved] = useState(!isEmpty(initialQuotationRequest.dateApprovedProjectManager));
+    const [notPmApproved, setNotPmApproved] = useState(initialQuotationRequest.notApprovedProjectManager);
 
     const validationSchema = Yup.object().shape({});
 
@@ -119,6 +115,7 @@ function QuotationRequestProjectManager({ redirectBack, initialQuotationRequest,
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_project_manager"
+                                                        readOnly={notPmApproved}
                                                         placeholder={'Datum akkoord projectleider'}
                                                     />
                                                 )}
@@ -126,7 +123,7 @@ function QuotationRequestProjectManager({ redirectBack, initialQuotationRequest,
                                         </div>
                                         <div>
                                             <Button
-                                                variant={true === pmApproved ? 'dark' : 'outline-dark'}
+                                                variant={true === pmApproved ? 'success' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setPmApproved(true);
@@ -134,19 +131,25 @@ function QuotationRequestProjectManager({ redirectBack, initialQuotationRequest,
                                                         'dateApprovedProjectManager',
                                                         moment().format('YYYY-MM-DD')
                                                     );
+                                                    setNotPmApproved(false);
+                                                    setFieldValue('notApprovedProjectManager', false);
                                                 }}
+                                                disabled={pmApproved}
                                             >
                                                 {true === pmApproved ? 'Goedgekeurd' : 'Goedkeuren'}
                                             </Button>
                                             <Button
-                                                variant={false === pmApproved ? 'dark' : 'outline-dark'}
+                                                variant={true === notPmApproved ? 'danger' : 'outline-dark'}
                                                 size="sm"
                                                 onClick={() => {
                                                     setPmApproved(false);
                                                     setFieldValue('dateApprovedProjectManager', '');
+                                                    setNotPmApproved(true);
+                                                    setFieldValue('notApprovedProjectManager', true);
                                                 }}
+                                                disabled={notPmApproved}
                                             >
-                                                {false === pmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                                {true === notPmApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
                                             </Button>
                                         </div>
                                     </div>

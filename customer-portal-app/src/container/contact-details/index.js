@@ -25,6 +25,7 @@ const ContactDetails = function(props) {
         const keys =
             '?keys[]=portalName' +
             '&keys[]=portalWebsite' +
+            '&keys[]=portalLoginInfoText' +
             '&keys[]=portalUrl' +
             '&keys[]=responsibleUserId' +
             '&keys[]=checkContactTaskResponsibleUserId' +

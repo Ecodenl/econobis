@@ -156,6 +156,9 @@ export default {
                                         'dateEnd',
                                         'linkProjectInfo',
                                         'linkUnderstandInfo',
+                                        'textRegisterParticipationSingular',
+                                        'textRegisterParticipationPlural',
+                                        'linkUnderstandInfo',
                                         'showQuestionAboutMembership',
                                         'usesMollie',
                                     ],
@@ -178,10 +181,16 @@ export default {
         return axiosInstance.post(requestUrl, contact);
     },
 
-    previewDocument: registerValues => {
+    previewDocument: function(registerValues) {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
-        return axiosInstance.post(requestUrl, registerValues);
+        return axiosInstance.post(requestUrl, { registerValues });
+    },
+
+    previewDocumentIncrease: function(registerValues, registerType, participantId) {
+        const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/${participantId}/preview-increase-document`;
+
+        return axiosInstance.post(requestUrl, { registerValues, registerType });
     },
 
     fetchContactFreeFields: function(contactId) {
@@ -202,6 +211,19 @@ export default {
 
     fetchContactProjects: function(contactId) {
         const requestUrl = `/contact/${contactId}/contact-projects`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchContactContactGroups: function(contactId) {
+        const requestUrl = `/contact/${contactId}/contact-groups`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    changeContactToContactGroup: function(contactId, contactGroupId, isChecked) {
+        const action = isChecked ? 'remove' : 'add';
+        const requestUrl = `/contact/${contactId}/contact-group/${contactGroupId}/${action}`;
 
         return axiosInstance.get(requestUrl);
     },

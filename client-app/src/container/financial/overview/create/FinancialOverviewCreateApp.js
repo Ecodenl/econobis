@@ -8,6 +8,13 @@ import FinancialOverviewCreateViewPdf from './FinancialOverviewCreateViewPdf';
 import FinancialOverviewCreateViewEmail from './FinancialOverviewCreateViewEmail';
 import FinancialOverviewCreateToolbar from './FinancialOverviewCreateToolbar';
 import { connect } from 'react-redux';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const FinancialOverviewCreateAppWrapper = props => {
+    const params = useParams();
+    return <FinancialOverviewCreateApp {...props} params={params} />;
+};
 
 class FinancialOverviewCreateApp extends Component {
     constructor(props) {
@@ -150,4 +157,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(FinancialOverviewCreateApp);
+export default connect(mapStateToProps, null)(FinancialOverviewCreateAppWrapper);

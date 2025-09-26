@@ -14,6 +14,9 @@ import PortalSettingsAPI from '../../api/portal-settings/PortalSettingsAPI';
 import axios from 'axios';
 import { ThemeSettingsContext } from '../../context/ThemeSettingsContext';
 import { Alert } from 'react-bootstrap';
+import ErrorPage from '../../components/general/ErrorPage';
+import moment from 'moment';
+import ParticipantProjectAPI from '../../api/participant-project/ParticipantProjectAPI';
 
 function RegisterProject({ match, currentSelectedContact }) {
     const { setCurrentThemeSettings } = useContext(ThemeSettingsContext);
@@ -39,120 +42,160 @@ function RegisterProject({ match, currentSelectedContact }) {
 
     const [registerValues, setRegisterValues] = useState(initialRegisterValues);
 
+    const [registerType, setRegisterType] = useState(null);
+    const [projectId, setProjectId] = useState(null);
+    const [participantId, setParticipantId] = useState(null);
     const [project, setProject] = useState({});
     const [contact, setContact] = useState({});
     const [portalSettings, setPortalSettings] = useState({});
-    const [isLoading, setLoading] = useState(true);
+    const [isLoading1, setIsLoading1] = useState(true);
+    const [isLoading2, setIsLoading2] = useState(true);
+    const [isLoading3, setIsLoading3] = useState(true);
+    const [hasError, setHasError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState(null);
     const [isSucces, setSucces] = useState(false);
     const [contactProjectData, setContactProjectData] = useState({});
 
+    const [currentStep, setStep] = useState(1);
+
     useEffect(() => {
-        if (currentSelectedContact.id) {
-            (function fetchContactAndProject() {
-                setLoading(true);
-
-                axios
-                    .all([
-                        ProjectAPI.fetchProject(match.params.id),
-                        ContactAPI.fetchContact(currentSelectedContact.id),
-                        ContactAPI.fetchContactProjectData(currentSelectedContact.id, match.params.id),
-                    ])
-                    .then(
-                        axios.spread((payloadProject, payloadContact, payloadContactProjectData) => {
-                            const contact = payloadContact.data.data;
-                            const project = payloadProject.data.data;
-                            setProject(project);
-                            setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
-                            const contactData = rebaseContact(contact);
-                            setContact(contactData);
-
-                            setContactProjectData(payloadContactProjectData.data);
-
-                            if (
-                                project &&
-                                project.projectType &&
-                                project.projectType.codeRef === 'postalcode_link_capital'
-                            ) {
-                                let pcrPostalCode = '';
-                                if (contactData.typeId === 'organisation') {
-                                    pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
-                                } else {
-                                    pcrPostalCode = contactData.primaryAddress
-                                        ? contactData.primaryAddress.postalCode
-                                        : '';
-                                }
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                    ...initialPcrValues,
-                                    pcrPostalCode,
-                                });
-                            } else {
-                                setRegisterValues({
-                                    ...registerValues,
-                                    projectId: match.params.id,
-                                    contactId: currentSelectedContact.id,
-                                    // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                });
-                            }
-
-                            if (
-                                payloadContactProjectData.data.projectRegisterIndicators.allowChangeParticipation &&
-                                payloadContactProjectData.data.projectRegisterIndicators.allowPayMollie
-                            ) {
-                                /**
-                                 * Er is wel ingeschreven maar nog niet betaald, dan mag het formulier
-                                 * wel geopend worden en stellen we de eerder ingevoerde gegevens in. projectRegisterIndicators
-                                 */
-                                setRegisterValues(current => {
-                                    return {
-                                        ...current,
-                                        participationsOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .participationsOptioned,
-                                        amountOptioned:
-                                            payloadContactProjectData.data.projectRegisterIndicators.amountOptioned,
-                                        pcrYearlyPowerKwhConsumption:
-                                            payloadContactProjectData.data.projectRegisterIndicators
-                                                .powerKwhConsumption,
-                                        didAcceptAgreement: true,
-                                        didUnderstandInfo: true,
-                                    };
-                                });
-                            }
-
-                            setLoading(false);
-                        })
-                    )
-                    .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setLoading(false);
-                    });
-            })();
+        if (match.params) {
+            const { registerType, id: projectId, participantId } = match.params;
+            setRegisterType(registerType);
+            setProjectId(projectId);
+            setParticipantId(participantId);
         }
+    }, [match]);
 
-        (function callFetchPortalSettings() {
-            setLoading(true);
-            const keys =
-                '?keys[]=portalName' +
-                '&keys[]=portalWebsite' +
-                '&keys[]=portalUrl' +
-                '&keys[]=responsibleUserId' +
-                '&keys[]=checkContactTaskResponsibleUserId' +
-                '&keys[]=linkPrivacyPolicy' +
-                '&keys[]=pcrPowerKwhConsumptionPercentage' +
-                '&keys[]=pcrGeneratingCapacityOneSolorPanel';
-            PortalSettingsAPI.fetchPortalSettings(keys)
-                .then(payload => {
-                    setPortalSettings({ ...payload.data });
+    useEffect(() => {
+        if (projectId && currentSelectedContact?.id) {
+            callFetchPortalSettings();
+            fetchContactAndProject();
+        }
+    }, [projectId, currentSelectedContact]);
+
+    function goToPreviousStep() {
+        setStep(currentStep <= 2 ? 1 : currentStep - 1);
+    }
+
+    function goToNextStep() {
+        setStep(currentStep >= 4 ? 5 : currentStep + 1);
+    }
+
+    function callFetchPortalSettings() {
+        setIsLoading1(true);
+
+        const keys =
+            '?keys[]=portalName' +
+            '&keys[]=portalWebsite' +
+            '&keys[]=portalLoginInfoText' +
+            '&keys[]=portalUrl' +
+            '&keys[]=responsibleUserId' +
+            '&keys[]=checkContactTaskResponsibleUserId' +
+            '&keys[]=linkPrivacyPolicy' +
+            '&keys[]=pcrPowerKwhConsumptionPercentage' +
+            '&keys[]=pcrGeneratingCapacityOneSolorPanel';
+        PortalSettingsAPI.fetchPortalSettings(keys)
+            .then(payload => {
+                setPortalSettings({ ...payload.data });
+                setIsLoading1(false);
+            })
+            .catch(error => {
+                setHasError(true);
+                setErrorMessage('Fout bij ophalen gegevens');
+                setIsLoading1(false);
+            });
+    }
+
+    function fetchContactAndProject() {
+        setHasError(false);
+        setErrorMessage(null);
+        setIsLoading2(true);
+
+        axios
+            .all([
+                ProjectAPI.fetchProject(projectId),
+                ContactAPI.fetchContact(currentSelectedContact.id),
+                ContactAPI.fetchContactProjectData(currentSelectedContact.id, projectId),
+            ])
+            .then(
+                axios.spread((payloadProject, payloadContact, payloadContactProjectData) => {
+                    if (
+                        payloadProject.data.data.dateStartRegistrations === null ||
+                        payloadProject.data.data.dateStartRegistrations > moment().format('YYYY-MM-DD') ||
+                        (payloadProject.data.data.dateEndRegistrations !== null &&
+                            payloadProject.data.data.dateEndRegistrations < moment().format('YYYY-MM-DD'))
+                    ) {
+                        setHasError(true);
+                        setErrorMessage('Inschrijving niet mogelijk op dit moment');
+                    } else {
+                        const contact = payloadContact.data.data;
+                        const project = payloadProject.data.data;
+                        setProject(project);
+                        setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
+                        const contactData = rebaseContact(contact);
+                        setContact(contactData);
+                        setContactProjectData(payloadContactProjectData.data);
+
+                        if (
+                            project &&
+                            project.projectType &&
+                            project.projectType.codeRef === 'postalcode_link_capital'
+                        ) {
+                            let pcrPostalCode = '';
+                            if (contactData.typeId === 'organisation') {
+                                pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
+                            } else {
+                                pcrPostalCode = contactData.primaryAddress ? contactData.primaryAddress.postalCode : '';
+                            }
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: projectId,
+                                contactId: currentSelectedContact.id,
+                                // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                ...initialPcrValues,
+                                pcrPostalCode,
+                            });
+                        } else {
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: projectId,
+                                contactId: currentSelectedContact.id,
+                                // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                            });
+                        }
+                    }
+                    setIsLoading2(false);
                 })
-                .catch(error => {
-                    this.setState({ isLoading: false, hasError: true });
+            )
+            .catch(error => {
+                // console.log('error');
+                // console.log(error);
+                setHasError(true);
+                setErrorMessage('Fout bij ophalen gegevens');
+                setIsLoading2(false);
+            });
+
+        if (registerType === 'verhogen' && participantId) {
+            setIsLoading3(true);
+            ParticipantProjectAPI.show(participantId)
+                .then(payload => {
+                    if (!payload.data.data.basicInformation.allowIncreaseParticipations) {
+                        setHasError(true);
+                        setErrorMessage('Verhogen niet mogelijk op dit moment');
+                    }
+                    setIsLoading3(false);
+                })
+                .catch(() => {
+                    // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                    setHasError(true);
+                    setErrorMessage('Fout bij ophalen gegevens');
+                    setIsLoading3(false);
                 });
-        })();
-    }, [match, currentSelectedContact]);
+        } else {
+            setIsLoading3(false);
+        }
+    }
 
     function handleSubmitRegisterValues(values) {
         setRegisterValues({ ...registerValues, ...values });
@@ -162,16 +205,21 @@ function RegisterProject({ match, currentSelectedContact }) {
         const updatedContact = { ...contact, ...values, projectId: project.id };
         ContactAPI.updateContact(updatedContact)
             .then(payload => {
+                setIsLoading2(true);
                 ContactAPI.fetchContact(currentSelectedContact.id)
                     .then(payload => {
                         const contactData = rebaseContact(payload.data.data);
 
                         setContact(contactData);
+                        setIsLoading2(false);
+
                         nextStep();
                     })
                     .catch(error => {
-                        alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
-                        setLoading(false);
+                        // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
+                        setHasError(true);
+                        setErrorMessage('Fout bij ophalen gegevens');
+                        setIsLoading2(false);
                     });
             })
             .catch(error => {
@@ -180,21 +228,27 @@ function RegisterProject({ match, currentSelectedContact }) {
                     message: error.response.data.message,
                 });
                 // alert('Er is iets misgegaan met opslaan! Herlaad de pagina opnieuw.');
+                setHasError(true);
+                setErrorMessage('Fout bij opslaan gegevens');
             });
     }
 
     return (
         <div className={'content-section'}>
             <div className="content-container w-container">
-                {isLoading ? (
+                {isLoading1 || isLoading2 || isLoading3 ? (
                     <LoadingView />
-                ) : !contactProjectData.projectRegisterIndicators.hasParticipation &&
+                ) : hasError ? (
+                    <ErrorPage message={errorMessage} />
+                ) : (!contactProjectData.projectRegisterIndicators.hasParticipation ||
+                      contactProjectData.projectRegisterIndicators.allowIncreaseParticipations) &&
                   !contactProjectData.projectRegisterIndicators.allowRegisterToProject ? (
                     <>
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    Inschrijving voor project <strong>{project.name}</strong>
+                                    {registerType === 'verhogen' ? 'Bijschrijving' : 'Inschrijving'} voor{' '}
+                                    <strong>{project.name}</strong>
                                 </h1>
                                 <Row className={'mb-4'}>
                                     <Col>
@@ -229,12 +283,13 @@ function RegisterProject({ match, currentSelectedContact }) {
                         </Row>
                     </>
                 ) : contactProjectData.projectRegisterIndicators.hasParticipation &&
-                  !contactProjectData.projectRegisterIndicators.allowChangeParticipation ? (
+                  (registerType !== 'verhogen' ||
+                      !contactProjectData.projectRegisterIndicators.allowIncreaseParticipations) ? (
                     <>
                         <Row>
                             <Col>
                                 <h1 className="content-heading">
-                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor project{' '}
+                                    <strong>{contact.fullNameFnf}</strong> is al ingeschreven voor{' '}
                                     <strong>{project.name}</strong>
                                 </h1>
                             </Col>
@@ -256,7 +311,8 @@ function RegisterProject({ match, currentSelectedContact }) {
                         <Col>
                             {isSucces ? (
                                 <h1 className="content-heading">
-                                    Ingeschreven voor project <strong>{project.name}</strong>
+                                    {registerType === 'verhogen' ? 'Bijgeschreven' : 'Ingeschreven'} voor{' '}
+                                    <strong>{project.name}</strong>
                                 </h1>
                             ) : (
                                 <>
@@ -264,20 +320,26 @@ function RegisterProject({ match, currentSelectedContact }) {
                                         <ButtonGroup aria-label="register" className="w-button-group-left">
                                             <Link to={`/inschrijven-projecten`}>
                                                 <Button className={'w-button'} size="sm">
-                                                    Inschrijven projecten
+                                                    Ga terug
                                                 </Button>
                                             </Link>
                                         </ButtonGroup>
                                     </Row>
                                     <h1 className="content-heading">
-                                        Schrijf <strong>{contact.fullNameFnf}</strong> in voor project{' '}
+                                        Schrijf <strong>{contact.fullNameFnf}</strong>{' '}
+                                        {registerType === 'verhogen' ? 'bij' : 'in'} voor{' '}
                                         <strong>{project.name}</strong>
                                     </h1>
                                 </>
                             )}
                             <MasterForm
+                                currentStep={currentStep}
+                                goToNextStep={goToNextStep}
+                                goToPreviousStep={goToPreviousStep}
                                 portalSettings={portalSettings}
                                 project={project}
+                                participantId={participantId}
+                                registerType={registerType}
                                 contactProjectData={contactProjectData}
                                 initialRegisterValues={registerValues}
                                 handleSubmitRegisterValues={handleSubmitRegisterValues}

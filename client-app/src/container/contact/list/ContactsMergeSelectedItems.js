@@ -78,25 +78,39 @@ function ContactsMergeSelectedItems({ contacts, fetchContactsData, toggleShowMer
                     </ul>
                 </Modal>
             ) : (
-                <Modal
-                    buttonConfirmText="Samenvoegen"
-                    buttonClassName={'btn-danger'}
-                    closeModal={toggleShowMergeSelectedItems}
-                    confirmAction={() => confirmAction()}
-                    showConfirmAction={countCheckedContact() === 2}
-                    title="Contacten samenvoegen"
-                >
-                    {countCheckedContact() === 2 ? (
-                        <div>
-                            Weet je zeker dat je deze 2 contacten wilt samenvoegen? <br />
-                            Gegevens worden overgenomen naar het eerst geselecteerde contact{' '}
-                            <strong>{contactKeep.number}</strong>, het tweede geselecteerde contact{' '}
-                            <strong>{contactRemove.number}</strong> wordt verwijderd.
-                        </div>
+                <div>
+                    {message.length ? (
+                        <Modal
+                            closeModal={toggleShowMergeSelectedItems}
+                            showConfirmAction={false}
+                            buttonCancelText={'OK'}
+                            title="Contacten samenvoegen"
+                        >
+                            {message}
+                        </Modal>
                     ) : (
-                        <div>Selecteer exact 2 contacten om te kunnen samenvoegen.</div>
+                        <Modal
+                            buttonConfirmText="Samenvoegen"
+                            buttonClassName={'btn-danger'}
+                            closeModal={toggleShowMergeSelectedItems}
+                            confirmAction={() => confirmAction()}
+                            showConfirmAction={countCheckedContact() === 2}
+                            title="Contacten samenvoegen"
+                        >
+                            {countCheckedContact() === 2 ? (
+                                <div>
+                                    Weet je zeker dat je deze 2 contacten wilt samenvoegen? <br />
+                                    Gegevens worden overgenomen naar het eerst geselecteerde contact{' '}
+                            <strong>{contactKeep.number}</strong>, het tweede geselecteerde contact{' '}
+                            <strong>{contactRemove.number}</strong> wordt
+                                    verwijderd.
+                                </div>
+                            ) : (
+                                <div>Selecteer exact 2 contacten om te kunnen samenvoegen.</div>
+                            )}
+                        </Modal>
                     )}
-                </Modal>
+                </div>
             )}
         </div>
     );

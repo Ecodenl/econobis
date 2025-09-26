@@ -8,6 +8,13 @@ import DocumentViewToolbar from './DocumentViewToolbar';
 import DocumentViewForm from './DocumentViewForm';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
 import fileDownload from 'js-file-download';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const DocumentViewAppWrapper = props => {
+    const params = useParams();
+    return <DocumentViewApp {...props} params={params} />;
+};
 
 class DocumentViewApp extends Component {
     constructor(props) {
@@ -79,4 +86,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewApp);
+export default connect(mapStateToProps, mapDispatchToProps)(DocumentViewAppWrapper);

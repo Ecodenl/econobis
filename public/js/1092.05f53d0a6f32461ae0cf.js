@@ -1,0 +1,1 @@
+"use strict";(self.webpackChunkeco=self.webpackChunkeco||[]).push([[1092],{91092:(e,t,n)=>{n.r(t),n.d(t,{default:()=>l});var u=n(96540),a=n(47767),c=n(9293);function l(){var e=(0,a.g)().id,t=(0,u.useContext)(c.t).openEmailDetailsModal;return(0,u.useEffect)((function(){t(e)}),[e]),u.createElement("div",null)}}}]);

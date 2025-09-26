@@ -1,6 +1,6 @@
 import React from 'react';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';
@@ -21,6 +21,8 @@ const RevenuesListFormView = ({
     onLineEnter,
     onLineLeave,
 }) => {
+    const navigate = useNavigate();
+
     const { id, confirmed, status, category, dateBegin, dateEnd, datePayed, amountRevenue } = revenueDetails;
 
     let statusText = '';
@@ -74,13 +76,13 @@ const RevenuesListFormView = ({
             <div className="col-sm-2">{amountRevenue ? MoneyPresenter(amountRevenue) : ''}</div>
             <div className="col-sm-1">
                 {showActionButtons ? (
-                    <a role="button" onClick={() => hashHistory.push(`/project/opbrengst/${id}`)}>
+                    <a role="button" onClick={() => navigate(`/project/opbrengst/${id}`)}>
                         <Icon className="mybtn-success" size={14} icon={confirmed ? eye : pencil} />
                     </a>
                 ) : (
                     ''
                 )}
-                {showActionButtons && permissions.manageFinancial && !confirmed ? (
+                {showActionButtons && permissions.manageProject && !confirmed ? (
                     <a role="button" onClick={toggleDelete}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

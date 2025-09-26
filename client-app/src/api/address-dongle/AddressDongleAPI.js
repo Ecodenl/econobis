@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADDRESS_DONGLE = `${URL_API}/api/address-dongle`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchAddressDongles: ({ filters, extraFilters, sorts, pagination }) => {
+        const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
         const requestUrl = `${URL_ADDRESS_DONGLE}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 extraFilters: JSON.stringify(extraFilters),
@@ -22,9 +22,10 @@ export default {
     },
 
     fetchDongle: id => {
+        const URL_ADDRESS_DONGLE = `${getApiUrl()}/api/address-dongle`;
         const requestUrl = `${URL_ADDRESS_DONGLE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {

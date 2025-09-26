@@ -62,11 +62,11 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
     }
     protected function doPost($dataContent)
     {
-        $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
-        $bezoekStatusMade = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'made')->first();
-
         $hoomCampaigns = $this->cooperation->hoomCampaigns;
+        $bezoekAction = OpportunityAction::where('code_ref', 'visit')->first();
 
+        // eerst op zoek naar bezoek met status Afspraak gemaakt
+        $bezoekStatusMade = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'made')->first();
         $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
             ->where('status_id', $bezoekStatusMade->id)
             ->whereHas('opportunity', function($query) use ($hoomCampaigns) {
@@ -92,11 +92,47 @@ class EndPointWoningStatusController extends EndPointHoomDossierController
             })
             ->orderby('id', 'desc')->first();
 
+        // Niet gevonden, dan nog even op zoek naar bezoek met status Geen afspraak gemaakt
+        if(!$quotationRequest) {
+            $bezoekStatusDefault = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'default')->first();
+            $quotationRequest = QuotationRequest::where('opportunity_action_id', $bezoekAction->id)
+                ->where('status_id', $bezoekStatusDefault->id)
+                ->whereHas('opportunity', function ($query) use ($hoomCampaigns) {
+                    $query->where(function ($query2) use ($hoomCampaigns) {
+                        foreach ($hoomCampaigns as $hoomCampaign) {
+                            $query2->orWhere(function ($query3) use ($hoomCampaign) {
+                                $query3->where(function ($query4) use ($hoomCampaign) {
+                                    $query4->whereHas('intake', function ($query5) use ($hoomCampaign) {
+                                        $query5->where('contact_id', $this->contact->id)
+                                            ->where(function ($query6) use ($hoomCampaign) {
+                                                $query6->where('campaign_id', $hoomCampaign->campaign_id);
+                                            });
+                                    });
+                                });
+                                if ($hoomCampaign->measure_id != null) {
+                                    $query3->whereHas('measures', function ($query7) use ($hoomCampaign) {
+                                        $query7->where('measure_id', $hoomCampaign->measure_id);
+                                    });
+                                }
+                            });
+                        }
+                    });
+                })
+                ->orderby('id', 'desc')->first();
+        }
+
         if(!$quotationRequest) {
             $this->error('Afspraak niet gevonden in Econobis', 404);
         }
 
         if($dataContent->status->short === 'executed'){
+            // Als bezoek nog op Geen afspraakt gemaakt stond, dan zetten we datum Afspraak gemaakt ook op vandaag.
+            $bezoekStatusDefault = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'default')->first();
+            if($quotationRequest->status_id = $bezoekStatusDefault->id){
+                $quotationRequest->date_planned = Carbon::parse(Carbon::parse('now')->format('Y-m-d') . ' 00:00:00');
+                $this->log('Afspraak (nog niet gemaakt) automatisch voorzien van datum afpraak ' .  ($quotationRequest->date_planned ? Carbon::parse($quotationRequest->date_planned)->format('d-m-Y H:i') : 'onbekend') );
+            }
+
             $bezoekStatusDone = QuotationRequestStatus::where('opportunity_action_id', $bezoekAction->id)->where('code_ref', 'done')->first();
             $quotationRequest->status_id = $bezoekStatusDone->id;
             if(!$quotationRequest->date_recorded){

@@ -1,9 +1,15 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import TaskHarmonica from './harmonica/TaskHarmonica';
 import DocumentHarmonica from './harmonica/DocumentHarmonica';
+
+// Functionele wrapper voor de class component
+const IntakeDetailsHarmonicaWrapper = props => {
+    const navigate = useNavigate();
+    return <IntakeDetailsHarmonica {...props} navigate={navigate} />;
+};
 
 class IntakeDetailsHarmonica extends Component {
     constructor(props) {
@@ -30,11 +36,11 @@ class IntakeDetailsHarmonica extends Component {
     }
 
     newTask = () => {
-        hashHistory.push(`/taak/nieuw/contact-groep/${this.props.id}`);
+        this.props.navigate(`/taak/nieuw/contact-groep/${this.props.id}`);
     };
 
     newDocument = type => {
-        hashHistory.push(`/document/nieuw/${type}/contact-groep/${this.props.id}`);
+        this.props.navigate(`/document/nieuw/${type}/contact-groep/${this.props.id}`);
     };
 
     render() {
@@ -66,4 +72,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(IntakeDetailsHarmonica);
+export default connect(mapStateToProps)(IntakeDetailsHarmonicaWrapper);

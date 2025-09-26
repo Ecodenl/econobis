@@ -40,6 +40,7 @@ class ExtraFilter extends RequestExtraFilter
         'intakeDateStart',
         'intakeDateFinish',
         'intakeStatus',
+        'intakeSource',
         'campaign',
         'product',
         'dateStart',
@@ -166,6 +167,34 @@ class ExtraFilter extends RequestExtraFilter
             return;
         }
 
+        // Ook Uitzondering voor intake filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
+        if($filter['field'] == 'intakeSource' ){
+            $data = $filter['data'];
+            $filterType = $filter['type'];
+            switch($filterType) {
+                case 'neq':
+                    $query->where(function ($query) use ($filterType, $data) {
+                        $query->whereDoesntHave('intakes')
+                            ->orWhereHas('intakes', function ($query) use ($filterType, $data) {
+                                $query
+                                    ->whereDoesntHave('sources')
+                                    ->orWhereDoesntHave('sources', function ($query) use ($filterType, $data) {
+                                        $query->where('source_id', $data);
+                                    });
+                            });
+                    });
+                    break;
+                default:
+                    $query->whereHas('intakes', function ($query) use ($data) {
+                        $query->whereHas('sources', function ($query) use ($data) {
+                            $query->where('source_id', $data);
+                        });
+                    });
+            }
+
+            return;
+        }
+        
         // Ook Uitzondering voor housingfile filters, hier zitten extra argumenten bij. Aparte routine laten doorlopen
         if($filter['field'] == 'housingFileFieldName' ){
             if($filterType === 'or'){

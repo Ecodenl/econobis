@@ -183,7 +183,7 @@ class ParticipantFormEdit extends Component {
                     <ViewText
                         label={'Project'}
                         value={project ? project.name : ''}
-                        link={project ? 'project/' + project.id : ''}
+                        link={project ? '/project/' + project.id : ''}
                         className={'col-sm-6 form-group'}
                     />
                     <ViewText
@@ -196,7 +196,7 @@ class ParticipantFormEdit extends Component {
                     <ViewText
                         label={'Contact'}
                         value={contact ? contact.fullName : ''}
-                        link={contact ? 'contact/' + contact.id : ''}
+                        link={contact ? '/contact/' + contact.id : ''}
                         className={'col-sm-6 form-group'}
                     />
                     <ViewText

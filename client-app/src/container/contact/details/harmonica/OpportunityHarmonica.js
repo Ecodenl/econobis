@@ -13,16 +13,18 @@ const OpportunityHarmonica = ({
     permissions,
 }) => {
     return (
-        <Panel className={'harmonica-button'}>
-            <PanelBody>
-                <div className="col-sm-12" onClick={toggleShowList} role="button">
-                    <span className="">
-                        KANSEN <span className="badge">{opportunityCount}</span>
-                    </span>
-                </div>
-                <div className="col-sm-12">{showOpportunitiesList && <OpportunitiesList />}</div>
-            </PanelBody>
-        </Panel>
+        permissions.viewOpportunity && (
+            <Panel className={'harmonica-button'}>
+                <PanelBody>
+                    <div className="col-sm-12" onClick={toggleShowList} role="button">
+                        <span className="">
+                            KANSEN <span className="badge">{opportunityCount}</span>
+                        </span>
+                    </div>
+                    <div className="col-sm-12">{showOpportunitiesList && <OpportunitiesList />}</div>
+                </PanelBody>
+            </Panel>
+        )
     );
 };
 

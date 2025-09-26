@@ -5,6 +5,13 @@ import TaskTypeDetailsForm from './TaskTypeDetailsForm';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import TaskTypeDetailsAPI from '../../../api/task-type/TaskTypeDetailsAPI';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const TaskTypeDetailsAppWrapper = props => {
+    const params = useParams();
+    return <TaskTypeDetailsApp {...props} params={params} />;
+};
 
 class TaskTypeDetailsApp extends Component {
     constructor(props) {
@@ -68,4 +75,4 @@ class TaskTypeDetailsApp extends Component {
     }
 }
 
-export default TaskTypeDetailsApp;
+export default TaskTypeDetailsAppWrapper;

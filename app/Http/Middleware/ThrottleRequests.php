@@ -21,7 +21,7 @@ class ThrottleRequests extends LaravelThrottleRequests
             throw $this->buildException($request, $key, $maxAttempts);
         }
 
-        $this->limiter->hit($key, $decaySeconds);
+        $this->limiter->hit($key, (int) $decaySeconds);
 
         $response = $next($request);
 

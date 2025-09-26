@@ -22,14 +22,16 @@ class Filter extends RequestFilter
         'areaName',
         'campaign',
         'measureRequestedId',
+        'intakeSourceId',
         'statusId',
     ];
 
     protected $mapping = [
         'fullName' => 'contacts.full_name',
         'campaign' => 'campaigns.name',
-        'statusId' => 'intakes.intake_status_id',
         'measureRequestedId' => 'intake_measure_requested.measure_category_id',
+        'intakeSourceId' => 'intake_source.source_id',
+        'statusId' => 'intakes.intake_status_id',
     ];
 
     protected $joins = [
@@ -37,13 +39,15 @@ class Filter extends RequestFilter
         'address' => 'address',
         'areaName' => 'addressAreaName',
         'campaign' => 'campaign',
-        'sourceId' => 'source',
+//        'sourceId' => 'source',
         'measureRequestedId' => 'measureRequested',
+        'intakeSourceId' => 'intakeSource',
     ];
 
     protected $defaultTypes = [
         '*' => 'ct',
         'measureRequestedId' => 'eq',
+        'intakeSourceId' => 'eq',
         'statusId' => 'eq',
     ];
 

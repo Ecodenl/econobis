@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory } from 'react-router';
-import { Link } from 'react-router';
+import { Link, useNavigate } from 'react-router-dom';
 
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
@@ -12,6 +11,12 @@ import { bindActionCreators } from 'redux';
 import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
 import RevenuesKwhAPI from '../../../../../api/project/RevenuesKwhAPI';
+
+// Functionele wrapper voor de class component
+const RevenuesKwhdetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <RevenuesKwhdetailsToolbar {...props} navigate={navigate} />;
+};
 
 class RevenuesKwhdetailsToolbar extends Component {
     constructor(props) {
@@ -41,10 +46,10 @@ class RevenuesKwhdetailsToolbar extends Component {
     };
 
     render() {
-        const { revenuesKwh } = this.props;
-        const pdfLinkLedenverklaring = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
-        const pdfLinkProductieSpecificatie = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie%20specificatie`;
-        const excelLink = `project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
+        const { revenuesKwh, navigate } = this.props;
+        const pdfLinkLedenverklaring = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/ledenverklaring`;
+        const pdfLinkProductieSpecificatie = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-rapport/productie_specificatie`;
+        const excelLink = `/project/opbrengst-kwh/${this.props.revenuesKwh.id}/energieleverancier-excel`;
 
         return (
             <div className="row">
@@ -53,8 +58,8 @@ class RevenuesKwhdetailsToolbar extends Component {
                         <PanelBody className={'panel-small'}>
                             <div className="col-md-2">
                                 <div className="btn-group btn-group-flex margin-small" role="group">
-                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
-                                    {this.props.permissions.manageFinancial && !this.props.revenuesKwh.confirmed ? (
+                                    <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
+                                    {this.props.permissions.manageProject && !this.props.revenuesKwh.confirmed ? (
                                         <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
                                     ) : null}
                                     {revenuesKwh.confirmed == 1 ? (
@@ -112,4 +117,4 @@ const mapDispatchToProps = dispatch => {
     return bindActionCreators({ blockUI, unblockUI }, dispatch);
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhdetailsToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(RevenuesKwhdetailsToolbarWrapper);

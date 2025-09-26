@@ -1,6 +1,5 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_INVOICE = `${URL_API}/api/invoice`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchInvoices: ({
@@ -12,9 +11,10 @@ export default {
         onlyPostInvoices,
         setInvoicesPaid,
     }) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 onlyEmailInvoices: JSON.stringify(onlyEmailInvoices),
@@ -29,9 +29,10 @@ export default {
     },
 
     peekInvoices: () => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -42,9 +43,10 @@ export default {
     },
 
     getCSV: ({ filters, sorts, administrationId }) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/csv`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -54,9 +56,10 @@ export default {
     },
 
     getCSVWithProducts: ({ filters, sorts, administrationId }) => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/csvwithproducts`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 administrationId: JSON.stringify(administrationId),
                 filters: JSON.stringify(filters),
@@ -66,9 +69,10 @@ export default {
     },
 
     getUnpaidInvoices: () => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/amount-unpaid`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {
@@ -77,9 +81,10 @@ export default {
     },
 
     getInvoicesForSending: ids => {
+        const URL_INVOICE = `${getApiUrl()}/api/invoice`;
         const requestUrl = `${URL_INVOICE}/sending`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, { ids: ids })
             .then(response => response.data)
             .catch(error => {

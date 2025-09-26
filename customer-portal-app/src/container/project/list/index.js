@@ -100,8 +100,7 @@ function ProjectList(props) {
                 <Row>
                     <Col>
                         <h1 className="content-heading">
-                            Overzicht projecten waarop <strong>{props.currentSelectedContact.fullNameFnf}</strong> kan
-                            inschrijven.
+                            Beschikbare inschrijvingen voor <strong>{props.currentSelectedContact.fullNameFnf}</strong>.
                         </h1>
                     </Col>
                 </Row>
@@ -119,7 +118,7 @@ function ProjectList(props) {
                     <>
                         <Row>
                             <Col>
-                                <p>Klik op het project voor meer details.</p>
+                                <p>Klik op een inschrijving voor meer details.</p>
                             </Col>
                         </Row>
                         <Row>
@@ -127,13 +126,13 @@ function ProjectList(props) {
                                 {isLoading ? (
                                     <LoadingView />
                                 ) : contactProjectsArray.length === 0 ? (
-                                    'Geen projecten beschikbaar om op in te schrijven.'
+                                    'Geen gegevens beschikbaar om op in te schrijven.'
                                 ) : (
                                     <Table responsive>
                                         <thead>
                                             <tr>
                                                 <th>Organisatie</th>
-                                                <th>Project</th>
+                                                <th>Inschrijving voor</th>
                                                 <th>Ingeschreven</th>
                                                 <th>Start inschrijving</th>
                                                 <th>Einde inschrijving</th>
@@ -144,34 +143,28 @@ function ProjectList(props) {
                                                 <tr key={project.id}>
                                                     <td>{project.administrationName}</td>
                                                     <td>
-                                                        {project.allowChangeParticipation ? (
-                                                            <>
-                                                                {project.name} (
+                                                        <>
+                                                            {!project.hasParticipation &&
+                                                            project.allowRegisterToProject ? (
                                                                 <Link to={`/project/${project.id}`}>
-                                                                    wijzig inschrijving
+                                                                    {project.name}
                                                                 </Link>
-                                                                )
-                                                            </>
-                                                        ) : (
-                                                            <>
-                                                                {!project.hasParticipation &&
-                                                                project.allowRegisterToProject ? (
-                                                                    <Link to={`/project/${project.id}`}>
-                                                                        {project.name}
-                                                                    </Link>
-                                                                ) : (
-                                                                    <span className={'text-muted'}>{project.name}</span>
-                                                                )}
-                                                            </>
-                                                        )}
+                                                            ) : (
+                                                                <span className={'text-muted'}>{project.name}</span>
+                                                            )}
+                                                        </>
+                                                        {/*)}*/}
                                                     </td>
                                                     <td>
                                                         {project.hasParticipation ? (
                                                             <>
                                                                 {project.allowPayMollie ? (
                                                                     <div className="text-center">
-                                                                        Nog niet betaald,
-                                                                        <br />
+                                                                        ✔<br />
+                                                                        <span className="text-danger">
+                                                                            Nog niet betaald
+                                                                        </span>
+                                                                        ,<br />
                                                                         <a href={project.econobisPaymentLink}>
                                                                             betaal nu
                                                                         </a>

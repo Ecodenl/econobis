@@ -1,10 +1,12 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 function NoteList({ relatedNotes }) {
+    const navigate = useNavigate();
+
     function openItem(id) {
-        hashHistory.push(`/taak/${id}`);
+        navigate(`/taak/${id}`);
     }
 
     if (relatedNotes.length === 0) return <div>Geen notities gevonden.</div>;

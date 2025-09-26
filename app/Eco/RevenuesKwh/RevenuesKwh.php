@@ -25,9 +25,9 @@ class RevenuesKwh extends Model
         'id'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     //relations
@@ -148,6 +148,9 @@ class RevenuesKwh extends Model
 
         $yearBegin = Carbon::parse($this->date_begin)->format('Y');
         $yearEnd = Carbon::parse($this->date_end)->format('Y');
+
+        // Vervangen _ in reporttype met spatie
+        $reportType = str_replace('_', ' ', $reportType);
 
         if($yearEnd === $yearBegin) {
             $year = $yearBegin;

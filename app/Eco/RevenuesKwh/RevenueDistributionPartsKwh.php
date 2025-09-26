@@ -87,8 +87,21 @@ class RevenueDistributionPartsKwh extends Model
         return number_format( $this->delivered_kwh, '2',',', '.' );
     }
     public function getKwhReturnFromTillVisibleAttribute(){
-        $payoutKwh = $this->partsKwh->payout_kwh ? $this->partsKwh->payout_kwh : 0;
-        return $this->delivered_kwh_from_till_visible * $payoutKwh;
+        $upToPartsKwhIds = RevenuePartsKwh::where('revenue_id', $this->revenue_id)->where('date_end', '<=', Carbon::parse($this->partsKwh->date_end)->format('Y-m-d'))->orderBy('date_end', 'desc')->get();
+        $kwhReturnTotal = 0;
+        foreach ($upToPartsKwhIds as $part){
+            $kwhReturnDistributionPart = RevenueDistributionPartsKwh::where('revenue_id', $this->revenue_id)->where('distribution_id', $this->distribution_id)->where('parts_id', $part->id)->first();
+            $isVisibleNotEndOfYear = $kwhReturnDistributionPart->is_end_participation || $kwhReturnDistributionPart->is_energy_supplier_switch || $kwhReturnDistributionPart->is_end_total_period;
+
+            if($kwhReturnDistributionPart && ($kwhReturnDistributionPart->id == $this->id || $isVisibleNotEndOfYear == false)){
+                $payoutKwh = $part->payout_kwh ?: 0;
+                $kwhReturnTotal +=  $kwhReturnDistributionPart->delivered_kwh * $payoutKwh;
+            }
+            if($kwhReturnDistributionPart && $kwhReturnDistributionPart->id != $this->id && $isVisibleNotEndOfYear == true){
+                break;
+            }
+        }
+        return $kwhReturnTotal;
     }
     public function getKwhReturnAttribute(){
         return  $this->kwh_return_from_till_visible;

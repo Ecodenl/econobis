@@ -28,6 +28,8 @@ class MeasureCategoryController extends Controller
             ->integer('organisationIdWfCreateQuotationRequest')->validate('nullable|exists:organisations,id')->onEmpty(null)->whenMissing(null)->alias('organisation_id_wf_create_quotation_request')->next()
             ->boolean('usesWfEmailQuotationRequest')->alias('uses_wf_email_quotation_request')->next()
             ->integer('emailTemplateIdWfCreateQuotationRequest')->validate('nullable|exists:email_templates,id')->onEmpty(null)->whenMissing(null)->alias('email_template_id_wf_create_quotation_request')->next()
+            ->string('calendarBackgroundColor')->onEmpty(null)->alias('calendar_background_color')->next()
+            ->string('calendarTextColor')->onEmpty(null)->alias('calendar_text_color')->next()
             ->get();
 
         $measureCategory->fill($data);

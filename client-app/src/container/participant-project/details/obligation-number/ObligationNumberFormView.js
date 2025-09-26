@@ -21,7 +21,7 @@ const ObligationNumberFormView = props => {
                 <div className="col-sm-11">{number}</div>
             </div>
             <div className="col-sm-1">
-                {props.showActionButtons && props.permissions.manageFinancial ? (
+                {props.showActionButtons && props.permissions.manageParticipation ? (
                     <a role="button" onClick={props.openEdit}>
                         <Icon className="mybtn-success" size={14} icon={pencil} />
                     </a>
@@ -29,7 +29,7 @@ const ObligationNumberFormView = props => {
                     ''
                 )}
                 &nbsp;
-                {props.showActionButtons && props.permissions.manageFinancial ? (
+                {props.showActionButtons && props.permissions.manageParticipation ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

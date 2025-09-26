@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import GroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import Modal from '../../../components/modal/Modal';
 import InputSelect from '../../../components/form/InputSelect';
+
+// Functionele wrapper voor de class component
+const ContactListAddContactsToGroupWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactListAddContactsToGroup {...props} navigate={navigate} />;
+};
 
 class ContactListAddContactsToGroup extends Component {
     constructor(props) {
@@ -46,7 +52,7 @@ class ContactListAddContactsToGroup extends Component {
         this.props.contacts.map(contact => contact.checked === true && contactIds.push(contact.id));
         GroupAPI.addManyContactsToGroup(contactIds, this.state.groupId).then(payload => {
             this.props.toggleAddGroup();
-            hashHistory.push(`/contacten-in-groep/${this.state.groupId}`);
+            this.props.navigate(`/contacten-in-groep/${this.state.groupId}`);
         });
     };
 
@@ -86,4 +92,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(ContactListAddContactsToGroup);
+export default connect(mapStateToProps, null)(ContactListAddContactsToGroupWrapper);

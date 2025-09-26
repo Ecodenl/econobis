@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -13,6 +13,12 @@ import moment from 'moment';
 import validator from 'validator';
 import ErrorModal from '../../../components/modal/ErrorModal';
 import ParticipantDetailsTerminateLoanOrObligation from './ParticipantDetailsTerminateLoanOrObligation';
+
+// Functionele wrapper voor de class component
+const ParticipantDetailsToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <ParticipantDetailsToolbar {...props} navigate={navigate} />;
+};
 
 class ParticipantDetailsToolbar extends Component {
     constructor(props) {
@@ -27,8 +33,13 @@ class ParticipantDetailsToolbar extends Component {
         };
     }
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     toggleTerminate = () => {
@@ -71,7 +82,7 @@ class ParticipantDetailsToolbar extends Component {
     }
 
     render() {
-        const { participantProject, project } = this.props;
+        const { participantProject, project, navigate } = this.props;
 
         if (!participantProject || !project) {
             return;
@@ -94,7 +105,7 @@ class ParticipantDetailsToolbar extends Component {
             //     project.isParticipationTransferable &&
             //     participantProject.participationsCurrent > 0 &&
             //     participantProject.participationsCurrent &&
-            //     this.props.permissions.manageFinancial;
+            //     this.props.permissions.manageParticipation;
             // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
             const projectTypeCodeRef = project ? project.typeCodeRef : '';
@@ -107,10 +118,10 @@ class ParticipantDetailsToolbar extends Component {
                             <PanelBody className={'panel-small'}>
                                 <div className="col-md-3">
                                     <div className="btn-group btn-group-flex margin-small" role="group">
-                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                         {allowDeleteAndTerminateButtons && (
                                             <>
-                                                <ButtonIcon iconName={'trash'} onClickAction={this.toggleDelete} />
+                                                <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                                                 {!isTerminated ? (
                                                     <ButtonText
                                                         buttonText={`Beëindigen`}
@@ -132,7 +143,7 @@ class ParticipantDetailsToolbar extends Component {
                                         {/*    <ButtonText*/}
                                         {/*        buttonText={`Deelnames overdragen`}*/}
                                         {/*        onClickAction={() =>*/}
-                                        {/*            hashHistory.push(*/}
+                                        {/*            this.props.navigate(*/}
                                         {/*                `/project/deelnemer/${participantProject.id}/overdragen`*/}
                                         {/*            )*/}
                                         {/*        }*/}
@@ -157,7 +168,7 @@ class ParticipantDetailsToolbar extends Component {
 
                     {this.state.showDelete && (
                         <ParticipantDetailsDelete
-                            closeDeleteItemModal={this.toggleDelete}
+                            closeDeleteItemModal={this.hideDeleteModal}
                             id={participantProject.id}
                             projectid={participantProject.project.id}
                         />
@@ -207,4 +218,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ParticipantDetailsToolbar);
+export default connect(mapStateToProps)(ParticipantDetailsToolbarWrapper);

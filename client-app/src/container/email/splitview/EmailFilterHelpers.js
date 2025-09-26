@@ -55,13 +55,23 @@ export function getJoryFilter(values, folder, contactId, eigen = false) {
         });
     }
 
-    if (values.responsibleUserId && values.responsibleUserId !== 1) {
+    if (values.responsibleUserId === 'noResponsible') {
+        filter.and.push({
+            f: 'responsibleUserId',
+            d: null,
+        });
+        filter.and.push({
+            f: 'responsibleTeamId',
+            d: null,
+        });
+    }
+    if (values.responsibleUserId !== 'noResponsible' && values.responsibleUserId && values.responsibleUserId !== 1) {
         filter.and.push({
             f: 'responsibleUserId',
             d: values.responsibleUserId,
         });
     }
-    if (values.responsibleTeamId && values.responsibleTeamId !== 1) {
+    if (values.responsibleUserId !== 'noResponsible' && values.responsibleTeamId && values.responsibleTeamId !== 1) {
         filter.and.push({
             f: 'responsibleTeamId',
             d: values.responsibleTeamId,

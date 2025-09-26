@@ -14,6 +14,13 @@ import ProjectsList from './ProjectsList';
 import { bindActionCreators } from 'redux';
 import filterHelper from '../../../helpers/FilterHelper';
 import { isEmpty } from 'lodash';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const ProjectsListAppWrapper = props => {
+    const params = useParams();
+    return <ProjectsListApp {...props} params={params} />;
+};
 
 class ProjectsListApp extends Component {
     constructor(props) {
@@ -32,7 +39,7 @@ class ProjectsListApp extends Component {
         this.fetchProjectsData();
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props.params.value !== nextProps.params.value) {
             if (!isEmpty(nextProps.params)) {
                 switch (nextProps.params.filter) {
@@ -145,4 +152,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ProjectsListApp);
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectsListAppWrapper);

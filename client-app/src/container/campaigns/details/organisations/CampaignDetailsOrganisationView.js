@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
@@ -14,9 +14,11 @@ const CampaignDetailsOrganisationView = ({
     showActionButtons,
     toggleDelete,
 }) => {
+    const navigate = useNavigate();
+
     return (
         <div className={`row border ${highlightLine}`} onMouseEnter={onLineEnter} onMouseLeave={onLineLeave}>
-            <div onClick={() => hashHistory.push(`/contact/${contactId}`)}>
+            <div onClick={() => navigate(`/contact/${contactId}`)}>
                 <div className="col-sm-1">{contact.number}</div>
                 <div className="col-sm-2">{name}</div>
                 <div className="col-sm-2">{address?.city || ''}</div>

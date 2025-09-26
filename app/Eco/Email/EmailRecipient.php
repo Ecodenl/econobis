@@ -19,7 +19,7 @@ class EmailRecipient
     {
         if (is_numeric($idOrEmailAddress)) {
             $this->type = static::TYPE_MODEL;
-            $this->emailAddressModel = EmailAddress::find($idOrEmailAddress);
+            $this->emailAddressModel = EmailAddress::find($idOrEmailAddress) ?? new EmailAddress();
 
             return;
         }
@@ -46,7 +46,7 @@ class EmailRecipient
             return [
                 'id' => $this->emailAddressModel->id,
                 'email' => $this->emailAddressModel->email,
-                'name' => $this->emailAddressModel->contact->full_name,
+                'name' => $this->emailAddressModel->contact?->full_name,
             ];
         }
 

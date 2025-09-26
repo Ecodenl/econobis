@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_OPPORTUNITY = `${URL_API}/api/opportunity`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchOpportunity: id => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data.data)
             .catch(error => {
@@ -15,9 +15,10 @@ export default {
     },
 
     updateOpportunity: (id, data) => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -26,9 +27,10 @@ export default {
     },
 
     storeOpportunity: data => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -37,27 +39,31 @@ export default {
     },
 
     deleteOpportunity: id => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     deleteBulkOpportunities: ids => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/bulk-delete`;
 
-        return axiosInstance.post(requestUrl, { ids: ids });
+        return getAxiosInstance().post(requestUrl, { ids: ids });
     },
 
     updateBulkOpportunities: (ids, values) => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/bulk-update`;
 
-        return axiosInstance.post(requestUrl, { ids: ids, ...values });
+        return getAxiosInstance().post(requestUrl, { ids: ids, ...values });
     },
 
     updateOpportunityEvaluation: (id, data) => {
+        const URL_OPPORTUNITY = `${getApiUrl()}/api/opportunity`;
         const requestUrl = `${URL_OPPORTUNITY}/evaluation/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {

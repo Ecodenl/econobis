@@ -1,11 +1,17 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import EmailAPI from '../../../api/email/EmailAPI';
-import Icon from "react-icons-kit";
+import Icon from 'react-icons-kit';
 moment.locale('nl');
 import { trash } from 'react-icons-kit/fa/trash';
 import { pencil } from 'react-icons-kit/fa/pencil';
+
+// Functionele wrapper voor de class component
+const EmailsInListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailsInListItem {...props} navigate={navigate} />;
+};
 
 class EmailsInListItem extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class EmailsInListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/email/${id}`);
+        this.props.navigate(`/email/${id}`);
     }
 
     removeEmail(id) {
@@ -92,4 +98,4 @@ class EmailsInListItem extends Component {
     }
 }
 
-export default EmailsInListItem;
+export default EmailsInListItemWrapper;

@@ -1,34 +1,30 @@
 import React from 'react';
+import { useDispatch } from 'react-redux';
 
 import Modal from '../../../components/modal/Modal';
-import { connect } from 'react-redux';
 import { deleteHousingFile } from '../../../actions/housing-file/HousingFileDetailsActions';
 
-const HousingFileDetailsDelete = props => {
+const HousingFileDetailsDelete = ({ id, fullStreet, closeDeleteItemModal }) => {
+    const dispatch = useDispatch();
+
     const confirmAction = () => {
-        props.deleteHousingFile(props.id);
-        props.closeDeleteItemModal();
+        dispatch(deleteHousingFile(id));
+        closeDeleteItemModal();
     };
 
     return (
         <Modal
             buttonConfirmText="Verwijder"
             buttonClassName={'btn-danger'}
-            closeModal={props.closeDeleteItemModal}
-            confirmAction={() => confirmAction()}
+            closeModal={closeDeleteItemModal}
+            confirmAction={confirmAction}
             title="Verwijderen"
         >
             <p>
-                Verwijder woningdossier: <strong> {`${props.fullStreet}`} </strong>
+                Verwijder woningdossier: <strong> {`${fullStreet}`} </strong>
             </p>
         </Modal>
     );
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteHousingFile: id => {
-        dispatch(deleteHousingFile(id));
-    },
-});
-
-export default connect(null, mapDispatchToProps)(HousingFileDetailsDelete);
+export default HousingFileDetailsDelete;

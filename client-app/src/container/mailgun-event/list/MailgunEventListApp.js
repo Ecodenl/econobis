@@ -7,7 +7,7 @@ import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
 import MailgunEventListItem from './MailgunEventListItem';
-import axiosInstance from '../../../api/default-setup/AxiosInstance';
+import getAxiosInstance from '../../../api/default-setup/AxiosInstance';
 import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import { FaInfoCircle, FaQuestionCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
@@ -37,7 +37,7 @@ export default function MailgunEventListApp() {
     const fetch = () => {
         setLoading(true);
 
-        return axiosInstance
+        return getAxiosInstance()
             .get('jory/mailgun-event', {
                 params: {
                     jory: getFetchJory(),
@@ -58,7 +58,7 @@ export default function MailgunEventListApp() {
     const fetchFromMailgun = () => {
         setLoading(true);
 
-        return axiosInstance
+        return getAxiosInstance()
             .post('mailgun-event/fetch-from-mailgun')
             .then(() => {
                 fetch();
@@ -70,7 +70,7 @@ export default function MailgunEventListApp() {
     };
 
     const fetchMeta = () => {
-        return axiosInstance
+        return getAxiosInstance()
             .get('jory/mailgun-domain', {
                 params: {
                     jory: {

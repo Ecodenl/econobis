@@ -1,15 +1,17 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../components/modal/Modal';
 import DocumentTemplateAPI from '../../../api/document-template/DocumentTemplateAPI';
 
 const DocumentTemplateDetailsDuplicate = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         DocumentTemplateAPI.duplicateTemplate(props.templateId).then(payload => {
             const id = payload.data.data.id;
 
-            hashHistory.push(`/document-template/${id}`);
+            navigate(`/document-template/${id}`);
             props.closeModal();
         });
     };

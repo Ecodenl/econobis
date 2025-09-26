@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import InvoiceListSetPaid from './InvoiceListSetPaid';
 import InvoiceListSendNotification from './InvoiceListSendNotification';
@@ -15,6 +15,12 @@ import { euro } from 'react-icons-kit/fa/euro';
 import { bullhorn } from 'react-icons-kit/fa/bullhorn';
 import { remove } from 'react-icons-kit/fa/remove';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const InvoicesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoicesListItem {...props} navigate={navigate} />;
+};
 
 class InvoicesListItem extends Component {
     constructor(props) {
@@ -72,11 +78,11 @@ class InvoicesListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/nota/${id}`);
+        this.props.navigate(`/nota/${id}`);
     }
 
     viewItem(id) {
-        hashHistory.push(`/nota/inzien/${id}`);
+        this.props.navigate(`/nota/inzien/${id}`);
     }
 
     showSend = () => {
@@ -343,4 +349,4 @@ class InvoicesListItem extends Component {
     }
 }
 
-export default InvoicesListItem;
+export default InvoicesListItemWrapper;

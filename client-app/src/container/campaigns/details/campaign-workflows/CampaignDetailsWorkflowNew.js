@@ -262,7 +262,7 @@ function CampaignDetailsWorkflowNew({ campaignId, toggleShowNew, workflowForType
                             <div className="row">
                                 <div className="form-group col-sm-6" />
                                 <InputToggle
-                                    label={'E-mail coach'}
+                                    label={'E-mail organisatie/coach'}
                                     name={'mailCcToCoachWf'}
                                     value={Boolean(mailCcToCoachWf)}
                                     onChangeAction={handleMailCcToCoachWfChange}

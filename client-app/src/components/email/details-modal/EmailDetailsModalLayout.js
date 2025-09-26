@@ -67,7 +67,7 @@ export default function EmailDetailsModalLayout({
                         <ViewText
                             label={'Verwijderd door'}
                             value={email.removedBy ? email.removedBy.fullName : 'Onbekend'}
-                            link={email.removedBy ? 'gebruiker/' + email.removedBy.id : ''}
+                            link={email.removedBy ? '/gebruiker/' + email.removedBy.id : ''}
                         />
                         <ViewText
                             label={'Datum verwijderd'}
@@ -199,7 +199,7 @@ export default function EmailDetailsModalLayout({
                         <ViewText
                             label={'Afgehandeld door'}
                             value={email.closedBy ? email.closedBy.fullName : ''}
-                            link={email.closedBy ? 'gebruiker/' + email.closedBy.id : ''}
+                            link={email.closedBy ? '/gebruiker/' + email.closedBy.id : ''}
                         />
                         <ResponsibleInputSelect
                             values={{

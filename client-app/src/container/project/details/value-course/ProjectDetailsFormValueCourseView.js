@@ -31,7 +31,7 @@ const ProjectDetailsFormValueCourseView = props => {
                 ) : (
                     ''
                 )}
-                {props.showActionButtons && props.permissions.manageFinancial ? (
+                {props.showActionButtons && props.permissions.manageProject ? (
                     <a role="button" onClick={props.toggleDelete}>
                         <Icon className="mybtn-danger" size={14} icon={trash} />
                     </a>

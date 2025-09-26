@@ -7,6 +7,8 @@ moment.locale('nl');
 import ViewText from '../../../../../../components/form/ViewText';
 import styled from '@emotion/styled';
 import MoneyPresenter from '../../../../../../helpers/MoneyPresenter';
+import PanelFooter from '../../../../../../components/panel/PanelFooter';
+import ButtonText from '../../../../../../components/button/ButtonText';
 
 const StyledEm = styled.em`
     font-weight: normal;
@@ -40,6 +42,7 @@ const RevenueFormView = props => {
         distributionType,
     } = props.revenue;
 
+    const statusConcept = !!(status && status === 'concept');
     const kwhTotal = kwhEnd - kwhStart;
 
     let statusText = '';
@@ -305,6 +308,13 @@ const RevenueFormView = props => {
                         </React.Fragment>
                     )}
                 </React.Fragment>
+            ) : null}
+            {statusConcept ? (
+                <PanelFooter>
+                    <div className="pull-right btn-group" role="group">
+                        <ButtonText buttonText={'Definitief maken'} onClickAction={props.setConfirmModal} />
+                    </div>
+                </PanelFooter>
             ) : null}
         </div>
     );

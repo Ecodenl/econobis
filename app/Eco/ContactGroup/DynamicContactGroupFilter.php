@@ -14,6 +14,7 @@ use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
@@ -116,6 +117,14 @@ class DynamicContactGroupFilter extends Model
                 if($this->data){
                     $measureCategory = MeasureCategory::find($this->data);
                     return $measureCategory ? $measureCategory->name : ''   ;
+                }
+                return '';
+            }
+            // intakeSource omzetten
+            if ($this->field == 'intakeSource'){
+                if($this->data){
+                    $intakeSource = IntakeSource::find($this->data);
+                    return $intakeSource->name_source;
                 }
                 return '';
             }

@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 import moment from 'moment';
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
+
+// Functionele wrapper voor de class component
+const OpportunitiesListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <OpportunitiesListItem {...props} navigate={navigate} />;
+};
 
 class OpportunitiesListItem extends Component {
     constructor(props) {
@@ -32,7 +38,7 @@ class OpportunitiesListItem extends Component {
 
     openItem(id) {
         if (!this.props.showCheckbox) {
-            hashHistory.push(`kans/${id}`);
+            this.props.navigate(`/kans/${id}`);
         }
     }
 
@@ -41,6 +47,7 @@ class OpportunitiesListItem extends Component {
             id,
             number,
             address,
+            postalCode,
             createdAt,
             desiredDate,
             contactName,
@@ -76,6 +83,7 @@ class OpportunitiesListItem extends Component {
                 <td>{desiredDate ? moment(desiredDate).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
                 <td>{address}</td>
+                <td>{postalCode}</td>
                 <td>{measureCategoryName}</td>
                 <td className="pre-wrap">
                     {measures.length
@@ -121,4 +129,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps, null)(OpportunitiesListItem);
+export default connect(mapStateToProps, null)(OpportunitiesListItemWrapper);

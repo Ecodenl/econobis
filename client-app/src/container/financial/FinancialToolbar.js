@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../components/button/ButtonIcon';
 import AdministrationDetailsAPI from '../../api/administration/AdministrationDetailsAPI';
@@ -11,6 +11,12 @@ import InvoicesSyncFromTwinfield from './InvoicesSyncFromTwinfield';
 import InvoicesSyncToTwinfield from './InvoicesSyncToTwinfield';
 import Icon from 'react-icons-kit';
 import { refresh } from 'react-icons-kit/fa/refresh';
+
+// Functionele wrapper voor de class component
+const FinancialToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <FinancialToolbar {...props} navigate={navigate} />;
+};
 
 class FinancialToolbar extends Component {
     constructor(props) {
@@ -41,7 +47,7 @@ class FinancialToolbar extends Component {
             .then(payload => {
                 this.setState({ syncingToInvoices: false });
                 this.props.setError(200, payload.data);
-                hashHistory.push(`/financieel/${this.props.administrationDetails.id}/notas/geexporteerd`);
+                this.props.navigate(`/financieel/${this.props.administrationDetails.id}/notas/geexporteerd`);
             })
             .catch(error => {
                 this.setState({ syncingToInvoices: false });
@@ -125,11 +131,13 @@ class FinancialToolbar extends Component {
     };
 
     render() {
+        const { navigate } = this.props;
+
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         {this.props.administrationDetails.usesTwinfield == true &&
                             this.props.administrationDetails.twinfieldIsValid == true && (
                                 <ButtonText
@@ -206,4 +214,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(FinancialToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(FinancialToolbarWrapper);

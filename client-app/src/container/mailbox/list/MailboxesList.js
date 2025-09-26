@@ -1,71 +1,60 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState } from 'react';
 
+import DataTablePagination from '../../../components/dataTable/DataTablePagination';
 import DataTable from '../../../components/dataTable/DataTable';
 import DataTableHead from '../../../components/dataTable/DataTableHead';
 import DataTableBody from '../../../components/dataTable/DataTableBody';
-import DataTableHeadTitle from '../../../components/dataTable/DataTableHeadTitle';
 import MailboxesListItem from './MailboxesListItem';
+import MailboxesListHead from './MailboxesListHead';
+import MailboxesListFilter from './MailboxesListFilter';
 
-class MailboxesList extends Component {
-    constructor(props) {
-        super(props);
-    }
-
-    render() {
-        let loadingText = '';
-        let loading = true;
-
-        if (this.props.hasError) {
-            loadingText = 'Fout bij het ophalen van mailboxen.';
-        } else if (this.props.isLoading) {
-            loadingText = 'Gegevens aan het laden.';
-        } else if (this.props.mailboxes.length === 0) {
-            loadingText = 'Geen mailboxen gevonden!';
-        } else {
-            loading = false;
-        }
-
-        return (
-            <div>
+function MailboxesList({
+    mailboxes,
+    mailboxesTotal,
+    recordsPerPage,
+    isLoading,
+    filter,
+    handlePageClick,
+    handleChangeSort,
+    handleChangeFilter,
+    handleKeyUp,
+}) {
+    return (
+        <div>
+            <form onKeyUp={handleKeyUp} className={'margin-10-top'}>
                 <DataTable>
                     <DataTableHead>
-                        <tr className="thead-title">
-                            <DataTableHeadTitle title={'Weergavenaam'} width={'15%'} />
-                            <DataTableHeadTitle title={'E-mail'} width={'15%'} />
-                            {/*<DataTableHeadTitle title={'Gebruikersnaam'} width={'15%'} />*/}
-                            <DataTableHeadTitle title={'Inkomend'} width={'15%'} />
-                            {/*<DataTableHeadTitle title={'Gebruikt mailgun'} width={'10%'} />*/}
-                            <DataTableHeadTitle title={'Uitgaand'} width={'15%'} />
-                            <DataTableHeadTitle title={'Primair'} width={'5%'} />
-                            <DataTableHeadTitle title={'Actief'} width={'5%'} />
-                            <DataTableHeadTitle title={''} width={'5%'} />
-                        </tr>
+                        <MailboxesListHead handleChangeSort={handleChangeSort} />
+                        <MailboxesListFilter filter={filter} handleChangeFilter={handleChangeFilter} />
                     </DataTableHead>
                     <DataTableBody>
-                        {loading ? (
+                        {isLoading ? (
                             <tr>
-                                <td colSpan={7}>{loadingText}</td>
+                                <td colSpan={7}>Bezig met gegevens laden</td>
                             </tr>
-                        ) : (
-                            this.props.mailboxes.map(mailbox => {
+                        ) : mailboxes.length > 0 ? (
+                            mailboxes.map(mailbox => {
                                 return <MailboxesListItem key={mailbox.id} {...mailbox} />;
                             })
+                        ) : (
+                            <tr>
+                                <td colSpan={3}>Geen resultaten!</td>
+                            </tr>
                         )}
                     </DataTableBody>
                 </DataTable>
-            </div>
-        );
-    }
+
+                <div className="col-md-6 col-md-offset-3">
+                    <DataTablePagination
+                        onPageChangeAction={handlePageClick}
+                        totalRecords={mailboxesTotal}
+                        initialPage={0}
+                        recordsPerPage={recordsPerPage}
+                    />
+                </div>
+            </form>
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        mailboxes: state.mailboxes,
-        usesMailgun: state.systemData.usesMailgun,
-        isLoading: state.loadingData.isLoading,
-        hasError: state.loadingData.hasError,
-    };
-};
-
-export default connect(mapStateToProps, null)(MailboxesList);
+export default MailboxesList;

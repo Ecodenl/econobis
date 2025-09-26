@@ -1,5 +1,5 @@
 import React, { Component, useState } from 'react';
-import { browserHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelBody from '../../../components/panel/PanelBody';
@@ -8,6 +8,8 @@ import { connect } from 'react-redux';
 import CooperationDetailsLaposta from './Laposta';
 
 function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
+    const navigate = useNavigate();
+
     const [showSyncLaposta, setShowSyncLaposta] = useState(false);
     function toggleShowSyncLaposta() {
         setShowSyncLaposta(!showSyncLaposta);
@@ -20,7 +22,7 @@ function CooperationDetailsToolbar({ permissions, isLoading, formData }) {
                     <PanelBody className={'panel-small'}>
                         <div className="col-md-4">
                             <div className="btn-group btn-group-flex margin-small" role="group">
-                                <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                                <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                                 {permissions.manageMarketing && formData.useLaposta == true ? (
                                     <ButtonText
                                         onClickAction={toggleShowSyncLaposta}

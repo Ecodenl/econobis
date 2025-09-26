@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import * as ibantools from 'ibantools';
 import axios from 'axios';
@@ -21,6 +21,12 @@ import InputDate from '../../../components/form/InputDate';
 import moment from 'moment';
 import Image from 'react-bootstrap/lib/Image';
 import PortalImageCrop from '../../../components/imageUploadAndCrop/PortalImageCrop';
+
+// Functionele wrapper voor de class component
+const AdministrationNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <AdministrationNewForm {...props} navigate={navigate} />;
+};
 
 class AdministrationNewForm extends Component {
     constructor(props) {
@@ -64,20 +70,6 @@ class AdministrationNewForm extends Component {
                 emailTemplateFinancialOverviewId: '',
                 attachment: '',
                 mailboxId: '',
-                usesTwinfield: false,
-                twinfieldConnectionType: '',
-                twinfieldUsername: '',
-                twinfieldPassword: '',
-                twinfieldClientId: '',
-                twinfieldClientSecret: '',
-                twinfieldOrganizationCode: '',
-                twinfieldOfficeCode: '',
-                dateSyncTwinfieldContacts: '',
-                dateSyncTwinfieldPayments: moment('2019-01-01').format('YYYY-MM-DD'),
-                dateSyncTwinfieldInvoices: moment('2019-01-01').format('YYYY-MM-DD'),
-                pendingInvoicesPresent: false,
-                oldestUnpaidInvoiceDate: '',
-                oldestTwinfieldInvoiceDate: '',
                 prefixInvoiceNumber: 'F',
                 usesVat: true,
                 emailBccNotas: '',
@@ -93,16 +85,6 @@ class AdministrationNewForm extends Component {
                 IBAN: false,
                 email: false,
                 website: false,
-                twinfieldConnectionType: false,
-                twinfieldUsername: false,
-                twinfieldPassword: false,
-                twinfieldClientId: false,
-                twinfieldClientSecret: false,
-                twinfieldOrganizationCode: false,
-                twinfieldOfficeCode: false,
-                dateSyncTwinfieldContacts: false,
-                dateSyncTwinfieldPayments: false,
-                dateSyncTwinfieldInvoices: false,
                 prefixInvoiceNumber: false,
                 mailboxId: false,
                 emailBccNotas: false,
@@ -277,82 +259,12 @@ class AdministrationNewForm extends Component {
             }
         }
 
-        if (administration.usesTwinfield) {
-            if (validator.isEmpty(administration.twinfieldConnectionType + '')) {
-                errors.twinfieldConnectionType = true;
-                hasErrors = true;
-            }
-
-            if (administration.twinfieldConnectionType === 'openid') {
-                if (validator.isEmpty(administration.twinfieldClientId + '')) {
-                    errors.twinfieldClientId = true;
-                    hasErrors = true;
-                }
-
-                if (validator.isEmpty(administration.twinfieldClientSecret + '')) {
-                    errors.twinfieldClientSecret = true;
-                    hasErrors = true;
-                }
-            }
-
-            if (validator.isEmpty(administration.twinfieldOfficeCode + '')) {
-                errors.twinfieldOfficeCode = true;
-                hasErrors = true;
-            }
-
-            if (validator.isEmpty(administration.twinfieldOrganizationCode + '')) {
-                errors.twinfieldOrganizationCode = true;
-                hasErrors = true;
-            }
-
-            let administrationCodeNotUnique = false;
-            if (!validator.isEmpty(administration.administrationCode + '')) {
-                this.props.administrationsPeek.map(
-                    existingAdministrationCode =>
-                        existingAdministrationCode.id !== administration.id &&
-                        existingAdministrationCode.administrationCode !== null &&
-                        !validator.isEmpty(existingAdministrationCode.administrationCode + '') &&
-                        existingAdministrationCode.administrationCode &&
-                        administration.administrationCode &&
-                        existingAdministrationCode.administrationCode.toUpperCase() ===
-                            administration.administrationCode.toUpperCase() &&
-                        (administrationCodeNotUnique = true)
-                );
-            }
-            if (administrationCodeNotUnique) {
-                errors.administrationCode = true;
-                hasErrors = true;
-            }
-
-            let twinFieldOfficeAndOrganizationCodeNotUnique = false;
-            this.state.twinfieldInfoAdministrations.map(
-                existingTwinfieldAdministration =>
-                    existingTwinfieldAdministration.twinfieldOfficeCode &&
-                    administration.twinfieldOfficeCode &&
-                    existingTwinfieldAdministration.twinfieldOfficeCode.toUpperCase() ===
-                        administration.twinfieldOfficeCode.toUpperCase() &&
-                    existingTwinfieldAdministration.twinfieldOrganizationCode &&
-                    administration.twinfieldOrganizationCode &&
-                    existingTwinfieldAdministration.twinfieldOrganizationCode.toUpperCase() ===
-                        administration.twinfieldOrganizationCode.toUpperCase() &&
-                    existingTwinfieldAdministration.id !== administration.id &&
-                    (twinFieldOfficeAndOrganizationCodeNotUnique = true)
-            );
-            if (twinFieldOfficeAndOrganizationCodeNotUnique) {
-                errors.twinfieldOfficeCode = true;
-                hasErrors = true;
-            }
-        }
-
         this.setState({ ...this.state, errors: errors });
 
         // If no errors send form
         if (!hasErrors) {
             let loadingText = 'Aan het laden';
 
-            if (administration.usesTwinfield) {
-                loadingText = 'De koppeling Econobis Twinfield wordt gemaakt. Dit kan enige tijd duren';
-            }
             this.setState({
                 ...this.state,
                 loadingText: loadingText,
@@ -385,17 +297,6 @@ class AdministrationNewForm extends Component {
             data.append('emailTemplateExhortationId', administration.emailTemplateExhortationId);
             data.append('emailTemplateFinancialOverviewId', administration.emailTemplateFinancialOverviewId);
             data.append('attachment', administration.attachment);
-            data.append('usesTwinfield', administration.usesTwinfield);
-            data.append('twinfieldConnectionType', administration.twinfieldConnectionType);
-            data.append('twinfieldUsername', administration.twinfieldUsername);
-            data.append('twinfieldPassword', administration.twinfieldPassword);
-            data.append('twinfieldClientId', administration.twinfieldClientId);
-            data.append('twinfieldClientSecret', administration.twinfieldClientSecret);
-            data.append('twinfieldOrganizationCode', administration.twinfieldOrganizationCode);
-            data.append('twinfieldOfficeCode', administration.twinfieldOfficeCode);
-            data.append('dateSyncTwinfieldContacts', administration.dateSyncTwinfieldContacts);
-            data.append('dateSyncTwinfieldPayments', administration.dateSyncTwinfieldPayments);
-            data.append('dateSyncTwinfieldInvoices', administration.dateSyncTwinfieldInvoices);
             data.append('prefixInvoiceNumber', administration.prefixInvoiceNumber);
             data.append('usesVat', administration.usesVat);
             data.append('emailBccNotas', administration.emailBccNotas);
@@ -406,7 +307,7 @@ class AdministrationNewForm extends Component {
 
             AdministrationDetailsAPI.newAdministration(data)
                 .then(payload => {
-                    hashHistory.push(`/administratie/${payload.data.id}`);
+                    this.props.navigate(`/administratie/${payload.data.id}`);
                 })
                 .catch(function(error) {
                     console.log(error);
@@ -442,20 +343,6 @@ class AdministrationNewForm extends Component {
             emailTemplateFinancialOverviewId,
             ibanAttn,
             mailboxId,
-            usesTwinfield,
-            twinfieldConnectionType,
-            twinfieldUsername,
-            twinfieldPassword,
-            twinfieldClientId,
-            twinfieldClientSecret,
-            twinfieldOrganizationCode,
-            twinfieldOfficeCode,
-            dateSyncTwinfieldContacts,
-            dateSyncTwinfieldPayments,
-            dateSyncTwinfieldInvoices,
-            pendingInvoicesPresent,
-            oldestUnpaidInvoiceDate,
-            oldestTwinfieldInvoiceDate,
             prefixInvoiceNumber,
             usesVat,
             emailBccNotas,
@@ -463,19 +350,6 @@ class AdministrationNewForm extends Component {
             usesMollie,
             mollieApiKey,
         } = this.state.administration;
-
-        let disableBeforeDateSyncTwinfieldContacts = moment(moment('2019-01-01').format('YYYY-MM-DD')).format(
-            'YYYY-MM-DD'
-        );
-        let disableBeforeDateSyncTwinfieldInvoices = moment(moment('2019-01-01').format('YYYY-MM-DD')).format(
-            'YYYY-MM-DD'
-        );
-        let disableBeforeDateSyncTwinfieldPayments = moment(moment('2019-01-01').format('YYYY-MM-DD')).format(
-            'YYYY-MM-DD'
-        );
-        // let disableAfterDateSyncTwinfieldContacts = null;
-        // let disableAfterDateSyncTwinfieldInvoices = null;
-        // let disableAfterDateSyncTwinfieldPayments = null;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -778,171 +652,6 @@ class AdministrationNewForm extends Component {
                             </div>
                         )}
 
-                        <div className="row">
-                            <div className={'panel-part panel-heading'}>
-                                <span className={'h5 text-bold'}>Twinfield</span>
-                            </div>
-                        </div>
-
-                        <div className="row">
-                            <InputToggle
-                                label={'Gebruikt Twinfield'}
-                                name={'usesTwinfield'}
-                                value={usesTwinfield}
-                                onChangeAction={this.handleInputChange}
-                            />
-                            {usesTwinfield == true && (
-                                <InputSelect
-                                    label={'API connection type'}
-                                    id="twinfieldConnectionType"
-                                    name={'twinfieldConnectionType'}
-                                    options={this.props.twinfieldConnectionTypes}
-                                    value={twinfieldConnectionType}
-                                    onChangeAction={this.handleInputChange}
-                                    required={'required'}
-                                    error={this.state.errors.twinfieldConnectionType}
-                                />
-                            )}
-                        </div>
-
-                        {usesTwinfield == true && (
-                            <React.Fragment>
-                                <div className="row">
-                                    <InputText
-                                        label="Gebruikersnaam"
-                                        name={'twinfieldUsername'}
-                                        value={twinfieldUsername}
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        error={this.state.errors.twinfieldUsername}
-                                    />
-                                    <InputText
-                                        label="Wachtwoord"
-                                        name={'twinfieldPassword'}
-                                        value={twinfieldPassword}
-                                        onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.twinfieldPassword}
-                                        required={'required'}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        label="Client Id"
-                                        name={'twinfieldClientId'}
-                                        value={twinfieldClientId}
-                                        onChangeAction={this.handleInputChange}
-                                        // required={'required'}
-                                        error={this.state.errors.twinfieldClientId}
-                                    />
-                                    <InputText
-                                        label="Client Secret"
-                                        name={'twinfieldClientSecret'}
-                                        value={twinfieldClientSecret}
-                                        onChangeAction={this.handleInputChange}
-                                        // required={'required'}
-                                        error={this.state.errors.twinfieldClientSecret}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputText
-                                        label="Omgeving"
-                                        name={'twinfieldOrganizationCode'}
-                                        value={twinfieldOrganizationCode}
-                                        onChangeAction={this.handleInputChange}
-                                        required={'required'}
-                                        error={this.state.errors.twinfieldOrganizationCode}
-                                    />
-                                    <InputText
-                                        label="Code"
-                                        name={'twinfieldOfficeCode'}
-                                        value={twinfieldOfficeCode}
-                                        onChangeAction={this.handleInputChange}
-                                        error={this.state.errors.twinfieldOfficeCode}
-                                        required={'required'}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputDate
-                                        label={'Synchroniseer contacten vanaf'}
-                                        name={'dateSyncTwinfieldContacts'}
-                                        value={dateSyncTwinfieldContacts}
-                                        onChangeAction={this.handleInputChangeDate}
-                                        disabledBefore={disableBeforeDateSyncTwinfieldContacts}
-                                        disabledAfter={dateSyncTwinfieldInvoices}
-                                        readOnly={usesTwinfield == false}
-                                        error={this.state.errors.dateSyncTwinfieldContacts}
-                                        size={'col-sm-5'}
-                                        textToolTip={`Na het maken van de koppeling worden contacten met een nota in Econobis
-                                            aangemaakt in Twinfield vanaf deze datum (op basis van nota datum). De nota’s
-                                            uit Econobis worden niet overgezet. In Twinfield kunnen vervolgens oude nota’s
-                                            worden gekoppeld. Als deze datum leeg blijft dan begint de synchronisatie vanaf
-                                            de eerste datum van niet betaald nota’s synchroniseren. Deze synchronisatie
-                                            draait ook automatisch nachts.`}
-                                    />
-                                    <ViewText
-                                        className={'col-sm-6 form-group'}
-                                        label={"Nota's in behandeling"}
-                                        value={pendingInvoicesPresent ? 'Ja' : 'Nee'}
-                                        name={'pendingInvoicesPresent'}
-                                        textToolTip={`Nota's in behandeling zijn nota's met status 'Wordt definitief gemaakt',
-                                         'Fout bij maken', 'Wordt verstuurd', 'Opnieuw te verzenden' of 'Wordt opnieuw verstuurd'.
-                                          Zolang er nota's in behandeling zijn kunnen de datums "Synchroniseer nota's vanaf"
-                                          en "Synchroniseer betalingen vanaf" niet gewijzigd worden.`}
-                                    />
-                                </div>
-                                <div className="row">
-                                    <InputDate
-                                        label={"Synchroniseer nota's vanaf"}
-                                        name={'dateSyncTwinfieldInvoices'}
-                                        value={dateSyncTwinfieldInvoices}
-                                        onChangeAction={this.handleInputChangeDate}
-                                        disabledBefore={disableBeforeDateSyncTwinfieldInvoices}
-                                        disabledAfter={oldestTwinfieldInvoiceDate}
-                                        readOnly={usesTwinfield == false || pendingInvoicesPresent}
-                                        error={this.state.errors.dateSyncTwinfieldInvoices}
-                                        size={'col-sm-5'}
-                                        textToolTip={`Niet betaalde nota’s, incl. de contacten worden vanaf deze datum (op basis van
-                                            nota datum) gesynchroniseerd met Twinfield. De datum kan niet liggen na de datum van de oudste gesynchroniseerde
-                                            nota. Deze synchronisatie moet handmatig aangevraagd worden.`}
-                                    />
-                                    <ViewText
-                                        className={'col-sm-6 form-group'}
-                                        label={'Oudste nota datum gesynchroniseerd met Twinfield'}
-                                        value={
-                                            oldestTwinfieldInvoiceDate
-                                                ? moment(oldestTwinfieldInvoiceDate).format('L')
-                                                : ''
-                                        }
-                                    />
-                                </div>
-                                <div className="row">
-                                    {/*todo WM: opschonen*/}
-                                    {/*<InputDate*/}
-                                    {/*    label={'Synchroniseer betalingen vanaf'}*/}
-                                    {/*    name={'dateSyncTwinfieldPayments'}*/}
-                                    {/*    value={dateSyncTwinfieldPayments}*/}
-                                    {/*    onChangeAction={this.handleInputChangeDate}*/}
-                                    {/*    disabledBefore={disableBeforeDateSyncTwinfieldPayments}*/}
-                                    {/*    disabledAfter={oldestUnpaidInvoiceDate}*/}
-                                    {/*    readOnly={usesTwinfield == false || pendingInvoicesPresent}*/}
-                                    {/*    error={this.state.errors.dateSyncTwinfieldPayments}*/}
-                                    {/*    size={'col-sm-5'}*/}
-                                    {/*    textToolTip={`In de nacht worden betalingen gesynchroniseerd. Dit gebeurt vanaf deze datum (op*/}
-                                    {/*        basis van nota datum). De datum kan niet liggen na de datum van de oudste nog*/}
-                                    {/*        niet betaalde nota.`}*/}
-                                    {/*/>*/}
-                                    <div className={'col-sm-6 form-group'} />
-                                    <ViewText
-                                        className={'col-sm-6 form-group'}
-                                        label={'Oudste nota datum met status niet betaald'}
-                                        value={
-                                            oldestUnpaidInvoiceDate ? moment(oldestUnpaidInvoiceDate).format('L') : ''
-                                        }
-                                    />
-                                </div>
-                            </React.Fragment>
-                        )}
-
                         {this.state.showModalUploadImage && (
                             <AdministrationLogoNew
                                 closeUploadImage={this.closeUploadImage}
@@ -983,10 +692,9 @@ const mapStateToProps = state => {
     return {
         countries: state.systemData.countries,
         portalSettingsLayouts: state.systemData.portalSettingsLayouts,
-        twinfieldConnectionTypes: state.systemData.twinfieldConnectionTypes,
         administrationsPeek: state.systemData.administrationsPeek,
         meDetails: state.meDetails,
     };
 };
 
-export default connect(mapStateToProps)(AdministrationNewForm);
+export default connect(mapStateToProps)(AdministrationNewFormWrapper);

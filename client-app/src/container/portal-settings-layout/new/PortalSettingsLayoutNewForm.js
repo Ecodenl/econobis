@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -14,6 +14,12 @@ import Panel from '../../../components/panel/Panel';
 import PortalSettingsLayoutDetailsAPI from '../../../api/portal-settings-layout/PortalSettingsLayoutDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
 import ErrorUnauthorized from '../../global/ErrorUnauthorized';
+
+// Functionele wrapper voor de class component
+const PortalSettingsLayoutNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <PortalSettingsLayoutNewForm {...props} navigate={navigate} />;
+};
 
 class PortalSettingsLayoutNewForm extends Component {
     constructor(props) {
@@ -86,7 +92,7 @@ class PortalSettingsLayoutNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/portal-instellingen-layout/${payload.data.data.id}`);
+                    this.props.navigate(`/portal-instellingen-layout/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -141,4 +147,4 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutNewForm);
+export default connect(mapStateToProps, mapDispatchToProps)(PortalSettingsLayoutNewFormWrapper);

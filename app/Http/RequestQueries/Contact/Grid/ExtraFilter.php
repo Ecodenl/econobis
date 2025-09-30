@@ -286,14 +286,12 @@ class ExtraFilter extends RequestExtraFilter
                 $query->where(function ($query) use ($type, $data) {
                     $query->whereDoesntHave('primaryAddress')
                         ->orWhereHas('primaryAddress', function ($query) use ($type, $data) {
-                            $data = str_replace(' ', '', $data);
                             RequestFilter::applyFilter($query, 'city', $type, $data);
                         });
                 });
                 break;
             default:
                 $query->whereHas('primaryAddress', function ($query) use ($type, $data) {
-                    $data = str_replace(' ', '', $data);
                     RequestFilter::applyFilter($query, 'city', $type, $data);
                 });
                 break;

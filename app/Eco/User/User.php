@@ -102,6 +102,14 @@ class User extends Authenticatable
         return $this->belongsTo(Mailbox::class);
     }
 
+    public function getFullNameFnfAttribute()
+    {
+        $firstName = $this->first_name ? $this->first_name . ' ' : "";
+        $prefix = $this->last_name_prefix ? $this->last_name_prefix . ' ' : '';
+        $fullNameFnf = ($firstName . $prefix . $this->last_name);
+        return $fullNameFnf;
+    }
+
     public function requiresTwoFactorAuthentication()
     {
         $cooperation = Cooperation::first();

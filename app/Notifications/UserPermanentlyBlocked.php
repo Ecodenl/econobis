@@ -19,10 +19,8 @@ class UserPermanentlyBlocked extends Notification
     {
         return (new MailMessage)
             ->subject('Uw account is geblokkeerd')
-            ->greeting('Beste '.$notifiable->name.',')
+            ->greeting('Beste '.$notifiable->fullNameFnF.',')
             ->line('Uw account is permanent geblokkeerd wegens herhaaldelijk mislukte inlogpogingen.')
-            ->line('Neem contact op met onze supportafdeling om uw account opnieuw te laten activeren.')
-            ->salutation('Met vriendelijke groet,')
-            ->line(config('app.name'));
+            ->line('Neem contact op met onze supportafdeling om uw account opnieuw te laten activeren.');
     }
 }

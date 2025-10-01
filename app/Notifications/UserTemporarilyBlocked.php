@@ -27,11 +27,9 @@ class UserTemporarilyBlocked extends Notification
     {
         return (new MailMessage)
             ->subject('Tijdelijke blokkade van uw account')
-            ->greeting('Beste '.$notifiable->name.',')
+            ->greeting('Beste '.$notifiable->fullNameFnF.',')
             ->line('Uw account is tijdelijk geblokkeerd wegens meerdere mislukte inlogpogingen.')
             ->line('U kunt opnieuw proberen in te loggen vanaf: **'.$this->blockedUntil->locale('nl_NL')->isoFormat('dddd D MMMM YYYY HH:mm').'**.')
-            ->line('Als u deze pogingen niet zelf heeft gedaan, raden wij u aan om na afloop direct uw wachtwoord te wijzigen.')
-            ->salutation('Met vriendelijke groet,')
-            ->line(config('app.name'));
+            ->line('Als u deze pogingen niet zelf heeft gedaan, raden wij u aan om na afloop direct uw wachtwoord te wijzigen.');
     }
 }

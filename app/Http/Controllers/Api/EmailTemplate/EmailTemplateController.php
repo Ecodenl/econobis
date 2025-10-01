@@ -109,6 +109,14 @@ class EmailTemplateController extends Controller
         }
     }
 
+    public function duplicate(EmailTemplate $emailTemplate)
+    {
+        $newTemplate = $emailTemplate->replicate();
+        $newTemplate->save();
+
+        return $this->show($newTemplate);
+    }
+
     public function peek()
     {
         return EmailTemplatePeek::collection(EmailTemplate::get()->sortBy('name', SORT_NATURAL|SORT_FLAG_CASE));

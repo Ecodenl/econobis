@@ -55,6 +55,9 @@ class User extends Authenticatable
         'require_two_factor_authentication' => 'boolean',
         'show_two_factor_notification' => 'boolean',
         'last_visit' => 'datetime',
+        'blocked_until' => 'datetime',
+        'blocked_permanent' => 'bool',
+        'failed_logins' => 'int',
     ];
 
     protected $encryptable = [
@@ -97,6 +100,14 @@ class User extends Authenticatable
     public function defaultMailbox()
     {
         return $this->belongsTo(Mailbox::class);
+    }
+
+    public function getFullNameFnfAttribute()
+    {
+        $firstName = $this->first_name ? $this->first_name . ' ' : "";
+        $prefix = $this->last_name_prefix ? $this->last_name_prefix . ' ' : '';
+        $fullNameFnf = ($firstName . $prefix . $this->last_name);
+        return $fullNameFnf;
     }
 
     public function requiresTwoFactorAuthentication()

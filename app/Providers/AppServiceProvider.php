@@ -7,8 +7,12 @@ use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Support\Facades\RateLimiter;   // <— nieuw
+use Illuminate\Cache\RateLimiting\Limit;      // <— nieuw
+use Illuminate\Http\Request;                  // <— nieuw
 use Laravel\Passport\Passport;
 use Monolog\Handler\SlackHandler;
+use Psr\Log\LogLevel;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +27,17 @@ class AppServiceProvider extends ServiceProvider
 
         Schema::defaultStringLength(191);
         date_default_timezone_set('Europe/Amsterdam');
+
+        // RateLimiter voor login via /oauth/token
+        RateLimiter::for('oauth-login', function (Request $request) {
+// ToDo WM: voor lokaal testen ook even doen, later kan dit weer teruggezet worden.
+//            if (app()->isLocal()) {
+//                Log::info('Local!');
+//                return Limit::none();
+//            }
+            $userId = (string) ($request->input('username') ?? $request->input('email') ?? 'unknown');
+            return Limit::perMinute(5)->by($userId.'|'.$request->ip());
+        });
 
         if ($this->app->environment() == 'production') { // alleen errors naar slack versturen in productie
             $host= gethostname();
@@ -41,15 +56,15 @@ class AppServiceProvider extends ServiceProvider
             $monolog = Log::getLogger(); // onderliggende monolog instatie ophalen
             $slackHandler
                 = new SlackHandler( // nieuwe slackhandler
-                    Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
-                    $slackChannelName, // slack channel naam
-                    'econobis', // slack username
-                    true,
-                    null,
-                    \Monolog\Logger::ERROR, // vanaf welk level de errors naar slack worden verstuurd
-                    true,
-                    false,
-                    true); // extra data toevoegen
+                Config::get('app.SLACK_TOKEN'), // slack token uit de config -> .env halen
+                $slackChannelName, // slack channel naam
+                'econobis', // slack username
+                true,
+                null,
+                LogLevel::ERROR, // vanaf welk level de errors naar slack worden verstuurd
+                true,
+                false,
+                true); // extra data toevoegen
 
             //nieuwe handler die de coöperatie toevoegd aan elke log
             $monolog->pushHandler($slackHandler);

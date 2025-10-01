@@ -2,7 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 
-class SeedOktober2025MeasuresAndMeasureCategoriesTable extends Migration
+class SeedSpukMeasureCategoriesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -12,24 +12,19 @@ class SeedOktober2025MeasuresAndMeasureCategoriesTable extends Migration
     public function up()
     {
         $categorizedMeasures = [
-            'Energie aansluiting' => [
-                'Afleverset van warmtenet',
-                'Aardgasmeter/-afsluiting',
-                'Afleverset',
-                'Elektriciteitsmeter',
-                'Groepenkast aansluiting (1_35, 3_25, 1/3-fasen)',
-                'Groepen, beveiligingen',
-                'Bedrading (in woning)',
+            'Isolatieglas' => [
+                'Isolerende deuren',
+                'Isolerende deuren i.c.m kozijnen',
+            ],
+            'Ventilatie' => [
+                'CO2 gestuurde ventilatie',
             ],
         ];
 
-        $id = 8;
+        $id = 5;
         foreach ($categorizedMeasures as $category => $measures) {
-            // Create the category
-            $catId = DB::table('measure_categories')->insertGetId(
-                [ 'name' => $category ]
-            );
-
+            // Get the category
+            $catId = DB::table('measure_categories')->where('name', $category)->first()->id;
             // Create the measures
             foreach($measures as $measure) {
                 DB::table('measures')->insertGetId(

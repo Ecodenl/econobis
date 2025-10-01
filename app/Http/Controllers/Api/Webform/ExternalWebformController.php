@@ -307,25 +307,8 @@ class ExternalWebformController extends Controller
 
         // Add opportunity to exitsting intake
         if ($data['intake']['intake_id']) {
-            $intake = Intake::find($data['intake']['intake_id']);
-            if (!$intake) {
-                $this->error('Er is een ongeldige waarde voor intake_id (' . (isset($data['intake']['intake_id']) ? $data['intake']['intake_id'] : "") . ') meegegeven.');
-            } else {
-                $this->log("Intake met id " . $intake->id . " gevonden.");
-                $this->addOpportunityToExistingIntake($intake, $data['quotation_request'], $webform);
-            }
+            $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
         }
-        // Add opportunity to exitsting intake
-        if ($data['intake']['intake_external_code']) {
-            $intake = Intake::where($data['intake']['intake_external_code'])->first();
-            if (!$intake && isset($data['intake']['intake_external_code'])) {
-                $this->log('Meegegeven intake_id_extern (' . $data['intake']['intake_external_code'] . ') nog niet bekend. Nieuwe intake aanmaken.');
-            } else {
-                $this->log("Intake met id " . $intake->id . " gevonden bij intake_id_extern (" . $data['intake']['intake_external_code'] . "). Geen nieuwe intake aanmaken");
-                $this->addOpportunityToExistingIntake($intake, $data['quotation_request'], $webform);
-            }
-        }
-
         // Add quotationrequest to exitsting opportunity
         if ($data['opportunity']['opportunity_id']) {
             $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
@@ -337,9 +320,7 @@ class ExternalWebformController extends Controller
         }
 
         // after adding to existing intake and/or opportuntiy we are done
-        if ($data['intake']['intake_id'] || $data['intake']['intake_external_code'] || $data['opportunity']['opportunity_id'] || $data['quotation_request']['quotation_request_id']) {
-            $this->contact = $intake?->contact;
-            $this->intake = $intake;
+        if ($data['intake']['intake_id'] || $data['opportunity']['opportunity_id'] || $data['quotation_request']['quotation_request_id']) {
             return;
         }
 
@@ -608,7 +589,7 @@ class ExternalWebformController extends Controller
             'intake' => [
                 // Intake
                 'intake_id' => 'intake_id',
-                'intake_id_extern' => 'intake_external_code',
+                'intake_id_extern' => 'external_code',
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_maatregel_id' => 'measure_id',
@@ -2358,9 +2339,7 @@ class ExternalWebformController extends Controller
 
     protected function addIntakeToAddress(Address $address, array $dataIntake, array $dataQuotationRequest, Webform $webform)
     {
-
-        // geen existing intake en campaign_id meegegeven
-        if (!$this->intake && $dataIntake['campaign_id']) {
+        if (!$dataIntake['intake_id'] && $dataIntake['campaign_id']) {
 
             // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.
@@ -2401,15 +2380,29 @@ class ExternalWebformController extends Controller
                 $measureCategories = MeasureCategory::whereIn('id', explode(',', $dataIntake['measure_categorie_ids']))->get();
             }
 
-            $intake = Intake::make([
-                'contact_id' => $address->contact->id,
-                'intake_status_id' => $intakeStatus->id,
-                'campaign_id' => $campaign->id,
-                'note' => $dataIntake['note'],
-            ]);
-            $intake->address_id = $address->id;
-            $intake->save();
-            $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            $createNewIntake = true;
+            if ($dataIntake['external_code']) {
+                $intake = Intake::where('external_code', $dataIntake['external_code'])->first();
+                if (!$intake && isset($dataIntake['external_code'])) {
+                    $this->log('Meegegeven intake_id_extern (' . $dataIntake['external_code'] . ') nog niet bekend. Nieuwe intake aanmaken.');
+                } else {
+                    $this->log("Intake met id " . $intake->id . " gevonden bij intake_id_extern (" . $dataIntake['external_code'] . "). Geen nieuwe intake aanmaken");
+                    $createNewIntake = false;
+                }
+            } else {
+                $this->log("Geen external_code meegegeven");
+            }
+            if ($createNewIntake) {
+                $intake = Intake::create([
+                    'external_code' => !empty($dataIntake['external_code']) ? $dataIntake['external_code'] : null,
+                    'contact_id' => $address->contact->id,
+                    'address_id' => $address->id,
+                    'intake_status_id' => $intakeStatus->id,
+                    'campaign_id' => $campaign->id,
+                    'note' => $dataIntake['note'],
+                ]);
+                $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            }
 
             $intake->reasons()->sync($reasons->pluck('id'));
             $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
@@ -2476,20 +2469,20 @@ class ExternalWebformController extends Controller
 
             return $intake;
         } else {
-            $this->log('Er is intake_id of bestaande intake_id_extern meegegeven of geen campagne meegegeven, intake niet nieuw aanmaken.');
+            $this->log('Er is intake_id meegegeven of geen campagne meegegeven, intake niet nieuw aanmaken.');
         }
     }
 
-    protected function addOpportunityToExistingIntake(Intake $intake, array $dataQuotationRequest, Webform $webform)
+    protected function addOpportunityToExistingIntake(array $dataIntake, array $dataQuotationRequest, Webform $webform)
     {
-        if ($intake) {
+        if ($dataIntake['intake_id']) {
 
-//            $intake = Intake::find($dataIntake['intake_id']);
-//            if (!$intake) {
-//                $this->error('Er is een ongeldige waarde voor intake_id (' . (isset($dataIntake['intake_id']) ? $dataIntake['intake_id'] : "") . ') meegegeven.');
-//            } else {
-//                $this->log("Intake met id " . $intake->id . " gevonden.");
-//            }
+            $intake = Intake::find($dataIntake['intake_id']);
+            if (!$intake) {
+                $this->error('Er is een ongeldige waarde voor intake_id (' . (isset($dataIntake['intake_id']) ? $dataIntake['intake_id'] : "") . ') meegegeven.');
+            } else {
+                $this->log("Intake met id " . $intake->id . " gevonden.");
+            }
 
             // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
             // Die moeten we eerst even setten als we dus hier vanuit webform komen.

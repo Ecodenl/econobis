@@ -27,13 +27,14 @@ class EmailsInListApp extends Component {
     constructor(props) {
         super(props);
 
-        // if (!isEmpty(props.params)) {
         // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+        // if (!isEmpty(props.params)) {
         // if (props.params.type === 'eigen') {
         //     this.props.setFilterMe(true);
         // }
+        // todo WM: En hier kwamen we al nooit! Sterker nog this.props.resetEmailsFilters() is not a function
         // } else {
-        this.props.resetEmailsFilters();
+        // this.props.resetEmailsFilters();
         // }
 
         this.refreshData = this.refreshData.bind(this);

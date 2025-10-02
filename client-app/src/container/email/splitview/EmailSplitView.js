@@ -79,11 +79,6 @@ export default function EmailSplitView() {
         setFilters({ ...getFiltersFromStorage(), fetch: true });
 
         setEigenOpenstaand(query.eigen === '1');
-        // if (query.eigen) {
-        //     setEigenOpenstaand(true);
-        // } else {
-        //     setEigenOpenstaand(false);
-        // }
     }, [query.eigen]);
 
     useEffect(() => {

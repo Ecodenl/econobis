@@ -205,7 +205,11 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                         >
                                             <option></option>
                                             {statuses
-                                                .filter(status => status.id !== 'closed')
+                                                .filter(status => {
+                                                    if (!eigenOpenstaand || status.id !== 'closed') {
+                                                        return true;
+                                                    }
+                                                })
                                                 .map(status => (
                                                     <option key={status.id} value={status.id}>
                                                         {status.name}

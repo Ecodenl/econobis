@@ -18,9 +18,9 @@ class UserPermanentlyBlocked extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-            ->subject('Uw account is geblokkeerd')
+            ->subject('Jouw account is geblokkeerd')
             ->greeting('Beste '.$notifiable->fullNameFnF.',')
-            ->line('Uw account is permanent geblokkeerd wegens herhaaldelijk mislukte inlogpogingen.')
-            ->line('Neem contact op met onze supportafdeling om uw account opnieuw te laten activeren.');
+            ->line('Jouw account is permanent geblokkeerd wegens herhaaldelijk mislukte inlogpogingen.')
+            ->line('Vraag je beheerder om jouw account te herstellen in Econobis.');
     }
 }

@@ -33,7 +33,8 @@ class LoginAttemptThrottle
                 $this->logAttempt($user, $identifier, $request, false, 'blocked_permanent', $user->failed_logins, null, true);
 
                 return response()->json([
-                    'error' => 'Account geblokkeerd. Neem contact op met support.'
+                    'error' => 'Account geblokkeerd. Neem contact op met support.',
+                    'errorBlocked' => 'Jouw account is permanent geblokkeerd wegens herhaaldelijk mislukte inlogpogingen. Vraag je beheerder om jouw account te herstellen in Econobis.',
                 ], 423);
             }
 
@@ -43,6 +44,7 @@ class LoginAttemptThrottle
 
                 return response()->json([
                     'error' => 'Te veel mislukte pogingen. Probeer later opnieuw.',
+                    'errorBlocked' => 'Jouw account is tijdelijk geblokkeerd wegens meerdere mislukte inlogpogingen. Je kunt opnieuw proberen in te loggen vanaf: '.$user->blocked_until->locale('nl_NL')->isoFormat('dddd D MMMM YYYY HH:mm').'.',
                     'retry_after_seconds' => now()->diffInSeconds($user->blocked_until),
                 ], 429);
             }

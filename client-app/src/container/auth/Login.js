@@ -93,7 +93,7 @@ class Login extends Component {
                 this.setState({
                     username: '',
                     password: '',
-                    errorMessage: 'Verkeerde inloggegevens ingevuld!',
+                    errorMessage: payload ? payload.error : 'Verkeerde inloggegevens ingevuld!',
                 });
             }
         });

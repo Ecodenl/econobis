@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { useNavigate } from 'react-router-dom';
-import moment from 'moment';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
@@ -40,7 +39,7 @@ class UsersListItem extends Component {
     }
 
     render() {
-        const { id, firstName, fullLastName, email, status } = this.props;
+        const { id, firstName, fullLastName, email, status, blocked_until } = this.props;
 
         return (
             <tr
@@ -53,6 +52,7 @@ class UsersListItem extends Component {
                 <td>{fullLastName}</td>
                 <td>{email}</td>
                 <td>{status}</td>
+                <td>{blocked_until}</td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

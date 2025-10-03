@@ -157,7 +157,7 @@ class LoginAttemptThrottle
         $blockedUntil = null,
         bool $blockedPermanent = false
     ): void {
-        // Veiligheid: user_agent kan lang zijn; DB kolom is 512
+        // Veiligheid: user_agent kan lang zijn; DB kolom user_agent is 512
         $ua = (string) $request->userAgent();
         if (strlen($ua) > 512) {
             $ua = substr($ua, 0, 512);

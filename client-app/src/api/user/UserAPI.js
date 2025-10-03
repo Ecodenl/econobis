@@ -29,6 +29,12 @@ export default {
 
         return getAxiosInstance().post(requestUrl, person);
     },
+    unblockUser: userId => {
+        const URL_USER = `${getApiUrl()}/api/user`;
+        const requestUrl = `${URL_USER}/${userId}/unblock`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
 
     addRole: (userId, roleId) => {
         const URL_USER = `${getApiUrl()}/api/user`;

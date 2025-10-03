@@ -27,6 +27,7 @@ class GridUser extends JsonResource
             'fullLastName' => $this->present()->fullLastName(),
             'email' => $this->email,
             'status' => $this->active ? 'Actief' : 'Inactief',
+            'blocked_until' => $this->blocked_permanent ? 'Permanent' : ($this->blocked_until ? $this->blocked_until->locale('nl_NL')->isoFormat('dddd D MMMM YYYY HH:mm') : ''),
         ];
     }
 }

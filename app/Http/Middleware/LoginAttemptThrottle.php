@@ -8,7 +8,6 @@ use App\Notifications\UserPermanentlyBlocked;
 use App\Notifications\UserTemporarilyBlocked;
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 
 class LoginAttemptThrottle
 {
@@ -26,66 +25,67 @@ class LoginAttemptThrottle
         // Probeer user te vinden op email/username; doe niets als onbekend (tegen user enumeration)
         $user = $identifier ? User::where('email', $identifier)->first() : null;
 
-        // 1) PRE-CHECK: geblokkeerd?
+        // 1) PRE-CHECK: geblokkeerd? -> log intern, extern uniform 401
         if ($user) {
             // Permanent geblokkeerd
             if ($user->blocked_permanent) {
                 $this->logAttempt($user, $identifier, $request, false, 'blocked_permanent', $user->failed_logins, null, true);
-
-                return response()->json([
-                    'error' => 'Account geblokkeerd. Neem contact op met support.',
-                    'errorBlocked' => 'Jouw account is permanent geblokkeerd wegens herhaaldelijk mislukte inlogpogingen. Vraag je beheerder om jouw account te herstellen in Econobis.',
-                ], 423);
+                return $this->genericUnauthorized();
             }
 
             // Tijdelijk geblokkeerd
             if ($user->blocked_until && now()->lt($user->blocked_until)) {
                 $this->logAttempt($user, $identifier, $request, false, 'blocked_until', $user->failed_logins, $user->blocked_until, false);
-
-                return response()->json([
-                    'error' => 'Te veel mislukte pogingen. Probeer later opnieuw.',
-                    'errorBlocked' => 'Jouw account is tijdelijk geblokkeerd wegens meerdere mislukte inlogpogingen. Je kunt opnieuw proberen in te loggen vanaf: '.$user->blocked_until->locale('nl_NL')->isoFormat('dddd D MMMM YYYY HH:mm').'.',
-                    'retry_after_seconds' => now()->diffInSeconds($user->blocked_until),
-                ], 429);
+                return $this->genericUnauthorized();
             }
         }
 
-        // 2) Laat throttle + Passport het werk doen
+        // 2) Laat throttle + Passport issueToken afhandelen
         $response = $next($request);
         $status   = $response->getStatusCode();
 
-        // Als we geen user konden resolven → toch loggen, maar zonder user_id
+        // Geen user → nog steeds uniform reageren, maar intern loggen wat er gebeurde
         if (!$user) {
-            $this->logAttempt(null, $identifier, $request, $status === 200, $status === 200 ? 'ok' : ($status === 429 ? 'rate_limited' : 'invalid_grant'));
-            return $response;
+            if ($status === 200) {
+                $this->logAttempt(null, $identifier, $request, true, 'ok');
+                return $response;
+            }
+            // 429 (rate limit) -> uniforme 401 naar buiten, intern loggen als rate_limited
+            if ($status === 429) {
+                $this->logAttempt(null, $identifier, $request, false, 'rate_limited');
+                return $this->genericUnauthorized();
+            }
+            // 400/401 enz. -> uniforme 401
+            $this->logAttempt(null, $identifier, $request, false, in_array($status, [400,401], true) ? 'invalid_grant' : "other_{$status}");
+            return $this->genericUnauthorized();
         }
 
-        // 429 door RateLimiter (middelware na ons) → log rate limited en klaar
+        // 429 van RateLimiter -> uniform 401 naar buiten, intern loggen
         if ($status === 429) {
             $this->logAttempt($user, $identifier, $request, false, 'rate_limited', $user->failed_logins, $user->blocked_until, (bool)$user->blocked_permanent);
-            return $response;
+            return $this->genericUnauthorized();
         }
 
         // 3) Post-checks per status
+        // 200: reset teller/blokkades en laat het succes gewoon door
         if ($status === 200) {
-            // Succes: reset teller + blokkades
-            $user->failed_logins   = 0;
-            $user->blocked_until   = null;
-            $user->blocked_permanent = false;
-            $user->save();
-
+            if ($user->failed_logins > 0 || $user->blocked_until || $user->blocked_permanent) {
+                $user->update([
+                    'failed_logins'       => 0,
+                    'blocked_until'       => null,
+                    'blocked_permanent'   => false,
+                ]);
+            }
             $this->logAttempt($user, $identifier, $request, true, 'ok', 0);
             return $response;
         }
 
-        // Mislukking (400/401)
+        // 400/401: mislukt -> teller + drempels, notificaties, uniform 401 terug
         if (in_array($status, [400, 401], true)) {
-            // Teller verhogen en actuele waarde ophalen
             $user->increment('failed_logins');
             $user->refresh();
 
             $result = 'invalid_grant';
-
             switch ($user->failed_logins) {
                 case 15:
                     $user->blocked_permanent = true;
@@ -94,21 +94,18 @@ class LoginAttemptThrottle
                     $user->notify(new UserPermanentlyBlocked());
                     $result = 'blocked_permanent_set';
                     break;
-
                 case 10:
                     $until = now()->addHour();
                     $user->update(['blocked_until' => $until]);
                     $user->notify(new UserTemporarilyBlocked($until));
                     $result = 'blocked_until_1h';
                     break;
-
                 case 5:
                     $until = now()->addMinutes(15);
                     $user->update(['blocked_until' => $until]);
                     $user->notify(new UserTemporarilyBlocked($until));
                     $result = 'blocked_until_15m';
                     break;
-
                 default:
                     // 1–4, 6–9, 11–14: geen extra blokkade, alleen loggen
                     break;
@@ -126,26 +123,35 @@ class LoginAttemptThrottle
                 (bool) $user->blocked_permanent
             );
 
-            return $response;
+            return $this->genericUnauthorized();
         }
 
-        if ($status === 200) {
-            // Doe alleen updates als er echt iets te resetten valt
-            if ($user->failed_logins > 0 || $user->blocked_until || $user->blocked_permanent) {
-                $user->update([
-                    'failed_logins' => 0,
-                    'blocked_until' => null,
-                    'blocked_permanent' => false,
-                ]);
-            }
-
-            $this->logAttempt($user, $identifier, $request, true, 'ok', 0);
-            return $response;
-        }
+        // Overige statuscodes -> intern loggen, extern alsnog uniforme 401
+        $this->logAttempt(
+            $user,
+            $identifier,
+            $request,
+            false,
+            "other_{$status}",
+            $user->failed_logins,
+            $user->blocked_until,
+            (bool) $user->blocked_permanent
+        );
+        return $this->genericUnauthorized();
     }
 
     /**
-     * Schrijft een regel weg naar user_login_attempts.
+     * Uniforme response naar de frontend (geen enumeratie).
+     */
+    protected function genericUnauthorized()
+    {
+        return response()->json([
+            'error' => 'Inloggen is niet gelukt. Probeer het (later) opnieuw of reset je wachtwoord als je die vergeten bent. Check je mailbox om te kijken of je account wellicht geblokkeerd is.',
+        ], 401);
+    }
+
+    /**
+     * Schrijf logregel weg naar user_login_attempts.
      */
     protected function logAttempt(
         ?User $user,
@@ -159,9 +165,7 @@ class LoginAttemptThrottle
     ): void {
         // Veiligheid: user_agent kan lang zijn; DB kolom user_agent is 512
         $ua = (string) $request->userAgent();
-        if (strlen($ua) > 512) {
-            $ua = substr($ua, 0, 512);
-        }
+        if (strlen($ua) > 512) { $ua = substr($ua, 0, 512); }
 
         UserLoginAttempt::create([
             'user_id'             => $user?->id,

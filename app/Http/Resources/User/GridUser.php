@@ -9,6 +9,7 @@
 namespace App\Http\Resources\User;
 
 
+use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class GridUser extends JsonResource
@@ -27,6 +28,7 @@ class GridUser extends JsonResource
             'fullLastName' => $this->present()->fullLastName(),
             'email' => $this->email,
             'status' => $this->active ? 'Actief' : 'Inactief',
+            'blocked' => $this->blocked_permanent || ($this->blocked_until !== null && Carbon::parse($this->blocked_until) > Carbon::now()),
             'blocked_until' => $this->blocked_permanent ? 'Permanent' : ($this->blocked_until ? $this->blocked_until->locale('nl_NL')->isoFormat('dddd D MMMM YYYY HH:mm') : ''),
         ];
     }

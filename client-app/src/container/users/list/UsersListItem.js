@@ -39,7 +39,11 @@ class UsersListItem extends Component {
     }
 
     render() {
-        const { id, firstName, fullLastName, email, status, blocked_until } = this.props;
+        const { id, firstName, fullLastName, email, status, blocked, blocked_until } = this.props;
+
+        const styleBlocked = {
+            color: blocked ? 'red' : 'green',
+        };
 
         return (
             <tr
@@ -52,7 +56,9 @@ class UsersListItem extends Component {
                 <td>{fullLastName}</td>
                 <td>{email}</td>
                 <td>{status}</td>
-                <td>{blocked_until}</td>
+                <td>
+                    <span style={styleBlocked}>{blocked_until}</span>
+                </td>
                 <td>
                     {this.state.showActionButtons ? (
                         <a role="button" onClick={() => this.openItem(id)}>

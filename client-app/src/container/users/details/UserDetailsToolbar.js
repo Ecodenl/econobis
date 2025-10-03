@@ -9,18 +9,12 @@ import ButtonText from '../../../components/button/ButtonText';
 const UserDetailsToolbar = props => {
     const navigate = useNavigate();
 
-    const showUnblock =
-        props.blockedPermanent !== undefined &&
-        props.blockedUntil !== undefined &&
-        (props.blockedPermanent === true ||
-            (props.blockedUntil !== null && moment(props.blockedUntil).format() > moment().format()));
-
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group btn-group-flex" role="group">
                     <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
-                    {showUnblock === true ? (
+                    {props.blocked === true ? (
                         <ButtonText
                             buttonText={'Deblokkeren'}
                             onClickAction={props.handleUnBlock}
@@ -31,7 +25,9 @@ const UserDetailsToolbar = props => {
                 </div>
             </div>
             <div className="col-md-4">
-                <h4 className="text-center">{props.fullName}</h4>
+                <h4 className="text-center">
+                    {props.fullName} {props.blocked === true ? <span style={{ color: 'red' }}>Geblokkeerd</span> : null}
+                </h4>
             </div>
             <div className="col-md-4" />
         </div>
@@ -41,6 +37,7 @@ const UserDetailsToolbar = props => {
 const mapStateToProps = state => {
     return {
         fullName: state.userDetails.fullName,
+        blocked: state.userDetails.blocked,
         blockedUntil: state.userDetails.blockedUntil,
         blockedPermanent: state.userDetails.blockedPermanent,
     };

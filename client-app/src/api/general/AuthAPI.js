@@ -16,7 +16,7 @@ export default {
             .post(requestUrl, { ...getAuthKey(), ...loginCredentials })
             .then(response => response)
             .catch(error => {
-                return { error: error?.response?.data?.errorBlocked ?? 'Verkeerde inloggegevens ingevuld!' };
+                return { error: error?.response?.data?.error ?? 'Verkeerde inloggegevens ingevuld!' };
             });
     },
 

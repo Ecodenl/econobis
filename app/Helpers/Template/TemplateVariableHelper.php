@@ -2095,10 +2095,16 @@ class TemplateVariableHelper
 //                return $model->date_recorded ? Carbon::parse($model->date_recorded)->format('d-m-Y H:i') : null;
 //            case 'datum_uitgebracht':
                 return $model->date_released ? Carbon::parse($model->date_released)->format('d-m-Y H:i') : null;
+            case 'status_akkoord_extern':
+                return $model->not_approved_external ? 'Afgekeurd' : ($model->date_approved_external ? 'Goedgekeurd' : '');
             case 'datum_akkoord_extern':
                 return $model->date_approved_external ? Carbon::parse($model->date_approved_external)->format('d-m-Y') : null;
+            case 'status_akkoord_projectleider':
+                return $model->not_approved_project_manager ? 'Afgekeurd' : ($model->date_approved_project_manager ? 'Goedgekeurd' : '');
             case 'datum_akkoord_projectleider':
                 return $model->date_approved_project_manager ? Carbon::parse($model->date_approved_project_manager)->format('d-m-Y') : null;
+            case 'status_akkoord_bewoner':
+                return $model->not_approved_client ? 'Afgekeurd' : ($model->date_approved_client ? 'Goedgekeurd' : '');
             case 'datum_akkoord_bewoner':
                 return $model->date_approved_client ? Carbon::parse($model->date_approved_client)->format('d-m-Y') : null;
             case 'datum_uitgevoerd':

@@ -3,10 +3,17 @@ import getAxiosInstance from '../default-setup/AxiosInstance';
 const URL_MAILBOX = 'mailbox';
 
 export default {
-    fetchMailboxes: () => {
+    fetchMailboxes: (filters, sorts, pagination) => {
         const requestUrl = `${URL_MAILBOX}/grid`;
 
-        return getAxiosInstance().get(requestUrl);
+        return getAxiosInstance().get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+                limit: pagination.limit,
+                offset: pagination.offset,
+            },
+        });
     },
 
     fetchMailboxesLoggedInUser: () => {

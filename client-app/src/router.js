@@ -185,6 +185,8 @@ const ParticipantReportCreateApp = React.lazy(() =>
 const WebformsListApp = React.lazy(() => import('./container/webform/list/WebformsListApp'));
 const WebformNewApp = React.lazy(() => import('./container/webform/new/WebformNewApp'));
 const WebformDetailsApp = React.lazy(() => import('./container/webform/details/WebformDetailsApp'));
+const SourcesListApp = React.lazy(() => import('./container/sources/list/SourcesListApp'));
+const SourceDetailsApp = React.lazy(() => import('./container/sources/details/SourceDetailsApp'));
 const VatCodesListApp = React.lazy(() => import('./container/vat-code/list/VatCodesListApp'));
 const VatCodeNewApp = React.lazy(() => import('./container/vat-code/new/VatCodeNewApp'));
 const VatCodeDetailsApp = React.lazy(() => import('./container/vat-code/details/VatCodeDetailsApp'));
@@ -656,6 +658,9 @@ const AppRoutes = () => {
                         <Route path="webformulieren" element={<WebformsListApp />} />
                         <Route path="webformulier/nieuw" element={<WebformNewApp />} />
                         <Route path="webformulier/:id" element={<WebformDetailsApp />} />
+                        /* Aanmeldingsbronnen */
+                        <Route path="aanmeldingsbronnen" element={<SourcesListApp />} />
+                        <Route path="aanmeldingsbron/:id" element={<SourceDetailsApp />} />
                         /* Mailboxes */
                         <Route path="mailgun-domeinen" element={<MailgunDomainsListApp />} />
                         <Route path="mailgun-domein/nieuw" element={<MailgunDomainNewApp />} />

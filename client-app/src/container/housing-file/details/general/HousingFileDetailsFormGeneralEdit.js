@@ -316,6 +316,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             value={energyLabelStatusId}
                             options={this.state.energyLabelStatus}
                             onChangeAction={this.handleInputChange}
+                            readOnly={hasHoomDossierLink}
                         />
                     ) : null}
                     {showFields.some(showField => showField.econobisFieldName === 'is_monument') ? (
@@ -326,7 +327,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             options={this.state.noYesUnknownOptions}
                             emptyOption={false}
                             onChangeAction={this.handleInputChange}
-                            disabled={hasHoomDossierLink}
+                            readOnly={hasHoomDossierLink}
                         />
                     ) : null}
                 </div>
@@ -345,7 +346,7 @@ class HousingFileDetailsFormGeneralEdit extends Component {
                             options={this.state.noYesUnknownOptions}
                             emptyOption={false}
                             onChangeAction={this.handleInputChange}
-                            disabled={hasHoomDossierLink}
+                            readOnly={hasHoomDossierLink}
                         />
                     ) : null}
                 </div>

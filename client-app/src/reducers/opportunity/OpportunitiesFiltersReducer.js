@@ -7,6 +7,10 @@ const filtersReducerDefaultState = {
         field: 'address',
         data: '',
     },
+    postalCode: {
+        field: 'postalCode',
+        data: '',
+    },
     createdAtStart: {
         field: 'createdAtStart',
         data: '',
@@ -69,6 +73,14 @@ export default (state = filtersReducerDefaultState, action) => {
                 address: {
                     ...state.address,
                     data: action.address,
+                },
+            };
+        case 'SET_FILTER_OPPORTUNITY_POSTAL_CODE':
+            return {
+                ...state,
+                postalCode: {
+                    ...state.postalCode,
+                    data: action.postalCode,
                 },
             };
         case 'SET_FILTER_OPPORTUNITY_CREATED_AT_START':

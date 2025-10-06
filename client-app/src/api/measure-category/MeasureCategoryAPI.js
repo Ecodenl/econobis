@@ -17,6 +17,8 @@ export default {
                         'organisationIdWfCreateQuotationRequest',
                         'usesWfEmailQuotationRequest',
                         'emailTemplateIdWfCreateQuotationRequest',
+                        'calendarBackgroundColor',
+                        'calendarTextColor',
                     ],
                 },
             },

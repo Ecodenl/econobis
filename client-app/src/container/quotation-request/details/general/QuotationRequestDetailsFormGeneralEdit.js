@@ -14,6 +14,7 @@ import validator from 'validator';
 import { fetchQuotationRequestDetails } from '../../../../actions/quotation-request/QuotationRequestDetailsActions';
 import InputTime from '../../../../components/form/InputTime';
 import ViewText from '../../../../components/form/ViewText';
+import InputToggle from '../../../../components/form/InputToggle';
 
 class QuotationRequestDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -36,13 +37,21 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             datePlannedAttempt2,
             datePlannedAttempt3,
             datePlanned,
+            statusApprovedExternal,
             dateApprovedExternal,
+            notApprovedExternal,
             dateUnderReview,
+            statusApprovedProjectManager,
             dateApprovedProjectManager,
+            notApprovedProjectManager,
+            statusApprovedClient,
             dateApprovedClient,
+            notApprovedClient,
             dateExecuted,
             dateUnderReviewDetermination,
+            statusApprovedDetermination,
             dateApprovedDetermination,
+            notApprovedDetermination,
             quotationText,
             quotationAmount,
             costAdjustment,
@@ -56,38 +65,85 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             clientNote,
         } = props.quotationRequestDetails;
 
-        // this.state.opportunityActionCodeRef                'visit'
-        // this.state.visitDefaultStatusId                     7
-        // this.state.visitMadeStatusId                        8
-        // this.state.visitDoneStatusId                        9
-        // this.state.visitCanceledStatusId                    14
+        const visitDefaultStatusId =
+            opportunityAction.codeRef === 'visit'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'default';
+                  }).id
+                : null;
+        const visitMadeStatusId =
+            opportunityAction.codeRef === 'visit'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'made';
+                  }).id
+                : null;
+        const visitDoneStatusId =
+            opportunityAction.codeRef === 'visit'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'done';
+                  }).id
+                : null;
+        const visitCanceledStatusId =
+            opportunityAction.codeRef === 'visit'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'cancelled';
+                  }).id
+                : null;
+        const clientApprovedStatusId =
+            opportunityAction.codeRef === 'quotation-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'approved';
+                  }).id
+                : null;
+        const projectManagerApprovedStatusId =
+            opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'pm-approved';
+                  }).id
+                : null;
+        const externalApprovedStatusId =
+            (opportunityAction.codeRef === opportunityAction.codeRef) === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'approved';
+                  }).id
+                : null;
+        const determinationApprovedStatusId =
+            opportunityAction.codeRef === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'approved-det';
+                  }).id
+                : null;
+        const clientNotApprovedStatusId =
+            opportunityAction.codeRef === 'quotation-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'not-approved';
+                  }).id
+                : null;
+        const projectManagerNotApprovedStatusId =
+            opportunityAction.codeRef === 'quotation-request' || opportunityAction.codeRef === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'pm-not-approved';
+                  }).id
+                : null;
+        const externalNotApprovedStatusId =
+            (opportunityAction.codeRef === opportunityAction.codeRef) === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'not-approved';
+                  }).id
+                : null;
+        const determinationNotApprovedStatusId =
+            opportunityAction.codeRef === 'subsidy-request'
+                ? relatedQuotationRequestsStatuses.find(status => {
+                      return status.codeRef == 'not-approved-det';
+                  }).id
+                : null;
 
         this.state = {
             opportunityActionCodeRef: opportunityAction.codeRef,
-            visitDefaultStatusId:
-                opportunityAction.codeRef === 'visit'
-                    ? relatedQuotationRequestsStatuses.find(status => {
-                          return status.codeRef == 'default';
-                      }).id
-                    : null,
-            visitMadeStatusId:
-                opportunityAction.codeRef === 'visit'
-                    ? relatedQuotationRequestsStatuses.find(status => {
-                          return status.codeRef == 'made';
-                      }).id
-                    : null,
-            visitDoneStatusId:
-                opportunityAction.codeRef === 'visit'
-                    ? relatedQuotationRequestsStatuses.find(status => {
-                          return status.codeRef == 'done';
-                      }).id
-                    : null,
-            visitCanceledStatusId:
-                opportunityAction.codeRef === 'visit'
-                    ? relatedQuotationRequestsStatuses.find(status => {
-                          return status.codeRef == 'cancelled';
-                      }).id
-                    : null,
+            visitDefaultStatusId,
+            visitMadeStatusId,
+            visitDoneStatusId,
+            visitCanceledStatusId,
             opportunity: {
                 opportunityId: opportunity.id ? opportunity.id : '',
                 opportunityNumber: opportunity.number ? opportunity.number : '',
@@ -122,13 +178,21 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                 datePlannedAttempt3: datePlannedAttempt3 ? datePlannedAttempt3 : '',
                 datePlanned: datePlanned ? datePlanned : '',
                 timePlanned: datePlanned ? moment(datePlanned).format('HH:mm') : '08:00',
+                statusApprovedExternal: statusApprovedExternal ? statusApprovedExternal : '',
                 dateApprovedExternal: dateApprovedExternal ? dateApprovedExternal : '',
+                notApprovedExternal: notApprovedExternal ? notApprovedExternal : '',
                 dateUnderReview: dateUnderReview ? dateUnderReview : '',
+                statusApprovedProjectManager: statusApprovedProjectManager ? statusApprovedProjectManager : '',
                 dateApprovedProjectManager: dateApprovedProjectManager ? dateApprovedProjectManager : '',
+                notApprovedProjectManager: notApprovedProjectManager ? notApprovedProjectManager : '',
+                statusApprovedClient: statusApprovedClient ? statusApprovedClient : '',
                 dateApprovedClient: dateApprovedClient ? dateApprovedClient : '',
+                notApprovedClient: notApprovedClient ? notApprovedClient : '',
                 dateExecuted: dateExecuted ? dateExecuted : '',
                 dateUnderReviewDetermination: dateUnderReviewDetermination ? dateUnderReviewDetermination : '',
+                statusApprovedDetermination: statusApprovedDetermination ? statusApprovedDetermination : '',
                 dateApprovedDetermination: dateApprovedDetermination ? dateApprovedDetermination : '',
+                notApprovedDetermination: notApprovedDetermination ? notApprovedDetermination : '',
                 quotationText: quotationText ? quotationText : '',
                 quotationAmount: quotationAmount ? quotationAmount : 0,
                 costAdjustment: costAdjustment ? costAdjustment : 0,
@@ -335,12 +399,19 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
             datePlanned,
             timePlanned,
             dateApprovedClient,
+            notApprovedClient,
+            statusApprovedProjectManager,
             dateApprovedProjectManager,
+            notApprovedProjectManager,
+            statusApprovedExternal,
             dateApprovedExternal,
+            notApprovedExternal,
             dateUnderReview,
             dateExecuted,
             dateUnderReviewDetermination,
+            statusApprovedDetermination,
             dateApprovedDetermination,
+            notApprovedDetermination,
             quotationText,
             quotationAmount,
             costAdjustment,
@@ -609,37 +680,114 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                             ) : null}
                         </div>
                         <div className="row">
-                            <InputDate
-                                label="Datum akkoord bewoner"
-                                size={'col-sm-6'}
-                                name="dateApprovedClient"
-                                value={dateApprovedClient}
-                                onChangeAction={this.handleInputChangeDate}
+                            {notApprovedClient ? (
+                                <ViewText
+                                    label="Status akkoord bewoner"
+                                    id={'statusApprovedClient'}
+                                    className={'col-sm-6 form-group'}
+                                    value={'Afgekeurd'}
+                                />
+                            ) : (
+                                <InputDate
+                                    label="Datum akkoord bewoner"
+                                    size={'col-sm-6'}
+                                    name="dateApprovedClient"
+                                    value={dateApprovedClient}
+                                    onChangeAction={this.handleInputChangeDate}
+                                />
+                            )}
+                            <InputToggle
+                                label="Afgekeurd door bewoner"
+                                name="notApprovedClient"
+                                value={notApprovedClient}
+                                onChangeAction={this.handleInputChange}
                             />
                         </div>
                         <div className="row">
-                            <InputDate
-                                label="Datum akkoord projectleider"
-                                size={'col-sm-6'}
-                                name="dateApprovedProjectManager"
-                                value={dateApprovedProjectManager}
-                                onChangeAction={this.handleInputChangeDate}
-                                readOnly={opportunityAction.codeRef === 'subsidy-request'}
-                            />
+                            {opportunityAction.codeRef === 'subsidy-request' ? (
+                                <>
+                                    <ViewText
+                                        label={'Datum akkoord projectleider'}
+                                        id={'dateApprovedProjectManager'}
+                                        className={'col-sm-6 form-group'}
+                                        value={
+                                            dateApprovedProjectManager && moment(dateApprovedProjectManager).format('L')
+                                        }
+                                    />
+                                    <ViewText
+                                        label="Status akkoord projectleider"
+                                        id={'statusApprovedProjectManager'}
+                                        className={'col-sm-6 form-group'}
+                                        value={statusApprovedProjectManager}
+                                    />
+                                </>
+                            ) : (
+                                <>
+                                    {notApprovedProjectManager ? (
+                                        <ViewText
+                                            label="Status akkoord projectleider"
+                                            id={'notApprovedProjectManager'}
+                                            className={'col-sm-6 form-group'}
+                                            value={'Afgekeurd'}
+                                        />
+                                    ) : (
+                                        <InputDate
+                                            label="Datum akkoord projectleider"
+                                            size={'col-sm-6'}
+                                            name="dateApprovedProjectManager"
+                                            value={dateApprovedProjectManager}
+                                            onChangeAction={this.handleInputChangeDate}
+                                        />
+                                    )}
+                                    <InputToggle
+                                        label="Afgekeurd door projectleider"
+                                        name="notApprovedProjectManager"
+                                        value={notApprovedProjectManager}
+                                        onChangeAction={this.handleInputChange}
+                                    />
+                                </>
+                            )}
                         </div>
                     </>
                 ) : null}
                 {opportunityAction.codeRef === 'subsidy-request' ? (
                     <>
                         <div className="row">
-                            <InputDate
-                                label="Datum akkoord toekenning"
-                                size={'col-sm-6'}
-                                name="dateApprovedExternal"
-                                value={dateApprovedExternal}
-                                onChangeAction={this.handleInputChangeDate}
-                                readOnly={opportunityAction.codeRef === 'subsidy-request'}
+                            <ViewText
+                                label={'Datum akkoord toekenning'}
+                                id={'dateApprovedExternal'}
+                                className={'col-sm-6 form-group'}
+                                value={dateApprovedExternal && moment(dateApprovedExternal).format('L')}
                             />
+                            <ViewText
+                                label="Status akkoord toekenning"
+                                id={'statusApprovedExternal'}
+                                className={'col-sm-6 form-group'}
+                                value={statusApprovedExternal}
+                            />
+                            {/*{notApprovedExternal ? (*/}
+                            {/*    <ViewText*/}
+                            {/*        label="Status akkoord toekenning"*/}
+                            {/*        id={'notApprovedExternal'}*/}
+                            {/*        className={'col-sm-6 form-group'}*/}
+                            {/*        value={'Afgekeurd'}*/}
+                            {/*    />*/}
+                            {/*) : (*/}
+                            {/*    <InputDate*/}
+                            {/*        label="Datum akkoord toekenning"*/}
+                            {/*        size={'col-sm-6'}*/}
+                            {/*        name="dateApprovedExternal"*/}
+                            {/*        value={dateApprovedExternal}*/}
+                            {/*        onChangeAction={this.handleInputChangeDate}*/}
+                            {/*        readOnly={opportunityAction.codeRef === 'subsidy-request'} // todo wm: waarom readOnly voor Budgetaanvraag?*/}
+                            {/*    />*/}
+                            {/*)}*/}
+                            {/*<InputToggle*/}
+                            {/*    label="Afgekeurd door toekenning"*/}
+                            {/*    name="notApprovedExternal"*/}
+                            {/*    value={notApprovedExternal}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <InputDate
@@ -724,6 +872,35 @@ class QuotationRequestDetailsFormGeneralEdit extends Component {
                                 className={'col-sm-6 form-group'}
                                 value={dateApprovedDetermination && moment(dateApprovedDetermination).format('L')}
                             />
+                            <ViewText
+                                label="Status akkoord vaststelling"
+                                id={'statusApprovedDetermination'}
+                                className={'col-sm-6 form-group'}
+                                value={statusApprovedDetermination}
+                            />
+                            {/*{notApprovedDetermination ? (*/}
+                            {/*    <ViewText*/}
+                            {/*        label="Status akkoord vaststelling"*/}
+                            {/*        id={'notApprovedDetermination'}*/}
+                            {/*        className={'col-sm-6 form-group'}*/}
+                            {/*        value={'Afgekeurd'}*/}
+                            {/*    />*/}
+                            {/*) : (*/}
+                            {/*    <InputDate*/}
+                            {/*        label="Datum akkoord vaststelling"*/}
+                            {/*        size={'col-sm-6'}*/}
+                            {/*        name="dateApprovedDetermination"*/}
+                            {/*        value={dateApprovedDetermination}*/}
+                            {/*        onChangeAction={this.handleInputChangeDate}*/}
+                            {/*        readOnly={opportunityAction.codeRef === 'subsidy-request'} // todo wm: waarom readOnly voor Budgetaanvraag?*/}
+                            {/*    />*/}
+                            {/*)}*/}
+                            {/*<InputToggle*/}
+                            {/*    label="Afgekeurd door vaststelling"*/}
+                            {/*    name="notApprovedExternal"*/}
+                            {/*    value={notApprovedExternal}*/}
+                            {/*    onChangeAction={this.handleInputChange}*/}
+                            {/*/>*/}
                         </div>
                         <div className="row">
                             <ViewText

@@ -27,6 +27,7 @@ class MailFetcherMsOauth
     private array $fetchedEmails = [];
     private Collection $parts;
     private Graph $appClient;
+    private $errorAppClientInitialization = false;
 
     /**
      * @throws Exception
@@ -39,16 +40,23 @@ class MailFetcherMsOauth
         $this->initMsOauthConfig();
     }
 
-    public function fetchNew()
+    /**
+     * Fetches new emails and returns a structured response:
+     * - On success: ['status' => 'success', 'imapIdLastFetched' => int|null]
+     * - On error:   ['status' => 'error', 'errorMessage' => string]
+     */
+    public function fetchNew() :mixed
     {
-//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
-
-        if ($this->mailbox->start_fetch_mail != null) {
-            return;
+        if($this->errorAppClientInitialization){
+            $errorMessage = "Initialization Graph client was not successfully! Mailbox id: " . $this->mailbox->id;
+//            Log::error($errorMessage);
+            return [
+                'status' => 'error',
+                'errorMessage' => $errorMessage,
+            ];
         }
 
-        $this->mailbox->start_fetch_mail = Carbon::now();
-        $this->mailbox->save();
+//        Log::info("Check fetchNew mailbox " . $this->mailbox->id);
 
         if ($this->mailbox->date_last_fetched) {
             $dateLastFetched = Carbon::parse($this->mailbox->date_last_fetched)->subDay()->format('Y-m-d');
@@ -59,8 +67,8 @@ class MailFetcherMsOauth
         $moreAvailable = true;
 
 // todo
-// Dit werkt niet (schiet in lus) als er meer dan setPageSize messages zijn.
-// moet dus anders
+//  Dit werkt niet (schiet in lus) als er meer dan setPageSize messages zijn.
+//  moet dus anders
 //        while ($moreAvailable) {
 
             try {
@@ -80,27 +88,21 @@ class MailFetcherMsOauth
                     Log::error('Niet alle email ingelezen voor mailbox ' . $this->mailbox->id . ', totaal messages was: ' . $messages->count());
                 }
             } catch (Exception $e) {
-                Log::error('Error mailbox ' . $this->mailbox->id . ' getting user\'s inbox: '.$e->getMessage());
-                if($this->mailbox->login_tries < 5){
-                    $this->mailbox->login_tries += 1;
-//                    Log::info('Poging ' . $this->mailbox->login_tries);
-                } else {
-                    Log::info('Mailbox op inactief gezet na 5 pogingen.');
-                    $this->mailbox->valid = false;
-                }
-                $this->mailbox->start_fetch_mail = null;
-                $this->mailbox->save();
-
-                return $e->getMessage();
+                $errorMessage = "Error mailbox " . $this->mailbox->id . " getting user's inbox: " . $e->getMessage();
+//                Log::error($errorMessage);
+                return [
+                    'status' => 'error',
+                    'errorMessage' => $errorMessage,
+                ];
             }
 
 //        }
 
-        $this->mailbox->date_last_fetched = Carbon::now();
-        $this->mailbox->valid = true;
-        $this->mailbox->login_tries = 0;
-        $this->mailbox->start_fetch_mail = null;
-        $this->mailbox->save();
+        return [
+            'status' => 'success',
+            'imapIdLastFetched' => null,
+        ];
+
     }
 
     private function processMessages(GraphCollectionRequest $listMessages, $dateLastFetched): bool
@@ -135,18 +137,20 @@ class MailFetcherMsOauth
     private function initMsOauthConfig(): void
     {
         $msOauthConnectionManager = new MsOauthConnectionManager($this->mailbox);
-        $this->appClient = $msOauthConnectionManager->setAccessTokenFromRefreshToken();
 
-// todo oauth WM: nog iets met response doen ?
-//        if (isset($this->appClient['message']) && $this->appClient['message'] == 'ms_oauth_unauthorised') {
-//            Log::info($this->appClient);
-//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
-//        }
-//
-//        // Todo improve failure message
-//        if (!($client instanceof Google_Client) && isset($client['message']) && $client['message'] === 'ms_oauth_unauthorised') {
-//            throw new Exception('InitMsOauthConfig: ' . $client['message']);
-//        }
+        try {
+            $token = $msOauthConnectionManager->setAccessTokenFromRefreshToken();
+            if($token) {
+                $this->appClient = $token;
+            } else {
+                $this->errorAppClientInitialization = true;
+                Log::error('InitMsOauthConfig: no access token from refresh token ! Mailbox id: ' . $this->mailbox->id);
+            }
+        } catch (\Exception $ex) {
+            $this->errorAppClientInitialization = true;
+            Log::error('InitMsOauthConfig: no access token from refresh token ! Mailbox id: ' . $this->mailbox->id);
+            Log::error($ex);
+        }
     }
 
     private function fetchEmail(Message $message)
@@ -200,8 +204,6 @@ class MailFetcherMsOauth
             $textHtml = $message->getBody()->getContent();
         } catch (\Exception $ex) {
             Log::error("Failed to retrieve HtmlBody from email (" . $message->getId() . ") in mailbox (" . $this->mailbox->id . "). Error: " . $ex->getMessage());
-            $this->mailbox->start_fetch_mail = null;
-            $this->mailbox->save();
             return;
         }
         $textHtml = $textHtml ?: '';

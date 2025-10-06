@@ -29,7 +29,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
-    'as' => 'password.reset',
+    'as' => 'api.password.reset',
     'uses' => 'Auth\ResetPasswordController@showResetForm'
 ]);
 
@@ -341,7 +341,6 @@ Route::namespace('Api')
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
         Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');
-        Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
@@ -684,6 +683,9 @@ Route::namespace('Api')
         Route::post('cost-center', 'CostCenter\CostCenterController@store');
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
+
+        Route::get('source/jory', 'IntakeSource\IntakeSourceController@jory');
+        Route::post('source/{source}', 'IntakeSource\IntakeSourceController@update');
 
         Route::get('task-type/jory', 'Task\TaskTypeController@jory');
         Route::post('task-type/{taskType}', 'Task\TaskTypeController@update');

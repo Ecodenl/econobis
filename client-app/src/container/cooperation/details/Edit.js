@@ -392,7 +392,6 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     { id: 'Verdana', name: 'Verdana' },
                                     { id: 'Tahoma', name: 'Tahoma' },
                                     { id: 'Montserrat', name: 'Montserrat' },
-
                                     { id: 'Trebuchet MS', name: 'Trebuchet MS' },
                                     { id: 'Impact', name: 'Impact' },
                                     { id: 'Gill Sans', name: 'Gill Sans' },

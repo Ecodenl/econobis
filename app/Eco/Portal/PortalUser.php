@@ -40,6 +40,12 @@ class PortalUser extends Authenticatable
         'password', 'remember_token',
     ];
 
+    protected $casts = [
+        'blocked_until' => 'datetime',
+        'blocked_permanent' => 'bool',
+        'failed_logins' => 'int',
+    ];
+
     public function contact()
     {
         return $this->belongsTo(Eco\Contact\Contact::class);
@@ -53,6 +59,11 @@ class PortalUser extends Authenticatable
     public function twoFactorTokens()
     {
         return $this->hasMany(PortalTwoFactorToken::class);
+    }
+
+    public function getFullNameFnfAttribute()
+    {
+        return $this?->contact?->full_name_fnf ?: '';
     }
 
     /**

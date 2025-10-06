@@ -9,6 +9,13 @@ export default {
         return getAxiosInstance().post(requestUrl, portalUser);
     },
 
+    unblockUser: id => {
+        const URL_USER = `${getApiUrl()}/api/contact-portal-user`;
+        const requestUrl = `${URL_USER}/${id}/unblock`;
+
+        return getAxiosInstance().post(requestUrl);
+    },
+
     deletePortalUser: id => {
         const URL_CONTACT_PORTAL_USER = `${getApiUrl()}/api/contact-portal-user`;
         const requestUrl = `${URL_CONTACT_PORTAL_USER}/${id}/delete`;

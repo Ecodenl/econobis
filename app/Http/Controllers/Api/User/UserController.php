@@ -133,7 +133,7 @@ class UserController extends Controller
 
     public function unblock(User $user, Request $request)
     {
-        $this->authorize('unblockUser', $user);
+        $this->authorize('unblockUser', Auth::user());
 
         $user->failed_logins   = 0;
         $user->blocked_until   = null;

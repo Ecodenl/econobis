@@ -7,20 +7,16 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const ContactDetailsFormPortalUserView = props => {
-    const { email, hasTwoFactorEnabled } = props.portalUser;
+    const { email, hasTwoFactorEnabled, failedLogins, blockedUntilFormatted } = props.portalUser;
     return (
-        <div
-            className={`row border ${props.highlightLine}`}
-            onMouseEnter={() => props.onLineEnter()}
-            onMouseLeave={() => props.onLineLeave()}
-        >
-            <div>
-                <div onClick={props.switchToEdit} className="col-sm-6">
-                    <ViewText className={'col-sm-12'} label="Inlog emailadres" value={email} />
-                </div>
-                <div onClick={props.switchToEdit} className="col-sm-5">
-                    <ViewText className={'col-sm-12'} label="Twee factor authenticatie" value={hasTwoFactorEnabled ? 'Ja' : 'Nee'} />
-                </div>
+        <div onClick={props.switchToEdit}>
+            <div className="row">
+                <ViewText label="Inlog emailadres" value={email} />
+                <ViewText
+                    className={'col-sm-5'}
+                    label="Twee factor authenticatie"
+                    value={hasTwoFactorEnabled ? 'Ja' : 'Nee'}
+                />
                 <div className="col-sm-1">
                     {props.permissions.updateContactPortalUser && props.showActionButtons ? (
                         <a role="button" onClick={props.switchToEdit}>
@@ -37,6 +33,10 @@ const ContactDetailsFormPortalUserView = props => {
                         ''
                     )}
                 </div>
+            </div>
+            <div className="row">
+                <ViewText label={'Geblokkeerd tot'} value={blockedUntilFormatted} />
+                <ViewText label={'Foutieve loginpogingen'} value={failedLogins} />
             </div>
         </div>
     );

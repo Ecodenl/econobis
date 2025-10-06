@@ -10,5 +10,6 @@ Route::group(['middleware' => ['scope.app']], function () {
 });
 
 Route::group(['middleware' => ['passport-portal', 'scope.portal'], 'prefix' => 'portal/oauth'], function () {
-    Route::post('/token', [AccessTokenController::class, 'issueToken']);
+    Route::post('/token', [AccessTokenController::class, 'issueToken'])
+        ->middleware([\App\Http\Middleware\LoginPortalAttemptThrottle::class, 'throttle:oauth-login-portal']);
 });

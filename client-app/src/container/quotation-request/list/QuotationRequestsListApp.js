@@ -53,7 +53,10 @@ function QuotationRequestsListApp() {
 
     function getCSV() {
         dispatch(blockUI());
-        const filters = filterHelper(quotationRequestsFilters);
+        let filters = filterHelper(quotationRequestsFilters);
+        if (opportunityActionId > 0) {
+            filters = [...filters, { field: 'opportunityActionId', data: opportunityActionId }];
+        }
         const sorts = quotationRequestsSorts;
 
         QuotationRequestAPI.getCSV({ filters, sorts })

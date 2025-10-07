@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import EmailTemplateDeleteItem from './general/EmailTemplateDeleteItem';
+import EmailTemplateDetailsDuplicate from '../../email-templates/details/EmailTemplateDetailsDuplicate';
 
 // Functionele wrapper voor de class component
 const EmailTemplateDetailsToolbarWrapper = props => {
@@ -17,8 +18,13 @@ class EmailTemplateDetailsToolbar extends Component {
 
         this.state = {
             showDelete: false,
+            showDuplicate: false,
         };
     }
+
+    toggleDuplicate = () => {
+        this.setState({ showDuplicate: !this.state.showDuplicate });
+    };
 
     showDeleteModal = () => {
         this.setState({ showDelete: true });
@@ -36,6 +42,7 @@ class EmailTemplateDetailsToolbar extends Component {
                 <div className="col-md-4">
                     <div className="btn-group" role="group">
                         <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
+                        <ButtonIcon iconName={'copy'} onClickAction={this.toggleDuplicate} />
                         <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                     </div>
                 </div>
@@ -46,6 +53,13 @@ class EmailTemplateDetailsToolbar extends Component {
                 {this.state.showDelete && (
                     <EmailTemplateDeleteItem
                         closeDeleteItemModal={this.hideDeleteModal}
+                        templateName={this.props.templateName}
+                        templateId={this.props.templateId}
+                    />
+                )}
+                {this.state.showDuplicate && (
+                    <EmailTemplateDetailsDuplicate
+                        closeModal={this.toggleDuplicate}
                         templateName={this.props.templateName}
                         templateId={this.props.templateId}
                     />

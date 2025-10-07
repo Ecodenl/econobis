@@ -165,7 +165,7 @@ const InvoicesListFilter = props => {
                             {(props.administrationDetails.totalInvoicesExported > 0 ||
                                 props.administrationDetails.twinfieldIsValid) && (
                                 <option key={'exported'} value={'exported'}>
-                                    {'Geboekt'}
+                                    {'Geboekt in Twinfield'}
                                 </option>
                             )}
                             <option key={'paid'} value={'paid'}>
@@ -189,6 +189,17 @@ const InvoicesListFilter = props => {
                             <option key={'is-resending'} value={'is-resending'}>
                                 {'Wordt opnieuw verstuurd'}
                             </option>
+                            {(props.administrationDetails.totalInvoicesExported > 0 ||
+                                props.administrationDetails.twinfieldIsValid) && (
+                                <>
+                                    <option key={'is-exporting'} value={'is-exporting'}>
+                                        {'Wordt gesynchroniseerd naar Twinfield'}
+                                    </option>
+                                    <option key={'error-exporting'} value={'error-exporting'}>
+                                        {'Fout bij synchronisatie naar Twinfield'}
+                                    </option>
+                                </>
+                            )}
                         </optgroup>
                         <optgroup label={'Substatus'}>
                             <option key={'reminder'} value={'reminder'}>

@@ -431,6 +431,7 @@ Route::namespace('Api')
         Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
         Route::get('email-template/with-user/{emailTemplate}', 'EmailTemplate\EmailTemplateController@showWithUser');
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
+        Route::post('email-template/{emailTemplate}/duplicate', 'EmailTemplate\EmailTemplateController@duplicate');
         Route::post('email-template/{emailTemplate}/delete', 'EmailTemplate\EmailTemplateController@destroy');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 

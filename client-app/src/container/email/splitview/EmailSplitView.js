@@ -21,7 +21,6 @@ export default function EmailSplitView() {
     const navigate = useNavigate();
     const params = useParams();
     const location = useLocation();
-    // const query = queryString.parse(location.search);
     const query = Object.fromEntries(new URLSearchParams(location.search));
 
     const perPage = 50;
@@ -34,6 +33,8 @@ export default function EmailSplitView() {
     const [isFetchingEmails, setIsFetchingEmails] = useState(false);
     const [contact, setContact] = useState(null);
     const [filters, setFilters] = useState({ ...defaultFilters });
+    const [eigenOpenstaand, setEigenOpenstaand] = useState(false);
+
     const { isEmailDetailsModalOpen, isEmailSendModalOpen, openEmailSendModal } = useContext(EmailModalContext);
     const hasMailboxes = activeMailboxes.length > 0;
 
@@ -45,7 +46,6 @@ export default function EmailSplitView() {
     }, []);
 
     useEffect(() => {
-        // if (!isEmailDetailsModalOpen && emails.length > 0) {
         if (!isEmailDetailsModalOpen && emailCount > 0) {
             refetchCurrentEmails();
         }
@@ -74,6 +74,12 @@ export default function EmailSplitView() {
             setContact(null);
         }
     }, [query.contact]);
+
+    useEffect(() => {
+        setFilters({ ...getFiltersFromStorage(), fetch: true });
+
+        setEigenOpenstaand(query.eigen === '1');
+    }, [query.eigen]);
 
     useEffect(() => {
         /**
@@ -166,7 +172,7 @@ export default function EmailSplitView() {
     };
 
     const getFilter = () => {
-        return getJoryFilter(filters, params.folder, query.contact, query.eigen);
+        return getJoryFilter(filters, params.folder, query.contact, query.eigen === '1');
     };
 
     const getSorts = () => {
@@ -184,9 +190,9 @@ export default function EmailSplitView() {
     };
 
     const resetFilters = () => {
-        if (query.contact) {
+        if (query.contact || query.eigen) {
             /**
-             * Als er nog een contactfilter is via de querystring dan willen we die ook wissen.
+             * Als er nog een contactfilter of eigen filter is via de querystring dan willen we die ook wissen.
              * Dus redirecten naar dezelfde pagina zonder querystring en zorgen dat filters gereset worden.
              */
             storeFiltersToStorage(defaultFilters);
@@ -231,7 +237,7 @@ export default function EmailSplitView() {
         setIsRefreshingData(false);
     }
     const hasFilters = () => {
-        return Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
+        return eigenOpenstaand || Object.keys(filters).some(key => !!filters[key] && key !== 'fetch');
     };
 
     return (
@@ -275,9 +281,14 @@ export default function EmailSplitView() {
                             </div>
                         </div>
                         <div className="col-md-4" style={{ marginTop: '-10px', marginBottom: '5px' }}>
-                            {contact && (
+                            {(contact || eigenOpenstaand) && (
                                 <span style={{ marginLeft: '6px' }}>
-                                    Email voor contact <strong>{contact?.fullName}</strong>
+                                    {eigenOpenstaand ? <strong>Eigen openstaande e-mails</strong> : 'E-mails'}{' '}
+                                    {contact && (
+                                        <span>
+                                            voor contact <strong>{contact?.fullName}</strong>
+                                        </span>
+                                    )}
                                     <a
                                         role="button"
                                         style={{ marginLeft: '10px' }}
@@ -329,6 +340,7 @@ export default function EmailSplitView() {
                             filters={filters}
                             setFilters={setFilters}
                             activeMailboxes={activeMailboxes}
+                            eigenOpenstaand={eigenOpenstaand}
                         />
                     </form>
                 </div>

@@ -220,7 +220,24 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
 
                                     {eigenOpenstaand ? (
                                         <th style={{ color: 'red', verticalAlign: 'middle' }}>
-                                            <span>Eigen</span>
+                                            <span>
+                                                {'Eigen '}
+                                                <FaInfoCircle
+                                                    color={'blue'}
+                                                    size={'15px'}
+                                                    data-tip={
+                                                        'Je ziet hier alle mailtjes gekoppeld aan jou als verantwoordelijke die niet status “afgehandeld” hebben.\nAls je afgehandelde mailtjes wil zien of mailtjes niet specifiek gekoppeld aan jou moet je de "Filter wissen" knop aanklikken.'
+                                                    }
+                                                    data-for={`tooltip-${name}`}
+                                                />
+                                                <ReactTooltip
+                                                    id={`tooltip-${name}`}
+                                                    effect="float"
+                                                    place="right"
+                                                    multiline={true}
+                                                    aria-haspopup="true"
+                                                />
+                                            </span>
                                         </th>
                                     ) : (
                                         <th>

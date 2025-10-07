@@ -1,10 +1,16 @@
 <!doctype html>
 <html lang="{{ app()->getLocale() }}">
 <head>
+    @php
+        $faviconPath = public_path('favicon.ico');
+        $faviconUrl  = asset('favicon.ico');
+        $version     = file_exists($faviconPath) ? filemtime($faviconPath) : time(); // fallback
+    @endphp
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="backend-url" content="{{ config('app.url') }}">
+    <link rel="icon" href="{{ $faviconUrl }}?v={{ $version }}">
 
     <title>Econobis</title>
 

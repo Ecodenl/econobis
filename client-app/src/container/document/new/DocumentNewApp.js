@@ -7,7 +7,7 @@ import DocumentNewToolbar from './DocumentNewToolbar';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import DocumentDetailsAPI from '../../../api/document/DocumentDetailsAPI';
-import { isEqual } from 'lodash';
+import { isEmpty } from 'lodash';
 import ContactGroupAPI from '../../../api/contact-group/ContactGroupAPI';
 import IntakesAPI from '../../../api/intake/IntakesAPI';
 import OpportunitiesAPI from '../../../api/opportunity/OpportunitiesAPI';
@@ -28,6 +28,7 @@ import DocumentNewFormProject from './DocumentNewFormProject';
 import DocumentNewFormAdministration from './DocumentNewFormAdministration';
 import DocumentNewFormParticipant from './DocumentNewFormParticipant';
 import ContactDetailsAPI from '../../../api/contact/ContactDetailsAPI';
+import EmailAttachmentAPI from '../../../api/email/EmailAttachmentAPI';
 
 // Functionele wrapper voor de class component
 const DocumentNewAppWrapper = props => {
@@ -78,7 +79,9 @@ class DocumentNewApp extends Component {
         });
 
         this.state = {
-            contactsGroups: [],
+            hasPreSelectedContacts: false,
+            preSelectedContacts: [],
+            contactGroups: [],
             intakes: [],
             opportunities: [],
             templates: [],
@@ -153,6 +156,16 @@ class DocumentNewApp extends Component {
     }
 
     componentDidMount() {
+        if (this.props.params.emailAttachmentId && this.props.params.emailAttachmentId > 0) {
+            // fetchContacts uit email waar bijlage bij hoort
+            EmailAttachmentAPI.fetchContacts(this.props.params.emailAttachmentId).then(payload => {
+                if (!isEmpty(payload.data.data)) {
+                    this.setState({ hasPreSelectedContacts: true });
+                    this.setState({ preSelectedContacts: payload.data.data });
+                }
+            });
+        }
+
         if (this.props.params.contactId) {
             ContactDetailsAPI.getContactDetails(this.props.params.contactId).then(payload => {
                 if (payload) {
@@ -296,6 +309,18 @@ class DocumentNewApp extends Component {
                     ...this.state.document,
                     contactId: selectedContactId,
                     selectedContact: selectedOption,
+                },
+            });
+        }
+    };
+
+    handleInputChangeContactEmailId = selectedContactId => {
+        if (selectedContactId) {
+            this.setState({
+                ...this.state,
+                document: {
+                    ...this.state.document,
+                    contactId: selectedContactId,
                 },
             });
         }
@@ -623,6 +648,8 @@ class DocumentNewApp extends Component {
                         ) : (
                             <DocumentNewForm
                                 document={this.state.document}
+                                hasPreSelectedContacts={this.state.hasPreSelectedContacts}
+                                preSelectedContacts={this.state.preSelectedContacts}
                                 contactGroups={this.state.contactGroups}
                                 intakes={this.state.intakes}
                                 opportunities={this.state.opportunities}
@@ -646,6 +673,7 @@ class DocumentNewApp extends Component {
                                 onDropAccepted={this.onDropAccepted}
                                 onDropRejected={this.onDropRejected}
                                 handleInputChangeContactId={this.handleInputChangeContactId}
+                                handleInputChangeContactEmailId={this.handleInputChangeContactEmailId}
                                 searchTermContact={this.state.searchTermContact}
                                 isLoadingContact={this.state.isLoadingContact}
                                 setSearchTermContact={this.setSearchTermContact}

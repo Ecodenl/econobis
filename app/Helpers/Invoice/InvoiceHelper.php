@@ -140,7 +140,9 @@ class InvoiceHelper
             && $invoice->status_id !== 'is-sending'
             && $invoice->status_id !== 'error-making'
             && $invoice->status_id !== 'error-sending'
-            && $invoice->status_id !== 'is-resending')
+            && $invoice->status_id !== 'is-resending'
+            && $invoice->status_id !== 'is-exporting'
+            && $invoice->status_id !== 'error-exporting')
         {
             if($invoice->status_id === 'paid' && $invoice->amount_open != 0){
                 if($invoice->twinfield_number){
@@ -582,7 +584,7 @@ class InvoiceHelper
     }
     public static function invoiceIsResending(Invoice $invoice)
     {
-        //Nota moet nog status in-progress hebben
+        //Nota moet nog status error-sending hebben
         if($invoice->status_id === 'error-sending')
         {
             $invoice->status_id = 'is-resending';
@@ -601,6 +603,40 @@ class InvoiceHelper
             $invoice->save();
         }
     }
+    public static function invoiceIsExporting(Invoice $invoice)
+    {
+        //Nota moet nog status sent of error-exporting hebben
+        if($invoice->status_id === 'sent' || $invoice->status_id === 'error-exporting')
+        {
+            $invoice->status_id = 'is-exporting';
+            $invoice->save();
+        }
+    }
+    public static function invoiceExported(Invoice $invoice, ?string $twinfieldNumber = null)
+    {
+        //Nota moet nog status is-exporting hebben
+        if ($invoice->status_id === 'is-exporting') {
+            // 0 invoice meteen op betaald zetten
+            $isNullInvoice = $invoice->getTotalInclVatInclReductionAttribute() == 0;
+            $invoice->status_id = $isNullInvoice ? 'paid' : 'exported';
+            // Twinfieldnummer opslaan
+            if ($twinfieldNumber !== null) {
+                $invoice->twinfield_number = $twinfieldNumber;
+            }
+            $invoice->save();
+        }
+    }
+    public static function invoiceErrorExporting(Invoice $invoice)
+    {
+        //Nota moet nog status is-exporting hebben
+        if($invoice->status_id === 'is-exporting')
+        {
+            //Status naar error-exporting
+            $invoice->status_id = 'error-exporting';
+            $invoice->save();
+        }
+    }
+
     public static function invoicePdfIsCreated(Invoice $invoice)
     {
         $invoicesToSend = $invoice->invoicesToSend()->first();

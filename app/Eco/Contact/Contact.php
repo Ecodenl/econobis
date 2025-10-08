@@ -368,6 +368,11 @@ class Contact extends Model
     {
         return $this->hasManyThrough(HousingFile::class, Address::class)->orderBy('housing_files.id', 'desc');
     }
+    public function latestHousingFile()
+    {
+        return $this->hasOneThrough(HousingFile::class, Address::class)
+            ->latest();
+    }
 
     public function addressEnergySuppliers()
     {

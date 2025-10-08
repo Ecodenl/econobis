@@ -162,6 +162,19 @@ class TemplateVariableHelper
 
         $model->load('person', 'organisation', 'contactPerson', 'primaryAddress', 'primaryEmailAddress', 'primaryphoneNumber');
 
+        $prefix1 = 'woningdossier_';
+        $stringMatch1 = str_starts_with($varname, $prefix1);
+        if($stringMatch1 && $model->latestHousingFile) {
+            $stringRemainder1 = $stringMatch1 ? substr($varname, strlen($prefix1)) : '';
+            return TemplateVariableHelper::getHousingFileVar($model->latestHousingFile, $stringRemainder1);
+        }
+        $prefix2 = 'adres_woningdossier_';
+        $stringMatch2 = str_starts_with($varname, $prefix2);
+        if($stringMatch2 && $model?->primaryAddress?->housingFile) {
+            $stringRemainder2 = $stringMatch2 ? substr($varname, strlen($prefix2)) : '';
+            return TemplateVariableHelper::getHousingFileVar($model->primaryAddress->housingFile, $stringRemainder2);
+        }
+
         switch ($varname) {
             case 'nummer':
                 return $model->number;

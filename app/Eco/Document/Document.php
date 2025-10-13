@@ -18,7 +18,7 @@ use App\Eco\Project\Project;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\Task\Task;
 use App\Eco\User\User;
-use App\Helpers\Alfresco\AlfrescoHelper;
+//use App\Helpers\Alfresco\AlfrescoHelper;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Storage;
@@ -137,9 +137,9 @@ class Document extends Model
             return Storage::disk('documents')->get($this->file_path_and_name);
 
         // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
-        } elseif ($this->alfresco_node_id != null) {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            return $alfrescoHelper->downloadFile($this->alfresco_node_id);
+//        } elseif ($this->alfresco_node_id != null) {
+//            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
+//            return $alfrescoHelper->downloadFile($this->alfresco_node_id);
         }
 
         return null;

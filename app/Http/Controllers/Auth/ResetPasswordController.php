@@ -3,10 +3,10 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Eco\User\User;
-use App\Helpers\Alfresco\AlfrescoHelper;
+//use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Http\Controllers\Controller;
 use App\Notifications\MailNewAccount;
-use App\Notifications\MailNewAccountAlfresco;
+//use App\Notifications\MailNewAccountAlfresco;
 use App\Notifications\MailPasswordReset;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -95,21 +95,22 @@ class ResetPasswordController extends Controller
         if($response == Password::PASSWORD_RESET){
             $user = User::where('email', $request->input('email'))->first();
 
-            $didCreateAlfrescoAccount = false;
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && !$user->has_alfresco_account){
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
-                if(!$alfrescoHelper->checkIfAccountExists($user)) {
-                    $alfrescoHelper->createNewAccount($user, $request->input('password'));
-                    $didCreateAlfrescoAccount = true;
-                    $user->has_alfresco_account = 1;
-                }
-                else{
-                    $alfrescoHelper->assignUserToPrivateSite($user->email);
-                    $user->has_alfresco_account = 1;
-                }
-            }
-            $user->save();
-            $this->sendResetResponse($didCreateAlfrescoAccount, $user);
+//            $didCreateAlfrescoAccount = false;
+//            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && !$user->has_alfresco_account){
+//                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
+//                if(!$alfrescoHelper->checkIfAccountExists($user)) {
+//                    $alfrescoHelper->createNewAccount($user, $request->input('password'));
+//                    $didCreateAlfrescoAccount = true;
+//                    $user->has_alfresco_account = 1;
+//                }
+//                else{
+//                    $alfrescoHelper->assignUserToPrivateSite($user->email);
+//                    $user->has_alfresco_account = 1;
+//                }
+//            }
+//            $user->save();
+//            $this->sendResetResponse($didCreateAlfrescoAccount, $user);
+            $this->sendResetResponse($user);
         }else{
             Log::info('Response: ' . $response . '.' );
             $errorMessage = $response;
@@ -120,15 +121,16 @@ class ResetPasswordController extends Controller
     }
 
     //redirect is handled by react, we send succes e-mail
-    protected function sendResetResponse($didCreateAlfrescoAccount, User $user)
+//    protected function sendResetResponse($didCreateAlfrescoAccount, User $user)
+    protected function sendResetResponse(User $user)
     {
         if($user->visit_count !== 0){
             $user->notify(new MailPasswordReset());
         }
-        else if($didCreateAlfrescoAccount) {
-            $user->notify(new MailNewAccountAlfresco($user->email));
-            $this->sendAdministrationEmail($user);
-        }
+//        else if($didCreateAlfrescoAccount) {
+//            $user->notify(new MailNewAccountAlfresco($user->email));
+//            $this->sendAdministrationEmail($user);
+//        }
         else{
             $user->notify(new MailNewAccount($user->email));
             $this->sendAdministrationEmail($user);

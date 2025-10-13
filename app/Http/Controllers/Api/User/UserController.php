@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
-use App\Helpers\Alfresco\AlfrescoHelper;
+//use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Auth\ForgotPasswordController;
@@ -56,16 +56,13 @@ class UserController extends Controller
         $user = new User();
         $user->fill($data);
 
+        $user->has_alfresco_account = 0;
         //checks if account exists
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
-            $exists = $alfrescoHelper->checkIfAccountExists($user);
-            $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
-        } else {
-            $user->has_alfresco_account = 0;
-        }
-
-
+//        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
+//            $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
+//            $exists = $alfrescoHelper->checkIfAccountExists($user);
+//            $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
+//        }
         $user->alfresco_password = 'nvt';
         $user->save();
 

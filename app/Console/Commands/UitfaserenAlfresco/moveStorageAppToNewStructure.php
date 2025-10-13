@@ -2,15 +2,17 @@
 
 namespace App\Console\Commands\UitfaserenAlfresco;
 
-use App\Eco\Mailbox\Mailbox;
-use App\Eco\Schedule\CommandRun;
-use Carbon\Carbon;
+//use App\Eco\Mailbox\Mailbox;
+//use App\Eco\Schedule\CommandRun;
+//use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\File;
+//use Illuminate\Support\Facades\Log;
 
 class moveStorageAppToNewStructure extends Command
 {
+// Alfresco volledig uitgefaseerd nu
+//
 //    protected $signature = 'uitfaserenAlfresco:moveStorageAppToNewStructure {--proef=true} {--withLog=false}';
 //    protected bool $hasErrors = false;
 //

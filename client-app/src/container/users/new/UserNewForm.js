@@ -86,12 +86,6 @@ class UserNewForm extends Component {
             UserAPI.newUser(user)
                 .then(payload => {
                     this.props.fetchSystemData();
-                    // if (payload.data.data.hasAlfrescoAccount) {
-                    //     this.props.setError(
-                    //         200,
-                    //         'Alfresco account voor deze gebruiker bestaat al. Er wordt alleen een nieuw account aangemaakt voor Econobis'
-                    //     );
-                    // }
                     this.props.navigate(`/gebruiker/${payload.data.data.id}`);
                 })
                 .catch(

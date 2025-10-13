@@ -2,15 +2,17 @@
 
 namespace App\Console\Commands\UitfaserenAlfresco;
 
-use App\Eco\Administration\Administration;
-use App\Eco\Schedule\CommandRun;
+//use App\Eco\Administration\Administration;
+//use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\File;
+//use Carbon\Carbon;
+//use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\File;
 
 class moveLogosToNewStructure extends Command
 {
+// Alfresco volledig uitgefaseerd nu
+//
 //    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true} {--withLog=false}';
 //    protected bool $hasErrors = false;
 //

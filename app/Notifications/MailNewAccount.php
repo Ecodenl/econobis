@@ -48,7 +48,6 @@ class MailNewAccount extends Notification
             ->line("<h1>Hallo! Je bent nu gebruiker van Econobis</h1>")
             ->line("Je bent nu gebruiker van de Econobis van " . \Config::get('app.name') . ". Met jouw account bestaande uit je gebruikersnaam " . $this->emailAddress . " en je aangemaakte wachtwoord, kun je inloggen op de Econobis-omgeving van je organisatie:")
             ->line(\Config::get('app.url'))
-            ->line('Je was reeds gebruiker op Alfresco. Je inloggegevens blijven hetzelfde en zijn niet gewijzigd.')
             ->line('<b>Econobis Community Portaal</b>')
             ->line('In Alfresco hebben we een <a href="https://alfresco.econobis.nl/share/page/site/econobis-community-portaal/dashboard">Community Portaal</a> ingericht.')
             ->line('Dit is een informatiesite voor gebruikers van Econobis. Je kunt inloggen met je gebruikersnaam wachtwoord (zelfde als Econobis).')

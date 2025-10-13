@@ -2,14 +2,17 @@
 
 namespace App\Console\Commands\UitfaserenAlfresco;
 
-use App\Eco\Administration\Administration;
-use App\Eco\Schedule\CommandRun;
+//use App\Eco\Administration\Administration;
+//use App\Eco\Schedule\CommandRun;
 use Illuminate\Console\Command;
-use Carbon\Carbon;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
+//use Carbon\Carbon;
+//use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Storage;
+
 class test extends Command
 {
+// Alfresco volledig uitgefaseerd nu
+//
 //    /**
 //     * The name and signature of the console command.
 //     *

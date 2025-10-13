@@ -2,19 +2,21 @@
 
 namespace App\Console\Commands\UitfaserenAlfresco;
 
-use App\Eco\Document\Document;
-use App\Eco\Schedule\CommandRun;
-use App\Helpers\Alfresco\AlfrescoHelper;
-use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
-use Carbon\Carbon;
+//use App\Eco\Document\Document;
+//use App\Eco\Schedule\CommandRun;
+//use App\Helpers\Alfresco\AlfrescoHelper;
+//use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
+//use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Str;
+//use Illuminate\Support\Facades\Log;
+//use Illuminate\Support\Facades\Mail;
+//use Illuminate\Support\Facades\Storage;
+//use Illuminate\Support\Str;
 
 class moveDocuments extends Command
 {
+// Alfresco volledig uitgefaseerd nu
+//
 //    protected $signature = 'uitfaserenAlfresco:moveDocuments  {--deleteAlfresco=false} {--withLog=false}';
 //    protected $mailTo = 'wim.mosman@xaris.nl';
 //    protected bool $hasErrors = false;

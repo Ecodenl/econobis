@@ -10,7 +10,6 @@ namespace App\Http\Controllers\Api\Document;
 
 use App\Eco\Document\Document;
 
-//use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\RequestInput\RequestInput;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Controller;
@@ -136,8 +135,7 @@ class DocumentController extends Controller
         $document->fill($data);
         $document->save();
 
-        //store the actual file in Alfresco
-//        $user = Auth::user();
+        //store the actual file in Bigstorage
 
         if($data['document_type'] == 'internal'){
 
@@ -241,16 +239,9 @@ class DocumentController extends Controller
     {
         $this->authorize('create', Document::class);
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
-//        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
         if ($document->file_path_and_name != null) {
             Storage::disk('documents')->delete($document->file_path_and_name);
-//        } else {
-//            //delete file in Alfresco(to trashbin)
-//            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
-//                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//                $alfrescoHelper->deleteFile($document->alfresco_node_id);
-//            }
         }
 
         $document->delete();
@@ -327,10 +318,6 @@ class DocumentController extends Controller
                 'Access-Control-Expose-Headers' => 'X-Filename',
             ]);
 
-            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
-//        } elseif ($document->alfresco_node_id != null) {
-//            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
         return null;
@@ -355,13 +342,6 @@ class DocumentController extends Controller
                 'filename' => $document->filename,
                 'mime' => $mime,
             ];
-//        } elseif ($document->alfresco_node_id != null) {
-//            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-//            $content = $alfrescoHelper->downloadFile($document->alfresco_node_id);
-//            return [
-//                'content' => $content,
-//                'filename' => $document->filename,
-//            ];
         }
 
         return null;

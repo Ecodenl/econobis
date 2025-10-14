@@ -11,18 +11,18 @@ use Illuminate\Console\Command;
 
 class moveStorageAppToNewStructure extends Command
 {
+    protected $signature = 'uitfaserenAlfresco:moveStorageAppToNewStructure {--proef=true} {--withLog=false}';
+    protected bool $hasErrors = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function handle()
+    {
 // Alfresco volledig uitgefaseerd nu
 //
-//    protected $signature = 'uitfaserenAlfresco:moveStorageAppToNewStructure {--proef=true} {--withLog=false}';
-//    protected bool $hasErrors = false;
-//
-//    public function __construct()
-//    {
-//        parent::__construct();
-//    }
-//
-//    public function handle()
-//    {
 //        $proef = $this->option('proef') === 'true';
 //        $withLog = $this->option('withLog') === 'true';
 //
@@ -170,7 +170,7 @@ class moveStorageAppToNewStructure extends Command
 //                Log::info("Proef: zou bronmap verwijderen: {$oldRoot}");
 //            }
 //        }
-//    }
+    }
 //
 //    private function safeDeleteDirectory(string $path, bool $withLog): void
 //    {

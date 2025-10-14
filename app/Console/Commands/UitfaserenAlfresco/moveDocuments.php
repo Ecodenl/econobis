@@ -15,21 +15,21 @@ use Illuminate\Console\Command;
 
 class moveDocuments extends Command
 {
+    protected $signature = 'uitfaserenAlfresco:moveDocuments  {--deleteAlfresco=false} {--withLog=false}';
+    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected bool $hasErrors = false;
+    protected $errors = [];
+    protected $description = 'Move documents from Alfreso to Bigstorage';
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function handle()
+    {
 // Alfresco volledig uitgefaseerd nu
 //
-//    protected $signature = 'uitfaserenAlfresco:moveDocuments  {--deleteAlfresco=false} {--withLog=false}';
-//    protected $mailTo = 'wim.mosman@xaris.nl';
-//    protected bool $hasErrors = false;
-//    protected $errors = [];
-//    protected $description = 'Move documents from Alfreso to Bigstorage';
-//
-//    public function __construct()
-//    {
-//        parent::__construct();
-//    }
-//
-//    public function handle()
-//    {
 //        $doDelete = $this->option('deleteAlfresco') == 'true';
 //        $withLog = $this->option('withLog') === 'true';
 //
@@ -63,7 +63,7 @@ class moveDocuments extends Command
 //        }
 //
 //        Log::info('Einde ' . $this->description . ($doDelete ? ' MET DELETE!' : '') );
-//    }
+    }
 //
 //    private function moveDocumentFromAlfresco(bool $withLog): void
 //    {

@@ -930,6 +930,9 @@ margin-bottom: 10px;
 .pdf_viewer_wrapper {
 text-align: center;
 }
+.pdf-viewer-page {
+background-color: var(--portal-main-background-color) !important;
+}
 .pdf-viewer-page canvas {
 display: inline-block !important;
 }

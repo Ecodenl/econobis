@@ -11,18 +11,18 @@ use Illuminate\Console\Command;
 
 class moveLogosToNewStructure extends Command
 {
+    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true} {--withLog=false}';
+    protected bool $hasErrors = false;
+
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    public function handle()
+    {
 // Alfresco volledig uitgefaseerd nu
 //
-//    protected $signature = 'uitfaserenAlfresco:moveLogosToNewStructure {--proef=true} {--withLog=false}';
-//    protected bool $hasErrors = false;
-//
-//    public function __construct()
-//    {
-//        parent::__construct();
-//    }
-//
-//    public function handle()
-//    {
 //        $proef = $this->option('proef') === 'true';
 //        $withLog = $this->option('withLog') === 'true';
 //
@@ -51,7 +51,7 @@ class moveLogosToNewStructure extends Command
 //        $commandRun->save();
 //
 //        Log::info("Verplaatsen van logo's " . ($proef ? '(PROEF) ' : '') . "voltooid!");
-//    }
+    }
 //
 //    private function moveLogosToNewStructure(bool $proef, bool $withLog): void
 //    {

@@ -70,6 +70,7 @@ class FullCooperation extends JsonResource
             'externalUrlContacts' => $this->external_url_contacts,
             'externalUrlContactsButtonText' => $this->external_url_contacts_button_text,
             'externalUrlContactsOnNewPage' => $this->external_url_contacts_on_new_page,
+            'requireTeamOnUserCreate' => $this->require_team_on_user_create,
         ];
     }
 }

@@ -4226,6 +4226,15 @@ class ExternalWebformController extends Controller
             $quotationRequest->quotation_text = $dataQuotationRequest['quotation_text'];
         }
 
+        if($dataQuotationRequest['status_code_ref']) {
+            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $quotationRequest->opportunity_action_id)->first();
+            if ($quotationRequestStatus) {
+                $quotationRequest->status_id =  $quotationRequestStatus->id;
+            } else {
+                $this->log("Ongeldig kansactie_status code ref meegegeven: ". $dataQuotationRequest['status_code_ref'] . "'.");
+            }
+        }
+
         if ($dataQuotationRequest['date_planned_attempt1']) {
             $quotationRequest->date_planned_attempt1 = Carbon::make($dataQuotationRequest['date_planned_attempt1']);;
         }

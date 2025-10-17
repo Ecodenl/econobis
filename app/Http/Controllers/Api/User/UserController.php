@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $user->load(['lastNamePrefix', 'title', 'administrations', 'defaultMailbox']);
+        $user->load(['lastNamePrefix', 'title', 'administrations', 'defaultMailbox', 'teams']);
 
         return FullUser::make($user);
     }

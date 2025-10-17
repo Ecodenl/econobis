@@ -13,6 +13,7 @@ use App\Http\Resources\Administration\AdministrationPeek;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\LastNamePrefix\FullLastNamePrefix;
 use App\Http\Resources\Mailbox\MailboxPeek;
+use App\Http\Resources\Team\PeekTeam;
 use App\Http\Resources\Title\FullTitle;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Spatie\Permission\Models\Permission;
@@ -44,6 +45,7 @@ class FullUser extends JsonResource
             'permissions' => $this->getPermissions(),
             'hasAlfrescoAccount' => $this->has_alfresco_account ? true : false,
             'roles' => $this->getRoles(),
+            'teams' => PeekTeam::collection($this->whenLoaded('teams')),
             'requireTwoFactorAuthentication' => $this->require_two_factor_authentication,
             'hasTwoFactorActivated' => $this->hasTwoFactorActivated(),
             'showTwoFactorNotification' => $this->show_two_factor_notification,

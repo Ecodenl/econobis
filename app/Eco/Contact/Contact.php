@@ -23,6 +23,7 @@ use App\Eco\Intake\Intake;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Occupation\OccupationContact;
 use App\Eco\Opportunity\Opportunity;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\Order\Order;
 use App\Eco\Order\OrderProduct;
 use App\Eco\Organisation\Organisation;
@@ -952,11 +953,13 @@ class Contact extends Model
         }
 
         $startDate = $date->copy()->startOfMonth();
+        $opportunityActionVisitId = OpportunityAction::where('code_ref', 'visit')->first()->id;
+        $quotationRequestStatusVisitCancelledId = QuotationRequestStatus::where('opportunity_action_id', $opportunityActionVisitId)->where('code_ref', QuotationRequestStatus::STATUS_VISIT_CANCELLED_CODE_REF)->first()->id;
 
         if(!isset($this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')])){
             $reachedLimit = $this->quotationRequests()
                 ->whereBetween('date_planned', [$startDate, $date->copy()->endOfMonth()])
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->where('status_id', '!=', $quotationRequestStatusVisitCancelledId)
                 ->count() >= $this->coach_max_appointments_per_month;
 
             $this->reachedAppointmentLimitsByMonth[$startDate->format('Y-m')] = $reachedLimit;
@@ -980,11 +983,13 @@ class Contact extends Model
         }
 
         $startDate = $date->copy()->startOfWeek();
+        $opportunityActionVisitId = OpportunityAction::where('code_ref', 'visit')->first()->id;
+        $quotationRequestStatusVisitCancelledId = QuotationRequestStatus::where('opportunity_action_id', $opportunityActionVisitId)->where('code_ref', QuotationRequestStatus::STATUS_VISIT_CANCELLED_CODE_REF)->first()->id;
 
         if(!isset($this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')])){
             $reachedLimit = $this->quotationRequests()
                 ->whereBetween('date_planned', [$startDate, $date->copy()->endOfWeek()])
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID)
+                ->where('status_id', '!=', $quotationRequestStatusVisitCancelledId)
                 ->count() >= $this->coach_max_appointments_per_week;
 
             $this->reachedAppointmentLimitsByWeek[$startDate->format('Y-m-d')] = $reachedLimit;

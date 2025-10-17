@@ -11,6 +11,7 @@ use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -48,10 +49,14 @@ class UserController extends Controller
             ->string('mobileNumber')->whenMissing('')->alias('mobile')->next()
             ->boolean('active')->whenMissing(true)->next()
             ->string('occupation')->next()
+            ->string('teamId')->validate('nullable|exists:teams,id')->default(null)->alias('team_id')->next()
             ->get();
-
         //create random password
         $data['password'] = Str::random(20);
+
+        // Pak team_id los en haal ’m uit $data zodat het niet in fill() belandt
+        // Deze gebruiken dan om gebruiker direct aan opgegeven team te koppelen, zie $user->teams()->attach([$teamId]); verderop
+        $teamId = (int) Arr::pull($data, 'team_id');
 
         $user = new User();
         $user->fill($data);
@@ -68,6 +73,11 @@ class UserController extends Controller
 
         $user->alfresco_password = 'nvt';
         $user->save();
+
+        // Team koppelen als gezet
+        if ($teamId > 0) {
+            $user->teams()->attach([$teamId]);
+        }
 
         $user->assignRole(Role::findByName('Medewerker'));
 

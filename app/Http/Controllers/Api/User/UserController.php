@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -39,6 +41,10 @@ class UserController extends Controller
     {
         $this->authorize('create', User::class);
 
+        // cooperation
+        $cooperation = Cooperation::first();
+        $requireTeamOnUserCreate = $cooperation ? $cooperation->require_team_on_user_create : false;
+
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
             ->string('firstName')->whenMissing('')->alias('first_name')->next()
@@ -48,7 +54,21 @@ class UserController extends Controller
             ->string('mobileNumber')->whenMissing('')->alias('mobile')->next()
             ->boolean('active')->whenMissing(true)->next()
             ->string('occupation')->next()
-            ->string('teamId')->validate('nullable|exists:teams,id')->default(null)->alias('team_id')->next()
+            ->string('teamId')->validate(function ($attribute, $value, $fail) use ($requireTeamOnUserCreate) {
+                $id = (int) $value;
+
+                // als teamkeuze verplicht is maar er geen selectie is gemaakt
+                if ($requireTeamOnUserCreate && !$id && $value !== '0') {
+                    $fail('Kies een team of selecteer "** Niet aan een team toevoegen **".');
+                    return;
+                }
+
+                // als er wél een team is gekozen, moet dat bestaan (behalve 0)
+                if ($id > 0 && !Team::whereKey($id)->exists()) {
+                    $fail('Het geselecteerde team bestaat niet.');
+                }
+            })
+            ->default(null)->alias('team_id')->next()
             ->get();
         //create random password
         $data['password'] = Str::random(20);

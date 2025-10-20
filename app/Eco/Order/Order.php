@@ -217,6 +217,12 @@ class Order extends Model
         if ($this->invoices()->where('status_id', 'is-resending')->exists()) {
             return false;
         }
+        if ($this->invoices()->where('status_id', 'is-exporting')->exists()) {
+            return false;
+        }
+        if ($this->invoices()->where('status_id', 'error-exporting')->exists()) {
+            return false;
+        }
 
         if(!$this->date_next_invoice){
             return false;

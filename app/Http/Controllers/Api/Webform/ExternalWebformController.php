@@ -589,6 +589,7 @@ class ExternalWebformController extends Controller
             'intake' => [
                 // Intake
                 'intake_id' => 'intake_id',
+                'intake_id_extern' => 'external_code',
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_maatregel_id' => 'measure_id',
@@ -2379,15 +2380,29 @@ class ExternalWebformController extends Controller
                 $measureCategories = MeasureCategory::whereIn('id', explode(',', $dataIntake['measure_categorie_ids']))->get();
             }
 
-            $intake = Intake::make([
-                'contact_id' => $address->contact->id,
-                'intake_status_id' => $intakeStatus->id,
-                'campaign_id' => $campaign->id,
-                'note' => $dataIntake['note'],
-            ]);
-            $intake->address_id = $address->id;
-            $intake->save();
-            $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            $createNewIntake = true;
+            if ($dataIntake['external_code']) {
+                $intake = Intake::where('external_code', $dataIntake['external_code'])->first();
+                if (!$intake && isset($dataIntake['external_code'])) {
+                    $this->log('Meegegeven intake_id_extern (' . $dataIntake['external_code'] . ') nog niet bekend. Nieuwe intake aanmaken.');
+                } else {
+                    $this->log("Intake met id " . $intake->id . " gevonden bij intake_id_extern (" . $dataIntake['external_code'] . "). Geen nieuwe intake aanmaken");
+                    $createNewIntake = false;
+                }
+            } else {
+                $this->log("Geen external_code meegegeven");
+            }
+            if ($createNewIntake) {
+                $intake = Intake::create([
+                    'external_code' => !empty($dataIntake['external_code']) ? $dataIntake['external_code'] : null,
+                    'contact_id' => $address->contact->id,
+                    'address_id' => $address->id,
+                    'intake_status_id' => $intakeStatus->id,
+                    'campaign_id' => $campaign->id,
+                    'note' => $dataIntake['note'],
+                ]);
+                $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            }
 
             $intake->reasons()->sync($reasons->pluck('id'));
             $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));

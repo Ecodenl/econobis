@@ -1415,8 +1415,11 @@ class ExternalWebformController extends Controller
                     $AddressController = app(AddressController::class);
                     $getLvbagAddress = $AddressController->getLvbagAddress($request);
 
-                    $data['address_street'] = $getLvbagAddress['street'];
-                    $data['address_city'] = $getLvbagAddress['city'];
+                    if($getLvbagAddress['street'] != "" && $getLvbagAddress['street'] != ''){
+                        $data['address_street'] = $getLvbagAddress['street'];
+                        $data['address_city'] = $getLvbagAddress['city'];
+                        $this->log('Bij postcode ' . $data['address_postal_code'] . ' en huisnummer ' . $data['address_number'] . ' straat en plaats automatisch bepaald via LvBag: ' . $getLvbagAddress['street'] . ' | ' . $getLvbagAddress['city'] . '.');
+                    }
                 }
 
                 $address = Address::create([

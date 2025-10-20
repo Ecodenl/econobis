@@ -47,6 +47,7 @@ class OpportunitiesListItem extends Component {
             id,
             number,
             address,
+            postalCode,
             createdAt,
             desiredDate,
             contactName,
@@ -82,6 +83,7 @@ class OpportunitiesListItem extends Component {
                 <td>{desiredDate ? moment(desiredDate).format('DD-MM-Y') : 'Onbekend'}</td>
                 <td>{contactName}</td>
                 <td>{address}</td>
+                <td>{postalCode}</td>
                 <td>{measureCategoryName}</td>
                 <td className="pre-wrap">
                     {measures.length

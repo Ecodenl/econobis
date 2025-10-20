@@ -3,7 +3,7 @@ import { useSelector } from 'react-redux';
 import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 
-export default function EmailSplitViewFiltersPanel({ filters, setFilters, activeMailboxes }) {
+export default function EmailSplitViewFiltersPanel({ filters, setFilters, activeMailboxes, eigenOpenstaand }) {
     const statuses = useSelector(state => state.systemData.emailStatuses);
     const teams = useSelector(state => state.systemData.teams);
     const users = useSelector(state => state.systemData.users);
@@ -18,7 +18,16 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
         setResponsibleUserId('');
         setResponsibleTeamId('');
 
-        if (val.indexOf('user') !== 0 && val.indexOf('team') !== 0) {
+        if (val === 'noResponsible') {
+            setFilters({
+                ...filters,
+                responsibleUserId: 'noResponsible',
+                responsibleTeamId: '',
+                fetch: true,
+            });
+        }
+
+        if (val !== 'noResponsible' && val.indexOf('user') !== 0 && val.indexOf('team') !== 0) {
             setFilters({
                 ...filters,
                 responsibleUserId: '',
@@ -26,7 +35,7 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                 fetch: true,
             });
         }
-        if (val.indexOf('user') === 0) {
+        if (val !== 'noResponsible' && val.indexOf('user') === 0) {
             setResponsibleUserId(val.replace('user', ''));
             setFilters({
                 ...filters,
@@ -36,7 +45,7 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
             });
         }
 
-        if (val.indexOf('team') === 0) {
+        if (val !== 'noResponsible' && val.indexOf('team') === 0) {
             setResponsibleTeamId(val.replace('team', ''));
             setFilters({
                 ...filters,
@@ -48,6 +57,9 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
     };
 
     const getResponsibleValue = () => {
+        if (filters.responsibleUserId === 'noResponsible') {
+            return 'noResponsible';
+        }
         if (filters.responsibleUserId) {
             return 'user' + filters.responsibleUserId;
         }
@@ -192,41 +204,68 @@ export default function EmailSplitViewFiltersPanel({ filters, setFilters, active
                                             }}
                                         >
                                             <option></option>
-                                            {statuses.map(status => (
-                                                <option key={status.id} value={status.id}>
-                                                    {status.name}
+                                            {statuses
+                                                .filter(status => {
+                                                    if (!eigenOpenstaand || status.id !== 'closed') {
+                                                        return true;
+                                                    }
+                                                })
+                                                .map(status => (
+                                                    <option key={status.id} value={status.id}>
+                                                        {status.name}
+                                                    </option>
+                                                ))}
+                                        </select>
+                                    </th>
+
+                                    {eigenOpenstaand ? (
+                                        <th style={{ color: 'red', verticalAlign: 'middle' }}>
+                                            <span>
+                                                {'Eigen '}
+                                                <FaInfoCircle
+                                                    color={'blue'}
+                                                    size={'15px'}
+                                                    data-tip={
+                                                        'Je ziet hier alle mailtjes gekoppeld aan jou als verantwoordelijke die niet status “afgehandeld” hebben.\nAls je afgehandelde mailtjes wil zien of mailtjes niet specifiek gekoppeld aan jou moet je de "Filter wissen" knop aanklikken.'
+                                                    }
+                                                    data-for={`tooltip-${name}`}
+                                                />
+                                                <ReactTooltip
+                                                    id={`tooltip-${name}`}
+                                                    effect="float"
+                                                    place="right"
+                                                    multiline={true}
+                                                    aria-haspopup="true"
+                                                />
+                                            </span>
+                                        </th>
+                                    ) : (
+                                        <th>
+                                            <select
+                                                className="form-control input-sm"
+                                                name={'responsible'}
+                                                value={getResponsibleValue()}
+                                                onChange={e => setResponsibleValue(e.target.value)}
+                                            >
+                                                <option value=""></option>
+                                                <option style={{ fontWeight: 'normal' }} value="noResponsible">
+                                                    Zonder verantwoordelijke
                                                 </option>
-                                            ))}
-                                        </select>
-                                    </th>
-                                    <th>
-                                        <select
-                                            className="form-control input-sm"
-                                            name={'responsible'}
-                                            value={getResponsibleValue()}
-                                            onChange={e => setResponsibleValue(e.target.value)}
-                                        >
-                                            <option value=""></option>
-                                            <optgroup key={1} label={'Gebruikers'}>
-                                                {users.map(user => {
-                                                    return (
-                                                        <option key={user.id} value={'user' + user.id}>
-                                                            {user['fullName']}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </optgroup>
-                                            <optgroup key={1} label={'Teams'}>
-                                                {teams.map(team => {
-                                                    return (
-                                                        <option key={team.id} value={'team' + team.id}>
-                                                            {team['name']}
-                                                        </option>
-                                                    );
-                                                })}
-                                            </optgroup>
-                                        </select>
-                                    </th>
+                                                <optgroup label={'Gebruikers'}>
+                                                    {users.map(user => {
+                                                        return (
+                                                            <option value={'user' + user.id}>{user['fullName']}</option>
+                                                        );
+                                                    })}
+                                                </optgroup>
+                                                <optgroup label={'Teams'}>
+                                                    {teams.map(team => {
+                                                        return <option value={'team' + team.id}>{team['name']}</option>;
+                                                    })}
+                                                </optgroup>
+                                            </select>
+                                        </th>
+                                    )}
                                     <th>
                                         <select
                                             className="form-control input-sm"

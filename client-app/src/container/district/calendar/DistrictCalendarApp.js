@@ -49,7 +49,7 @@ const DistrictCalendarApp = props => {
 
         DistrictAPI.fetchDistrictCalendarItems(params.id, startDate, endDate).then(data => {
             const quotationRequests = data.quotationRequests.map(item => {
-                const { id, coach, contact, datePlanned, durationMinutes, statusCodeRef } = item;
+                const { id, coach, contact, datePlanned, durationMinutes, statusCodeRef, color, backgroundColor } = item;
 
                 const prefixMap = {
                     done: '✅ ',
@@ -70,6 +70,8 @@ const DistrictCalendarApp = props => {
                     end: moment(datePlanned)
                         .add(durationMinutes, 'm')
                         .toDate(),
+                    color: color,
+                    backgroundColor: backgroundColor
                 };
             });
 
@@ -96,7 +98,13 @@ const DistrictCalendarApp = props => {
     };
 
     const eventPropGetter = event => {
-        return { className: getEventClass(event) };
+        return {
+            className: getEventClass(event),
+            style: {
+                backgroundColor: event.backgroundColor,
+                color: event.color,
+            }
+        };
     };
 
     const getEventClass = event => {

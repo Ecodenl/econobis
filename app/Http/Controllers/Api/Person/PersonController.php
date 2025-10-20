@@ -14,6 +14,7 @@ use App\Eco\Address\AddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\EnergySupplier\EnergySupplier;
@@ -306,6 +307,14 @@ class PersonController extends ApiController
     {
         $this->authorize('update', $person);
 
+        $contact = Contact::where('hoom_account_id', $request['hoomAccountId'])
+            ->where('type_id', ContactType::PERSON)->first();
+        $duplicateHoomAccountIdErrorMessage = '';
+        if ($contact) {
+            $duplicateHoomAccountIdErrorMessage = 'Er bestaat al een gebruiker met dit Hoom account id: '
+                . $contact->full_name . ' (' . $contact->number . ').';
+        }
+
         $contactData = $request->validate([
             'memberSince' => 'date',
             'memberUntil' => 'date',
@@ -321,8 +330,8 @@ class PersonController extends ApiController
             'collectMandateSignatureDate' => 'date',
             'collectMandateFirstRunDate' => 'date',
             'collectMandateCollectionSchema' => '',
-            'hoomAccountId' => '',
-        ]);
+            'hoomAccountId' => 'unique:contacts,hoom_account_id,'.$person->contact_id,
+        ], ['hoomAccountId' => $duplicateHoomAccountIdErrorMessage]);
 
         if($request['dateOfBirth'] == null) { unset($request['dateOfBirth']); }
 

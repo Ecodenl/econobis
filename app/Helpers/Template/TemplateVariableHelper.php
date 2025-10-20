@@ -1858,7 +1858,7 @@ class TemplateVariableHelper
             case 'hoom_building_id':
                 return $model->hoom_building_id;
             case 'woz_waarde':
-                return TemplateVariableHelper::formatFinancial(('woningdossier_' . $varname), $model->woz_value);
+                return $model->woz_value ? TemplateVariableHelper::formatFinancial(('woningdossier_' . $varname), $model->woz_value) : "onbekend";
             case 'geveloppervlakte':
                 return $model->wall_surface;
             case 'raamoppervlakte':
@@ -1866,7 +1866,7 @@ class TemplateVariableHelper
             case 'vloeroppervlakte':
                 return $model->floor_surface;
             case 'opbrengst_zonnepanelen':
-                return $model->revenue_solar_panels;
+                return $model->revenue_solar_panels !== 0 ? $model->revenue_solar_panels : "onbekend";
             case 'manier_koken':
                 return $model?->cookType?->hoom_status_name;
             case 'verwarming':
@@ -1874,7 +1874,7 @@ class TemplateVariableHelper
             case 'water_comfort':
                 return $model?->waterComfort?->hoom_status_name;
             case 'aantal_bewoners':
-                return $model->number_of_residents;
+                return $model->number_of_residents !== 0 ? $model->number_of_residents : "onbekend";;
             case 'stook_temperatuur':
                 return $model?->boilerSettingComfortHeat?->hoom_status_name;
             case 'verbruik_gas':

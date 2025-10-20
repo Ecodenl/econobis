@@ -11,14 +11,11 @@ namespace App\Http\Controllers\Api\Person;
 
 use App\Eco\Address\Address;
 use App\Eco\Address\AddressType;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\Administration\Administration;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactType;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\EmailAddress\EmailAddressType;
-use App\Eco\EnergySupplier\EnergySupplier;
-use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\LastNamePrefix\LastNamePrefix;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;

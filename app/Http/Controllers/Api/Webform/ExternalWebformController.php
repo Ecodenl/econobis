@@ -98,6 +98,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\Address\AddressController;
 
 class ExternalWebformController extends Controller
 {
@@ -1400,6 +1401,22 @@ class ExternalWebformController extends Controller
                     $countryCode = $country->id;
                 } else {
                     $countryCode = null;
+                }
+
+                //if street or city not set we ask lvbag for the details when postalcode and number are set.
+                if($data['address_postal_code'] != "" && $data['address_number'] != "" && ($data['address_street'] == "" || $data['address_city'])) {
+                    // Convert array to Request because the Controller function allready made and requires a request
+                    $request = new Request();
+                    $request->replace([
+                        'postalCode' => $data['address_postal_code'],
+                        'number' => $data['address_number'],
+                    ]);
+
+                    $AddressController = app(AddressController::class);
+                    $getLvbagAddress = $AddressController->getLvbagAddress($request);
+
+                    $data['address_street'] = $getLvbagAddress['street'];
+                    $data['address_city'] = $getLvbagAddress['city'];
                 }
 
                 $address = Address::create([

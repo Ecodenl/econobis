@@ -24,16 +24,17 @@ class AddressSpukLaiExcelHelper
         $this->addresses = $addresses;
     }
 
-    public function downloadSpukLaiExcel()
+    public function downloadSpukLaiExcel(string $dateBegin = '2025-01-01', string $dateEnd = '2025-12-31')
     {
-        if($this->addresses->count() === 0){
+        if ($this->addresses->count() === 0) {
             abort(403, 'Geen adressen aanwezig in selectie');
         }
+
+        $year = date('Y', strtotime($dateBegin)); // automatisch het jaar bepalen
 
         $completeData = [];
 
         $headerData = [];
-
         $headerData[0] = 'Straat';
         $headerData[1] = 'nr.';
         $headerData[2] = 'Toevoeging';
@@ -60,7 +61,7 @@ class AddressSpukLaiExcelHelper
         $headerData[23] = 'Glas en kozijnpanelen Ug en Up ≤ 1,2 W/m2K dhz';
         $headerData[24] = 'Glas en kozijnpanelen Ug en Up ≤ 1,2 W/m2K derden';
         $headerData[25] = 'Isolerende deuren Ud ≤ 1,5 W/m2K dhz';
-        $headerData[26] ='Isolerende deuren Ud ≤ 1,5 W/m2K derden';
+        $headerData[26] = 'Isolerende deuren Ud ≤ 1,5 W/m2K derden';
         $headerData[27] = 'Glas en kozijnpanelen Ug en Up ≤ 0,7 W/m2K dhz';
         $headerData[28] = 'Glas en kozijnpanelen Ug en Up ≤ 0,7 W/m2K derden';
         $headerData[29] = 'Isolerende deuren Ud ≤ 1,0 W/m2K i.c.m. nieuwe isolerende kozijnen Uf ≤  1,5 W/m2K dhz';
@@ -72,40 +73,46 @@ class AddressSpukLaiExcelHelper
 
         $completeData[] = $headerData;
 
-//        Log::info('debug 2');
-//        Log::info($completeData);
+        // Ophalen actie
+        $budgetAanvraagAction = OpportunityAction::where('code_ref', 'subsidy-request')->first();
+        if (!$budgetAanvraagAction) {
+            abort(422, 'Onbekende opportunity action: subsidy-request');
+        }
 
         foreach ($this->addresses->chunk(100) as $chunk) {
+            // Eager load met filters
             $chunk->load([
                 'housingFile',
-                'intakes',
+                'intakes' => function ($q) {
+                    $q->whereIn('id', function ($sub) {
+                        $sub->from('opportunities')
+                            ->select('intake_id')
+                            ->groupBy('intake_id')
+                            ->havingRaw('COUNT(DISTINCT measure_category_id) >= 2');
+                    });
+                },
+                'intakes.opportunities.quotationRequests' => function ($q) use ($budgetAanvraagAction, $dateBegin, $dateEnd) {
+                    $q->where('opportunity_action_id', $budgetAanvraagAction->id)
+                        ->whereBetween('date_executed', [$dateBegin, $dateEnd]);
+                },
             ]);
 
             foreach ($chunk as $address) {
                 foreach ($address->intakes as $intake) {
                     foreach ($intake->opportunities as $opportunity) {
-                        if($opportunity->measures->count() > 1){
-
-                            $dateBegin = "2025-01-01";
-                            $dateEnd = "2025-12-31";
-                            $budgetAanvraagAction = OpportunityAction::where('code_ref', 'subsidy-request')->first();
-                            $quotationRequestsCollection = $opportunity->quotationRequests
-                                ->where('opportunity_action_id', $budgetAanvraagAction->id)
-                                ->whereBetween('date_executed', [$dateBegin, $dateEnd]);
-                            if($quotationRequestsCollection->count() > 0){
-                                $completeData[] = $this->addRowData($address, 2025, $opportunity, $quotationRequestsCollection);
-                            }
+                        $quotationRequestsCollection = $opportunity->quotationRequests;
+                        if ($quotationRequestsCollection->isNotEmpty()) {
+                            // Gebruik dynamisch jaar
+                            $completeData[] = $this->addRowData($address, $year, $opportunity, $quotationRequestsCollection);
                         }
                     }
                 }
-
             }
         }
 
+        // Excel export
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-
-        // Load all data in worksheet
         $sheet->fromArray($completeData);
 
         for ($col = 'A'; $col !== 'AJ'; $col++) {
@@ -114,18 +121,15 @@ class AddressSpukLaiExcelHelper
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:AJ1')
-            ->applyFromArray([
-                'font' => [
-                    'bold' => true,
-                ],
-
-            ]);
+        $sheet->getStyle('A1:AJ1')->applyFromArray([
+            'font' => ['bold' => true],
+        ]);
 
         $writer = new Xlsx($spreadsheet);
-        $document = $writer->save('php://output');
-        return $document;
+        $writer->save('php://output');
+        return response()->noContent(); // evt. download response afhankelijk van jouw gebruik
     }
+
 
      private function addRowData($address, $year, $opportunity, $quotationRequestsCollection) {
 

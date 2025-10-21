@@ -15,24 +15,15 @@ use App\Eco\Contact\ContactForImport;
 use App\Eco\Contact\ContactToImport;
 use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\Title\Title;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class ContactImportFromEnergySupplierHelper
 {
-    private $firstNameHeaderId = 0;
-    private $lastNameHeaderId = 0;
-
     public function validateImport($file, $supplierCodeRef, $file_headers)
     {
-
-        $supplierCodeRef = explode(';', $supplierCodeRef);
         $file_headers = explode(';', $file_headers);
-        if( $supplierCodeRef === 'OM'){
-            $this->firstNameHeaderId = 2;
-            $this->lastNameHeaderId = 3;
-        }
 
         if (!$file) {
             return [
@@ -62,7 +53,6 @@ class ContactImportFromEnergySupplierHelper
 
         $validationLines = [];
 
-        // todo: check op line met meer dan 1024 tekens?
         while ($line = fgetcsv($csv, 1024, ";")) {
             $lineNumber++;
             if ($lineNumber === 1) {
@@ -73,7 +63,7 @@ class ContactImportFromEnergySupplierHelper
                     return [$errorValidationHeader];
                 }
             } else {
-                array_push($validationLines, $this->validateLine($line, $lineNumber, $file_headers));
+                array_push($validationLines, $this->validateLine($supplierCodeRef, $line, $lineNumber, $file_headers));
             }
 
         }
@@ -109,7 +99,7 @@ class ContactImportFromEnergySupplierHelper
                 'field' => 'Header',
                 'value' => 'Te lang',
                 'line' => 0,
-                'message' => 'Er zijn meer dan .... ' . sizeof($file_headers)
+                'message' => 'Er zijn meer dan ' . sizeof($file_headers)
                     . ' headers gevonden',
                 'prio' => 1
             ];
@@ -141,13 +131,23 @@ class ContactImportFromEnergySupplierHelper
         return false;
     }
 
-    public function validateLine($line, $lineNumber, $file_headers)
+    public function validateLine($supplierCodeRef, $line, $lineNumber, $file_headers)
     {
         $field = [];
         $value = [];
         $defaultMessage = 'Rij kan succesvol geïmporteerd worden.';
         $message = [];
         $prio = 3;
+
+        if( $supplierCodeRef === 'OM'){
+            $firstNameHeaderId = 3;
+            $lastNameHeaderId = 5;
+            $kvkNumberHeaderId = 22;
+        } else {
+            $firstNameHeaderId = null;
+            $lastNameHeaderId = null;
+            $kvkNumberHeaderId =  null;
+        }
 
         if (sizeof($line) < sizeof($file_headers)) {
             return [
@@ -183,14 +183,26 @@ class ContactImportFromEnergySupplierHelper
             }
         }
 
-        //voornaam of achternaam verplicht
-        if ($this->firstNameHeaderId != 0
-            && $this->lastNameHeaderId != 0
-            && !$line[$this->firstNameHeaderId]
-            && !$line[$this->lastNameHeaderId]) {
-            array_push($field, $file_headers[$this->firstNameHeaderId]);
-            array_push($value, $line[$this->firstNameHeaderId]);
-            array_push($message, 'Voornaam of achternaam is een verplicht veld.');
+        // Indien zakelijk (kvk number is ingevuld), dan achternaam verplicht
+        if ($kvkNumberHeaderId
+            && $lastNameHeaderId
+            && !$line[$kvkNumberHeaderId]
+            && !$line[$lastNameHeaderId]) {
+            array_push($field, $file_headers[$lastNameHeaderId]);
+            array_push($value, $line[$lastNameHeaderId]);
+            array_push($message, 'Achternaam is een verplicht veld voor organisatie.');
+            $prio = 1;
+        };
+        // Indien particulier (kvk number is niet ingevuld), an voornaam of achternaam verplicht
+        if ($kvkNumberHeaderId != 0
+            && $firstNameHeaderId != 0
+            && $lastNameHeaderId != 0
+            && $line[$kvkNumberHeaderId]
+            && !$line[$firstNameHeaderId]
+            && !$line[$lastNameHeaderId]) {
+            array_push($field, $file_headers[$firstNameHeaderId]);
+            array_push($value, $line[$firstNameHeaderId]);
+            array_push($message, 'Voornaam of achternaam is een verplicht veld voor persoon.');
             $prio = 1;
         };
 
@@ -205,8 +217,14 @@ class ContactImportFromEnergySupplierHelper
 
     }
 
-    public function import($file, $suppliercodeRef, $warninglines)
+    public function import($file, $supplierCodeRef, $warninglines)
     {
+        if( $supplierCodeRef === 'OM'){
+            $kvkNumberHeaderId = 22;
+        } else {
+            $kvkNumberHeaderId =  null;
+        }
+
         $csv = fopen($file, 'r');
 
         ContactToImport::query()->delete();
@@ -223,128 +241,138 @@ class ContactImportFromEnergySupplierHelper
             $firstLine = substr($firstLine, 3); // Strip the BOM
         }
 
-        // Convert the first line to CSV array if needed
-//        $headerLine = str_getcsv($firstLine, ";");
-//        Log::info('headerline');
-//        Log::info($headerLine);
-
-        // todo: check op line met meer dan 1024 tekens?
         while ($line = fgetcsv($csv, 1024, ";")) {
-//            Log::info('line details');
-//            Log::info($line);
             if (!in_array($counter, $warninglinesArray)) {
                 foreach ($line as $k => $field) {
 //                    Log::info('Key: ' . $k);
 //                    Log::info('Field: ' . $field);
+
                     // when encoding isn't UTF-8 encode lineField to utf8.
                     $encodingLineField = mb_detect_encoding($field, 'UTF-8', true);
                     if (false === $encodingLineField) {
                         $line[$k] = mb_convert_encoding($field, 'UTF-8', mb_list_encodings());
                     }
                 };
+
                 try {
                     DB::beginTransaction();
                     $contactToImport = new ContactToImport();
 
-                    $contactType = $line[4] ?: 'Particulier';
+                    // als KvK number ingevuld is, dan zakelijk anders particulier
+                    $contactType = $kvkNumberHeaderId &&  $line[$kvkNumberHeaderId] ? 'Zakelijk' : 'Particulier';
                     $contactToImport->contact_type = $contactType;
 
-                    $address = $this->splitAddress($line[12]);
-//                        Log::info('address');
-//                        Log::info($address);
+                    if ($line[0]) {
+                        $contactToImport->es_number = $line[0];
+                    }
 
-//                    if ($line[2]) {
-//                        $contactToImport->first_name = $line[2];
-//                    } else {
-//                        $contactToImport->first_name = '';
-//                    }
+                    if ($line[1]) {
+                        $contactToImport->gender = $line[1];
+                    }
+                    if ($line[1] || $line[2]) {
+                        $title= $this->getTitle($line[1], $line[2]);
+//        Log::info('Gender in: ' . $line[1] . ' en title in: ' . $line[2] . ', title uit: ' . $title);
+                        $contactToImport->title = $title;
+                    }
 
-                    $klantVoornaam = $line[2] ?: '';
-//                    Log::info('klantVoorNaam in: ' . $klantVoornaam);
-                    if ($contactType === 'Zakelijk') {
-                        $firstNameArray = [
-                            'initials' => '',
-                            'first_name' => '',
-                        ];
+                    if ($line[3]) {
+                        $firstNameArray = $this->splitFirstName($line[3]);
+//        Log::info('klantVoorNaam in: ' . $line[3] . ', initials uit: ' . $firstNameArray['initials'] . ', first_Name uit: ' . $firstNameArray['first_name']);
+                        if ($firstNameArray['initials']) {
+                            $contactToImport->initials = $firstNameArray['initials'];
+                        }
+                        if ($firstNameArray['first_name']) {
+                            $contactToImport->first_name = $firstNameArray['first_name'];
+                        }
                     } else {
-                        $firstNameArray = $this->splitFirstName($klantVoornaam);
-                    }
-//                    Log::info('klantVoorNaam in: ' . $line[3] . ', initials uit: ' . $firstNameArray['initials'] . ', first_Name uit: ' . $firstNameArray['first_name']);
-                    if ($firstNameArray['initials']) {
-                        $contactToImport->initials = $firstNameArray['initials'];
-                    }
-                    if ($firstNameArray['first_name']) {
-                        $contactToImport->first_name = $firstNameArray['first_name'];
+                        $contactToImport->initials = '';
+                        $contactToImport->first_name = '';
                     }
 
-                    $klantAchternaam = $line[3] ?: '';
-//                    Log::info('klantAchternaam in: ' . $klantAchternaam);
-                    if ($contactType === 'Zakelijk') {
-                        $lastNameArray = [
-                            'last_name_prefix' => '',
-                            'last_name' => $klantAchternaam,
-                        ];
-                    } else {
-                        $lastNameArray = $this->splitLastName($klantAchternaam);
-                    }
-//                        Log::info('klantAchternaam in: ' . $line[3] . ', last_name_prefix uit: ' . $lastNameArray['last_name_prefix'] . ', last_name uit: ' . $lastNameArray['last_name']);
+                    if ($line[4] || $line[5]) {
 
-                    if ($lastNameArray['last_name']) {
-                        $contactToImport->last_name = $lastNameArray['last_name'];
-                    }
-                    if ($lastNameArray['last_name_prefix']) {
-                        $contactToImport->last_name_prefix = $lastNameArray['last_name_prefix'];
+                        $lastNameArray = $this->splitLastName($line[4], $line[5]);
+//        Log::info('Person_Infix in: ' . $line[4] . ' en Person_LastName in: ' . $line[5] . ', last_name_prefix uit: ' . $lastNameArray['last_name_prefix'] . ', last_name uit: ' . $lastNameArray['last_name']);
+
+                        if ($lastNameArray['last_name']) {
+                            $contactToImport->last_name = $lastNameArray['last_name'];
+                        }
+                        if ($lastNameArray['last_name_prefix']) {
+                            $contactToImport->last_name_prefix = $lastNameArray['last_name_prefix'];
+                        }
+
                     }
 
-                    if ($line[12]) {
-                        $contactToImport->address = $line[12];
+                    if ($line[6]) {
+                        $contactToImport->date_of_birth = $line[6];
                     }
-                    if ($address['street']) {
-                        $contactToImport->street = $address['street'];
-                    }
-                    if ($address['housenumber']) {
-                        $contactToImport->housenumber = $address['housenumber'];
-                    }
-                    if ($address['addition']) {
-                        $contactToImport->addition = $address['addition'];
-                    }
+
+                    // 7 t/m 12 = Mailing address (importeren we niet)
+
                     if ($line[13]) {
-                        $contactToImport->postal_code = $line[13];
+                        $contactToImport->street = $line[13];
                     }
                     if ($line[14]) {
-                        $contactToImport->city = $line[14];
+                        $contactToImport->housenumber = $line[14];
                     }
-                    if ($line[28]) {
-                        $contactToImport->email_contact = $line[28];
+                    if ($line[15]) {
+                        $contactToImport->addition = $line[15];
+                    }
+
+                    // full address gebruiken we niet meer, nu komt adres altijd binnen met street, housenumber en addition.
+                    $contactToImport->address = '';
+
+                    if ($line[16]) {
+                        $contactToImport->city = $line[16];
+                    }
+                    if ($line[17]) {
+                        $contactToImport->postal_code = $line[17];
+                    }
+                    // hier al encrypten ?
+                    if ($line[18]) {
+                        $contactToImport->iban = $line[18];
+                    }
+                    if ($line[19]) {
+                        $contactToImport->email_contact = $line[19];
                     } else {
                         $contactToImport->email_contact = '';
                     }
-                    if ($line[30]) {
-                        $contactToImport->phone_number = $line[30];
+                    if ($line[20]) {
+                        $contactToImport->email_contact_financial = $line[20];
+                    }
+                    if ($line[21]) {
+                        $contactToImport->phone_number = $line[21];
                     } else {
                         $contactToImport->phone_number = '';
                     }
-                    if ($line[7]) {
-                        $contactToImport->ean = $line[7];
-                    }
-                    if ($line[9]) {
-                        $contactToImport->ean_type = $line[9];
-                    }
-                    if ($line[6]) {
-                        $contactToImport->es_number = $line[6];
+                    if ($line[22]) {
+                        $contactToImport->chamber_of_commerce_number = $line[22];
                     }
 
-                    if ($line[14]) {
-                        $contactToImport->member_since = $line[17];
+                    // 23 = Channel (importeren we niet)
+
+                    if ($line[24]) {
+                        $contactToImport->ean = $line[24];
+                    }
+                    if ($line[25]) {
+                        $contactToImport->ean_type = $line[25];
                     }
 
-                    if ($line[18]) {
-                        $contactToImport->end_date = $line[18];
+                    // 26 t/m 43 = diverse velden (importeren we niet)
+
+                    if ($line[44]) {
+                        $contactToImport->member_since = $line[44];
                     }
+
+                    if ($line[45]) {
+                        $contactToImport->end_date = $line[45];
+                    }
+
+                    // 46 = resellerOrganizationId (importeren we niet)
 
                     $contactToImport->status = 'new';
 
-                    $contactToImport->supplier_code_ref = $suppliercodeRef;
+                    $contactToImport->supplier_code_ref = $supplierCodeRef;
 
                     $contactToImport->save();
 
@@ -370,63 +398,6 @@ class ContactImportFromEnergySupplierHelper
         return 'succes';
     }
 
-    //todo: deze code komt van Marco, nog nakijken of alles goed gaat
-    private function splitAddress($eanAdres)
-    {
-        $length = Str::length($eanAdres);
-        $splits = explode(' ', $eanAdres);
-        $teller = count($splits);
-        $teller = $teller - 1;
-//        Log::info('splits');
-//        Log::info($splits);
-        $straatNaam = '';
-        $huisnummer = '';
-        $toevoeging = '';
-        $toevoegingTemp = '';
-        while ($teller > 0) {
-            $string = $splits[$teller];
-//            Log::info('string: ' . $string);
-//            $substring = substr($string, 0, 1);
-            if (1 === preg_match('~[0-9]~', substr($string, 0, 1))) {
-                $teller2 = 1;
-                $length = Str::length($string);
-                while ($teller2 < $length) {
-                    if (1 === preg_match('~[0-9]~', substr($string, $teller2, 1))) {
-                    } else {
-                        $toevoeging = substr($string, $teller2);
-                        $toevoeging = str_replace('-', '', $toevoeging);
-                        $huisnummer = substr($string, 0, $teller2);
-                        $teller2 = $length;
-                    }
-                    $teller2++;
-                }
-                if ($toevoeging == '') {
-                    $huisnummer = $string;
-
-                }
-                $index = 0;
-                while ($index < $teller) {
-                    // for ($index = 0; $index < $teller ; $index++) {
-                    if ($straatNaam == '') {
-                        $straatNaam = $splits[$index];
-                    } else {
-                        $straatNaam = $straatNaam . " " . $splits[$index];
-                    }
-                    $index++;
-                }
-                $teller = 0;
-            } else {
-                $toevoegingTemp = $string;
-            }
-
-            if ($toevoegingTemp > '' and $toevoeging > '') {
-                $toevoeging = $toevoeging . ' ' . $toevoegingTemp;
-            }
-            $teller = $teller - 1;
-        }
-
-        return ['street' => $straatNaam, 'housenumber' => $huisnummer, 'addition' => $toevoegingTemp];
-    }
 
     private function splitFirstName($klantVoornaam) {
 
@@ -435,7 +406,6 @@ class ContactImportFromEnergySupplierHelper
 
         // If no point is found, set initials as an empty string and first_name as the first_name
         if ($containsPoint === false) {
-//            Log::info('If no space is found, set prefix as an empty string and last_name as the full name');
             return [
                 'initials' => '',
                 'first_name' => $klantVoornaam
@@ -450,42 +420,45 @@ class ContactImportFromEnergySupplierHelper
 
     }
 
-    private function splitLastName($klantAchternaam) {
+    private function getTitle($gender, $title) {
 
-        // Find the position of the last space
-        $lastSpacePosition = strrpos($klantAchternaam, ' ');
-
-        // If no space is found, set prefix as an empty string and last_name as the full name
-        if ($lastSpacePosition === false) {
-//            Log::info('If no space is found, set prefix as an empty string and last_name as the full name');
-            return [
-                'last_name_prefix' => '',
-                'last_name' => $klantAchternaam
-            ];
+        if ($title) {
+            // Check if the potential prefix exists in the LastNamePrefix table
+            $titleExists = Title::where('name', $title)->exists();
+            if($titleExists) {
+                return $title;
+            }
         }
-
-        // Split the string into potential prefix and last_name based on the last space
-        $potentialPrefix = substr($klantAchternaam, 0, $lastSpacePosition); // Everything before the last space
-        $last_name = substr($klantAchternaam, $lastSpacePosition + 1); // Everything after the last space
-
-        // Check if the potential prefix exists in the LastNamePrefix table
-        $prefixExists = LastNamePrefix::where('name', $potentialPrefix)->exists();
-
-        if ($prefixExists) {
-            // If prefix exists in the database, return the split prefix and last_name
-//            Log::info('If prefix exists in the database, return the split prefix and last_name');
-            return [
-                'last_name_prefix' => $potentialPrefix,
-                'last_name' => $last_name
-            ];
-        } else {
-            // If no valid prefix is found, the entire name is treated as last_name
-//            Log::info('If no valid prefix is found, the entire name is treated as last_name');
-            return [
-                'last_name_prefix' => '',
-                'last_name' => $klantAchternaam
-            ];
+        if (trim($gender) === 'Man') {
+            return Title::where('name', 'Dhr')->first()?->name ?? '';
         }
+        if (trim($gender) === 'Vrouw') {
+            return Title::where('name', 'Mevr')->first()?->name ?? '';
+        }
+        return '';
+    }
+
+    private function splitLastName($tussenvoegsel, $klantAchternaam) {
+
+        if ($tussenvoegsel) {
+            // Check if the potential prefix exists in the LastNamePrefix table
+            $prefixExists = LastNamePrefix::where('name', $tussenvoegsel)->exists();
+            if($prefixExists) {
+                return [
+                    'last_name_prefix' => $tussenvoegsel,
+                    'last_name' => $klantAchternaam
+                ];
+            } else {
+                return [
+                    'last_name_prefix' => '',
+                    'last_name' => $klantAchternaam . ', ' . $tussenvoegsel
+                ];
+            }
+        }
+        return [
+            'last_name_prefix' => '',
+            'last_name' => $klantAchternaam
+        ];
 
     }
 
@@ -937,15 +910,6 @@ class ContactImportFromEnergySupplierHelper
         $uniqueContactIds = [];  // Use an associative array for better performance
 
         foreach ($matchConditions as $matchCode => $matchCondition) {
-// todo wm: opschonen
-//            if($contactToImport->contact_type === 'Zakelijk'){
-//            if($contactToImport->id === 73){
-//                Log::info("debug query " . $matchCode);
-//                $testQuery = Contact::where($matchCondition);
-//                $sql = str_replace(array('?'), array('\'%s\''), $testQuery->toSql());
-//                $sql = vsprintf($sql, $testQuery->getBindings());
-//                Log::info($sql);
-//            }
 
             // Pluck only the 'id' of matching contacts
             $contactIds = Contact::where($matchCondition)->pluck('id');

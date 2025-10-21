@@ -12,6 +12,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Title\Title;
 use App\Helpers\Excel\ContactToImportExcelHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
@@ -175,11 +176,14 @@ class ContactToImportController extends Controller
         $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
         if(!$energySupplier) return false;
 
+        $titleId = Title::where('name', $contactToImport->title)->first()?->id;
+
         $contactNew = Contact::create([
             'type_id' =>$contactToImport->contact_type === 'Zakelijk' ? 'organisation' : 'person',
             'status_id' => 'importEsClient',
             'created_with' => 'econobis',
             'owner_id' => $userId,
+            'iban' => $contactToImport->iban ?? '',
         ]);
 
         if($contactToImport->contact_type === 'Zakelijk' ){
@@ -187,16 +191,17 @@ class ContactToImportController extends Controller
                 'contact_id' => $contactNew->id,
                 'name' => $contactToImport->last_name ?? '',
                 'statutory_name' => '',
+                'chamber_of_commerce_number' => $contactToImport->chamber_of_commerce_number ?? '',
             ]);
         } else {
             Person::create([
                 'contact_id' => $contactNew->id,
-                'title_id' => null,
-                'initials' => '',
+                'title_id' => $titleId ?? null,
+                'initials' => $contactToImport->initials ?? '',
                 'first_name' => $contactToImport->first_name ?? '',
                 'last_name' => $contactToImport->last_name ?? '',
-                'last_name_prefix' => $contactToImport->last_name_prefix,
-                'date_of_birth' => null,
+                'last_name_prefix' => $contactToImport->last_name_prefix ?? null,
+                'date_of_birth' => $contactToImport->date_of_birth ?? null,
             ]);
 
         }
@@ -204,22 +209,34 @@ class ContactToImportController extends Controller
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contactNew->id);
 
-        $emailaddress = EmailAddress::create([
-            'contact_id' => $contact->id,
-            'type_id' => 'home',
-            'email' => $contactToImport->email_contact,
-        ]);
+        if($contactToImport->email_contact) {
+            $emailaddress = EmailAddress::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'home',
+                'email' => $contactToImport->email_contact,
+            ]);
+        }
 
-        $phoneNumber = PhoneNumber::create([
-            'contact_id' => $contact->id,
-            'type_id' => 'home',
-            'number' => $contactToImport->phone_number,
-        ]);
+        if($contactToImport->email_contact_financial) {
+            $emailaddressFinancial = EmailAddress::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'invoice',
+                'email' => $contactToImport->email_contact_financial,
+            ]);
+        }
+
+        if($contactToImport->phone_number) {
+            $phoneNumber = PhoneNumber::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'home',
+                'number' => $contactToImport->phone_number,
+            ]);
+        }
 
         $eanGas = null;
         $eanElectricity = null;
         $energySupplyTypeId = 3;
-        if($contactToImport->ean_type === 'Elektriciteit'){
+        if($contactToImport->ean_type === 'Electricity'){
             $energySupplyTypeId = 2;
             $eanElectricity = $contactToImport->ean;
         } elseif ($contactToImport->ean_type === 'Gas'){
@@ -328,7 +345,8 @@ class ContactToImportController extends Controller
         $eanGas = null;
         $eanElectricity = null;
         $energySupplyTypeId = 3;
-        if($contactToImport->ean_type === 'Elektriciteit'){
+
+        if($contactToImport->ean_type === 'Electricity'){
             $energySupplyTypeId = 2;
             $eanElectricity = $contactToImport->ean;
         } elseif ($contactToImport->ean_type === 'Gas'){

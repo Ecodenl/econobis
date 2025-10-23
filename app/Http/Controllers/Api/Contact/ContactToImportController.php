@@ -12,6 +12,7 @@ use App\Eco\EnergySupplier\EnergySupplier;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Person\Person;
 use App\Eco\PhoneNumber\PhoneNumber;
+use App\Eco\Title\Title;
 use App\Helpers\Excel\ContactToImportExcelHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\ContactToImport\Grid\RequestQuery;
@@ -175,11 +176,14 @@ class ContactToImportController extends Controller
         $energySupplier = EnergySupplier::where('abbreviation', $contactToImport->supplier_code_ref)->first();
         if(!$energySupplier) return false;
 
+        $titleId = Title::where('name', $contactToImport->title)->first()?->id;
+
         $contactNew = Contact::create([
             'type_id' =>$contactToImport->contact_type === 'Zakelijk' ? 'organisation' : 'person',
             'status_id' => 'importEsClient',
             'created_with' => 'econobis',
             'owner_id' => $userId,
+            'iban' => $contactToImport->iban ?? '',
         ]);
 
         if($contactToImport->contact_type === 'Zakelijk' ){
@@ -187,16 +191,17 @@ class ContactToImportController extends Controller
                 'contact_id' => $contactNew->id,
                 'name' => $contactToImport->last_name ?? '',
                 'statutory_name' => '',
+                'chamber_of_commerce_number' => $contactToImport->chamber_of_commerce_number ?? '',
             ]);
         } else {
             Person::create([
                 'contact_id' => $contactNew->id,
-                'title_id' => null,
-                'initials' => '',
+                'title_id' => $titleId ?? null,
+                'initials' => $contactToImport->initials ?? '',
                 'first_name' => $contactToImport->first_name ?? '',
                 'last_name' => $contactToImport->last_name ?? '',
-                'last_name_prefix' => $contactToImport->last_name_prefix,
-                'date_of_birth' => null,
+                'last_name_prefix' => $contactToImport->last_name_prefix ?? null,
+                'date_of_birth' => $contactToImport->date_of_birth ?? null,
             ]);
 
         }
@@ -204,27 +209,28 @@ class ContactToImportController extends Controller
         // contact opnieuw ophalen tbv contactwijzigingen via PersonObserver
         $contact = Contact::find($contactNew->id);
 
-        $emailaddress = EmailAddress::create([
-            'contact_id' => $contact->id,
-            'type_id' => 'home',
-            'email' => $contactToImport->email_contact,
-        ]);
+        if($contactToImport->email_contact) {
+            $emailaddress = EmailAddress::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'home',
+                'email' => $contactToImport->email_contact,
+            ]);
+        }
 
-        $phoneNumber = PhoneNumber::create([
-            'contact_id' => $contact->id,
-            'type_id' => 'home',
-            'number' => $contactToImport->phone_number,
-        ]);
+        if($contactToImport->email_contact_financial) {
+            $emailaddressFinancial = EmailAddress::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'invoice',
+                'email' => $contactToImport->email_contact_financial,
+            ]);
+        }
 
-        $eanGas = null;
-        $eanElectricity = null;
-        $energySupplyTypeId = 3;
-        if($contactToImport->ean_type === 'Elektriciteit'){
-            $energySupplyTypeId = 2;
-            $eanElectricity = $contactToImport->ean;
-        } elseif ($contactToImport->ean_type === 'Gas'){
-            $energySupplyTypeId = 1;
-            $eanGas = $contactToImport->ean;;
+        if($contactToImport->phone_number) {
+            $phoneNumber = PhoneNumber::create([
+                'contact_id' => $contact->id,
+                'type_id' => 'home',
+                'number' => $contactToImport->phone_number,
+            ]);
         }
 
         $address = Address::create([
@@ -236,18 +242,59 @@ class ContactToImportController extends Controller
             'city' => $contactToImport->city,
             'postal_code' => $contactToImport->postal_code,
             'country_id' => null,
-            'ean_electricity' => $eanElectricity,
-            'ean_gas' => $eanGas,
+            'ean_electricity' => $contactToImport->ean,
+            'ean_gas' => $contactToImport->ean_gas,
         ]);
 
-        $addressEnergySupplier = AddressEnergySupplier::create([
-            'address_id' => $address->id,
-            'energy_supplier_id' => $energySupplier->id,
-            'es_number' => $contactToImport->es_number,
-            'energy_supply_type_id' => $energySupplyTypeId,
-            'member_since' => $contactToImport->member_since ?: null,
-            'endDate' => $contactToImport->end_date ?: null,
-        ]);
+        if($contactToImport->ean_type === 'Elektriciteit en gas'){
+            if($contactToImport->member_since === $contactToImport->member_since_gas
+            && $contactToImport->end_date === $contactToImport->end_date_gas) {
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => 3,
+                    'member_since' => $contactToImport->member_since ?: null,
+                    'endDate' => $contactToImport->end_date ?: null,
+                ]);
+            } else {
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => 2,
+                    'member_since' => $contactToImport->member_since ?: null,
+                    'endDate' => $contactToImport->end_date ?: null,
+                ]);
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => 1,
+                    'member_since' => $contactToImport->member_since_gas ?: null,
+                    'endDate' => $contactToImport->end_date_gas ?: null,
+                ]);
+            }
+
+        } elseif($contactToImport->ean_type === 'Elektriciteit'){
+            AddressEnergySupplier::create([
+                'address_id' => $address->id,
+                'energy_supplier_id' => $energySupplier->id,
+                'es_number' => $contactToImport->es_number,
+                'energy_supply_type_id' => 2,
+                'member_since' => $contactToImport->member_since ?: null,
+                'endDate' => $contactToImport->end_date ?: null,
+            ]);
+        } elseif ($contactToImport->ean_type === 'Gas'){
+            AddressEnergySupplier::create([
+                'address_id' => $address->id,
+                'energy_supplier_id' => $energySupplier->id,
+                'es_number' => $contactToImport->es_number,
+                'energy_supply_type_id' => 1,
+                'member_since' => $contactToImport->member_since_gas ?: null,
+                'endDate' => $contactToImport->end_date_gas ?: null,
+            ]);
+        }
 
         return $contact;
     }
@@ -325,28 +372,13 @@ class ContactToImportController extends Controller
             $contact->primaryphoneNumber->update();
         }
 
-        $eanGas = null;
-        $eanElectricity = null;
-        $energySupplyTypeId = 3;
-        if($contactToImport->ean_type === 'Elektriciteit'){
-            $energySupplyTypeId = 2;
-            $eanElectricity = $contactToImport->ean;
-        } elseif ($contactToImport->ean_type === 'Gas'){
-            $energySupplyTypeId = 1;
-            $eanGas = $contactToImport->ean;;
-        }
-
         if($contact->primaryAddress){
             $contact->primaryAddress->street = $contactToImport->street;
             $contact->primaryAddress->number = $contactToImport->housenumber;
             $contact->primaryAddress->addition = $contactToImport->addition;
             $contact->primaryAddress->city = $contactToImport->city;
-            if($energySupplyTypeId == 2 || $energySupplyTypeId == 3){
-                $contact->primaryAddress->ean_electricity = $eanElectricity;
-            }
-            if($energySupplyTypeId == 1 || $energySupplyTypeId == 3){
-                $contact->primaryAddress->ean_gas = $eanGas;
-            }
+            $contact->primaryAddress->ean_electricity = $contactToImport->ean;
+            $contact->primaryAddress->ean_gas = $contactToImport->ean_gas;
             $contact->primaryAddress->update();
         }
 //

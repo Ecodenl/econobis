@@ -133,6 +133,10 @@ class Contact extends Model
     {
         return $this->hasOne(EmailAddress::class)->where('primary', true);
     }
+    public function latestEmailAddressInvoice()
+    {
+        return $this->hasOne(EmailAddress::class)->where('type_id', 'invoice')->latestOfMany();
+    }
 
     public function emails()
     {

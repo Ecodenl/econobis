@@ -15,12 +15,16 @@ return new class extends Migration
     public function up()
     {
         Schema::table('contact_to_imports', function (Blueprint $table) {
+            $table->date('member_since')->nullable()->change();
             $table->string('title')->after('id')->nullable();
             $table->string('gender')->after('id')->nullable();
             $table->date('date_of_birth')->after('last_name_prefix')->nullable();
             $table->text('iban')->after('phone_number')->nullable();
             $table->string('email_contact_financial')->after('email_contact')->nullable();
             $table->string('chamber_of_commerce_number')->after('phone_number')->nullable();
+            $table->date('end_date_gas')->after('end_date')->nullable();
+            $table->date('member_since_gas')->after('end_date')->nullable();
+            $table->string('ean_gas')->after('end_date');
         });
 
         $samenOmSupplier = ContactToImportSupplier::where('code_ref', 'OM')->first();
@@ -37,6 +41,10 @@ return new class extends Migration
     public function down()
     {
         Schema::table('contact_to_imports', function (Blueprint $table) {
+            $table->date('member_since')->nullable(false)->change();
+            $table->dropColumn('end_date_gas');
+            $table->dropColumn('member_since_gas');
+            $table->dropColumn('ean_gas');
             $table->dropColumn('chamber_of_commerce_number');
             $table->dropColumn('email_contact_financial');
             $table->dropColumn('iban');

@@ -351,21 +351,50 @@ class ContactImportFromEnergySupplierHelper
 
                     // 23 = Channel (importeren we niet)
 
-                    if ($line[24]) {
-                        $contactToImport->ean = $line[24];
-                    }
+                    // Ean gegevens alleen als we type weten
                     if ($line[25]) {
-                        $contactToImport->ean_type = $line[25];
-                    }
 
-                    // 26 t/m 43 = diverse velden (importeren we niet)
+                        // Electricity
+                        if ($line[25] === 'Electricity') {
+                            $contactToImport->ean_type = 'Elektriciteit';
+                            if ($line[24]) {
+                                $contactToImport->ean = $line[24];
+                            }
 
-                    if ($line[44]) {
-                        $contactToImport->member_since = $line[44];
-                    }
+                            // 26 t/m 43 = diverse velden (importeren we niet)
 
-                    if ($line[45]) {
-                        $contactToImport->end_date = $line[45];
+                            if ($line[44]) {
+                                $contactToImport->member_since = $line[44];
+                            }
+
+                            if ($line[45]) {
+                                $contactToImport->end_date = $line[45];
+                            }
+                            $contactToImport->ean_gas = '';
+                            $contactToImport->member_since_gas = null;
+                            $contactToImport->end_date_gas = null;
+                        }
+                        // Gas
+                        if ($line[25] === 'Gas') {
+                            $contactToImport->ean_type = 'Gas';
+                            $contactToImport->ean = '';
+                            $contactToImport->member_since = null;
+                            $contactToImport->end_date = null;
+                            if ($line[24]) {
+                                $contactToImport->ean_gas = $line[24];
+                            }
+                            // 26 t/m 43 = diverse velden (importeren we niet)
+
+                            if ($line[44]) {
+                                $contactToImport->member_since_gas = $line[44];
+                            }
+
+                            if ($line[45]) {
+                                $contactToImport->end_date_gas = $line[45];
+                            }
+                        }
+
+
                     }
 
                     // 46 = resellerOrganizationId (importeren we niet)
@@ -386,6 +415,7 @@ class ContactImportFromEnergySupplierHelper
             $counter++;
         }
 
+        self::mergeDoubleImports();
         self::processContactMatches();
 
         return 'succes';
@@ -460,6 +490,44 @@ class ContactImportFromEnergySupplierHelper
             'last_name' => $klantAchternaam
         ];
 
+    }
+
+    public static function mergeDoubleImports(): void
+    {
+        // Process ContactToImport in chunks of 100 (or a number that suits your memory constraints)
+        ContactToImport::where('ean_type', 'Electricity')->chunk(5, function ($contactToImports) {
+            foreach ($contactToImports as $contactToImport) {
+                $contactToImportSameForGas = ContactToImport::where('ean_type', 'Gas')
+                    ->where('es_number', $contactToImport->es_number)
+                    ->where('gender', $contactToImport->gender)
+                    ->where('title', $contactToImport->title)
+                    ->where('contact_type', $contactToImport->contact_type)
+                    ->where('initials', $contactToImport->initials)
+                    ->where('first_name', $contactToImport->first_name)
+                    ->where('last_name', $contactToImport->last_name)
+                    ->where('last_name_prefix', $contactToImport->last_name_prefix)
+                    ->where('date_of_birth', $contactToImport->date_of_birth)
+                    ->where('street', $contactToImport->street)
+                    ->where('housenumber', $contactToImport->housenumber)
+                    ->where('addition', $contactToImport->addition)
+                    ->where('postal_code', $contactToImport->postal_code)
+                    ->where('city', $contactToImport->city)
+                    ->where('email_contact', $contactToImport->email_contact)
+                    ->where('email_contact_financial', $contactToImport->email_contact_financial)
+                    ->where('phone_number', $contactToImport->phone_number)
+                    ->where('chamber_of_commerce_number', $contactToImport->chamber_of_commerce_number)
+                    ->first();
+                if($contactToImportSameForGas && $contactToImport->iban === $contactToImportSameForGas->iban) {
+                    $contactToImport->ean_type = 'Elektriciteit en gas';
+                    $contactToImport->ean_gas = $contactToImportSameForGas->ean_gas;
+                    $contactToImport->member_since_gas = $contactToImportSameForGas->member_since_gas;
+                    $contactToImport->end_date_gas = $contactToImportSameForGas->end_date_gas;
+                    $contactToImport->save();
+                    $contactToImportSameForGas->delete();
+                }
+
+            }
+        });
     }
 
     public static function processContactMatches(): void

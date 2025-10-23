@@ -233,17 +233,6 @@ class ContactToImportController extends Controller
             ]);
         }
 
-        $eanGas = null;
-        $eanElectricity = null;
-        $energySupplyTypeId = 3;
-        if($contactToImport->ean_type === 'Electricity'){
-            $energySupplyTypeId = 2;
-            $eanElectricity = $contactToImport->ean;
-        } elseif ($contactToImport->ean_type === 'Gas'){
-            $energySupplyTypeId = 1;
-            $eanGas = $contactToImport->ean;;
-        }
-
         $address = Address::create([
             'contact_id' => $contact->id,
             'type_id' => 'visit',
@@ -253,18 +242,62 @@ class ContactToImportController extends Controller
             'city' => $contactToImport->city,
             'postal_code' => $contactToImport->postal_code,
             'country_id' => null,
-            'ean_electricity' => $eanElectricity,
-            'ean_gas' => $eanGas,
+            'ean_electricity' => $contactToImport->ean,
+            'ean_gas' => $contactToImport->ean_gas,
         ]);
 
-        $addressEnergySupplier = AddressEnergySupplier::create([
-            'address_id' => $address->id,
-            'energy_supplier_id' => $energySupplier->id,
-            'es_number' => $contactToImport->es_number,
-            'energy_supply_type_id' => $energySupplyTypeId,
-            'member_since' => $contactToImport->member_since ?: null,
-            'endDate' => $contactToImport->end_date ?: null,
-        ]);
+        $energySupplyTypeId = 3; // standaard Elektriciteit en gas
+        $energySupplierMemberSince = null;
+        $energySupplierEndDate = null;
+        if($contactToImport->ean_type === 'Elektriciteit en gas'){
+            if($contactToImport->member_since === $contactToImport->member_since_gas
+            && $contactToImport->end_date === $contactToImport->end_date_gas) {
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => $energySupplyTypeId,
+                    'member_since' => $contactToImport->member_since ?: null,
+                    'endDate' => $contactToImport->end_date ?: null,
+                ]);
+            } else {
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => 2,
+                    'member_since' => $contactToImport->member_since ?: null,
+                    'endDate' => $contactToImport->end_date ?: null,
+                ]);
+                AddressEnergySupplier::create([
+                    'address_id' => $address->id,
+                    'energy_supplier_id' => $energySupplier->id,
+                    'es_number' => $contactToImport->es_number,
+                    'energy_supply_type_id' => 1,
+                    'member_since' => $contactToImport->member_since_gas ?: null,
+                    'endDate' => $contactToImport->end_date_gas ?: null,
+                ]);
+            }
+
+        } elseif($contactToImport->ean_type === 'Elektriciteit'){
+            AddressEnergySupplier::create([
+                'address_id' => $address->id,
+                'energy_supplier_id' => $energySupplier->id,
+                'es_number' => $contactToImport->es_number,
+                'energy_supply_type_id' => 2,
+                'member_since' => $contactToImport->member_since ?: null,
+                'endDate' => $contactToImport->end_date ?: null,
+            ]);
+        } elseif ($contactToImport->ean_type === 'Gas'){
+            AddressEnergySupplier::create([
+                'address_id' => $address->id,
+                'energy_supplier_id' => $energySupplier->id,
+                'es_number' => $contactToImport->es_number,
+                'energy_supply_type_id' => 1,
+                'member_since' => $contactToImport->member_since_gas ?: null,
+                'endDate' => $contactToImport->end_date_gas ?: null,
+            ]);
+        }
 
         return $contact;
     }

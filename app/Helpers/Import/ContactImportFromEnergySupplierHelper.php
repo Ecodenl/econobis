@@ -495,7 +495,7 @@ class ContactImportFromEnergySupplierHelper
     public static function mergeDoubleImports(): void
     {
         // Process ContactToImport in chunks of 100 (or a number that suits your memory constraints)
-        ContactToImport::where('ean_type', 'Electricity')->chunk(5, function ($contactToImports) {
+        ContactToImport::where('ean_type', 'Elektriciteit')->chunk(100, function ($contactToImports) {
             foreach ($contactToImports as $contactToImport) {
                 $contactToImportSameForGas = ContactToImport::where('ean_type', 'Gas')
                     ->where('es_number', $contactToImport->es_number)
@@ -525,7 +525,6 @@ class ContactImportFromEnergySupplierHelper
                     $contactToImport->save();
                     $contactToImportSameForGas->delete();
                 }
-
             }
         });
     }

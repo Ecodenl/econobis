@@ -246,9 +246,6 @@ class ContactToImportController extends Controller
             'ean_gas' => $contactToImport->ean_gas,
         ]);
 
-        $energySupplyTypeId = 3; // standaard Elektriciteit en gas
-        $energySupplierMemberSince = null;
-        $energySupplierEndDate = null;
         if($contactToImport->ean_type === 'Elektriciteit en gas'){
             if($contactToImport->member_since === $contactToImport->member_since_gas
             && $contactToImport->end_date === $contactToImport->end_date_gas) {
@@ -256,7 +253,7 @@ class ContactToImportController extends Controller
                     'address_id' => $address->id,
                     'energy_supplier_id' => $energySupplier->id,
                     'es_number' => $contactToImport->es_number,
-                    'energy_supply_type_id' => $energySupplyTypeId,
+                    'energy_supply_type_id' => 3,
                     'member_since' => $contactToImport->member_since ?: null,
                     'endDate' => $contactToImport->end_date ?: null,
                 ]);
@@ -375,29 +372,13 @@ class ContactToImportController extends Controller
             $contact->primaryphoneNumber->update();
         }
 
-        $eanGas = null;
-        $eanElectricity = null;
-        $energySupplyTypeId = 3;
-
-        if($contactToImport->ean_type === 'Electricity'){
-            $energySupplyTypeId = 2;
-            $eanElectricity = $contactToImport->ean;
-        } elseif ($contactToImport->ean_type === 'Gas'){
-            $energySupplyTypeId = 1;
-            $eanGas = $contactToImport->ean;;
-        }
-
         if($contact->primaryAddress){
             $contact->primaryAddress->street = $contactToImport->street;
             $contact->primaryAddress->number = $contactToImport->housenumber;
             $contact->primaryAddress->addition = $contactToImport->addition;
             $contact->primaryAddress->city = $contactToImport->city;
-            if($energySupplyTypeId == 2 || $energySupplyTypeId == 3){
-                $contact->primaryAddress->ean_electricity = $eanElectricity;
-            }
-            if($energySupplyTypeId == 1 || $energySupplyTypeId == 3){
-                $contact->primaryAddress->ean_gas = $eanGas;
-            }
+            $contact->primaryAddress->ean_electricity = $contactToImport->ean;
+            $contact->primaryAddress->ean_gas = $contactToImport->ean_gas;
             $contact->primaryAddress->update();
         }
 //

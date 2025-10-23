@@ -2,6 +2,7 @@
 
 namespace App\Eco\Contact;
 
+use App\Http\Traits\Encryptable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -12,11 +13,17 @@ use Illuminate\Database\Eloquent\Builder;
 
 class ContactToImport extends Model
 {
+    use Encryptable;
+
     protected $guarded = ['id'];
 
     protected $dates = [
         'member_since',
         'end_date',
+    ];
+
+    protected $encryptable = [
+        'iban'
     ];
 
     public function contact()

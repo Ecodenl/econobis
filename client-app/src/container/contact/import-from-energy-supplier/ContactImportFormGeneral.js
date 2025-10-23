@@ -187,7 +187,7 @@ class ContactImportFormGeneral extends Component {
                                     <div className="btn-group btn-group-flex margin-small" role="group">
                                         <ButtonText
                                             loading={this.state.uploading}
-                                            buttonText={'Upload CSV'}
+                                            buttonText={'Upload CSV opnieuw'}
                                             onClickAction={this.toggleUpload}
                                         />
                                         {!this.state.hasError && (

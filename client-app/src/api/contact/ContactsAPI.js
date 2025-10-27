@@ -201,6 +201,43 @@ export default {
         return getAxiosInstance().post(requestUrl, csv);
     },
 
+    validateImportFromEnergySupplier: csv => {
+        const requestUrl = `${getApiUrl()}/api/contact/validate-import-from-energy-supplier`;
+
+        return getAxiosInstance().post(requestUrl, csv);
+    },
+
+    importFromEnergySupplier: csv => {
+        const requestUrl = `${getApiUrl()}/api/contact/import-from-energy-supplier`;
+
+        return getAxiosInstance().post(requestUrl, csv);
+    },
+
+    getExcelContactToImport: ({ filters, sorts }) => {
+        const requestUrl = `${getApiUrl()}/api/contact/excel-contact-to-import`;
+
+        return getAxiosInstance().get(requestUrl, {
+            params: {
+                filters: JSON.stringify(filters),
+                sorts: JSON.stringify(sorts),
+            },
+            responseType: 'blob',
+        });
+    },
+
+    getContactToImportsSuppliers: () => {
+        const requestUrl = `${getApiUrl()}/api/contact/contact-to-imports-suppliers`;
+
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(function(response) {
+                return response.data;
+            })
+            .catch(function(error) {
+                console.log(error);
+            });
+    },
+
     getChartData: () => {
         const requestUrl = `${getApiUrl()}/api/contact/chart-data`;
 

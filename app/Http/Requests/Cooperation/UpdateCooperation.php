@@ -63,6 +63,7 @@ class UpdateCooperation extends FormRequest
             'externalUrlContacts' => [''],
             'externalUrlContactsButtonText' => [''],
             'externalUrlContactsOnNewPage' => [''],
+            'requireTeamOnUserCreate' => [''],
         ];
     }
 }

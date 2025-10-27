@@ -165,6 +165,7 @@ class SystemData extends JsonResource
 //            'housingFileHoomLinksUse' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'G')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
             'housingFileHoomLinks' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName', 'external_hoom_short_name as externalHoomShortName'])->where('visible_in_econobis', true)->orderBy('housing_file_data_type')->orderBy('label')->get(),
             'housingFileHoomLinksToShowInEconobis' => HousingFileHoomLink::select(['econobis_field_name as econobisFieldName'])->where('visible_in_econobis', true)->whereNotNull('econobis_field_name')->get(),
+            'housingFileHoomLinksToImportFromHoom' => HousingFileHoomLink::select(['econobis_field_name as econobisFieldName'])->where('import_from_hoom', true)->whereNotNull('econobis_field_name')->get(),
             'housingFileHoomLinksStatus' => HousingFileHoomLink::select(['id as key', 'label as name', 'external_hoom_short_name as externalHoomShortName'])->where('housing_file_data_type', 'W')->where('visible_in_econobis', true)->orderBy('external_hoom_short_name')->get(),
 
             'currentWallInsulationSelection' => HousingFileHoomHousingStatus::select(['hoom_status_value as key', 'hoom_status_name as name'])->where('external_hoom_short_name', 'current-wall-insulation')->get(),
@@ -194,7 +195,7 @@ class SystemData extends JsonResource
             'contactGroupTypes' => FullEnumWithIdAndName::collection(ContactGroupType::collection()),
             'contactStatuses' => FullEnumWithIdAndName::collection(ContactStatus::collection()),
             'contactTypes' => FullEnumWithIdAndName::collection(ContactType::collection()),
-            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication', 'use_dongle_registration'])->first(),
+            'cooperation' => Cooperation::select(['id', 'hoom_link', 'use_laposta', 'use_export_address_consumption', 'require_two_factor_authentication', 'use_dongle_registration', 'require_team_on_user_create'])->first(),
             'cooperationExternalUrlContacts' => Cooperation::select(['id', 'show_external_url_for_contacts', 'external_url_contacts', 'external_url_contacts_button_text', 'external_url_contacts_on_new_page'])->first(),
             'costCenters' => FullCostCenter::collection(CostCenter::all()),
             'countries' => GenericResource::collection(Country::all()),

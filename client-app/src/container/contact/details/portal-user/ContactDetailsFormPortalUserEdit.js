@@ -8,17 +8,21 @@ import validator from 'validator';
 import ErrorModal from '../../../../components/modal/ErrorModal';
 import PortalUserAPI from '../../../../api/contact/PortalUserAPI';
 import * as ContactDetailsActions from '../../../../actions/contact/ContactDetailsActions';
+import ViewText from '../../../../components/form/ViewText';
 
 class ContactDetailsFormPortalUserEdit extends Component {
     constructor(props) {
         super(props);
 
-        const { id, email } = props.portalUser;
+        const { id, email, blocked, failedLogins, blockedUntilFormatted } = props.portalUser;
 
         this.state = {
             portalUser: {
-                id: id,
-                email: email,
+                id,
+                email,
+                blocked,
+                failedLogins,
+                blockedUntilFormatted,
             },
             errors: {
                 email: false,
@@ -81,6 +85,21 @@ class ContactDetailsFormPortalUserEdit extends Component {
                 });
     };
 
+    handleUnBlock = event => {
+        event.preventDefault();
+
+        PortalUserAPI.unblockUser(this.state.portalUser.id).then(() => {
+            this.props.dispatch(
+                ContactDetailsActions.updatePortalUser({
+                    ...this.state.portalUser,
+                    blocked: false,
+                    failedLogins: 0,
+                    blockedUntilFormatted: null,
+                })
+            );
+            this.props.switchToView();
+        });
+    };
     closeErrorModal = () => {
         this.setState({ showErrorModal: false, modalErrorMessage: '' });
     };
@@ -104,7 +123,7 @@ class ContactDetailsFormPortalUserEdit extends Component {
     };
 
     render() {
-        const { email } = this.state.portalUser;
+        const { email, blocked, failedLogins, blockedUntilFormatted } = this.state.portalUser;
 
         return (
             <React.Fragment>
@@ -121,7 +140,7 @@ class ContactDetailsFormPortalUserEdit extends Component {
                             error={this.state.errors.email}
                         />
 
-                        <div className="col-sm-6">
+                        <div className="form-group col-sm-6">
                             <label className="col-sm-6">Twee factor authenticatie</label>
                             <div className="col-sm-3">{this.props.portalUser.hasTwoFactorEnabled ? 'Ja' : 'Nee'}</div>
                             {this.props.portalUser.hasTwoFactorEnabled ? (
@@ -130,6 +149,18 @@ class ContactDetailsFormPortalUserEdit extends Component {
                                 </a>
                             ) : null}
                         </div>
+                    </div>
+                    <div className="row">
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Geblokkeerd tot'}
+                            value={blockedUntilFormatted}
+                        />
+                        <ViewText
+                            className={'form-group col-sm-6'}
+                            label={'Foutieve loginpogingen'}
+                            value={failedLogins}
+                        />
                     </div>
 
                     <PanelFooter>
@@ -140,6 +171,9 @@ class ContactDetailsFormPortalUserEdit extends Component {
                                 onClickAction={this.props.switchToView}
                             />
                             <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+                            {blocked === true ? (
+                                <ButtonText buttonText={'Deblokkeren'} onClickAction={this.handleUnBlock} />
+                            ) : null}
                         </div>
                     </PanelFooter>
                 </form>

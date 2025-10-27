@@ -156,6 +156,7 @@ Route::namespace('Api')
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
+        Route::post('/user/{user}/unblock', 'User\UserController@unblock');
         Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
@@ -194,6 +195,7 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
+        Route::post('/contact-portal-user/{portalUser}/unblock', 'PortalUser\PortalUserController@unblock');
         Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
         Route::post('/contact-portal-user/{portalUser}/reset-two-factor', 'PortalUser\PortalUserController@resetTwoFactor');
 

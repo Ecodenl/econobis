@@ -9,7 +9,6 @@ use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
@@ -206,16 +205,10 @@ class QuotationRequestController
 
         // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan halen we deze op uit die storage map.
         if ($document->file_path_and_name != null) {
-
             $filePath = Storage::disk('documents')->path($document->file_path_and_name);
             header('X-Filename:' . $document->filename);
             header('Access-Control-Expose-Headers: X-Filename');
             return response()->download($filePath, $document->filename);
-
-            // anders indien alfresco_node_id ingevuld, dan halen we deze op uit Alfreso.
-        } elseif ($document->alfresco_node_id != null) {
-            $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-            return $alfrescoHelper->downloadFile($document->alfresco_node_id);
         }
 
         return null;
@@ -231,16 +224,9 @@ class QuotationRequestController
             abort(403, 'Niet bevoegd om dit document te verwijderen.');
         }
 
-        // indien document niet in alfresco maar document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
-        if ($document->alfresco_node_id == null && $document->file_path_and_name != null) {
+        // indien document was gemaakt in a storage map (file_path_and_name ingevuld), dan ook verwijderen in die storage map.
+        if ($document->file_path_and_name != null) {
             Storage::disk('documents')->delete($document->file_path_and_name);
-        } else {
-            //delete file in Alfresco(to trashbin)
-//            $user = Auth::user();
-            if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local' && $document->alfresco_node_id) {
-                $alfrescoHelper = new AlfrescoHelper(\Config::get('app.ALFRESCO_COOP_USERNAME'), \Config::get('app.ALFRESCO_COOP_PASSWORD'));
-                $alfrescoHelper->deleteFile($document->alfresco_node_id);
-            }
         }
 
         $document->delete();

@@ -63,8 +63,8 @@ class HousingFileExcelSpecificationsHelper
                 $rowData[0] = $housingFile->address ? $housingFile->address->fullAddress : '';
                 $rowData[1] = $housingFile->address ? $housingFile->address->postal_code : '';
                 $rowData[2] = $housingFile->address ? $housingFile->address->city : '';
-                $rowData[3] = $housingFileSpecification->measure ? $housingFileSpecification->measure->name : ''; //'Maatregel categorie'
-                $rowData[4] = ($housingFileSpecification->measure && $housingFileSpecification->measure->measureCategory) ? $housingFileSpecification->measure->measureCategory->name : ''; //'Maatregel'
+                $rowData[3] = ($housingFileSpecification->measure && $housingFileSpecification->measure->measureCategory) ? $housingFileSpecification->measure->measureCategory->name : ''; //'Maatregel categorie'
+                $rowData[4] = $housingFileSpecification->measure ? $housingFileSpecification->measure->name : ''; //'Maatregel'
                 $rowData[5] = $housingFileSpecification->campaign ? $housingFileSpecification->campaign->name : ''; //'Campagne'
                 $rowData[6] = $housingFileSpecification->status ? $housingFileSpecification->status->name : ''; //'Status'
                 $rowData[7] = $housingFileSpecification->measure_date; //'Datum realisatie'

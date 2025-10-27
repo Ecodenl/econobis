@@ -137,7 +137,7 @@ class Address extends Model
         return $typeAndPrimary;
     }
 
-    public function getfullAddressAttribute(){
+    public function getFullAddressAttribute(){
         $fullAddress = $this->street . ' ' . $this->number . ($this->addition ? '-' . $this->addition : '');
         return $fullAddress;
     }

@@ -30,6 +30,7 @@ class FinancialOverviewContactController extends Controller
 
         foreach ($financialOverviewContacts as $financialOverviewContact) {
             $financialOverviewContact->emailToAddress = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+            $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact->contact);
         }
 
         $selectedFinancialOverviewContacts = new Collection();
@@ -373,6 +374,20 @@ class FinancialOverviewContactController extends Controller
         }
 
         return $contactInfo;
+    }
+    public function getAllowInterimFinancialOverview(Contact $contact)
+    {
+//        $allowInterimFinancialOverview = false;
+
+        // All participations for the contact must be terminated
+//        $activeParticipantProjectsExists = $contact->participations()
+//            ->whereNotNull('date_terminated')
+//            ->exists();
+        return $contact->participations()
+            ->whereNotNull('date_terminated')
+            ->exists();
+
+//        return $activeParticipantProjectsExists;
     }
 
     protected function getOrganisationEmailAddressFinancialOverview(Contact $contact){

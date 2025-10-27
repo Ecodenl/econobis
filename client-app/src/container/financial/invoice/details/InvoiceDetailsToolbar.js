@@ -155,6 +155,8 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.statusId !== 'error-making' &&
                             this.props.invoiceDetails.statusId !== 'error-sending' &&
                             this.props.invoiceDetails.statusId !== 'is-resending' &&
+                            this.props.invoiceDetails.statusId !== 'is-exporting' &&
+                            this.props.invoiceDetails.statusId !== 'error-exporting' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
                                 <ButtonIcon iconName={'remove'} onClickAction={this.showSetIrrecoverable} />

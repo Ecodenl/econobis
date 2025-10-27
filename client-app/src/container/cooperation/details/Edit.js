@@ -210,8 +210,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 value={values.hoomKey}
                                 onChangeAction={handleChange}
                                 disabled={
-                                    meDetails.email !== "support@econobis.nl" &&
-                                    meDetails.email !== "software@xaris.nl"
+                                    meDetails.email !== 'support@econobis.nl' && meDetails.email !== 'software@xaris.nl'
                                 }
                             />
                         </div>
@@ -392,6 +391,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     { id: 'Arial Black', name: 'Arial Black' },
                                     { id: 'Verdana', name: 'Verdana' },
                                     { id: 'Tahoma', name: 'Tahoma' },
+                                    { id: 'Montserrat', name: 'Montserrat' },
                                     { id: 'Trebuchet MS', name: 'Trebuchet MS' },
                                     { id: 'Impact', name: 'Impact' },
                                     { id: 'Gill Sans', name: 'Gill Sans' },

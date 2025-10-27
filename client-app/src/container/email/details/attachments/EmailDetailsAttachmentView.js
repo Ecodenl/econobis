@@ -59,7 +59,7 @@ class EmailDetailsAttachmentView extends Component {
         });
     };
 
-    saveToAlfresco = id => {
+    saveToBigstorage = id => {
         this.props.navigate(`/document/nieuw/upload/email-bijlage/${id}`);
     };
 
@@ -90,7 +90,7 @@ class EmailDetailsAttachmentView extends Component {
                         ''
                     )}
                     {this.props.showActionButtons ? (
-                        <a role="button" onClick={() => this.saveToAlfresco(id)}>
+                        <a role="button" onClick={() => this.saveToBigstorage(id)}>
                             <Icon className="mybtn-success" size={14} icon={share} />
                         </a>
                     ) : (

@@ -55,6 +55,9 @@ class ContactDetailsFormPortalUser extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Portal gebruiker gegevens</span>
+                    {this.props?.portalUser?.blocked === true ? (
+                        <span style={{ color: 'red' }}> Geblokkeerd</span>
+                    ) : null}
                 </PanelHeader>
                 <PanelBody>
                     {!this.props.portalUser ? (

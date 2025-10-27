@@ -98,6 +98,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\Address\AddressController;
 
 class ExternalWebformController extends Controller
 {
@@ -1400,6 +1401,25 @@ class ExternalWebformController extends Controller
                     $countryCode = $country->id;
                 } else {
                     $countryCode = null;
+                }
+
+                //if street or city not set we ask lvbag for the details when postalcode and number are set.
+                if($data['address_postal_code'] != "" && $data['address_number'] != "" && ($data['address_street'] == "" || $data['address_city'])) {
+                    // Convert array to Request because the Controller function allready made and requires a request
+                    $request = new Request();
+                    $request->replace([
+                        'postalCode' => $data['address_postal_code'],
+                        'number' => $data['address_number'],
+                    ]);
+
+                    $AddressController = app(AddressController::class);
+                    $getLvbagAddress = $AddressController->getLvbagAddress($request);
+
+                    if($getLvbagAddress['street'] != "" && $getLvbagAddress['street'] != ''){
+                        $data['address_street'] = $getLvbagAddress['street'];
+                        $data['address_city'] = $getLvbagAddress['city'];
+                        $this->log('Bij postcode ' . $data['address_postal_code'] . ' en huisnummer ' . $data['address_number'] . ' straat en plaats automatisch bepaald via LvBag: ' . $getLvbagAddress['street'] . ' | ' . $getLvbagAddress['city'] . '.');
+                    }
                 }
 
                 $address = Address::create([
@@ -4224,6 +4244,15 @@ class ExternalWebformController extends Controller
         // When quotation_text filled in
         if($dataQuotationRequest['quotation_text']) {
             $quotationRequest->quotation_text = $dataQuotationRequest['quotation_text'];
+        }
+
+        if($dataQuotationRequest['status_code_ref']) {
+            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $quotationRequest->opportunity_action_id)->first();
+            if ($quotationRequestStatus) {
+                $quotationRequest->status_id =  $quotationRequestStatus->id;
+            } else {
+                $this->log("Ongeldig kansactie_status code ref meegegeven: ". $dataQuotationRequest['status_code_ref'] . "'.");
+            }
         }
 
         if ($dataQuotationRequest['date_planned_attempt1']) {

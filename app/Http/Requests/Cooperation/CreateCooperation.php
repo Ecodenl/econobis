@@ -59,6 +59,7 @@ class CreateCooperation extends FormRequest
             'externalUrlContacts' => [''],
             'externalUrlContactsButtonText' => [''],
             'externalUrlContactsOnNewPage' => [''],
+            'requireTeamOnUserCreate' => [''],
         ];
     }
 }

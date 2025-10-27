@@ -24,8 +24,12 @@ const ContactNewApp = React.lazy(() => import('./container/contact/new/ContactNe
 const ContactsInGroupListApp = React.lazy(() =>
     import('./container/contact-groups/list-contacts-in-group/ContactsInGroupListApp')
 );
-const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));
 const ContactImportApp = React.lazy(() => import('./container/contact/import/ContactImportApp'));
+const ContactImportFromEnergySupplierApp = React.lazy(() =>
+    import('./container/contact/import-from-energy-supplier/ContactImportApp')
+);
+const ContactsListApp = React.lazy(() => import('./container/contact/list/ContactsListApp'));
+const ContactToImportsListApp = React.lazy(() => import('./container/contact-to-imports/list/ContactToImportsListApp'));
 const CreateRevenuesKwhReportApp = React.lazy(() =>
     import('./container/project/details/revenueKwh/details/create/CreateRevenuesKwhReportApp')
 );
@@ -185,6 +189,8 @@ const ParticipantReportCreateApp = React.lazy(() =>
 const WebformsListApp = React.lazy(() => import('./container/webform/list/WebformsListApp'));
 const WebformNewApp = React.lazy(() => import('./container/webform/new/WebformNewApp'));
 const WebformDetailsApp = React.lazy(() => import('./container/webform/details/WebformDetailsApp'));
+const SourcesListApp = React.lazy(() => import('./container/sources/list/SourcesListApp'));
+const SourceDetailsApp = React.lazy(() => import('./container/sources/details/SourceDetailsApp'));
 const VatCodesListApp = React.lazy(() => import('./container/vat-code/list/VatCodesListApp'));
 const VatCodeNewApp = React.lazy(() => import('./container/vat-code/new/VatCodeNewApp'));
 const VatCodeDetailsApp = React.lazy(() => import('./container/vat-code/details/VatCodeDetailsApp'));
@@ -327,6 +333,11 @@ const AppRoutes = () => {
                         <Route path="contact/nieuw/:type" element={<ContactNewApp />} />
                         <Route path="contact/import" element={<ContactImportApp />} />
                         /* Contacts in group */
+                        <Route
+                            path="contact/importeren-energie-klanten"
+                            element={<ContactImportFromEnergySupplierApp />}
+                        />
+                        <Route path="contact/signaleringslijst-energie-klanten" element={<ContactToImportsListApp />} />
                         <Route path="contact-groep/nieuw" element={<ContactGroupNewApp />} />
                         <Route path="contact-groepen" element={<ContactGroupsListApp />} />
                         <Route path="contact-groep/:id/:mode" element={<ContactGroupDetailsApp />} />
@@ -656,6 +667,9 @@ const AppRoutes = () => {
                         <Route path="webformulieren" element={<WebformsListApp />} />
                         <Route path="webformulier/nieuw" element={<WebformNewApp />} />
                         <Route path="webformulier/:id" element={<WebformDetailsApp />} />
+                        /* Aanmeldingsbronnen */
+                        <Route path="aanmeldingsbronnen" element={<SourcesListApp />} />
+                        <Route path="aanmeldingsbron/:id" element={<SourceDetailsApp />} />
                         /* Mailboxes */
                         <Route path="mailgun-domeinen" element={<MailgunDomainsListApp />} />
                         <Route path="mailgun-domein/nieuw" element={<MailgunDomainNewApp />} />

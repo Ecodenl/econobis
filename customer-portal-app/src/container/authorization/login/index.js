@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {Link, Redirect, useHistory} from 'react-router-dom';
+import { Link, Redirect, useHistory } from 'react-router-dom';
 
 import { AuthConsumer } from '../../../context/AuthContext';
 import LoginForm from './Form';
@@ -9,18 +9,20 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import PortalSettingsAPI from '../../../api/portal-settings/PortalSettingsAPI';
-import MeAPI from "../../../api/general/MeAPI";
+import MeAPI from '../../../api/general/MeAPI';
 
 export default props => {
     const history = useHistory();
     const [isLoading, setIsLoading] = useState(true);
     const [showError, toggleError] = useState(false);
+    const [errorMessage, setErrorMessage] = useState('');
 
     const [redirectToReferrer, toggleRedirect] = useState(false);
     let { from } = props.location.state || { from: { pathname: '/dashboard' } };
 
     const [portalActive, setPortalActive] = useState(false);
     const [showNewAtCooperativeLink, setShowNewAtCooperativeLink] = useState(false);
+    const [portalLoginInfoText, setPortalLoginInfoText] = useState(false);
     const [newAtCooperativeLinkText, setNewAtCooperativeLinkText] = useState('');
     const [imageHash, setImageHash] = useState(Date.now());
 
@@ -34,6 +36,16 @@ export default props => {
                 .catch(error => {
                     // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                     setIsLoading(false);
+                });
+        })();
+
+        (function callFetchPortalLoginInfoText() {
+            PortalSettingsAPI.fetchPortalLoginInfoText()
+                .then(payload => {
+                    setPortalLoginInfoText(payload.data);
+                })
+                .catch(error => {
+                    // alert('Er is iets misgegaan met laden. Herlaad de pagina opnieuw.');
                 });
         })();
 
@@ -61,21 +73,30 @@ export default props => {
     function handleSubmit(values, actions, login) {
         AuthAPI.login(values)
             .then(payload => {
-                toggleError(false);
-                login(payload.data, () => {
-                    MeAPI.fetchTwoFactorStatus().then(payload => {
-                        if(payload.data.hasTwoFactorEnabled && !payload.data.hasValidToken) {
-                            history.push('/two-factor/confirm');
-                            return;
-                        }
+                if (payload.status == 200) {
+                    toggleError(false);
+                    setErrorMessage('');
+                    login(payload.data, () => {
+                        MeAPI.fetchTwoFactorStatus().then(payload => {
+                            if (payload.data.hasTwoFactorEnabled && !payload.data.hasValidToken) {
+                                history.push('/two-factor/confirm');
+                                return;
+                            }
 
-                        toggleRedirect(true)
+                            toggleRedirect(true);
+                        });
                     });
-                });
+                } else {
+                    // If login fails show error and then set submitting back to false
+                    toggleError(true);
+                    setErrorMessage(payload ? payload.error : 'Gebruikte logingegevens zijn onjuist!');
+                    actions.setSubmitting(false);
+                }
             })
             .catch(error => {
                 // If login fails show error and then set submitting back to false
                 toggleError(true);
+                setErrorMessage('Gebruikte logingegevens zijn onjuist!');
                 actions.setSubmitting(false);
             });
     }
@@ -113,11 +134,19 @@ export default props => {
                                         </React.Fragment>
                                     ) : !isLoading ? (
                                         <React.Fragment>
+                                            {portalLoginInfoText != '' ? (
+                                                <>
+                                                    <Row className="justify-content-center text-center">
+                                                        {portalLoginInfoText}
+                                                    </Row>
+                                                    <br />
+                                                </>
+                                            ) : null}
                                             <LoginForm handleSubmit={handleSubmit} login={login} />
                                             {showError ? (
                                                 <Row className="justify-content-center">
                                                     <Alert className={'p-1 m-1 text-danger'} variant={'danger'}>
-                                                        Gebruikte logingegevens zijn onjuist!
+                                                        {errorMessage}
                                                     </Alert>
                                                 </Row>
                                             ) : null}

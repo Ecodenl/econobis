@@ -59,7 +59,7 @@ const RevenuesListForm = ({
                 <span className="h5 text-bold">
                     {projectType.codeRef === 'postalcode_link_capital' ? 'Opbrengsten Euro' : 'Opbrengsten'}
                 </span>
-                {permissions.manageFinancial && (
+                {permissions.manageProject && (
                     <React.Fragment>
                         {projectType.codeRef === 'capital' || projectType.codeRef === 'postalcode_link_capital' ? (
                             <ButtonIcon

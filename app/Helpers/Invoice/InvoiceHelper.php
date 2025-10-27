@@ -86,6 +86,15 @@ class InvoiceHelper
                 }
             }
 
+            $vatPercentage = null;
+            if($orderProduct->product->currentPrice) {
+                $vatPercentage = $orderProduct->product->currentPrice->vat_percentage;
+            } else {
+                if ($orderProduct->product->ledger && $orderProduct->product->ledger->vatCode) {
+                    $vatPercentage = $orderProduct->product->ledger->vatCode->percentage;
+                }
+            }
+
             $invoiceProduct = new InvoiceProduct();
             $invoiceProduct->product_id = $orderProduct->product_id;
             $invoiceProduct->invoice_id = $invoice->id;
@@ -95,7 +104,7 @@ class InvoiceHelper
             $invoiceProduct->price_number_of_decimals = $priceNumberOfDecimals;
             $invoiceProduct->price = $price;
             $invoiceProduct->price_incl_vat = $priceInclVat;
-            $invoiceProduct->vat_percentage = $orderProduct->product->currentPrice ? $orderProduct->product->currentPrice->vat_percentage : 0;
+            $invoiceProduct->vat_percentage = $vatPercentage;
             $invoiceProduct->product_code = $orderProduct->product->code;
             $invoiceProduct->product_name = $orderProduct->product->name;
             $invoiceProduct->description = $orderProduct->product->invoice_text;
@@ -131,7 +140,9 @@ class InvoiceHelper
             && $invoice->status_id !== 'is-sending'
             && $invoice->status_id !== 'error-making'
             && $invoice->status_id !== 'error-sending'
-            && $invoice->status_id !== 'is-resending')
+            && $invoice->status_id !== 'is-resending'
+            && $invoice->status_id !== 'is-exporting'
+            && $invoice->status_id !== 'error-exporting')
         {
             if($invoice->status_id === 'paid' && $invoice->amount_open != 0){
                 if($invoice->twinfield_number){
@@ -424,8 +435,24 @@ class InvoiceHelper
         $contactName = null;
 
         if ($invoice->order->contact->type_id == 'person') {
-            $prefix = $invoice->order->contact->person->last_name_prefix;
-            $contactName = $prefix ? $invoice->order->contact->person->first_name . ' ' . $prefix . ' ' . $invoice->order->contact->person->last_name : $invoice->order->contact->person->first_name . ' ' . $invoice->order->contact->person->last_name;
+            $titleAddress = $invoice->order->contact?->person?->title?->address;
+            $initials = $invoice->order->contact?->person?->initials ? $invoice->order->contact?->person?->initials : ($invoice->order->contact?->person?->first_name ? substr($invoice->order->contact?->person?->first_name, 0, 1) . "." : "");
+            $prefix = $invoice->order->contact?->person->last_name_prefix;
+
+            $contactName = '';
+            // Als er een title address is beginnen we daarmee
+            if ($titleAddress) {
+                $contactName .= $titleAddress . ' ';
+            }
+            // Hierna voegen we toe: initials + ' '
+            $contactName .= $initials . ' ';
+            // Als er een prefix is, dan voegen we die toe: prefix + ' '
+            if ($prefix) {
+                $contactName .= $prefix . ' ';
+            }
+            // Tenslotte voegen we toe: last_name
+            $contactName .= $invoice->order->contact?->person->last_name;
+
         } elseif ($invoice->order->contact->type_id == 'organisation') {
             $contactName = optional($invoice->order->contact->organisation)->statutory_name ? $invoice->order->contact->organisation->statutory_name : $invoice->order->contact->full_name;
         }
@@ -557,7 +584,7 @@ class InvoiceHelper
     }
     public static function invoiceIsResending(Invoice $invoice)
     {
-        //Nota moet nog status in-progress hebben
+        //Nota moet nog status error-sending hebben
         if($invoice->status_id === 'error-sending')
         {
             $invoice->status_id = 'is-resending';
@@ -576,6 +603,40 @@ class InvoiceHelper
             $invoice->save();
         }
     }
+    public static function invoiceIsExporting(Invoice $invoice)
+    {
+        //Nota moet nog status sent of error-exporting hebben
+        if($invoice->status_id === 'sent' || $invoice->status_id === 'error-exporting')
+        {
+            $invoice->status_id = 'is-exporting';
+            $invoice->save();
+        }
+    }
+    public static function invoiceExported(Invoice $invoice, ?string $twinfieldNumber = null)
+    {
+        //Nota moet nog status is-exporting hebben
+        if ($invoice->status_id === 'is-exporting') {
+            // 0 invoice meteen op betaald zetten
+            $isNullInvoice = $invoice->getTotalInclVatInclReductionAttribute() == 0;
+            $invoice->status_id = $isNullInvoice ? 'paid' : 'exported';
+            // Twinfieldnummer opslaan
+            if ($twinfieldNumber !== null) {
+                $invoice->twinfield_number = $twinfieldNumber;
+            }
+            $invoice->save();
+        }
+    }
+    public static function invoiceErrorExporting(Invoice $invoice)
+    {
+        //Nota moet nog status is-exporting hebben
+        if($invoice->status_id === 'is-exporting')
+        {
+            //Status naar error-exporting
+            $invoice->status_id = 'error-exporting';
+            $invoice->save();
+        }
+    }
+
     public static function invoicePdfIsCreated(Invoice $invoice)
     {
         $invoicesToSend = $invoice->invoicesToSend()->first();

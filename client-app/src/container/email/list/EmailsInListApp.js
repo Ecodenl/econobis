@@ -5,7 +5,7 @@ import { fetchEmails, clearEmails } from '../../../actions/email/EmailsActions';
 import { setEmailsPagination } from '../../../actions/email/EmailsPaginationActions';
 import { blockUI, unblockUI } from '../../../actions/general/BlockUIActions';
 import { clearFilterEmail } from '../../../actions/email/EmailFiltersActions';
-import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
+// import { setFilterMe } from '../../../actions/email/EmailFiltersActions';
 import { setError } from '../../../actions/general/ErrorActions';
 import EmailsInList from './EmailsInList';
 import EmailsInListToolbar from './EmailsInListToolbar';
@@ -27,13 +27,15 @@ class EmailsInListApp extends Component {
     constructor(props) {
         super(props);
 
-        if (!isEmpty(props.params)) {
-            if (props.params.type === 'eigen') {
-                this.props.setFilterMe(true);
-            }
-        } else {
-            this.props.resetEmailsFilters();
-        }
+        // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+        // if (!isEmpty(props.params)) {
+        // if (props.params.type === 'eigen') {
+        //     this.props.setFilterMe(true);
+        // }
+        // todo WM: En hier kwamen we al nooit! Sterker nog this.props.resetEmailsFilters() is not a function
+        // } else {
+        // this.props.resetEmailsFilters();
+        // }
 
         this.refreshData = this.refreshData.bind(this);
         this.handlePageClick = this.handlePageClick.bind(this);
@@ -59,11 +61,12 @@ class EmailsInListApp extends Component {
 
         if (this.props.params.type !== nextProps.params.type) {
             if (!isEmpty(nextProps.params)) {
-                if (nextProps.params.type === 'eigen') {
-                    this.props.setFilterMe(true);
-                } else {
-                    this.props.clearFilterEmail();
-                }
+                // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+                // if (nextProps.params.type === 'eigen') {
+                //     this.props.setFilterMe(true);
+                // } else {
+                this.props.clearFilterEmail();
+                // }
             }
 
             setTimeout(() => {
@@ -136,9 +139,10 @@ class EmailsInListApp extends Component {
 
         let me = false;
 
-        if (this.props.params.type == 'eigen') {
-            me = true;
-        }
+        // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+        // if (this.props.params.type == 'eigen') {
+        //     me = true;
+        // }
 
         return (
             <Panel className="col-lg-12">
@@ -174,7 +178,9 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return bindActionCreators(
-        { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe, setError },
+        // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+        // { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setFilterMe, setError },
+        { fetchEmails, clearEmails, clearFilterEmail, setEmailsPagination, blockUI, unblockUI, setError },
         dispatch
     );
 };

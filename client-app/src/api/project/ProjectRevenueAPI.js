@@ -26,6 +26,12 @@ export default {
             });
     },
 
+    updateProjectRevenueConfirm: (id, data) => {
+        const requestUrl = `${URL_REVENUE}/${id}/confirm`;
+
+        return getAxiosInstance().post(requestUrl, data);
+    },
+
     storeProjectRevenue: data => {
         const requestUrl = `${URL_REVENUE}`;
 

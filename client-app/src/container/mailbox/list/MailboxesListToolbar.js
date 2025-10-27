@@ -4,30 +4,34 @@ import { useNavigate } from 'react-router-dom';
 import ButtonIcon from '../../../components/button/ButtonIcon';
 import { connect } from 'react-redux';
 
-const MailboxesListToolbar = props => {
+function MailboxesListToolbar({ mailboxesTotal, refreshMailboxes, permissions }) {
     const navigate = useNavigate();
 
     const newMailbox = () => {
         navigate(`/mailbox/nieuw`);
     };
 
-    const { permissions = {} } = props;
-
     return (
         <div className="row">
             <div className="col-md-4">
                 <div className="btn-group" role="group">
-                    <ButtonIcon iconName={'refresh'} onClickAction={props.refreshData} />
+                    <ButtonIcon iconName={'refresh'} onClickAction={refreshMailboxes} />
                     {permissions.createMailbox && <ButtonIcon iconName={'plus'} onClickAction={newMailbox} />}
                 </div>
             </div>
             <div className="col-md-4">
                 <h3 className="text-center table-title">Mailboxen</h3>
             </div>
-            <div className="col-md-4" />
+            <div className="col-md-4">
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div className="pull-right">Resultaten: {mailboxesTotal}</div>
+                    </div>
+                </div>
+            </div>
         </div>
     );
-};
+}
 
 const mapStateToProps = state => {
     return {
@@ -35,4 +39,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(MailboxesListToolbar);
+export default connect(mapStateToProps, null)(MailboxesListToolbar);

@@ -3,9 +3,11 @@
 namespace App\Http\Controllers\Api\PortalUser;
 
 use App\Eco\Portal\PortalUser;
+use App\Eco\Portal\PortalUserLoginAttempt;
 use App\Http\Controllers\Api\ApiController;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Laravel\Fortify\Actions\DisableTwoFactorAuthentication;
 
@@ -25,6 +27,36 @@ class PortalUserController extends ApiController
 
 //        return new FullPortalUser($portalUser->fresh()->load('createdBy', 'updatedBy'));
         return new $portalUser;
+    }
+
+    public function unblock(PortalUser $portalUser, Request $request)
+    {
+        $this->authorize('unblockUser', Auth::user());
+
+        $portalUser->failed_logins   = 0;
+        $portalUser->blocked_until   = null;
+        $portalUser->blocked_permanent = false;
+        $portalUser->save();
+
+        // Veiligheid: email kan ook tot 191 lang zijn; DB kolom result is 191
+        $result = (string) 'Unblocked by: ' . Auth::user()->email . ' (id: ' . Auth::user()->id . ')';
+        if (strlen($result) > 191) {
+            $result = substr($result, 0, 191);
+        }
+
+        PortalUserLoginAttempt::create([
+            'portal_user_id'      => $portalUser?->id,
+            'identifier'          => $portalUser?->email,
+            'ip'                  => null,
+            'user_agent'          => null,
+            'succeeded'           => true,
+            'result'              => $result,
+            'failed_logins_after' => null,
+            'blocked_until'       => null,
+            'blocked_permanent'   => false,
+        ]);
+
+        return $portalUser;
     }
 
     protected function validateEmail(Request $request, PortalUser $portalUser)

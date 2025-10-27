@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 
-import InputSelect from '../../../../components/form/InputSelect';
 import InputTinyMCEUpdateable from '../../../../components/form/InputTinyMCEUpdateable';
 import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
-import ViewHtmlAsText from '../../../../components/form/ViewHtmlAsText';
+
 function DocumentNewFormCreateDocument(props) {
     const [htmlBody, setValueHtmlBody] = useState('');
 

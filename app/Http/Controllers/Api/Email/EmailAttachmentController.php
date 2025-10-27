@@ -7,8 +7,8 @@ use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailAttachment;
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Contact\ContactWithAddressPeek;
 use Illuminate\Http\Request;
-//use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 
 class EmailAttachmentController extends Controller
@@ -39,6 +39,14 @@ class EmailAttachmentController extends Controller
 
 //        return response()->download($filePath, $emailAttachment->name);
     }
+
+    public function contactsFromEmail(EmailAttachment $emailAttachment)
+    {
+        $this->authorize('manage', $emailAttachment->email);
+
+        return ContactWithAddressPeek::collection($emailAttachment->email->contacts);
+    }
+
 
     public function addDocumentsAsAttachments(Email $email, Request $request)
     {

@@ -421,6 +421,7 @@ Route::namespace('Api')
          * Email attachments
          */
         Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
+        Route::get('email-attachment/{emailAttachment}/contacts', [EmailAttachmentController::class, 'contactsFromEmail']);
         Route::post('email-attachment/{emailAttachment}/delete', [EmailAttachmentController::class, 'delete']);
         Route::post('email/{email}/add-documents-as-attachments', [EmailAttachmentController::class, 'addDocumentsAsAttachments']);
         Route::post('email/{email}/attachment', [EmailAttachmentController::class, 'store']);
@@ -430,6 +431,7 @@ Route::namespace('Api')
         Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
         Route::get('email-template/with-user/{emailTemplate}', 'EmailTemplate\EmailTemplateController@showWithUser');
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
+        Route::post('email-template/{emailTemplate}/duplicate', 'EmailTemplate\EmailTemplateController@duplicate');
         Route::post('email-template/{emailTemplate}/delete', 'EmailTemplate\EmailTemplateController@destroy');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 

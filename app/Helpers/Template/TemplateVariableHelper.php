@@ -162,6 +162,19 @@ class TemplateVariableHelper
 
         $model->load('person', 'organisation', 'contactPerson', 'primaryAddress', 'primaryEmailAddress', 'primaryphoneNumber');
 
+        $prefix1 = 'woningdossier_';
+        $stringMatch1 = str_starts_with($varname, $prefix1);
+        if($stringMatch1 && $model->latestHousingFile) {
+            $stringRemainder1 = $stringMatch1 ? substr($varname, strlen($prefix1)) : '';
+            return TemplateVariableHelper::getHousingFileVar($model->latestHousingFile, $stringRemainder1);
+        }
+        $prefix2 = 'adres_woningdossier_';
+        $stringMatch2 = str_starts_with($varname, $prefix2);
+        if($stringMatch2 && $model?->primaryAddress?->housingFile) {
+            $stringRemainder2 = $stringMatch2 ? substr($varname, strlen($prefix2)) : '';
+            return TemplateVariableHelper::getHousingFileVar($model->primaryAddress->housingFile, $stringRemainder2);
+        }
+
         switch ($varname) {
             case 'nummer':
                 return $model->number;
@@ -1817,19 +1830,19 @@ class TemplateVariableHelper
     public static function getHousingFileVar($model, $varname){
         switch ($varname) {
             case 'woningtype':
-                return optional($model->buildingType)->name;
-            case 'gebruikersoppervlakte':
-                return $model->surface;
+                return $model?->buildingType?->name;
             case 'bouwjaar':
                 return $model->build_year;
+            case 'gebruikersoppervlakte':
+                return $model->surface;
             case 'daktype':
-                return optional($model->roofType)->name;
+                return $model?->roofType?->name;
             case 'energielabel':
-                return optional($model->energyLabel)->name;
-            case 'status_energielabel':
-                return optional($model->energyLabelStatus)->name;
+                return $model?->energyLabel?->name;
             case 'aantal_bouwlagen':
                 return $model->floors;
+            case 'status_energielabel':
+                return $model?->energyLabelStatus?->name;
             case 'monument':
                 return match ($model->is_monument) {
                     '1' => 'Ja',
@@ -1842,6 +1855,46 @@ class TemplateVariableHelper
                     '0' => 'Nee',
                     default => 'Onbekend',
                 };
+            case 'hoom_building_id':
+                return $model->hoom_building_id;
+            case 'woz_waarde':
+                return $model->woz_value ? TemplateVariableHelper::formatFinancial(('woningdossier_' . $varname), $model->woz_value) : "onbekend";
+            case 'geveloppervlakte':
+                return $model->wall_surface;
+            case 'raamoppervlakte':
+                return $model->total_window_surface;
+            case 'vloeroppervlakte':
+                return $model->floor_surface;
+            case 'opbrengst_zonnepanelen':
+                return $model->revenue_solar_panels !== 0 ? $model->revenue_solar_panels : "onbekend";
+            case 'manier_koken':
+                return $model?->cookType?->hoom_status_name;
+            case 'verwarming':
+                return $model?->heatSource?->hoom_status_name;
+            case 'water_comfort':
+                return $model?->waterComfort?->hoom_status_name;
+            case 'aantal_bewoners':
+                return $model->number_of_residents !== 0 ? $model->number_of_residents : "onbekend";;
+            case 'stook_temperatuur':
+                return $model?->boilerSettingComfortHeat?->hoom_status_name;
+            case 'verbruik_gas':
+                return $model->amount_gas;
+            case 'verbruik_elektriciteit':
+                return $model->amount_electricity;
+            case 'opmerking_bewoner':
+                return $model->remark;
+            case 'opmerking_coach':
+                return $model->remark_coach;
+
+            // ToDo WM: wellicht later, nog niet in gebruik in Econobis bij woningdossier
+            // frame_type                         // Kozijntype
+            // pitched_roof_surface               // Hellend dakoppervlakte
+            // flat_roof_surface                  // Platte dakoppervlakte
+            // pitched_roof_heating               // Hellend dak ruimtes verwarming
+            // flat_roof_heating                  // Platte dak ruimtes verwarming
+            // hr3p_glass_frame_current_glass     // hr3p glaslijst (huidig)
+            // glass_in_lead_replace_rooms_heated // Kamers verwarmd (met Glas-in-lood ramen)
+
             default:
                 return '';
         }
@@ -1850,6 +1903,17 @@ class TemplateVariableHelper
     public static function getQuotationRequestVar($model, $varname){
 
         $contact = $model?->opportunity?->intake?->contact;
+
+        $prefix1 = 'woningdossier_';
+        $stringMatch1 = str_starts_with($varname, $prefix1);
+        if($stringMatch1) {
+            $stringRemainder1 = $stringMatch1 ? substr($varname, strlen($prefix1)) : '';
+            if($model?->opportunity?->housingFileSpecification) {
+                return TemplateVariableHelper::getHousingFileVar($model->opportunity->housingFileSpecification->housingFile, $stringRemainder1);
+            } elseif( $model?->opportunity?->intake?->address) {
+                return TemplateVariableHelper::getHousingFileVar($model->opportunity->intake->address->housingFile, $stringRemainder1);
+            }
+        }
 
         switch ($varname) {
             case 'id':
@@ -2056,10 +2120,12 @@ class TemplateVariableHelper
                     return null;
                 }
                 return Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->format('d-m-Y H:i') : Carbon::parse($model->date_planned)->format('d-m-Y');
-            case 'tijdstip_afspraak':
-                return $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->format('H:i') : null;
             case 'datum_afspraak_zonder_tijdstip':
                 return $model->date_planned ? Carbon::parse($model->date_planned)->format('d-m-Y') : null;
+            case 'tijdstip_afspraak':
+                return $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->format('H:i') : null;
+            case 'tijdstip_afspraak_einde':
+                return $model->date_planned && $model->duration_minutes && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes($model->duration_minutes)->format('H:i') : 'onbekend';
             case 'tijdstip_afspraak_30_min_later':
                 $tijdStipXMinutenLater = $model->date_planned && Carbon::parse($model->date_planned)->format('H:i') != '00:00' ? Carbon::parse($model->date_planned)->addMinutes(30)->format('H:i') : null;
                 return $tijdStipXMinutenLater ?: null;

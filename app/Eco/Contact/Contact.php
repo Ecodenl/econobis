@@ -133,6 +133,10 @@ class Contact extends Model
     {
         return $this->hasOne(EmailAddress::class)->where('primary', true);
     }
+    public function latestEmailAddressInvoice()
+    {
+        return $this->hasOne(EmailAddress::class)->where('type_id', 'invoice')->latestOfMany();
+    }
 
     public function emails()
     {
@@ -666,6 +670,15 @@ class Contact extends Model
         return $this->financialOverviewContactsSend()->exists();
     }
 
+    // Contact initials (only if person).
+    public function getInitialsAttribute()
+    {
+        if ($this->type_id == 'person') {
+            return $this->person->initials;
+        } else {
+            return '';
+        }
+    }
     // Contact firstname (only if person).
     public function getFirstNameAttribute()
     {

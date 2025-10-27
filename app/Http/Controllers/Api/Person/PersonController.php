@@ -394,6 +394,8 @@ class PersonController extends ApiController
             'hoomAccountId' => 'unique:contacts,hoom_account_id,'.$person->contact_id,
         ], ['hoomAccountId' => $duplicateHoomAccountIdErrorMessage]);
 
+        if($request['dateOfBirth'] == null) { unset($request['dateOfBirth']); }
+
         $personData = $request->validate([
             'initials' => '',
             'firstName' => '',

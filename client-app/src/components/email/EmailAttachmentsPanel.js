@@ -23,7 +23,7 @@ export default function EmailAttachmentsPanel({ email, allowView = true }) {
         });
     };
 
-    const saveToAlfresco = attachment => {
+    const saveToBigstorage = attachment => {
         navigate(`/document/nieuw/upload/email-bijlage/${attachment.id}`);
 
         setIsEmailDetailsModalOpen(false);
@@ -79,7 +79,7 @@ export default function EmailAttachmentsPanel({ email, allowView = true }) {
                                                 <a role="button" onClick={() => downloadItem(attachment)}>
                                                     <Icon className="mybtn-success" size={14} icon={download} />
                                                 </a>
-                                                <a role="button" onClick={() => saveToAlfresco(attachment)}>
+                                                <a role="button" onClick={() => saveToBigstorage(attachment)}>
                                                     <Icon className="mybtn-success" size={14} icon={share} />
                                                 </a>
                                                 {allowView && (isImage(attachment) || isPdf(attachment)) && (

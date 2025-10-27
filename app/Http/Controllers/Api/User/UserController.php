@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\User;
 
+use App\Eco\Cooperation\Cooperation;
+use App\Eco\Team\Team;
 use App\Eco\User\User;
 use App\Eco\User\UserLoginAttempt;
 use App\Helpers\Alfresco\AlfrescoHelper;
@@ -12,6 +14,7 @@ use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\Intake\Grid\RequestQuery;
 use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
@@ -31,7 +34,7 @@ class UserController extends Controller
     {
         $this->authorize('view', User::class);
 
-        $user->load(['lastNamePrefix', 'title', 'administrations', 'defaultMailbox']);
+        $user->load(['lastNamePrefix', 'title', 'administrations', 'defaultMailbox', 'teams']);
 
         return FullUser::make($user);
     }
@@ -39,6 +42,10 @@ class UserController extends Controller
     public function store(RequestInput $input, Request $request)
     {
         $this->authorize('create', User::class);
+
+        // cooperation
+        $cooperation = Cooperation::first();
+        $requireTeamOnUserCreate = $cooperation ? $cooperation->require_team_on_user_create : false;
 
         $data = $input->string('email')->validate(['required', 'email', 'unique:users,email'])->next()
             ->string('titleId')->validate('exists:titles,id')->default(null)->alias('title_id')->next()
@@ -49,26 +56,42 @@ class UserController extends Controller
             ->string('mobileNumber')->whenMissing('')->alias('mobile')->next()
             ->boolean('active')->whenMissing(true)->next()
             ->string('occupation')->next()
-            ->get();
+            ->string('teamId')->validate(function ($attribute, $value, $fail) use ($requireTeamOnUserCreate) {
+                $id = (int) $value;
 
+                // als teamkeuze verplicht is maar er geen selectie is gemaakt
+                if ($requireTeamOnUserCreate && !$id && $value !== '0') {
+                    $fail('Kies een team of selecteer "** Niet aan een team toevoegen **".');
+                    return;
+                }
+
+                // als er wél een team is gekozen, moet dat bestaan (behalve 0)
+                if ($id > 0 && !Team::whereKey($id)->exists()) {
+                    $fail('Het geselecteerde team bestaat niet.');
+                }
+            })
+            ->default(null)->alias('team_id')->next()
+            ->get();
         //create random password
         $data['password'] = Str::random(20);
+
+        // Pak team_id los en haal ’m uit $data zodat het niet in fill() belandt
+        // Deze gebruiken dan om gebruiker direct aan opgegeven team te koppelen, zie $user->teams()->attach([$teamId]); verderop
+        $teamId = (int) Arr::pull($data, 'team_id');
 
         $user = new User();
         $user->fill($data);
 
-        //checks if account exists
-        if(\Config::get('app.ALFRESCO_COOP_USERNAME') != 'local') {
-            $alfrescoHelper = new AlfrescoHelper( \Config::get('app.ALFRESCO_ADMIN_USERNAME'), \Config::get('app.ALFRESCO_ADMIN_PASSWORD'));
-            $exists = $alfrescoHelper->checkIfAccountExists($user);
-            $exists ? $user->has_alfresco_account = 1 : $user->has_alfresco_account = 0;
-        } else {
-            $user->has_alfresco_account = 0;
-        }
-
-
+        // Todo: Alfresco volledig uitgefaseerd nu, maar deze velden moet niet null zijn
+        //  later deze velden nog eens helemaal weghalen
+        $user->has_alfresco_account = 0;
         $user->alfresco_password = 'nvt';
         $user->save();
+
+        // Team koppelen als gezet
+        if ($teamId > 0) {
+            $user->teams()->attach([$teamId]);
+        }
 
         $user->assignRole(Role::findByName('Medewerker'));
 

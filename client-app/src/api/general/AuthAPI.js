@@ -15,8 +15,8 @@ export default {
         return getAxiosInstance()
             .post(requestUrl, { ...getAuthKey(), ...loginCredentials })
             .then(response => response)
-            .catch(() => {
-                return { error: 'Geen juiste login gegevens ingevuld' };
+            .catch(error => {
+                return { error: error?.response?.data?.error ?? 'Verkeerde inloggegevens ingevuld!' };
             });
     },
 

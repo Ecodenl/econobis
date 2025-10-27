@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Eco\User\User;
+use App\Eco\User\UserLoginAttempt;
 use App\Helpers\Alfresco\AlfrescoHelper;
 use App\Helpers\Excel\PermissionExcelHelper;
 use App\Helpers\RequestInput\RequestInput;
@@ -126,6 +127,36 @@ class UserController extends Controller
         $this->authorize('update-default-mailbox', $user);
         $user->default_mailbox_id = $request->input('defaultMailboxId') ? $request->input('defaultMailboxId') : null;
         $user->save();
+
+        return $this->show($user);
+    }
+
+    public function unblock(User $user, Request $request)
+    {
+        $this->authorize('unblockUser', Auth::user());
+
+        $user->failed_logins   = 0;
+        $user->blocked_until   = null;
+        $user->blocked_permanent = false;
+        $user->save();
+
+        // Veiligheid: email kan ook tot 191 lang zijn; DB kolom result is 191
+        $result = (string) 'Unblocked by: ' . Auth::user()->email . ' (id: ' . Auth::user()->id . ')';
+        if (strlen($result) > 191) {
+            $result = substr($result, 0, 191);
+        }
+
+        UserLoginAttempt::create([
+            'user_id'             => $user?->id,
+            'identifier'          => $user?->email,
+            'ip'                  => null,
+            'user_agent'          => null,
+            'succeeded'           => true,
+            'result'              => $result,
+            'failed_logins_after' => null,
+            'blocked_until'       => null,
+            'blocked_permanent'   => false,
+        ]);
 
         return $this->show($user);
     }

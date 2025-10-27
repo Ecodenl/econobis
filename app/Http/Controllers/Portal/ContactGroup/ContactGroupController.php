@@ -24,12 +24,14 @@ class ContactGroupController extends Controller
         $contactGroups = ContactGroup::where('show_portal', true)
             ->where('type_id', 'static')
             ->where('closed', false)
-            ->where(function ($q) use ($portalUser) {
-                $q->where('edit_portal', true)
-                    ->orWhereHas('contacts', function ($q2) use ($portalUser) {
-                        $q2->where('contacts.id', $portalUser->contact->id);
-                    });
-            })
+//  WM: klant is koning, ze willen ook de groepen tonen waar portaluser geen lid van is en waar hij/zij zich niet voor kan aanmelden
+//  enige criteria om groep te tonen zijn dus: show_portal = TRUE, type_id = static en closed = FALSE
+//            ->where(function ($q) use ($portalUser) {
+//                $q->where('edit_portal', true)
+//                    ->orWhereHas('contacts', function ($q2) use ($portalUser) {
+//                        $q2->where('contacts.id', $portalUser->contact->id);
+//                    });
+//            })
             ->orderByRaw('portal_sort_order IS NULL, portal_sort_order ASC')
             ->orderBy('name', 'ASC')
             ->get();

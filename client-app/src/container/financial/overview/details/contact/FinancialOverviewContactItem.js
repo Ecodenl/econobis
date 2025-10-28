@@ -12,6 +12,7 @@ function FinancialOverviewContactItem({
     status,
     dateSent,
     emailedTo,
+    allowInterimFinancialOverview,
     showSelectFinancialOverviewContactsToSend,
     toggleFinancialOverviewContactCheck,
     financialOverviewContactIds,
@@ -57,6 +58,7 @@ function FinancialOverviewContactItem({
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
                     <Icon className="mybtn-success" size={14} icon={eye} />
                 </a>
+                {allowInterimFinancialOverview ? ' TT' : ''}
             </td>
         </tr>
     );

@@ -13,6 +13,7 @@ use App\Eco\ContactNote\ContactNote;
 use App\Eco\Document\Document;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
@@ -668,6 +669,16 @@ class Contact extends Model
     public function getHasFinancialOverviewsAttribute()
     {
         return $this->financialOverviewContactsSend()->exists();
+    }
+    public function getLastYearFinancialOverviewSentAttribute()
+    {
+        $financialOverviewIds = $this->financialOverviewContactsSend()->get()->pluck('financial_overview_id')->toArray();
+
+        $financialOverview = FinancialOverview::whereIn('id', $financialOverviewIds)
+            ->get()
+            ->sortByDesc('year')
+            ->first();
+        return $financialOverview ? (int) $financialOverview->year : null;
     }
 
     // Contact initials (only if person).

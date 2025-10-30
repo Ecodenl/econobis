@@ -377,17 +377,10 @@ class FinancialOverviewContactController extends Controller
     }
     public function getAllowInterimFinancialOverview(Contact $contact)
     {
-//        $allowInterimFinancialOverview = false;
-
         // All participations for the contact must be terminated
-//        $activeParticipantProjectsExists = $contact->participations()
-//            ->whereNotNull('date_terminated')
-//            ->exists();
-        return $contact->participations()
-            ->whereNotNull('date_terminated')
+        return !$contact->participations()
+            ->whereNull('date_terminated')
             ->exists();
-
-//        return $activeParticipantProjectsExists;
     }
 
     protected function getOrganisationEmailAddressFinancialOverview(Contact $contact){

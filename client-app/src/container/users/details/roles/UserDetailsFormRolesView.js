@@ -16,7 +16,7 @@ class UserDetailsFormRolesView extends Component {
         const additionalRolesList = [
             'Beheerder webformulier',
             'Beheerder Mailgun domeinen',
-            'Beheerder Portal Settings',
+            'Beheerder portal instellingen',
             'Beheerder coöperatie instellingen',
             'Data opschoner',
         ];

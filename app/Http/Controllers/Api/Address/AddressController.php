@@ -127,7 +127,7 @@ class AddressController extends ApiController
                 abort(412, implode(';', $messages));
             }
         }
-        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'country'));
+        return new FullAddress($address->fresh()->load('addressEnergySuppliers.energySupplier', 'addressEnergySuppliers.energySupplyType', 'addressEnergySuppliers.energySupplyStatus', 'addressDongles', 'country'));
     }
 
     public function destroy(Address $address)
@@ -154,6 +154,10 @@ class AddressController extends ApiController
     }
 
     public function getLvbagAddress(Request $request){
+
+        $pc = $request->input('postalCode');
+        $huisnummer = $request->input('number');
+
         $secret = config('lvbag.lvbag_key');
 
         if(empty($secret)){
@@ -180,15 +184,13 @@ class AddressController extends ApiController
 
         $lvbag = Lvbag::init($client);
 
-        $pc = $request->input('postalCode');
-
         if(preg_match('/^\d{4}\s[A-Za-z]{2}$/', $pc)){
             $pc = preg_replace('/\s+/', '', $pc);
         }
 
         // Only get address from Lvbag if the postalcode is default NL format: 4 times numeric, directly followed by two times alphanumeric (for example 1616AA)
         // and the housenumber is between 1 and 99999
-        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || !is_numeric($request->input('number')) || $request->input('number') <= 0 || $request->input('number') > 99999) {
+        if(!preg_match('/^\d{4}[A-Za-z]{2}$/', $pc) || !is_numeric($huisnummer) || $huisnummer <= 0 || $huisnummer > 99999) {
             return [
                 'street' => "",
                 'city' => "",
@@ -198,7 +200,7 @@ class AddressController extends ApiController
         $addresses = $lvbag->adresUitgebreid()
         ->list([
             'postcode' => $pc,
-            'huisnummer' => $request->input('number'),
+            'huisnummer' => $huisnummer,
         ]);
 
         $street = ($addresses && $addresses[0]) ? $addresses[0]['korteNaam'] : "";

@@ -59,6 +59,7 @@ class CreateCooperation extends FormRequest
             'externalUrlContacts' => [''],
             'externalUrlContactsButtonText' => [''],
             'externalUrlContactsOnNewPage' => [''],
+            'requireTeamOnUserCreate' => [''],
             'cleanupYearsInvoicesDateSend' => [7],
             'cleanupYearsOneoffOrdersStartDate' => [7],
             'cleanupYearsPeriodicOrdersTerminationDate' => [7],

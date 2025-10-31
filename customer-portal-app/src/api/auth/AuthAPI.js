@@ -26,7 +26,13 @@ export default {
         const requestUrl = `${BASE_URL}/oauth/token`;
         delete axios.defaults.headers.common['Authorization'];
 
-        return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
+        // return axios.post(requestUrl, { ...AUTH_KEY, ...loginCredentials });
+        return axios
+            .post(requestUrl, { ...AUTH_KEY, ...loginCredentials })
+            .then(response => response)
+            .catch(error => {
+                return { error: error?.response?.data?.error ?? 'Gebruikte logingegevens zijn onjuist!' };
+            });
     },
 
     register: payload => {

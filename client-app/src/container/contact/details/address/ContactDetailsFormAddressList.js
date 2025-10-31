@@ -1,11 +1,13 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
 
 import ContactDetailsFormAddressItem from './ContactDetailsFormAddressItem';
 
 const ContactDetailsFormAddressList = props => {
-    const numberOfAddresses = props.addresses.length;
-    const addressesNotOld = props.addresses.filter(address => address.typeId !== 'old');
+    const addresses = useSelector(state => state.contactDetails.addresses);
+
+    const numberOfAddresses = addresses.length;
+    const addressesNotOld = addresses.filter(address => address.typeId !== 'old');
     const numberOfAddressesNotOld = addressesNotOld.length;
 
     return (
@@ -24,21 +26,19 @@ const ContactDetailsFormAddressList = props => {
                 </div>
                 <div className="col-sm-1" />
             </div>
-            {props.addresses.length > 0 ? (
-                props.addresses.map(address => {
-                    return (
-                        <ContactDetailsFormAddressItem
-                            key={address.id}
-                            address={address}
-                            numberOfAddresses={numberOfAddresses}
-                            numberOfAddressesNotOld={numberOfAddressesNotOld}
-                            setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
-                            addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
-                            setAddressDongleNewOrEditOpen={props.setAddressDongleNewOrEditOpen}
-                            addressDongleNewOrEditOpen={props.addressDongleNewOrEditOpen}
-                        />
-                    );
-                })
+            {addresses.length > 0 ? (
+                addresses.map(address => (
+                    <ContactDetailsFormAddressItem
+                        key={address.id}
+                        address={address}
+                        numberOfAddresses={numberOfAddresses}
+                        numberOfAddressesNotOld={numberOfAddressesNotOld}
+                        setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
+                        addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
+                        setAddressDongleNewOrEditOpen={props.setAddressDongleNewOrEditOpen}
+                        addressDongleNewOrEditOpen={props.addressDongleNewOrEditOpen}
+                    />
+                ))
             ) : (
                 <div>Geen adres bekend.</div>
             )}
@@ -46,10 +46,4 @@ const ContactDetailsFormAddressList = props => {
     );
 };
 
-const mapStateToProps = state => {
-    return {
-        addresses: state.contactDetails.addresses,
-    };
-};
-
-export default connect(mapStateToProps)(ContactDetailsFormAddressList);
+export default ContactDetailsFormAddressList;

@@ -52,6 +52,7 @@ class IntakesListItem extends Component {
             status,
             campaign,
             measuresRequestedNames = [],
+            sourcesNames = [],
             showCheckbox,
             toggleIntakeCheck,
             intakeIds,
@@ -79,6 +80,7 @@ class IntakesListItem extends Component {
                 <td>{fullAddress}</td>
                 <td>{areaName}</td>
                 <td>{measuresRequestedNames.join(', ')}</td>
+                <td>{sourcesNames.join(', ')}</td>
                 <td>{status}</td>
                 <td>{campaign.name}</td>
                 <td>

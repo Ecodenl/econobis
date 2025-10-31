@@ -105,7 +105,7 @@ class ParticipantDetailsToolbar extends Component {
             //     project.isParticipationTransferable &&
             //     participantProject.participationsCurrent > 0 &&
             //     participantProject.participationsCurrent &&
-            //     this.props.permissions.manageFinancial;
+            //     this.props.permissions.manageParticipation;
             // isTransferable = participantProject.statusId == 2 ? isTransferable : false;
 
             const projectTypeCodeRef = project ? project.typeCodeRef : '';

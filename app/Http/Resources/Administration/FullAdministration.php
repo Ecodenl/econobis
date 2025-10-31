@@ -104,6 +104,9 @@ class FullAdministration extends JsonResource
                 'totalInvoicesErrorMaking' => $this->total_invoices_error_making,
                 'totalInvoicesIsResending' => $this->total_invoices_is_resending,
 
+                'totalInvoicesIsExporting' => $this->total_invoices_is_exporting,
+                'totalInvoicesErrorExporting' => $this->total_invoices_error_exporting,
+
                 'totalPaymentInvoices' => $this->total_payment_invoices,
                 'totalPaymentInvoicesConcepts' => $this->total_payment_invoices_concepts,
                 'totalPaymentInvoicesSent' => $this->total_payment_invoices_sent,
@@ -114,8 +117,8 @@ class FullAdministration extends JsonResource
                 'canCreateFinancialOverviewContacts' => $this->can_create_financial_overview_contacts,
 
                 'usesTwinfield' => $this->uses_twinfield,
-                'twinfieldConnectionType' => $this->twinfield_connection_type,
-                'twinfieldConnectionTypeWithIdAndName' => FullEnumWithIdAndName::make($this->getTwinfieldConnectionTypeWithIdAndName()),
+//                'twinfieldConnectionType' => $this->twinfield_connection_type,
+//                'twinfieldConnectionTypeWithIdAndName' => FullEnumWithIdAndName::make($this->getTwinfieldConnectionTypeWithIdAndName()),
                 'twinfieldHasRefreshToken' => (!empty($this->twinfield_refresh_token) ? 'Ja' : 'Nee'),
                 'twinfieldRedirectUri' => $this->uses_twinfield ? (\Config::get('app.url_api') . '/twinfield') : '',
                 'twinfieldUsername' => $this->twinfield_username,

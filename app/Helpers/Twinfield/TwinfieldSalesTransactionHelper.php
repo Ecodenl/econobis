@@ -11,6 +11,7 @@ namespace App\Helpers\Twinfield;
 use App\Eco\Administration\Administration;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Twinfield\TwinfieldLog;
+use App\Helpers\Invoice\InvoiceHelper;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
@@ -106,17 +107,17 @@ class TwinfieldSalesTransactionHelper
         set_time_limit(0);
 
         // Retrieve invoices to be checked in batches
-        $invoicesToBeChecked = $this->getInvoicesToBeChecked();
+        $invoicesToBeProcessed = $this->getInvoicesToBeProcessed();
 
         // Split invoices into chunks/batches
-        $invoiceBatches = array_chunk($invoicesToBeChecked->toArray(), self::BATCH_SIZE);
+        $invoiceBatches = array_chunk($invoicesToBeProcessed->toArray(), self::BATCH_SIZE);
 
         $chunkNumber = 0;
-        $numberOfChunks = ceil($invoicesToBeChecked->count() / self::BATCH_SIZE);
+        $numberOfChunks = ceil($invoicesToBeProcessed->count() / self::BATCH_SIZE);
 
         foreach ($invoiceBatches as $batch) {
             $chunkNumber++;
-            $message = 'Start batch voor nota\'s (' . $chunkNumber . '/' . $numberOfChunks . ') voor in totaal ' . $invoicesToBeChecked->count() . ' nota\'s (' . self::BATCH_SIZE . ' per batch)';
+            $message = 'Start batch voor nota\'s (' . $chunkNumber . '/' . $numberOfChunks . ') voor in totaal ' . $invoicesToBeProcessed->count() . ' nota\'s (' . self::BATCH_SIZE . ' per batch)';
             $this->logBatchSync($message);
 
             $this->processInvoiceBatch($batch);
@@ -139,21 +140,26 @@ class TwinfieldSalesTransactionHelper
         return implode(';', $this->messages);
     }
 
-    private function getInvoicesToBeChecked()
+    private function getInvoicesToBeProcessed()
     {
-        return $this->administration->invoices()
-            ->where('status_id', 'sent')
+        $invoicesToBeProcessed = $this->administration->invoices()
+            ->whereIn('status_id', ['sent', 'error-exporting'])
             ->where('date_sent', '>=', $this->fromInvoiceDateSent)
             ->whereDoesntHave('invoiceProducts', function ($query) {
                 $query->whereNull('twinfield_ledger_code');
             })
             ->get();
+        foreach ($invoicesToBeProcessed as $invoiceToBeProcessed) {
+            InvoiceHelper::invoiceIsExporting($invoiceToBeProcessed);
+        }
+
+        return $invoicesToBeProcessed;
     }
 
     private function processInvoiceBatch(array $invoiceBatch)
     {
-        foreach ($invoiceBatch as $invoiceToBeChecked) {
-            $invoiceToProcess = Invoice::find($invoiceToBeChecked['id']);
+        foreach ($invoiceBatch as $invoiceToBeProcessed) {
+            $invoiceToProcess = Invoice::find($invoiceToBeProcessed['id']);
             if ($invoiceToProcess){
                 $this->processInvoice($invoiceToProcess);
             }
@@ -216,7 +222,7 @@ class TwinfieldSalesTransactionHelper
                 $dueDateInvoice2 = new \DateTime($invoiceToProcess->date_sent); ;
                 $dueDateInvoice2->add( $daysToAdd2);
 
-                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDay($invoiceToProcess->days_to_expire);
+                $dueDateInvoice = Carbon::parse($invoiceToProcess->date_sent)->addDays((int) $invoiceToProcess->days_to_expire);
             }else {
                 $datePaymentDue = $invoiceToProcess->getDatePaymentDueAttribute();
                 if ($dueDateInvoice = 0) {
@@ -337,22 +343,15 @@ class TwinfieldSalesTransactionHelper
         //Salestransaction - versturen naar Twinfield
         try {
             $response = $this->transactionApiConnector->send($twinfieldSalesTransaction);
-            if($invoiceToProcess->status_id === 'sent'){
-                // 0 invoice meteen op betaald zetten
-                if($isNullInvoice){
-                    $invoiceToProcess->status_id = 'paid';
-                }else{
-                    $invoiceToProcess->status_id = 'exported';
-                }
-            }
-            $invoiceToProcess->twinfield_number = $response->getNumber();
-            $invoiceToProcess->save();
+            InvoiceHelper::invoiceExported($invoiceToProcess, $response->getNumber());
             return true;
         } catch (PhpTwinfieldException $exceptionTwinfield) {
+            InvoiceHelper::invoiceErrorExporting($invoiceToProcess);
             $message = 'Er is een twinfield fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Twinfield foutmelding: ' . $exceptionTwinfield->getMessage();
             $this->logGeneral($invoiceToProcess, $message, true, true);
             return $message;
         } catch (\Exception $e) {
+            InvoiceHelper::invoiceErrorExporting($invoiceToProcess);
             $message = 'Er is een fout opgetreden bij synchronisatie nota\'s, nota: ' . $invoiceToProcess->number . '. Foutmelding: ' . $e->getMessage();
             $this->logGeneral($invoiceToProcess, $message, true, true);
             return $message;

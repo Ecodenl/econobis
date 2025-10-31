@@ -17,7 +17,7 @@ class checkWrongProjectPCRSettings extends Command
      * @var string
      */
     protected $signature = 'project:checkWrongProjectPCRSettings {--recover=false}';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

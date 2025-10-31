@@ -6,6 +6,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('setting/portal-active', 'Setting\PortalSettingController@getPortalActive');
 Route::get('setting/cooperative-name', 'Setting\PortalSettingController@getCooperativeName');
+Route::get('setting/portal-login-info-text', 'Setting\PortalSettingController@getPortalLoginInfoText');
 Route::get('setting/show-new-at-cooperative-link', 'Setting\PortalSettingController@getShowNewAtCooperativeLink');
 Route::get('setting/new-at-cooperative-link-text', 'Setting\PortalSettingController@getNewAtCooperativeLinkText');
 
@@ -36,25 +37,40 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::post('/contact/{contact}', 'Contact\ContactController@update');
         Route::get('/contact/{contact}/financial-overview-documents', 'Contact\ContactController@financialOverviewDocuments');
         Route::get('/contact/{contact}/related-administrations', 'Contact\ContactController@relatedAdministrations');
+        Route::get('/contact/{contact}/contact-group/{contactGroup}/add', 'Contact\ContactController@addContactToContactGroup');
+        Route::get('/contact/{contact}/contact-group/{contactGroup}/remove', 'Contact\ContactController@removeContactFromContactGroup');
         Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
 
+        Route::get('/contact-groups', 'ContactGroup\ContactGroupController@index');
+
+
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
+        Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');
+
+        Route::post('/contact-group/{contactGroup}/contacts/add/{contact}', 'ContactGroup\ContactGroupController@addContact');
 
         Route::get('/project/{project}/document/{document}/download', 'Project\ProjectController@documentDownload');
 
         Route::get('/project/participant/{participantProject}', 'ParticipationProject\ParticipationProjectController@show');
-        Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
         Route::get('/project/participant/{participantProject}/document/{document}/download', 'ParticipationProject\ParticipationProjectController@documentDownload');
+        Route::post('/project/participant/create', 'ParticipationProject\ParticipationProjectController@create');
+        Route::post('/project/participant/{participantProject}/update', 'ParticipationProject\ParticipationProjectController@update');
 
         Route::get('setting', '\\' . SettingController::class . '@get');
         Route::get('setting/multiple', '\\' . SettingController::class . '@multiple');
 
         Route::get('/portal-settings-dashboard/{portalSettingsDashboard}/{contact}', 'PortalSettingsDashboard\PortalSettingsDashboardController@get');
 
+        Route::get('/contact/{contact}/contact-free-fields', 'Contact\ContactController@getContactFreeFields');
+        Route::get('/contact/{contact}/contact-portal-free-fields', 'Contact\ContactController@getContactPortalFreeFields');
         Route::get('/contact/{contact}/contact-free-fields', 'FreeFields\FreeFieldsFieldRecordController@getContactValuesForPortal');
         Route::get('/address/{address}/address-free-fields', 'FreeFields\FreeFieldsFieldRecordController@getAddressValuesForPortal');
         Route::get('/contact/{contact}/contact-projects', 'Contact\ContactController@getContactProjects');
+        Route::get('/contact/{contact}/contact-groups', 'Contact\ContactController@getContactGroups');
         Route::get('/contact/{contact}/{project}/contact-project-data', 'Contact\ContactController@getContactProjectData');
+
+        Route::get('/portal-free-fields-page/{contact}/{urlPageRef}', 'PortalFreeFieldsPage\PortalFreeFieldsPageController@show');
+        Route::post('/portal-free-fields-page-values/{contact}/update', 'Contact\ContactController@updatePortalFreeFieldsPageValues');
 
         Route::get('me/quotation-request', 'QuotationRequest\QuotationRequestController@index');
         Route::get('quotation-request/{quotationRequest}', 'QuotationRequest\QuotationRequestController@view');
@@ -86,3 +102,4 @@ Route::middleware(['auth:api', 'scopes:use-portal'])
     });
 
 Route::post('mollie/webhook', [ParticipantMutationMolliePaymentController::class, 'webhook'])->name('portal.mollie.webhook');
+Route::get('mollie/test-webhook/{participantMutationCode}', [ParticipantMutationMolliePaymentController::class, 'testWebhook'])->name('portal.mollie.testWebhook');

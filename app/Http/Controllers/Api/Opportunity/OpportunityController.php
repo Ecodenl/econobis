@@ -31,6 +31,8 @@ class OpportunityController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Opportunity::class);
+
         $opportunities = $requestQuery->get();
 
         $opportunities->load(['intake.contact', 'intake.campaign', 'intake.address', 'measureCategory', 'measures', 'status', 'quotationRequests']);
@@ -45,6 +47,10 @@ class OpportunityController extends ApiController
 
     public function show(Opportunity $opportunity)
     {
+        set_time_limit(60);
+
+        $this->authorize('view', Opportunity::class);
+
         $opportunity->load([
             'measureCategory',
             'quotationRequests.organisationOrCoach',
@@ -83,6 +89,8 @@ class OpportunityController extends ApiController
 
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', Opportunity::class);
+
         set_time_limit(0);
         $opportunities = $requestQuery->getQueryNoPagination()->get();
 
@@ -243,6 +251,8 @@ class OpportunityController extends ApiController
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', Opportunity::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = Opportunity::query()->orderBy('id');

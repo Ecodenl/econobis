@@ -1,6 +1,7 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import validator from 'validator';
+import { isEqual } from 'lodash';
 
 import { setError } from '../../../../actions/general/ErrorActions';
 import AddressAPI from '../../../../api/contact/AddressAPI';
@@ -8,366 +9,335 @@ import { unsetPrimaryAddresses, updateAddress } from '../../../../actions/contac
 import ContactDetailsFormAddressView from './ContactDetailsFormAddressView';
 import ContactDetailsFormAddressEdit from './ContactDetailsFormAddressEdit';
 import ContactDetailsFormAddressDelete from './ContactDetailsFormAddressDelete';
-import { isEqual } from 'lodash';
 import Modal from '../../../../components/modal/Modal';
 import AddressDetailsFormAddressEnergySupplier from './address-energy-suppliers/AddressDetailsFormAddressEnergySupplier';
 import SharedAreaAPI from '../../../../api/shared-area/SharedAreaAPI';
 import FreeFields from '../../../../components/freeFields/FreeFields';
+import Dongles from './address-dongles/AddressDetailsFormAddressDongle';
 
-class ContactDetailsFormAddressItem extends Component {
-    constructor(props) {
-        super(props);
+function ContactDetailsFormAddressItem(props) {
+    const dispatch = useDispatch();
 
-        this.state = {
-            showModal: false,
-            modalTitle: '',
-            modalButtonCancelText: '',
-            modalShowConfirmAction: false,
-            modalConfirmAction: {},
-            modalButtonConfirmText: '',
-            modalText: '',
-            showActionButtons: false,
-            highlightLine: '',
-            showEdit: false,
-            showAddressEnergySupplier: false,
-            showDelete: false,
-            address: {
-                ...props.address,
-            },
-            errors: {
-                typeId: false,
-                postalCode: false,
-                number: false,
-                countryId: false,
-                endDate: false,
-                eanElectricity: false,
-                eanGas: false,
-            },
-        };
-    }
+    const permissions = useSelector(state => state.meDetails.permissions);
+    const useDongleRegistration = useSelector(state => state.systemData?.cooperation?.use_dongle_registration ?? false);
 
-    componentWillReceiveProps(nextProps) {
-        if (!isEqual(this.state.address, nextProps.address)) {
-            this.setState({
-                ...this.state,
-                address: {
-                    ...nextProps.address,
-                },
-            });
+    const [showModal, setShowModal] = useState(false);
+    const [modalContent, setModalContent] = useState({
+        title: '',
+        buttonCancelText: '',
+        showConfirmAction: false,
+        confirmAction: {},
+        buttonConfirmText: '',
+        text: '',
+    });
+
+    const [showActionButtons, setShowActionButtons] = useState(false);
+    const [highlightLine, setHighlightLine] = useState('');
+    const [showEdit, setShowEdit] = useState(false);
+    const [showAddressEnergySupplier, setShowAddressEnergySupplier] = useState(false);
+    const [showDelete, setShowDelete] = useState(false);
+
+    const [address, setAddress] = useState({ ...props.address });
+
+    const [errors, setErrors] = useState({
+        typeId: false,
+        postalCode: false,
+        number: false,
+        countryId: false,
+        endDate: false,
+        eanElectricity: false,
+        eanGas: false,
+    });
+
+    useEffect(() => {
+        if (!isEqual(address, props.address)) {
+            setAddress({ ...props.address });
         }
-    }
+    }, [props.address]);
 
-    onLineEnter = () => {
-        this.setState({
-            showActionButtons: true,
-            highlightLine: 'highlight-line',
-        });
+    useEffect(() => {
+        const { postalCode, number, city, street } = address;
+
+        const shouldFetch =
+            !validator.isEmpty(postalCode + '') &&
+            validator.isPostalCode(postalCode, 'NL') &&
+            !validator.isEmpty(number + '') &&
+            validator.isEmpty(city + '') &&
+            validator.isEmpty(street + '');
+
+        if (shouldFetch) {
+            const timeoutId = setTimeout(() => {
+                AddressAPI.getLvbagAddress(postalCode, number).then(payload => {
+                    setAddress(prev => ({
+                        ...prev,
+                        street: payload.street,
+                        city: payload.city,
+                    }));
+                });
+            }, 100);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [address.postalCode, address.number, address.city, address.street]);
+
+    useEffect(() => {
+        const { postalCode, number } = address;
+
+        const shouldFetch =
+            !validator.isEmpty(postalCode + '') &&
+            validator.isPostalCode(postalCode, 'NL') &&
+            !validator.isEmpty(number + '');
+
+        if (shouldFetch) {
+            const timeoutId = setTimeout(() => {
+                SharedAreaAPI.getSharedAreaDetails(postalCode, number).then(payload => {
+                    setAddress(prev => ({
+                        ...prev,
+                        areaName: payload.areaName,
+                        districtName: payload.districtName,
+                    }));
+                });
+            }, 100);
+
+            return () => clearTimeout(timeoutId);
+        }
+    }, [address.postalCode, address.number]);
+
+    const onLineEnter = () => {
+        setShowActionButtons(true);
+        setHighlightLine('highlight-line');
     };
 
-    onLineLeave = () => {
-        this.setState({
-            showActionButtons: false,
-            highlightLine: '',
-        });
+    const onLineLeave = () => {
+        setShowActionButtons(false);
+        setHighlightLine('');
     };
 
-    openEdit = () => {
-        if (this.props.numberOfAddressesNotOld > 0 || this.state.address.primary === true) {
-            this.setState({ showEdit: true });
-            this.props.setAddressEnergySupplierNewOrEditOpen(true);
+    const openEdit = () => {
+        if (props.numberOfAddressesNotOld > 0 || address.primary === true) {
+            setShowEdit(true);
+            props.setAddressEnergySupplierNewOrEditOpen(true);
         }
     };
 
-    closeEdit = () => {
-        this.setState({ showEdit: false });
-        this.props.setAddressEnergySupplierNewOrEditOpen(false);
+    const closeEdit = () => {
+        setShowEdit(false);
+        props.setAddressEnergySupplierNewOrEditOpen(false);
     };
 
-    openAddressEnergySupplier = () => {
-        this.setState({ showAddressEnergySupplier: true });
+    const openAddressEnergySupplier = () => {
+        setShowAddressEnergySupplier(true);
     };
 
-    closeAddressEnergySupplier = () => {
-        this.setState({ showAddressEnergySupplier: false });
-        this.props.setAddressEnergySupplierNewOrEditOpen(false);
+    const closeAddressEnergySupplier = () => {
+        setShowAddressEnergySupplier(false);
+        props.setAddressEnergySupplierNewOrEditOpen(false);
     };
 
-    cancelEdit = () => {
-        this.setState({
-            ...this.state,
-            address: { ...this.props.address },
-        });
-
-        this.closeEdit();
+    const cancelEdit = () => {
+        setAddress({ ...props.address });
+        closeEdit();
     };
 
-    toggleDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    const toggleDelete = () => {
+        setShowDelete(!showDelete);
     };
 
-    handleInputChange = event => {
-        const target = event.target;
-        const value = target.type === 'checkbox' ? target.checked : target.value;
-        const name = target.name;
+    const handleInputChange = event => {
+        const { name, type, checked, value } = event.target;
+        const newValue = type === 'checkbox' ? checked : value;
 
-        this.setState({
-            ...this.state,
-            address: {
-                ...this.state.address,
-                [name]: value,
-            },
-        });
+        const newAddress = { ...address, [name]: newValue };
+        setAddress(newAddress);
 
-        //if this is the primary address or used in Sce participation
-        // todo WM: cleanup
-        //         console.log('usedInActiveParticipationInSceOrPcrProject');
-        //         console.log(this.state.address.usedInActiveParticipationInSceOrPcrProject);
+        // Check special warnings
         if (
             name === 'typeId' &&
-            value === 'old' &&
-            this.state.address.usedInActiveParticipationInSceOrPcrProject && this.state.address.primary
+            newValue === 'old' &&
+            address.usedInActiveParticipationInSceOrPcrProject &&
+            address.primary
         ) {
-            this.setState({
-                showModal: true,
-                modalTitle: 'Waarschuwing',
-                modalButtonCancelText: 'Ok',
-                modalShowConfirmAction: false,
-                modalConfirmAction: {},
-                modalButtonConfirmText: '',
-                modalText:
+            setModalContent({
+                title: 'Waarschuwing',
+                buttonCancelText: 'Ok',
+                showConfirmAction: false,
+                confirmAction: {},
+                buttonConfirmText: '',
+                text:
                     'Er is een deelname in een SCE of Postcoderoos project op dit adres. Deze deelname moet worden beëindigd en er moet een nieuwe deelname op het nieuwe adres worden aangemaakt. Er zal een taak aangemaakt worden.',
             });
+            setShowModal(true);
         }
 
-        //if this is not the primary address and its used in a non SCE project
         if (
             name === 'typeId' &&
-            value === 'old' &&
-            this.state.address.usedInActiveParticipationNotInSceOrPcrProject &&
-            !this.state.address.primary
+            newValue === 'old' &&
+            address.usedInActiveParticipationNotInSceOrPcrProject &&
+            !address.primary
         ) {
-            this.setState({
-                showModal: true,
-                modalTitle: 'Waarschuwing',
-                modalButtonCancelText: 'Ok',
-                modalShowConfirmAction: false,
-                modalConfirmAction: {},
-                modalButtonConfirmText: '',
-                modalText:
+            setModalContent({
+                title: 'Waarschuwing',
+                buttonCancelText: 'Ok',
+                showConfirmAction: false,
+                confirmAction: {},
+                buttonConfirmText: '',
+                text:
                     'Er is een deelname in een project op dit adres. Deze deelname zal worden overgezet naar het primaire adres.',
             });
+            setShowModal(true);
         }
-
-        setTimeout(() => {
-            const { address } = this.state;
-            if (
-                !validator.isEmpty(address.postalCode + '') &&
-                validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number + '') &&
-                validator.isEmpty(address.city + '') &&
-                validator.isEmpty(address.street + '')
-            ) {
-                AddressAPI.getLvbagAddress(address.postalCode, address.number).then(payload => {
-                    this.setState({
-                        ...this.state,
-                        address: {
-                            ...this.state.address,
-                            street: payload.street,
-                            city: payload.city,
-                        },
-                    });
-                });
-            }
-        }, 100);
-
-        setTimeout(() => {
-            const { address } = this.state;
-            if (
-                !validator.isEmpty(address.postalCode + '') &&
-                validator.isPostalCode(address.postalCode, 'NL') &&
-                !validator.isEmpty(address.number + '')
-            ) {
-                SharedAreaAPI.getSharedAreaDetails(address.postalCode, address.number).then(payload => {
-                    this.setState({
-                        ...this.state,
-                        address: {
-                            ...this.state.address,
-                            areaName: payload.areaName,
-                            districtName: payload.districtName,
-                        },
-                    });
-                });
-            }
-        }, 100);
     };
 
-    handleInputChangeDate = (value, name) => {
-        this.setState({
-            ...this.state,
-            address: {
-                ...this.state.address,
-                [name]: value,
-            },
-        });
+    const handleInputChangeDate = (value, name) => {
+        setAddress(prev => ({
+            ...prev,
+            [name]: value,
+        }));
     };
 
-    closeModal = () => {
-        this.setState({ showModal: false });
+    const closeModal = () => {
+        setShowModal(false);
     };
 
-    handleSubmit = event => {
+    const handleSubmit = async event => {
         event.preventDefault();
 
-        const { address } = this.state;
-
-        // Postalcode always to uppercase
-        if (address.postalCode) {
-            address.postalCode = address.postalCode.toUpperCase();
-        }
-
-        let errors = {};
+        const updatedAddress = { ...address };
+        let localErrors = {};
         let hasErrors = false;
 
-        if (validator.isEmpty(address.postalCode + '')) {
-            errors.postalCode = true;
+        if (updatedAddress.postalCode) {
+            updatedAddress.postalCode = updatedAddress.postalCode.toUpperCase();
+        }
+
+        if (validator.isEmpty(updatedAddress.postalCode + '')) {
+            localErrors.postalCode = true;
             hasErrors = true;
         }
 
-        let countryId = address.countryId;
-        if (validator.isEmpty(address.countryId + '')) {
-            countryId = 'NL';
-        }
+        let countryId = updatedAddress.countryId || 'NL';
 
-        let postalCodeValid = true;
-        if (!validator.isEmpty(address.postalCode + '')) {
-            if (countryId === 'NL') {
-                postalCodeValid = validator.isPostalCode(address.postalCode, 'NL');
-            } else {
-                postalCodeValid = validator.isPostalCode(address.postalCode, 'any');
-            }
-            if (!postalCodeValid) {
-                errors.postalCode = true;
-                errors.countryId = true;
+        if (!validator.isEmpty(updatedAddress.postalCode + '')) {
+            const isValid =
+                countryId === 'NL'
+                    ? validator.isPostalCode(updatedAddress.postalCode, 'NL')
+                    : validator.isPostalCode(updatedAddress.postalCode, 'any');
+
+            if (!isValid) {
+                localErrors.postalCode = true;
+                localErrors.countryId = true;
                 hasErrors = true;
             }
         }
 
-        if (validator.isEmpty(address.number + '')) {
-            errors.number = true;
+        if (validator.isEmpty(updatedAddress.number + '')) {
+            localErrors.number = true;
             hasErrors = true;
         }
 
-        if (validator.isEmpty(address.typeId + '')) {
-            errors.typeId = true;
+        if (validator.isEmpty(updatedAddress.typeId + '')) {
+            localErrors.typeId = true;
             hasErrors = true;
         }
 
-        if (address.typeId === 'old' && (address.endDate === null || validator.isEmpty(address.endDate))) {
-            errors.endDate = true;
+        if (
+            updatedAddress.typeId === 'old' &&
+            (updatedAddress.endDate === null || validator.isEmpty(updatedAddress.endDate))
+        ) {
+            localErrors.endDate = true;
             hasErrors = true;
         }
 
-        this.setState({ ...this.state, errors: errors });
-        // If no errors send form
-        !hasErrors &&
-            AddressAPI.updateAddress(address)
-                .then(payload => {
-                    if (address.primary) {
-                        this.props.unsetPrimaryAddresses();
-                    }
-                    this.props.updateAddress(payload.data.data);
-                    this.closeEdit();
-                })
-                .catch(error => {
-                    this.props.setError(error.response.status, error.response.data.message);
-                });
+        setErrors(localErrors);
+
+        if (!hasErrors) {
+            try {
+                const response = await AddressAPI.updateAddress(updatedAddress);
+                if (updatedAddress.primary) {
+                    dispatch(unsetPrimaryAddresses());
+                }
+                dispatch(updateAddress(response.data.data));
+                closeEdit();
+            } catch (error) {
+                dispatch(setError(error.response.status, error.response.data.message));
+            }
+        }
     };
 
-    render() {
-        return (
-            <div>
-                <ContactDetailsFormAddressView
-                    highlightLine={this.state.highlightLine}
-                    showActionButtons={this.state.showActionButtons}
-                    onLineEnter={this.onLineEnter}
-                    onLineLeave={this.onLineLeave}
-                    openEdit={this.openEdit}
-                    showEdit={this.state.showEdit}
-                    openAddressEnergySupplier={this.openAddressEnergySupplier}
-                    toggleDelete={this.toggleDelete}
-                    numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
-                    address={this.state.address}
-                    addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
-                />
-                {this.props.permissions.updateContactAddress && this.state.showEdit && (
-                    <>
-                        <ContactDetailsFormAddressEdit
-                            numberOfAddresses={this.props.numberOfAddresses}
-                            numberOfAddressesNotOld={this.props.numberOfAddressesNotOld}
-                            address={this.state.address}
-                            handleInputChange={this.handleInputChange}
-                            handleInputChangeDate={this.handleInputChangeDate}
-                            handleSubmit={this.handleSubmit}
-                            typeIdError={this.state.errors.typeId}
-                            endDateError={this.state.errors.endDate}
-                            postalCodeError={this.state.errors.postalCode}
-                            numberError={this.state.errors.number}
-                            countryIdError={this.state.errors.countryId}
-                            eanElectricityError={this.state.errors.eanElectricity}
-                            eanGasError={this.state.errors.eanGas}
-                            cancelEdit={this.cancelEdit}
-                        />
-                        <FreeFields table={'addresses'} recordId={this.props.address.id} />
-                    </>
-                )}
-                {this.state.showAddressEnergySupplier && (
-                    <AddressDetailsFormAddressEnergySupplier
-                        address={this.state.address}
-                        setAddressEnergySupplierNewOrEditOpen={this.props.setAddressEnergySupplierNewOrEditOpen}
-                        closeAddressEnergySupplier={this.closeAddressEnergySupplier}
-                        addressEnergySupplierNewOrEditOpen={this.props.addressEnergySupplierNewOrEditOpen}
+    return (
+        <div>
+            <ContactDetailsFormAddressView
+                highlightLine={highlightLine}
+                showActionButtons={showActionButtons}
+                onLineEnter={onLineEnter}
+                onLineLeave={onLineLeave}
+                openEdit={openEdit}
+                showEdit={showEdit}
+                openAddressEnergySupplier={openAddressEnergySupplier}
+                toggleDelete={toggleDelete}
+                numberOfAddressesNotOld={props.numberOfAddressesNotOld}
+                address={address}
+                addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
+            />
+            {permissions.updateContactAddress && showEdit && (
+                <>
+                    <ContactDetailsFormAddressEdit
+                        numberOfAddresses={props.numberOfAddresses}
+                        numberOfAddressesNotOld={props.numberOfAddressesNotOld}
+                        address={address}
+                        handleInputChange={handleInputChange}
+                        handleInputChangeDate={handleInputChangeDate}
+                        handleSubmit={handleSubmit}
+                        typeIdError={errors.typeId}
+                        endDateError={errors.endDate}
+                        postalCodeError={errors.postalCode}
+                        numberError={errors.number}
+                        countryIdError={errors.countryId}
+                        eanElectricityError={errors.eanElectricity}
+                        eanGasError={errors.eanGas}
+                        cancelEdit={cancelEdit}
                     />
-                )}
+                    <FreeFields table={'addresses'} recordId={props.address.id} />
 
-                {this.props.permissions.deleteContactAddress && this.state.showDelete && (
-                    <ContactDetailsFormAddressDelete
-                        closeDeleteItemModal={this.toggleDelete}
-                        numberOfAddresses={this.props.numberOfAddresses}
-                        {...this.props.address}
-                    />
-                )}
-                {this.state.showModal && (
-                    <Modal
-                        title={this.state.modalTitle}
-                        closeModal={this.closeModal}
-                        showConfirmAction={this.state.modalShowConfirmAction}
-                        confirmAction={this.state.modalConfirmAction}
-                        buttonCancelText={this.state.modalButtonCancelText}
-                        buttonConfirmText={this.state.modalButtonConfirmText}
-                    >
-                        {this.state.modalText}
-                    </Modal>
-                )}
-            </div>
-        );
-    }
+                    {permissions.manageDongles && useDongleRegistration && (
+                        <Dongles
+                            address={address}
+                            setAddressDongleNewOrEditOpen={props.setAddressDongleNewOrEditOpen}
+                            closeAddressDongle={props.closeAddressDongle}
+                            addressDongleNewOrEditOpen={props.addressDongleNewOrEditOpen}
+                        />
+                    )}
+                </>
+            )}
+            {showAddressEnergySupplier && (
+                <AddressDetailsFormAddressEnergySupplier
+                    address={address}
+                    setAddressEnergySupplierNewOrEditOpen={props.setAddressEnergySupplierNewOrEditOpen}
+                    closeAddressEnergySupplier={closeAddressEnergySupplier}
+                    addressEnergySupplierNewOrEditOpen={props.addressEnergySupplierNewOrEditOpen}
+                />
+            )}
+            {permissions.deleteContactAddress && showDelete && (
+                <ContactDetailsFormAddressDelete
+                    closeDeleteItemModal={toggleDelete}
+                    numberOfAddresses={props.numberOfAddresses}
+                    {...props.address}
+                />
+            )}
+            {showModal && (
+                <Modal
+                    title={modalContent.title}
+                    closeModal={closeModal}
+                    showConfirmAction={modalContent.showConfirmAction}
+                    confirmAction={modalContent.confirmAction}
+                    buttonCancelText={modalContent.buttonCancelText}
+                    buttonConfirmText={modalContent.buttonConfirmText}
+                >
+                    {modalContent.text}
+                </Modal>
+            )}
+        </div>
+    );
 }
 
-const mapStateToProps = state => {
-    return {
-        permissions: state.meDetails.permissions,
-    };
-};
-const mapDispatchToProps = dispatch => ({
-    updateAddress: id => {
-        dispatch(updateAddress(id));
-    },
-    unsetPrimaryAddresses: () => {
-        dispatch(unsetPrimaryAddresses());
-    },
-    setError: (http_code, message) => {
-        dispatch(setError(http_code, message));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsFormAddressItem);
+export default ContactDetailsFormAddressItem;

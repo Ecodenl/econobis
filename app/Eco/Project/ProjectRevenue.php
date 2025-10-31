@@ -23,14 +23,9 @@ class ProjectRevenue extends Model
         'id'
     ];
 
-    protected $dates = [
-//        'date_begin',
-//        'date_end',
-//        'date_reference',
-//        'date_confirmed',
-//        'date_payed',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     //relations

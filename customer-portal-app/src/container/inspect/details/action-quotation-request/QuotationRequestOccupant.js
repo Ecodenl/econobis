@@ -8,15 +8,12 @@ import ButtonGroup from 'react-bootstrap/ButtonGroup';
 import Button from 'react-bootstrap/Button';
 import { ClipLoader } from 'react-spinners';
 import InputTextDate from '../../../../components/form/InputTextDate';
+import moment from 'moment';
+import { isEmpty } from 'lodash';
 
 function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handleSubmit }) {
-    const [pmApproved, setPmApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'pm-approved'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'pm-not-approved'
-            ? false
-            : null
-    );
+    const [approved, setApproved] = useState(!isEmpty(initialQuotationRequest.dateApprovedClient));
+    const [notApproved, setNotApproved] = useState(initialQuotationRequest.notApprovedClient);
 
     const validationSchema = Yup.object().shape({});
 
@@ -33,6 +30,8 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -63,6 +62,13 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -140,17 +146,66 @@ function QuotationRequestOccupant({ redirectBack, initialQuotationRequest, handl
                                     <FormLabel htmlFor="date_approved_client" className={'field-label'}>
                                         Datum akkoord bewoner
                                     </FormLabel>
-                                    <Field name="dateApprovedClient">
-                                        {({ field }) => (
-                                            <InputTextDate
-                                                field={field}
-                                                type="date"
-                                                id="date_approved_client"
-                                                placeholder={'Datum akkoord bewoner'}
-                                                readOnly={true}
-                                            />
-                                        )}
-                                    </Field>
+                                    <div style={{ display: 'flex' }}>
+                                        <div>
+                                            <Field name="dateApprovedClient">
+                                                {({ field }) => (
+                                                    <InputTextDate
+                                                        field={field}
+                                                        type="date"
+                                                        errors={errors}
+                                                        touched={touched}
+                                                        onChangeAction={setFieldValue}
+                                                        id="date_approved_client"
+                                                        readOnly={
+                                                            ![
+                                                                'under-review-occupant',
+                                                                'approved',
+                                                                'not-approved',
+                                                            ].includes(initialQuotationRequest.status.codeRef) ||
+                                                            notApproved
+                                                        }
+                                                        placeholder={'Datum akkoord bewoner'}
+                                                    />
+                                                )}
+                                            </Field>
+                                        </div>
+                                        {['under-review-occupant', 'approved', 'not-approved'].includes(
+                                            initialQuotationRequest.status.codeRef
+                                        ) ? (
+                                            <div>
+                                                <Button
+                                                    variant={true === approved ? 'success' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(true);
+                                                        setFieldValue(
+                                                            'dateApprovedClient',
+                                                            moment().format('YYYY-MM-DD')
+                                                        );
+                                                        setNotApproved(false);
+                                                        setFieldValue('notApprovedClient', false);
+                                                    }}
+                                                    disabled={approved}
+                                                >
+                                                    {true === approved ? 'Goedgekeurd' : 'Goedkeuren'}
+                                                </Button>
+                                                <Button
+                                                    variant={true === notApproved ? 'danger' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(false);
+                                                        setFieldValue('dateApprovedClient', '');
+                                                        setNotApproved(true);
+                                                        setFieldValue('notApprovedClient', true);
+                                                    }}
+                                                    disabled={notApproved}
+                                                >
+                                                    {true === notApproved ? 'Afgekeurd' : 'Niet goedkeuren'}
+                                                </Button>
+                                            </div>
+                                        ) : null}
+                                    </div>
                                     <FormLabel htmlFor="date_approved_project_manager" className={'field-label'}>
                                         Datum akkoord projectleider
                                     </FormLabel>

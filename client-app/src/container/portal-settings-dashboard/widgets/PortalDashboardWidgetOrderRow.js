@@ -1,4 +1,6 @@
 import React, { useRef, useState } from 'react';
+import { getApiUrl } from '../../../api/utils/ApiUrl';
+
 import { useDrag, useDrop } from 'react-dnd';
 import { arrows_vertical } from 'react-icons-kit/ikons/arrows_vertical';
 
@@ -7,7 +9,7 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 
 import { Image } from 'react-bootstrap';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import PortalSettingsDashboardWidgetDeleteItem from './details/PortalSettingsDashboardWidgetDeleteItem';
 
 const DND_ITEM_TYPE = 'row';
@@ -20,13 +22,15 @@ const PortalDashboardWidgetOrderRow = ({
     deletePortalSettingsDashboardWidget,
     imageHash,
 }) => {
+    const navigate = useNavigate();
+
     const dropRef = useRef(null);
     const dragRef = useRef(null);
     const [showDelete, setShowDelete] = useState(false);
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighLightRow] = useState('');
 
-    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,
@@ -88,7 +92,7 @@ const PortalDashboardWidgetOrderRow = ({
                 ref={dropRef}
                 style={{ opacity }}
                 className={highlightRow}
-                onDoubleClick={() => hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)}
+                onDoubleClick={() => navigate(`/portal-instellingen-dashboard-widget/${row.id}`)}
                 onMouseEnter={() => {
                     setShowActionButtons(true);
                     setHighLightRow('highlight-row');
@@ -113,7 +117,7 @@ const PortalDashboardWidgetOrderRow = ({
                         case 'title':
                             return <td {...cell.getCellProps()}>{cell.render('Cell')}</td>;
                         case 'widgetImageFileName': {
-                            const imageUrl = cell.value && `${URL_API}/portal/images/${cell.value}?${imageHash}`;
+                            const imageUrl = cell.value && `${getApiUrl()}/portal/images/${cell.value}?${imageHash}`;
                             return (
                                 <td key={cell.column.id}>
                                     <Image
@@ -142,7 +146,7 @@ const PortalDashboardWidgetOrderRow = ({
                                             <a
                                                 role="button"
                                                 onClick={() =>
-                                                    hashHistory.push(`/portal-instellingen-dashboard-widget/${row.id}`)
+                                                    navigate(`/portal-instellingen-dashboard-widget/${row.id}`)
                                                 }
                                             >
                                                 <Icon className="mybtn-success" size={14} icon={pencil} />

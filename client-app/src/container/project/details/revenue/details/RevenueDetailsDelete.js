@@ -1,15 +1,17 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import Modal from '../../../../../components/modal/Modal';
 import ProjectRevenueAPI from '../../../../../api/project/ProjectRevenueAPI';
 
 const RevenueDetailsDelete = props => {
+    const navigate = useNavigate();
+
     const confirmAction = () => {
         ProjectRevenueAPI.deleteProjectRevenue(props.id).then(() => {
             props.participationId
-                ? hashHistory.push(`/project/deelnemer/${props.participationId}`)
-                : hashHistory.push(`/project/details/${props.projectId}`);
+                ? navigate(`/project/deelnemer/${props.participationId}`)
+                : navigate(`/project/details/${props.projectId}`);
         });
     };
 

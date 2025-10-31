@@ -23,6 +23,7 @@ class FullOccupationContact extends JsonResource
             'startDate' => $this->start_date,
             'endDate' => $this->end_date,
             'primary' => $this->primary,
+            'allowManageInPortal' => $this->allow_manage_in_portal,
         ];
     }
 }

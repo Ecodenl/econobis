@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import moment from 'moment';
 moment.locale('nl');
 
-import InputText from '../../../../components/form/InputText';
 import ButtonText from '../../../../components/button/ButtonText';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
@@ -11,28 +10,18 @@ import OpportunityStatusDetailsAPI from '../../../../api/opportunity-status/Oppo
 import { bindActionCreators } from 'redux';
 import { fetchSystemData } from '../../../../actions/general/SystemDataActions';
 import InputToggle from '../../../../components/form/InputToggle';
-import InputReactSelect from '../../../../components/form/InputReactSelect';
 import ViewText from '../../../../components/form/ViewText';
-import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
-import validator from 'validator';
 
 class OpportunityStatusDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        // todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
         this.state = {
-            emailTemplates: [],
             opportunityStatus: {
                 ...props.opportunityStatus,
             },
             errors: {
                 usesWf: false,
-                emailTemplateIdWf: false,
-                numberOfDaysToSendEmail: false,
-            },
-            peekLoading: {
-                emailTemplates: true,
             },
         };
         this.handleReactSelectChange = this.handleReactSelectChange.bind(this);
@@ -62,18 +51,6 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
         });
     }
 
-    componentDidMount() {
-        EmailTemplateAPI.fetchEmailTemplatesPeek().then(emailTemplates =>
-            this.setState({
-                emailTemplates,
-                peekLoading: {
-                    ...this.state.peekLoading,
-                    emailTemplates: false,
-                },
-            })
-        );
-    }
-
     handleSubmit = event => {
         event.preventDefault();
 
@@ -82,18 +59,6 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
         // Validation
         let errors = {};
         let hasErrors = false;
-
-        if (opportunityStatus.usesWf == true) {
-            // todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
-            // if (!opportunityStatus.emailTemplateIdWf) {
-            //     errors.emailTemplateIdWf = true;
-            //     hasErrors = true;
-            // }
-            // if (validator.isEmpty(opportunityStatus.numberOfDaysToSendEmail.toString())) {
-            //     errors.numberOfDaysToSendEmail = true;
-            //     hasErrors = true;
-            // }
-        }
 
         this.setState({ ...this.state, errors: errors });
 
@@ -111,8 +76,7 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
     };
 
     render() {
-        // todo WM: opschonen velden emailTemplateIdWf en numberOfDaysToSendEmail
-        const { name, usesWf, emailTemplateIdWf, numberOfDaysToSendEmail } = this.state.opportunityStatus;
+        const { name, usesWf } = this.state.opportunityStatus;
 
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
@@ -146,32 +110,6 @@ class OpportunityStatusDetailsFormGeneralEdit extends Component {
                                         className={'col-sm-10 form-group'}
                                     />
                                 </div>
-                                {/*<div className="row">*/}
-                                {/*    <InputReactSelect*/}
-                                {/*        label={'Template e-mail bij deze status'}*/}
-                                {/*        divSize={'col-sm-10'}*/}
-                                {/*        name={'emailTemplateIdWf'}*/}
-                                {/*        options={this.state.emailTemplates}*/}
-                                {/*        value={emailTemplateIdWf}*/}
-                                {/*        onChangeAction={this.handleReactSelectChange}*/}
-                                {/*        isLoading={this.state.peekLoading.emailTemplates}*/}
-                                {/*        required={'required'}*/}
-                                {/*        error={this.state.errors.emailTemplateIdWf}*/}
-                                {/*    />*/}
-                                {/*</div>*/}
-                                {/*<div className="row">*/}
-                                {/*    <InputText*/}
-                                {/*        label={'Aantal dagen e-mail na deze status'}*/}
-                                {/*        divSize={'col-sm-10'}*/}
-                                {/*        type={'number'}*/}
-                                {/*        id={'numberOfDaysToSendEmail'}*/}
-                                {/*        name={'numberOfDaysToSendEmail'}*/}
-                                {/*        value={numberOfDaysToSendEmail}*/}
-                                {/*        onChangeAction={this.handleInputChange}*/}
-                                {/*        required={'required'}*/}
-                                {/*        error={this.state.errors.numberOfDaysToSendEmail}*/}
-                                {/*    />*/}
-                                {/*</div>*/}
                             </React.Fragment>
                         )}
                     </PanelBody>

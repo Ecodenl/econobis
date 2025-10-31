@@ -85,10 +85,17 @@ export default {
                             },
                         },
                         occupationsActive: {
-                            fld: ['id', 'occupationId', 'primaryContactId', 'contactId', 'primary'],
+                            fld: [
+                                'id',
+                                'occupationId',
+                                'primaryContactId',
+                                'contactId',
+                                'primary',
+                                'allowManageInPortal',
+                            ],
                             rlt: {
                                 occupation: {
-                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation', 'occupationForPortal'],
+                                    fld: ['id', 'primaryOccupation', 'secondaryOccupation'],
                                 },
                                 primaryContact: {
                                     fld: ['id', 'fullNameFnf'],
@@ -149,6 +156,9 @@ export default {
                                         'dateEnd',
                                         'linkProjectInfo',
                                         'linkUnderstandInfo',
+                                        'textRegisterParticipationSingular',
+                                        'textRegisterParticipationPlural',
+                                        'linkUnderstandInfo',
                                         'showQuestionAboutMembership',
                                         'usesMollie',
                                     ],
@@ -171,10 +181,16 @@ export default {
         return axiosInstance.post(requestUrl, contact);
     },
 
-    previewDocument: registerValues => {
+    previewDocument: function(registerValues) {
         const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/preview-document`;
 
-        return axiosInstance.post(requestUrl, registerValues);
+        return axiosInstance.post(requestUrl, { registerValues });
+    },
+
+    previewDocumentIncrease: function(registerValues, registerType, participantId) {
+        const requestUrl = `/contact/${registerValues.contactId}/${registerValues.projectId}/${participantId}/preview-increase-document`;
+
+        return axiosInstance.post(requestUrl, { registerValues, registerType });
     },
 
     fetchContactFreeFields: function(contactId) {
@@ -188,8 +204,31 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchContactPortalFreeFields: function(contactId, urlPageRef) {
+        const requestUrl = `/contact/${contactId}/contact-portal-free-fields`;
+
+        return axiosInstance.get(requestUrl, {
+            params: {
+                urlPageRef: urlPageRef,
+            },
+        });
+    },
+
     fetchContactProjects: function(contactId) {
         const requestUrl = `/contact/${contactId}/contact-projects`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    fetchContactContactGroups: function(contactId) {
+        const requestUrl = `/contact/${contactId}/contact-groups`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    changeContactToContactGroup: function(contactId, contactGroupId, isChecked) {
+        const action = isChecked ? 'remove' : 'add';
+        const requestUrl = `/contact/${contactId}/contact-group/${contactGroupId}/${action}`;
 
         return axiosInstance.get(requestUrl);
     },

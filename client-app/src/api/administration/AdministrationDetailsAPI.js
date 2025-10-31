@@ -1,12 +1,12 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADMINISTRATION = `${URL_API}/api/administration`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchAdministrationDetails: function(id) {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -16,9 +16,10 @@ export default {
             });
     },
     fetchAdministrationLogoDetails: function(id) {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/logo-details`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -28,9 +29,10 @@ export default {
             });
     },
     fetchTotalsInfoAdministration: function(id) {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/totals-info-administration`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data;
@@ -41,9 +43,10 @@ export default {
     },
 
     newAdministration: administration => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, administration)
             .then(function(response) {
                 return response.data;
@@ -54,9 +57,10 @@ export default {
     },
 
     updateAdministration: ({ administration, administrationId }) => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${administrationId}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, administration)
             .then(function(response) {
                 return response;
@@ -67,15 +71,17 @@ export default {
     },
 
     deleteAdministration: id => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     attachUser: administrationUser => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${administrationUser.administrationId}/${administrationUser.userId}/attach`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response;
@@ -86,47 +92,54 @@ export default {
     },
 
     detachUser: ({ administrationId, userId }) => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${administrationId}/${userId}/detach`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     downloadSepa: sepaId => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/sepa/${sepaId}`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     deleteSepa: sepaId => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/sepa/${sepaId}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     syncSentInvoicesToTwinfield: id => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/sync-invoices-to-twinfield`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     syncSentContactsToTwinfield: id => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/sync-contacts-to-twinfield`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     syncSentInvoicesFromTwinfield: (id, fromDateSent) => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/sync-invoices-from-twinfield`;
 
-        return axiosInstance.post(requestUrl, {
+        return getAxiosInstance().post(requestUrl, {
             fromDateSent: fromDateSent,
         });
     },
 
     newLedger: ledger => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/ledger`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, ledger)
             .then(function(response) {
                 return response.data.data;
@@ -137,9 +150,10 @@ export default {
     },
 
     updateLedger: ledger => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/ledger/${ledger.id}/update`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, ledger)
             .then(function(response) {
                 return response.data.data;
@@ -150,9 +164,10 @@ export default {
     },
 
     fetchLedgers: id => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/ledgers`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(response => response.data)
             .catch(error => {

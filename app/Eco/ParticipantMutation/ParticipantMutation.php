@@ -21,15 +21,9 @@ class ParticipantMutation extends Model
         'paid_on',
     ];
 
-    protected $dates = [
-//        'date_interest',
-//        'date_option',
-//        'date_granted',
-//        'date_contract_retour',
-//        'date_payment',
-//        'date_entry',
-        'created_at',
-        'updated_at',
+    protected $casts = [
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
     public function participation()
@@ -117,6 +111,21 @@ class ParticipantMutation extends Model
         if($this->participation->date_terminated != null){
             return false;
         }
+
+        if ($this->participation->project->projectType->code_ref === 'loan') {
+            $mutationTypeFirstDesposit = ParticipantMutationType::where('code_ref', 'first_deposit')->where('project_type_id',  $this->participation->project->projectType->id)->first();
+
+            if($mutationTypeFirstDesposit && $this->type_id === $mutationTypeFirstDesposit->id) {
+                $participationHasMutationsWithStatusDepositOrWithDrawal = $this->participation->mutations()
+                    ->whereHas('type', function ($query) {
+                        $query->whereIn('code_ref', ['deposit', 'withDrawal']);
+                    })->exists();
+                if($participationHasMutationsWithStatusDepositOrWithDrawal){
+                    return false;
+                }
+            }
+        }
+
         $projectRevenueDistributions = $this->participation->projectRevenueDistributions()->whereNotIn('status', ['concept'])
             ->whereHas('revenue', function ($query) {
                 $query->where('date_begin', '<=', Carbon::parse($this->date_entry)->format('Y-m-d'));

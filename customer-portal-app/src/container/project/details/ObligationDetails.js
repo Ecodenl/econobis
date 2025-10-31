@@ -5,34 +5,46 @@ import FormLabel from 'react-bootstrap/FormLabel';
 import moment from 'moment';
 import TextBlock from '../../../components/general/TextBlock';
 import MoneyPresenter from '../../../helpers/MoneyPresenter';
+import { capitalizeFirstLetter, lowerCaseFirstLetter } from '../../../helpers/ModifyText';
 
 function ObligationDetails({ project }) {
+    const textRegisterCurrentBookWorth = project.textRegisterCurrentBookWorth ?? 'Huidige hoofdsom';
+    const textRegisterParticipationSingular = project.textRegisterParticipationSingular ?? 'obligatie';
+    const textRegisterParticipationPlural = project.textRegisterParticipationPlural ?? 'obligaties';
+
     return (
         <>
             <Row>
                 <Col xs={12} md={6}>
-                    <FormLabel>Project</FormLabel>
+                    <FormLabel>Inschrijving voor</FormLabel>
                     <TextBlock>{project.name}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Omschrijving project</FormLabel>
+                    <FormLabel>Omschrijving</FormLabel>
                     <TextBlock>{project.description ? project.description : ' '}</TextBlock>
                 </Col>
 
                 <Col xs={12} md={6}>
-                    <FormLabel>Huidige hoofdsom per obligatie</FormLabel>
+                    <FormLabel>
+                        {capitalizeFirstLetter(textRegisterCurrentBookWorth)} per{' '}
+                        {lowerCaseFirstLetter(textRegisterParticipationSingular)}
+                    </FormLabel>
                     <TextBlock>{MoneyPresenter(project.currentBookWorth)}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Aantal obligaties nodig</FormLabel>
+                    <FormLabel>Aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)} nodig</FormLabel>
                     <TextBlock>{project.totalParticipations}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Minimaal aantal obligaties per contact</FormLabel>
+                    <FormLabel>
+                        Minimaal aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)} per contact
+                    </FormLabel>
                     <TextBlock>{project.minParticipations}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>
-                    <FormLabel>Maximaal aantal obligaties per contact</FormLabel>
+                    <FormLabel>
+                        Maximaal aantal {lowerCaseFirstLetter(textRegisterParticipationPlural)} per contact
+                    </FormLabel>
                     <TextBlock>{project.maxParticipations}</TextBlock>
                 </Col>
                 <Col xs={12} md={6}>

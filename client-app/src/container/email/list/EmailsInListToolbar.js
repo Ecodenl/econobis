@@ -1,12 +1,14 @@
 import React from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import ButtonIcon from '../../../components/button/ButtonIcon';
 
 const EmailsInListToolbar = props => {
+    const navigate = useNavigate();
+
     const newMailbox = () => {
-        hashHistory.push(`/email/nieuw`);
+        navigate(`/email/nieuw`);
     };
 
     const { meta = {} } = props.emails;
@@ -32,7 +34,9 @@ const EmailsInListToolbar = props => {
             </div>
             <div className="col-md-4">
                 <h3 className="text-center table-title">
-                    {props.me ? 'Eigen e-mail' : 'E-mail'} {props.folder}{' '}
+                    {/*todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview)*/}
+                    {/*{props.me ? 'Eigen e-mail' : 'E-mail'} {props.folder}{' '}*/}
+                    'E-mail' {props.folder}{' '}
                 </h3>
             </div>
             <div className="col-md-4">

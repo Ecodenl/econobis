@@ -21,6 +21,7 @@ const ContactGroupExtraFilterView = props => {
             field === 'intakeDateStart' ||
             field === 'intakeDateFinish' ||
             field === 'intakeStatus' ||
+            field === 'intakeSource' ||
             field === 'quotationRequestStatusOrganisationOrCoach' ||
             field === 'quotationRequestStatusOccupant' ||
             field === 'occupationPrimary' ||
@@ -29,7 +30,8 @@ const ContactGroupExtraFilterView = props => {
             field === 'country' ||
             field === 'inspectionPersonType' ||
             field === 'housingFileFieldValue' ||
-            field === 'sharedArea') &&
+            field === 'sharedArea' ||
+            field === 'addressDongleTypeReadOut') &&
         (comperator === 'eq' || comperator === 'neq' || comperator === 'rel' || comperator === 'nrel')
     ) {
         dataNameReadable = '--Willekeurige waarde--';

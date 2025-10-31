@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 import { connect } from 'react-redux';
 
@@ -8,6 +8,12 @@ import { pencil } from 'react-icons-kit/fa/pencil';
 import { trash } from 'react-icons-kit/fa/trash';
 import { FaExclamationCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
+
+// Functionele wrapper voor de class component
+const ContactsInGroupListItemWrapper = props => {
+    const navigate = useNavigate();
+    return <ContactsInGroupListItem {...props} navigate={navigate} />;
+};
 
 class ContactsInGroupListItem extends Component {
     constructor(props) {
@@ -34,7 +40,7 @@ class ContactsInGroupListItem extends Component {
     }
 
     openItem(id) {
-        hashHistory.push(`/contact/${id}`);
+        this.props.navigate(`/contact/${id}`);
     }
 
     render() {
@@ -168,4 +174,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(ContactsInGroupListItem);
+export default connect(mapStateToProps)(ContactsInGroupListItemWrapper);

@@ -24,7 +24,7 @@ import {
 import InvoicesAPI from '../../../../api/invoice/InvoicesAPI';
 import fileDownload from 'js-file-download';
 import moment from 'moment/moment';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import ButtonText from '../../../../components/button/ButtonText';
 import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import InvoiceListSetMultiplePaid from './InvoiceListSetMultiplePaid';
@@ -49,6 +49,12 @@ const initialState = {
         id: '',
         fullName: '',
     },
+};
+
+// Functionele wrapper voor de class component
+const InvoicesListWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoicesList {...props} navigate={navigate} />;
 };
 
 class InvoicesList extends Component {
@@ -233,7 +239,7 @@ class InvoicesList extends Component {
 
         if (this.state.invoiceIds.length > 0) {
             this.props.previewSend(this.state.invoiceIds);
-            hashHistory.push(
+            this.props.navigate(
                 `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         } else {
@@ -255,7 +261,7 @@ class InvoicesList extends Component {
         } else {
             if (this.state.invoiceIds.length > 0) {
                 this.props.previewSend(this.state.invoiceIds);
-                hashHistory.push(
+                this.props.navigate(
                     `/financieel/${this.props.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
                 );
             } else {
@@ -484,7 +490,10 @@ class InvoicesList extends Component {
         let totalInvoicesIsSending = 0;
         let totalInvoicesIsResending = 0;
         let totalInvoicesErrorMaking = 0;
+        let totalInvoicesIsExporting = 0;
+        let totalInvoicesErrorExporting = 0;
         let amountInProgress = 0;
+        let amountExportingInProgress = 0;
         let inProgressStartText = null;
         let inProgressEndText = null;
         let ordersInProgressInvoicesText = null;
@@ -492,6 +501,10 @@ class InvoicesList extends Component {
         let isSendingText = null;
         let isResendingText = null;
         let errorMakingText = null;
+        let exportingStartText = null;
+        let isExportingText = null;
+        let errorExportingText = null;
+        let exportingEndText = null;
         if (this.props.totalsInfoAdministration) {
             totalOrdersInProgressInvoices = this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
                 ? this.props.totalsInfoAdministration.totalOrdersInProgressInvoices
@@ -508,8 +521,7 @@ class InvoicesList extends Component {
             totalInvoicesErrorMaking = this.props.totalsInfoAdministration.totalInvoicesErrorMaking
                 ? this.props.totalsInfoAdministration.totalInvoicesErrorMaking
                 : 0;
-
-            amountInProgress +=
+            amountInProgress =
                 totalOrdersInProgressInvoices +
                 totalInvoicesErrorMaking +
                 totalInvoicesInProgress +
@@ -543,7 +555,32 @@ class InvoicesList extends Component {
                 if (totalInvoicesErrorMaking > 0) {
                     errorMakingText = '- Definitieve nota\'s met status "Fout bij maken": ' + totalInvoicesErrorMaking;
                 }
+
                 inProgressEndText =
+                    'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
+            }
+
+            totalInvoicesIsExporting = this.props.totalsInfoAdministration.totalInvoicesIsExporting
+                ? this.props.totalsInfoAdministration.totalInvoicesIsExporting
+                : 0;
+            totalInvoicesErrorExporting = this.props.totalsInfoAdministration.totalInvoicesErrorExporting
+                ? this.props.totalsInfoAdministration.totalInvoicesErrorExporting
+                : 0;
+
+            amountExportingInProgress = totalInvoicesIsExporting + totalInvoicesErrorExporting;
+
+            if (amountExportingInProgress > 0 && this.props.filter == 'geexporteerd') {
+                exportingStartText = "Overzicht status bij het synchroniseren nota's naar Twinfield";
+                if (totalInvoicesIsExporting > 0) {
+                    isExportingText =
+                        "- Definitieve nota's die nu gesynchroniseerd met Twinfield: " + totalInvoicesIsExporting;
+                }
+                if (totalInvoicesErrorExporting > 0) {
+                    errorExportingText =
+                        '- Definitieve nota\'s met status "Fout bij synchroniseren Twinfield": ' +
+                        totalInvoicesErrorExporting;
+                }
+                exportingEndText =
                     'Gebruik blauwe refresh/vernieuwen knop of F5 (Command + R op Mac) om status overzicht te verversen.';
             }
         }
@@ -699,6 +736,23 @@ class InvoicesList extends Component {
                                 <br /> {inProgressEndText}
                             </div>
                         ) : null}
+                        {exportingStartText ? (
+                            <div className="alert alert-warning">
+                                {exportingStartText}
+                                <br />
+                                {isExportingText ? (
+                                    <span>
+                                        {isExportingText} <br />
+                                    </span>
+                                ) : null}
+                                {errorExportingText ? (
+                                    <span>
+                                        {errorExportingText} <br />
+                                    </span>
+                                ) : null}
+                                <br /> {exportingEndText}
+                            </div>
+                        ) : null}
                     </div>
                 ) : (
                     <div className="col-md-12">
@@ -813,4 +867,4 @@ const mapDispatchToProps = dispatch => {
     );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoicesList);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoicesListWrapper);

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 
 import GeneralSearchModalModelList from './GeneralSearchModalModelList';
 import Draggable from 'react-draggable';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import Icon from 'react-icons-kit';

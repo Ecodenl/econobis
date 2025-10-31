@@ -41,6 +41,7 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
     useEffect(() => {
         if (isAuth) {
             if (
+                !location.pathname.includes('/vrije-velden/') &&
                 !location.pathname.includes('/project/') &&
                 !location.pathname.includes('/project-deelname/') &&
                 !location.pathname.includes('/inschrijven/') &&
@@ -55,8 +56,21 @@ const ProtectedRoute = ({ component: Component, setInitialUserData, isAuth, ...r
         <AuthConsumer>
             {({ isAuth }) => (
                 <div className="body-2" id="body-2">
-                    <Header />
-                    <Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />
+                    {/*<Header />*/}
+                    {/*<Route render={props => (isAuth ? <Component {...props} /> : <Redirect to="/login" />)} {...rest} />*/}
+                    <Route
+                        {...rest}
+                        render={props =>
+                            isAuth ? (
+                                <>
+                                    <Header {...props} />
+                                    <Component {...props} />
+                                </>
+                            ) : (
+                                <Redirect to="/login" />
+                            )
+                        }
+                    />
                 </div>
             )}
         </AuthConsumer>

@@ -51,6 +51,7 @@ class EmailJoryResource extends JoryResource
         $this->field('sent_by_user_id')->filterable()->sortable();
         $this->field('status')->filterable()->sortable();
         $this->field('subject')->filterable()->sortable();
+        $this->field('subject_for_filter')->filterable()->sortable();
         $this->field('task_id')->filterable()->sortable();
         $this->field('to')->filterable()->sortable();
         $this->field('updated_at')->filterable()->sortable();

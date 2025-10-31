@@ -1,23 +1,13 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 export default {
     fetchQuotationRequestStatus: () => {
         const requestUrl = `jory/quotation-request-status`;
 
-        // todo WM: opschonen velden emailTemplateIdWf, mailCcToCoachWf en numberOfDaysToSendEmail
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 jory: {
-                    fld: [
-                        'id',
-                        'name',
-                        'usesWf',
-                        'emailTemplateIdWf',
-                        'numberOfDaysToSendEmail',
-                        'order',
-                        'mailCcToCoachWf',
-                        'opportunityActionName',
-                    ],
+                    fld: ['id', 'name', 'usesWf', 'order', 'opportunityActionName', 'sendEmailReminder'],
                     srt: ['opportunityActionId', 'order'],
                 },
             },

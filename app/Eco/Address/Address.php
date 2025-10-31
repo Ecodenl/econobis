@@ -2,6 +2,7 @@
 
 namespace App\Eco\Address;
 
+use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\Contact\Contact;
 use App\Eco\Country\Country;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
@@ -33,6 +34,17 @@ class Address extends Model
     public function addressEnergySuppliers()
     {
         return $this->hasMany(AddressEnergySupplier::class)->orderByDesc('member_since')->orderByDesc('id');
+    }
+    public function addressDongles()
+    {
+        return $this->hasMany(AddressDongle::class)->orderByDesc('id');
+    }
+
+    public function lastAddressDongle()
+    {
+        // latestOfMany is default op basis van created_at, als je dit bijv. op basis van 'id' wil, dan kan je dit veld meegeven in latestOfMany:
+        //       return $this->hasOne(AddressDongle::class)->latestOfMany('id');
+        return $this->hasOne(AddressDongle::class)->latestOfMany();
     }
 
     // currentAddressEnergySupplierElectricity: only for Electricity ! (type 2 or 3)
@@ -92,8 +104,8 @@ class Address extends Model
 
     public function freeFieldsFieldRecords()
     {
-        $fieldTableAddresses = FreeFieldsTable::where('table', 'addresses')->first();
-        $addressFieldIds = FreeFieldsField::where('table_id', ($fieldTableAddresses->id ?? '$#@') )->get()->pluck('id')->toArray();
+        $fieldTableAddress = FreeFieldsTable::where('table', 'addresses')->first();
+        $addressFieldIds = FreeFieldsField::where('table_id', ($fieldTableAddress->id ?? '$#@') )->get()->pluck('id')->toArray();
         return $this->hasMany(FreeFieldsFieldRecord::class, 'table_record_id')->whereIn('field_id', $addressFieldIds);
     }
 
@@ -125,7 +137,7 @@ class Address extends Model
         return $typeAndPrimary;
     }
 
-    public function getfullAddressAttribute(){
+    public function getFullAddressAttribute(){
         $fullAddress = $this->street . ' ' . $this->number . ($this->addition ? '-' . $this->addition : '');
         return $fullAddress;
     }

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import SideNav, { Nav, NavIcon, NavText } from 'react-sidenav';
 import SvgIcon from 'react-icons-kit';
 import { connect } from 'react-redux';
@@ -21,7 +21,7 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
+const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
             <Nav id="dashboard">
@@ -167,14 +167,16 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         </NavText>
                     </Nav>
 
-                    <Nav id="deelnemers">
-                        <NavText>
-                            <Link className="sidebar-link" to="deelnemers">
-                                Deelnemers
-                            </Link>
-                        </NavText>
-                    </Nav>
-                    {permissions.manageFinancial && (
+                    {permissions.menuParticipations && (
+                        <Nav id="deelnemers">
+                            <NavText>
+                                <Link className="sidebar-link" to="deelnemers">
+                                    Deelnemers
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuFinancialOverviews && (
                         <Nav id="waardestaten">
                             <NavText>
                                 <Link className="sidebar-link" to="waardestaten">
@@ -246,11 +248,29 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                             </NavText>
                         </Nav>
                     )}
+                    {permissions.menuIntakeSources && (
+                        <Nav id="aanmeldingsbronnen">
+                            <NavText>
+                                <Link className="sidebar-link" to="aanmeldingsbronnen">
+                                    Aanmeldingsbronnen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
                     {permissions.menuMeasures && (
                         <Nav id="measures">
                             <NavText>
                                 <Link className="sidebar-link" to="maatregelen">
                                     Maatregelen
+                                </Link>
+                            </NavText>
+                        </Nav>
+                    )}
+                    {permissions.menuDongles && useDongleRegistration == true && (
+                        <Nav id="dongles">
+                            <NavText>
+                                <Link className="sidebar-link" to="dongels">
+                                    Dongels
                                 </Link>
                             </NavText>
                         </Nav>
@@ -467,7 +487,7 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         return (
                             <Nav key={i} id={`administration/${administration.id}`}>
                                 <NavText>
-                                    <Link className="sidebar-link" to={`financieel/${administration.id}`}>
+                                    <Link className="sidebar-link" to={`/financieel/${administration.id}`}>
                                         {administration.name}
                                     </Link>
                                 </NavText>
@@ -653,19 +673,22 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid }) => (
                         <Nav id="free-fields">
                             <NavText>
                                 <Link className="sidebar-link" to="vrije-velden">
-                                    Vrije velden
+                                    Vrije velden Algemeen
                                 </Link>
                             </NavText>
                         </Nav>
                     )}
-                    {/* todo WM check: wordt niet meer gebruikt toch ?*/}
-                    {/*<Nav id="postal-code-link">*/}
-                    {/*    <NavText>*/}
-                    {/*        <Link className="sidebar-link" to="postcoderoos">*/}
-                    {/*            Postcoderoos*/}
-                    {/*        </Link>*/}
-                    {/*    </NavText>*/}
-                    {/*</Nav>*/}
+                    {permissions.manageFreeFields &&
+                        permissions.menuPortalSettings &&
+                        permissions.managePortalSettings && (
+                            <Nav id="free-fields-portal-page">
+                                <NavText>
+                                    <Link className="sidebar-link" to="vrije-velden-portaal-pagina">
+                                        Vrije velden Portaal pagina
+                                    </Link>
+                                </NavText>
+                            </Nav>
+                        )}
                 </Nav>
             )}
 
@@ -709,6 +732,7 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         administrations: state.meDetails.administrations,
         mailboxesInvalid: state.systemData.mailboxesInvalid,
+        useDongleRegistration: state.systemData?.cooperation?.use_dongle_registration ?? false,
     };
 };
 

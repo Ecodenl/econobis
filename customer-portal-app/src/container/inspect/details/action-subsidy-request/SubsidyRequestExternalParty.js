@@ -10,26 +10,18 @@ import InputTextDate from '../../../../components/form/InputTextDate';
 import moment from 'moment/moment';
 import InputTextCurrency from '../../../../components/form/InputTextCurrency';
 import ValidationSchemaQuotationRequest from '../../../../helpers/ValidationSchemaQuotationRequest';
+import { isEmpty } from 'lodash';
 
 function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, handleSubmit }) {
     const [underReview, setUnderReview] = useState(initialQuotationRequest.status?.codeRef === 'under-review');
-    const [approved, setApproved] = useState(
-        initialQuotationRequest.status?.codeRef === 'approved'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'not-approved'
-            ? false
-            : null
-    );
+    const [approved, setApproved] = useState(!isEmpty(initialQuotationRequest.dateApprovedExternal));
+    const [notApproved, setNotApproved] = useState(initialQuotationRequest.notApprovedExternal);
+
     const [underReviewDet, setUnderReviewDet] = useState(
         initialQuotationRequest.status?.codeRef === 'under-review-det'
     );
-    const [approvedDet, setApprovedDet] = useState(
-        initialQuotationRequest.status?.codeRef === 'approved-det'
-            ? true
-            : initialQuotationRequest.status?.codeRef === 'not-approved-det'
-            ? false
-            : null
-    );
+    const [approvedDet, setApprovedDet] = useState(!isEmpty(initialQuotationRequest.dateApprovedDetermination));
+    const [notApprovedDet, setNotApprovedDet] = useState(initialQuotationRequest.notApprovedDetermination);
 
     const validationSchema = ValidationSchemaQuotationRequest.validationSchemaBasic;
 
@@ -46,6 +38,8 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -76,6 +70,13 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                                     />
                                     {/*<FormLabel className={'field-label'}>Omschrijving</FormLabel>*/}
                                     {/*{initialQuotationRequest.quotationText}*/}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"
@@ -171,40 +172,55 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_external"
+                                                        readOnly={
+                                                            !['under-review', 'approved', 'not-approved'].includes(
+                                                                initialQuotationRequest.status.codeRef
+                                                            ) || notApproved
+                                                        }
                                                         placeholder={'Datum akkoord toekenning'}
-                                                        readOnly={approved ? false : true}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
-                                        <div>
-                                            <Button
-                                                variant={true === approved ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setApproved(true);
-                                                    setFieldValue(
-                                                        'dateApprovedExternal',
-                                                        moment().format('YYYY-MM-DD')
-                                                    );
-                                                }}
-                                            >
-                                                {true === approved ? 'Toekenning goedgekeurd' : 'Toekenning goedkeuren'}
-                                            </Button>
-
-                                            <Button
-                                                variant={false === approved ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setApproved(false);
-                                                    setFieldValue('dateApprovedExternal', '');
-                                                }}
-                                            >
-                                                {false === approved
-                                                    ? 'Toekenning afgekeurd'
-                                                    : 'Toekenning niet goedkeuren'}
-                                            </Button>
-                                        </div>
+                                        {['under-review', 'approved', 'not-approved'].includes(
+                                            initialQuotationRequest.status.codeRef
+                                        ) ? (
+                                            <div>
+                                                <Button
+                                                    variant={true === approved ? 'success' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(true);
+                                                        setFieldValue(
+                                                            'dateApprovedExternal',
+                                                            moment().format('YYYY-MM-DD')
+                                                        );
+                                                        setNotApproved(false);
+                                                        setFieldValue('notApprovedExternal', false);
+                                                    }}
+                                                    disabled={approved}
+                                                >
+                                                    {true === approved
+                                                        ? 'Toekenning goedgekeurd'
+                                                        : 'Toekenning goedkeuren'}
+                                                </Button>
+                                                <Button
+                                                    variant={true === notApproved ? 'danger' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApproved(false);
+                                                        setFieldValue('dateApprovedExternal', '');
+                                                        setNotApproved(true);
+                                                        setFieldValue('notApprovedExternal', true);
+                                                    }}
+                                                    disabled={notApproved}
+                                                >
+                                                    {true === notApproved
+                                                        ? 'Toekenning afgekeurd'
+                                                        : 'Toekenning niet goedkeuren'}
+                                                </Button>
+                                            </div>
+                                        ) : null}
                                     </div>
                                     <FormLabel htmlFor="date_executed" className={'field-label'}>
                                         Datum uitgevoerd
@@ -292,42 +308,59 @@ function SubsidyRequestExternalParty({ redirectBack, initialQuotationRequest, ha
                                                         touched={touched}
                                                         onChangeAction={setFieldValue}
                                                         id="date_approved_determination"
+                                                        readOnly={
+                                                            ![
+                                                                'under-review-det',
+                                                                'approved-det',
+                                                                'not-approved-det',
+                                                            ].includes(initialQuotationRequest.status.codeRef) ||
+                                                            notApprovedDet
+                                                        }
                                                         placeholder={'Datum akkoord vaststelling'}
-                                                        readOnly={approvedDet ? false : true}
                                                     />
                                                 )}
                                             </Field>
                                         </div>
-                                        <div>
-                                            <Button
-                                                variant={true === approvedDet ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setApprovedDet(true);
-                                                    setFieldValue(
-                                                        'dateApprovedDetermination',
-                                                        moment().format('YYYY-MM-DD')
-                                                    );
-                                                }}
-                                            >
-                                                {true === approvedDet
-                                                    ? 'Vaststelling goedgekeurd'
-                                                    : 'Vaststelling goedkeuren'}
-                                            </Button>
+                                        {['under-review-det', 'approved-det', 'not-approved-det'].includes(
+                                            initialQuotationRequest.status.codeRef
+                                        ) ? (
+                                            <div>
+                                                <Button
+                                                    variant={true === approvedDet ? 'success' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApprovedDet(true);
+                                                        setFieldValue(
+                                                            'dateApprovedDetermination',
+                                                            moment().format('YYYY-MM-DD')
+                                                        );
+                                                        setNotApprovedDet(false);
+                                                        setFieldValue('notApprovedDetermination', false);
+                                                    }}
+                                                    disabled={approvedDet}
+                                                >
+                                                    {true === approvedDet
+                                                        ? 'Vaststelling goedgekeurd'
+                                                        : 'Vaststelling goedkeuren'}
+                                                </Button>
 
-                                            <Button
-                                                variant={false === approvedDet ? 'dark' : 'outline-dark'}
-                                                size="sm"
-                                                onClick={() => {
-                                                    setApprovedDet(false);
-                                                    setFieldValue('dateApprovedDetermination', '');
-                                                }}
-                                            >
-                                                {false === approvedDet
-                                                    ? 'Vaststelling afgekeurd'
-                                                    : 'Vaststelling niet goedkeuren'}
-                                            </Button>
-                                        </div>
+                                                <Button
+                                                    variant={true === notApprovedDet ? 'danger' : 'outline-dark'}
+                                                    size="sm"
+                                                    onClick={() => {
+                                                        setApprovedDet(false);
+                                                        setFieldValue('dateApprovedDetermination', '');
+                                                        setNotApprovedDet(true);
+                                                        setFieldValue('notApprovedDetermination', true);
+                                                    }}
+                                                    disabled={notApprovedDet}
+                                                >
+                                                    {true === notApprovedDet
+                                                        ? 'Vaststelling afgekeurd'
+                                                        : 'Vaststelling niet goedkeuren'}
+                                                </Button>
+                                            </div>
+                                        ) : null}
                                     </div>
 
                                     <FormLabel className={'field-label'}>Bedrag vaststelling</FormLabel>

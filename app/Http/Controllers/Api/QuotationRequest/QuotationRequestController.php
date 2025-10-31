@@ -17,6 +17,7 @@ use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Helpers\CSV\QuotationRequestCSVHelper;
 use App\Helpers\Delete\Models\DeleteQuotationRequest;
+use App\Helpers\Opportunity\OpportunityHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\QuotationRequest\Grid\RequestQuery;
 use App\Http\Resources\Opportunity\FullOpportunity;
@@ -38,6 +39,8 @@ class QuotationRequestController extends ApiController
 
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         $quotationRequests = $requestQuery->get();
 
         $quotationRequests->load([
@@ -62,6 +65,8 @@ class QuotationRequestController extends ApiController
 
     public function show(QuotationRequest $quotationRequest)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         $quotationRequest->load([
             'organisationOrCoach.contactPerson.contact',
             'projectManager',
@@ -110,8 +115,22 @@ class QuotationRequestController extends ApiController
         return FullQuotationRequest::make($quotationRequest);
     }
 
+    public function showUpdateOpportunityStatus(Request $request, QuotationRequest $quotationRequest)
+    {
+        $data = $request->validate([
+            'statusId' => 'required|exists:quotation_request_status,id',
+        ]);
+        $quotationRequest->status_id = $data['statusId'];
+        $opportunityHelper = new OpportunityHelper($quotationRequest);
+
+        return $opportunityHelper->showUpdateOpportunityStatus();
+    }
+
+
     public function csv(RequestQuery $requestQuery)
     {
+        $this->authorize('view', QuotationRequest::class);
+
         set_time_limit(0);
         $quotationRequests = $requestQuery->getQueryNoPagination()->get();
 
@@ -125,6 +144,8 @@ class QuotationRequestController extends ApiController
      */
     public function getStore(Opportunity $opportunity, OpportunityAction $opportunityAction)
     {
+        $this->authorize('manage', QuotationRequest::class);
+
         $opportunity->load([
             'intake.address',
             'measures',
@@ -163,8 +184,11 @@ class QuotationRequestController extends ApiController
             'datePlanned' => 'string',
             'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
+            'notApprovedClient' => 'boolean',
             'dateApprovedProjectManager' => 'string',
+            'notApprovedProjectManager' => 'boolean',
             'dateApprovedExternal' => 'string',
+            'notApprovedExternal' => 'boolean',
             'dateUnderReview' => 'string',
             'dateExecuted' => 'string',
             'quotationAmount' => 'string',
@@ -238,14 +262,17 @@ class QuotationRequestController extends ApiController
         if ($data['dateApprovedClient']) {
             $quotationRequest->date_approved_client = $data['dateApprovedClient'];
         }
+        $quotationRequest->not_approved_client = $request->input('notApprovedClient', false);
 
         if ($data['dateApprovedProjectManager']) {
             $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
         }
+        $quotationRequest->not_approved_project_manager = $request->input('notApprovedProjectManager', false);
 
         if ($data['dateApprovedExternal']) {
             $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
         }
+        $quotationRequest->not_approved_external = $request->input('notApprovedExternal', false);
 
         if (isset($data['dateUnderReview']) && $data['dateUnderReview']) {
             $quotationRequest->date_under_review = $data['dateUnderReview'];
@@ -267,6 +294,9 @@ class QuotationRequestController extends ApiController
         }
         if (isset($data['awardAmount'])) {
             $quotationRequest->award_amount = trim($data['awardAmount']) ?: 0;
+        }
+        if (isset($data['amountDetermination'])) {
+            $quotationRequest->amount_determination = trim($data['amountDetermination']) ?: 0;
         }
 
         $quotationRequest->duration_minutes = $request->input('durationMinutes');
@@ -313,12 +343,16 @@ class QuotationRequestController extends ApiController
             'datePlanned' => 'string',
             'timePlanned' => 'string',
             'dateApprovedClient' => 'string',
+            'notApprovedClient' => 'boolean',
             'dateApprovedProjectManager' => 'string',
+            'notApprovedProjectManager' => 'boolean',
             'dateApprovedExternal' => 'string',
+            'notApprovedExternal' => 'boolean',
             'dateUnderReview' => 'string',
             'dateExecuted' => 'string',
             'dateUnderReviewDetermination' => 'string',
             'dateApprovedDetermination' => 'string',
+            'notApprovedDetermination' => 'boolean',
             'opportunityActionId' => 'required|exists:opportunity_actions,id',
             'coachOrOrganisationNote' => 'string',
             'quotationAmount' => 'string',
@@ -349,8 +383,8 @@ class QuotationRequestController extends ApiController
             $quotationRequest->external_party_id = null;
         }
 
-        if ($data['dateRecorded']) {
-            if ($data['timeRecorded']) {
+        if (isset($data['dateRecorded'])) {
+            if (isset($data['timeRecorded'])) {
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
                 $timeRecorded = Carbon::parse($request->get('timeRecorded'))->format('H:i');
                 $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' ' . $timeRecorded);
@@ -358,13 +392,13 @@ class QuotationRequestController extends ApiController
                 $dateRecorded = Carbon::parse($request->get('dateRecorded'))->format('Y-m-d');
                 $dateRecordedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateRecorded . ' 08:00');
             }
-            $quotationRequest->date_recorded = $dateRecordedMerged;
+            $quotationRequest->date_recorded = !empty($data['dateRecorded']) ? $dateRecordedMerged : null;
         } else {
             $quotationRequest->date_recorded = null;
         }
 
-        if ($data['dateReleased']) {
-            if ($data['timeReleased']) {
+        if (isset($data['dateReleased'])) {
+            if (isset($data['timeReleased'])) {
                 $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
                 $timeReleased = Carbon::parse($request->get('timeReleased'))->format('H:i');
                 $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' ' . $timeReleased);
@@ -372,7 +406,7 @@ class QuotationRequestController extends ApiController
                 $dateReleased = Carbon::parse($request->get('dateReleased'))->format('Y-m-d');
                 $dateReleasedMerged = Carbon::createFromFormat('Y-m-d H:i', $dateReleased . ' 08:00');
             }
-            $quotationRequest->date_released = $dateReleasedMerged;
+            $quotationRequest->date_released = !empty($data['dateReleased']) ? $dateReleasedMerged : null;
         } else {
             $quotationRequest->date_released = null;
         }
@@ -387,8 +421,8 @@ class QuotationRequestController extends ApiController
             $quotationRequest->date_planned_attempt3 = !empty($data['datePlannedAttempt3']) ? $data['datePlannedAttempt3'] : null;
         }
 
-        if ($data['datePlanned']) {
-            if ($data['timePlanned']) {
+        if (isset($data['datePlanned'])) {
+            if (isset($data['timePlanned'])) {
                 $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
                 $timePlanned = Carbon::parse($request->get('timePlanned'))->format('H:i');
                 $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' ' . $timePlanned);
@@ -396,37 +430,41 @@ class QuotationRequestController extends ApiController
                 $datePlanned = Carbon::parse($request->get('datePlanned'))->format('Y-m-d');
                 $datePlannedMerged = Carbon::createFromFormat('Y-m-d H:i', $datePlanned . ' 08:00');
             }
-            $quotationRequest->date_planned = $datePlannedMerged;
+            $quotationRequest->date_planned = !empty($data['datePlanned']) ? $datePlannedMerged : null;
         } else {
             $quotationRequest->date_planned = null;
         }
 
-        if ($data['dateApprovedClient']) {
-            $quotationRequest->date_approved_client = $data['dateApprovedClient'];
+        if (isset($data['dateApprovedClient'])) {
+            $quotationRequest->date_approved_client = !empty($data['dateApprovedClient']) ? $data['dateApprovedClient'] : null;
         }
+        $quotationRequest->not_approved_client = $data['notApprovedClient'];
 
-        if ($data['dateApprovedProjectManager']) {
-            $quotationRequest->date_approved_project_manager = $data['dateApprovedProjectManager'];
+        if (isset($data['dateApprovedProjectManager'])) {
+            $quotationRequest->date_approved_project_manager = !empty($data['dateApprovedProjectManager']) ? $data['dateApprovedProjectManager'] : null;
         }
+        $quotationRequest->not_approved_project_manager = $request->input('notApprovedProjectManager', false);
 
-        if ($data['dateApprovedExternal']) {
-            $quotationRequest->date_approved_external = $data['dateApprovedExternal'];
+        if (isset($data['dateApprovedExternal'])) {
+            $quotationRequest->date_approved_external = !empty($data['dateApprovedExternal']) ? $data['dateApprovedExternal'] : null;
         }
+        $quotationRequest->not_approved_external = $request->input('notApprovedExternal', false);
 
-        if ($data['dateUnderReview']) {
-            $quotationRequest->date_under_review = $data['dateUnderReview'];
+        if (isset($data['dateUnderReview'])) {
+            $quotationRequest->date_under_review = !empty($data['dateUnderReview']) ? $data['dateUnderReview'] : null;
         }
 
         if (isset($data['dateExecuted'])) {
             $quotationRequest->date_executed = !empty($data['dateExecuted']) ? $data['dateExecuted'] : null;
         }
 
-        if ($data['dateUnderReviewDetermination']) {
-            $quotationRequest->date_under_review_determination = $data['dateUnderReviewDetermination'];
+        if (isset($data['dateUnderReviewDetermination'])) {
+            $quotationRequest->date_under_review_determination = !empty($data['dateUnderReviewDetermination']) ? $data['dateUnderReviewDetermination'] : null;
         }
-        if ($data['dateApprovedDetermination']) {
-            $quotationRequest->date_approved_determination = $data['dateApprovedDetermination'];
+        if (isset($data['dateApprovedDetermination'])) {
+            $quotationRequest->date_approved_determination = !empty($data['dateApprovedDetermination']) ? $data['dateApprovedDetermination'] : null;
         }
+        $quotationRequest->not_approved_determination = $request->input('notApprovedDetermination', false);
 
         if (isset($data['quotationText'])) {
             $quotationRequest->quotation_text = $data['quotationText'];
@@ -539,6 +577,8 @@ class QuotationRequestController extends ApiController
 
     public function peek(Request $request)
     {
+//        $this->authorize('view', QuotationRequest::class);
+
         $teamContactIds = Auth::user()->getTeamContactIds();
 
         $query = QuotationRequest::query()->orderBy('id');

@@ -19,7 +19,6 @@ use App\Http\Requests\Cooperation\UpdateCooperationHoomCampaign;
 use App\Http\Resources\Cooperation\FullCooperation;
 use App\Http\Resources\Cooperation\FullCooperationHoomCampaign;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Storage;
 
 class CooperationController extends ApiController
 {
@@ -66,18 +65,16 @@ class CooperationController extends ApiController
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
+        $cooperation->use_dongle_registration = $request->boolean('useDongleRegistration');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         if($cooperation->email_report_table_problems == '') {
             $cooperation->email_report_table_problems = null;
         }
+        $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
+        $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+        $cooperation->require_team_on_user_create = $request->boolean('requireTeamOnUserCreate');
         $cooperation->save();
-
-        // Store attachment when given
-        if($request->file('attachment')){
-            $this->checkStorageDir($cooperation->id);
-            $this->storeLogo($request->file('attachment'), $cooperation);
-        }
 
         return $this->show();
     }
@@ -115,11 +112,15 @@ class CooperationController extends ApiController
         $cooperation->send_email = $request->boolean('sendEmail');
         $cooperation->use_laposta = $request->boolean('useLaposta');
         $cooperation->use_export_address_consumption = $request->boolean('useExportAddressConsumption');
+        $cooperation->use_dongle_registration = $request->boolean('useDongleRegistration');
         $cooperation->require_two_factor_authentication = $request->boolean('requireTwoFactorAuthentication');
         $cooperation->create_contacts_for_report_table = $request->boolean('createContactsForReportTable');
         if($cooperation->email_report_table_problems == '') {
             $cooperation->email_report_table_problems = null;
         }
+        $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
+        $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
+        $cooperation->require_team_on_user_create = $request->boolean('requireTeamOnUserCreate');
         $cooperation->save();
 
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false
@@ -127,12 +128,6 @@ class CooperationController extends ApiController
             DB::table('contact_groups_contacts_for_report')->truncate();
             $cooperation->create_contacts_for_report_table_last_created = null;
             $cooperation->save();
-        }
-
-        // Store attachment when given
-        if($request->file('attachment')){
-            $this->checkStorageDir($cooperation->id);
-            $this->storeLogo($request->file('attachment'), $cooperation);
         }
 
         return $this->show();
@@ -168,32 +163,6 @@ class CooperationController extends ApiController
         $this->authorize('manage', Cooperation::class);
 
         $cooperationHoomCampaign->delete();
-    }
-
-    private function checkStorageDir(){
-        //Check if storage map exists
-        $storageDir = Storage::disk('cooperation')->path(DIRECTORY_SEPARATOR . 'cooperation' . DIRECTORY_SEPARATOR . 'logo');
-
-        if (!is_dir($storageDir)) {
-            mkdir($storageDir, 0777, true);
-        }
-    }
-
-    private function storeLogo($attachment, $cooperation)
-    {
-        $this->authorize('manage', Cooperation::class);
-
-        if (!$attachment->isValid()) {
-            abort('422', 'Error uploading file');
-        }
-
-        $filename = $attachment->store('cooperation'
-            . DIRECTORY_SEPARATOR . 'logo', 'cooperation');
-
-        $cooperation->logo_filename = $filename;
-        $cooperation->logo_name = $attachment->getClientOriginalName();
-
-        $cooperation->save();
     }
 
     public function syncAllWithLaposta(Cooperation $cooperation){

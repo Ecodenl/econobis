@@ -71,8 +71,19 @@ class FreeFieldsFieldRecordController extends ApiController
                 break;
         }
 
-        foreach($request->get('data')['records'] as $record) {
+        $this->updateRecordValues($contactId, $records);
 
+    }
+    public function updateValuesFromFreeFieldsContact($contactId, array $records)
+    {
+//        $this->authorize('view', FreeFieldsField::class);
+
+        $this->updateRecordValues($contactId, $records);
+
+    }
+    private function updateRecordValues($recordId, array $records)
+    {
+        foreach($records as $record) {
             $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $record['id'])->firstOrNew();
 
             // Id nog niet bekend, dan nieuw! Overnemen: field_id en table_record_id
@@ -90,14 +101,14 @@ class FreeFieldsFieldRecordController extends ApiController
                     $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
                     break;
                 case 'int':
-                    $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'] != '' ? (int)$record['fieldRecordValueInt'] : null;
+                    $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'] != '' ? (int) $record['fieldRecordValueInt'] : null;
                     break;
                 case 'double_2_dec':
                 case 'amount_euro':
-                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'] != '' ? (float)$record['fieldRecordValueDouble'] : null;
-                    break;
+                    $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'] != '' ? (double) str_replace(',', '.', $record['fieldRecordValueDouble']) : null;
+                break;
                 case 'date':
-                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d') . ' 00:00:00' : null;
+                    $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d')  : null;
                     break;
                 case 'datetime':
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;
@@ -128,7 +139,8 @@ class FreeFieldsFieldRecordController extends ApiController
                 ->where('visible_portal', true)
                 ->orderBy('sort_order')->get();
         } else {
-            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)->orderBy('sort_order')->get();
+            $freeFieldsFieldPerTable = FreeFieldsField::where('table_id', $tableId)
+                ->orderBy('sort_order')->get();
         }
 
         foreach ($freeFieldsFieldPerTable as $field) {
@@ -179,6 +191,7 @@ class FreeFieldsFieldRecordController extends ApiController
                 'fieldRecordValueInt' => $fieldRecordValueInt,
                 'fieldRecordValueDouble' => $fieldRecordValueDouble,
                 'fieldRecordValueDatetime' => $fieldRecordValueDatetime,
+                'changePortal' => $field->change_portal,
                 'mandatory' => $field->mandatory,
                 'mask' => $field->mask,
             ];

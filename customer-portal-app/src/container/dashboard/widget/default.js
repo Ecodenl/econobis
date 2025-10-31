@@ -24,7 +24,7 @@ export const ContactDetailsDashboardWidget = function({ contact, backgroundColor
                                 <div>
                                     <b>Adres</b>
                                     <br />
-                                    {contact.primaryAddress.street} {contact.primaryAddress.number}
+                                    {contact.primaryAddress.street} {contact.primaryAddress.number} {contact.primaryAddress.addition}
                                     <br />
                                     {contact.primaryAddress.postalCode} {contact.primaryAddress.city},{' '}
                                     {contact.primaryAddress.country ? contact.primaryAddress.country.name : ''}
@@ -40,7 +40,7 @@ export const ContactDetailsDashboardWidget = function({ contact, backgroundColor
                                 <div>
                                     <b>Bezoekadres</b>
                                     <br />
-                                    {contact.visitAddress.street} {contact.visitAddress.number}
+                                    {contact.visitAddress.street} {contact.visitAddress.number} {contact.visitAddress.addition}
                                     <br />
                                     {contact.visitAddress.postalCode} {contact.visitAddress.city},{' '}
                                     {contact.visitAddress.country ? contact.visitAddress.country.name : ''}
@@ -54,7 +54,7 @@ export const ContactDetailsDashboardWidget = function({ contact, backgroundColor
                                 <div>
                                     <b>Postadres</b>
                                     <br />
-                                    {contact.postalAddress.street} {contact.postalAddress.number}
+                                    {contact.postalAddress.street} {contact.postalAddress.number} {contact.postalAddress.addition}
                                     <br />
                                     {contact.postalAddress.postalCode} {contact.postalAddress.city},{' '}
                                     {contact.postalAddress.country ? contact.postalAddress.country.name : ''}
@@ -68,7 +68,7 @@ export const ContactDetailsDashboardWidget = function({ contact, backgroundColor
                                 <div>
                                     <b>Nota adres</b>
                                     <br />
-                                    {contact.invoiceAddress.street} {contact.invoiceAddress.number}
+                                    {contact.invoiceAddress.street} {contact.invoiceAddress.number} {contact.invoiceAddress.addition}
                                     <br />
                                     {contact.invoiceAddress.postalCode} {contact.invoiceAddress.city},{' '}
                                     {contact.invoiceAddress.country ? contact.invoiceAddress.country.name : ''}
@@ -138,10 +138,7 @@ export const SwitchContactDashboardWidget = function({
                                 {user.fullNameFnf}
                             </Button>
                             {user.occupationsActive.map(occupationContact =>
-                                (occupationContact.primaryContact.typeId === 'organisation' &&
-                                    occupationContact.primary) ||
-                                (occupationContact.primaryContact.typeId === 'person' &&
-                                    occupationContact.occupation.occupationForPortal) ? (
+                                occupationContact.allowManageInPortal ? (
                                     <Button
                                         className="w-button btn btn-primary btn-sm"
                                         key={'user-' + occupationContact.primaryContact.id}

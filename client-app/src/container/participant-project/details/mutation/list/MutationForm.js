@@ -28,11 +28,14 @@ class MutationForm extends Component {
 
     render() {
         let allowAddMutation = false;
-        if (this.props.permissions.manageFinancial && !this.props.isTerminated) {
+        if (this.props.permissions.manageParticipation && !this.props.isTerminated) {
             if (this.props.projectTypeCodeRef !== 'loan') {
                 allowAddMutation = true;
-            } else if (this.props.loanTypeCodeRef != 'lineair' || !this.props.hasLoanFirstDeposit) {
-                allowAddMutation = true;
+            } else if (this.props.loanTypeCodeRef === 'lineair') {
+                allowAddMutation = this.props.hasLoanFirstDeposit === null;
+            } else {
+                allowAddMutation =
+                    this.props.hasLoanFirstDeposit === null || this.props.hasLoanFirstDeposit === 'final';
             }
         }
         return (

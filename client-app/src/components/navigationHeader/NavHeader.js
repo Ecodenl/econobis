@@ -1,6 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
+import { Link } from 'react-router-dom';
 import Logo from '../logo/Logo';
 import NavSearch from './NavSearch';
 import Icon from 'react-icons-kit';
@@ -19,9 +19,9 @@ const NavHeader = props => {
                         {props.menuStuck ? <Icon size={21} icon={ellipsisV} /> : <Icon size={21} icon={bars} />}
                     </a>
                     <a
-                        href="https://alfresco.econobis.nl"
+                        href="https://wiki.econobis.nl"
                         target={'_blank'}
-                        title="Als je op Help klikt dan kom je uit op de Alfreco Econobis Community Portaal. Hier vind je al informatie over het gebruik van Econobis. Je kan inloggen op de site met je inlog gegevens van Econobis. Kom je er niet uit stuur dan een mail naar support@econobis.nl"
+                        title="Als je op Help klikt dan kom je uit op de Econobis Wiki. Hier vind je al informatie over het gebruik van Econobis. Je kan de zoekbalk bovenaan de pagina gebruiken om te zoeken op trefwoorden. Kom je er niet uit vraag dan jou beheerder in econobis om hulp, als hij/zij er niet uit komt kan diegene een mail naar support@econobis.nl sturen."
                     >
                         HELP
                     </a>
@@ -42,7 +42,7 @@ const NavHeader = props => {
                             </a>
                             <ul className="dropdown-menu">
                                 <li>
-                                    <Link to="loguit?force=1">Uitloggen</Link>
+                                    <Link to="/loguit?force=1">Uitloggen</Link>
                                 </li>
                                 <li onClick={props.toggleChangePassword}>
                                     <Link>Wachtwoord wijzigen</Link>

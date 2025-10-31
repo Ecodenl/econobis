@@ -1,18 +1,19 @@
-import axiosInstance from '../default-setup/AxiosInstance';
-
-const URL_ADMINISTRATION = `${URL_API}/api/administration`;
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchAdministrations: () => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/grid`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     peekAdministrations: () => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -23,9 +24,10 @@ export default {
     },
 
     fetchTwinfieldInfoAdministrations: () => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/twinfield-info-administrations`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl)
             .then(function(response) {
                 return response.data.data;
@@ -36,9 +38,10 @@ export default {
     },
 
     peekLedgers: id => {
+        const URL_ADMINISTRATION = `${getApiUrl()}/api/administration`;
         const requestUrl = `${URL_ADMINISTRATION}/${id}/ledger/peek`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(function(response) {
                 return response.data.data;

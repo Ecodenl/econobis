@@ -1,4 +1,4 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
 
 const URL_VALUE_COURSE = `project/value-course`;
 
@@ -6,7 +6,7 @@ export default {
     updateProjectValueCourse: (id, data) => {
         const requestUrl = `${URL_VALUE_COURSE}/${id}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -17,7 +17,7 @@ export default {
     storeProjectValueCourse: data => {
         const requestUrl = `${URL_VALUE_COURSE}`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, data)
             .then(response => response.data.data)
             .catch(error => {
@@ -28,7 +28,7 @@ export default {
     deleteProjectValueCourse: id => {
         const requestUrl = `${URL_VALUE_COURSE}/${id}/delete`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl)
             .then(response => response.data.data)
             .catch(error => {

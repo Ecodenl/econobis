@@ -22,6 +22,11 @@ class RevenuePartsKwhObserver
                 $revenuesKwh->status = 'concept';
                 $revenuesKwh->save();
             }
+            // Op moment dat een part op Definitief wordt gezet dan project (default) date_entry op null zetten.
+            if($revenuePartsKwh->status == 'confirmed'){
+                $revenuesKwh->project->date_entry = null;
+                $revenuesKwh->project->save();
+            }
             // Op moment dat laatste part op confirmed wordt gezet, ook revenuesKwh op confirmed.
             // Vooralsnog een aparte actie vanuit revenuesKwh
 //            $revenuesKwh = $revenuePartsKwh->revenuesKwh;

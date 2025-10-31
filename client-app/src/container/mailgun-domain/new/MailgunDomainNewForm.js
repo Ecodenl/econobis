@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import validator from 'validator';
 import moment from 'moment';
 
@@ -13,6 +13,12 @@ import PanelBody from '../../../components/panel/PanelBody';
 import Panel from '../../../components/panel/Panel';
 import MailgunDomainDetailsAPI from '../../../api/mailgun-domain/MailgunDomainDetailsAPI';
 import { fetchSystemData } from '../../../actions/general/SystemDataActions';
+
+// Functionele wrapper voor de class component
+const MailgunDomainNewFormWrapper = props => {
+    const navigate = useNavigate();
+    return <MailgunDomainNewForm {...props} navigate={navigate} />;
+};
 
 class MailgunDomainNewForm extends Component {
     constructor(props) {
@@ -87,7 +93,7 @@ class MailgunDomainNewForm extends Component {
                 .then(payload => {
                     this.props.fetchSystemData();
 
-                    hashHistory.push(`/mailgun-domein/${payload.data.data.id}`);
+                    this.props.navigate(`/mailgun-domein/${payload.data.data.id}`);
                 })
                 .catch(function(error) {
                     alert('Er is iets mis gegaan met opslaan!');
@@ -139,4 +145,4 @@ class MailgunDomainNewForm extends Component {
 
 const mapDispatchToProps = dispatch => bindActionCreators({ fetchSystemData }, dispatch);
 
-export default connect(null, mapDispatchToProps)(MailgunDomainNewForm);
+export default connect(null, mapDispatchToProps)(MailgunDomainNewFormWrapper);

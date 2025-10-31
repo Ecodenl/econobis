@@ -6,6 +6,13 @@ import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import VatCodeDetailsAPI from '../../../api/vat-code/VatCodeDetailsAPI';
 import moment from 'moment';
+import { useParams } from 'react-router-dom';
+
+// Functionele wrapper voor de class component
+const VatCodeDetailsAppWrapper = props => {
+    const params = useParams();
+    return <VatCodeDetailsApp {...props} params={params} />;
+};
 
 class VatCodeDetailsApp extends Component {
     constructor(props) {
@@ -72,4 +79,4 @@ class VatCodeDetailsApp extends Component {
     }
 }
 
-export default VatCodeDetailsApp;
+export default VatCodeDetailsAppWrapper;

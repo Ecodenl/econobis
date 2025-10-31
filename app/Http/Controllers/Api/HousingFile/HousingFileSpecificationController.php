@@ -15,8 +15,8 @@ use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\HousingFileSpecificationStatus;
 use App\Eco\Intake\Intake;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityAction;
@@ -67,13 +67,23 @@ class HousingFileSpecificationController extends ApiController
                 $housingFile = $housingFileSpecification->housingFile;
                 $measure = Measure::find($housingFileSpecification->measure_id);
 
-                $intake = Intake::create([
-                    'contact_id' => $housingFile->address->contact->id,
-                    'address_id' => $housingFile->address->id,
-                    'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
-                    'campaign_id' => $campaign->id,
-                    'note' => 'Intake gemaakt vanuit woningdossier specificatie',
-                ]);
+                //first we check for existing Intakes that meet the criteria, if so we will use the last created intake
+                $intake = Intake::where('campaign_id', $campaign->id)
+                        ->where('contact_id', $housingFile->address->contact->id)
+                        ->where('address_id', $housingFile->address->id)
+                        ->orderBy('created_at', 'DESC')->first();
+
+                //if the above query has no results we will create a new Intake
+                if (!$intake) {
+                    $intake = Intake::create([
+                        'contact_id' => $housingFile->address->contact->id,
+                        'address_id' => $housingFile->address->id,
+                        'intake_status_id' => $intakeStatusIdClosedWithOpportunity,
+                        'campaign_id' => $campaign->id,
+                        'note' => 'Intake gemaakt vanuit woningdossier specificatie',
+                    ]);
+                }
+
                 $intake->sources()->sync($housingFileIntakeSource);
 
                 $intake->measuresRequested()->sync($measure->measureCategory->id);

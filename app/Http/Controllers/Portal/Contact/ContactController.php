@@ -16,9 +16,12 @@ use App\Eco\EmailAddress\EmailAddressType;
 use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
 use App\Eco\EnergySupplier\EnergySupplierType;
 use App\Eco\EnergySupplier\EnergySupplier;
+use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\LastNamePrefix\LastNamePrefix;
+use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\PhoneNumber\PhoneNumber;
 use App\Eco\PhoneNumber\PhoneNumberType;
+use App\Eco\PortalFreeFields\PortalFreeFieldsPage;
 use App\Eco\Project\Project;
 use App\Eco\Project\ProjectStatus;
 use App\Eco\Project\ProjectType;
@@ -26,13 +29,17 @@ use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
 use App\Helpers\Address\AddressHelper;
+use App\Helpers\ContactGroup\ContactGroupHelper;
 use App\Helpers\Document\DocumentHelper;
+use App\Helpers\Laposta\LapostaMemberHelper;
 use App\Helpers\Project\RevenuesKwhHelper;
 use App\Helpers\Settings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\AddressEnergySupplier\AddressEnergySupplierController;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Controllers\Api\FreeFields\FreeFieldsFieldRecordController;
+use App\Http\Controllers\Api\PortalFreeFields\PortalFreeFieldsFieldRecordController;
 use App\Http\Resources\Portal\Administration\AdministrationResource;
 use App\Http\Resources\Portal\Documents\FinancialOverviewDocumentResource;
 use App\Http\Resources\Project\ProjectRegister;
@@ -41,6 +48,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class ContactController extends ApiController
@@ -110,6 +118,9 @@ class ContactController extends ApiController
                     $currentAddressEnergySupplierElectricity = isset($request['primaryAddress']['currentAddressEnergySupplierElectricity']) ? $request['primaryAddress']['currentAddressEnergySupplierElectricity'] : null;
                     $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
+                if (isset($request['freeFieldsFieldRecords'])) {
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                }
             }
 
             // ORGANISATION
@@ -130,7 +141,46 @@ class ContactController extends ApiController
                 if (isset($request['invoiceAddress'])) {
                     $this->updateAddress(ContactType::ORGANISATION, $contact, $request['invoiceAddress'], null, 'invoice', null);
                 }
+                if (isset($request['freeFieldsFieldRecords'])) {
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                }
             }
+
+        });
+
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voor nu hebben we responisibleUserId from settings.json tijdelijk in Auth user gezet hierboven
+        // Voor zekerheid hierna weer even Auth user herstellen met portal user
+        Auth::setUser($portalUser);
+
+    }
+
+    public function updatePortalFreeFieldsPageValues(Contact $contact, Request $request)
+    {
+        if (!isset($request) || !isset($request->id)) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // ophalen contactgegevens portal user (vertegenwoordiger)
+        $portalUser = Auth::user();
+        if (!Auth::isPortalUser() || !$portalUser->contact) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        // Voor aanmaak van contact gegevens wordt created by and updated by via ContactObserver altijd bepaald obv Auth::id
+        // todo wellicht moeten we hier nog wat op anders verzinnen, voornu gebruiken we responisibleUserId from settings.json, verderop zetten we dat weer terug naar portal user
+        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        if (!$responsibleUserId) {
+            abort(501, 'Er is helaas een fout opgetreden.');
+        }
+
+        $updateUser = User::find($responsibleUserId);
+        $updateUser->occupation = '@portal-update@';
+        Auth::setUser($updateUser);
+
+        DB::transaction(function () use ($contact, $request) {
+
+            $contact = Contact::find($contact->id);
+            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
 
         });
 
@@ -163,13 +213,49 @@ class ContactController extends ApiController
         {
             $documentBody = '';
         }else{
-            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $documentTemplate, [
-                'amountOptioned' => $request->amountOptioned,
-                'participationsOptioned' => $request->participationsOptioned,
-                'transactionCostsAmount' => $request->transactionCostsAmount,
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, null, $documentTemplate, [
+                'amountOptioned' => data_get($request->registerValues, 'amountOptioned', 0),
+                'participationsOptioned' => data_get($request->registerValues, 'participationsOptioned', 0),
+                'transactionCostsAmount' => data_get($request->registerValues, 'transactionCostsAmount', 0),
             ]);
         }
         return $documentBody;
+    }
+    public function previewIncreaseDocument(Contact $contact, Project $project, ParticipantProject $participantProject, Request $request)
+    {
+        $documentTemplateAgreementId = $project ? $project->document_template_increase_participations_id : 0;
+        $documentTemplate = DocumentTemplate::find($documentTemplateAgreementId);
+
+        if(!$documentTemplate)
+        {
+            $documentBody = '';
+        }else{
+            $documentBody = DocumentHelper::getDocumentBody($contact, $project, $participantProject, $documentTemplate, [
+                'amountOptioned' => data_get($request->registerValues, 'amountOptioned', 0),
+                'participationsOptioned' => data_get($request->registerValues, 'participationsOptioned', 0),
+                'transactionCostsAmount' => data_get($request->registerValues, 'transactionCostsAmount', 0),
+            ]);
+        }
+        return $documentBody;
+    }
+
+    public function getContactFreeFields(Contact $contact)
+    {
+        $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
+        return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
+    }
+    public function getContactPortalFreeFields(Contact $contact, Request $request)
+    {
+        $urlPageRef = $request->get('urlPageRef');
+
+        // Page must be active
+        $portalFreeFieldsPage = PortalFreeFieldsPage::where('url_page_ref', $urlPageRef)->where('is_active', true)->first();
+        if (!$portalFreeFieldsPage) {
+            abort(403, 'Geen toegang tot deze pagina.');
+        }
+
+        $portalFreeFieldsFieldRecordController = new PortalFreeFieldsFieldRecordController();
+        return $portalFreeFieldsFieldRecordController->getValuesForPortal($urlPageRef, 'contacts', $contact->id,);
     }
 
     public function getContactProjects(Contact $contact)
@@ -200,6 +286,13 @@ class ContactController extends ApiController
             $this->setContactProjectIndicators($project, $contact, $projects, $key);
         }
         return response()->json(ProjectRegister::collection($projects));
+    }
+
+    public function getContactGroups(Contact $contact)
+    {
+        $groups = $contact->groups()->select('name', 'id')->get();
+
+        return $groups;
     }
 
     public function getContactProjectData(Contact $contact, Project $project)
@@ -266,7 +359,7 @@ class ContactController extends ApiController
         $textAgreeTermsMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textAgreeTermsMerged,'cooperatie' );
 
         $textLinkAgreeTermsMerged = $project->text_link_agree_terms;
-        $textLinkAgreeTermsMerged = str_replace('{voorwaarden_link}', "<a href='" . $project->link_agree_terms . "' target='_blank'>voorwaarden</a>", $textLinkAgreeTermsMerged);
+        $textLinkAgreeTermsMerged = str_replace('{voorwaarden_link}', "<a href='" . $project->link_agree_terms . "' target='_blank'>" . $project->text_link_name_agree_terms . "</a>", $textLinkAgreeTermsMerged);
         $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkAgreeTermsMerged, 'contact', $contact);
         $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkAgreeTermsMerged, 'ik', Auth::user());
         $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkAgreeTermsMerged,'portal' );
@@ -274,7 +367,7 @@ class ContactController extends ApiController
         $textLinkAgreeTermsMerged = TemplateVariableHelper::replaceTemplateCooperativeVariables($textLinkAgreeTermsMerged,'cooperatie' );
 
         $textLinkUnderstandInfoMerged = $project->text_link_understand_info;
-        $textLinkUnderstandInfoMerged = str_replace('{project_informatie_link}', "<a href='" . $project->link_understand_info . "' target='_blank'>project informatie</a>", $textLinkUnderstandInfoMerged);
+        $textLinkUnderstandInfoMerged = str_replace('{project_informatie_link}', "<a href='" . $project->link_understand_info . "' target='_blank'>" . $project->text_link_name_understand_info . "</a>", $textLinkUnderstandInfoMerged);
         $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkUnderstandInfoMerged, 'contact', $contact);
         $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplateVariables($textLinkUnderstandInfoMerged, 'ik', Auth::user());
         $textLinkUnderstandInfoMerged = TemplateVariableHelper::replaceTemplatePortalVariables($textLinkUnderstandInfoMerged,'portal' );
@@ -373,6 +466,56 @@ class ContactController extends ApiController
         }
 
         return AdministrationResource::collection($administrations);
+    }
+
+    public function addContactToContactGroup(Contact $contact, ContactGroup $contactGroup)
+    {
+        if(!$contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+
+            $contactGroup->contacts()->attach([$contact->id => ['member_created_at' => \Illuminate\Support\Carbon::now(), 'member_to_group_since' => Carbon::now()]]);
+            if($contactGroup->laposta_list_id){
+                $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                $lapostaMemberHelper->createMember();
+            }
+
+            if($contactGroup->send_email_new_contact_link){
+                $contactGroupHelper = new ContactGroupHelper($contactGroup, $contact);
+                $contactGroupHelper->processEmailNewContactToGroup();
+            }
+            if($contactGroup->inspection_person_type_id !== null){
+                $contact->inspection_person_type_id = $contactGroup->inspection_person_type_id;
+                $contact->save();
+            }
+        }
+    }
+
+    public function removeContactFromContactGroup(Contact $contact, ContactGroup $contactGroup)
+    {
+        if($contactGroup->laposta_list_id){
+            if($contactGroup->contacts()->where('contact_id', $contact->id)->exists()){
+                $contactGroupPivot = $contactGroup->contacts()->where('contact_id', $contact->id)->first()->pivot;
+                if($contactGroupPivot->laposta_member_id !== null
+                    && $contactGroupPivot->laposta_member_state !== 'unknown'
+                    && $contactGroupPivot->laposta_member_state !== 'inprogress'
+                ){
+                    $lapostaMemberHelper = new LapostaMemberHelper($contactGroup, $contact);
+                    $lapostaMemberHelper->deleteMember();
+                }
+            }
+        }
+
+        $contactGroup->contacts()->detach($contact);
+
+        //now check if the contact is still in any inspection_person_type_group,
+        // if so set the inspection_person_type_id column to first found
+        // if not set the inspection_person_type_id column to null again
+        if($contact->groups()->whereNotNull('inspection_person_type_id')->exists()) {
+            $contact->inspection_person_type_id = $contact->groups()->whereNotNull('inspection_person_type_id')->first()->inspection_person_type_id;
+            $contact->save();
+        } else {
+            $contact->inspection_person_type_id = null;
+            $contact->save();
+        }
     }
 
     protected function updatePerson($contact, Request $request)
@@ -831,6 +974,63 @@ class ContactController extends ApiController
 
     }
 
+    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData)
+    {
+        // Array to hold transformed records
+        $updateValues = [];
+
+        foreach ($freeFieldsFieldRecordsData as $key => $value) {
+            // Extract record id from "record-{id}" format
+            $recordId = (int) str_replace('record-', '', $key);
+
+            // Fetch field format type from FreeFieldsField model
+            $freeFieldsField = FreeFieldsField::find($recordId);
+            $fieldFormatType = $freeFieldsField?->freeFieldsFieldFormat?->format_type ?? null;
+
+            if ($fieldFormatType) {
+                // Initialize a single record array with defaults
+                $record = [
+                    'id' => $recordId,
+                    'fieldFormatType' => $fieldFormatType, // add fieldFormatType
+                    'fieldRecordValueText' => null,
+                    'fieldRecordValueBoolean' => null,
+                    'fieldRecordValueInt' => null,
+                    'fieldRecordValueDouble' => null,
+                    'fieldRecordValueDatetime' => null,
+                ];
+
+                // Assign values based on format type
+                switch ($fieldFormatType) {
+                    case 'boolean':
+                        $record['fieldRecordValueBoolean'] = (bool) $value;
+                        break;
+                    case 'text_short':
+                    case 'text_long':
+                        $record['fieldRecordValueText'] = $value;
+                        break;
+                    case 'int':
+                        $record['fieldRecordValueInt'] = (int) $value;
+                        break;
+                    case 'double_2_dec':
+                    case 'amount_euro':
+                        $record['fieldRecordValueDouble'] = (double) str_replace(',', '.', $value);
+                        break;
+                    case 'date':
+                    case 'datetime':
+                        $record['fieldRecordValueDatetime'] = $value;
+                        break;
+                }
+
+                // Add the transformed record to updateValues
+                $updateValues[] = $record;
+            }
+        }
+
+        // Call updateValues with transformed data
+        $controller = new FreeFieldsFieldRecordController();
+        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues);
+    }
+
     protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)
     {
         //Make task note of changes
@@ -883,40 +1083,56 @@ class ContactController extends ApiController
     {
         $project->isSceOrPcrProject = $project->projectType->code_ref === 'postalcode_link_capital' || $project->is_sce_project;
         $project->hasParticipation = false;
-        $project->allowChangeParticipation = false;
+        $project->allowIncreaseParticipations = false;
         $project->allowPayMollie = false;
         $project->econobisPaymentLink = '';
         $project->allowRegisterToProject = false;
-        $project->textNotAllowedRegisterToProject = '';
+        $project->textNotAllowedRegisterToProject = 'Inschrijving op dit project niet mogelijk.';
         $project->participationsOptioned = 0;
         $project->amountOptioned = 0;
         $project->powerKwhConsumption = 0;
 
-        $previousParticipantProject = $contact->participations()->where('project_id', $project->id)->first();
-        // Is there allready a participation for this contact/project ?
-        if ($previousParticipantProject) {
+        // Fetch all participations for the contact that match the project and are not terminated
+        $participantProjects = $contact->participations()
+            ->where('project_id', $project->id)
+            ->whereNull('date_terminated')
+            ->get();
+
+        // Set hasParticipation if participations exist
+        if ($participantProjects->isNotEmpty()) {
             $project->hasParticipation = true;
-            $project->participationsOptioned = $previousParticipantProject->participations_optioned;
-            $project->amountOptioned = $previousParticipantProject->amount_optioned;
-            $project->powerKwhConsumption = $previousParticipantProject->power_kwh_consumption;
-            $previousMutation = optional(optional($previousParticipantProject)->mutationsAsc())->first(); // Pakken de eerste mutatie.
+        }
 
-            /* If mollie is used and there was a first mutation with status option and isn't paid by mollie yet, then:
-               - allow change of option participation
-               - allow to pay for mollie (still open)
-               - return also the econobisPaymentLink to pay with mollie */
-            if ($project->uses_mollie && $previousMutation && !$previousMutation->is_paid_by_mollie && $previousMutation->status && $previousMutation->status->code_ref === 'option') {
-                $project->allowChangeParticipation = true;
-                $project->allowPayMollie = true;
-                $project->econobisPaymentLink = $previousMutation->econobis_payment_link;
+        // Check if any mutation meets the criteria
+        $mutationToPay = null;
+        foreach ($participantProjects as $participantProject) {
+            $mutationToPay = $participantProject->mutationsAsc()
+                ->whereNull('date_payment')
+                ->get() // Retrieve all mutations in ascending order
+                ->first(fn($mutation) => !$mutation->is_paid_by_mollie); // Filter by the dynamic attribute
+
+            if ($mutationToPay) {
+                break; // Stop searching after finding the first valid mutation
             }
+        }
 
-        // no participation for this contact/project yet
-        } else {
+        // Set project fields if a valid mutation is found
+        if ($mutationToPay && $project->uses_mollie) {
+            $project->allowPayMollie = true;
+            $project->econobisPaymentLink = $mutationToPay->econobis_payment_link;
+        } else if ($project->allow_increase_participations_in_portal
+            && $project->date_start_registrations <= Carbon::now()->format('Y-m-d')
+            && $project->date_end_registrations >= Carbon::now()->format('Y-m-d')) {
+            $project->allowIncreaseParticipations = true;
+        }
+
+        // no participation for this contact/project yet or increase is allowed
+        if ( $project->hasParticipation === false || (bool)$project->allow_increase_participations_in_portal === true ) {
 
             // no membership required, then allow register to project
             if (!$project->is_membership_required) {
                 $project->allowRegisterToProject = true;
+                $project->textNotAllowedRegisterToProject = '';
 
             // membership required and project not visible for all contacts
             } elseif (!$project->visible_for_all_contacts) {
@@ -935,6 +1151,7 @@ class ContactController extends ApiController
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
                         $project->allowRegisterToProject = true;
+                        $project->textNotAllowedRegisterToProject = '';
                     }else {
                         // Contact not a member and if function came with incoming collection projects, then we remove (forget) this project.
                         if (!$project->allowRegisterToProject && $projects) {
@@ -966,6 +1183,7 @@ class ContactController extends ApiController
                     // if contact is member (through the linked contactgroups of project), then allow register to project
                     if($contactInRequiredContactGroup){
                         $project->allowRegisterToProject = true;
+                        $project->textNotAllowedRegisterToProject = '';
                     }else{
                         // Contact not a member, still show project, but don't allow register to project, and put info text in textfield not allowed register to project.
                         $project->textNotAllowedRegisterToProject = $project->text_info_project_only_members;

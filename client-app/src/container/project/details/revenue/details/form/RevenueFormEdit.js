@@ -14,7 +14,6 @@ import PanelFooter from '../../../../../../components/panel/PanelFooter';
 import ProjectRevenueAPI from '../../../../../../api/project/ProjectRevenueAPI';
 
 import { fetchRevenue, getDistribution } from '../../../../../../actions/project/ProjectDetailsActions';
-import Modal from '../../../../../../components/modal/Modal';
 import styled from '@emotion/styled';
 import ViewText from '../../../../../../components/form/ViewText';
 
@@ -54,13 +53,11 @@ class RevenueFormEdit extends Component {
         } = props.revenue;
 
         this.state = {
-            showModal: false,
             revenue: {
                 id,
                 distributionTypeId: distributionTypeId,
                 confirmed: !!confirmed,
                 status: status ? status : '',
-                conceptToUpdate: !!(status && status === 'concept-to-update'),
                 dateBegin: dateBegin ? moment(dateBegin).format('Y-MM-DD') : '',
                 dateEnd: dateEnd ? moment(dateEnd).format('Y-MM-DD') : '',
                 dateReference: dateReference ? moment(dateReference).format('Y-MM-DD') : '',
@@ -117,27 +114,6 @@ class RevenueFormEdit extends Component {
         dateEnd = moment(dateEnd);
 
         return dateEnd.year() > dateBegin.year();
-    };
-
-    toggleShowModal = () => {
-        this.setState({
-            showModal: !this.state.showModal,
-        });
-    };
-
-    cancelSetDate = () => {
-        this.setState({
-            ...this.state,
-            revenue: {
-                ...this.state.revenue,
-                dateConfirmed: '',
-                confirmed: false,
-            },
-        });
-
-        this.setState({
-            showModal: !this.state.showModal,
-        });
     };
 
     handleInputChange = event => {
@@ -198,29 +174,6 @@ class RevenueFormEdit extends Component {
                 [name]: value,
             },
         });
-    };
-
-    handleInputChangeDateConfirmed = (value, name) => {
-        if (value) {
-            this.setState({
-                ...this.state,
-                revenue: {
-                    ...this.state.revenue,
-                    [name]: value,
-                    confirmed: true,
-                },
-            });
-            this.toggleShowModal();
-        } else {
-            this.setState({
-                ...this.state,
-                revenue: {
-                    ...this.state.revenue,
-                    [name]: value,
-                    confirmed: false,
-                },
-            });
-        }
     };
 
     handleSubmit = event => {
@@ -470,7 +423,6 @@ class RevenueFormEdit extends Component {
             distributionTypeId,
             confirmed,
             status,
-            conceptToUpdate,
             dateBegin,
             dateEnd,
             dateReference,
@@ -654,12 +606,10 @@ class RevenueFormEdit extends Component {
 
                 <div className="row">
                     <ViewText className={'form-group col-sm-6'} label={'Status'} value={statusText} />
-                    <InputDate
+                    <ViewText
+                        className={'form-group col-sm-6'}
                         label={'Datum definitief'}
-                        name={'dateConfirmed'}
-                        value={dateConfirmed}
-                        readOnly={conceptToUpdate}
-                        onChangeAction={this.handleInputChangeDateConfirmed}
+                        value={dateConfirmed ? moment(dateConfirmed).format('L') : ''}
                     />
                 </div>
                 <div className="row">
@@ -1005,39 +955,6 @@ class RevenueFormEdit extends Component {
                         />
                     </div>
                 </PanelFooter>
-
-                {this.state.showModal && (
-                    <Modal
-                        buttonConfirmText="Bevestigen"
-                        closeModal={this.cancelSetDate}
-                        confirmAction={this.toggleShowModal}
-                        title="Bevestigen"
-                    >
-                        <p>
-                            {this.props.revenue.category.codeRef === 'redemptionEuro'
-                                ? 'Als je deze datum invult, zal de aflossing definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'
-                                : 'Als je deze datum invult, zal de opbrengst definitief worden gemaakt. Je kunt deze hierna niet meer aanpassen.'}
-                        </p>
-                        {(!payPercentage || payPercentage == 0) &&
-                        (!payAmount || payAmount == 0) &&
-                        (!revenue || revenue == 0) &&
-                        (!payPercentageValidFromKeyAmount || payPercentageValidFromKeyAmount == 0) ? (
-                            category.codeRef === 'redemptionEuro' ? (
-                                <p>
-                                    <span style={{ color: 'red' }}>Aflossing is 0 !!</span>
-                                </p>
-                            ) : projectTypeCodeRef === 'loan' || projectTypeCodeRef === 'obligation' ? (
-                                <p>
-                                    <span style={{ color: 'red' }}>Uitkering (rente) is 0 !!</span>
-                                </p>
-                            ) : projectTypeCodeRef === 'capital' || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                                <p>
-                                    <span style={{ color: 'red' }}>Resultaat is 0 !!</span>
-                                </p>
-                            ) : null
-                        ) : null}
-                    </Modal>
-                )}
             </form>
         );
     }

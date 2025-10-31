@@ -1,33 +1,30 @@
-import React, {useState} from 'react';
-import {hashHistory} from 'react-router';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import Icon from 'react-icons-kit';
 import { pencil } from 'react-icons-kit/fa/pencil';
 
-export default function ContactAvailabilityListItem({contact}) {
+export default function ContactAvailabilityListItem({ contact }) {
+    const navigate = useNavigate();
+
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighlightRow] = useState('');
     const onRowEnter = () => {
         setShowActionButtons(true);
         setHighlightRow('highlight-row');
-    }
+    };
 
     const onRowLeave = () => {
         setShowActionButtons(false);
         setHighlightRow('');
-    }
+    };
 
     const openItem = () => {
-        hashHistory.push(`/beschikbaarheid/${contact.id}`);
-    }
+        navigate(`/beschikbaarheid/${contact.id}`);
+    };
 
     return (
-        <tr
-            className={highlightRow}
-            onDoubleClick={openItem}
-            onMouseEnter={onRowEnter}
-            onMouseLeave={onRowLeave}
-        >
+        <tr className={highlightRow} onDoubleClick={openItem} onMouseEnter={onRowEnter} onMouseLeave={onRowLeave}>
             <td>{contact.name}</td>
             <td>
                 {showActionButtons && (

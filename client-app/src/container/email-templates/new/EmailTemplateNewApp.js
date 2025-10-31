@@ -2,13 +2,19 @@ import React, { Component } from 'react';
 
 import validator from 'validator';
 import { isEmpty } from 'lodash';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import EmailTemplateNewToolbar from './EmailTemplateNewToolbar';
 import EmailTemplateNew from './EmailTemplateNew';
 
 import EmailTemplateAPI from '../../../api/email-template/EmailTemplateAPI';
 import DocumentsAPI from '../../../api/document/DocumentsAPI';
+
+// Functionele wrapper voor de class component
+const EmailTemplateNewAppWrapper = props => {
+    const navigate = useNavigate();
+    return <EmailTemplateNewApp {...props} navigate={navigate} />;
+};
 
 class EmailTemplateNewApp extends Component {
     constructor(props) {
@@ -79,7 +85,7 @@ class EmailTemplateNewApp extends Component {
 
         !hasErrors &&
             EmailTemplateAPI.storeEmailTemplate(emailTemplate).then(payload => {
-                hashHistory.push(`/email-template/${payload.id}`);
+                this.props.navigate(`/email-template/${payload.id}`);
             });
     };
 
@@ -108,4 +114,4 @@ class EmailTemplateNewApp extends Component {
     }
 }
 
-export default EmailTemplateNewApp;
+export default EmailTemplateNewAppWrapper;

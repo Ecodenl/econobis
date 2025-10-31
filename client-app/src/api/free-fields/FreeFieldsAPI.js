@@ -1,10 +1,11 @@
-import axiosInstance from '../default-setup/AxiosInstance';
+import getAxiosInstance from '../default-setup/AxiosInstance';
+import { getApiUrl } from '../utils/ApiUrl';
 
 export default {
     fetchFreeFieldsFields: (filters, sorts, pagination) => {
-        const requestUrl = `${URL_API}/api/free-fields-field/grid`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/grid`;
 
-        return axiosInstance.get(requestUrl, {
+        return getAxiosInstance().get(requestUrl, {
             params: {
                 filters: JSON.stringify(filters),
                 sorts: JSON.stringify(sorts),
@@ -15,15 +16,15 @@ export default {
     },
 
     deleteFreeFieldsField: id => {
-        const requestUrl = `${URL_API}/api/free-fields-field/${id}/delete`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/${id}/delete`;
 
-        return axiosInstance.post(requestUrl);
+        return getAxiosInstance().post(requestUrl);
     },
 
     newFreeFieldsField: freeFieldsField => {
-        const requestUrl = `${URL_API}/api/free-fields-field`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .post(requestUrl, freeFieldsField)
             .then(function(response) {
                 return response.data;
@@ -34,45 +35,50 @@ export default {
     },
 
     fetchFreeFieldDetails: id => {
-        const requestUrl = `${URL_API}/api/free-fields-field/${id}`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/${id}`;
 
-        return axiosInstance.get(requestUrl).then(response => {
-            return response.data.data;
-        });
+        return getAxiosInstance()
+            .get(requestUrl)
+            .then(response => {
+                return response.data.data;
+            });
     },
 
     updateFreeFieldsField: freeFieldsField => {
-        return axiosInstance.post(`${URL_API}/api/free-fields-field/${freeFieldsField.id}/update`, freeFieldsField);
+        return getAxiosInstance().post(
+            `${getApiUrl()}/api/free-fields-field/${freeFieldsField.id}/update`,
+            freeFieldsField
+        );
     },
 
     fetchFilterFreeFieldsFieldsContact: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter/contacts`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/get-for-filter/contacts`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     fetchFilterFreeFieldsFieldsAddress: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/get-for-filter/addresses`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/get-for-filter/addresses`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     peekFreeFieldsTables: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/free-fields-tables/peek`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/free-fields-tables/peek`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     peekFreeFieldsFieldFormats: () => {
-        const requestUrl = `${URL_API}/api/free-fields-field/free-fields-field-formats/peek`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field/free-fields-field-formats/peek`;
 
-        return axiosInstance.get(requestUrl);
+        return getAxiosInstance().get(requestUrl);
     },
 
     fetchFreeFieldsFieldRecords: (table, recordId) => {
-        const requestUrl = `${URL_API}/api/free-fields-field-records/get-values`;
+        const requestUrl = `${getApiUrl()}/api/free-fields-field-records/get-values`;
 
-        return axiosInstance
+        return getAxiosInstance()
             .get(requestUrl, {
                 params: {
                     table: table,
@@ -83,7 +89,7 @@ export default {
     },
 
     updateFreeFieldsFieldRecords: (table, data, recordId) => {
-        const requestUrl = `${URL_API}/api/free-fields-field-records/update-values`;
-        return axiosInstance.post(requestUrl, { data: { table: table, records: data, recordId: recordId } });
+        const requestUrl = `${getApiUrl()}/api/free-fields-field-records/update-values`;
+        return getAxiosInstance().post(requestUrl, { data: { table: table, records: data, recordId: recordId } });
     },
 };

@@ -26,6 +26,8 @@ function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSu
                         <Form>
                             <Row>
                                 <Col>
+                                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                                    {initialQuotationRequest.opportunity.intake.contact.number}
                                     <FormLabel className={'field-label'}>Naam</FormLabel>
                                     <input
                                         type="text"
@@ -56,6 +58,13 @@ function QuotationRequestCoach({ redirectBack, initialQuotationRequest, handleSu
                                     />
                                     <FormLabel className={'field-label'}>Omschrijving</FormLabel>
                                     {initialQuotationRequest.quotationText}
+                                    <FormLabel className={'field-label'}>Maatregel specifiek</FormLabel>
+                                    <input
+                                        type="text"
+                                        className={`text-input w-input content`}
+                                        value={initialQuotationRequest.measureNames}
+                                        readOnly={true}
+                                    />
                                     <FormLabel className={'field-label'}>Status</FormLabel>
                                     <input
                                         type="text"

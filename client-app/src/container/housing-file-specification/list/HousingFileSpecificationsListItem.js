@@ -51,6 +51,7 @@ class HousingFileSpecificationsListItem extends Component {
             measureName,
             status,
             measureDate,
+            createdAt,
             answer,
             floor,
             side,
@@ -71,7 +72,7 @@ class HousingFileSpecificationsListItem extends Component {
             <>
                 <tr
                     className={this.state.highlightRow}
-                    // onDoubleClick={permissions.manageFinancial ? () => this.openItem(id) : null}
+                    // onDoubleClick={permissions.manageHousingFile ? () => this.openItem(id) : null}
                     onMouseEnter={() => this.onRowEnter()}
                     onMouseLeave={() => this.onRowLeave()}
                     onClick={() => this.toggleShowMore()}
@@ -105,6 +106,7 @@ class HousingFileSpecificationsListItem extends Component {
                     <td>{status ? status.name : ''}</td>
                     <td>{measureDate ? moment(measureDate).format('DD-MM-Y') : ''}</td>
                     <td>{typeBrand}</td>
+                    <td>{createdAt ? moment(createdAt).format('DD-MM-Y') : ''}</td>
                     <td>
                         {!showCheckboxList && hasMore ? (
                             <a role="button" onClick={() => this.toggleShowMore()}>

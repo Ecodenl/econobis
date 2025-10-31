@@ -18,7 +18,7 @@ class checkOverlappingEnergySuppliers extends Command
      * @var string
      */
     protected $signature = 'addressEnergySupplier:checkOverlappingEnergySuppliers';
-    protected $mailTo = 'wim.mosman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.

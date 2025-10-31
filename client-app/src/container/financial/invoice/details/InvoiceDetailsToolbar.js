@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { browserHistory, hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 import ButtonIcon from '../../../../components/button/ButtonIcon';
 import InvoiceDetailsFormSetPaid from './general/InvoiceDetailsFormSetPaid';
@@ -11,6 +11,12 @@ import InvoiceDetailsAPI from '../../../../api/invoice/InvoiceDetailsAPI';
 import { previewSend } from '../../../../actions/invoice/InvoicesActions';
 import InvoiceDetailsFormDelete from './general/InvoiceDetailsFormDelete';
 import { setError } from '../../../../actions/general/ErrorActions';
+
+// Functionele wrapper voor de class component
+const InvoiceToolbarWrapper = props => {
+    const navigate = useNavigate();
+    return <InvoiceToolbar {...props} navigate={navigate} />;
+};
 
 class InvoiceToolbar extends Component {
     constructor(props) {
@@ -26,7 +32,7 @@ class InvoiceToolbar extends Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
+    UNSAFE_componentWillReceiveProps(nextProps) {
         if (this.props !== nextProps) {
             if (nextProps.invoiceDetails.dateReminder3) {
                 this.setState({
@@ -69,7 +75,7 @@ class InvoiceToolbar extends Component {
             );
         } else {
             this.props.previewSend([this.props.invoiceDetails.id]);
-            hashHistory.push(
+            this.props.navigate(
                 `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/email/${paymentType}`
             );
         }
@@ -78,7 +84,7 @@ class InvoiceToolbar extends Component {
     showSendPost = () => {
         let paymentType = this.props.invoiceDetails.paymentTypeId === 'collection' ? 'incasso' : 'overboeken';
         this.props.previewSend([this.props.invoiceDetails.id]);
-        hashHistory.push(
+        this.props.navigate(
             `/financieel/${this.props.invoiceDetails.order.administrationId}/notas/te-verzenden/verzenden/post/${paymentType}`
         );
     };
@@ -95,12 +101,17 @@ class InvoiceToolbar extends Component {
         this.setState({ showSetIrrecoverable: !this.state.showSetIrrecoverable });
     };
 
-    showDelete = () => {
-        this.setState({ showDelete: !this.state.showDelete });
+    showDeleteModal = () => {
+        this.setState({ showDelete: true });
+    };
+
+    hideDeleteModal = () => {
+        this.setState({ showDelete: false });
+        this.props.navigate(-1);
     };
 
     view = () => {
-        hashHistory.push(`/nota/inzien/${this.props.invoiceDetails.id}`);
+        this.props.navigate(`/nota/inzien/${this.props.invoiceDetails.id}`);
     };
 
     render() {
@@ -108,12 +119,13 @@ class InvoiceToolbar extends Component {
             (this.props.invoiceDetails.statusId === 'to-send' || this.props.invoiceDetails.statusId === 'sent') &&
             this.props.invoiceDetails.usesTwinfield &&
             !this.props.invoiceDetails.compatibleWithTwinfield;
+        const { navigate } = this.props;
 
         return (
             <div className="row">
                 <div className="col-md-4">
                     <div className="btn-group btn-group-flex margin-small" role="group">
-                        <ButtonIcon iconName={'arrowLeft'} onClickAction={browserHistory.goBack} />
+                        <ButtonIcon iconName={'arrowLeft'} onClickAction={() => navigate(-1)} />
                         <ButtonIcon iconName={'eye'} onClickAction={this.view} />
                         {(this.props.invoiceDetails.statusId === 'to-send' ||
                             this.props.invoiceDetails.statusId === 'error-sending') &&
@@ -143,13 +155,15 @@ class InvoiceToolbar extends Component {
                             this.props.invoiceDetails.statusId !== 'error-making' &&
                             this.props.invoiceDetails.statusId !== 'error-sending' &&
                             this.props.invoiceDetails.statusId !== 'is-resending' &&
+                            this.props.invoiceDetails.statusId !== 'is-exporting' &&
+                            this.props.invoiceDetails.statusId !== 'error-exporting' &&
                             this.props.invoiceDetails.statusId !== 'paid' &&
                             this.props.invoiceDetails.statusId !== 'irrecoverable' && (
                                 <ButtonIcon iconName={'remove'} onClickAction={this.showSetIrrecoverable} />
                             )}
                         <ButtonIcon iconName={'download'} onClickAction={this.download} />
                         {this.props.invoiceDetails.statusId === 'to-send' && (
-                            <ButtonIcon iconName={'trash'} onClickAction={this.showDelete} />
+                            <ButtonIcon iconName={'trash'} onClickAction={this.showDeleteModal} />
                         )}
                     </div>
                 </div>
@@ -189,7 +203,7 @@ class InvoiceToolbar extends Component {
                     <InvoiceDetailsFormDelete
                         number={this.props.invoiceDetails.number}
                         id={this.props.invoiceDetails.id}
-                        closeDeleteItemModal={this.showDelete}
+                        closeDeleteItemModal={this.hideDeleteModal}
                     />
                 )}
             </div>
@@ -213,4 +227,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbar);
+export default connect(mapStateToProps, mapDispatchToProps)(InvoiceToolbarWrapper);

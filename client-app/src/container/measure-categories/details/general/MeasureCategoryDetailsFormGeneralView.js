@@ -17,6 +17,8 @@ const MeasureCategoryDetailsFormGeneralView = ({
     explanationWfCreateOpportunity,
     explanationWfCreateQuotationRequest,
     explanationWfEmailQuotationRequest,
+    calendarBackgroundColor,
+    calendarTextColor
 }) => {
     return (
         <div onClick={switchToEdit}>
@@ -140,6 +142,62 @@ const MeasureCategoryDetailsFormGeneralView = ({
                             )}
                         </React.Fragment>
                     )}
+
+                    <div className="row">
+                        <ViewText
+                            label={'Kalenderitem achtergrondkleur'}
+                            divSize={'col-sm-8'}
+                            value={calendarBackgroundColor}
+                            className={'col-sm-6 form-group'}
+                            labelSize={'col-sm-10'}
+                            valueSize={'col-sm-2'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: calendarBackgroundColor,
+                                color: calendarTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px 15px',
+                                borderRadius: '2px',
+                                width: '130px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Kalender item
+                        </span>
+                    </div>
+
+                    <div className="row">
+                        <ViewText
+                            label={'Kalenderitem tekstkleur'}
+                            divSize={'col-sm-8'}
+                            value={calendarTextColor}
+                            className={'col-sm-6 form-group'}
+                            labelSize={'col-sm-10'}
+                            valueSize={'col-sm-2'}
+                        />
+                        <span
+                            className="rc-color-picker-trigger"
+                            unselectable="unselectable"
+                            style={{
+                                backgroundColor: calendarBackgroundColor,
+                                color: calendarTextColor,
+                                border: '1px solid #999',
+                                display: 'inline-block',
+                                padding: '2px 15px',
+                                borderRadius: '2px',
+                                width: '130px',
+                                height: '30px',
+                                boxShadow: '0 0 0 2px #fff inset',
+                            }}
+                        >
+                            Kalender item
+                        </span>
+                    </div>
                 </PanelBody>
             </Panel>
         </div>

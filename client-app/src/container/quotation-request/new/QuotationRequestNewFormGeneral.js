@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { hashHistory } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 import moment from 'moment';
 
 moment.locale('nl');
@@ -13,6 +13,13 @@ import InputTextArea from '../../../components/form/InputTextArea';
 import validator from 'validator';
 import InputTime from '../../../components/form/InputTime';
 import Modal from '../../../components/modal/Modal';
+import ViewText from '../../../components/form/ViewText';
+
+// Functionele wrapper voor de class component
+const QuotationRequestNewFormGeneralWrapper = props => {
+    const navigate = useNavigate();
+    return <QuotationRequestNewFormGeneral {...props} navigate={navigate} />;
+};
 
 class QuotationRequestNewFormGeneral extends Component {
     constructor(props) {
@@ -27,6 +34,7 @@ class QuotationRequestNewFormGeneral extends Component {
             opportunity: {
                 fullName: '',
                 fullAddress: '',
+                opportunityNumber: '',
                 measureName: '',
                 organisationsOrCoaches: [],
                 projectManagers: [],
@@ -47,8 +55,11 @@ class QuotationRequestNewFormGeneral extends Component {
                 datePlanned: '',
                 timePlanned: '',
                 dateApprovedClient: '',
+                notApprovedClient: false,
                 dateApprovedProjectManager: '',
+                notApprovedProjectManager: false,
                 dateApprovedExternal: '',
+                notApprovedExternal: false,
                 quotationText: '',
                 quotationAmount: '',
                 costAdjustment: '',
@@ -67,7 +78,7 @@ class QuotationRequestNewFormGeneral extends Component {
         this.handleInputChangeDate = this.handleInputChangeDate.bind(this);
     }
 
-    componentWillMount() {
+    UNSAFE_componentWillMount() {
         QuotationRequestDetailsAPI.fetchNewQuotationRequest(
             this.props.opportunityId,
             this.props.opportunityAction.id
@@ -106,6 +117,7 @@ class QuotationRequestNewFormGeneral extends Component {
                 opportunity: {
                     fullName: payload.intake.contact.fullName,
                     fullAddress: payload.intake.fullAddress,
+                    opportunityNumber: payload.number,
                     organisationsOrCoaches:
                         payload.intake && payload.intake.campaign ? payload.intake.campaign.organisationsOrCoaches : '',
                     projectManagers:
@@ -253,7 +265,7 @@ class QuotationRequestNewFormGeneral extends Component {
         !hasErrors &&
             QuotationRequestDetailsAPI.newQuotationRequest(quotationRequest)
                 .then(payload => {
-                    hashHistory.push(`/offerteverzoek/${payload.data.id}`);
+                    this.props.navigate(`/offerteverzoek/${payload.data.id}`);
                 })
                 .catch(error => {
                     if (error.response && error.response.status === 422) {
@@ -292,7 +304,7 @@ class QuotationRequestNewFormGeneral extends Component {
         this.setState({
             showHoomdossierWarningModal: false,
         });
-        hashHistory.push(`/kans/${this.props.opportunityId}`);
+        this.props.navigate(`/kans/${this.props.opportunityId}`);
     };
 
     render() {
@@ -321,6 +333,7 @@ class QuotationRequestNewFormGeneral extends Component {
         const {
             fullName,
             fullAddress,
+            opportunityNumber,
             organisationsOrCoaches,
             projectManagers,
             externalParties,
@@ -375,6 +388,12 @@ class QuotationRequestNewFormGeneral extends Component {
                         options={externalParties}
                         onChangeAction={this.handleInputChange}
                         error={this.state.errors.externalPartyId}
+                    />
+                    <ViewText
+                        label={'Kansnummer'}
+                        id={'opportunityNumber'}
+                        className={'col-sm-6 form-group'}
+                        value={opportunityNumber}
                     />
                 </div>
 
@@ -649,4 +668,4 @@ class QuotationRequestNewFormGeneral extends Component {
     }
 }
 
-export default QuotationRequestNewFormGeneral;
+export default QuotationRequestNewFormGeneralWrapper;

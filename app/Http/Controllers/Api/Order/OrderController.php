@@ -261,7 +261,7 @@ class OrderController extends ApiController
         $priceHistory->price_number_of_decimals = $productData['priceNumberOfDecimals'];
         $priceHistory->price = $productData['price'];
         $priceHistory->price_incl_vat = $productData['priceInclVat'];
-        $priceHistory->vat_percentage = $productData['vatPercentage'] ? $productData['vatPercentage'] : null;
+        $priceHistory->vat_percentage = ($productData['vatPercentage'] != '') ? $productData['vatPercentage'] : null;
 
         $orderProductData = $request->input('orderProduct');
 

@@ -162,7 +162,7 @@
                 <td class="align-left">{!! (str_replace('€', '&euro;', $invoiceProduct->description)) !!}</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span> {{ number_format($invoiceProduct->price, $invoiceProduct->price_number_of_decimals, ',', '.') }}</td>
                 <td class="align-right">{{ $invoiceProduct->amount }}</td>
-                <td class="align-right">@if($invoice->vatInfo){{ $invoiceProduct->vat_percentage ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
+                <td class="align-right">@if($invoice->vatInfo){{ ($invoiceProduct->vat_percentage !== null) ? number_format($invoiceProduct->vat_percentage, 2, ',', '.') . '%' : 'Geen'}}@endif</td>
                 <td class="align-right"><span class="euro-sign">&euro;</span> {{ $invoiceProduct->amount_excl_vat_formatted }}</td>
             </tr>
 

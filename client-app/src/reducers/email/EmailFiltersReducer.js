@@ -103,14 +103,15 @@ export default (state = filtersReducerDefaultState, action) => {
                     data: action.responsibleName,
                 },
             };
-        case 'SET_FILTER_EMAIL_ME':
-            return {
-                ...state,
-                me: {
-                    ...state.me,
-                    data: action.me,
-                },
-            };
+        // todo WM: Eigen e-mail gaat niet meer vanuit oude mail, eigen e-mail gaat nu naar nieuwe splitview
+        // case 'SET_FILTER_EMAIL_ME':
+        //     return {
+        //         ...state,
+        //         me: {
+        //             ...state.me,
+        //             data: action.me,
+        //         },
+        //     };
         case 'CLEAR_FILTER_EMAIL':
             return {
                 ...state,

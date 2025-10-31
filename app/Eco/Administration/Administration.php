@@ -14,7 +14,7 @@ use App\Eco\PaymentInvoice\PaymentInvoice;
 use App\Eco\PortalSettingsLayout\PortalSettingsLayout;
 use App\Eco\Product\Product;
 use App\Eco\Project\Project;
-use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
+//use App\Eco\Twinfield\TwinfieldConnectionTypeWithIdAndName;
 use App\Eco\Twinfield\TwinfieldCustomerNumber;
 use App\Eco\User\User;
 use App\Http\Traits\Encryptable;
@@ -47,12 +47,12 @@ class Administration extends Model
         return $this->hasMany(TwinfieldCustomerNumber::class);
     }
 
-    public function getTwinfieldConnectionTypeWithIdAndName()
-    {
-        if(!$this->twinfield_connection_type) return null;
-
-        return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
-    }
+//    public function getTwinfieldConnectionTypeWithIdAndName()
+//    {
+//        if(!$this->twinfield_connection_type) return null;
+//
+//        return TwinfieldConnectionTypeWithIdAndName::get($this->twinfield_connection_type);
+//    }
 
     public function users()
     {
@@ -201,7 +201,7 @@ class Administration extends Model
             ->whereDoesntHave('invoices', function ($q) {
                 $q->where(function ($q2) {
                     $q2->where('orders.collection_frequency_id', 'once')
-                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ]);
                 });
             })->count();
     }
@@ -214,7 +214,7 @@ class Administration extends Model
             ->whereDoesntHave('invoices', function ($q) {
                 $q->where(function ($q2) {
                     $q2->where('orders.collection_frequency_id', 'once')
-                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                        ->orWhereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ]);
                 });
             })->count();
     }
@@ -229,7 +229,7 @@ class Administration extends Model
         return $this->orders()
             ->where('orders.status_id', 'active')
             ->whereHas('invoices', function ($q) {
-                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ]);
+                $q->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ]);
             })->count();
     }
 
@@ -278,9 +278,19 @@ class Administration extends Model
         return $this->invoices()->where('status_id', 'error-making')->count();
     }
 
-    public function getTotalInvoicesisResendingAttribute()
+    public function getTotalInvoicesIsResendingAttribute()
     {
         return $this->invoices()->where('status_id', 'is-resending')->count();
+    }
+
+    public function getTotalInvoicesIsExportingAttribute()
+    {
+        return $this->invoices()->where('status_id', 'is-exporting')->count();
+    }
+
+    public function getTotalInvoicesErrorExportingAttribute()
+    {
+        return $this->invoices()->where('status_id', 'error-exporting')->count();
     }
 
     public function getTotalInvoicesSentAttribute()
@@ -293,7 +303,7 @@ class Administration extends Model
                 })->orWhere(function ($q) {
                     $q->where('payment_type_id', '!=', 'transfer');
                 });
-            })->where('status_id', 'sent')->whereNull('date_reminder_1')
+            })->whereIn('invoices.status_id', ['sent', 'error-exporting'])->whereNull('date_reminder_1')
             ->whereNull('date_reminder_2')->whereNull('date_reminder_3')
             ->whereNull('date_exhortation')->count();
     }
@@ -323,7 +333,7 @@ class Administration extends Model
                             ->where('invoices.days_to_expire', '<=', '0');
 
                     })->orWhere(function ($q) {
-                        $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                        $q->whereIn('invoices.status_id', ['sent', 'error-exporting'])->where('invoices.payment_type_id', 'transfer')
                             ->where('invoices.days_to_expire', '<=', '0');
                     });
             })
@@ -441,12 +451,12 @@ class Administration extends Model
 
     public function getPendingInvoicesPresentAttribute() {
 
-        return $this->invoices()->whereIn('invoices.status_id', ['in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])->exists();
+        return $this->invoices()->whereIn('invoices.status_id', ['in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ])->exists();
 
     }
 
     public function getOldestUnpaidInvoiceDateAttribute() {
-        $oldestUnpaidInvoice = $this->invoices()->whereIn('invoices.status_id', ['sent', 'exported'])->whereNotNull('invoices.date_sent')->orderBy('invoices.date_sent')->first();
+        $oldestUnpaidInvoice = $this->invoices()->whereIn('invoices.status_id', ['sent', 'exported', 'error-exporting'])->whereNotNull('invoices.date_sent')->orderBy('invoices.date_sent')->first();
         return $oldestUnpaidInvoice ? $oldestUnpaidInvoice->date_sent : null;
     }
 

@@ -15,7 +15,7 @@ import ResponsibleInputSelect from '../../../components/email/ResponsibleInputSe
 import { EmailModalContext } from '../../../context/EmailModalContext';
 import { mapEmojiToStatuses } from '../../../helpers/EmailStatusHelpers';
 
-export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAttributes, deleted }) {
+export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAttributes, deletedHandler }) {
     const { openEmailDetailsModal, openEmailSendModal } = useContext(EmailModalContext);
     const statusses = useSelector(state => mapEmojiToStatuses(state.systemData.emailStatuses));
 
@@ -43,7 +43,7 @@ export default function EmailSplitViewDetailsHeaderPanel({ email, updateEmailAtt
         }
 
         EmailGenericAPI.deleteMultiple([email.id]).then(() => {
-            deleted();
+            deletedHandler();
         });
     };
 

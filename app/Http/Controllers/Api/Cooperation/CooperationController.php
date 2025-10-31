@@ -73,9 +73,8 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
-
+        $cooperation->require_team_on_user_create = $request->boolean('requireTeamOnUserCreate');
         $cooperation->cleanup_email = $request->boolean('cleanupEmail');
-
         $cooperation->save();
 
         return $this->show();
@@ -122,9 +121,8 @@ class CooperationController extends ApiController
         }
         $cooperation->show_external_url_for_contacts = $request->boolean('showExternalUrlForContacts');
         $cooperation->external_url_contacts_on_new_page = $request->boolean('externalUrlContactsOnNewPage');
-
+        $cooperation->require_team_on_user_create = $request->boolean('requireTeamOnUserCreate');
         $cooperation->cleanup_email = $request->boolean('cleanupEmail');
-
         $cooperation->save();
 
         //empty contact_groups_contacts_for_report if create_contacts_for_report_table is set to false

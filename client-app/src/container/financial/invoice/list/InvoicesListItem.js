@@ -155,7 +155,9 @@ class InvoicesListItem extends Component {
             this.props.statusId === 'is-sending' ||
             this.props.statusId === 'error-making' ||
             this.props.statusId === 'error-sending' ||
-            this.props.statusId === 'is-resending'
+            this.props.statusId === 'is-resending' ||
+            this.props.statusId === 'is-exporting' ||
+            this.props.statusId === 'error-exporting'
                 ? 'in-progress-row'
                 : '';
         const errorStatus =
@@ -287,6 +289,8 @@ class InvoicesListItem extends Component {
                     this.props.statusId !== 'error-making' &&
                     this.props.statusId !== 'error-sending' &&
                     this.props.statusId !== 'is-resending' &&
+                    this.props.statusId !== 'is-exporting' &&
+                    this.props.statusId !== 'error-exporting' &&
                     this.props.statusId !== 'paid' &&
                     this.props.statusId !== 'irrecoverable' ? (
                         <a role="button" onClick={() => this.showSetIrrecoverable()} title="Zet op oninbaar">

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Contact;
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactAvailability;
 use App\Eco\District\District;
+use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -42,8 +43,10 @@ class ContactAvailabilityController
 
         $startOfWeek = Carbon::make($request->input('startOfWeek'))->startOfWeek();
         $endOfWeek = $startOfWeek->copy()->endOfWeek();
+        $opportunityActionVisitId = OpportunityAction::where('code_ref', 'visit')->first()->id;
+        $quotationRequestStatusVisitCancelledId = QuotationRequestStatus::where('opportunity_action_id', $opportunityActionVisitId)->where('code_ref', QuotationRequestStatus::STATUS_VISIT_CANCELLED_CODE_REF)->first()->id;
 
-        return $district->coaches->map(function(Contact $coach) use ($endOfWeek, $startOfWeek) {
+        return $district->coaches->map(function(Contact $coach) use ($endOfWeek, $startOfWeek, $quotationRequestStatusVisitCancelledId) {
             /**
              * getPlannableAvailabilitiesInPeriod() resultaat in tijdelijke variabele op coach opslaan
              * zodat we deze hieronder niet meerdere keren hoeven te berekenen.
@@ -54,11 +57,11 @@ class ContactAvailabilityController
         })->filter(function(Contact $coach) {
             return $coach->temp_availabilities->count() > 0;
         })
-        ->load(['quotationRequests' => function($query) use ($startOfWeek, $request){
+        ->load(['quotationRequests' => function($query) use ($startOfWeek, $request, $quotationRequestStatusVisitCancelledId){
             $endOfWeek = $startOfWeek->copy()->endOfWeek();
             $query->whereBetween('date_planned', [$startOfWeek, $endOfWeek])
                 ->where('uses_planning', true)
-                ->where('status_id', '!=', QuotationRequestStatus::STATUS_VISIT_CANCELLED_ID);
+                ->where('status_id', '!=', $quotationRequestStatusVisitCancelledId);
         }])
         ->map(function(Contact $coach) {
             return [

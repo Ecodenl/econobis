@@ -5,9 +5,9 @@ namespace Database\Seeders;
 use App\Eco\Address\Address;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
-use App\Eco\Intake\IntakeSource;
-use App\Eco\Measure\Measure;
-use App\Eco\Measure\MeasureRequested;
+use App\Eco\IntakeSource\IntakeSource;
+//use App\Eco\Measure\Measure;
+//use App\Eco\Measure\MeasureRequested;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use Illuminate\Database\Seeder;
 
@@ -42,18 +42,18 @@ class IntakesSeeder extends Seeder
                     );
 
 
-                    // Als er een intake is kunnen er ook measuresRequested aan het adres zijn gekoppeld
-                    Measure::inRandomOrder()
-                        ->limit(random_int(0, 3))
-                        ->get()
-                        ->each(function ($measure) use ($address, $faker) {
-                            MeasureRequested::factory()->count(1)
-                                ->create([
-                                    'address_id' => $address->id,
-                                    'measure_id' => $measure->id,
-                                ]
-                            );
-                        });
+//                    // Als er een intake is kunnen er ook measuresRequested aan het adres zijn gekoppeld
+//                    Measure::inRandomOrder()
+//                        ->limit(random_int(0, 3))
+//                        ->get()
+//                        ->each(function ($measure) use ($address, $faker) {
+//                            MeasureRequested::factory()->count(1)
+//                                ->create([
+//                                    'address_id' => $address->id,
+//                                    'measure_id' => $measure->id,
+//                                ]
+//                            );
+//                        });
 
                 });
         }

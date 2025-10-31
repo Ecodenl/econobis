@@ -239,11 +239,12 @@ class ContactController extends ApiController
         return $documentBody;
     }
 
-    public function getContactFreeFields(Contact $contact)
-    {
-        $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
-        return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
-    }
+// ToDo WM: check, deze wordt als het goed is niet meer gebruikt. Vervangen door FreeFields\FreeFieldsFieldRecordController@getContactValuesForPortal ?!
+//    public function getContactFreeFields(Contact $contact)
+//    {
+//        $freeFieldsFieldRecordController = new FreeFieldsFieldRecordController();
+//        return $freeFieldsFieldRecordController->getValuesForPortal('contacts', $contact->id,);
+//    }
     public function getContactPortalFreeFields(Contact $contact, Request $request)
     {
         $urlPageRef = $request->get('urlPageRef');

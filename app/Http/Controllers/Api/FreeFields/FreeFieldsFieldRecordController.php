@@ -71,12 +71,18 @@ class FreeFieldsFieldRecordController extends ApiController
                 break;
         }
 
-        $this->updateRecordValues($contactId, $records);
+        if( isset($request->get('data')['recordId']) && isset($request->get('data')['records']) ){
+            $recordId = $request->get('data')['recordId'];
+            $records = $request->get('data')['records'];
+            $this->updateRecordValues($recordId, $records);
+        }
 
     }
     public function updateValuesFromFreeFieldsContact($contactId, array $records)
     {
 //        $this->authorize('view', FreeFieldsField::class);
+        $object = Contact::find($contactId);
+        $this->authorize('update', $object);
 
         $this->updateRecordValues($contactId, $records);
 

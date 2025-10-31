@@ -325,238 +325,239 @@ const DefaultContactOrganisationEdit = function({
                         </Col>
                     </Row>
 
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
-                </Row>
-
-                <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={false} />
-            </Col>
-
-            <Col xs={12} md={6}>
-                <FormLabel
-                    htmlFor="street"
-                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
-                >
-                    Bezoekadres
-                    {initialContact.blockChangeAddress ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
-                    ) : initialContact.blockChangeAddressNumber ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Postcode en huisnummer is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied met huisnummerreeks`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
-                    ) : initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Postcode is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
-                    ) : (
-                        ''
-                    )}
-                </FormLabel>
-                {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
-                (!isEmpty(values.visitAddress.street + '') ||
-                    !isEmpty(values.visitAddress.number + '') ||
-                    !isEmpty(values.visitAddress.addition + '') ||
-                    !isEmpty(values.visitAddress.postalCode + '') ||
-                    !isEmpty(values.visitAddress.city + '')) ? (
+                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
                     <Row>
-                        <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
-                            </small>
-                        </Col>
+                        <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
                     </Row>
-                ) : (
-                    ''
-                )}
-                <Row>
-                    <Col xs={12} sm={12}>
-                        <Field name="visitAddress.street">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street"
-                                    placeholder={'Straat'}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="visitAddress.number">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street_number"
-                                    placeholder={'Nummer'}
-                                    disabled={
-                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={4}>
-                        <Field name="visitAddress.addition">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="addition"
-                                    placeholder={'Toevoeging'}
-                                    disabled={
-                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="visitAddress.postalCode">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="postal_code"
-                                    placeholder={'Postcode'}
-                                    disabled={
-                                        initialContact.blockChangeAddress ||
-                                        initialContact.isParticipantSceProject ||
-                                        initialContact.isParticipantPcrProject
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={8}>
-                        <Field name="visitAddress.city">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="city"
-                                    placeholder={'Plaats'}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field name="visitAddress.countryId">
-                            {({ field }) => (
-                                <Select
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="country_id"
-                                    placeholder={'Selecteer uw land'}
-                                    options={Countries}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
 
-                <FreeFields
-                    freeFieldsFieldRecords={initialContact.visitAddress.freeFieldsFieldRecords}
-                    showEdit={false}
-                />
+                    <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={false} />
+                </Col>
 
-                {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                    <>
-                        <FormLabel
-                            htmlFor="ean_electricity"
-                            className={
-                                projectTypeCodeRef === 'postalcode_link_capital'
-                                    ? 'field-label required'
-                                    : 'field-label'
-                            }
-                        >
-                            EAN nummer elektriciteit
-                        </FormLabel>
-                        {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
-                        !isEmpty(values.visitAddress.eanElectricity + '') ? (
-                            <Row>
-                                <Col xs={12} sm={12}>
-                                    <small className={'text-danger'}>
-                                        EAN nummer elektriciteit wordt alleen opgeslagen als minimaal nummer en postcode
-                                        zijn ingevuld bij bezoekadres.
-                                    </small>
-                                </Col>
-                            </Row>
+                <Col xs={12} md={6}>
+                    <FormLabel
+                        htmlFor="street"
+                        className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                    >
+                        Bezoekadres
+                        {initialContact.blockChangeAddress ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : initialContact.blockChangeAddressNumber ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Postcode en huisnummer is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied met huisnummerreeks`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Postcode is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
                         ) : (
                             ''
                         )}
+                    </FormLabel>
+                    {(isEmpty(values.visitAddress.number + '') || isEmpty(values.visitAddress.postalCode + '')) &&
+                    (!isEmpty(values.visitAddress.street + '') ||
+                        !isEmpty(values.visitAddress.number + '') ||
+                        !isEmpty(values.visitAddress.addition + '') ||
+                        !isEmpty(values.visitAddress.postalCode + '') ||
+                        !isEmpty(values.visitAddress.city + '')) ? (
                         <Row>
-                            <Col xs={12} sm={12} md={8}>
-                                <Field name="visitAddress.eanElectricity">
-                                    {({ field }) => (
-                                        <InputText
-                                            field={field}
-                                            errors={errors}
-                                            touched={touched}
-                                            id="ean_electricity"
-                                            placeholder={'EAN nummer elektriciteit'}
-                                        />
-                                    )}
-                                </Field>
+                            <Col xs={12} sm={12}>
+                                <small className={'text-danger'}>
+                                    Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                                </small>
                             </Col>
                         </Row>
+                    ) : (
+                        ''
+                    )}
+                    <Row>
+                        <Col xs={12} sm={12}>
+                            <Field name="visitAddress.street">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street"
+                                        placeholder={'Straat'}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="visitAddress.number">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street_number"
+                                        placeholder={'Nummer'}
+                                        disabled={
+                                            initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={4}>
+                            <Field name="visitAddress.addition">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="addition"
+                                        placeholder={'Toevoeging'}
+                                        disabled={
+                                            initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="visitAddress.postalCode">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="postal_code"
+                                        placeholder={'Postcode'}
+                                        disabled={
+                                            initialContact.blockChangeAddress ||
+                                            initialContact.isParticipantSceProject ||
+                                            initialContact.isParticipantPcrProject
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={8}>
+                            <Field name="visitAddress.city">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="city"
+                                        placeholder={'Plaats'}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={8}>
+                            <Field name="visitAddress.countryId">
+                                {({ field }) => (
+                                    <Select
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="country_id"
+                                        placeholder={'Selecteer uw land'}
+                                        options={Countries}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+
+                    <FreeFields
+                        freeFieldsFieldRecords={initialContact.visitAddress.freeFieldsFieldRecords}
+                        showEdit={false}
+                    />
+
+                    {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <>
+                            <FormLabel
+                                htmlFor="ean_electricity"
+                                className={
+                                    projectTypeCodeRef === 'postalcode_link_capital'
+                                        ? 'field-label required'
+                                        : 'field-label'
+                                }
+                            >
+                                EAN nummer elektriciteit
+                            </FormLabel>
+                            {(isEmpty(values.visitAddress.number + '') ||
+                                isEmpty(values.visitAddress.postalCode + '')) &&
+                            !isEmpty(values.visitAddress.eanElectricity + '') ? (
+                                <Row>
+                                    <Col xs={12} sm={12}>
+                                        <small className={'text-danger'}>
+                                            EAN nummer elektriciteit wordt alleen opgeslagen als minimaal nummer en
+                                            postcode zijn ingevuld bij bezoekadres.
+                                        </small>
+                                    </Col>
+                                </Row>
+                            ) : (
+                                ''
+                            )}
+                            <Row>
+                                <Col xs={12} sm={12} md={8}>
+                                    <Field name="visitAddress.eanElectricity">
+                                        {({ field }) => (
+                                            <InputText
+                                                field={field}
+                                                errors={errors}
+                                                touched={touched}
+                                                id="ean_electricity"
+                                                placeholder={'EAN nummer elektriciteit'}
+                                            />
+                                        )}
+                                    </Field>
+                                </Col>
+                            </Row>
 
                             <FormLabel htmlFor="ean_gas" className={'field-label'}>
                                 EAN nummer gas
@@ -735,222 +736,228 @@ const DefaultContactOrganisationEdit = function({
                         </>
                     ) : null}
 
-                <FormLabel htmlFor="street" className="field-label">
-                    Postadres
-                </FormLabel>
-                {(isEmpty(values.postalAddress.number + '') || isEmpty(values.postalAddress.postalCode + '')) &&
-                (!isEmpty(values.postalAddress.street + '') ||
-                    !isEmpty(values.postalAddress.addition + '') ||
-                    !isEmpty(values.postalAddress.postalCode + '') ||
-                    !isEmpty(values.postalAddress.city + '')) ? (
+                    <FormLabel htmlFor="street" className="field-label">
+                        Postadres
+                    </FormLabel>
+                    {(isEmpty(values.postalAddress.number + '') || isEmpty(values.postalAddress.postalCode + '')) &&
+                    (!isEmpty(values.postalAddress.street + '') ||
+                        !isEmpty(values.postalAddress.addition + '') ||
+                        !isEmpty(values.postalAddress.postalCode + '') ||
+                        !isEmpty(values.postalAddress.city + '')) ? (
+                        <Row>
+                            <Col xs={12} sm={12}>
+                                <small className={'text-danger'}>
+                                    Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                                </small>
+                            </Col>
+                        </Row>
+                    ) : (
+                        ''
+                    )}
                     <Row>
                         <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
-                            </small>
+                            <Field name="postalAddress.street">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street"
+                                        placeholder={'Straat'}
+                                    />
+                                )}
+                            </Field>
                         </Col>
                     </Row>
-                ) : (
-                    ''
-                )}
-                <Row>
-                    <Col xs={12} sm={12}>
-                        <Field name="postalAddress.street">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street"
-                                    placeholder={'Straat'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="postalAddress.number">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street_number"
-                                    placeholder={'Nummer'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={4}>
-                        <Field name="postalAddress.addition">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="addition"
-                                    placeholder={'Toevoeging'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="postalAddress.postalCode">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="postal_code"
-                                    placeholder={'Postcode'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={8}>
-                        <Field name="postalAddress.city">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="city"
-                                    placeholder={'Plaats'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field name="postalAddress.countryId">
-                            {({ field }) => (
-                                <Select
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="country_id"
-                                    placeholder={'Selecteer uw land'}
-                                    options={Countries}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="postalAddress.number">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street_number"
+                                        placeholder={'Nummer'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={4}>
+                            <Field name="postalAddress.addition">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="addition"
+                                        placeholder={'Toevoeging'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="postalAddress.postalCode">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="postal_code"
+                                        placeholder={'Postcode'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={8}>
+                            <Field name="postalAddress.city">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="city"
+                                        placeholder={'Plaats'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={8}>
+                            <Field name="postalAddress.countryId">
+                                {({ field }) => (
+                                    <Select
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="country_id"
+                                        placeholder={'Selecteer uw land'}
+                                        options={Countries}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
 
-                <FreeFields
-                    freeFieldsFieldRecords={initialContact.postalAddress.freeFieldsFieldRecords}
-                    showEdit={false}
-                />
+                    <FreeFields
+                        freeFieldsFieldRecords={initialContact.postalAddress.freeFieldsFieldRecords}
+                        showEdit={false}
+                    />
 
-                <FormLabel htmlFor="street" className="field-label">
-                    Nota adres
-                </FormLabel>
-                {(isEmpty(values.invoiceAddress.number + '') || isEmpty(values.invoiceAddress.postalCode + '')) &&
-                (!isEmpty(values.invoiceAddress.street + '') ||
-                    !isEmpty(values.invoiceAddress.number + '') ||
-                    !isEmpty(values.invoiceAddress.addition + '') ||
-                    !isEmpty(values.invoiceAddress.postalCode + '') ||
-                    !isEmpty(values.invoiceAddress.city + '')) ? (
+                    <FormLabel htmlFor="street" className="field-label">
+                        Nota adres
+                    </FormLabel>
+                    {(isEmpty(values.invoiceAddress.number + '') || isEmpty(values.invoiceAddress.postalCode + '')) &&
+                    (!isEmpty(values.invoiceAddress.street + '') ||
+                        !isEmpty(values.invoiceAddress.number + '') ||
+                        !isEmpty(values.invoiceAddress.addition + '') ||
+                        !isEmpty(values.invoiceAddress.postalCode + '') ||
+                        !isEmpty(values.invoiceAddress.city + '')) ? (
+                        <Row>
+                            <Col xs={12} sm={12}>
+                                <small className={'text-danger'}>
+                                    Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                                </small>
+                            </Col>
+                        </Row>
+                    ) : (
+                        ''
+                    )}
                     <Row>
                         <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
-                            </small>
+                            <Field name="invoiceAddress.street">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street"
+                                        placeholder={'Straat'}
+                                    />
+                                )}
+                            </Field>
                         </Col>
                     </Row>
-                ) : (
-                    ''
-                )}
-                <Row>
-                    <Col xs={12} sm={12}>
-                        <Field name="invoiceAddress.street">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street"
-                                    placeholder={'Straat'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="invoiceAddress.number">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street_number"
-                                    placeholder={'Nummer'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={4}>
-                        <Field name="invoiceAddress.addition">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="addition"
-                                    placeholder={'Toevoeging'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="invoiceAddress.postalCode">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="postal_code"
-                                    placeholder={'Postcode'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={8}>
-                        <Field name="invoiceAddress.city">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="city"
-                                    placeholder={'Plaats'}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field name="invoiceAddress.countryId">
-                            {({ field }) => (
-                                <Select
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="country_id"
-                                    placeholder={'Selecteer uw land'}
-                                    options={Countries}
-                                />
-                            )}
-                        </Field></Col>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="invoiceAddress.number">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street_number"
+                                        placeholder={'Nummer'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={4}>
+                            <Field name="invoiceAddress.addition">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="addition"
+                                        placeholder={'Toevoeging'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
                     </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="invoiceAddress.postalCode">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="postal_code"
+                                        placeholder={'Postcode'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={8}>
+                            <Field name="invoiceAddress.city">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="city"
+                                        placeholder={'Plaats'}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={8}>
+                            <Field name="invoiceAddress.countryId">
+                                {({ field }) => (
+                                    <Select
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="country_id"
+                                        placeholder={'Selecteer uw land'}
+                                        options={Countries}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+
+                    <FreeFields
+                        freeFieldsFieldRecords={initialContact.invoiceAddress.freeFieldsFieldRecords}
+                        showEdit={false}
+                    />
                 </Col>
             </Row>
             <Row>
@@ -991,13 +998,6 @@ const DefaultContactOrganisationEdit = function({
                 </Row>
             )}
         </>
-
-                <FreeFields
-                    freeFieldsFieldRecords={initialContact.invoiceAddress.freeFieldsFieldRecords}
-                    showEdit={false}
-                />
-            </Col>
-        </Row>
     );
 };
 

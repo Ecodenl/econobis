@@ -83,60 +83,60 @@ function DefaultContactPersonalView({ portalSettings, initialContact, freeFields
                         </TextBlock>
                     </Row>
 
-                <FormLabel className={'field-label'}>Adres</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
-                        {primaryAddress.street}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Nummer'}>
-                        {primaryAddress.number}
-                    </TextBlock>
-                    <TextBlock className={'col-6 col-sm-4 '} placeholder={'Toevoeging'}>
-                        {primaryAddress.addition}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-4'} placeholder={'Postcode'}>
-                        {primaryAddress.postalCode}
-                    </TextBlock>
-                    <TextBlock className={'col-12 col-sm-6'} placeholder={'Plaats'}>
-                        {primaryAddress.city}
-                    </TextBlock>
-                </Row>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
-                        {primaryAddress.country ? primaryAddress.country.name : ''}
-                    </TextBlock>
-                </Row>
+                    <FormLabel className={'field-label'}>Adres</FormLabel>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-8'} placeholder={'Straat'}>
+                            {primaryAddress.street}
+                        </TextBlock>
+                    </Row>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-4'} placeholder={'Nummer'}>
+                            {primaryAddress.number}
+                        </TextBlock>
+                        <TextBlock className={'col-6 col-sm-4 '} placeholder={'Toevoeging'}>
+                            {primaryAddress.addition}
+                        </TextBlock>
+                    </Row>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-4'} placeholder={'Postcode'}>
+                            {primaryAddress.postalCode}
+                        </TextBlock>
+                        <TextBlock className={'col-12 col-sm-6'} placeholder={'Plaats'}>
+                            {primaryAddress.city}
+                        </TextBlock>
+                    </Row>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-8'} placeholder={'Land'}>
+                            {primaryAddress.country ? primaryAddress.country.name : ''}
+                        </TextBlock>
+                    </Row>
 
-                <FreeFields freeFieldsFieldRecords={primaryAddress.freeFieldsFieldRecords} showEdit={false} />
+                    <FreeFields freeFieldsFieldRecords={primaryAddress.freeFieldsFieldRecords} showEdit={false} />
 
-                {isParticipantPcrProject ? (
-                    <>
-                        <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer elektriciteit'}>
-                                {primaryAddress.eanElectricity}
-                            </TextBlock>
-                        </Row>
-                        <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
-                                {primaryAddress.eanGas}
-                            </TextBlock>
-                        </Row>
-                    </>
-                ) : (
-                    ''
-                )}
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
-                </Row>
+                    {isParticipantPcrProject ? (
+                        <>
+                            <FormLabel className={'field-label'}>EAN nummer elektriciteit</FormLabel>
+                            <Row>
+                                <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer elektriciteit'}>
+                                    {primaryAddress.eanElectricity}
+                                </TextBlock>
+                            </Row>
+                            <FormLabel className={'field-label'}>EAN nummer gas</FormLabel>
+                            <Row>
+                                <TextBlock className={'col-12 col-sm-8'} placeholder={'EAN nummer gas'}>
+                                    {primaryAddress.eanGas}
+                                </TextBlock>
+                            </Row>
+                        </>
+                    ) : (
+                        ''
+                    )}
+                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-8'}>{number}</TextBlock>
+                    </Row>
 
-                <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
+                    <FreeFields freeFieldsFieldRecords={freeFieldsFieldRecords} showEdit={false} />
                 </Col>
                 <Col xs={12} md={6}>
                     <FormLabel className={'field-label'}>IBAN gegevens</FormLabel>
@@ -194,22 +194,6 @@ function DefaultContactPersonalView({ portalSettings, initialContact, freeFields
                                 </TextBlock>
                             </Row>
 
-                        <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
-                        <Row>
-                            <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>
-                                {primaryAddress.currentAddressEnergySupplierElectricity.memberSince
-                                    ? moment(primaryAddress.currentAddressEnergySupplierElectricity.memberSince).format(
-                                          'L'
-                                      )
-                                    : ''}
-                            </TextBlock>
-                        </Row>
-                    </>
-                ) : (
-                    ''
-                )}
-            </Col>
-        </Row>
                             <FormLabel className={'field-label'}>Klant bij leverancier sinds</FormLabel>
                             <Row>
                                 <TextBlock className={'col-12 col-sm-8'} placeholder={'Klant sinds'}>

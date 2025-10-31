@@ -117,12 +117,11 @@ function RegisterProject({ match, currentSelectedContact }) {
                 ProjectAPI.fetchProject(projectId),
                 ContactAPI.fetchContact(currentSelectedContact.id),
                 ContactAPI.fetchContactFreeFields(currentSelectedContact.id),
-                        ContactAPI.fetchContactProjectData(currentSelectedContact.id, projectId),
-                    ])
-                    .then(
-                        axios.spread(
-                            (payloadProject, payloadContact, payloadContactFreeFields, payloadContactProjectData) => {
-                        if (
+                ContactAPI.fetchContactProjectData(currentSelectedContact.id, projectId),
+            ])
+            .then(
+                axios.spread((payloadProject, payloadContact, payloadContactFreeFields, payloadContactProjectData) => {
+                    if (
                         payloadProject.data.data.dateStartRegistrations === null ||
                         payloadProject.data.data.dateStartRegistrations > moment().format('YYYY-MM-DD') ||
                         (payloadProject.data.data.dateEndRegistrations !== null &&
@@ -130,51 +129,47 @@ function RegisterProject({ match, currentSelectedContact }) {
                     ) {
                         setHasError(true);
                         setErrorMessage('Inschrijving niet mogelijk op dit moment');
-                    } else {        const contact = payloadContact.data.data;
-                                const project = payloadProject.data.data;
-                                setProject(project);
-                                setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
-                                const contactData = rebaseContact(contact);
-                                contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
-                                setContact(contactData);
+                    } else {
+                        const contact = payloadContact.data.data;
+                        const project = payloadProject.data.data;
+                        setProject(project);
+                        setCurrentThemeSettings(project.administration.portalSettingsLayoutAssigned);
+                        const contactData = rebaseContact(contact);
+                        contactData.freeFieldsFieldRecords = payloadContactFreeFields.data;
+                        setContact(contactData);
 
-                                setContactProjectData(payloadContactProjectData.data);
+                        setContactProjectData(payloadContactProjectData.data);
 
-                                if (
-                                    project &&
-                                    project.projectType &&
-                                    project.projectType.codeRef === 'postalcode_link_capital'
-                                ) {
-                                    let pcrPostalCode = '';
-                                    if (contactData.typeId === 'organisation') {
-                                        pcrPostalCode = contactData.visitAddress
-                                            ? contactData.visitAddress.postalCode
-                                            : '';
-                                    } else {
-                                        pcrPostalCode = contactData.primaryAddress
-                                            ? contactData.primaryAddress.postalCode
-                                            : '';
-                                    }
-                                    setRegisterValues({
-                                        ...registerValues,
-                                        projectId: projectId,
-                                        contactId: currentSelectedContact.id,
-                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                        ...initialPcrValues,
-                                        pcrPostalCode,
-                                    });
-                                } else {
-                                    setRegisterValues({
-                                        ...registerValues,
-                                        projectId: projectId,
-                                        contactId: currentSelectedContact.id,
-                                        // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
-                                    });
-                                }
-}
-                                setIsLoading2(false);
+                        if (
+                            project &&
+                            project.projectType &&
+                            project.projectType.codeRef === 'postalcode_link_capital'
+                        ) {
+                            let pcrPostalCode = '';
+                            if (contactData.typeId === 'organisation') {
+                                pcrPostalCode = contactData.visitAddress ? contactData.visitAddress.postalCode : '';
+                            } else {
+                                pcrPostalCode = contactData.primaryAddress ? contactData.primaryAddress.postalCode : '';
                             }
-                )
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: projectId,
+                                contactId: currentSelectedContact.id,
+                                // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                                ...initialPcrValues,
+                                pcrPostalCode,
+                            });
+                        } else {
+                            setRegisterValues({
+                                ...registerValues,
+                                projectId: projectId,
+                                contactId: currentSelectedContact.id,
+                                // choiceMembership: payloadContactProjectData.data.belongsToMembershipGroup ? 0 : 1,
+                            });
+                        }
+                    }
+                    setIsLoading2(false);
+                })
             )
             .catch(error => {
                 // console.log('error');
@@ -225,7 +220,7 @@ function RegisterProject({ match, currentSelectedContact }) {
                             setContact(contactData);
                             nextStep();
                         })
-                    )
+                    );
                 setIsLoading2(true);
                 ContactAPI.fetchContact(currentSelectedContact.id)
                     .then(payload => {

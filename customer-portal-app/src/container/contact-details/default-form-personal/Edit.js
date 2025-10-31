@@ -1,6 +1,6 @@
 import React from 'react';
 import InputText from '../../../components/form/InputText';
-import { Field, Formik } from 'formik';
+import { Field } from 'formik';
 import Select from '../../../components/form/Select';
 import Countries from '../../../data/Countries';
 import EnergySuppliers from '../../../data/EnergySuppliers';
@@ -15,6 +15,7 @@ import { FaInfoCircle } from 'react-icons/fa';
 import ReactTooltip from 'react-tooltip';
 import InputTextDate from '../../../components/form/InputTextDate';
 import { isEmpty } from 'lodash';
+import FreeFields from '../../../components/freeFields/FreeFields';
 import ContactFreeFields from '../ContactFreeFields';
 import { Alert } from 'react-bootstrap';
 
@@ -277,201 +278,210 @@ const DefaultContactPersonalEdit = function({
                         </Col>
                     </Row>
 
-                <FormLabel
-                    htmlFor="street"
-                    className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
-                >
-                    Adres
-                    {initialContact.blockChangeAddress ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
-                    ) : initialContact.blockChangeAddressNumber ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Postcode en huisnummer is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied met huisnummerreeks`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
-                    ) : initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject ? (
-                        <>
-                            {' '}
-                            <FaInfoCircle
-                                color={'blue'}
-                                size={'15px'}
-                                data-tip={`Postcode is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied`}
-                                data-for={`participant-${initialContact.id}`}
-                            />
-                            <ReactTooltip
-                                id={`participant-${initialContact.id}`}
-                                effect="float"
-                                place="bottom"
-                                multiline={true}
-                                aria-haspopup="true"
-                            />
-                        </>
+                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
+                    </Row>
+
+                    <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={false} />
+                </Col>
+
+                <Col xs={12} md={6}>
+                    <FormLabel
+                        htmlFor="street"
+                        className={initialContact.isParticipant ? 'field-label required' : 'field-label'}
+                    >
+                        Adres
+                        {initialContact.blockChangeAddress ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Adres kan momenteel niet worden aangepast. Geef jouw adreswijziging per e-mail aan ons door.`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : initialContact.blockChangeAddressNumber ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Postcode en huisnummer is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied met huisnummerreeks`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : initialContact.isParticipantSceProject || initialContact.isParticipantPcrProject ? (
+                            <>
+                                {' '}
+                                <FaInfoCircle
+                                    color={'blue'}
+                                    size={'15px'}
+                                    data-tip={`Postcode is niet meer wijzigen vanwege deelname aan project op een specifiek postcodegebied`}
+                                    data-for={`participant-${initialContact.id}`}
+                                />
+                                <ReactTooltip
+                                    id={`participant-${initialContact.id}`}
+                                    effect="float"
+                                    place="bottom"
+                                    multiline={true}
+                                    aria-haspopup="true"
+                                />
+                            </>
+                        ) : (
+                            ''
+                        )}
+                    </FormLabel>
+                    {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
+                    (!isEmpty(values.primaryAddress.street + '') ||
+                        !isEmpty(values.primaryAddress.number + '') ||
+                        !isEmpty(values.primaryAddress.addition + '') ||
+                        !isEmpty(values.primaryAddress.postalCode + '') ||
+                        !isEmpty(values.primaryAddress.city + '')) ? (
+                        <Row>
+                            <Col xs={12} sm={12}>
+                                <small className={'text-danger'}>
+                                    Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
+                                </small>
+                            </Col>
+                        </Row>
                     ) : (
                         ''
                     )}
-                </FormLabel>
-                {(isEmpty(values.primaryAddress.number + '') || isEmpty(values.primaryAddress.postalCode + '')) &&
-                (!isEmpty(values.primaryAddress.street + '') ||
-                    !isEmpty(values.primaryAddress.number + '') ||
-                    !isEmpty(values.primaryAddress.addition + '') ||
-                    !isEmpty(values.primaryAddress.postalCode + '') ||
-                    !isEmpty(values.primaryAddress.city + '')) ? (
                     <Row>
                         <Col xs={12} sm={12}>
-                            <small className={'text-danger'}>
-                                Adres wordt alleen opgeslagen als minimaal nummer en postcode zijn ingevuld.
-                            </small>
+                            <Field name="primaryAddress.street">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street"
+                                        placeholder={'Straat'}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
                         </Col>
                     </Row>
-                ) : (
-                    ''
-                )}
-                <Row>
-                    <Col xs={12} sm={12}>
-                        <Field name="primaryAddress.street">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street"
-                                    placeholder={'Straat'}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="primaryAddress.number">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="street_number"
-                                    placeholder={'Nummer'}
-                                    disabled={
-                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={4}>
-                        <Field name="primaryAddress.addition">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="addition"
-                                    placeholder={'Toevoeging'}
-                                    disabled={
-                                        initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={4}>
-                        <Field name="primaryAddress.postalCode">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="postal_code"
-                                    placeholder={'Postcode'}
-                                    disabled={
-                                        initialContact.blockChangeAddress ||
-                                        initialContact.isParticipantSceProject ||
-                                        initialContact.isParticipantPcrProject
-                                    }
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                    <Col xs={12} sm={8}>
-                        <Field name="primaryAddress.city">
-                            {({ field }) => (
-                                <InputText
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="city"
-                                    placeholder={'Plaats'}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col xs={12} sm={8}>
-                        <Field name="primaryAddress.countryId">
-                            {({ field }) => (
-                                <Select
-                                    field={field}
-                                    errors={errors}
-                                    touched={touched}
-                                    id="country_id"
-                                    placeholder={'Selecteer uw land'}
-                                    options={Countries}
-                                    disabled={initialContact.blockChangeAddress}
-                                />
-                            )}
-                        </Field>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="primaryAddress.number">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="street_number"
+                                        placeholder={'Nummer'}
+                                        disabled={
+                                            initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={4}>
+                            <Field name="primaryAddress.addition">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="addition"
+                                        placeholder={'Toevoeging'}
+                                        disabled={
+                                            initialContact.blockChangeAddress || initialContact.blockChangeAddressNumber
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={4}>
+                            <Field name="primaryAddress.postalCode">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="postal_code"
+                                        placeholder={'Postcode'}
+                                        disabled={
+                                            initialContact.blockChangeAddress ||
+                                            initialContact.isParticipantSceProject ||
+                                            initialContact.isParticipantPcrProject
+                                        }
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                        <Col xs={12} sm={8}>
+                            <Field name="primaryAddress.city">
+                                {({ field }) => (
+                                    <InputText
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="city"
+                                        placeholder={'Plaats'}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
+                    <Row>
+                        <Col xs={12} sm={8}>
+                            <Field name="primaryAddress.countryId">
+                                {({ field }) => (
+                                    <Select
+                                        field={field}
+                                        errors={errors}
+                                        touched={touched}
+                                        id="country_id"
+                                        placeholder={'Selecteer uw land'}
+                                        options={Countries}
+                                        disabled={initialContact.blockChangeAddress}
+                                    />
+                                )}
+                            </Field>
+                        </Col>
+                    </Row>
 
-                        <FreeFields
-                            freeFieldsFieldRecords={initialContact.primaryAddress.freeFieldsFieldRecords}
-                            showEdit={false}
-                        />
-                    </Col>
-                </Row>
-                {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
-                    <>
-                        <FormLabel
-                            htmlFor="ean_electricity"
-                            className={
-                                projectTypeCodeRef === 'postalcode_link_capital'
-                                    ? 'field-label required'
-                                    : 'field-label'
-                            }
-                        >
-                            EAN nummer elektriciteit
-                        </FormLabel>
+                    <FreeFields
+                        freeFieldsFieldRecords={initialContact.primaryAddress.freeFieldsFieldRecords}
+                        showEdit={false}
+                    />
 
+                    {initialContact.isParticipantPcrProject || projectTypeCodeRef === 'postalcode_link_capital' ? (
+                        <>
+                            <FormLabel
+                                htmlFor="ean_electricity"
+                                className={
+                                    projectTypeCodeRef === 'postalcode_link_capital'
+                                        ? 'field-label required'
+                                        : 'field-label'
+                                }
+                            >
+                                EAN nummer elektriciteit
+                            </FormLabel>
                             {(isEmpty(values.primaryAddress.number + '') ||
                                 isEmpty(values.primaryAddress.postalCode + '')) &&
                             !isEmpty(values.primaryAddress.eanElectricity + '') ? (
@@ -486,7 +496,6 @@ const DefaultContactPersonalEdit = function({
                             ) : (
                                 ''
                             )}
-
                             <Row>
                                 <Col xs={12} sm={10} md={6}>
                                     <Field name="primaryAddress.eanElectricity">
@@ -502,10 +511,10 @@ const DefaultContactPersonalEdit = function({
                                     </Field>
                                 </Col>
                             </Row>
+
                             <FormLabel htmlFor="ean_gas" className={'field-label'}>
                                 EAN nummer gas
                             </FormLabel>
-
                             {(isEmpty(values.primaryAddress.number + '') ||
                                 isEmpty(values.primaryAddress.postalCode + '')) &&
                             !isEmpty(values.primaryAddress.eanGas + '') ? (
@@ -520,7 +529,6 @@ const DefaultContactPersonalEdit = function({
                             ) : (
                                 ''
                             )}
-
                             <Row>
                                 <Col xs={12} sm={10} md={6}>
                                     <Field name="primaryAddress.eanGas">
@@ -541,13 +549,13 @@ const DefaultContactPersonalEdit = function({
                         ''
                     )}
 
-                <FormLabel className={'field-label'}>Contactnummer</FormLabel>
-                <Row>
-                    <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
-                </Row>
+                    <FormLabel className={'field-label'}>Contactnummer</FormLabel>
+                    <Row>
+                        <TextBlock className={'col-12 col-sm-8'}>{values.number}</TextBlock>
+                    </Row>
 
-                <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={true} />
-            </Col>
+                    <FreeFields freeFieldsFieldRecords={initialContact.freeFieldsFieldRecords} showEdit={true} />
+                </Col>
 
                 <Col xs={12} md={6}>
                     <FormLabel
@@ -816,36 +824,6 @@ const DefaultContactPersonalEdit = function({
                 </Row>
             )}
         </>
-                                <FormLabel htmlFor="member_since" className={'field-label'}>
-                                    Klant bij leverancier sinds
-                                </FormLabel>
-                                <Row>
-                                    <Col xs={12} sm={12} md={8}>
-                                        <Field name="primaryAddress.currentAddressEnergySupplierElectricity.memberSince">
-                                            {({ field }) => (
-                                                <InputTextDate
-                                                    field={field}
-                                                    type="date"
-                                                    errors={errors}
-                                                    touched={touched}
-                                                    onChangeAction={setFieldValue}
-                                                    min={memberSinceDisabledBefore}
-                                                    max={memberSinceDisabledAfter}
-                                                    id="member_since"
-                                                    placeholder={'Klant sinds'}
-                                                />
-                                            )}
-                                        </Field>
-                                    </Col>
-                                </Row>
-                            </>
-                        ) : (
-                            ''
-                        )}
-                    </>
-                ) : null}
-            </Col>
-        </Row>
     );
 };
 

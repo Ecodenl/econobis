@@ -27,6 +27,7 @@ const ContactGroupDetailsFormGeneralView = props => {
         emailTemplateNewContactLink = {},
         includeIntoExportGroupReport,
         inspectionPersonType,
+        portalSortOrder,
     } = props.contactGroupDetails;
 
     return (
@@ -78,6 +79,12 @@ const ContactGroupDetailsFormGeneralView = props => {
                 <ViewText label={'Zichtbaar op portaal'} value={showPortal ? 'Ja' : 'Nee'} />
                 <ViewText label={'Veranderen op portaal'} value={editPortal ? 'Ja' : 'Nee'} />
             </div>
+
+            {type.id === 'static' && showPortal ? (
+                <div className="row">
+                    <ViewText label={'Volgorde op portaal'} value={portalSortOrder} />
+                </div>
+            ) : null}
 
             <div className="row">
                 <ViewText label={'Zichtbaar bij contact'} value={showContactForm ? 'Ja' : 'Nee'} />

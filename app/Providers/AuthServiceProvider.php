@@ -40,6 +40,8 @@ use App\Eco\HousingFile\HousingFileLog;
 use App\Eco\HousingFile\HousingFileLogPolicy;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
+use App\Eco\IntakeSource\IntakeSource;
+use App\Eco\IntakeSource\IntakeSourcePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
 use App\Eco\Jobs\JobsLog;
@@ -140,6 +142,7 @@ class AuthServiceProvider extends ServiceProvider
         Opportunity::class => OpportunityPolicy::class,
         Task::class => TaskPolicy::class,
         Intake::class => IntakePolicy::class,
+        IntakeSource::class => IntakeSourcePolicy::class,
         HousingFile::class => HousingFilePolicy::class,
         HousingFileLog::class => HousingFileLogPolicy::class,
         Campaign::class => CampaignPolicy::class,

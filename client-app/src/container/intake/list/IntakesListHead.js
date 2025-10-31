@@ -28,6 +28,12 @@ const IntakesListHead = props => {
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
+                sortColumn={'intakeSourceId'}
+                title={'Aanmeldingsbronnen'}
+                width={'10%'}
+                setSorts={setSorts}
+            />
+            <DataTableHeadTitleAndSort
                 sortColumn={'statusId'}
                 title={'Status intakes'}
                 width={'15%'}

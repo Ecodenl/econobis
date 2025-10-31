@@ -20,6 +20,7 @@ use App\Helpers\MsOauth\MsOauthConnectionManager;
 use App\Helpers\RequestInput\RequestInput;
 use App\Http\Controllers\Controller;
 use App\Http\Middleware\EncryptCookies;
+use App\Http\RequestQueries\Mailbox\Grid\RequestQuery;
 use App\Http\Resources\GenericResource;
 use App\Http\Resources\Mailbox\FullMailbox;
 use App\Http\Resources\Mailbox\FullMailboxIgnore;
@@ -42,15 +43,20 @@ class MailboxController extends Controller
         $this->middleware([EncryptCookies::class, StartSession::class])->only('update');
     }
 
-    public function grid()
+    public function grid(RequestQuery $requestQuery)
     {
         $this->authorize('view', Mailbox::class);
 
-        $mailboxes = Mailbox::get();
+        $mailboxes = $requestQuery->get();
 
         $mailboxes->load(['mailgunDomain']);
 
-        return GridMailbox::collection($mailboxes);
+        return GridMailbox::collection($mailboxes)
+            ->additional([
+                'meta' => [
+                    'total' => $requestQuery->total(),
+                ]
+            ]);
     }
 
     public function store(Request $request, RequestInput $input, MailgunHelper $mailgunHelper)
@@ -217,27 +223,24 @@ class MailboxController extends Controller
         return MailboxPeek::collection(Mailbox::orderBy('name')->get());
     }
 
+    //called by cronjob
+    static public function receiveAllEmail()
+    {
+        // Bepaal van welke mailboxen we email gaan ophalen: Alle actieve en geldige mailboxen
+        $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
+        self::receiveEmails($mailboxes);
+    }
+
     public function receiveMailFromMailboxesUser()
     {
         $this->authorize('view', Mailbox::class);
 
         $user = Auth::user();
 
-        $mailboxes = $user->mailboxes()->get();
+        // Bepaal van welke mailboxen we email gaan ophalen: Alle gekoppelde mailboxen aan user
+        $mailboxes = $user->mailboxes()->where('valid', 1)->where('is_active', 1)->get();
+        self::receiveEmails($mailboxes);
 
-        $errorMessages = false;
-        foreach ($mailboxes as $mailbox) {
-            $errorMessage = $this->receive($mailbox);
-            if($errorMessage){
-                $responseArray = json_decode($errorMessage, true);
-                if(isset($responseArray['error'])){
-                    $errorMessages[] = "Error mailbox " . $mailbox->name . " (" . $mailbox->id . "): " . $responseArray['error'] . (isset($responseArray['error_description']) ? " - " . $responseArray['error_description'] : '');
-                }
-            }
-        }
-        if($errorMessages) {
-            abort("412", implode("\n", $errorMessages));
-        }
     }
 
     public function loggedInEmailPeek()
@@ -291,22 +294,6 @@ class MailboxController extends Controller
         $mailboxes = $user->mailboxes()->select('mailbox_id', 'email', 'name')->where('is_active', 1)->get();
 
         return LoggedInEmailPeek::collection($mailboxes);
-    }
-
-    //called by cronjob
-    static public function receiveAllEmail()
-    {
-        $mailboxes = Mailbox::where('valid', 1)->where('is_active', 1)->get();
-        foreach ($mailboxes as $mailbox) {
-            if ($mailbox->incoming_server_type === 'ms-oauth') {
-                $mailFetcher = new MailFetcherMsOauth($mailbox);
-            } else if ($mailbox->incoming_server_type !== 'mailgun'){
-                $mailFetcher = new MailFetcher($mailbox);
-            } else {
-                return;
-            }
-            $mailFetcher->fetchNew();
-        }
     }
 
     public function storeIgnore(RequestInput $input)
@@ -382,27 +369,94 @@ class MailboxController extends Controller
         }
     }
 
-    private function receive(Mailbox $mailbox)
+    /**
+     * @param $mailboxes
+     * @return void
+     * @throws \Exception
+     */
+    private static function receiveEmails($mailboxes): void
     {
-        $this->authorize('view', Mailbox::class);
-
-        if (!$mailbox->is_active) {
-            return 'This mailbox is not active';
-        }
-        if (!$mailbox->valid) {
-            return 'This mailbox is invalid';
-        }
-
-        //Create a new mailfetcher. This will check if the mailbox is valid and set it in the db.
-        if ($mailbox->incoming_server_type === 'ms-oauth') {
-            $mailFetcher = new MailFetcherMsOauth($mailbox);
-        } else if ($mailbox->incoming_server_type !== 'mailgun'){
-            $mailFetcher = new MailFetcher($mailbox);
-        } else {
-            return;
+        // Blokkeer ze om dubbele fetch te voorkomen
+        $mailboxIdsToFetch = [];
+        foreach ($mailboxes as $mailbox) {
+            if ($mailbox->start_fetch_mail === null) {
+                $mailbox->start_fetch_mail = Carbon::now();
+                $mailbox->save();
+                $mailboxIdsToFetch[] = $mailbox->id;
+            }
         }
 
-        return $mailFetcher->fetchNew();
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//        Log::info('Mailbox ids to fetch emails', $mailboxIdsToFetch);
+
+        // Mailboxen doorlopen waarvan we email gaan ophalen
+        foreach ($mailboxIdsToFetch as $mailboxIdToFetch) {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//            Log::info('Fetch emails voor mailbox Id: ' . $mailboxIdToFetch);
+            $mailboxToFetch = Mailbox::find($mailboxIdToFetch);
+            if ($mailboxToFetch?->incoming_server_type === 'ms-oauth') {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                Log::info('via MailFetcherMsOauth');
+                $mailFetcher = new MailFetcherMsOauth($mailboxToFetch);
+            } else if ($mailboxToFetch?->incoming_server_type !== 'mailgun') {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                Log::info('via MailFetcher');
+                $mailFetcher = new MailFetcher($mailboxToFetch);
+            } else {
+                // Ga door naar volgende mailbox (fetch doen we niet voor incoming mailgun mailboxen
+                continue;
+            }
+
+            try {
+            $response = $mailFetcher->fetchNew();
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//            Log::info( 'Response van Fetchnew:' );
+//            Log::info( $response );
+                if($response['status'] === 'error'){
+                    Log::error('Errors found bij fetchNew mailbox id: ' . $mailboxToFetch->id);
+                    Log::error($response['errorMessage']);
+
+                    if($mailboxToFetch->login_tries < 5){
+                        $mailboxToFetch->login_tries += 1;
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                        Log::info('Poging ' . $mailboxToFetch->login_tries);
+                        $mailboxToFetch->save();
+                    } else {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                        Log::info('Mailbox op invalid gezet na 5 pogingen.');
+                        $mailboxToFetch->valid = false;
+                        $mailboxToFetch->save();
+                    }
+                } else {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                    Log::info('Geen fouten bij mailbox');
+                    //
+
+                    if ($response['status'] === 'success') {
+                        if($response['imapIdLastFetched'] !== null){
+                            $mailboxToFetch->imap_id_last_fetched = $response['imapIdLastFetched'];
+                        }
+                        $mailboxToFetch->date_last_fetched = Carbon::now();
+                        $mailboxToFetch->login_tries = 0;
+                        $mailboxToFetch->valid = true;
+                        $mailboxToFetch->save();
+                    }
+                }
+            } catch (\Exception $ex) {
+                Log::error("Errors when trying to fetch emails from mailbox " . $mailboxToFetch->id.  ". Error: " . $ex->getMessage());
+            }
+
+        }
+        // weer vrijgeven mailboxen die we net doorlopen hebben
+        foreach ($mailboxIdsToFetch as $mailboxIdToFetch) {
+            $mailboxToFetch = Mailbox::find($mailboxIdToFetch);
+            if ($mailboxToFetch?->start_fetch_mail !== null) {
+// todo WM:opschonen, maar wellicht nog even gebruiken bij de-a
+//                Log::info('Vrijgeven voor fetch emails van mailbox Id: ' . $mailboxIdToFetch);
+                $mailboxToFetch->start_fetch_mail = null;
+                $mailboxToFetch->save();
+            }
+        }
     }
 
     private function storeOrUpdateOauthApiSettings(Mailbox $mailbox, array $inputOauthApiSettings): void

@@ -13,6 +13,11 @@ export default {
 
         return axiosInstance.get(requestUrl);
     },
+    fetchPortalLoginInfoText: () => {
+        const requestUrl = `${URL_PORTAL_SETTINGS}/portal-login-info-text`;
+
+        return axiosInstance.get(requestUrl);
+    },
     fetchCooperativeName: () => {
         const requestUrl = `${URL_PORTAL_SETTINGS}/cooperative-name`;
 

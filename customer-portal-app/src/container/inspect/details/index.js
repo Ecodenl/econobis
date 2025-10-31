@@ -38,8 +38,11 @@ function InspectDetails({ match, history, user }) {
             datePlanned: values.datePlanned,
             dateReleased: values.dateReleased,
             dateApprovedClient: values.dateApprovedClient,
+            notApprovedClient: values.notApprovedClient,
             dateApprovedProjectManager: values.dateApprovedProjectManager,
+            notApprovedProjectManager: values.notApprovedProjectManager,
             dateApprovedExternal: values.dateApprovedExternal,
+            notApprovedExternal: values.notApprovedExternal,
             opportunityStatusId: values.opportunity.status.id,
             opportunityActionId: values.opportunityAction.id,
             coachOrOrganisationNote: values.coachOrOrganisationNote,
@@ -53,6 +56,7 @@ function InspectDetails({ match, history, user }) {
             awardAmount: values.awardAmount ? values.awardAmount.toString().replace(',', '.') : '',
             dateUnderReviewDetermination: values.dateUnderReviewDetermination,
             dateApprovedDetermination: values.dateApprovedDetermination,
+            notApprovedDetermination: values.notApprovedDetermination,
             amountDetermination: values.amountDetermination
                 ? values.amountDetermination.toString().replace(',', '.')
                 : '',

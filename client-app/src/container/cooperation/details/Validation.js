@@ -32,6 +32,7 @@ export const CooperationValidation = Yup.object().shape({
         otherwise: schema => schema.notRequired(),
     }),
     externalUrlContactsOnNewPage: Yup.boolean(),
+    requireTeamOnUserCreate: Yup.boolean(),
 });
 
 export const CreateCooperationHoomCampaignValidation = Yup.object().shape({

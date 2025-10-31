@@ -215,6 +215,9 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                 name={'hoomKey'}
                                 value={values.hoomKey}
                                 onChangeAction={handleChange}
+                                disabled={
+                                    meDetails.email !== 'support@econobis.nl' && meDetails.email !== 'software@xaris.nl'
+                                }
                             />
                         </div>
                         <div className="row">
@@ -394,6 +397,7 @@ function CooperationDetailsFormEdit({ formData, toggleEdit, updateResult, fetchS
                                     { id: 'Arial Black', name: 'Arial Black' },
                                     { id: 'Verdana', name: 'Verdana' },
                                     { id: 'Tahoma', name: 'Tahoma' },
+                                    { id: 'Montserrat', name: 'Montserrat' },
                                     { id: 'Trebuchet MS', name: 'Trebuchet MS' },
                                     { id: 'Impact', name: 'Impact' },
                                     { id: 'Gill Sans', name: 'Gill Sans' },
@@ -564,6 +568,16 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                                 </div>
                             </>
                         ) : null}
+                        <div className="row">
+                            <InputToggle
+                                label={'Verplicht Team koppeling bij nieuwe Econobis gebruikers'}
+                                name={'requireTeamOnUserCreate'}
+                                value={values.requireTeamOnUserCreate}
+                                onChangeAction={e => setFieldValue('requireTeamOnUserCreate', e.target.checked)}
+                                size={'col-sm-5'}
+                                textToolTip={`Met deze knop kan je afdwingen dat er verplicht een Team koppeling gemaakt moet worden bij nieuwe Econobis gebruikers`}
+                            />
+                        </div>{' '}
                     </PanelBody>
 
                     <PanelBody>

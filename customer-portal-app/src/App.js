@@ -12,9 +12,9 @@ import Forgot from './container/authorization/forgot';
 import Reset from './container/authorization/reset';
 import Dashboard from './container/dashboard';
 import ContactDetails from './container/contact-details';
-// import MyAreasOfInterest from './container/my-areas-of-interest';
 import RegisterProject from './container/register';
 import ProjectList from './container/project/list';
+import ContactGroupList from './container/contact-group/list';
 import ProjectDetails from './container/project/details';
 import RegistrationList from './container/registration/list';
 import NewAccount from './container/authorization/new-account';
@@ -22,6 +22,7 @@ import NewAccountSuccess from './container/authorization/new-account/NewAccountS
 import ChangeAccount from './container/authorization/change-account';
 import AboutUs from './container/about-us/list';
 import RegistrationDetails from './container/registration/details';
+import AddContactToGroup from './container/add-to-group';
 import FinancialOverviewDocuments from './container/financial-overview-documents/list';
 import { ThemeSettingsProvider } from './context/ThemeSettingsContext';
 import AboutUsAdministration from './container/about-us/details';
@@ -54,7 +55,9 @@ function App() {
                             <ProtectedRoute path="/inschrijven/:id" component={RegisterProject} />
                             <ProtectedRoute path="/inschrijven-projecten" component={ProjectList} />
                             <ProtectedRoute path="/inschrijvingen-projecten" component={RegistrationList} />
+                            <ProtectedRoute path="/groepen-beheer" component={ContactGroupList} />
                             <ProtectedRoute path="/project-deelname/:id" component={RegistrationDetails} />
+                            <ProtectedRoute path="/toevoegen-aan-groep/:id" component={AddContactToGroup} />
                             <ProtectedRoute path="/project/:id" component={ProjectDetails} />
                             <ProtectedRoute path="/waardestaat-documenten" component={FinancialOverviewDocuments} />
                             <ProtectedRoute path="/wijzig-inloggegevens" component={ChangeAccount} />

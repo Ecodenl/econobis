@@ -5,6 +5,7 @@ namespace App\Helpers\Hoomdossier;
 
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactType;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\Cooperation\Cooperation;
 use App\Eco\EmailTemplate\EmailTemplate;
@@ -34,6 +35,23 @@ class HoomdossierHelper
     public function make() {
         // Check if all necessary fields are filled
         $this->validateRequiredFields();
+
+        //check if there is a user with a hoom_account_id and the same email address
+        $thisContactEmail = $this->contact->primaryEmailAddress;
+
+        $contactsCheck = Contact::where('id', '!=', $thisContactEmail->contact_id)
+            ->where('type_id', ContactType::PERSON)
+            ->whereNotNull('hoom_account_id')
+            ->whereHas('primaryEmailAddress', function ($query) use($thisContactEmail) {
+                $query->where('email', $thisContactEmail->email);
+            });
+        if($contactsCheck->count() > 0) {
+            $errorMessage = [];
+            foreach ($contactsCheck->get() as $contactCheck){
+                $errorMessage[] = 'Er bestaat al een contact ' . $contactCheck->full_name . ' (' . $contactCheck->number . ') met zelfde primair e-mailadres ' . $contactCheck->primaryEmailAddress->email . ' en een Hoomdossier';
+            }
+            throw ValidationException::withMessages(array("econobis" => $errorMessage));
+        }
 
         // Send to hoomdossier url
         $hoomResponse = $this->sendToHoomdossier();

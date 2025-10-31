@@ -5,17 +5,17 @@ return [
     //Version number displayed in the header, change this with every update
     'version_major' => '5',
     'version_minor' => '2',
-    'version_fix' => '0.7',
+    'version_fix' => '3.1',
 
     //Alfresco envs
-    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
-    'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
-    'ALFRESCO_COOP_USERNAME' => env('ALFRESCO_COOP_USERNAME'),
-    'ALFRESCO_COOP_PASSWORD' => env('ALFRESCO_COOP_PASSWORD'),
-    'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
-    'ALFRESCO_URL' => env('ALFRESCO_URL'),
-    'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
-    'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
+//    'ALFRESCO_ADMIN_USERNAME' => env('ALFRESCO_ADMIN_USERNAME'),
+//    'ALFRESCO_ADMIN_PASSWORD' => env('ALFRESCO_ADMIN_PASSWORD'),
+//    'ALFRESCO_COOP_USERNAME' => env('ALFRESCO_COOP_USERNAME'),
+//    'ALFRESCO_COOP_PASSWORD' => env('ALFRESCO_COOP_PASSWORD'),
+//    'ALFRESCO_SITE_MAP' => env('ALFRESCO_SITE_MAP'),
+//    'ALFRESCO_URL' => env('ALFRESCO_URL'),
+//    'ALFRESCO_SSL_VERIFYPEER' => env('ALFRESCO_SSL_VERIFYPEER'),
+//    'ALFRESCO_SSL_VERIFYHOST' => env('ALFRESCO_SSL_VERIFYHOST'),
 
     //Format for contact number
     'APP_CONTACT_NUMBER_FORMAT' => env('APP_CONTACT_NUMBER_FORMAT', 'C{year}-{id}'),
@@ -101,7 +101,7 @@ return [
     |
     */
 
-    'timezone' => 'UTC',
+    'timezone' => 'Europe/Amsterdam',
 
     /*
     |--------------------------------------------------------------------------
@@ -301,6 +301,5 @@ return [
         'last_name' => env('ADMIN_USER_LAST_NAME'),
         'email' => env('ADMIN_USER_EMAIL'),
         'password' => env('ADMIN_USER_PASSWORD'),
-        'alfresco_password' => env('ADMIN_USER_PASSWORD_ALFRESCO'),
     ],
 ];

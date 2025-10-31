@@ -399,6 +399,9 @@ class AdministrationController extends ApiController
             'totalInvoicesErrorMaking' => $administration->total_invoices_error_making,
             'totalInvoicesIsResending' => $administration->total_invoices_is_resending,
 
+            'totalInvoicesIsExporting' => $administration->total_invoices_is_exporting,
+            'totalInvoicesErrorExporting' => $administration->total_invoices_error_exporting,
+
             'totalPaymentInvoices' => $administration->total_payment_invoices,
             'totalPaymentInvoicesConcepts' => $administration->total_payment_invoices_concepts,
             'totalPaymentInvoicesSent' => $administration->total_payment_invoices_sent,

@@ -52,6 +52,7 @@ const INITIAL_STATE = {
         externalUrlContacts: '',
         externalUrlContactsButtonText: '',
         externalUrlContactsOnNewPage: true,
+        requireTeamOnUserCreate: false,
         cleanupEmail: '',
     },
     isLoading: true,

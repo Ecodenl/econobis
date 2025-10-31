@@ -288,6 +288,15 @@ Deze tarieven kunnen voorals nog alleen via de API worden ingeschoten met waarde
                             </div>
                         </>
                     ) : null}
+                    <div className="row">
+                        <ViewText
+                            label={'Verplicht Team koppeling bij nieuwe Econobis gebruikers'}
+                            value={formData.requireTeamOnUserCreate ? 'Ja' : 'Nee'}
+                            name={'requireTeamOnUserCreate'}
+                            size={'col-sm-5'}
+                            textToolTip={`Met deze knop kan je afdwingen dat er verplicht een Team koppeling gemaakt moet worden bij nieuwe Econobis gebruikers`}
+                        />
+                    </div>
                 </PanelBody>
             </Panel>
         </section>

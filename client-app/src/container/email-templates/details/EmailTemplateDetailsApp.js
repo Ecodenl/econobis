@@ -23,6 +23,12 @@ class EmailTemplateDetailsApp extends Component {
         this.props.fetchEmailTemplate(this.props.params.id);
     }
 
+    componentDidUpdate(prevProps) {
+        if (this.props.params.id !== prevProps.params.id) {
+            this.props.fetchEmailTemplate(this.props.params.id);
+        }
+    }
+
     render() {
         return (
             <div className="row">

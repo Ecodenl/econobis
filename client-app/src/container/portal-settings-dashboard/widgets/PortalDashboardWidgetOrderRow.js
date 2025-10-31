@@ -30,7 +30,7 @@ const PortalDashboardWidgetOrderRow = ({
     const [showActionButtons, setShowActionButtons] = useState(false);
     const [highlightRow, setHighLightRow] = useState('');
 
-    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames'];
+    const staticWidgets = ['over-ons', 'project-schrijf-je-in', 'huidige-deelnames', 'groepen-beheer'];
 
     const [, drop] = useDrop({
         accept: DND_ITEM_TYPE,

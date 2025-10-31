@@ -10,7 +10,6 @@ namespace App\Http\RequestQueries\Invoice\Grid;
 
 
 use App\Helpers\RequestQuery\RequestFilter;
-use Carbon\Carbon;
 
 class Filter extends RequestFilter
 {
@@ -55,11 +54,11 @@ class Filter extends RequestFilter
     {
         $query->where(function ($q) use ($data) {
             $q->orWhere(function ($q1) use ($data) {
-                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
+                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ])
                 ->where('invoices.date_requested', '<=',
                     $data);})
                 ->orWhere(function ($q2) use ($data) {
-                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
+                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ])
                         ->where('invoices.date_sent', '<=',
                             $data);
                 });
@@ -74,10 +73,10 @@ class Filter extends RequestFilter
 
         $query->where(function ($q) use ($data) {
             $q->orWhere(function ($q1) use ($data) {
-                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
+                $q1->whereIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ])
                     ->where('orders.subject', 'LIKE', '%' . $data . '%');})
                 ->orWhere(function ($q2) use ($data) {
-                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending' ])
+                    $q2->whereNotIn('invoices.status_id', ['to-send', 'in-progress', 'is-sending', 'error-making', 'error-sending', 'is-resending', 'is-exporting', 'error-exporting' ])
                         ->where('invoices.subject', 'LIKE', '%' . $data . '%');
                 });
         });
@@ -133,7 +132,7 @@ class Filter extends RequestFilter
                                     ->where('invoices.days_to_expire', '<=', '0');
 
                             })->orWhere(function ($q) {
-                                $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                                $q->whereIn('invoices.status_id', ['sent', 'error-exporting'])->where('invoices.payment_type_id', 'transfer')
                                     ->where('invoices.days_to_expire', '<=', '0');
                             });})
 
@@ -147,7 +146,7 @@ class Filter extends RequestFilter
                                 $q->where('invoices.status_id', 'exported')
                                     ->where('invoices.days_to_expire', '<=', '0');
                             })->orWhere(function ($q) {
-                                $q->where('invoices.status_id', 'sent')->where('invoices.payment_type_id', 'transfer')
+                                $q->whereIn('invoices.status_id', ['sent', 'error-exporting'])->where('invoices.payment_type_id', 'transfer')
                                     ->where('invoices.days_to_expire', '<=', '0');
                             });
                     })->whereNotIn('invoices.status_id', ['to-send', 'paid', 'irrecoverable'])
@@ -181,6 +180,7 @@ class Filter extends RequestFilter
         } else {
             if (!in_array($data, $not_reminder_statusses)) {
                 if ($data === 'sent') {
+                    $query->whereIn('invoices.status_id', ['sent', 'error-exporting']);
                     $query->where(function ($q) {
                         $q->where(function ($q) {
                             $q->where('invoices.payment_type_id', 'transfer')
@@ -190,6 +190,7 @@ class Filter extends RequestFilter
                             $q->where('invoices.payment_type_id', '!=', 'transfer');
                         });
                     });
+                    return false;
                 }
                 if ($data === 'exported') {
                     $query->where(function ($q) {

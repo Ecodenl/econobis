@@ -43,8 +43,8 @@ use App\Eco\HousingFile\HousingFileSpecification;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakeReason;
-use App\Eco\Intake\IntakeSource;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
@@ -98,6 +98,7 @@ use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Response;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use App\Http\Controllers\Api\Address\AddressController;
 
 class ExternalWebformController extends Controller
 {
@@ -589,6 +590,7 @@ class ExternalWebformController extends Controller
             'intake' => [
                 // Intake
                 'intake_id' => 'intake_id',
+                'intake_id_extern' => 'external_code',
                 'intake_campagne_id' => 'campaign_id',
                 'intake_motivatie_ids' => 'reason_ids',
                 'intake_maatregel_id' => 'measure_id',
@@ -1399,6 +1401,25 @@ class ExternalWebformController extends Controller
                     $countryCode = $country->id;
                 } else {
                     $countryCode = null;
+                }
+
+                //if street or city not set we ask lvbag for the details when postalcode and number are set.
+                if($data['address_postal_code'] != "" && $data['address_number'] != "" && ($data['address_street'] == "" || $data['address_city'])) {
+                    // Convert array to Request because the Controller function allready made and requires a request
+                    $request = new Request();
+                    $request->replace([
+                        'postalCode' => $data['address_postal_code'],
+                        'number' => $data['address_number'],
+                    ]);
+
+                    $AddressController = app(AddressController::class);
+                    $getLvbagAddress = $AddressController->getLvbagAddress($request);
+
+                    if($getLvbagAddress['street'] != "" && $getLvbagAddress['street'] != ''){
+                        $data['address_street'] = $getLvbagAddress['street'];
+                        $data['address_city'] = $getLvbagAddress['city'];
+                        $this->log('Bij postcode ' . $data['address_postal_code'] . ' en huisnummer ' . $data['address_number'] . ' straat en plaats automatisch bepaald via LvBag: ' . $getLvbagAddress['street'] . ' | ' . $getLvbagAddress['city'] . '.');
+                    }
                 }
 
                 $address = Address::create([
@@ -2379,15 +2400,29 @@ class ExternalWebformController extends Controller
                 $measureCategories = MeasureCategory::whereIn('id', explode(',', $dataIntake['measure_categorie_ids']))->get();
             }
 
-            $intake = Intake::make([
-                'contact_id' => $address->contact->id,
-                'intake_status_id' => $intakeStatus->id,
-                'campaign_id' => $campaign->id,
-                'note' => $dataIntake['note'],
-            ]);
-            $intake->address_id = $address->id;
-            $intake->save();
-            $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            $createNewIntake = true;
+            if ($dataIntake['external_code']) {
+                $intake = Intake::where('external_code', $dataIntake['external_code'])->first();
+                if (!$intake && isset($dataIntake['external_code'])) {
+                    $this->log('Meegegeven intake_id_extern (' . $dataIntake['external_code'] . ') nog niet bekend. Nieuwe intake aanmaken.');
+                } else {
+                    $this->log("Intake met id " . $intake->id . " gevonden bij intake_id_extern (" . $dataIntake['external_code'] . "). Geen nieuwe intake aanmaken");
+                    $createNewIntake = false;
+                }
+            } else {
+                $this->log("Geen external_code meegegeven");
+            }
+            if ($createNewIntake) {
+                $intake = Intake::create([
+                    'external_code' => !empty($dataIntake['external_code']) ? $dataIntake['external_code'] : null,
+                    'contact_id' => $address->contact->id,
+                    'address_id' => $address->id,
+                    'intake_status_id' => $intakeStatus->id,
+                    'campaign_id' => $campaign->id,
+                    'note' => $dataIntake['note'],
+                ]);
+                $this->log("Intake met id " . $intake->id . " aangemaakt en gekoppeld aan adres id " . $address->id . ".");
+            }
 
             $intake->reasons()->sync($reasons->pluck('id'));
             $this->log("Intake gekoppeld aan motivaties: " . $reasons->implode('name', ', '));
@@ -4209,6 +4244,15 @@ class ExternalWebformController extends Controller
         // When quotation_text filled in
         if($dataQuotationRequest['quotation_text']) {
             $quotationRequest->quotation_text = $dataQuotationRequest['quotation_text'];
+        }
+
+        if($dataQuotationRequest['status_code_ref']) {
+            $quotationRequestStatus = QuotationRequestStatus::where('code_ref', $dataQuotationRequest['status_code_ref'])->where('opportunity_action_id', $quotationRequest->opportunity_action_id)->first();
+            if ($quotationRequestStatus) {
+                $quotationRequest->status_id =  $quotationRequestStatus->id;
+            } else {
+                $this->log("Ongeldig kansactie_status code ref meegegeven: ". $dataQuotationRequest['status_code_ref'] . "'.");
+            }
         }
 
         if ($dataQuotationRequest['date_planned_attempt1']) {

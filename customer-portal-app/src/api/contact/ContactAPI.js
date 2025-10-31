@@ -215,6 +215,19 @@ export default {
         return axiosInstance.get(requestUrl);
     },
 
+    fetchContactContactGroups: function(contactId) {
+        const requestUrl = `/contact/${contactId}/contact-groups`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
+    changeContactToContactGroup: function(contactId, contactGroupId, isChecked) {
+        const action = isChecked ? 'remove' : 'add';
+        const requestUrl = `/contact/${contactId}/contact-group/${contactGroupId}/${action}`;
+
+        return axiosInstance.get(requestUrl);
+    },
+
     fetchContactProjectData: function(contactId, projectId) {
         const requestUrl = `/contact/${contactId}/${projectId}/contact-project-data`;
 

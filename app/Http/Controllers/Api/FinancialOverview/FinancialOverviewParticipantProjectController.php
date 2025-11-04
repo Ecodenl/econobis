@@ -82,13 +82,29 @@ class FinancialOverviewParticipantProjectController extends Controller
                 'amount_end_value' => $endValue['amount'],
             ]);
 
-            FinancialOverviewContact::updateOrCreate([
-                //Add unique field to match here
+//            FinancialOverviewContact::updateOrCreate([
+//                //Add unique field to match here
+//                'financial_overview_id' => $financialOverviewProject->financialOverview->id,
+//                'contact_id' => $participant->contact_id,
+//            ], [
+//                'status_id' => 'concept',
+//            ]);
+            $existingFinancialOverviewContact = FinancialOverviewContact::where([
                 'financial_overview_id' => $financialOverviewProject->financialOverview->id,
-                'contact_id' => $participant->contact_id,
-            ], [
-                'status_id' => 'concept',
-            ]);
+                'contact_id'            => $participant->contact_id,
+            ])->first();
+
+            if ($existingFinancialOverviewContact) {
+                if ($existingFinancialOverviewContact->status_id !== 'sent') {
+                    $existingFinancialOverviewContact->update(['status_id' => 'concept']);
+                }
+            } else {
+                FinancialOverviewContact::create([
+                    'financial_overview_id' => $financialOverviewProject->financialOverview->id,
+                    'contact_id'            => $participant->contact_id,
+                    'status_id'             => 'concept',
+                ]);
+            }
         }
 
     }

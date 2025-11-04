@@ -30,7 +30,8 @@ class FinancialOverviewParticipantProjectObserver
         // if there are no remaining financial overview participant projects for this financial overview and contact, then delete financial overview contact
         if($numberOfFOContacts == 0){
             $financialOverviewContact = FinancialOverviewContact::where('financial_overview_id',  $financialOverviewId)
-                ->where('contact_id',  $contactId);
+                ->where('contact_id',  $contactId)
+                ->where('status_id', '!=', 'sent');
             $financialOverviewContact->delete();
         }
     }

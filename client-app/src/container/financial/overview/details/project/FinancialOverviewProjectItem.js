@@ -113,6 +113,9 @@ function FinancialOverviewProjectItem({
     const rowClass =
         financialOverviewProject.statusId === 'in-progress'
             ? 'in-progress-row'
+            : financialOverviewProject.statusId === 'concept' &&
+              financialOverviewProject.hasInterimFinancialOverviewContacts
+            ? 'in-progress-row-light'
             : financialOverviewProject.statusId === 'definitive'
             ? 'success-row-light'
             : '';

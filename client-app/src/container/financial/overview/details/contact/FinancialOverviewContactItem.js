@@ -22,17 +22,20 @@ function FinancialOverviewContactItem({
     const dateSentFormated = dateSent ? moment(dateSent).format('DD-MM-Y') : '';
     const [highlightLine, setHighlightLine] = useState('');
 
-    const inProgressRowClass =
+    const rowClass =
         statusId === 'in-progress' ||
         statusId === 'is-sending' ||
         statusId === 'error-making' ||
         statusId === 'error-sending' ||
         statusId === 'is-resending'
             ? 'in-progress-row'
+            : statusId === 'sent'
+            ? 'success-row-light'
             : '';
+
     return (
         <tr
-            className={`${highlightLine} ${inProgressRowClass}`}
+            className={`${highlightLine} ${rowClass}`}
             onMouseEnter={() => onLineEnter()}
             onMouseLeave={() => onLineLeave()}
         >
@@ -58,7 +61,6 @@ function FinancialOverviewContactItem({
                 <a role="button" onClick={() => getFinancialOverviewPDF(id, statusId)}>
                     <Icon className="mybtn-success" size={14} icon={eye} />
                 </a>
-                {allowInterimFinancialOverview ? ' TT' : ''}
             </td>
         </tr>
     );

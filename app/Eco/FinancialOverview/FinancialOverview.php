@@ -43,6 +43,16 @@ class FinancialOverview extends Model
         return $this->financialOverviewProjects()->count();
     }
 
+    public function getHasInterimFinancialOverviewContactsAttribute()
+    {
+        return $this->financialOverviewContacts()->where('status_id', 'sent')->exists();
+    }
+
+    public function getUsesInterimFinancialOverviewsAttribute()
+    {
+        return $this->administration->uses_interim_financial_overviews;
+    }
+
     public function getTotalFinancialOverviewProjectsInProgressAttribute()
     {
         return $this->financialOverviewProjects()->where('status_id', 'in-progress')->count();

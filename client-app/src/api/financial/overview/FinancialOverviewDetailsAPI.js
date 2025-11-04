@@ -21,6 +21,7 @@ export default {
                         'totalFinancialOverviewProjectsInProgress',
                         'totalFinancialOverviewProjectsConcept',
                         'totalFinancialOverviewProjectsDefinitive',
+                        'hasInterimFinancialOverviewContacts',
                     ],
                     rlt: {
                         administration: { fld: ['id', 'name'] },

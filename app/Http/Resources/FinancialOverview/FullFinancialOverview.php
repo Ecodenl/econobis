@@ -26,6 +26,7 @@ class FullFinancialOverview extends JsonResource
             'definitive' => $this->definitive,
             'statusId' => $this->status_id,
             'date' => $this->date_processed,
+            'hasInterimFinancialOverviewContacts' => $this->has_interim_financial_overview_contacts,
         ];
     }
 }

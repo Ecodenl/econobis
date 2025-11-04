@@ -12,6 +12,7 @@ const FinancialOverviewDetailsFormGeneralView = ({
     administrationId,
     statusId,
     dateProcessed,
+    hasInterimFinancialOverviewContacts,
     documentTemplateFinancialOverview,
     switchToEdit,
     callFetchFinancialOverviewDetails,
@@ -23,7 +24,11 @@ const FinancialOverviewDetailsFormGeneralView = ({
             status = 'Wordt aangemaakt...';
             break;
         case 'concept':
-            status = 'Concept';
+            if (hasInterimFinancialOverviewContacts) {
+                status = 'Concept / Verwerkt';
+            } else {
+                status = 'Concept';
+            }
             break;
         case 'definitive':
             status = 'Definitief';
@@ -86,6 +91,23 @@ const FinancialOverviewDetailsFormGeneralView = ({
                                 <div className="row">
                                     <div className="col-md-12">
                                         {messageText ? <div className="alert alert-danger">{messageText}</div> : null}
+                                    </div>
+                                </div>
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </div>
+            ) : null}
+            {statusId === 'concept' && hasInterimFinancialOverviewContacts ? (
+                <div>
+                    <Panel>
+                        <PanelBody>
+                            <div className="col-md-12 margin-10-top">
+                                <div className="row">
+                                    <div className="col-md-12">
+                                        <div className="alert alert-warning">
+                                            Er zijn reeds verwerkte tussentijdse waardestaten gemaakt!
+                                        </div>
                                     </div>
                                 </div>
                             </div>

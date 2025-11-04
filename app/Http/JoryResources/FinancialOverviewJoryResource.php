@@ -36,6 +36,8 @@ class FinancialOverviewJoryResource extends JoryResource
         $this->field('total_financial_overview_projects_in_progress')->filterable()->sortable();
         $this->field('total_financial_overview_projects_concept')->filterable()->sortable();
         $this->field('total_financial_overview_projects_definitive')->filterable()->sortable();
+        $this->field('uses_interim_financial_overviews')->filterable()->sortable();
+        $this->field('has_interim_financial_overview_contacts')->filterable()->sortable();
 
         // Relations
         $this->relation('administration');

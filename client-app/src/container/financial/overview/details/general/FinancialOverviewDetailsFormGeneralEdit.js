@@ -34,6 +34,9 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                 definitive: props.definitive ? props.definitive : false,
                 statusId: props.statusId ? props.statusId : '',
                 dateProcessed: props.dateProcessed ? props.dateProcessed : null,
+                hasInterimFinancialOverviewContacts: props.hasInterimFinancialOverviewContacts
+                    ? props.hasInterimFinancialOverviewContacts
+                    : false,
             },
             administrations: props.administrations ? props.administrations : null,
             documentTemplates: [],
@@ -153,6 +156,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             administrationId,
             statusId,
             dateProcessed,
+            hasInterimFinancialOverviewContacts,
             documentTemplateFinancialOverviewId,
         } = this.state.financialOverview;
 
@@ -162,7 +166,11 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                 status = 'Wordt aangemaakt...';
                 break;
             case 'concept':
-                status = 'Concept';
+                if (hasInterimFinancialOverviewContacts) {
+                    status = 'Concept / Verwerkt';
+                } else {
+                    status = 'Concept';
+                }
                 break;
             case 'definitive':
                 status = 'Definitief';
@@ -174,64 +182,83 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
         const dateProcessedFormated = dateProcessed ? moment(dateProcessed).format('DD-MM-Y') : '';
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel>
-                    <PanelBody>
-                        <div className="row">
-                            <ViewText className={'form-group col-md-6'} label={'Jaar'} value={year} />
-                            <ViewText className={'form-group col-md-6'} label={'Status'} value={status} />
-                        </div>
-                        <div className="row">
-                            <ViewText
-                                className={'form-group col-md-6'}
-                                label={'Administratie'}
-                                value={
-                                    administrationId
-                                        ? this.state.administrations &&
-                                          this.state.administrations.find(
-                                              administration => administration.id == administrationId
-                                          ).name
-                                        : ''
-                                }
-                            />
-                            <ViewText
-                                className={'form-group col-md-6'}
-                                label={'Datum verwerkt'}
-                                value={dateProcessedFormated}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelectLong
-                                label="Document template"
-                                name={'documentTemplateFinancialOverviewId'}
-                                options={this.state.documentTemplates}
-                                value={documentTemplateFinancialOverviewId}
-                                onChangeAction={this.handleReactSelectChange}
-                                required={'required'}
-                                // isLoading={peekLoading.documentTemplates}
-                                error={this.state.errors.documentTemplateFinancialOverviewId}
-                                errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
-                            />
-                        </div>
-                    </PanelBody>
+            <>
+                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <Panel>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText className={'form-group col-md-6'} label={'Jaar'} value={year} />
+                                <ViewText className={'form-group col-md-6'} label={'Status'} value={status} />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    className={'form-group col-md-6'}
+                                    label={'Administratie'}
+                                    value={
+                                        administrationId
+                                            ? this.state.administrations &&
+                                              this.state.administrations.find(
+                                                  administration => administration.id == administrationId
+                                              ).name
+                                            : ''
+                                    }
+                                />
+                                <ViewText
+                                    className={'form-group col-md-6'}
+                                    label={'Datum verwerkt'}
+                                    value={dateProcessedFormated}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label="Document template"
+                                    name={'documentTemplateFinancialOverviewId'}
+                                    options={this.state.documentTemplates}
+                                    value={documentTemplateFinancialOverviewId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    required={'required'}
+                                    // isLoading={peekLoading.documentTemplates}
+                                    error={this.state.errors.documentTemplateFinancialOverviewId}
+                                    errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
+                                />
+                            </div>
+                        </PanelBody>
 
-                    <PanelBody>
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Sluiten'}
-                                onClickAction={this.props.switchToView}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                type={'submit'}
-                                value={'Submit'}
-                                onClickAction={this.handleSubmit}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </form>
+                        <PanelBody>
+                            <div className="pull-right btn-group" role="group">
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Sluiten'}
+                                    onClickAction={this.props.switchToView}
+                                />
+                                <ButtonText
+                                    buttonText={'Opslaan'}
+                                    type={'submit'}
+                                    value={'Submit'}
+                                    onClickAction={this.handleSubmit}
+                                />
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </form>
+                {statusId === 'concept' && hasInterimFinancialOverviewContacts ? (
+                    <div>
+                        <Panel>
+                            <PanelBody>
+                                <div className="col-md-12 margin-10-top">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="alert alert-warning">
+                                                Er zijn reeds verwerkte tussentijdse waardestaten gemaakt!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    </div>
+                ) : null}
+            </>
         );
     }
 }

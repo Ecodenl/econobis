@@ -8,6 +8,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import ButtonText from '../../../../components/button/ButtonText';
 import PanelFooter from '../../../../components/panel/PanelFooter';
 import InputToggle from '../../../../components/form/InputToggle';
+import ViewText from '../../../../components/form/ViewText';
 
 class UserDetailsFormGeneralEdit extends Component {
     constructor(props) {
@@ -83,6 +84,8 @@ class UserDetailsFormGeneralEdit extends Component {
             mobile,
             occupation,
             active,
+            failedLogins,
+            blockedUntilFormatted,
         } = this.state.user;
 
         return (
@@ -166,6 +169,15 @@ class UserDetailsFormGeneralEdit extends Component {
                         value={active}
                         onChangeAction={this.handleInputChange}
                     />
+                </div>
+
+                <div className="row">
+                    <ViewText
+                        label={'Geblokkeerd tot'}
+                        value={blockedUntilFormatted}
+                        className={'form-group col-md-6'}
+                    />
+                    <ViewText label={'Foutieve loginpogingen'} value={failedLogins} className={'form-group col-md-6'} />
                 </div>
 
                 <PanelFooter>

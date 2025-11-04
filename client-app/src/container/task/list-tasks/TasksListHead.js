@@ -22,13 +22,13 @@ const TasksListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'note'}
                 title={'Taak / notitie'}
-                width={props.showSelectTasks ? '15%' : '20%'}
+                width={props.showSelectTasks ? '40%' : '45%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
                 sortColumn={'contactFullName'}
                 title={'Contact'}
-                width={'17%'}
+                width={'12%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort
@@ -37,7 +37,7 @@ const TasksListHead = props => {
                 width={'8%'}
                 setSorts={setSorts}
             />
-            <DataTableHeadTitle title={'Verantwoordelijke'} width={'15%'} />
+            <DataTableHeadTitle title={'Verantwoordelijke'} width={'12%'} />
             <th width="5%" />
         </tr>
     );

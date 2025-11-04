@@ -448,7 +448,7 @@ class DocumentDetailsFormEdit extends Component {
                             label={'Contact'}
                             name={'contactId'}
                             id={'contactId'}
-                            size={'col-sm-6'}
+                            valueSize={'col-sm-6'}
                             loadOptions={getContactOptions}
                             optionName={'fullName'}
                             value={selectedContact}

@@ -58,6 +58,8 @@ export default (type, field) => {
                     return 'Kans campagne';
                 case 'intakeMeasureCategory':
                     return 'Intake - Interesse';
+                case 'intakeSource':
+                    return 'Intake - Aanmeldingsbron';
                 case 'intakeDateStart':
                     return 'Intake - Begin datum';
                 case 'intakeDateFinish':

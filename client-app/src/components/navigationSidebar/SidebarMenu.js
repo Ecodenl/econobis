@@ -255,6 +255,15 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                                 </NavText>
                             </NavItem>
                         )}
+                        {permissions.menuIntakeSources && (
+                            <NavItem id="aanmeldingsbronnen">
+                                <NavText>
+                                    <Link className="sidebar-link" to="aanmeldingsbronnen">
+                                        Aanmeldingsbronnen
+                                    </Link>
+                                </NavText>
+                            </NavItem>
+                        )}
                         {permissions.menuMeasures && (
                             <NavItem id="measures">
                                 <NavText>

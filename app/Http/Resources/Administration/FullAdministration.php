@@ -104,6 +104,9 @@ class FullAdministration extends JsonResource
                 'totalInvoicesErrorMaking' => $this->total_invoices_error_making,
                 'totalInvoicesIsResending' => $this->total_invoices_is_resending,
 
+                'totalInvoicesIsExporting' => $this->total_invoices_is_exporting,
+                'totalInvoicesErrorExporting' => $this->total_invoices_error_exporting,
+
                 'totalPaymentInvoices' => $this->total_payment_invoices,
                 'totalPaymentInvoicesConcepts' => $this->total_payment_invoices_concepts,
                 'totalPaymentInvoicesSent' => $this->total_payment_invoices_sent,

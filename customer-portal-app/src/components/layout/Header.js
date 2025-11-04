@@ -31,6 +31,7 @@ function Header({ location, history }) {
     const buttonTextOverOns = getWidgetButtonTextByCodeRef(widgets, 'over-ons');
     const buttonTextInschrijvenProjecten = getWidgetButtonTextByCodeRef(widgets, 'project-schrijf-je-in');
     const buttonTextHuidigeDeelnames = getWidgetButtonTextByCodeRef(widgets, 'huidige-deelnames');
+    // const buttonTextGroepenBeheer = getWidgetButtonTextByCodeRef(widgets, 'groepen-beheer');
 
     useEffect(() => {
         if (!currentSelectedContact || !currentSelectedContact.id) return;
@@ -303,6 +304,15 @@ function Header({ location, history }) {
                                     >
                                         {buttonTextInschrijvenProjecten || 'Inschrijven projecten'}
                                     </Link>
+                                    {/*<Link*/}
+                                    {/*    to={'/groepen-beheer'}*/}
+                                    {/*    className={`nav-link w-nav-link w--nav-link-open ${*/}
+                                    {/*        location.pathname === '/groepen-beheer' ? 'w--current' : ''*/}
+                                    {/*    }`}*/}
+                                    {/*    onClick={closeMenu}*/}
+                                    {/*>*/}
+                                    {/*    {buttonTextGroepenBeheer || 'Groepen beheer'}*/}
+                                    {/*</Link>*/}
                                     {currentSelectedContact && currentSelectedContact.hasFinancialOverviews ? (
                                         <Link
                                             to={'/waardestaat-documenten'}

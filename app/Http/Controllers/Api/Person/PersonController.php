@@ -296,7 +296,7 @@ class PersonController extends ApiController
         return null;
     }
 
-    private function findDuplicateEmailAddressConflict(Person $person, EmailAddress $emailAddress): ?array
+    private function findDuplicateEmailAddressConflict(Person $person, ?EmailAddress $emailAddress): ?array
     {
         if (!$emailAddress?->email) {
             return null;

@@ -4,6 +4,7 @@ namespace App\Eco\FinancialOverview;
 
 use App\Eco\Administration\Administration;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\EmailTemplate\EmailTemplate;
 use Illuminate\Database\Eloquent\Model;
 
 class FinancialOverview extends Model
@@ -32,6 +33,10 @@ class FinancialOverview extends Model
     public function documentTemplateFinancialOverview()
     {
         return $this->belongsTo(DocumentTemplate::class, 'document_template_financial_overview_id');
+    }
+    public function emailTemplateFinancialOverview()
+    {
+        return $this->belongsTo(EmailTemplate::class, 'email_template_financial_overview_id');
     }
 
     public function financialOverviewPosts()

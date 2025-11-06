@@ -408,7 +408,7 @@ class FinancialOverviewHelper
      */
     public static function getWsAdditionalInfo(FinancialOverviewContact $financialOverviewContact, $contactPerson, \Illuminate\Contracts\Auth\Authenticatable $user): string
     {
-        $documentTemplateId = $financialOverviewContact->financialOverview ? $financialOverviewContact->financialOverview->document_template_financial_overview_id : 0;
+        $documentTemplateId = $financialOverviewContact?->document_template_financial_overview_id ?: ($financialOverviewContact?->financialOverview?->document_template_financial_overview_id ?: 0);
         $documentTemplate = DocumentTemplate::find($documentTemplateId);
 
         $contact = $financialOverviewContact->contact;

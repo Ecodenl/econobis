@@ -50,7 +50,13 @@ class FinancialOverviewProject extends Model
                     return 'Concept';
                 }
             case 'definitive':
-                return 'Definitief';
+                if( $this->has_interim_financial_overview_contacts ) {
+                    return 'Definitief / Verwerkt';
+                } else {
+                    return 'Definitief';
+                }
+            case 'processed':
+                return 'Verwerkt';
             default:
                 return null;
         }

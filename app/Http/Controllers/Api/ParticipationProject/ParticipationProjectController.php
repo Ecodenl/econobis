@@ -1642,9 +1642,22 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
-        // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
         $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+
         if ( $dateTerminated != null) {
+            // Deelname beeindigd niet meer terug te draaien indien waardestaat al verstuurd voor jaar waarin beeindigd is of daarna (voor het geval ze om wat voor reden in beeindigingsjaar geen waardestaat gemaakt hebeen).
+            $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
+            if( $participantProject->financialOverviewParticipantProjects()->where('status_id', 'sent')
+                ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
+                    $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
+                        $query->where('year', '>=', $yearTerminated);
+                    });
+                })
+                ->exists() ) {
+                return false;
+            }
+
+            // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
             $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
                 ->whereNotIn('status', ['concept'])
                 ->whereHas('revenue', function ($query) use($dateTerminated) {
@@ -1652,7 +1665,6 @@ class ParticipationProjectController extends ApiController
                         ->where('date_end', '>=', $dateTerminated);
                 })
                 ->exists();
-
             if($projectRevenueDistributionsNotConcept){
                 return false;
             }
@@ -1670,7 +1682,6 @@ class ParticipationProjectController extends ApiController
                         });
                     })
                     ->exists();
-
                 if($revenueDistributionKwh){
                     return false;
                 }

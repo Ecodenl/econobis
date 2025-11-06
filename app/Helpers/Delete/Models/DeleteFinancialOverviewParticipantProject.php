@@ -9,6 +9,7 @@
 namespace App\Helpers\Delete\Models;
 
 
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -59,10 +60,20 @@ class DeleteFinancialOverviewParticipantProject implements DeleteInterface
      */
     public function canDelete()
     {
+        if($this->financialOverviewParticipantProject->status_id === 'sent'){
+            array_push($this->errorMessage, "Er zijn al waardestaten voor deelnemer verzonden.");
+        }
         $hasFinancialOverviewDefinitive = ParticipantMutation::where('participation_id', $this->financialOverviewParticipantProject->participant_project_id)
             ->where('financial_overview_definitive', true)->exists();
         if($hasFinancialOverviewDefinitive){
             array_push($this->errorMessage, "Er zijn al mutaties voor deelnemer verwerkt in een definitieve project waarde staat.");
+        }
+        $hasFinancialOverviewContactSent = FinancialOverviewContact::where('financial_overview_id',  $this->financialOverviewParticipantProject->financialOverviewProject->financial_overview_id)
+            ->where('contact_id',  $this->financialOverviewParticipantProject->contact_id)
+            ->where('status_id', 'sent')->exists();
+
+        if($hasFinancialOverviewContactSent){
+            array_push($this->errorMessage, "Er zijn al waardestaten voor contact verzonden.");
         }
     }
 

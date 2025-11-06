@@ -7,18 +7,17 @@ moment.locale('nl');
 import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import FinancialOverviewsAPI from '../../../../../api/financial/overview/FinancialOverviewsAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 
 class FinancialOverviewDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            financialOverviews: [],
             financialOverview: {
                 id: props.id ? props.id : '',
                 year: props.year
@@ -30,6 +29,9 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                 documentTemplateFinancialOverviewId: props.documentTemplateFinancialOverviewId
                     ? props.documentTemplateFinancialOverviewId
                     : '',
+                emailTemplateFinancialOverviewId: props.emailTemplateFinancialOverviewId
+                    ? props.emailTemplateFinancialOverviewId
+                    : '',
                 administrationId: props.administrationId ? props.administrationId : '',
                 definitive: props.definitive ? props.definitive : false,
                 statusId: props.statusId ? props.statusId : '',
@@ -40,36 +42,67 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             },
             administrations: props.administrations ? props.administrations : null,
             documentTemplates: [],
+            emailTemplates: [],
+            peekLoading: {
+                documentTemplates: true,
+                emailTemplates: true,
+            },
             errorMessage: false,
             errors: {
                 year: false,
                 administrationId: false,
                 documentTemplateFinancialOverviewId: false,
+                emailTemplateFinancialOverviewId: false,
             },
         };
     }
 
     componentDidMount() {
-        FinancialOverviewsAPI.fetchFinancialOverviews()
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral()
             .then(payload => {
-                this.setState({ ...this.state, financialOverviews: payload.data.data });
+                let documentTemplates = [];
+                payload.forEach(function(documentTemplate) {
+                    if (documentTemplate.group == 'financial-overview') {
+                        documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
+                    }
+                });
+
+                this.setState(prevState => ({
+                    documentTemplates: documentTemplates,
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        documentTemplates: false,
+                    },
+                }));
             })
             .catch(error => {
-                this.setState({ ...this.state, hasError: true });
+                console.log(error);
+                this.setState(prevState => ({
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        documentTemplates: false,
+                    },
+                }));
             });
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-            let documentTemplates = [];
-
-            payload.forEach(function(documentTemplate) {
-                if (documentTemplate.group == 'financial-overview') {
-                    documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
-                }
+        EmailTemplateAPI.fetchEmailTemplatesPeek()
+            .then(payload => {
+                this.setState(prevState => ({
+                    emailTemplates: payload,
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        emailTemplates: false,
+                    },
+                }));
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState(prevState => ({
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        emailTemplates: false,
+                    },
+                }));
             });
-
-            this.setState({
-                documentTemplates: documentTemplates,
-            });
-        });
     }
 
     handleInputChange = event => {
@@ -108,6 +141,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+
         const { financialOverview } = this.state;
 
         // Validation
@@ -135,6 +169,12 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             errorMessage.documentTemplateFinancialOverviewId = 'Document template is een verplicht veld.';
             hasErrors = true;
         }
+        // e-mail template niet verplicht, indien niet ingevuld, dan standaard ingestelde template bij administratie gebruiken.
+        // if (validator.isEmpty(financialOverview.emailTemplateFinancialOverviewId + '')) {
+        //     errors.emailTemplateFinancialOverviewId = true;
+        //     errorMessage.emailTemplateFinancialOverviewId = 'E-mail template is een verplicht veld.';
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
@@ -158,6 +198,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             dateProcessed,
             hasInterimFinancialOverviewContacts,
             documentTemplateFinancialOverviewId,
+            emailTemplateFinancialOverviewId,
         } = this.state.financialOverview;
 
         let status = '';
@@ -211,15 +252,29 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                             </div>
                             <div className="row">
                                 <InputReactSelectLong
-                                    label="Document template"
+                                    label={'Document template' + this.state.peekLoading.documentTemplates}
                                     name={'documentTemplateFinancialOverviewId'}
                                     options={this.state.documentTemplates}
                                     value={documentTemplateFinancialOverviewId}
                                     onChangeAction={this.handleReactSelectChange}
                                     required={'required'}
-                                    // isLoading={peekLoading.documentTemplates}
+                                    isLoading={this.state.peekLoading.documentTemplates}
                                     error={this.state.errors.documentTemplateFinancialOverviewId}
                                     errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label={'E-mail template' + this.state.peekLoading.emailTemplates}
+                                    name={'emailTemplateFinancialOverviewId'}
+                                    options={this.state.emailTemplates}
+                                    value={emailTemplateFinancialOverviewId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    placeholder={'Gebruik administratie e-mail template'}
+                                    clearable={true}
+                                    isLoading={this.state.peekLoading.emailTemplates}
+                                    error={this.state.errors.emailTemplateFinancialOverviewId}
+                                    errorMessage={this.state.errorMessage.emailTemplateFinancialOverviewId}
                                 />
                             </div>
                         </PanelBody>

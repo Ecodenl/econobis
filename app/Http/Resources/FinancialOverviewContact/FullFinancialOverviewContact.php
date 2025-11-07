@@ -10,6 +10,7 @@ namespace App\Http\Resources\FinancialOverviewContact;
 
 
 use App\Http\Resources\Contact\FullContact;
+use App\Http\Resources\FinancialOverview\FullFinancialOverview;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class FullFinancialOverviewContact extends JsonResource
@@ -25,11 +26,13 @@ class FullFinancialOverviewContact extends JsonResource
             'status' => $this->status,
             'name' => $this->name,
             'filename' => $this->filename,
-            'contact' => FullContact::make($this->whenLoaded('contact')),
             'dateSent' => $this->date_sent,
             'emailedTo' => $this->emailed_to,
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
+            'allowInterimFinancialOverview' => $this->allowInterimFinancialOverview,
+            'contact' => FullContact::make($this->whenLoaded('contact')),
+            'financialOverview' => FullFinancialOverview::make($this->whenLoaded('financialOverview')),
         ];
     }
 }

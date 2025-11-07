@@ -18,6 +18,7 @@ import ButtonIcon from '../../../../../components/button/ButtonIcon';
 import ButtonText from '../../../../../components/button/ButtonText';
 import { connect } from 'react-redux';
 import { previewFinancialOverview } from '../../../../../actions/financial-overview/FinancialOverviewActions';
+import FinancialOverviewCreateInterimModal from '../../create/FinancialOverviewCreateInterimModal';
 
 const recordsPerPage = 50;
 // const maxRecordsPost = 50;
@@ -46,6 +47,9 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
     const [sort, setSort] = useState([{ field: 'contact', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
+
+    const [showInterimModal, setShowInterimModal] = useState(false);
+    const [selectedFOContactId, setSelectedFOContactId] = useState(null);
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
@@ -257,6 +261,11 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
 
     function checkAllFinancialOverviewContactsAreChecked() {
         setCheckedAll(financialOverviewContactIds.length === meta.financialOverviewContactIdsTotal.length);
+    }
+
+    function createInterim(financialOverviewContactId) {
+        setSelectedFOContactId(financialOverviewContactId);
+        setShowInterimModal(true);
     }
 
     let messageText = null;
@@ -485,6 +494,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                                         }
                                         toggleFinancialOverviewContactCheck={toggleFinancialOverviewContactCheck}
                                         financialOverviewContactIds={financialOverviewContactIds}
+                                        createInterim={createInterim}
                                     />
                                 );
                             })
@@ -505,6 +515,13 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                     />
                 </div>
             </form>
+
+            {showInterimModal && (
+                <FinancialOverviewCreateInterimModal
+                    financialOverviewContactId={selectedFOContactId}
+                    onClose={() => setShowInterimModal(false)}
+                />
+            )}
         </div>
     );
 }

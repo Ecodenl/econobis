@@ -30,6 +30,11 @@ export default {
 
         return getAxiosInstance().get(requestUrl);
     },
+    fetchFinancialOverviewContactForInterim: financialOverviewContactId => {
+        const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewContactId}/getForInterim`;
+
+        return getAxiosInstance().get(requestUrl);
+    },
 
     getFinancialOverviewContactsForSending: (financialOverviewId, ids, type) => {
         const requestUrl = `${URL_FINANCIAL_OVERVIEW_CONTACT}/${financialOverviewId}/sending/${type}`;

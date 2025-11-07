@@ -522,6 +522,18 @@ class Contact extends Model
         return $this->hasMany(FinancialOverviewContact::class)->where('status_id', 'sent')->orderBy('date_sent', 'desc');
     }
 
+    public function financialOverviewContactsConceptOrderedByYear()
+    {
+        return $this->hasMany(FinancialOverviewContact::class)
+            ->where('financial_overview_contacts.status_id', 'concept')
+            ->join('financial_overviews', 'financial_overview_contacts.financial_overview_id', '=', 'financial_overviews.id')
+            ->join('administrations', 'financial_overviews.administration_id', '=', 'administrations.id')
+            ->where('administrations.uses_interim_financial_overviews', 1)
+            ->orderBy('financial_overviews.year', 'asc')
+            ->orderBy('financial_overview_contacts.id', 'asc')
+            ->select('financial_overview_contacts.*');
+    }
+
     public function twinfieldLogs()
     {
         return $this->hasMany(TwinfieldLog::class);
@@ -684,6 +696,11 @@ class Contact extends Model
             ->sortByDesc('year')
             ->first();
         return $financialOverview ? (int) $financialOverview->year : null;
+    }
+
+    public function getOldestFinancialOverviewContactConceptAttribute()
+    {
+        return $this->financialOverviewContactsConceptOrderedByYear()->first();
     }
 
     // Contact initials (only if person).

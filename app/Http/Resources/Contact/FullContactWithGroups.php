@@ -96,6 +96,7 @@ class FullContactWithGroups extends JsonResource
             'emailSentCount' => $this->relatedEmailsSent ? $this->relatedEmailsSent->count() : 0,
             'relatedEmailsSent' => $this->relatedEmailsSent,
             'financialOverviewContactCount' => $this->financialOverviewContactsSend()->count(),
+            'oldestFinancialOverviewContactConceptId' => $this->oldestFinancialOverviewContactConcept?->id ?? null,
             'relatedFinancialOverviewContacts' => FullFinancialOverviewContact::collection($this->whenLoaded('financialOverviewContactsSend')),
             'documentCount' => $this->relatedDocuments ? $this->relatedDocuments->count() : 0,
             'relatedDocuments' => $this->relatedDocuments,

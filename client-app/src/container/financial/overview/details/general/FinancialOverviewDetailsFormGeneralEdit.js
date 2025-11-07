@@ -252,7 +252,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                             </div>
                             <div className="row">
                                 <InputReactSelectLong
-                                    label={'Document template' + this.state.peekLoading.documentTemplates}
+                                    label={'Document template'}
                                     name={'documentTemplateFinancialOverviewId'}
                                     options={this.state.documentTemplates}
                                     value={documentTemplateFinancialOverviewId}
@@ -265,7 +265,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                             </div>
                             <div className="row">
                                 <InputReactSelectLong
-                                    label={'E-mail template' + this.state.peekLoading.emailTemplates}
+                                    label={'E-mail template'}
                                     name={'emailTemplateFinancialOverviewId'}
                                     options={this.state.emailTemplates}
                                     value={emailTemplateFinancialOverviewId}

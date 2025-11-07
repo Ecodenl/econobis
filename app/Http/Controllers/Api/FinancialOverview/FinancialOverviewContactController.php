@@ -10,6 +10,7 @@ use App\Eco\Project\ProjectType;
 use App\Helpers\FinancialOverview\FinancialOverviewHelper;
 use App\Http\Controllers\Controller;
 use App\Http\RequestQueries\FinancialOverviewContact\Grid\RequestQuery;
+use App\Http\Resources\FinancialOverviewContact\FullFinancialOverviewContact;
 use App\Http\Resources\FinancialOverviewContact\SendFinancialOverviewContact;
 use App\Http\Resources\FinancialOverviewContact\GridFinancialOverviewContact;
 use App\Jobs\FinancialOverview\CreateAllFinancialOverviewContactsPost;
@@ -24,13 +25,15 @@ class FinancialOverviewContactController extends Controller
 {
     public function grid(RequestQuery $requestQuery)
     {
+        $this->authorize('view', FinancialOverview::class);
+
         $financialOverviewContacts = $requestQuery->get();
 
         $financialOverviewContacts->load(['financialOverview', 'contact']);
 
         foreach ($financialOverviewContacts as $financialOverviewContact) {
             $financialOverviewContact->emailToAddress = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
-            $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact->contact);
+            $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact);
         }
 
         $selectedFinancialOverviewContacts = new Collection();
@@ -54,6 +57,8 @@ class FinancialOverviewContactController extends Controller
 
     public function getFinancialOverviewContact(FinancialOverviewContact $financialOverviewContact, $preview = false)
     {
+        $this->authorize('view', FinancialOverview::class);
+
         $financialOverviewContact->append('status');
 
         $loanTypeId = ProjectType::where('code_ref', 'loan')->first()->id;
@@ -188,6 +193,19 @@ class FinancialOverviewContactController extends Controller
         return $financialOverviewContactData;
     }
 
+    public function getFinancialOverviewContactForInterim(FinancialOverviewContact $financialOverviewContact)
+    {
+        $this->authorize('view', FinancialOverview::class);
+
+        $financialOverviewContact->load([
+            'contact',
+            'financialOverview',
+        ]);
+
+        $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact);
+
+        return FullFinancialOverviewContact::make($financialOverviewContact);
+    }
 
     public function getFinancialOverviewContactsForSendingEmail(FinancialOverview $financialOverview, Request $request)
     {
@@ -375,12 +393,18 @@ class FinancialOverviewContactController extends Controller
 
         return $contactInfo;
     }
-    public function getAllowInterimFinancialOverview(Contact $contact)
+    // Tussentijdse waardestaat toegestaan?
+    // - contact mag lopende deelnames meer hebben.
+    // - Status moet nog concept zijn
+    // - bij gekoppelde administratie moet Gebruik aan staan
+    public function getAllowInterimFinancialOverview(FinancialOverviewContact $financialOverviewContact)
     {
         // All participations for the contact must be terminated
-        return !$contact->participations()
+        return !$financialOverviewContact->contact->participations()
             ->whereNull('date_terminated')
-            ->exists();
+            ->exists()
+            && ($financialOverviewContact?->status_id === 'concept' ?? false)
+            && ($financialOverviewContact?->financialOverview?->administration?->uses_interim_financial_overviews ?? false);
     }
 
     protected function getOrganisationEmailAddressFinancialOverview(Contact $contact){

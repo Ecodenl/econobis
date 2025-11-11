@@ -180,7 +180,7 @@ class FinancialOverviewContactController extends Controller
             ->get();
 
         $financialOverviewContactData = collect([
-            'financialOverviewContact' => $financialOverviewContact,
+            'financialOverviewContact' => FullFinancialOverviewContact::make($financialOverviewContact),
             'financialOverviewContactTotalLoanProjects' => $financialOverviewContactTotalLoanProjects->numberOfRecords > 0 ? $financialOverviewContactTotalLoanProjects : null,
             'financialOverviewContactTotalObligationProjects' => $financialOverviewContactTotalObligationProjects->numberOfRecords > 0 ? $financialOverviewContactTotalObligationProjects : null,
             'financialOverviewContactTotalCapitalProjects' => $financialOverviewContactTotalCapitalProjects->numberOfRecords > 0 ? $financialOverviewContactTotalCapitalProjects : null,
@@ -198,11 +198,13 @@ class FinancialOverviewContactController extends Controller
         $this->authorize('view', FinancialOverview::class);
 
         $financialOverviewContact->load([
-            'contact',
             'financialOverview',
         ]);
 
         $financialOverviewContact->allowInterimFinancialOverview = self::getAllowInterimFinancialOverview($financialOverviewContact);
+        $emailedTo = self::getContactInfoForFinancialOverview($financialOverviewContact->contact)['email'];
+        $financialOverviewContact->emailed_to = $emailedTo;
+        $financialOverviewContact->emailToAllowed = ($emailedTo !== 'Geen e-mail bekend') ? true : false;
 
         return FullFinancialOverviewContact::make($financialOverviewContact);
     }

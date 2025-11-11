@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+
 import Modal from '../../../../components/modal/Modal';
 import FinancialOverviewContactAPI from '../../../../api/financial/overview/FinancialOverviewContactAPI';
 import DocumentTemplateAPI from '../../../../api/document-template/DocumentTemplateAPI';
 import EmailTemplateAPI from '../../../../api/email-template/EmailTemplateAPI';
 import InputReactSelectLong from '../../../../components/form/InputReactSelectLong';
+import ButtonText from '../../../../components/button/ButtonText';
+// import { previewFinancialOverview } from '../../../../actions/financial-overview/FinancialOverviewActions';
 
 export default function FinancialOverviewCreateInterimModal({ financialOverviewContactId, onClose }) {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const [showModal, setShowModal] = useState(true);
 
     const [financialOverviewContact, setFinancialOverviewContact] = useState([]);
@@ -15,6 +23,7 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
     const [emailTemplates, setEmailTemplates] = useState([]);
     const [peekLoadingDocumentTemplates, setPeekLoadingDocumentTemplates] = useState(true);
     const [peekLoadingEmailTemplates, setPeekLoadingEmailTemplates] = useState(true);
+    const [emailToAllowed, setEmailToAllowed] = useState(false);
 
     useEffect(() => {
         if (financialOverviewContactId) {
@@ -27,21 +36,23 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
     function callFetchFinancialOverviewContactDetails() {
         FinancialOverviewContactAPI.fetchFinancialOverviewContactForInterim(financialOverviewContactId)
             .then(payload => {
-                setFinancialOverviewContact(payload?.data?.data ?? []);
+                const data = payload?.data?.data ?? [];
+                setFinancialOverviewContact(data);
                 setDocumentTemplateFinancialOverviewId(
-                    payload?.data?.data?.financialOverview?.documentTemplateFinancialOverviewId ?? null
+                    data?.financialOverview?.documentTemplateFinancialOverviewId ?? null
                 );
-                setEmailTemplateFinancialOverviewId(
-                    payload?.data?.data?.financialOverview?.emailTemplateFinancialOverviewId ?? null
-                );
+                setEmailTemplateFinancialOverviewId(data?.financialOverview?.emailTemplateFinancialOverviewId ?? null);
+                setEmailToAllowed(data?.emailToAllowed ?? false);
             })
             .catch(error => {
                 console.log(error);
                 setFinancialOverviewContact([]);
                 setDocumentTemplateFinancialOverviewId(null);
                 setEmailTemplateFinancialOverviewId(null);
+                setEmailToAllowed(false);
             });
     }
+
     function callFetchDocumentTemplatesPeekGeneral() {
         DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral()
             .then(payload => {
@@ -59,6 +70,7 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
                 setPeekLoadingDocumentTemplates(false);
             });
     }
+
     function callFetchEmailTemplatesPeek() {
         EmailTemplateAPI.fetchEmailTemplatesPeek()
             .then(payload => {
@@ -71,31 +83,27 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
             });
     }
 
-    // function previewSendEmail() {
-    //     setEmailFinancialOverviewContactsText('Preview e-mail waardestaten');
-    //     setOnlyEmailFinancialOverviewContacts(true);
-    //
-    //     if (financialOverviewContactIds.length > 0) {
-    //         previewFinancialOverview(financialOverviewContactIds);
-    //         navigate(`/waardestaat/${financialOverview.id}/aanmaken/email`);
-    //     } else {
-    //         toggleShowCheckboxList();
-    //     }
-    // }
-    //
-    // function previewSendPost() {
-    //     setPostFinancialOverviewContactsText('Preview post waardestaten');
-    //     setOnlyPostFinancialOverviewContacts(true);
-    //
-    //     if (financialOverviewContactIds.length > 0) {
-    //         previewFinancialOverview(financialOverviewContactIds);
-    //         navigate(`/waardestaat/${financialOverview.id}/aanmaken/post`);
-    //     } else {
-    //         toggleShowCheckboxList();
-    //     }
-    // }
-    function preview() {
-        console.log('Hier preview?');
+    // hier gaat het gebeuren:
+    function previewEmailCreateInterim() {
+        if (!financialOverviewContactId || !financialOverviewContact?.financialOverview?.id) return;
+
+        navigate(
+            `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/email/${financialOverviewContactId}`
+        );
+
+        setShowModal(false);
+        onClose && onClose();
+    }
+
+    function previewPostCreateInterim() {
+        if (!financialOverviewContactId || !financialOverviewContact?.financialOverview?.id) return;
+
+        navigate(
+            `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/post/${financialOverviewContactId}`
+        );
+
+        setShowModal(false);
+        onClose && onClose();
     }
 
     return (
@@ -103,46 +111,64 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
             {showModal && (
                 <Modal
                     modalClassName="modal-lg"
-                    buttonConfirmText="Preview tussentijdse waardestaat"
                     closeModal={() => {
                         setShowModal(false);
                         onClose && onClose();
                     }}
-                    confirmAction={preview}
                     title="Tussentijdse waardestaat"
                 >
                     <div>
                         <div className="row">
                             <div className={'col-sm-12'}>
-                                <h4>Tussentijdse waardestaat voor {financialOverviewContact?.contact?.fullNameFnf}</h4>
+                                <h4>Tussentijdse waardestaat voor {financialOverviewContact?.contactFullNameFnf}</h4>
                             </div>
                         </div>
                         <div className="row">
-                            <InputReactSelectLong
-                                label={'Document template'}
-                                name={'documentTemplateFinancialOverviewId'}
-                                options={documentTemplates}
-                                value={documentTemplateFinancialOverviewId}
-                                onChangeAction={setDocumentTemplateFinancialOverviewId}
-                                required={'required'}
-                                isLoading={peekLoadingDocumentTemplates}
-                                // error={errors.documentTemplateFinancialOverviewId}
-                                // errorMessage={errorMessage.documentTemplateFinancialOverviewId}
-                            />
+                            <div className="col-sm-12">
+                                <InputReactSelectLong
+                                    label={'Document template'}
+                                    name={'documentTemplateFinancialOverviewId'}
+                                    options={documentTemplates}
+                                    value={documentTemplateFinancialOverviewId}
+                                    onChangeAction={setDocumentTemplateFinancialOverviewId}
+                                    required={'required'}
+                                    isLoading={peekLoadingDocumentTemplates}
+                                    // error={errors.documentTemplateFinancialOverviewId}
+                                    // errorMessage={errorMessage.documentTemplateFinancialOverviewId}
+                                />
+                            </div>
                         </div>
                         <div className="row">
-                            <InputReactSelectLong
-                                label={'E-mail template'}
-                                name={'emailTemplateFinancialOverviewId'}
-                                options={emailTemplates}
-                                value={emailTemplateFinancialOverviewId}
-                                onChangeAction={setEmailTemplateFinancialOverviewId}
-                                placeholder={'Gebruik administratie e-mail template'}
-                                clearable={true}
-                                isLoading={peekLoadingEmailTemplates}
-                                // error={errors.emailTemplateFinancialOverviewId}
-                                // errorMessage={errorMessage.emailTemplateFinancialOverviewId}
-                            />
+                            <div className="col-sm-12">
+                                <InputReactSelectLong
+                                    label={'E-mail template'}
+                                    name={'emailTemplateFinancialOverviewId'}
+                                    options={emailTemplates}
+                                    value={emailTemplateFinancialOverviewId}
+                                    onChangeAction={setEmailTemplateFinancialOverviewId}
+                                    placeholder={'Gebruik administratie e-mail template'}
+                                    clearable={true}
+                                    isLoading={peekLoadingEmailTemplates}
+                                    // error={errors.emailTemplateFinancialOverviewId}
+                                    // errorMessage={errorMessage.emailTemplateFinancialOverviewId}
+                                />
+                            </div>
+                        </div>
+                        <div className="row">
+                            <div className="col-sm-12">
+                                <div className="btn-group pull-right" role="group">
+                                    {emailToAllowed ? (
+                                        <ButtonText
+                                            buttonText={'Preview e-mail tussentijdse waardestaat'}
+                                            onClickAction={previewEmailCreateInterim}
+                                        />
+                                    ) : null}
+                                    <ButtonText
+                                        buttonText={'Preview post tussentijdse waardestaat'}
+                                        onClickAction={previewPostCreateInterim}
+                                    />
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </Modal>

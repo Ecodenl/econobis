@@ -31,7 +31,8 @@ class FullFinancialOverviewContact extends JsonResource
             'createdAt' => $this->created_at,
             'updatedAt' => $this->updated_at,
             'allowInterimFinancialOverview' => $this->allowInterimFinancialOverview,
-            'contact' => FullContact::make($this->whenLoaded('contact')),
+            'contactFullNameFnf' => $this->contact?->full_name_fnf ?? '',
+            'emailToAllowed' => $this->emailToAllowed,
             'financialOverview' => FullFinancialOverview::make($this->whenLoaded('financialOverview')),
         ];
     }

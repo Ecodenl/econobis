@@ -55,7 +55,7 @@ class ContactDetailsFormPortalUserEdit extends Component {
         let errors = {};
         let hasErrors = false;
 
-        if (!validator.isEmail(portalUser.email)) {
+        if (!validator.isEmail(portalUser.email) && portalUser.email != "") {
             errors.email = true;
             hasErrors = true;
         }
@@ -136,7 +136,6 @@ class ContactDetailsFormPortalUserEdit extends Component {
                             name={'email'}
                             value={email}
                             onChangeAction={this.handleInputChange}
-                            required={'required'}
                             error={this.state.errors.email}
                         />
 

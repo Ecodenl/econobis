@@ -5,6 +5,7 @@ namespace App\Helpers\FinancialOverview;
 use App\Eco\DocumentTemplate\DocumentTemplate;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewContact;
+use App\Eco\FinancialOverview\FinancialOverviewParticipantProject;
 use App\Eco\FinancialOverview\FinancialOverviewsToSend;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Occupation\OccupationContact;
@@ -227,7 +228,7 @@ class FinancialOverviewHelper
         $htmlBody .= '<p></p>';
         $htmlBody .= $financialOverviewContact->financialOverview->administration->name;
 
-        $emailTemplate = $financialOverviewContact->financialOverview->administration->emailTemplateFinancialOverview;
+        $emailTemplate = $financialOverviewContact?->emailTemplateFinancialOverview ?: ($financialOverviewContact?->financialOverview?->administration?->emailTemplateFinancialOverview ?: null);
         $defaultAttachmentDocumentId = null;
         if ($emailTemplate) {
             $subject = $emailTemplate->subject
@@ -360,12 +361,22 @@ class FinancialOverviewHelper
     }
     public static function financialOverviewContactSend(FinancialOverviewContact $financialOverviewContact)
     {
-        //Waardestaat moet nog status is-sending hebben
-        if($financialOverviewContact->status_id === 'is-sending' || $financialOverviewContact->status_id === 'is-resending')
-        {
-            //Haal waardestaat uit tabel financial-overviews-to-send
+        // waardestaat moet nog status is-sending of is-resending hebben
+        if (
+            $financialOverviewContact->status_id === 'is-sending'
+            || $financialOverviewContact->status_id === 'is-resending'
+        ) {
+            // haal waardestaat uit tabel financial-overviews-to-send
             $financialOverviewContact->financialOverviewsToSend()->delete();
-            //Status sent
+
+            // alle participant-projects voor deze FO + dit contact ook op sent zetten
+            FinancialOverviewParticipantProject::where('contact_id', $financialOverviewContact->contact_id)
+                ->whereHas('financialOverviewProject', function ($q) use ($financialOverviewContact) {
+                    $q->where('financial_overview_id', $financialOverviewContact->financial_overview_id);
+                })
+                ->update(['status_id' => 'sent']);
+
+            // Status sent op het contact zelf
             $financialOverviewContact->status_id = 'sent';
             $financialOverviewContact->save();
         }

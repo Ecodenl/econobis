@@ -22,7 +22,7 @@ export default function FinancialOverviewCreateApp() {
     const [selectedContactId, setSelectedContactId] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
-    const isSingleMode = !!financialOverviewContactId;
+    const isInterimMode = !!financialOverviewContactId;
 
     // bulk-mode fetch
     const fetchBulk = useCallback(() => {
@@ -47,8 +47,8 @@ export default function FinancialOverviewCreateApp() {
             });
     }, [id, type, selectedIds]);
 
-    // single-mode fetch
-    const fetchSingle = useCallback(() => {
+    // interim-mode fetch
+    const fetchInterim = useCallback(() => {
         if (!financialOverviewContactId) return;
 
         setIsLoading(true);
@@ -57,7 +57,7 @@ export default function FinancialOverviewCreateApp() {
         FinancialOverviewContactsAPI.fetchFinancialOverviewContactForInterim(financialOverviewContactId)
             .then(payload => {
                 const contact = payload?.data?.data ?? null;
-                if (contact) {
+                if (contact?.allowInterimFinancialOverview) {
                     // we stoppen 'm in een array zodat de rest van de UI gelijk kan blijven
                     setFinancialOverviewContacts(contact ? [contact] : []);
                     setSelectedContactId(contact ? contact.id : '');
@@ -76,12 +76,12 @@ export default function FinancialOverviewCreateApp() {
 
     // kies welke fetch we doen
     useEffect(() => {
-        if (isSingleMode) {
-            fetchSingle();
+        if (isInterimMode) {
+            fetchInterim();
         } else {
             fetchBulk();
         }
-    }, [isSingleMode, fetchSingle, fetchBulk]);
+    }, [isInterimMode, fetchInterim, fetchBulk]);
 
     const changeFinancialOverviewContact = id => {
         setSelectedContactId(id);
@@ -90,84 +90,94 @@ export default function FinancialOverviewCreateApp() {
     const amountOfContacts = financialOverviewContacts ? financialOverviewContacts.length : 0;
 
     return (
-        <div>
-            {/* toolbar */}
-            <div className="row">
-                <div className="col-md-12 margin-10-top">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-small'}>
-                                <FinancialOverviewCreateToolbar
-                                    type={type}
-                                    selectedIds={isSingleMode ? [financialOverviewContactId] : selectedIds}
-                                    amountOfFinancialOverviewContacts={amountOfContacts}
-                                    financialOverviewId={id}
-                                />
-                            </PanelBody>
-                        </Panel>
-                    </div>
-                </div>
-            </div>
-
-            {/* content */}
-            <div className="row">
-                {/* lijst links */}
-                <div className="col-md-2">
-                    <div className="col-md-12 margin-10-top">
-                        <Panel>
-                            <PanelBody className={'panel-financial-overview-contacts-list'}>
-                                <FinancialOverviewCreateList
-                                    financialOverviewContacts={financialOverviewContacts}
-                                    isLoading={isLoading}
-                                    changeFinancialOverviewContact={changeFinancialOverviewContact}
-                                />
-                            </PanelBody>
-                        </Panel>
-                    </div>
-                </div>
-
-                {/* rechts afhankelijk van type */}
-                {type === 'email' ? (
-                    <>
-                        <div className="col-md-5">
-                            <div className="col-md-12 margin-10-top">
-                                <Panel>
-                                    <PanelBody>
-                                        <FinancialOverviewCreateViewPdf
-                                            financialOverviewContactId={selectedContactId}
-                                            isLoading={isLoading}
-                                            amountOfFinancialOverviewContacts={amountOfContacts || -1}
-                                        />
-                                    </PanelBody>
-                                </Panel>
-                            </div>
-                        </div>
-                        <div className="col-md-5">
-                            <div className="col-md-12 margin-10-top">
-                                <Panel>
-                                    <PanelBody>
-                                        <FinancialOverviewCreateViewEmail
-                                            financialOverviewContactId={selectedContactId}
-                                            isLoading={isLoading}
-                                            amountOfFinancialOverviewContacts={amountOfContacts || -1}
-                                        />
-                                    </PanelBody>
-                                </Panel>
-                            </div>
-                        </div>
-                    </>
-                ) : (
-                    <div className="col-md-6">
+        <>
+            {!isLoading && amountOfContacts === 0 ? (
+                <p>Geen waardestaat gegevens</p>
+            ) : (
+                <div>
+                    {/* toolbar */}
+                    <div className="row">
                         <div className="col-md-12 margin-10-top">
-                            <Panel>
-                                <PanelBody>
-                                    <FinancialOverviewCreateViewPdf financialOverviewContactId={selectedContactId} />
-                                </PanelBody>
-                            </Panel>
+                            <div className="col-md-12 margin-10-top">
+                                <Panel>
+                                    <PanelBody className={'panel-small'}>
+                                        <FinancialOverviewCreateToolbar
+                                            type={type}
+                                            selectedIds={isInterimMode ? [financialOverviewContactId] : selectedIds}
+                                            amountOfFinancialOverviewContacts={amountOfContacts}
+                                            financialOverviewId={id}
+                                            financialOverviewContactId={financialOverviewContactId}
+                                            isInterimMode={isInterimMode}
+                                        />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
                         </div>
                     </div>
-                )}
-            </div>
-        </div>
+
+                    {/* content */}
+                    <div className="row">
+                        {/* lijst links */}
+                        <div className="col-md-2">
+                            <div className="col-md-12 margin-10-top">
+                                <Panel>
+                                    <PanelBody className={'panel-financial-overview-contacts-list'}>
+                                        <FinancialOverviewCreateList
+                                            financialOverviewContacts={financialOverviewContacts}
+                                            isLoading={isLoading}
+                                            changeFinancialOverviewContact={changeFinancialOverviewContact}
+                                        />
+                                    </PanelBody>
+                                </Panel>
+                            </div>
+                        </div>
+
+                        {/* rechts afhankelijk van type */}
+                        {type === 'email' ? (
+                            <>
+                                <div className="col-md-5">
+                                    <div className="col-md-12 margin-10-top">
+                                        <Panel>
+                                            <PanelBody>
+                                                <FinancialOverviewCreateViewPdf
+                                                    financialOverviewContactId={selectedContactId}
+                                                    isLoading={isLoading}
+                                                    amountOfFinancialOverviewContacts={amountOfContacts || -1}
+                                                />
+                                            </PanelBody>
+                                        </Panel>
+                                    </div>
+                                </div>
+                                <div className="col-md-5">
+                                    <div className="col-md-12 margin-10-top">
+                                        <Panel>
+                                            <PanelBody>
+                                                <FinancialOverviewCreateViewEmail
+                                                    financialOverviewContactId={selectedContactId}
+                                                    isLoading={isLoading}
+                                                    amountOfFinancialOverviewContacts={amountOfContacts || -1}
+                                                />
+                                            </PanelBody>
+                                        </Panel>
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <div className="col-md-6">
+                                <div className="col-md-12 margin-10-top">
+                                    <Panel>
+                                        <PanelBody>
+                                            <FinancialOverviewCreateViewPdf
+                                                financialOverviewContactId={selectedContactId}
+                                            />
+                                        </PanelBody>
+                                    </Panel>
+                                </div>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            )}
+        </>
     );
 }

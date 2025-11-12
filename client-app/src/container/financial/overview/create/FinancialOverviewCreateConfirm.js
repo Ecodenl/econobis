@@ -11,7 +11,8 @@ export default function FinancialOverviewCreateConfirm({
     closeModal,
     financialOverviewId,
     financialOverviewContactIds = [],
-    type, // niet echt nodig hier, maar laten we 'm staan
+    financialOverviewContactId,
+    isInterimMode,
 }) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -21,20 +22,37 @@ export default function FinancialOverviewCreateConfirm({
         event.preventDefault();
         setLoading(true);
 
-        FinancialOverviewContactAPI.sendAll(financialOverviewId, financialOverviewContactIds, null)
-            .then(payload => {
-                if (payload && payload.headers && payload.headers['x-filename']) {
-                    fileDownload(payload.data, payload.headers['x-filename']);
-                }
-            })
-            .catch(err => {
-                // je deed dit eerst niet, maar je had setError al geïmporteerd
-                dispatch(setError(err?.response?.status ?? 500, 'Verzenden is mislukt.'));
-            })
-            .finally(() => {
-                // zelfde gedrag als class: direct terug naar waardestaat
-                navigate(`/waardestaat/${financialOverviewId}`);
-            });
+        if (isInterimMode === true && financialOverviewContactId) {
+            FinancialOverviewContactAPI.sendInterim(financialOverviewContactId)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .catch(err => {
+                    // je deed dit eerst niet, maar je had setError al geïmporteerd
+                    dispatch(setError(err?.response?.status ?? 500, 'Verzenden is mislukt.'));
+                })
+                .finally(() => {
+                    // zelfde gedrag als class: direct terug naar waardestaat
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        } else {
+            FinancialOverviewContactAPI.sendAll(financialOverviewId, financialOverviewContactIds, isInterimMode)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .catch(err => {
+                    // je deed dit eerst niet, maar je had setError al geïmporteerd
+                    dispatch(setError(err?.response?.status ?? 500, 'Verzenden is mislukt.'));
+                })
+                .finally(() => {
+                    // zelfde gedrag als class: direct terug naar waardestaat
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        }
     };
 
     return (

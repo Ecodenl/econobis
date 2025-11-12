@@ -37,11 +37,18 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
         FinancialOverviewContactAPI.fetchFinancialOverviewContactForInterim(financialOverviewContactId)
             .then(payload => {
                 const data = payload?.data?.data ?? [];
+                console.log(payload?.data?.data ?? []);
                 setFinancialOverviewContact(data);
                 setDocumentTemplateFinancialOverviewId(
-                    data?.financialOverview?.documentTemplateFinancialOverviewId ?? null
+                    data?.documentTemplateFinancialOverviewId ??
+                        data?.financialOverview?.documentTemplateFinancialOverviewId ??
+                        null
                 );
-                setEmailTemplateFinancialOverviewId(data?.financialOverview?.emailTemplateFinancialOverviewId ?? null);
+                setEmailTemplateFinancialOverviewId(
+                    data?.emailTemplateFinancialOverviewId ??
+                        data?.financialOverview?.emailTemplateFinancialOverviewId ??
+                        null
+                );
                 setEmailToAllowed(data?.emailToAllowed ?? false);
             })
             .catch(error => {
@@ -83,24 +90,79 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
             });
     }
 
-    // hier gaat het gebeuren:
+    function saveCreateInterim() {
+        if (!financialOverviewContactId || !financialOverviewContact?.financialOverview?.id) return;
+
+        FinancialOverviewContactAPI.updateFinancialOverviewContactForInterim(
+            financialOverviewContactId,
+            emailTemplateFinancialOverviewId,
+            documentTemplateFinancialOverviewId
+        )
+            .then(() => {
+                //
+            })
+            .catch(error => {
+                console.log(error);
+                setFinancialOverviewContact([]);
+                setDocumentTemplateFinancialOverviewId(null);
+                setEmailTemplateFinancialOverviewId(null);
+                setEmailToAllowed(false);
+            })
+            .finally(() => {
+                setShowModal(false);
+                onClose && onClose();
+            });
+    }
     function previewEmailCreateInterim() {
         if (!financialOverviewContactId || !financialOverviewContact?.financialOverview?.id) return;
 
-        navigate(
-            `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/email/${financialOverviewContactId}`
-        );
-
-        setShowModal(false);
-        onClose && onClose();
+        FinancialOverviewContactAPI.updateFinancialOverviewContactForInterim(
+            financialOverviewContactId,
+            emailTemplateFinancialOverviewId,
+            documentTemplateFinancialOverviewId
+        )
+            .then(() => {
+                navigate(
+                    `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/email/${financialOverviewContactId}`
+                );
+            })
+            .catch(error => {
+                console.log(error);
+                setFinancialOverviewContact([]);
+                setDocumentTemplateFinancialOverviewId(null);
+                setEmailTemplateFinancialOverviewId(null);
+                setEmailToAllowed(false);
+            })
+            .finally(() => {
+                setShowModal(false);
+                onClose && onClose();
+            });
     }
 
     function previewPostCreateInterim() {
         if (!financialOverviewContactId || !financialOverviewContact?.financialOverview?.id) return;
 
-        navigate(
-            `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/post/${financialOverviewContactId}`
-        );
+        FinancialOverviewContactAPI.updateFinancialOverviewContactForInterim(
+            financialOverviewContactId,
+            emailTemplateFinancialOverviewId,
+            documentTemplateFinancialOverviewId
+        )
+            .then(() => {
+                navigate(
+                    `/waardestaat/${financialOverviewContact.financialOverview.id}/aanmaken/post/${financialOverviewContactId}`
+                );
+            })
+            .catch(error => {
+                console.log(error);
+                setFinancialOverviewContact([]);
+                setDocumentTemplateFinancialOverviewId(null);
+                setEmailTemplateFinancialOverviewId(null);
+                setEmailToAllowed(false);
+            })
+            .finally(() => {
+                setShowModal(false);
+                onClose && onClose();
+            });
 
         setShowModal(false);
         onClose && onClose();
@@ -111,6 +173,7 @@ export default function FinancialOverviewCreateInterimModal({ financialOverviewC
             {showModal && (
                 <Modal
                     modalClassName="modal-lg"
+                    confirmAction={saveCreateInterim}
                     closeModal={() => {
                         setShowModal(false);
                         onClose && onClose();

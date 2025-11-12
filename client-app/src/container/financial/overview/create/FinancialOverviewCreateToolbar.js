@@ -11,6 +11,8 @@ export default function FinancialOverviewCreateToolbar({
     selectedIds = [],
     amountOfFinancialOverviewContacts = 0,
     financialOverviewId,
+    financialOverviewContactId,
+    isInterimMode,
 }) {
     const navigate = useNavigate();
     const [showSend, setShowSend] = useState(false);
@@ -41,19 +43,21 @@ export default function FinancialOverviewCreateToolbar({
 
             {showSend && type === 'email' && (
                 <FinancialOverviewCreateConfirm
-                    type={type}
                     financialOverviewContactIds={selectedIds}
                     closeModal={toggleSend}
                     financialOverviewId={financialOverviewId}
+                    financialOverviewContactId={financialOverviewContactId}
+                    isInterimMode={isInterimMode}
                 />
             )}
 
             {showSend && type === 'post' && (
                 <FinancialOverviewCreateConfirmPost
-                    type={type}
                     financialOverviewContactIds={selectedIds}
                     closeModal={toggleSend}
                     financialOverviewId={financialOverviewId}
+                    financialOverviewContactId={financialOverviewContactId}
+                    isInterimMode={isInterimMode}
                 />
             )}
         </div>

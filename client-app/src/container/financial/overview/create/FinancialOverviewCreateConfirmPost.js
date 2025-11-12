@@ -8,7 +8,8 @@ export default function FinancialOverviewCreateConfirmPost({
     closeModal,
     financialOverviewId,
     financialOverviewContactIds = [],
-    type, // ook hier niet per se nodig
+    financialOverviewContactId,
+    isInterimMode,
 }) {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
@@ -17,15 +18,27 @@ export default function FinancialOverviewCreateConfirmPost({
         event.preventDefault();
         setLoading(true);
 
-        FinancialOverviewContactAPI.sendAllPost(financialOverviewId, financialOverviewContactIds, null)
-            .then(payload => {
-                if (payload && payload.headers && payload.headers['x-filename']) {
-                    fileDownload(payload.data, payload.headers['x-filename']);
-                }
-            })
-            .finally(() => {
-                navigate(`/waardestaat/${financialOverviewId}`);
-            });
+        if (isInterimMode === true && financialOverviewContactId) {
+            FinancialOverviewContactAPI.sendInterimPost(financialOverviewContactId)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .finally(() => {
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        } else {
+            FinancialOverviewContactAPI.sendAllPost(financialOverviewId, financialOverviewContactIds, isInterimMode)
+                .then(payload => {
+                    if (payload && payload.headers && payload.headers['x-filename']) {
+                        fileDownload(payload.data, payload.headers['x-filename']);
+                    }
+                })
+                .finally(() => {
+                    navigate(`/waardestaat/${financialOverviewId}`);
+                });
+        }
     };
 
     return (

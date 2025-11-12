@@ -9,6 +9,9 @@
 namespace App\Helpers\Delete\Models;
 
 use App\Eco\Administration\Administration;
+use App\Eco\Contact\Contact;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\Opportunity\OpportunityStatus;
 use App\Eco\Order\Order;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
@@ -67,9 +70,10 @@ class DeleteEmailTemplate implements DeleteInterface
      */
     public function canDelete()
     {
+        // Email template can not be deleted if it is used in portalsettings
         $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
         if($emailTemplateNewAccountId == $this->emailTemplate->id){
-            array_push($this->errorMessage,'Ontkoppel deze template eerst in Portal instellingen bij "E-mail template Nieuwe account activeren"');
+            array_push($this->errorMessage,'Ontkoppel deze template eerst in algemene portal instellingen bij "E-mail template Nieuwe account activeren"');
         }
         $taskTypesNames = TaskType::where('email_template_id_wf_expired_task', $this->emailTemplate->id)->orWhere('email_template_id_wf_completed_task', $this->emailTemplate->id)->pluck('name')->toArray();
         if($taskTypesNames){
@@ -90,12 +94,16 @@ class DeleteEmailTemplate implements DeleteInterface
             array_push($this->errorMessage,'Ontkoppel template eerst in de volgende administraties: ' . implode(', ', $administrationNames));
         }
 
-        // Email template can not be deleted if it is used in portalsettings
-        $emailTemplateNewAccountId = PortalSettings::get('emailTemplateNewAccountId');
-        if($this->emailTemplate->id == $emailTemplateNewAccountId){
-            array_push($this->errorMessage, "Dit email template wordt nog gebruikt in algemene portal instellingen.");
+        // Email template can not be deleted if it is used in financial overviews
+        $financialOverviewNames = FinancialOverview::where('email_template_financial_overview_id', $this->emailTemplate->id)->pluck('description')->toArray();
+        if($financialOverviewNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende waardestaten: ' . implode(', ', $financialOverviewNames));
         }
-
+        $financialOverviewContactIds = FinancialOverviewContact::where('email_template_financial_overview_id', $this->emailTemplate->id)->pluck('contact_id')->toArray();
+        $contactNumbers = Contact::whereIn('id', array_unique($financialOverviewContactIds))->pluck('number')->toArray();
+        if($contactNumbers){
+            array_push($this->errorMessage,'Template in gebruik in waardestaten bij contacten: ' . implode(', ', $contactNumbers));
+        }
     }
 
     /** Deletes models recursive

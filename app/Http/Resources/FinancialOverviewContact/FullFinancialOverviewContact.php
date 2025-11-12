@@ -24,6 +24,8 @@ class FullFinancialOverviewContact extends JsonResource
             'contactId' => $this->contact_id,
             'statusId' => $this->status_id,
             'status' => $this->status,
+            'documentTemplateFinancialOverviewId' => $this->document_template_financial_overview_id,
+            'emailTemplateFinancialOverviewId' => $this->email_template_financial_overview_id,
             'name' => $this->name,
             'filename' => $this->filename,
             'dateSent' => $this->date_sent,

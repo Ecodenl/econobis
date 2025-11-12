@@ -29,6 +29,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
     const [showSelectFinancialOverviewContactsToSend, setShowSelectFinancialOverviewContactsToSend] = useState(false);
     const [checkedAll, setCheckedAll] = useState(false);
     const [financialOverviewContactIds, setFinancialOverviewContactIds] = useState([]);
+    const [onlyInterimFinancialOverviewContacts, setOnlyInterimFinancialOverviewContacts] = useState(false);
     const [onlyEmailFinancialOverviewContacts, setOnlyEmailFinancialOverviewContacts] = useState(false);
     const [onlyPostFinancialOverviewContacts, setOnlyPostFinancialOverviewContacts] = useState(false);
     const [showErrorMessagePost, setShowErrorMessagePost] = useState(false);
@@ -63,6 +64,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
             filter.statusId,
             filter.dateSent,
             filter.emailedTo,
+            onlyInterimFinancialOverviewContacts,
             onlyEmailFinancialOverviewContacts,
             onlyPostFinancialOverviewContacts,
             financialOverview.totalFinancialOverviewProjectsConcept,
@@ -92,6 +94,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                     sort,
                     pagination,
                     financialOverview.id,
+                    onlyInterimFinancialOverviewContacts,
                     onlyEmailFinancialOverviewContacts,
                     onlyPostFinancialOverviewContacts
                 ),
@@ -163,6 +166,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         setShowSelectFinancialOverviewContactsToSend(false);
         setCheckedAll(false);
         setFinancialOverviewContactIds([]);
+        setOnlyInterimFinancialOverviewContacts(false);
         setOnlyEmailFinancialOverviewContacts(false);
         setOnlyPostFinancialOverviewContacts(false);
         setShowErrorMessagePost(false);
@@ -236,11 +240,7 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
         if (isChecked) {
             financialOverviewContactIds = meta.financialOverviewContactIdsTotal;
         }
-        // if (onlyPostFinancialOverviewContacts) {
-        //     setFinancialOverviewContactIds(financialOverviewContactIds.slice(0, maxRecordsPost));
-        // } else {
         setFinancialOverviewContactIds(financialOverviewContactIds);
-        // }
         setCheckedAll(isChecked);
     }
 
@@ -371,6 +371,16 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                                 onClickAction={() => previewSendPost()}
                             />
                         ) : null}
+                        {financialOverview.usesInterimFinancialOverviews ? (
+                            <ButtonText
+                                buttonText={
+                                    onlyInterimFinancialOverviewContacts ? 'Toon alles' : 'Alleen voor tussentijds'
+                                }
+                                onClickAction={() =>
+                                    setOnlyInterimFinancialOverviewContacts(!onlyInterimFinancialOverviewContacts)
+                                }
+                            />
+                        ) : null}
                     </div>
                 </div>
                 <div className="col-md-6">
@@ -487,8 +497,8 @@ function FinancialOverviewContactList({ financialOverview, previewFinancialOverv
                                     <FinancialOverviewContactItem
                                         key={financialOverviewContact.id}
                                         {...financialOverviewContact}
-                                        onlyEmailFinancialOverviewContacts={onlyEmailFinancialOverviewContacts}
-                                        onlyPostFinancialOverviewContacts={onlyPostFinancialOverviewContacts}
+                                        // onlyEmailFinancialOverviewContacts={onlyEmailFinancialOverviewContacts}
+                                        // onlyPostFinancialOverviewContacts={onlyPostFinancialOverviewContacts}
                                         showSelectFinancialOverviewContactsToSend={
                                             showSelectFinancialOverviewContactsToSend
                                         }

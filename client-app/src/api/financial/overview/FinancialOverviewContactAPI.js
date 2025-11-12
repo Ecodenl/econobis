@@ -8,6 +8,7 @@ export default {
         sorts,
         pagination,
         financialOverviewId,
+        onlyInterimFinancialOverviewContacts,
         onlyEmailFinancialOverviewContacts,
         onlyPostFinancialOverviewContacts
     ) => {
@@ -15,6 +16,7 @@ export default {
         return getAxiosInstance().get(requestUrl, {
             params: {
                 financialOverviewId: JSON.stringify(financialOverviewId),
+                onlyInterimFinancialOverviewContacts: JSON.stringify(onlyInterimFinancialOverviewContacts),
                 onlyEmailFinancialOverviewContacts: JSON.stringify(onlyEmailFinancialOverviewContacts),
                 onlyPostFinancialOverviewContacts: JSON.stringify(onlyPostFinancialOverviewContacts),
                 filters: JSON.stringify(filters),

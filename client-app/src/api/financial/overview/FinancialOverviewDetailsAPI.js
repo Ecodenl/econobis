@@ -22,6 +22,7 @@ export default {
                         'totalFinancialOverviewProjectsInProgress',
                         'totalFinancialOverviewProjectsConcept',
                         'totalFinancialOverviewProjectsDefinitive',
+                        'usesInterimFinancialOverviews',
                         'hasInterimFinancialOverviewContacts',
                     ],
                     rlt: {

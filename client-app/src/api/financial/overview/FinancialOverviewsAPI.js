@@ -15,6 +15,7 @@ export default {
                         'definitive',
                         'statusId',
                         'dateProcessed',
+                        'usesInterimFinancialOverviews',
                         'hasInterimFinancialOverviewContacts',
                     ],
                     rlt: { administration: { fld: ['id', 'name'] } },

@@ -55,7 +55,7 @@ class FinancialOverview extends Model
 
     public function getUsesInterimFinancialOverviewsAttribute()
     {
-        return $this->administration->uses_interim_financial_overviews;
+        return $this->administration->uses_interim_financial_overviews === 1;
     }
 
     public function getTotalFinancialOverviewProjectsInProgressAttribute()

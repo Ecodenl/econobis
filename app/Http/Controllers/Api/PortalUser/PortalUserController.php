@@ -61,7 +61,7 @@ class PortalUserController extends ApiController
 
     protected function validateEmail(Request $request, PortalUser $portalUser)
     {
-        $this->validate($request, ['email' => 'email']);
+        $this->validate($request, ['email' => 'required|email']);
 
         if(PortalUser::where('email', $request->input('email'))->where('id', '!=', $portalUser->id)->count() !== 0){
             abort(404, 'E-mail bestaat al bij een andere Portal gebruiker.');

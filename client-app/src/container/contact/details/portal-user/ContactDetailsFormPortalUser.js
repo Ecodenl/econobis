@@ -20,20 +20,6 @@ class ContactDetailsFormPortalUser extends Component {
         };
     }
 
-    onLineEnter = () => {
-        this.setState({
-            showActionButtons: true,
-            highlightLine: 'highlight-line',
-        });
-    };
-
-    onLineLeave = () => {
-        this.setState({
-            showActionButtons: false,
-            highlightLine: '',
-        });
-    };
-
     switchToEdit = () => {
         this.setState({
             showEdit: true,
@@ -67,15 +53,15 @@ class ContactDetailsFormPortalUser extends Component {
                             </div>
                         </div>
                     ) : this.props.permissions.updateContactPortalUser && this.state.showEdit ? (
-                        <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
+                        <ContactDetailsFormPortalUserEdit
+                            switchToView={this.switchToView}
+                            toggleDelete={this.toggleDelete}
+                        />
                     ) : (
                         <ContactDetailsFormPortalUserView
                             highlightLine={this.state.highlightLine}
                             showActionButtons={this.state.showActionButtons}
-                            onLineEnter={this.onLineEnter}
-                            onLineLeave={this.onLineLeave}
                             switchToEdit={this.switchToEdit}
-                            toggleDelete={this.toggleDelete}
                         />
                     )}
                     {this.props.permissions.deleteContactPortalUser && this.state.showDelete && (

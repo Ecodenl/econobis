@@ -30,6 +30,14 @@ export default {
         return getAxiosInstance().get(requestUrl);
     },
 
+    getExcelFreeFieldsFieldLog: () => {
+        const requestUrl = `${getApiUrl()}/api/free-fields-field-log/excel/mutations`;
+
+        return getAxiosInstance().get(requestUrl, {
+            responseType: 'blob',
+        });
+    },
+
     deletePortalFreeFieldsPage: id => {
         const requestUrl = `${getApiUrl()}/api/portal-free-fields-page/${id}/delete`;
 

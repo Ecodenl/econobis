@@ -77,7 +77,7 @@ class DeleteContact implements DeleteInterface
         }
 
         if($this->contact->portalUser()->count() > 0){
-            array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder onder 'Portal gebruiker gegevens' het e-mail adres.  Verwijder dan het contact opnieuw.");
+            array_push($this->errorMessage, "Dit contact maakt gebruik van de 'mijn coöperatie portal'. Ga naar het contact en verwijder 'Portal gebruiker gegevens'. Verwijder dan het contact opnieuw.");
         }
 
         if($this->contact->organisation && $this->contact->organisation->campaigns->count() > 0){

@@ -58,11 +58,7 @@ class ContactDetailsFormPortalUser extends Component {
                             toggleDelete={this.toggleDelete}
                         />
                     ) : (
-                        <ContactDetailsFormPortalUserView
-                            highlightLine={this.state.highlightLine}
-                            showActionButtons={this.state.showActionButtons}
-                            switchToEdit={this.switchToEdit}
-                        />
+                        <ContactDetailsFormPortalUserView switchToEdit={this.switchToEdit} />
                     )}
                     {this.props.permissions.deleteContactPortalUser && this.state.showDelete && (
                         <ContactDetailsFormPortalUserDelete closeDeleteItemModal={this.toggleDelete} />

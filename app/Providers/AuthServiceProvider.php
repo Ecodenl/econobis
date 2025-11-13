@@ -39,7 +39,7 @@ use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldLog;
 use App\Eco\FreeFields\FreeFieldsFieldLogPolicy;
-use App\Eco\FreeFields\FreeFieldsPolicy;
+use App\Eco\FreeFields\FreeFieldsFieldPolicy;
 use App\Eco\HousingFile\HousingFile;
 use App\Eco\HousingFile\HousingFileLog;
 use App\Eco\HousingFile\HousingFileLogPolicy;
@@ -153,7 +153,7 @@ class AuthServiceProvider extends ServiceProvider
         Email::class => EmailPolicy::class,
         EmailTemplate::class => EmailTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
-        FreeFieldsField::class => FreeFieldsPolicy::class,
+        FreeFieldsField::class => FreeFieldsFieldPolicy::class,
         FreeFieldsFieldLog::class => FreeFieldsFieldLogPolicy::class,
         Mailbox::class => MailboxPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,

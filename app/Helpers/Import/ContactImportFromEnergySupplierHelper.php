@@ -569,7 +569,8 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -607,7 +608,7 @@ class ContactImportFromEnergySupplierHelper
 //                    } else {
 //                        $query->whereHas('person', function ($query) use ($contactToImport) {
 //                            if ($contactToImport->initials != null) {
-//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
 //                            } else {
 //                                $query->where('first_name', $contactToImport->first_name);
 //                            }
@@ -644,7 +645,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -682,7 +683,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -724,7 +725,7 @@ class ContactImportFromEnergySupplierHelper
 //                    } else {
 //                        $query->whereHas('person', function ($query) use ($contactToImport) {
 //                            if ($contactToImport->initials != null) {
-//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
 //                            } else {
 //                                $query->where('first_name', $contactToImport->first_name);
 //                            }
@@ -765,7 +766,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -805,7 +806,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -845,7 +846,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -886,7 +887,7 @@ class ContactImportFromEnergySupplierHelper
                     } else {
                         $query->whereHas('person', function ($query) use ($contactToImport) {
                             if ($contactToImport->initials != null) {
-                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
                             } else {
                                 $query->where('first_name', $contactToImport->first_name);
                             }
@@ -930,7 +931,7 @@ class ContactImportFromEnergySupplierHelper
 //                    } else {
 //                        $query->whereHas('person', function ($query) use ($contactToImport) {
 //                            if ($contactToImport->initials != null) {
-//                                $query->whereRaw('SUBSTRING(`people`.`first_name`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
+//                                $query->whereRaw('SUBSTRING(`people`.`initials`, 1, 1) = "' . substr($contactToImport->initials, 0, 1).'"');
 //                            } else {
 //                                $query->where('first_name', $contactToImport->first_name);
 //                            }
@@ -976,6 +977,16 @@ class ContactImportFromEnergySupplierHelper
 
             // Pluck only the 'id' of matching contacts
             $contactIds = Contact::where($matchCondition)->pluck('id');
+// Als je een gebruikte query wilt debuggen:
+//            if($matchCode === 'supplierFullMatch'){
+//                Log::info('supplierFullMatch?');
+//                Log::info("debug query");
+//                $query = Contact::where($matchCondition);
+//                $sql = str_replace(array('?'), array('\'%s\''), $query->toSql());
+//                $sql = vsprintf($sql, $query->getBindings());
+//                Log::info($sql);
+//                Log::info($contactIds);
+//            }
 
             foreach ($contactIds as $contactId) {
                 if (!isset($uniqueContactIds[$contactId])) {

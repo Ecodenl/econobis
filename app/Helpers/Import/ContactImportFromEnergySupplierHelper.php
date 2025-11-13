@@ -278,12 +278,8 @@ class ContactImportFromEnergySupplierHelper
                     if ($line[3]) {
                         $firstNameArray = $this->splitFirstName($line[3]);
 //        Log::info('klantVoorNaam in: ' . $line[3] . ', initials uit: ' . $firstNameArray['initials'] . ', first_Name uit: ' . $firstNameArray['first_name']);
-                        if ($firstNameArray['initials']) {
-                            $contactToImport->initials = $firstNameArray['initials'];
-                        }
-                        if ($firstNameArray['first_name']) {
-                            $contactToImport->first_name = $firstNameArray['first_name'];
-                        }
+                        $contactToImport->initials = $firstNameArray['initials'];
+                        $contactToImport->first_name = $firstNameArray['first_name'];
                     } else {
                         $contactToImport->initials = '';
                         $contactToImport->first_name = '';

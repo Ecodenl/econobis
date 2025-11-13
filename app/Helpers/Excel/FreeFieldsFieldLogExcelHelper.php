@@ -25,7 +25,7 @@ class FreeFieldsFieldLogExcelHelper
     {
 
         if($this->freeFieldsFieldLogs->count() === 0){
-            abort(403, 'Geen mutatie log regels aanwezig');
+            abort(411, 'Geen mutatie log regels aanwezig');
         }
 
         $completeData = [];

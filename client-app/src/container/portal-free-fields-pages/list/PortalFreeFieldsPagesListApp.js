@@ -9,6 +9,7 @@ import axios from 'axios';
 import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
 import moment from 'moment/moment';
 import fileDownload from 'js-file-download';
+import ErrorModal from '../../../components/modal/ErrorModal';
 
 const recordsPerPage = 50;
 
@@ -20,6 +21,8 @@ function PortalFreeFieldsPagesListApp() {
     const [sort, setSort] = useState([{ field: 'name', order: 'ASC' }]);
     const [pagination, setPagination] = useState({ offset: 0, limit: recordsPerPage });
     const pressedEnter = useKeyPress('Enter');
+    const [showErrorModal, setShowErrorModal] = useState(false);
+    const [modalErrorMessage, setModalErrorMessage] = useState('');
 
     // If pagination, sort or filter created at change then reload data
     useEffect(
@@ -40,32 +43,72 @@ function PortalFreeFieldsPagesListApp() {
     );
 
     function fetchPortalFreeFieldsPages() {
+        setLoading(true);
         axios
             .all([PortalFreeFieldsAPI.fetchPortalFreeFieldsPages(formatFilterHelper(), sort, pagination)])
             .then(
                 axios.spread(payloadPortalFreeFieldsPages => {
                     setPortalFreeFieldsPages(payloadPortalFreeFieldsPages.data.data);
                     setMetaData(payloadPortalFreeFieldsPages.data.meta);
-
-                    setLoading(false);
                 })
             )
             .catch(error => {
+                // alert('Er is iets misgegaan met ophalen van de gegevens.');
+                setShowErrorModal(true);
+                setModalErrorMessage('Er is iets misgegaan met ophalen van de gegevens.');
+            })
+            .finally(() => {
                 setLoading(false);
-                alert('Er is iets misgegaan met ophalen van de gegevens.');
             });
     }
-    function getExcelLogMutations() {
+
+    function deletePortalFreeFieldsPage(portalFreeFieldsPage) {
         setLoading(true);
-        PortalFreeFieldsAPI.getExcelFreeFieldsFieldLog()
+        PortalFreeFieldsAPI.deletePortalFreeFieldsPage(portalFreeFieldsPage)
             .then(payload => {
-                fileDownload(payload.data, `vrije-velden-mutaties-log-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`);
-                setLoading(false);
+                fetchPortalFreeFieldsPages();
             })
-            .catch(() => {
+            .catch(error => {
+                setShowErrorModal(true);
+                setModalErrorMessage('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
+            })
+            .finally(() => {
                 setLoading(false);
-                alert('Er is iets misgegaan met downloaden van de gegevens.');
             });
+    }
+
+    async function getExcelLogMutations() {
+        setLoading(true);
+        try {
+            const res = await PortalFreeFieldsAPI.getExcelFreeFieldsFieldLog();
+            fileDownload(res.data, `vrije-velden-mutaties-log-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`);
+        } catch (error) {
+            let errorMessage = 'Er is iets misgegaan bij downloaden. Probeer het opnieuw.';
+
+            if (error?.response) {
+                const { status, statusText, data } = error.response;
+
+                if (data instanceof Blob) {
+                    try {
+                        const text = await data.text(); // Blob → string
+                        try {
+                            const json = JSON.parse(text); // probeer JSON
+                            errorMessage = json?.message ?? text ?? errorMessage;
+                        } catch {
+                            errorMessage = text || errorMessage; // plain text fallback
+                        }
+                    } catch {
+                        // niks, val terug op default
+                    }
+                } else {
+                    errorMessage = data?.message || statusText || errorMessage;
+                }
+            }
+            setShowErrorModal(true);
+            setModalErrorMessage(errorMessage);
+        } finally {
+            setLoading(false);
+        }
     }
 
     function onSubmitFilter() {
@@ -114,43 +157,42 @@ function PortalFreeFieldsPagesListApp() {
         }
     }
 
-    function deletePortalFreeFieldsPage(portalFreeFieldsPage) {
-        PortalFreeFieldsAPI.deletePortalFreeFieldsPage(portalFreeFieldsPage)
-            .then(payload => {
-                fetchPortalFreeFieldsPages();
-            })
-            .catch(error => {
-                // setLoading(false);
-                alert('Er is iets misgegaan bij verwijderen. Probeer het opnieuw.');
-            });
+    function closeErrorModal() {
+        setShowErrorModal(false);
+        setModalErrorMessage('');
     }
 
     return (
-        <Panel>
-            <PanelBody>
-                <div className="col-md-12 margin-10-top">
-                    <PortalFreeFieldsPagesListToolbar
-                        portalFreeFieldsPagesTotal={meta.total}
-                        refreshPortalFreeFieldsPages={fetchPortalFreeFieldsPages}
-                        getExcelLogMutations={getExcelLogMutations}
-                    />
-                </div>
-                <div className="col-md-12 margin-10-top">
-                    <PortalFreeFieldsPagesList
-                        portalFreeFieldsPages={portalFreeFieldsPages}
-                        portalFreeFieldsTotal={meta.total}
-                        recordsPerPage={recordsPerPage}
-                        isLoading={isLoading}
-                        filter={filter}
-                        handlePageClick={handlePageClick}
-                        handleChangeSort={handleChangeSort}
-                        handleChangeFilter={handleChangeFilter}
-                        handleKeyUp={handleKeyUp}
-                        deletePortalFreeFieldsPage={deletePortalFreeFieldsPage}
-                    />
-                </div>
-            </PanelBody>
-        </Panel>
+        <>
+            <Panel>
+                <PanelBody>
+                    <div className="col-md-12 margin-10-top">
+                        <PortalFreeFieldsPagesListToolbar
+                            portalFreeFieldsPagesTotal={meta.total}
+                            refreshPortalFreeFieldsPages={fetchPortalFreeFieldsPages}
+                            getExcelLogMutations={getExcelLogMutations}
+                        />
+                    </div>
+                    <div className="col-md-12 margin-10-top">
+                        <PortalFreeFieldsPagesList
+                            portalFreeFieldsPages={portalFreeFieldsPages}
+                            portalFreeFieldsTotal={meta.total}
+                            recordsPerPage={recordsPerPage}
+                            isLoading={isLoading}
+                            filter={filter}
+                            handlePageClick={handlePageClick}
+                            handleChangeSort={handleChangeSort}
+                            handleChangeFilter={handleChangeFilter}
+                            handleKeyUp={handleKeyUp}
+                            deletePortalFreeFieldsPage={deletePortalFreeFieldsPage}
+                        />
+                    </div>
+                </PanelBody>
+            </Panel>
+            {showErrorModal && (
+                <ErrorModal closeModal={closeErrorModal} title={'Foutmelding'} errorMessage={modalErrorMessage} />
+            )}
+        </>
     );
 }
 

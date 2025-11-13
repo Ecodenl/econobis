@@ -531,7 +531,9 @@ class ParticipationProjectController extends ApiController
 
             $deleteParticipation = new DeleteParticipation($participantProject);
             $result = $deleteParticipation->delete();
-
+// todo WM: check of hier niet ook recalculate financialoverviewcontact moeten doen?
+//            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+//            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
             if(count($result) > 0){
                 DB::rollBack();
                 abort(412, implode(";", array_unique($result)));
@@ -549,41 +551,44 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $data = $requestInput
-            ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
-            ->get();
+        DB::transaction(function () use ($participantProject, $requestInput) {
+            $data = $requestInput
+                ->date('dateTerminated')->validate('date')->alias('date_terminated')->next()
+                ->get();
 
-        // Set terminated date
-        $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
-        $projectType = $participantProject->project->projectType;
+            // Set terminated date
+            $participantProject->date_terminated = Carbon::parse($data['date_terminated'])->format('Y-m-d');
+            $projectType = $participantProject->project->projectType;
 
-        DB::transaction(function () use ($participantProject, $projectType) {
             $participantProject->save();
-            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             // Make mutation withdrawal of total participations/loan
             $this->createMutationWithDrawal($participantProject, $projectType);
-        });
+// todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
-        if($projectType->code_ref === 'postalcode_link_capital') {
-            $revenuesKwhHelper = new RevenuesKwhHelper();
-            $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
+            if($projectType->code_ref === 'postalcode_link_capital') {
+                $revenuesKwhHelper = new RevenuesKwhHelper();
+                $revenuesKwhPart = $revenuesKwhHelper->checkAndSplitRevenuePartsKwh($participantProject, Carbon::parse($participantProject->date_terminated)->addDay(), null);
 
-            if($revenuesKwhPart){
-                $revenuePartsKwhRedirect = null;
-                if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                if($revenuesKwhPart){
+                    $revenuePartsKwhRedirect = null;
+                    if($revenuesKwhPart['success'] && $revenuesKwhPart['newRevenue'] ){
+                        $revenuePartsKwhRedirect = '/project/opbrengst-kwh/nieuw/' . $revenuesKwhPart['projectId']  . '/1';
+                    }
+                    if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
+                        $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
+                    }
+                    $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
+                }else{
+                    $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
                 }
-                if($revenuesKwhPart['success'] && !$revenuesKwhPart['newRevenue'] ){
-                    $revenuePartsKwhRedirect = '/project/opbrengst-kwh/' . $revenuesKwhPart['revenuesId']  . '/deelperiode/' . $revenuesKwhPart['revenuePartsId'];
-                }
-                $responseParticipations = ['hasParticipations' => true, 'revenuePartsKwhRedirect' => $revenuePartsKwhRedirect,  'projectsArray' => $revenuesKwhPart];
-            }else{
-                $responseParticipations = ['hasParticipations' => false, null, 'projectsArray' => []];
+
+                return $responseParticipations;
             }
 
-            return $responseParticipations;
-        }
+        });
 
         return null;
     }
@@ -600,7 +605,6 @@ class ParticipationProjectController extends ApiController
             // Set terminated date
             $participantProject->date_terminated = Carbon::parse( $data['date_terminated'] )->format('Y-m-d');
             $participantProject->save();
-            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
 
             $projectType = $participantProject->project->projectType;
             if ($projectType->code_ref == 'loan') {
@@ -608,7 +612,10 @@ class ParticipationProjectController extends ApiController
             } else {
                 $amountOrParticipationsDefinitive = $participantProject->participations_definitive;
             }
-
+//            if($participantProject->contact->id === 161){
+//                Log::info('test terminateLoanOrObligation');
+//                Log::info('amountOrParticipationsDefinitive: ' . $amountOrParticipationsDefinitive);
+//            }
             $lastRevenueConceptDistribution = $this->getLastRevenueConceptDistribution($participantProject);
 
             if($amountOrParticipationsDefinitive != 0 ||
@@ -638,6 +645,10 @@ class ParticipationProjectController extends ApiController
                 })
                 ->forceDelete();
 
+            // todo WM: check of deze nu hier goed staat, stond eerst voor createMutaionWithDrawal
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
+            $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
+
         });
 
     }
@@ -646,19 +657,21 @@ class ParticipationProjectController extends ApiController
     {
         $this->authorize('manage', ParticipantProject::class);
 
-        $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+        DB::transaction(function () use ($participantProject, $requestInput) {
+            $originalDateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
 
-        $data = $requestInput
-            ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
-            ->get();
+            $data = $requestInput
+                ->date('dateTerminated')->validate('nullable|date')->alias('date_terminated')->whenMissing(null)->next()
+                ->get();
 
-        // Set terminated date
-        $participantProject->date_terminated = $data['date_terminated'];
+            // Set terminated date (WM: dit lijkt mij een beetje omslachtig, als het goed is word hier nl. date_terminated altijd op null gezet!
+            $participantProject->date_terminated = $data['date_terminated'];
 
-        DB::transaction(function () use ($participantProject, $originalDateTerminated) {
             $participantProject->save();
 
             $projectTypeCodeRef = $participantProject->project->projectType->code_ref;
+            // Indien projectType loan of oblligation, dan kan er bij beeindiging een deelname verdeling zijn gemaakt,
+            // Bij capital of postalcode_link_capital wordt er bij beeindiging nog geen deelname verdeling zijn gemaakt,
             if($projectTypeCodeRef == 'loan' || $projectTypeCodeRef == 'obligation'){
 
                 // Indien participant in concept deelnemer verdeling waar oorspronkelijk beeindigsdatum in periode lag,
@@ -676,37 +689,66 @@ class ParticipationProjectController extends ApiController
                     $deleteRevenue->delete();
                 }
 
-                // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
-                $projectType = $participantProject->project->projectType;
-                $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
-                $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
-                $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
-                    ->whereIn('type_id', $withDrawalTypes)
-                    ->where('status_id', $mutationStatusFinal)
-                    ->where('financial_overview_definitive', false)
-                    ->orderByDesc('date_entry')
-                    ->first();
-
-                if($mutationDefinitiveLast) {
-                    $statusLogs = $mutationDefinitiveLast->statusLog;
-                    foreach ($statusLogs as $statusLog)
-                    {
-                        $statusLog->delete();
-                    }
-                    $mutationDefinitiveLast->delete();
-
-                    // Recalculate dependent data in participantProject
-                    $participantProject->calculator()->run()->save();
-
-                    // Recalculate dependent data in project
-                    $participantProject->project->calculator()->run()->save();
-                }
             }
+
+            // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
+            $projectType = $participantProject->project->projectType;
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+            $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
+                ->whereIn('type_id', $withDrawalTypes)
+                ->where('status_id', $mutationStatusFinal)
+                ->where('financial_overview_definitive', false)
+                ->orderByDesc('date_entry')
+                ->first();
+
+            if($mutationDefinitiveLast) {
+                $statusLogs = $mutationDefinitiveLast->statusLog;
+                foreach ($statusLogs as $statusLog)
+                {
+                    $statusLog->delete();
+                }
+                $mutationDefinitiveLast->delete();
+
+                // Recalculate dependent data in participantProject
+                $participantProject->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantProject->project->calculator()->run()->save();
+            }
+            // Laatste opname mutatieregel weer ongedaan maken. (niet meer verwijderen indien reeds opgenomen in definitieve waardestaat !)
+            $projectType = $participantProject->project->projectType;
+            $withDrawalTypes = ParticipantMutationType::whereIn('code_ref', ['withDrawal'])->where('project_type_id', $projectType->id)->get()->pluck('id')->toArray();
+            $mutationStatusFinal = (ParticipantMutationStatus::where('code_ref', 'final')->first())->id;
+            $mutationDefinitiveLast =  ParticipantMutation::where('participation_id', $participantProject->id)
+                ->whereIn('type_id', $withDrawalTypes)
+                ->where('status_id', $mutationStatusFinal)
+                ->where('financial_overview_definitive', false)
+                ->orderByDesc('date_entry')
+                ->first();
+
+            if($mutationDefinitiveLast) {
+                $statusLogs = $mutationDefinitiveLast->statusLog;
+                foreach ($statusLogs as $statusLog)
+                {
+                    $statusLog->delete();
+                }
+                $mutationDefinitiveLast->delete();
+
+                // Recalculate dependent data in participantProject
+                $participantProject->calculator()->run()->save();
+
+                // Recalculate dependent data in project
+                $participantProject->project->calculator()->run()->save();
+            }
+
+            // indien postalcode_link_capital dan evt nog bijwerken indicatorFieldEndParticipation
             if($projectTypeCodeRef == 'postalcode_link_capital'){
                 $revenuesKwhHelper = new RevenuesKwhHelper();
                 $revenuesKwhHelper->updateIndicatorFieldEndParticipation($participantProject, $originalDateTerminated);
             }
 
+            // Indien participation project in concept waardestaat / waardestaten, dan die herberekenen.
             $this->recalculateParticipantProjectForFinancialOverviews($participantProject);
         });
     }
@@ -1600,9 +1642,22 @@ class ParticipationProjectController extends ApiController
 
     public function getUndoTerminatedAllowed(ParticipantProject $participantProject)
     {
-        // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
         $dateTerminated = Carbon::parse($participantProject->date_terminated)->format('Y-m-d');
+
         if ( $dateTerminated != null) {
+            // Deelname beeindigd niet meer terug te draaien indien waardestaat al verstuurd voor jaar waarin beeindigd is of daarna (voor het geval ze om wat voor reden in beeindigingsjaar geen waardestaat gemaakt hebeen).
+            $yearTerminated = Carbon::parse($participantProject->date_terminated)->year;
+            if( $participantProject->financialOverviewParticipantProjects()->where('status_id', 'sent')
+                ->whereHas('financialOverviewProject', function ($query) use ($yearTerminated) {
+                    $query->whereHas('financialOverview', function ($query) use ($yearTerminated) {
+                        $query->where('year', '>=', $yearTerminated);
+                    });
+                })
+                ->exists() ) {
+                return false;
+            }
+
+            // Deelname beeindigd alleen terugdraaien indien beeindigingsdatum deelname nog niet in een verdeling zit die niet concept is.
             $projectRevenueDistributionsNotConcept = $participantProject->projectRevenueDistributions()
                 ->whereNotIn('status', ['concept'])
                 ->whereHas('revenue', function ($query) use($dateTerminated) {
@@ -1610,7 +1665,6 @@ class ParticipationProjectController extends ApiController
                         ->where('date_end', '>=', $dateTerminated);
                 })
                 ->exists();
-
             if($projectRevenueDistributionsNotConcept){
                 return false;
             }
@@ -1628,7 +1682,6 @@ class ParticipationProjectController extends ApiController
                         });
                     })
                     ->exists();
-
                 if($revenueDistributionKwh){
                     return false;
                 }

@@ -730,10 +730,14 @@ Route::namespace('Api')
         Route::get('financial-overview-contact/{financialOverviewContact}/download-preview', 'FinancialOverview\FinancialOverviewContactController@downloadPreview');
         Route::get('financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
         Route::get('financial-overview-contact/{financialOverviewContact}/get', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContact');
+        Route::get('financial-overview-contact/{financialOverviewContact}/get-for-interim', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactForInterim');
         Route::post('financial-overview-contact/{financialOverview}/sending/email', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingEmail');
         Route::post('financial-overview-contact/{financialOverview}/sending/post', 'FinancialOverview\FinancialOverviewContactController@getFinancialOverviewContactsForSendingPost');
         Route::post('financial-overview-contact/{financialOverview}/send-all', 'FinancialOverview\FinancialOverviewContactController@sendAll');
         Route::post('financial-overview-contact/{financialOverview}/send-all-post', 'FinancialOverview\FinancialOverviewContactController@sendAllPost');
+        Route::post('financial-overview-contact/{financialOverviewContact}/update-for-interim', 'FinancialOverview\FinancialOverviewContactController@updateForInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim', 'FinancialOverview\FinancialOverviewContactController@sendInterim');
+        Route::post('financial-overview-contact/{financialOverviewContact}/send-interim-post', 'FinancialOverview\FinancialOverviewContactController@sendInterimPost');
 
         Route::get('financial-overview-post/grid', 'FinancialOverview\FinancialOverviewPostController@grid');
         Route::get('financial-overview-post/{financialOverviewPost}/download', 'FinancialOverview\FinancialOverviewPostController@downloadFinancialOverviewPost');

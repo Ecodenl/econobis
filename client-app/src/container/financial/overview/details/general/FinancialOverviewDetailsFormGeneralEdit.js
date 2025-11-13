@@ -7,18 +7,17 @@ moment.locale('nl');
 import ButtonText from '../../../../../components/button/ButtonText';
 import Panel from '../../../../../components/panel/Panel';
 import PanelBody from '../../../../../components/panel/PanelBody';
-import FinancialOverviewsAPI from '../../../../../api/financial/overview/FinancialOverviewsAPI';
 import DocumentTemplateAPI from '../../../../../api/document-template/DocumentTemplateAPI';
 import ViewText from '../../../../../components/form/ViewText';
 import InputReactSelectLong from '../../../../../components/form/InputReactSelectLong';
 import FinancialOverviewDetailsAPI from '../../../../../api/financial/overview/FinancialOverviewDetailsAPI';
+import EmailTemplateAPI from '../../../../../api/email-template/EmailTemplateAPI';
 
 class FinancialOverviewDetailsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            financialOverviews: [],
             financialOverview: {
                 id: props.id ? props.id : '',
                 year: props.year
@@ -30,43 +29,80 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                 documentTemplateFinancialOverviewId: props.documentTemplateFinancialOverviewId
                     ? props.documentTemplateFinancialOverviewId
                     : '',
+                emailTemplateFinancialOverviewId: props.emailTemplateFinancialOverviewId
+                    ? props.emailTemplateFinancialOverviewId
+                    : '',
                 administrationId: props.administrationId ? props.administrationId : '',
                 definitive: props.definitive ? props.definitive : false,
                 statusId: props.statusId ? props.statusId : '',
                 dateProcessed: props.dateProcessed ? props.dateProcessed : null,
+                hasInterimFinancialOverviewContacts: props.hasInterimFinancialOverviewContacts
+                    ? props.hasInterimFinancialOverviewContacts
+                    : false,
             },
             administrations: props.administrations ? props.administrations : null,
             documentTemplates: [],
+            emailTemplates: [],
+            peekLoading: {
+                documentTemplates: true,
+                emailTemplates: true,
+            },
             errorMessage: false,
             errors: {
                 year: false,
                 administrationId: false,
                 documentTemplateFinancialOverviewId: false,
+                emailTemplateFinancialOverviewId: false,
             },
         };
     }
 
     componentDidMount() {
-        FinancialOverviewsAPI.fetchFinancialOverviews()
+        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral()
             .then(payload => {
-                this.setState({ ...this.state, financialOverviews: payload.data.data });
+                let documentTemplates = [];
+                payload.forEach(function(documentTemplate) {
+                    if (documentTemplate.group == 'financial-overview') {
+                        documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
+                    }
+                });
+
+                this.setState(prevState => ({
+                    documentTemplates: documentTemplates,
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        documentTemplates: false,
+                    },
+                }));
             })
             .catch(error => {
-                this.setState({ ...this.state, hasError: true });
+                console.log(error);
+                this.setState(prevState => ({
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        documentTemplates: false,
+                    },
+                }));
             });
-        DocumentTemplateAPI.fetchDocumentTemplatesPeekGeneral().then(payload => {
-            let documentTemplates = [];
-
-            payload.forEach(function(documentTemplate) {
-                if (documentTemplate.group == 'financial-overview') {
-                    documentTemplates.push({ id: documentTemplate.id, name: documentTemplate.name });
-                }
+        EmailTemplateAPI.fetchEmailTemplatesPeek()
+            .then(payload => {
+                this.setState(prevState => ({
+                    emailTemplates: payload,
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        emailTemplates: false,
+                    },
+                }));
+            })
+            .catch(error => {
+                console.log(error);
+                this.setState(prevState => ({
+                    peekLoading: {
+                        ...prevState.peekLoading,
+                        emailTemplates: false,
+                    },
+                }));
             });
-
-            this.setState({
-                documentTemplates: documentTemplates,
-            });
-        });
     }
 
     handleInputChange = event => {
@@ -105,6 +141,7 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
 
     handleSubmit = event => {
         event.preventDefault();
+
         const { financialOverview } = this.state;
 
         // Validation
@@ -132,6 +169,12 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             errorMessage.documentTemplateFinancialOverviewId = 'Document template is een verplicht veld.';
             hasErrors = true;
         }
+        // e-mail template niet verplicht, indien niet ingevuld, dan standaard ingestelde template bij administratie gebruiken.
+        // if (validator.isEmpty(financialOverview.emailTemplateFinancialOverviewId + '')) {
+        //     errors.emailTemplateFinancialOverviewId = true;
+        //     errorMessage.emailTemplateFinancialOverviewId = 'E-mail template is een verplicht veld.';
+        //     hasErrors = true;
+        // }
 
         this.setState({ ...this.state, errors: errors, errorMessage: errorMessage });
 
@@ -153,7 +196,9 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
             administrationId,
             statusId,
             dateProcessed,
+            hasInterimFinancialOverviewContacts,
             documentTemplateFinancialOverviewId,
+            emailTemplateFinancialOverviewId,
         } = this.state.financialOverview;
 
         let status = '';
@@ -162,7 +207,11 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
                 status = 'Wordt aangemaakt...';
                 break;
             case 'concept':
-                status = 'Concept';
+                if (hasInterimFinancialOverviewContacts) {
+                    status = 'Concept / Verwerkt';
+                } else {
+                    status = 'Concept';
+                }
                 break;
             case 'definitive':
                 status = 'Definitief';
@@ -174,64 +223,97 @@ class FinancialOverviewDetailsFormGeneralEdit extends Component {
         const dateProcessedFormated = dateProcessed ? moment(dateProcessed).format('DD-MM-Y') : '';
 
         return (
-            <form className="form-horizontal" onSubmit={this.handleSubmit}>
-                <Panel>
-                    <PanelBody>
-                        <div className="row">
-                            <ViewText className={'form-group col-md-6'} label={'Jaar'} value={year} />
-                            <ViewText className={'form-group col-md-6'} label={'Status'} value={status} />
-                        </div>
-                        <div className="row">
-                            <ViewText
-                                className={'form-group col-md-6'}
-                                label={'Administratie'}
-                                value={
-                                    administrationId
-                                        ? this.state.administrations &&
-                                          this.state.administrations.find(
-                                              administration => administration.id == administrationId
-                                          ).name
-                                        : ''
-                                }
-                            />
-                            <ViewText
-                                className={'form-group col-md-6'}
-                                label={'Datum verwerkt'}
-                                value={dateProcessedFormated}
-                            />
-                        </div>
-                        <div className="row">
-                            <InputReactSelectLong
-                                label="Document template"
-                                name={'documentTemplateFinancialOverviewId'}
-                                options={this.state.documentTemplates}
-                                value={documentTemplateFinancialOverviewId}
-                                onChangeAction={this.handleReactSelectChange}
-                                required={'required'}
-                                // isLoading={peekLoading.documentTemplates}
-                                error={this.state.errors.documentTemplateFinancialOverviewId}
-                                errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
-                            />
-                        </div>
-                    </PanelBody>
+            <>
+                <form className="form-horizontal" onSubmit={this.handleSubmit}>
+                    <Panel>
+                        <PanelBody>
+                            <div className="row">
+                                <ViewText className={'form-group col-md-6'} label={'Jaar'} value={year} />
+                                <ViewText className={'form-group col-md-6'} label={'Status'} value={status} />
+                            </div>
+                            <div className="row">
+                                <ViewText
+                                    className={'form-group col-md-6'}
+                                    label={'Administratie'}
+                                    value={
+                                        administrationId
+                                            ? this.state.administrations &&
+                                              this.state.administrations.find(
+                                                  administration => administration.id == administrationId
+                                              ).name
+                                            : ''
+                                    }
+                                />
+                                <ViewText
+                                    className={'form-group col-md-6'}
+                                    label={'Datum verwerkt'}
+                                    value={dateProcessedFormated}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label={'Document template'}
+                                    name={'documentTemplateFinancialOverviewId'}
+                                    options={this.state.documentTemplates}
+                                    value={documentTemplateFinancialOverviewId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    required={'required'}
+                                    isLoading={this.state.peekLoading.documentTemplates}
+                                    error={this.state.errors.documentTemplateFinancialOverviewId}
+                                    errorMessage={this.state.errorMessage.documentTemplateFinancialOverviewId}
+                                />
+                            </div>
+                            <div className="row">
+                                <InputReactSelectLong
+                                    label={'E-mail template'}
+                                    name={'emailTemplateFinancialOverviewId'}
+                                    options={this.state.emailTemplates}
+                                    value={emailTemplateFinancialOverviewId}
+                                    onChangeAction={this.handleReactSelectChange}
+                                    placeholder={'Gebruik administratie e-mail template'}
+                                    clearable={true}
+                                    isLoading={this.state.peekLoading.emailTemplates}
+                                    error={this.state.errors.emailTemplateFinancialOverviewId}
+                                    errorMessage={this.state.errorMessage.emailTemplateFinancialOverviewId}
+                                />
+                            </div>
+                        </PanelBody>
 
-                    <PanelBody>
-                        <div className="pull-right btn-group" role="group">
-                            <ButtonText
-                                buttonClassName={'btn-default'}
-                                buttonText={'Sluiten'}
-                                onClickAction={this.props.switchToView}
-                            />
-                            <ButtonText
-                                buttonText={'Opslaan'}
-                                type={'submit'}
-                                value={'Submit'}
-                                onClickAction={this.handleSubmit}
-                            />
-                        </div>
-                    </PanelBody>
-                </Panel>
-            </form>
+                        <PanelBody>
+                            <div className="pull-right btn-group" role="group">
+                                <ButtonText
+                                    buttonClassName={'btn-default'}
+                                    buttonText={'Sluiten'}
+                                    onClickAction={this.props.switchToView}
+                                />
+                                <ButtonText
+                                    buttonText={'Opslaan'}
+                                    type={'submit'}
+                                    value={'Submit'}
+                                    onClickAction={this.handleSubmit}
+                                />
+                            </div>
+                        </PanelBody>
+                    </Panel>
+                </form>
+                {statusId === 'concept' && hasInterimFinancialOverviewContacts ? (
+                    <div>
+                        <Panel>
+                            <PanelBody>
+                                <div className="col-md-12 margin-10-top">
+                                    <div className="row">
+                                        <div className="col-md-12">
+                                            <div className="alert alert-warning">
+                                                Er zijn reeds verwerkte tussentijdse waardestaten gemaakt!
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </PanelBody>
+                        </Panel>
+                    </div>
+                ) : null}
+            </>
         );
     }
 }

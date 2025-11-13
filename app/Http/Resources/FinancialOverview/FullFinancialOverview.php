@@ -22,10 +22,13 @@ class FullFinancialOverview extends JsonResource
             'administration' => GenericResource::make($this->whenLoaded('administration')),
             'documentTemplateFinancialOverviewId' => $this->document_template_financial_overview_id,
             'documentTemplateFinancialOverview' => GenericResource::make($this->whenLoaded('document_templates')),
+            'emailTemplateFinancialOverviewId' => $this->email_template_financial_overview_id,
+            'emailTemplateFinancialOverview' => GenericResource::make($this->whenLoaded('email_templates')),
             'year' => $this->year,
             'definitive' => $this->definitive,
             'statusId' => $this->status_id,
             'date' => $this->date_processed,
+            'hasInterimFinancialOverviewContacts' => $this->has_interim_financial_overview_contacts,
         ];
     }
 }

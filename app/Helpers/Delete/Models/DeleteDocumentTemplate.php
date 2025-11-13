@@ -8,7 +8,10 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Contact\Contact;
 use App\Eco\DocumentTemplate\DocumentTemplate;
+use App\Eco\FinancialOverview\FinancialOverview;
+use App\Eco\FinancialOverview\FinancialOverviewContact;
 use App\Eco\Project\Project;
 use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
@@ -72,6 +75,18 @@ class DeleteDocumentTemplate implements DeleteInterface
         if($projectNames){
             abort('409','Ontkoppel template bijschrijfformulier eerst in de volgende projecten: ' . implode(', ', $projectNames));
         }
+
+        // Document template can not be deleted if it is used in financial overviews
+        $financialOverviewNames = FinancialOverview::where('document_template_financial_overview_id', $this->documentTemplate->id)->pluck('description')->toArray();
+        if($financialOverviewNames){
+            array_push($this->errorMessage,'Ontkoppel template eerst in de volgende waardestaten: ' . implode(', ', $financialOverviewNames));
+        }
+        $financialOverviewContactIds = FinancialOverviewContact::where('document_template_financial_overview_id', $this->documentTemplate->id)->pluck('contact_id')->toArray();
+        $contactNumbers = Contact::whereIn('id', array_unique($financialOverviewContactIds))->pluck('number')->toArray();
+        if($contactNumbers){
+            array_push($this->errorMessage,'Template in gebruik in waardestaten bij contacten: ' . implode(', ', $contactNumbers));
+        }
+
     }
 
     /** Deletes models recursive

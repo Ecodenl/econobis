@@ -54,6 +54,7 @@ const AdministrationDetailsFormGeneralView = props => {
         portalSettingsLayout,
         usesMollie,
         mollieApiKey,
+        usesInterimFinancialOverviews,
     } = props.administrationDetails;
     const logoFilenameSrc = props.administrationLogoDetails?.logoFilenameSrc ?? null;
 
@@ -182,6 +183,12 @@ const AdministrationDetailsFormGeneralView = props => {
                             props.meDetails.email === 'software@xaris.nl') &&
                             usesMollie && <ViewText label={'Mollie API key'} value={mollieApiKey} />}
                     </div>
+                    <div className="row">
+                        <ViewText
+                            label={'Gebruikt tussentijdse waardestaten'}
+                            value={usesInterimFinancialOverviews ? 'Ja' : 'Nee'}
+                        />
+                    </div>
 
                     {usesTwinfield == true && (
                         <div className="row">
@@ -201,7 +208,6 @@ const AdministrationDetailsFormGeneralView = props => {
                                 <ViewText label={'Omgeving'} value={twinfieldOrganizationCode} />
                                 <ViewText label={'Code'} value={twinfieldOfficeCode} />
                             </div>
-
 
                             <React.Fragment>
                                 <div className="row">

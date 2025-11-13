@@ -9,8 +9,11 @@ use App\Eco\ParticipantProject\ParticipantProject;
 use App\Eco\Project\ProjectType;
 use App\Eco\Project\ProjectValueCourse;
 use App\Helpers\Delete\Models\DeleteFinancialOverviewParticipantProject;
+use App\Helpers\Delete\Models\DeleteFinancialOverviewProject;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class FinancialOverviewParticipantProjectController extends Controller
 {
@@ -43,10 +46,25 @@ class FinancialOverviewParticipantProjectController extends Controller
             $endDate = Carbon::createFromDate($financialOverview->year, 12, 31);
 
             if($participant->date_terminated && Carbon::parse($participant->date_terminated)->format('Y-m-d') < Carbon::parse($startDate)->format('Y-m-d') ) {
-                $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('financial_overview_project_id', $financialOverviewProject->id)->where('participant_project_id', $participant->id)->first();
+                $financialOverviewParticipantProject = FinancialOverviewParticipantProject::where('financial_overview_project_id', $financialOverviewProject->id)->where('participant_project_id', $participant->id)->where('status_id', '!=', 'sent')->first();
                 if($financialOverviewParticipantProject){
-                    $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-                    $deleteFinancialOverviewParticipantProject->delete();
+                    try {
+                        DB::beginTransaction();
+
+                        $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
+                        $result = $deleteFinancialOverviewParticipantProject->delete();
+
+                        if(count($result) > 0){
+                            DB::rollBack();
+                            abort(412, implode(";", array_unique($result)));
+                        }
+
+                        DB::commit();
+                    } catch (\PDOException $e) {
+                        DB::rollBack();
+                        Log::error($e->getMessage());
+                        abort(501, 'Er is helaas een fout opgetreden.');
+                    }
                 }
             } else {
                 $this->createFinancialOverviewParticipantProjects($participant, $startDate, $endDate, $financialOverviewProject);
@@ -69,26 +87,49 @@ class FinancialOverviewParticipantProjectController extends Controller
         if ($startValue['quantity'] != 0 || $startValue['bookworth'] != 0 || $startValue['amount'] != 0
             || $endValue['quantity'] != 0 || $endValue['bookworth'] != 0 || $endValue['amount'] != 0) {
 
-            FinancialOverviewParticipantProject::updateOrCreate([
-                //Add unique field to match here
-                'financial_overview_project_id' => $financialOverviewProject->id,
-                'participant_project_id' => $participant->id,
-            ], [
-                'quantity_start_value' => $startValue['quantity'],
-                'quantity_end_value' => $endValue['quantity'],
+            $dataFOPP = [
+                'contact_id'            => $participant->contact_id,
+                'quantity_start_value'  => $startValue['quantity'],
+                'quantity_end_value'    => $endValue['quantity'],
                 'bookworth_start_value' => $startValue['bookworth'],
-                'bookworth_end_value' => $endValue['bookworth'],
-                'amount_start_value' => $startValue['amount'],
-                'amount_end_value' => $endValue['amount'],
-            ]);
+                'bookworth_end_value'   => $endValue['bookworth'],
+                'amount_start_value'    => $startValue['amount'],
+                'amount_end_value'      => $endValue['amount'],
+            ];
 
-            FinancialOverviewContact::updateOrCreate([
-                //Add unique field to match here
+            $existingFOPP = FinancialOverviewParticipantProject::where([
+                'financial_overview_project_id' => $financialOverviewProject->id,
+                'participant_project_id'        => $participant->id,
+            ])->first();
+
+            if ($existingFOPP) {
+                if ($existingFOPP->status_id !== 'sent') {
+                    $existingFOPP->update($dataFOPP);
+                }
+            } else {
+                FinancialOverviewParticipantProject::create(array_merge($dataFOPP, [
+                    'financial_overview_project_id' => $financialOverviewProject->id,
+                    'participant_project_id'        => $participant->id,
+                    'status_id'                     => 'concept',
+                ]));
+            }
+
+            $existingFOC = FinancialOverviewContact::where([
                 'financial_overview_id' => $financialOverviewProject->financialOverview->id,
-                'contact_id' => $participant->contact_id,
-            ], [
-                'status_id' => 'concept',
-            ]);
+                'contact_id'            => $participant->contact_id,
+            ])->first();
+
+            if ($existingFOC) {
+                if ($existingFOC->status_id !== 'sent') {
+                    $existingFOC->update(['status_id' => 'concept']);
+                }
+            } else {
+                FinancialOverviewContact::create([
+                    'financial_overview_id' => $financialOverviewProject->financialOverview->id,
+                    'contact_id'            => $participant->contact_id,
+                    'status_id'             => 'concept',
+                ]);
+            }
         }
 
     }

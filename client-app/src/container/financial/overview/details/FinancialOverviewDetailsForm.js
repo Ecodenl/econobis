@@ -25,7 +25,6 @@ class FinancialOverviewDetailsForm extends Component {
         } else {
             loading = false;
         }
-
         return loading ? (
             <div>{loadingText}</div>
         ) : (

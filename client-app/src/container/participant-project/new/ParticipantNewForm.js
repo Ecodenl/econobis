@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import InputSelect from '../../../components/form/InputSelect';
 import ButtonText from '../../../components/button/ButtonText';
 import PanelFooter from '../../../components/panel/PanelFooter';
@@ -53,23 +53,25 @@ function ParticipantNewForm(props) {
         dateEntry,
         disableBeforeEntryDate,
     } = participation;
-    const status = participantMutationStatuses.find(
-        participantMutationStatuses => participantMutationStatuses.id == statusId
+    const status = participantMutationStatuses?.find(
+        participantMutationStatusItem => participantMutationStatusItem.id == statusId
     );
     const statusCodeRef = status ? status.codeRef : null;
 
     const getContactOptions = async () => {
-        if (searchTermContact.length <= 1) return;
+        if (searchTermContact.length <= 1) return [];
 
         setLoadingContact(true);
 
         try {
             const results = await ContactsAPI.fetchContactSearch(searchTermContact);
             setLoadingContact(false);
-            return results.data.data;
+            return results.data.data || [];
         } catch (error) {
-            setLoadingContact(false);
             // console.log(error);
+            return [];
+        } finally {
+            setLoadingContact(false);
         }
     };
 
@@ -85,7 +87,7 @@ function ParticipantNewForm(props) {
                     name={'projectId'}
                     id={'projectId'}
                     options={projects}
-                    value={Number(projectId)}
+                    value={projectId ? Number(projectId) : null}
                     onChangeAction={handleInputChangeProjectId}
                     required={'required'}
                     error={errors.projectId}
@@ -119,7 +121,7 @@ function ParticipantNewForm(props) {
                     id={'addressId'}
                     options={addresses}
                     optionName={'streetPostalCodeCity'}
-                    value={Number(addressId)}
+                    value={addressId ? Number(addressId) : null}
                     onChangeAction={handleInputChangeAddressId}
                     required={'required'}
                     disabled={projectTypeCodeRef !== 'postalcode_link_capital' && !isSceProject}

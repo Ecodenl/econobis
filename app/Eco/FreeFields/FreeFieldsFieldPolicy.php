@@ -5,7 +5,7 @@ namespace App\Eco\FreeFields;
 use App\Eco\User\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
-class FreeFieldsPolicy
+class FreeFieldsFieldPolicy
 {
     use HandlesAuthorization;
 

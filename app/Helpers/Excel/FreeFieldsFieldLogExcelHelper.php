@@ -25,7 +25,7 @@ class FreeFieldsFieldLogExcelHelper
     {
 
         if($this->freeFieldsFieldLogs->count() === 0){
-            abort(403, 'Geen mutatie log regels aanwezig');
+            abort(411, 'Geen mutatie log regels aanwezig');
         }
 
         $completeData = [];
@@ -69,7 +69,7 @@ class FreeFieldsFieldLogExcelHelper
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'H'; $col++) {
+        for ($col = 'A'; $col !== 'I'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);

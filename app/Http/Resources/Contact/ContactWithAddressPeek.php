@@ -21,6 +21,7 @@ class ContactWithAddressPeek extends JsonResource
             'fullName' => $this->full_name . ' (' . $this->number . ')',
             'primaryAddressId' => $this->primary_address_id,
             'addresses' => AddressForContactPeek::collection($this->whenLoaded('addressesWithoutOld')),
+            'lastYearFinancialOverviewSent' => $this->last_year_financial_overview_sent,
         ];
     }
 }

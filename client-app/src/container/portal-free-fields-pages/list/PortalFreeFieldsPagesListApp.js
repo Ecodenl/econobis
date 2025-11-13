@@ -7,6 +7,8 @@ import PortalFreeFieldsPagesListToolbar from './PortalFreeFieldsPagesListToolbar
 import useKeyPress from '../../../helpers/useKeyPress';
 import axios from 'axios';
 import PortalFreeFieldsAPI from '../../../api/portal-free-fields/PortalFreeFieldsPageAPI';
+import moment from 'moment/moment';
+import fileDownload from 'js-file-download';
 
 const recordsPerPage = 50;
 
@@ -51,6 +53,18 @@ function PortalFreeFieldsPagesListApp() {
             .catch(error => {
                 setLoading(false);
                 alert('Er is iets misgegaan met ophalen van de gegevens.');
+            });
+    }
+    function getExcelLogMutations() {
+        setLoading(true);
+        PortalFreeFieldsAPI.getExcelFreeFieldsFieldLog()
+            .then(payload => {
+                fileDownload(payload.data, `vrije-velden-mutaties-log-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`);
+                setLoading(false);
+            })
+            .catch(() => {
+                setLoading(false);
+                alert('Er is iets misgegaan met downloaden van de gegevens.');
             });
     }
 
@@ -118,6 +132,7 @@ function PortalFreeFieldsPagesListApp() {
                     <PortalFreeFieldsPagesListToolbar
                         portalFreeFieldsPagesTotal={meta.total}
                         refreshPortalFreeFieldsPages={fetchPortalFreeFieldsPages}
+                        getExcelLogMutations={getExcelLogMutations}
                     />
                 </div>
                 <div className="col-md-12 margin-10-top">

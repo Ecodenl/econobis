@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { isEmpty } from 'lodash';
 
-import { deleteContact } from '../../../actions/contact/ContactDetailsActions';
 import Panel from '../../../components/panel/Panel';
 import PanelBody from '../../../components/panel/PanelBody';
 import ButtonIcon from '../../../components/button/ButtonIcon';
@@ -11,6 +10,7 @@ import ContactDetailsDelete from './ContactDetailsDelete';
 import ButtonText from '../../../components/button/ButtonText';
 import ContactDetailsHoomdossier from './ContactDetailsHoomdossier';
 import { Link } from 'react-router-dom';
+import FinancialOverviewCreateInterimModal from '../../financial/overview/create/FinancialOverviewCreateInterimModal';
 
 function ContactDetailsToolbar({
     permissions,
@@ -24,12 +24,14 @@ function ContactDetailsToolbar({
     cooperation,
     isLoading,
     occupations,
+    oldestFinancialOverviewContactConceptId,
 }) {
     const navigate = useNavigate();
 
     const [showDelete, setShowDelete] = useState(false);
     const [showMakeHoomdossier, setShowMakeHoomdossier] = useState(false);
 
+    const [showInterimModal, setShowInterimModal] = useState(false);
     function showDeleteModal() {
         setShowDelete(true);
     }
@@ -71,6 +73,13 @@ function ContactDetailsToolbar({
                                         disabled={Boolean(hoomAccountId)}
                                     />
                                 ) : null}
+
+                                {!!oldestFinancialOverviewContactConceptId && (
+                                    <ButtonText
+                                        onClickAction={() => setShowInterimModal(true)}
+                                        buttonText={'Tussentijdse waardestaat'}
+                                    />
+                                )}
                             </div>
                         </div>
                         {!isLoading && (
@@ -87,6 +96,7 @@ function ContactDetailsToolbar({
                                         ? occupations.map(s =>
                                               s.primary ? (
                                                   <Link
+                                                      key={s.id ?? s.primaryContact.id}
                                                       to={`/contact/${s.primaryContact.id}`}
                                                       className="link-underline margin-10-right"
                                                   >
@@ -114,6 +124,13 @@ function ContactDetailsToolbar({
                 />
             )}
             {showMakeHoomdossier && <ContactDetailsHoomdossier closeModal={toggleShowMakeHoomdossier} />}
+
+            {showInterimModal && (
+                <FinancialOverviewCreateInterimModal
+                    financialOverviewContactId={oldestFinancialOverviewContactConceptId}
+                    onClose={() => setShowInterimModal(false)}
+                />
+            )}
         </div>
     );
 }
@@ -131,13 +148,8 @@ const mapStateToProps = state => {
         permissions: state.meDetails.permissions,
         isLoading: state.loadingData.isLoading,
         occupations: state.contactDetails.occupations,
+        oldestFinancialOverviewContactConceptId: state.contactDetails.oldestFinancialOverviewContactConceptId,
     };
 };
 
-const mapDispatchToProps = dispatch => ({
-    deleteContact: id => {
-        dispatch(deleteContact(id));
-    },
-});
-
-export default connect(mapStateToProps, mapDispatchToProps)(ContactDetailsToolbar);
+export default connect(mapStateToProps, null)(ContactDetailsToolbar);

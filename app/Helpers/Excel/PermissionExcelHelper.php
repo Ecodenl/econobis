@@ -47,13 +47,13 @@ class PermissionExcelHelper {
         // Load all data in worksheet
         $sheet->fromArray($completeData);
 
-        for ($col = 'A'; $col !== 'Y'; $col++) {
+        for ($col = 'A'; $col !== 'R'; $col++) {
             $spreadsheet->getActiveSheet()
                 ->getColumnDimension($col)
                 ->setAutoSize(true);
         }
 
-        $sheet->getStyle('A1:P1')
+        $sheet->getStyle('A1:Q1')
             ->applyFromArray([
                 'font' => [
                     'bold' => true,

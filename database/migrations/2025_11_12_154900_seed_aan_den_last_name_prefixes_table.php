@@ -13,7 +13,7 @@ class SeedAanDenLastNamePrefixesTable extends Migration
     public function up()
     {
         $prefixes = [
-            'Aan den',
+            'aan den',
         ];
 
         foreach ($prefixes as $prefix) {
@@ -35,7 +35,7 @@ class SeedAanDenLastNamePrefixesTable extends Migration
     public function down()
     {
         $prefixes = [
-            'Aan den',
+            'aan den',
         ];
 
         foreach ($prefixes as $prefix) {

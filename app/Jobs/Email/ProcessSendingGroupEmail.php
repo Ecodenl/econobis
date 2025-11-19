@@ -22,8 +22,6 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public bool $afterCommit = true;
-
     protected Email $email;
 
     protected User $user;

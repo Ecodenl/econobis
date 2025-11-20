@@ -47,14 +47,16 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     public function handle()
     {
-        Log::info('ProcessSendingGroupEmail start', [
-            'email_id' => $this->email->id,
-            'user_id' => $this->user->id,
-            'firstCall' => $this->firstCall,
-            'mail_contact_group_with_single_mail' => $this->email->mail_contact_group_with_single_mail,
-            'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
-            'contacts_pivot_count' => $this->email->contacts()->count(),
-        ]);
+        if($this->firstCall){
+            Log::info('ProcessSendingGroupEmail start', [
+                'email_id' => $this->email->id,
+                'user_id' => $this->user->id,
+                'firstCall' => $this->firstCall,
+                'mail_contact_group_with_single_mail' => $this->email->mail_contact_group_with_single_mail,
+                'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
+                'contacts_pivot_count' => $this->email->contacts()->count(),
+            ]);
+        }
 
         if ($this->firstCall) {
             $jobLog = new JobsLog();
@@ -78,13 +80,13 @@ class ProcessSendingGroupEmail implements ShouldQueue
          * Create a new Job to pick these up.
          */
         if ($this->email->groupEmailAddresses()->exists()) {
-            $remaining = $this->email->groupEmailAddresses()->count();
+//            $remaining = $this->email->groupEmailAddresses()->count();
 
-            Log::info('ProcessSendingGroupEmail re-dispatching for next chunk', [
-                'email_id' => $this->email->id,
-                'remaining_group_email_addresses' => $remaining,
-                'errors_so_far' => $this->errors,
-            ]);
+//            Log::info('ProcessSendingGroupEmail re-dispatching for next chunk', [
+//                'email_id' => $this->email->id,
+//                'remaining_group_email_addresses' => $remaining,
+//                'errors_so_far' => $this->errors,
+//            ]);
 
             self::dispatch($this->email, $this->user, false, $this->errors);
 
@@ -271,8 +273,6 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
     protected function sendNextChunk()
     {
-        $totalRemaining = $this->email->groupEmailAddresses()->count();
-
         /**
          * We send a maximum amount each time to prevent timeouts.
          */
@@ -280,12 +280,14 @@ class ProcessSendingGroupEmail implements ShouldQueue
             ->limit(Config::get('queue.email.chunk_size'))
             ->get();
 
-        Log::info('sendNextChunk before sending', [
-            'email_id' => $this->email->id,
-            'total_remaining_before_chunk' => $totalRemaining,
-            'chunk_size' => $groupEmailAddresses->count(),
-            'chunk_limit' => Config::get('queue.email.chunk_size'),
-        ]);
+//        $totalRemaining = $this->email->groupEmailAddresses()->count();
+
+//        Log::info('sendNextChunk before sending', [
+//            'email_id' => $this->email->id,
+//            'total_remaining_before_chunk' => $totalRemaining,
+//            'chunk_size' => $groupEmailAddresses->count(),
+//            'chunk_limit' => Config::get('queue.email.chunk_size'),
+//        ]);
 
         foreach ($groupEmailAddresses as $emailAddress) {
             try {
@@ -306,13 +308,13 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $this->email->groupEmailAddresses()->detach($emailAddress->id);
         }
 
-        $remainingAfter = $this->email->groupEmailAddresses()->count();
+//        $remainingAfter = $this->email->groupEmailAddresses()->count();
 
-        Log::info('sendNextChunk after sending', [
-            'email_id' => $this->email->id,
-            'total_remaining_after_chunk' => $remainingAfter,
-            'errors_for_email_so_far' => $this->errors,
-        ]);
+//        Log::info('sendNextChunk after sending', [
+//            'email_id' => $this->email->id,
+//            'total_remaining_after_chunk' => $remainingAfter,
+//            'errors_for_email_so_far' => $this->errors,
+//        ]);
     }
 
     protected function syncContactsByGroup($contactsWithEmail)

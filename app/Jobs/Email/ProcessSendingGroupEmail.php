@@ -176,7 +176,14 @@ class ProcessSendingGroupEmail implements ShouldQueue
         // 👉 Gebruik altijd IDs via getAllContacts(true)
         $allContactIds = $contactGroup->getAllContacts(true) ?: [];
 
-        $allContactsCount = is_array($allContactIds) ? count($allContactIds) : 0;
+        // Zorg dat het echt een array is
+        if ($allContactIds instanceof \Illuminate\Support\Collection) {
+            $allContactIds = $allContactIds->toArray();
+        }
+
+        // Uniek maken + opnieuw indexeren
+        $allContactIds = array_values(array_unique($allContactIds));
+        $allContactsCount = count($allContactIds);
 
         Log::info('prepareEmailForSending all contacts count BEFORE filter primaryEmailAddress', [
             'email_id' => $this->email->id,
@@ -191,32 +198,38 @@ class ProcessSendingGroupEmail implements ShouldQueue
             return;
         }
 
-        // 👉 Haal expliciet Contact-modellen op met primaryEmailAddress eager loaded
-        $contacts = Contact::whereIn('id', $allContactIds)
-            ->with('primaryEmailAddress')
-            ->get();
+        // 👉 Chunk size instelbaar via config, default 1000
+        $batchSize = Config::get('queue.email.contacts_group_chunk_size', 1000);
 
-        // Filter op contacten met primaryEmailAddress (zoals in je Tinker test)
-        $contactGroupAllContacts = $contacts->filter(function ($contact) {
-            return !!$contact->primaryEmailAddress;
-        });
+        $contactsWithEmail = collect();
+
+        foreach (array_chunk($allContactIds, $batchSize) as $idChunk) {
+            $chunkContacts = Contact::whereIn('id', $idChunk)
+                ->with('primaryEmailAddress')
+                ->get()
+                ->filter(function ($contact) {
+                    return !!$contact->primaryEmailAddress;
+                });
+            $contactsWithEmail = $contactsWithEmail->merge($chunkContacts);
+        }
 
         Log::info('prepareEmailForSending contacts count AFTER filter primaryEmailAddress', [
             'email_id' => $this->email->id,
-            'contacts_with_primary_email_count' => $contactGroupAllContacts->count(),
+            'contacts_with_primary_email_count' => $contactsWithEmail->count(),
         ]);
 
-        if ($contactGroupAllContacts->count() === 0) {
+        if ($contactsWithEmail->isEmpty()) {
             Log::warning('prepareEmailForSending: no contacts with primaryEmailAddress but group has members', [
                 'email_id' => $this->email->id,
                 'contact_group_id' => $contactGroup->id,
                 'all_contacts_count' => $allContactsCount,
             ]);
+            // We laten de functie bewust verder lopen; sendNextChunk zal dan gewoon niks doen.
         }
 
-        // 👉 Je bestaande methods blijven gewoon werken; ze verwachten een Collection van Contact-modellen
-        $this->syncContactsByGroup($contactGroupAllContacts);
-        $this->attachGroupEmailAddressesFromGroup($contactGroupAllContacts);
+        // 👉 Syncen en attachen contacts by group
+        $this->syncContactsByGroup($contactsWithEmail);
+        $this->attachGroupEmailAddressesFromGroup($contactsWithEmail);
 
         Log::info('prepareEmailForSending after sync/attach', [
             'email_id' => $this->email->id,
@@ -224,7 +237,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
         ]);
 
-        // Rest van je bestaande code (html_body wrappen etc.)
+        // html_body wrappen etc.
         $this->email->html_body =
             '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $this->email->subject . '</title></head><body>'
@@ -302,9 +315,9 @@ class ProcessSendingGroupEmail implements ShouldQueue
         ]);
     }
 
-    protected function syncContactsByGroup($contactGroupAllContacts)
+    protected function syncContactsByGroup($contactsWithEmail)
     {
-        $contactIds = $contactGroupAllContacts->pluck('id');
+        $contactIds = $contactsWithEmail->pluck('id');
 
         /**
          * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
@@ -312,9 +325,9 @@ class ProcessSendingGroupEmail implements ShouldQueue
         $this->email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
     }
 
-    protected function attachGroupEmailAddressesFromGroup($contactGroupAllContacts)
+    protected function attachGroupEmailAddressesFromGroup($contactsWithEmail)
     {
-        $emailAddressIds = $contactGroupAllContacts->pluck('primaryEmailAddress.id');
+        $emailAddressIds = $contactsWithEmail->pluck('primaryEmailAddress.id');
 
         $this->email->groupEmailAddresses()->attach($emailAddressIds->unique()->toArray());
     }

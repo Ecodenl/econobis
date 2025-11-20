@@ -22,7 +22,7 @@ class FullContactGroup extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'numberOfContacts' => $this->all_contacts->count(),
+            'numberOfContacts' => $this->getAllContactsCount(),
             'closed' => $this->closed,
             'closedStatus' => $this->present()->closedStatus(),
             'description' => $this->description,

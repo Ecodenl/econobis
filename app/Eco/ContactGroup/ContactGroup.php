@@ -251,43 +251,58 @@ class ContactGroup extends Model
 
     public function getAllContactGroupContactsAttribute()
     {
-        $groupContacts = $this->all_contacts;
-        foreach ($groupContacts as $groupContact){
+        $groupContacts = $this->getAllContacts() ?: new Collection();
 
+        foreach ($groupContacts as $groupContact) {
             $contactGroupsPivot = null;
-            if($groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->exists()){
-                $contactGroupsPivot = $groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->first()->pivot;
+
+            $groupId = $this->simulatedGroup ? $this->simulatedGroup->id : $this->id;
+
+            if ($groupContact->groups()->where('contact_group_id', $groupId)->exists()) {
+                $contactGroupsPivot = $groupContact->groups()
+                    ->where('contact_group_id', $groupId)
+                    ->first()
+                    ->pivot;
             }
 
-            $groupContact->laposta_member_id = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_id : null;
-            $groupContact->laposta_member_state = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_state : null;
+            $groupContact->laposta_member_id        = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_id : null;
+            $groupContact->laposta_member_state     = $contactGroupsPivot ? $contactGroupsPivot->laposta_member_state : null;
             $groupContact->laposta_last_error_message = $contactGroupsPivot ? $contactGroupsPivot->laposta_last_error_message : null;
-            $groupContact->member_created_at = $contactGroupsPivot ? $contactGroupsPivot->member_created_at : null;
-            $groupContact->member_to_group_since = $contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null;
+            $groupContact->member_created_at        = $contactGroupsPivot ? $contactGroupsPivot->member_created_at : null;
+            $groupContact->member_to_group_since    = $contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null;
         }
+
         return $groupContacts;
     }
 
     public function getAllContactGroupContactsIdsAttribute()
     {
-        return $this->all_contacts->pluck('id')->toArray();
-    }
+        return $this->getAllContacts(true) ?: [];    }
 
     public function getAllContactGroupContactsForReportAttribute()
     {
         $groupContactsForReport = [];
-        $groupContacts = $this->all_contacts;
-        foreach ($groupContacts as $groupContact){
 
+        $groupContacts = $this->getAllContacts() ?: new Collection();
+
+        $groupId = $this->simulatedGroup ? $this->simulatedGroup->id : $this->id;
+
+        foreach ($groupContacts as $groupContact) {
             $contactGroupsPivot = null;
-            if($groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->exists()){
-                $contactGroupsPivot = $groupContact->groups()->where('contact_group_id', ($this->simulatedGroup ? $this->simulatedGroup->id : $this->id))->first()->pivot;
+
+            if ($groupContact->groups()->where('contact_group_id', $groupId)->exists()) {
+                $contactGroupsPivot = $groupContact->groups()
+                    ->where('contact_group_id', $groupId)
+                    ->first()
+                    ->pivot;
             }
+
             $groupContactsForReport[] = [
                 'id' => $groupContact->id,
                 'member_to_group_since' => ($contactGroupsPivot ? $contactGroupsPivot->member_to_group_since : null),
             ];
         }
+
         return $groupContactsForReport;
     }
 
@@ -496,6 +511,13 @@ class ContactGroup extends Model
             $numberOfLapostaMembers = $this->contacts()->whereNotNull('laposta_member_id')->count();
         }
         return $numberOfLapostaMembers;
+    }
+
+    public function getAllContactsCount(): int
+    {
+        $ids = $this->getAllContacts(true) ?: [];
+
+        return is_array($ids) ? count($ids) : 0;
     }
 
     public function newEloquentBuilder($query)

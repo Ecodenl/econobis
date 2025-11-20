@@ -390,23 +390,19 @@ class ParticipationProjectController extends ApiController
 
         $message = [];
 
-        if($project->is_membership_required){
-            $hasGroup = false;
+        if ($project->is_membership_required) {
+            $requiredContactIds = collect();
 
-            foreach($project->requiresContactGroups as $contactGroup) {
-                if ($hasGroup) {
-                    break;
-                }
-                foreach ($contactGroup->all_contacts as $contactGroupContact) {
-                    if ($contactGroupContact->id = $contact->id) {
-                        $hasGroup = true;
-                    }
-                    if ($hasGroup) {
-                        break;
-                    }
-                }
+            foreach ($project->requiresContactGroups as $contactGroup) {
+                $ids = $contactGroup->getAllContacts(true) ?: [];
+                $requiredContactIds = $requiredContactIds->merge($ids);
             }
-            if(!$hasGroup){
+
+            $requiredContactIds = $requiredContactIds->unique();
+
+            $hasGroup = $requiredContactIds->contains($contact->id);
+
+            if (! $hasGroup) {
                 $message[] = 'Contact zit niet in de benodigde groep.';
             }
         }
@@ -1070,18 +1066,26 @@ class ParticipationProjectController extends ApiController
 
     public function peekContactsMembershipRequired(ParticipantProject $participantProject)
     {
-        if($participantProject->project->is_membership_required){
-            $contacts = new Collection();
+        if ($participantProject->project->is_membership_required) {
+            $contactIds = collect();
 
-            foreach ($participantProject->project->requiresContactGroups as $contactGroup){
-                $contacts = $contacts->merge($contactGroup->all_contacts);
+            foreach ($participantProject->project->requiresContactGroups as $contactGroup) {
+                $ids = $contactGroup->getAllContacts(true) ?: [];
+                $contactIds = $contactIds->merge($ids);
             }
 
-            $contacts = $contacts->sortBy('full_name', SORT_NATURAL|SORT_FLAG_CASE)->values();
+            $contactIds = $contactIds->unique()->values();
+
+            $contacts = Contact::select('id', 'full_name', 'number')
+                ->whereIn('id', $contactIds)
+                ->orderBy('full_name')
+                ->get();
+        } else {
+            $contacts = Contact::select('id', 'full_name', 'number')
+                ->orderBy('full_name')
+                ->get();
         }
-        else{
-            $contacts = Contact::select('id', 'full_name', 'number')->orderBy('full_name')->get();
-        }
+
         return ContactPeek::collection($contacts);
     }
 

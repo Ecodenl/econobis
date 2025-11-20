@@ -209,7 +209,9 @@ class EmailController extends Controller
     public function getEmailGroup(ContactGroup $contactGroup){
         $this->authorize('view', Email::class);
 
-        return $contactGroup->name . ' (' . $contactGroup->all_contacts->count() . ')';
+        $count = count($contactGroup->getAllContacts(true) ?: []);
+
+        return $contactGroup->name . ' (' . $count . ')';
     }
 
     public function update(Email $email, RequestInput $input, Request $request)
@@ -335,15 +337,25 @@ class EmailController extends Controller
         //if we send to group we save in a pivot because they can have alot of members
         if ($email->contact_group_id) {
             $contactGroup = ContactGroup::find($email->contact_group_id);
-            $contactIds = [];
-            foreach ($contactGroup->all_contacts as $contact) {
-                if ($contact->primaryEmailAddress) {
-                    $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
-                    array_push($contactIds, $contact->id);
+
+            if ($contactGroup) {
+                $allContactIds = $contactGroup->getAllContacts(true) ?: [];
+
+                $contacts = Contact::whereIn('id', $allContactIds)
+                    ->with('primaryEmailAddress')
+                    ->get();
+
+                $contactIds = [];
+                foreach ($contacts as $contact) {
+                    if ($contact->primaryEmailAddress) {
+                        $email->groupEmailAddresses()->attach($contact->primaryEmailAddress->id);
+                        $contactIds[] = $contact->id;
+                    }
                 }
+
+                $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
+                $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
             }
-            $oldEmailContactIds = $email->contacts()->pluck('contacts.id')->toArray();
-            $email->contacts()->sync(array_unique(array_merge($contactIds, $oldEmailContactIds)));
         }
 
         $email->sent_by_user_id = Auth::id();

@@ -32,7 +32,7 @@ class ProcessSendingEmail implements ShouldQueue
     public function handle()
     {
         if ($this->email->contactGroup) {
-            ProcessSendingGroupEmail::dispatch($this->email, $this->user);
+            ProcessSendingGroupEmail::dispatch($this->email, $this->user)->afterCommit();
             return;
         }
 

@@ -3,6 +3,7 @@
 namespace App\Jobs\Email;
 
 
+use App\Eco\Contact\Contact;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipient;
 use App\Eco\Email\EmailRecipientCollection;
@@ -172,8 +173,9 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'composed_of' => $contactGroup->composed_of,
         ]);
 
-        // Optioneel: alleen IDs ophalen voor telling, is goedkoper
-        $allContactIds = $contactGroup->getAllContacts(true);
+        // 👉 Gebruik altijd IDs via getAllContacts(true)
+        $allContactIds = $contactGroup->getAllContacts(true) ?: [];
+
         $allContactsCount = is_array($allContactIds) ? count($allContactIds) : 0;
 
         Log::info('prepareEmailForSending all contacts count BEFORE filter primaryEmailAddress', [
@@ -181,9 +183,21 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'all_contacts_count' => $allContactsCount,
         ]);
 
-        // 1-malig ophalen contactGroup->all_contacts !!! (zie voor verder uitleg in _todo comment bij getAllContactsAttribute in model ContactGroup)
-        // Hierna filteren we nog even op primaryEmailAddress aanwezig.
-        $contactGroupAllContacts = $this->email->contactGroup->all_contacts->filter(function ($contact) {
+        if ($allContactsCount === 0) {
+            Log::warning('prepareEmailForSending: group has no contacts', [
+                'email_id' => $this->email->id,
+                'contact_group_id' => $contactGroup->id,
+            ]);
+            return;
+        }
+
+        // 👉 Haal expliciet Contact-modellen op met primaryEmailAddress eager loaded
+        $contacts = Contact::whereIn('id', $allContactIds)
+            ->with('primaryEmailAddress')
+            ->get();
+
+        // Filter op contacten met primaryEmailAddress (zoals in je Tinker test)
+        $contactGroupAllContacts = $contacts->filter(function ($contact) {
             return !!$contact->primaryEmailAddress;
         });
 
@@ -192,6 +206,15 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'contacts_with_primary_email_count' => $contactGroupAllContacts->count(),
         ]);
 
+        if ($contactGroupAllContacts->count() === 0) {
+            Log::warning('prepareEmailForSending: no contacts with primaryEmailAddress but group has members', [
+                'email_id' => $this->email->id,
+                'contact_group_id' => $contactGroup->id,
+                'all_contacts_count' => $allContactsCount,
+            ]);
+        }
+
+        // 👉 Je bestaande methods blijven gewoon werken; ze verwachten een Collection van Contact-modellen
         $this->syncContactsByGroup($contactGroupAllContacts);
         $this->attachGroupEmailAddressesFromGroup($contactGroupAllContacts);
 
@@ -201,8 +224,9 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
         ]);
 
-        $this->email->html_body
-            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+        // Rest van je bestaande code (html_body wrappen etc.)
+        $this->email->html_body =
+            '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
             . $this->email->subject . '</title></head><body>'
             . $this->email->html_body . '</body></html>';
 

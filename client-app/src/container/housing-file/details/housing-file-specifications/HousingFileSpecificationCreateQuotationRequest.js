@@ -70,6 +70,7 @@ class HousingFileSpecificationCreateQuotationRequest extends Component {
             >
                 <p>{this.props.opportunityIds.length} kans(en) zijn aangemaakt.</p>
                 <p>Ook kansactie(s) type 'Offerteverzoek' aanmaken voor deze kans(en)?</p>
+                <p>Kies annuleren als er voor verschillende partijen offerteverzoeken gemaakt moeten worden.</p>
                 <div className="row">
                     <InputSelect
                         size={'col-md-12'}

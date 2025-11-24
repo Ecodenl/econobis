@@ -170,7 +170,17 @@ class ContactDetailsFormPortalUserEdit extends Component {
                                 buttonText={'Annuleren'}
                                 onClickAction={this.props.switchToView}
                             />
+
+                            {this.props.permissions.deleteContactPortalUser ? (
+                                <ButtonText
+                                    buttonText={'Verwijderen'}
+                                    buttonClassName={'btn-danger'}
+                                    onClickAction={this.props.toggleDelete}
+                                />
+                            ) : null}
+
                             <ButtonText buttonText={'Opslaan'} onClickAction={this.handleSubmit} />
+
                             {blocked === true ? (
                                 <ButtonText buttonText={'Deblokkeren'} onClickAction={this.handleUnBlock} />
                             ) : null}

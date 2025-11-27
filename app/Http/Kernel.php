@@ -64,6 +64,7 @@ class Kernel extends HttpKernel
         'guest' => \App\Http\Middleware\RedirectIfAuthenticated::class,
 //        'throttle' => \App\Http\Middleware\ThrottleRequests::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'client' => \Laravel\Passport\Http\Middleware\CheckClientCredentials::class,
         'scopes' => \Laravel\Passport\Http\Middleware\CheckScopes::class,
         'scope.app' => SetAppScope::class,
         'scope.portal' => SetPortalScope::class,

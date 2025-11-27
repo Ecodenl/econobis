@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="nl">
+<head>
+    <meta charset="UTF-8">
+    <title>Contactgegevens ophalen</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 2rem; }
+        label { display: block; margin-bottom: .5rem; }
+        input { padding: .4rem; margin-bottom: 1rem; width: 200px; }
+        button { padding: .5rem 1rem; }
+        pre { background: #f6f6f6; padding: 1rem; }
+    </style>
+</head>
+<body>
+<h1>Contactgegevens ophalen</h1>
+
+<label for="contactnr">Contactnummer:</label>
+<input type="text" id="contactnr" name="contactnr" placeholder="Bijv. 12345">
+
+<button id="btnFetch">Haal op</button>
+
+<h2>Resultaat</h2>
+<pre id="result">Nog niets opgehaald...</pre>
+
+<script>
+    document.getElementById('btnFetch').addEventListener('click', async () => {
+        const nummer = document.getElementById('contactnr').value.trim();
+        if (!nummer) { alert('Vul een contactnummer in'); return; }
+
+        const response = await fetch('test-rest-proxy.php', {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ contactnr: nummer })
+        });
+
+        const data = await response.json().catch(() => ({ error: 'invalid_json' }));
+        document.getElementById('result').textContent = JSON.stringify(data, null, 2);
+    });
+</script>
+</body>
+</html>

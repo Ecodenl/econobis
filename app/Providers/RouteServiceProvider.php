@@ -86,7 +86,7 @@ class RouteServiceProvider extends ServiceProvider
     protected function mapRestApiRoutes()
     {
         Route::prefix('rest-api')
-            ->middleware(['passport-portal', 'api'])
+            ->middleware(['api'])
             ->namespace('\App\Http\Controllers\RestApi')
             ->group(base_path('routes/rest-api.php'));
     }

@@ -331,7 +331,7 @@ class ParticipantsListApp extends Component {
         this.props.blockUI();
 
         try {
-            const maxParticipants = 1000;
+            const maxParticipants = 500;
             const total = this.props.participantsProject.meta.total;
             const amountFiles = Math.ceil(total / maxParticipants);
             const splitsExcel = total > maxParticipants;

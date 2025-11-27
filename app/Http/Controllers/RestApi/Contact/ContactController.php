@@ -10,18 +10,18 @@ use App\Http\Controllers\Api\ApiController;
 
 class ContactController extends ApiController
 {
-    public function getContact(?string $contactnr)
+    public function getContact(string $contactPublicId)
     {
-        if (!$contactnr) {
-            abort(501, 'Er is helaas een fout opgetreden (contactnummer ontbreekt).');
-        }
+        $contact = Contact::where('public_id', $contactPublicId)->first();
 
-        $contact = Contact::where('number', $contactnr)->first();
-        if(!$contact) {
-            abort(501, 'Er is helaas een fout opgetreden (contact niet gevonden).');
+        if (!$contact) {
+            return response()->json([
+                'message' => 'contact niet gevonden',
+            ], 404);
         }
 
         $contactType = '';
+        $contactNumber = $contact->number;
         $contactTitle = '';
         $contactInitials = '';
         $contactFirstName = '';
@@ -44,13 +44,14 @@ class ContactController extends ApiController
 
         $result = [
             'contactType' => $contactType ?? '',
+            'contactNumber' => $contactNumber ?? '',
             'contactTitle' => $contactTitle ?? '',
             'contactInitials' =>$contactInitials ?? '',
             'contactFirstName' => $contactFirstName ?? '',
             'contactLastNamePrefix' => $contactLastNamePrefix ?? '',
             'contactLastName' => $contactLastName ?? '',
             'contactOrganisationName' => $contactOrganisationName ?? '',
-            'contactPrimairyEmail' => $contact->primaryEmailAddress?->email ?? '',
+            'contactPrimaryEmail' => $contact->primaryEmailAddress?->email ?? '',
             'addressStreet' => $contact->primaryAddress?->street ?? '',
             'addressNumber' => $contact->primaryAddress?->number ?? '',
             'addressAddition' => $contact->primaryAddress?->addition ?? '',

@@ -37,11 +37,11 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 
 // JSON body lezen
 $input = json_decode(file_get_contents('php://input'), true) ?? [];
-$contactnr = isset($input['contactnr']) ? trim((string)$input['contactnr']) : '';
+$contactPublicId = isset($input['contactPublicId']) ? trim((string)$input['contactPublicId']) : '';
 
-if ($contactnr === '') {
+if ($contactPublicId === '') {
     http_response_code(400);
-    echo json_encode(['error' => 'contactnr_missing']);
+    echo json_encode(['error' => 'contactPublicId missing']);
     exit;
 }
 
@@ -101,7 +101,7 @@ if (!$accessToken) {
 }
 
 // 2) call jullie REST endpoint
-$contactUrl = $laravelBaseUrl . '/rest-api/contact/' . rawurlencode($contactnr);
+$contactUrl = $laravelBaseUrl . '/rest-api/contact/' . rawurlencode($contactPublicId);
 
 $ch = curl_init($contactUrl);
 curl_setopt_array($ch, [

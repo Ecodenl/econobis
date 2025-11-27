@@ -326,34 +326,51 @@ class ParticipantsListApp extends Component {
         }
     };
 
-    getExcel = () => {
+    // tijdelijk van 1000 naar 100 tbv testen splitsen
+    getExcel = async () => {
         this.props.blockUI();
 
-        const maxParticipants = 1000;
-        const amountFiles = Math.ceil(this.props.participantsProject.meta.total / maxParticipants);
-        const splitsExcel = this.props.participantsProject.meta.total > maxParticipants;
-        var counter = 1;
-        for (var i = 1; i <= amountFiles; i++) {
-            var offset = i * maxParticipants - maxParticipants;
-            var pagination = { limit: maxParticipants, offset: offset };
+        try {
+            const maxParticipants = 1000;
+            const total = this.props.participantsProject.meta.total;
+            const amountFiles = Math.ceil(total / maxParticipants);
+            const splitsExcel = total > maxParticipants;
+
             const filters = filterHelper(this.props.participantsProjectFilters);
             const extraFilters = this.state.extraFilters;
             const sorts = this.props.participantsProjectSorts;
-            ParticipantsProjectAPI.getExcel(filters, extraFilters, sorts, pagination, false, null)
-                .then(payload => {
-                    excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
-                    if (splitsExcel) {
-                        var excelFileName = `Deelnemers-${moment().format(
-                            'YYYY-MM-DD HH:mm:ss'
-                        )} (${counter} van ${amountFiles}).xlsx`;
-                    }
-                    fileDownload(payload.data, excelFileName);
-                    counter = counter + 1;
-                    this.props.unblockUI();
-                })
-                .catch(error => {
-                    this.props.unblockUI();
-                });
+
+            let counter = 1;
+
+            for (let i = 0; i < amountFiles; i++) {
+                const offset = i * maxParticipants;
+                const pagination = { limit: maxParticipants, offset };
+
+                const payload = await ParticipantsProjectAPI.getExcel(
+                    filters,
+                    extraFilters,
+                    sorts,
+                    pagination,
+                    false,
+                    null
+                );
+
+                let excelFileName = `Deelnemers-${moment().format('YYYY-MM-DD HH:mm:ss')}.xlsx`;
+
+                if (splitsExcel) {
+                    excelFileName = `Deelnemers-${moment().format(
+                        'YYYY-MM-DD HH:mm:ss'
+                    )} (${counter} van ${amountFiles}).xlsx`;
+                }
+
+                fileDownload(payload.data, excelFileName);
+                counter++;
+            }
+        } catch (error) {
+            // eventueel error tonen
+            console.error(error);
+        } finally {
+            this.props.unblockUI();
         }
     };
 

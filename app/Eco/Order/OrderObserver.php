@@ -69,8 +69,8 @@ class OrderObserver
                             $priceInclVat = $priceInclVat * 4;
                             break;
                         case 'half-year':
-                            $price *= 2;
-                            $priceInclVat *= 2;
+                            $price = $price * 2;
+                            $priceInclVat = $priceInclVat * 2;
                             break;
                         default:
                             // laat zoals het is

@@ -29,28 +29,36 @@ class OrderObserver
         $order->save();
     }
 
-    public function saved(Order $order){
+    public function saved(Order $order)
+    {
         foreach ($order->invoicesToSend as $invoiceToSend) {
             $invoiceToSend->collection_frequency_id = $order->collection_frequency_id;
             $invoiceToSend->subject = $order->subject;
             $invoiceToSend->invoice_text = $order->invoice_text;
             $invoiceToSend->save();
+
             foreach ($invoiceToSend->invoiceProducts as $invoiceProductToSend) {
                 $priceNumberOfDecimals = 2;
                 $price = 0;
-                if ($invoiceProductToSend->product->currentPrice) {
+                $priceInclVat = 0; // <- voorkom undefined
 
-                    if($invoiceProductToSend->product->currentPrice->has_variable_price) {
+                $currentPrice = $invoiceProductToSend->product->currentPrice;
+
+                if ($currentPrice !== null) {
+
+                    if ($currentPrice->has_variable_price) {
                         // Product heeft variabele prijs, deze zou al in de notaregel opgeslagen moeten zijn.
-                        // Als de incasseer frequentie wijzigt zou dit bedrag misschien ook moeten wijzigen?
-                        // Voor nu doen we dat niet en skippen we deze regel dus.
+                        // Bij wijziging incasso-frequentie doen we nu niets en slaan deze regel over.
                         continue;
                     }
 
-                    $priceNumberOfDecimals = $invoiceProductToSend->product->currentPrice->price_number_of_decimals;
-                    $price = $invoiceProductToSend->product->currentPrice->price;
-                    $priceInclVat = $invoiceProductToSend->product->currentPrice->price_incl_vat;
+                    $priceNumberOfDecimals = $currentPrice->price_number_of_decimals ?? 2;
 
+                    // null / '' → 0.00
+                    $price = empty($currentPrice->price) ? 0 : $currentPrice->price;
+                    $priceInclVat = empty($currentPrice->price_incl_vat) ? 0 : $currentPrice->price_incl_vat;
+
+                    // Frequentie op product
                     switch ($invoiceProductToSend->product->invoice_frequency_id) {
                         case 'monthly':
                             $price = $price * 12;
@@ -61,15 +69,15 @@ class OrderObserver
                             $priceInclVat = $priceInclVat * 4;
                             break;
                         case 'half-year':
-                            $price = $price * 2;
-                            $priceInclVat = $priceInclVat * 2;
+                            $price *= 2;
+                            $priceInclVat *= 2;
                             break;
                         default:
-                            $price = $price;
-                            $priceInclVat = $priceInclVat;
+                            // laat zoals het is
                             break;
                     }
 
+                    // Frequentie op order (incasso)
                     switch ($order->collection_frequency_id) {
                         case 'monthly':
                             $price = $price / 12;
@@ -84,8 +92,7 @@ class OrderObserver
                             $priceInclVat = $priceInclVat / 2;
                             break;
                         default:
-                            $price = $price;
-                            $priceInclVat = $priceInclVat;
+                            // laat zoals het is
                             break;
                     }
                 }

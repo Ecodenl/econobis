@@ -326,7 +326,6 @@ class ParticipantsListApp extends Component {
         }
     };
 
-    // tijdelijk van 1000 naar 100 tbv testen splitsen
     getExcel = async () => {
         this.props.blockUI();
 

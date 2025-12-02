@@ -175,8 +175,8 @@ class ProcessSendingGroupEmail implements ShouldQueue
             'composed_of' => $contactGroup->composed_of,
         ]);
 
-        // 👉 Gebruik altijd IDs via getAllContacts(true)
-        $allContactIds = $contactGroup->getAllContacts(true) ?: [];
+        // Gebruik altijd IDs via getAllContacts(true)
+        $allContactIds = $contactGroup->getAllContacts(true, true) ?: [];
 
         // Zorg dat het echt een array is
         if ($allContactIds instanceof \Illuminate\Support\Collection) {

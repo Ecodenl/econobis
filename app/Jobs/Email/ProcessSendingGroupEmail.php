@@ -69,7 +69,8 @@ class ProcessSendingGroupEmail implements ShouldQueue
         }
 
         if($this->email->mail_contact_group_with_single_mail){
-            $this->sendSingleMailToAllGroupContacts();
+//todo WM: Tijdelijke niet versturen groepsmail in Valleienergie, later weer // weghalen !!!
+//            $this->sendSingleMailToAllGroupContacts();
         }else{
             $this->sendNextChunk();
         }
@@ -190,6 +191,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
         Log::info('prepareEmailForSending all contacts count BEFORE filter primaryEmailAddress', [
             'email_id' => $this->email->id,
             'all_contacts_count' => $allContactsCount,
+            'contact_ids' => $allContactIds,
         ]);
 
         if ($allContactsCount === 0) {
@@ -257,19 +259,20 @@ class ProcessSendingGroupEmail implements ShouldQueue
         $this->email->save();
     }
 
-    protected function sendSingleMailToAllGroupContacts()
-    {
-        try {
-            $emailAddressIds = $this->email->groupEmailAddresses()->pluck('email_addresses.id')->toArray();
-            $to = EmailRecipientCollection::createFromValues($emailAddressIds);
-
-            (new SendSingleMail($this->email, $to, $this->user))->handle();
-        }catch (\Exception $e){
-            $this->errors++;
-        }
-
-        $this->email->groupEmailAddresses()->detach();
-    }
+//todo WM: Tijdelijke niet versturen groepsmail in Valleienergie, later weer // weghalen !!!
+//    protected function sendSingleMailToAllGroupContacts()
+//    {
+//        try {
+//            $emailAddressIds = $this->email->groupEmailAddresses()->pluck('email_addresses.id')->toArray();
+//            $to = EmailRecipientCollection::createFromValues($emailAddressIds);
+//
+//            (new SendSingleMail($this->email, $to, $this->user))->handle();
+//        }catch (\Exception $e){
+//            $this->errors++;
+//        }
+//
+//        $this->email->groupEmailAddresses()->detach();
+//    }
 
     protected function sendNextChunk()
     {
@@ -291,7 +294,8 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
         foreach ($groupEmailAddresses as $emailAddress) {
             try {
-                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
+//todo WM: Tijdelijke niet versturen groepsmail in Valleienergie, later weer // weghalen !!!
+//                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
             }catch (\Exception $e){
                 $this->errors++;
                 Log::error('sendNextChunk SendSingleMailToContact error', [

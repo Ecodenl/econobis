@@ -18,6 +18,7 @@ use App\Eco\User\User;
 use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
 use App\Jobs\Email\ProcessSendingEmail;
+use App\Jobs\Email\ProcessSendingGroupEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -231,7 +232,11 @@ class Email extends Model
 
     public function send(User $byUser)
     {
-        ProcessSendingEmail::dispatch($this, $byUser);
+        if ($this->contactGroup) {
+            ProcessSendingGroupEmail::dispatch($this, $byUser)->afterCommit();
+        } else {
+            ProcessSendingEmail::dispatch($this, $byUser)->afterCommit();
+        }
     }
 
     public function newEloquentBuilder($query)

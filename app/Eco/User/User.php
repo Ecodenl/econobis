@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Presenter\PresentableTrait;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Laravel\Fortify\Fortify;
@@ -191,9 +192,14 @@ class User extends Authenticatable
         }
 
         $teamContactIds = [];
+        //todo WM: Tijdelijke log regel voor testen in Valleienergie, later weer weghalen !!!
+        Log::info('Hallo getTeamContactIds bij User 2 !!!!!!!!!!');
         foreach ($this->teams as $team) {
             foreach ($team->contactGroups as $contactGroup) {
-                $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
+                $teamContactIds = array_merge(
+                    $teamContactIds,
+                    $contactGroup->getAllContacts(true, false)
+                );
             }
         }
 

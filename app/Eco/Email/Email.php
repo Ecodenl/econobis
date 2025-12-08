@@ -3,6 +3,7 @@
 namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Intake\Intake;
@@ -70,6 +71,14 @@ class Email extends Model
     public function contacts()
     {
         return $this->belongsToMany(Contact::class);
+    }
+    /**
+     * Directe relatie naar de contact_email records
+     * (handig voor status/to-send/sent queries in ProcessSendingGroupEmail).
+     */
+    public function contactEmails()
+    {
+        return $this->hasMany(ContactEmail::class, 'email_id');
     }
 
     public function manualContacts()

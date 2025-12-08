@@ -180,12 +180,12 @@ class ContactGroup extends Model
         }
 
         //todo WM: Tijdelijke log regel voor testen in Valleienergie, later weer weghalen !!!
-        if ($this->id === 78) {
-            Log::info('debug sql');
-            $sql = str_replace(array('?'), array('\'%s\''), $requestQuery->getQuery()->toSql());
-            $sql = vsprintf($sql, $requestQuery->getQuery()->getBindings());
-            Log::info($sql);
-        }
+//        if ($this->id === 78) {
+//            Log::info('debug sql');
+//            $sql = str_replace(array('?'), array('\'%s\''), $requestQuery->getQuery()->toSql());
+//            $sql = vsprintf($sql, $requestQuery->getQuery()->getBindings());
+//            Log::info($sql);
+//        }
         return $requestQuery;
     }
 

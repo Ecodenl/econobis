@@ -170,16 +170,22 @@ class ContactGroup extends Model
         $request->replace(['filters' => $requestFilters, 'extraFilters' => $requestExtraFilters, 'filterType' => $this->dynamic_filter_type]);
 
         if ($this->composed_of === 'contacts') {
-        //todo WM: check, Hier schieten we dus dus een loop als we in RequestQuery teamContactIds gaan bepalen !!!
-        // Vanuit hier, geen check op teamContactIds.
+            //todo WM: check, Hier schieten we dus dus een loop als we in RequestQuery teamContactIds gaan bepalen !!!
+            // Vanuit hier, geen check op teamContactIds.
             $requestQuery = new \App\Http\RequestQueries\Contact\Grid\RequestQuery($request, new \App\Http\RequestQueries\Contact\Grid\Filter($request), new \App\Http\RequestQueries\Contact\Grid\Sort($request), new \App\Http\RequestQueries\Contact\Grid\Joiner(),
                 new \App\Http\RequestQueries\Contact\Grid\ExtraFilter($request), false);
-        }
-        else if ($this->composed_of === 'participants') {
+        } else if ($this->composed_of === 'participants') {
             $requestQuery = new \App\Http\RequestQueries\ParticipantProject\Grid\RequestQuery($request, new \App\Http\RequestQueries\ParticipantProject\Grid\Filter($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Sort($request), new \App\Http\RequestQueries\ParticipantProject\Grid\Joiner(),
                 new \App\Http\RequestQueries\ParticipantProject\Grid\ExtraFilter($request));
         }
 
+        //todo WM: Tijdelijke log regel voor testen in Valleienergie, later weer weghalen !!!
+//        if ($this->id === 78) {
+//            Log::info('debug sql');
+//            $sql = str_replace(array('?'), array('\'%s\''), $requestQuery->getQuery()->toSql());
+//            $sql = vsprintf($sql, $requestQuery->getQuery()->getBindings());
+//            Log::info($sql);
+//        }
         return $requestQuery;
     }
 
@@ -336,8 +342,8 @@ class ContactGroup extends Model
         // tijdelijke override voor deze call
         $this->doLog = $doLog;
 
-        // default: geen resultaat
-        $result = false;
+        // default: lege array of geen resultaat
+        $result = $onlyIds ? [] : false;
 
         if ($this->type_id === 'static' || $this->type_id === 'simulated') {
             if ($this->composed_of === 'contacts') {

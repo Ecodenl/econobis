@@ -3,6 +3,7 @@
 namespace App\Eco\Email;
 
 use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Intake\Intake;
@@ -18,6 +19,7 @@ use App\Eco\User\User;
 use App\Helpers\Email\EmailGeneratorService;
 use App\Helpers\Email\EmailInlineImagesService;
 use App\Jobs\Email\ProcessSendingEmail;
+use App\Jobs\Email\ProcessSendingGroupEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -69,6 +71,14 @@ class Email extends Model
     public function contacts()
     {
         return $this->belongsToMany(Contact::class);
+    }
+    /**
+     * Directe relatie naar de contact_email records
+     * (handig voor status/to-send/sent queries in ProcessSendingGroupEmail).
+     */
+    public function contactEmails()
+    {
+        return $this->hasMany(ContactEmail::class, 'email_id');
     }
 
     public function manualContacts()
@@ -231,7 +241,11 @@ class Email extends Model
 
     public function send(User $byUser)
     {
-        ProcessSendingEmail::dispatch($this, $byUser);
+        if ($this->contactGroup) {
+            ProcessSendingGroupEmail::dispatch($this, $byUser)->afterCommit();
+        } else {
+            ProcessSendingEmail::dispatch($this, $byUser)->afterCommit();
+        }
     }
 
     public function newEloquentBuilder($query)

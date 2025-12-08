@@ -31,11 +31,6 @@ class ProcessSendingEmail implements ShouldQueue
 
     public function handle()
     {
-        if ($this->email->contactGroup) {
-            ProcessSendingGroupEmail::dispatch($this->email, $this->user)->afterCommit();
-            return;
-        }
-
         $jobLog = new JobsLog();
         $jobLog->value = 'Start e-mail(s) versturen.';
         $jobLog->user_id = $this->user->id;

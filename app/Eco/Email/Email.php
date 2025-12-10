@@ -143,6 +143,7 @@ class Email extends Model
         return $this->belongsTo(Invoice::class);
     }
 
+    // LEGACY: zodra email_group_email_addresses tabel gedropt kan deze relatie weg (TODO: remove after)
     public function groupEmailAddresses()
     {
         return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');

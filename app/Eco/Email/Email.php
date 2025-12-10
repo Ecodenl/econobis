@@ -22,6 +22,7 @@ use App\Jobs\Email\ProcessSendingEmail;
 use App\Jobs\Email\ProcessSendingGroupEmail;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+//use Illuminate\Support\Facades\Log;
 
 class Email extends Model
 {
@@ -143,6 +144,7 @@ class Email extends Model
         return $this->belongsTo(Invoice::class);
     }
 
+    // LEGACY: zodra email_group_email_addresses tabel gedropt kan deze relatie weg (TODO: remove after)
     public function groupEmailAddresses()
     {
         return $this->belongsToMany(EmailAddress::class, 'email_group_email_addresses');
@@ -241,6 +243,16 @@ class Email extends Model
 
     public function send(User $byUser)
     {
+        // simpele guard: als hij al verzonden is, niks meer doen
+        if ($this->folder === 'sent') {
+            // todo WM: opschonen na test
+//            Log::info('Email::send() overgeslagen: email is al verzonden.', [
+//                'email_id' => $this->id,
+//                'user_id'  => $byUser->id,
+//            ]);
+            return;
+        }
+
         if ($this->contactGroup) {
             ProcessSendingGroupEmail::dispatch($this, $byUser)->afterCommit();
         } else {

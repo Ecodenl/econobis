@@ -45,7 +45,7 @@ class DataTableHousingFileFieldFilter extends Component {
         ];
         // Laat je niet foppen:
         // building-contract-type is hoomdossier naam voor wat in econobis is_house_for_sale heet
-        // (en monument heet in econobis is_monument
+        // (en monument heet in econobis is_monument)
         const arraySelectNoYesUnknownFields = ['monument', 'building-contract-type'];
 
         this.state = {

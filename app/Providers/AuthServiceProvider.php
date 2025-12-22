@@ -203,6 +203,7 @@ class AuthServiceProvider extends ServiceProvider
         Passport::tokensCan([
             'use-app' => 'Use Econobis app',
             'use-portal' => 'Use Econobis portal',
+            'econobis-rest-api' => 'Use Econobis rest API',
         ]);
 
         // Laad de custom Passport routes

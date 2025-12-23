@@ -20,6 +20,7 @@ class ContactEmail extends Model
     public $timestamps = true;
 
     // Handige constants voor statussen
+    public const STATUS_PROCESSING    = 'processing';
     public const STATUS_TO_SEND = 'to-send';
     public const STATUS_SENT    = 'sent';
     public const STATUS_ERROR   = 'error';

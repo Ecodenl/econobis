@@ -53,10 +53,9 @@ class ProcessSendingEmail implements ShouldQueue
             // ContactEmail op error zetten bij mislukte send
             $this->markContactEmailsAsError($e);
 
-            // todo WM: opschonen na test
-//            Log::error('E-mail versturen mislukt: ' . $e->getMessage(), [
-//                'email_id' => $this->email->id ?? null,
-//            ]);
+            Log::error('E-mail versturen mislukt: ' . $e->getMessage(), [
+                'email_id' => $this->email->id ?? null,
+            ]);
         }
 
         $jobLog = new JobsLog();
@@ -74,10 +73,9 @@ class ProcessSendingEmail implements ShouldQueue
         $jobLog->job_category_id = 'email';
         $jobLog->save();
 
-        // todo WM: opschonen na test
-//        Log::error('E-mail maken mislukt:' . $exception->getMessage(), [
-//            'email_id' => $this->email->id ?? null,
-//        ]);
+        Log::error('E-mail versturen mislukt: ' . $exception->getMessage(), [
+            'email_id' => $this->email->id ?? null,
+        ]);
     }
 
     protected function getMailJob()

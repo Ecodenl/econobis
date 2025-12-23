@@ -55,12 +55,45 @@ class ProcessSendingGroupEmail implements ShouldQueue
             ]);
         }
 
+        if ($this->email->folder !== 'sent') {
+            $recovered = ContactEmail::where('email_id', $this->email->id)
+                ->where('status_code', ContactEmail::STATUS_PROCESSING)
+                ->where('updated_at', '<', now()->subMinutes(30))
+                ->update([
+                    'status_code' => ContactEmail::STATUS_TO_SEND,
+                    'updated_at'  => now(),
+                ]);
+
+            if ($recovered > 0) {
+                Log::warning('ProcessSendingGroupEmail: recovered stale processing rows', [
+                    'email_id' => $this->email->id,
+                    'recovered' => $recovered,
+                ]);
+            }
+        }
+
         if ($this->firstCall) {
             $jobLog = new JobsLog();
             $jobLog->value = 'Start e-mail(s) versturen.';
             $jobLog->user_id = $this->user->id;
             $jobLog->job_category_id = 'email';
             $jobLog->save();
+
+//            if ($this->email->folder !== 'sent') {
+//                // Voor de zekerheid: geen dubbele rows (bij herstart of retry)
+//                $resendErrors = ContactEmail::where('email_id', $this->email->id)
+//                    ->whereIn('status_code', [ContactEmail::STATUS_ERROR])
+//                    ->update([
+//                        'status_code' => ContactEmail::STATUS_TO_SEND,
+//                        'updated_at'  => now(),
+//                ]);
+//                if ($resendErrors > 0) {
+//                    Log::warning('ProcessSendingGroupEmail: resend error rows', [
+//                        'email_id' => $this->email->id,
+//                        'resendErrors' => $resendErrors,
+//                    ]);
+//                }
+//            }
 
             $this->prepareContactEmailsForGroup();
         }
@@ -69,7 +102,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
         if($this->email->mail_contact_group_with_single_mail){
 //todo WM: Tijdelijke niet versturen groepsmail in Valleienergie, later weer // weghalen !!!
-            $this->sendSingleMailToAllGroupContacts();
+//            $this->sendSingleMailToAllGroupContacts();
         } else {
             $hasMore = $this->sendNextChunk();
         }
@@ -162,11 +195,6 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $this->email->save();
         }
 
-        // Voor de zekerheid: geen dubbele rows (bij herstart of retry)
-        ContactEmail::where('email_id', $this->email->id)
-            ->whereIn('status_code', [ContactEmail::STATUS_ERROR])
-            ->update(['status_code' => ContactEmail::STATUS_TO_SEND]);
-
         $contactGroup = $this->email->contactGroup;
 
         if (!$contactGroup) {
@@ -200,7 +228,6 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
         foreach ($contacts as $contact) {
             // Kies hier je mailadres (bijv. primaire)
-            /** @var EmailAddress|null $emailAddress */
             $emailAddress = $contact->primaryEmailAddress ?? null;
 
             if (!$emailAddress) {
@@ -213,17 +240,36 @@ class ProcessSendingGroupEmail implements ShouldQueue
                 continue;
             }
 
-            // Dupes voorkomen: één row per (email, contact, email_address)
-            ContactEmail::updateOrCreate(
+            // Dupes voorkomen: één row per (email, contact)
+            $contactEmail = ContactEmail::firstOrCreate(
                 [
-                    'email_id'         => $this->email->id,
-                    'contact_id'       => $contact->id,
-                    'email_address_id' => $emailAddress->id,
+                    'email_id'   => $this->email->id,
+                    'contact_id' => $contact->id,
                 ],
                 [
-                    'status_code' => ContactEmail::STATUS_TO_SEND,
+                    'email_address_id' => $emailAddress->id,
+                    'status_code'      => ContactEmail::STATUS_TO_SEND,
                 ]
             );
+
+            if (! $contactEmail->wasRecentlyCreated) {
+                $dirty = false;
+
+                if ($contactEmail->email_address_id !== $emailAddress->id) {
+                    $contactEmail->email_address_id = $emailAddress->id;
+                    $dirty = true;
+                }
+
+                if ($contactEmail->status_code !== ContactEmail::STATUS_SENT &&
+                    $contactEmail->status_code !== ContactEmail::STATUS_TO_SEND) {
+                    $contactEmail->status_code = ContactEmail::STATUS_TO_SEND;
+                    $dirty = true;
+                }
+
+                if ($dirty) {
+                    $contactEmail->save();
+                }
+            }
         }
 
         Log::info('ProcessSendingGroupEmail prepared contact_emails', [
@@ -273,7 +319,10 @@ class ProcessSendingGroupEmail implements ShouldQueue
             // Succes: markeer alle to-send als sent
             ContactEmail::where('email_id', $this->email->id)
                 ->where('status_code', ContactEmail::STATUS_TO_SEND)
-                ->update(['status_code' => ContactEmail::STATUS_SENT]);
+                ->update([
+                    'status_code' => ContactEmail::STATUS_SENT,
+                    'updated_at'  => now(),
+                ]);
 
         } catch (\Exception $e) {
             Log::error('ProcessSendingGroupEmail: fout in sendSingleMailToAllGroupContacts', [
@@ -284,7 +333,10 @@ class ProcessSendingGroupEmail implements ShouldQueue
             // Alles wat nog to-send was, markeren als error
             ContactEmail::where('email_id', $this->email->id)
                 ->where('status_code', ContactEmail::STATUS_TO_SEND)
-                ->update(['status_code' => ContactEmail::STATUS_ERROR]);
+                ->update([
+                    'status_code' => ContactEmail::STATUS_ERROR,
+                    'updated_at'  => now(),
+                ]);
 
             $this->errors[] = $e->getMessage();
         }
@@ -296,10 +348,30 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
         // Pak de volgende set te versturen items
         /** @var \Illuminate\Support\Collection|\App\Eco\Contact\ContactEmail[] $rows */
-        $rows = ContactEmail::where('email_id', $this->email->id)
+        $ids = ContactEmail::where('email_id', $this->email->id)
             ->where('status_code', ContactEmail::STATUS_TO_SEND)
             ->orderBy('id')
             ->limit($chunkSize)
+            ->pluck('id');
+
+        if ($ids->isEmpty()) {
+            Log::info('ProcessSendingGroupEmail: geen to-send rows meer', ['email_id' => $this->email->id]);
+            return false;
+        }
+
+        // 2) Claim: zet op processing
+        ContactEmail::whereIn('id', $ids)
+            ->where('status_code', ContactEmail::STATUS_TO_SEND)
+            ->update([
+                'status_code' => ContactEmail::STATUS_PROCESSING,
+                'updated_at'  => now(),
+            ]);
+
+
+        // 3) Laad de claimed rows en verstuur
+        $rows = ContactEmail::where('email_id', $this->email->id)
+            ->whereIn('id', $ids)
+            ->where('status_code', ContactEmail::STATUS_PROCESSING)
             ->get();
 
         if ($rows->isEmpty()) {
@@ -335,7 +407,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
                 // Hier je bestaande send-logic:
                 // NIET queued; gewoon direct handle() zoals je al deed:
 //todo WM: Tijdelijke niet versturen groepsmail in Valleienergie, later weer // weghalen !!!
-                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
+//                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
 
                 // Succes
                 $row->status_code = ContactEmail::STATUS_SENT;

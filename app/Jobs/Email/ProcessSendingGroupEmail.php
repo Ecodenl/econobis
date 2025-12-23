@@ -26,7 +26,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
     protected User $user;
 
     protected $firstCall;
-//    protected int $errors = 0;
+
     protected array $errors;
 
     public function __construct(Email $email, User $user, $firstCall = true, array $errors = [])
@@ -392,22 +392,5 @@ class ProcessSendingGroupEmail implements ShouldQueue
 
         return false; // nu echt klaar
     }
-
-//    protected function syncContactsByGroup($contactsWithEmail)
-//    {
-//        $contactIds = $contactsWithEmail->pluck('id');
-//
-//        /**
-//         * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
-//         */
-//        $this->email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
-//    }
-
-//    protected function attachGroupEmailAddressesFromGroup($contactsWithEmail)
-//    {
-//        $emailAddressIds = $contactsWithEmail->pluck('primaryEmailAddress.id');
-//
-//        $this->email->groupEmailAddresses()->attach($emailAddressIds->unique()->toArray());
-//    }
 
 }

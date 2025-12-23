@@ -142,6 +142,10 @@ class Contact extends Model
     {
         return $this->belongsToMany(Email::class)->orderBy('emails.id', 'desc');
     }
+    public function contactEmails()
+    {
+        return $this->hasMany(ContactEmail::class, 'contact_id')->orderBy('contact_email.created_at', 'desc');
+    }
 
     /**
      * Dit zijn de emails die handmatig (eenmalig) aan dit contact zijn toegevoegd zonder dat het emailadres van dit contact ook wordt toegevoegd aan het contact.

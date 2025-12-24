@@ -69,8 +69,13 @@ class deleteEmailDefinitiveWithLog extends Command
                 $this->deleteEmailAttachment($attachment);
                 Log::info("Emailattachment ". $attachment->id . " verwijderd.");
             }
+            // 1. ContactEmail-rijen weg
+            $email->contactEmails()->delete();
+            // 2. Pivot email_contact blijft ook bestaan en mag je nog gewoon los detach-en
             $email->contacts()->detach();
+            // 3. LEGACY: oude groupEmailAddresses-relatie opruimen zolang de tabel nog bestaat (TODO: remove later)
             $email->groupEmailAddresses()->detach();
+            // 4. E-mail zelf definitief verwijderen
             $email->forceDelete();
             Log::info("Email ". $email->id . " verwijderd (date deleted_at: " . $email->deleted_at . ").");
         }

@@ -2,8 +2,7 @@
 
 namespace App\Jobs\Email;
 
-
-use App\Eco\Contact\Contact;
+use App\Eco\Contact\ContactEmail;
 use App\Eco\Email\Email;
 use App\Eco\Email\EmailRecipient;
 use App\Eco\Email\EmailRecipientCollection;
@@ -24,38 +23,57 @@ class ProcessSendingGroupEmail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Email $email;
-
     protected User $user;
 
-    protected int $errors = 0;
-
-    /**
-     * Variabele om te bepalen of dit de eerste aanroep
-     * is of een opvolgende van een batch.
-     *
-     * @var bool
-     */
     protected $firstCall;
 
-    public function __construct(Email $email, User $user, $firstCall = true, $previousErrors = 0)
+    protected array $errors;
+
+    public function __construct(Email $email, User $user, $firstCall = true, array $errors = [])
     {
         $this->email = $email;
         $this->user = $user;
         $this->firstCall = $firstCall;
-        $this->errors = $previousErrors;
+        $this->errors = $errors;
     }
 
     public function handle()
     {
         if($this->firstCall){
             Log::info('ProcessSendingGroupEmail start', [
+                'contact_group_id' => $this->email->contact_group_id,
                 'email_id' => $this->email->id,
                 'user_id' => $this->user->id,
                 'firstCall' => $this->firstCall,
                 'mail_contact_group_with_single_mail' => $this->email->mail_contact_group_with_single_mail,
-                'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
                 'contacts_pivot_count' => $this->email->contacts()->count(),
+                'contact_email_to_send' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_TO_SEND)
+                    ->count(),
+                'contact_email_sent' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_SENT)
+                    ->count(),
+                'contact_email_processing' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_PROCESSING)
+                    ->count(),
             ]);
+        }
+
+        if ($this->email->folder !== 'sent') {
+            $recovered = ContactEmail::where('email_id', $this->email->id)
+                ->where('status_code', ContactEmail::STATUS_PROCESSING)
+                ->where('updated_at', '<', now()->subMinutes(30))
+                ->update([
+                    'status_code' => ContactEmail::STATUS_TO_SEND,
+                    'updated_at'  => now(),
+                ]);
+
+            if ($recovered > 0) {
+                Log::warning('ProcessSendingGroupEmail: recovered stale processing rows', [
+                    'email_id' => $this->email->id,
+                    'recovered' => $recovered,
+                ]);
+            }
         }
 
         if ($this->firstCall) {
@@ -65,52 +83,62 @@ class ProcessSendingGroupEmail implements ShouldQueue
             $jobLog->job_category_id = 'email';
             $jobLog->save();
 
-            $this->prepareEmailForSending();
+//            if ($this->email->folder !== 'sent') {
+//                // Voor de zekerheid: geen dubbele rows (bij herstart of retry)
+//                $resendErrors = ContactEmail::where('email_id', $this->email->id)
+//                    ->whereIn('status_code', [ContactEmail::STATUS_ERROR])
+//                    ->update([
+//                        'status_code' => ContactEmail::STATUS_TO_SEND,
+//                        'updated_at'  => now(),
+//                ]);
+//                if ($resendErrors > 0) {
+//                    Log::warning('ProcessSendingGroupEmail: resend error rows', [
+//                        'email_id' => $this->email->id,
+//                        'resendErrors' => $resendErrors,
+//                    ]);
+//                }
+//            }
+
+            $this->prepareContactEmailsForGroup();
         }
+
+        $hasMore = false;
 
         if($this->email->mail_contact_group_with_single_mail){
             $this->sendSingleMailToAllGroupContacts();
-        }else{
-            $this->sendNextChunk();
-        }
-
-        /**
-         * Check if there are more Group email address to send to.
-         *
-         * Create a new Job to pick these up.
-         */
-        if ($this->email->groupEmailAddresses()->exists()) {
-//            $remaining = $this->email->groupEmailAddresses()->count();
-
-//            Log::info('ProcessSendingGroupEmail re-dispatching for next chunk', [
-//                'email_id' => $this->email->id,
-//                'remaining_group_email_addresses' => $remaining,
-//                'errors_so_far' => $this->errors,
-//            ]);
-
-            self::dispatch($this->email, $this->user, false, $this->errors);
-
-            return;
+        } else {
+            $hasMore = $this->sendNextChunk();
         }
 
         /**
          * Als we hier komen is de laatste chunk net afgerond.
          */
-        $this->sendToExtracontacten();
-        $this->markEmailAsSent();
+        // Alleen afronden als er geen vervolgjob meer komt
+        if (! $hasMore) {
+            $this->sendToExtracontacten();
+            $this->markEmailAsSent();
 
-        $jobLog = new JobsLog();
-        $jobLog->value = 'E-mail(s) versturen klaar.' . ($this->errors > 0 ? ' (met fouten)' : '');
-        $jobLog->user_id = $this->user->id;
-        $jobLog->job_category_id = 'email';
-        $jobLog->save();
+            $jobLog = new JobsLog();
+            $jobLog->value = 'E-mail(s) versturen klaar.' . (count($this->errors) > 0 ? ' (met fouten)' : '');
+            $jobLog->user_id = $this->user->id;
+            $jobLog->job_category_id = 'email';
+            $jobLog->save();
 
-        Log::info('ProcessSendingGroupEmail finished handle', [
-            'email_id' => $this->email->id,
-            'errors_total' => $this->errors,
-            'final_contacts_pivot_count' => $this->email->contacts()->count(),
-            'final_group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
-        ]);
+            Log::info('ProcessSendingGroupEmail finished handle', [
+                'email_id' => $this->email->id,
+                'errors_total' => count($this->errors),
+                'final_contacts_pivot_count' => $this->email->contacts()->count(),
+                'final_contact_email_to_send' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_TO_SEND)
+                    ->count(),
+                'final_contact_email_sent' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_SENT)
+                    ->count(),
+                'final_contact_email_processing' => ContactEmail::where('email_id', $this->email->id)
+                    ->where('status_code', ContactEmail::STATUS_PROCESSING)
+                    ->count(),
+            ]);
+        }
 
     }
 
@@ -139,7 +167,7 @@ class ProcessSendingGroupEmail implements ShouldQueue
         try {
             $mailJob->handle();
         }catch (\Exception $e){
-            $this->errors++;
+            $this->errors[] = $e->getMessage();
         }
     }
 
@@ -152,100 +180,108 @@ class ProcessSendingGroupEmail implements ShouldQueue
         return new SendSingleMail($this->email, new EmailRecipientCollection([$emailRecipient]), $this->user);
     }
 
-    protected function prepareEmailForSending()
+    /**
+     * Vul contact_email voor deze group email met status 'to-send'.
+     * Draait alleen bij de eerste call.
+     */
+    protected function prepareContactEmailsForGroup(): void
     {
-        Log::info('prepareEmailForSending start', [
-            'email_id' => $this->email->id,
-            'contact_group_id' => $this->email->contact_group_id,
-        ]);
+//        Log::info('prepareEmailForSending start', [
+//            'email_id' => $this->email->id,
+//            'contact_group_id' => $this->email->contact_group_id,
+//        ]);
+
+        // HTML-body eenmalig wrappen als dat nog niet gebeurd is
+        if (! str_contains($this->email->html_body ?? '', '<!DOCTYPE html>')) {
+            $this->email->html_body =
+                '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                . $this->email->subject . '</title></head><body>'
+                . $this->email->html_body . '</body></html>';
+
+            $this->email->save();
+        }
 
         $contactGroup = $this->email->contactGroup;
 
-        if (! $contactGroup) {
-            Log::warning('prepareEmailForSending: no contactGroup found for email', [
+        if (!$contactGroup) {
+            Log::warning('ProcessSendingGroupEmail: email heeft geen contactGroup', [
                 'email_id' => $this->email->id,
             ]);
             return;
         }
 
-        Log::info('prepareEmailForSending contactGroup info', [
-            'email_id' => $this->email->id,
-            'contact_group_id' => $contactGroup->id,
-            'type_id' => $contactGroup->type_id,
-            'composed_of' => $contactGroup->composed_of,
-        ]);
+//        Log::info('prepareEmailForSending contactGroup info', [
+//            'email_id' => $this->email->id,
+//            'contact_group_id' => $contactGroup->id,
+//            'type_id' => $contactGroup->type_id,
+//            'composed_of' => $contactGroup->composed_of,
+//        ]);
+        // voorbeeld: alle contacts als Collection van Contact modellen
+        $contacts = $contactGroup->getAllContacts(false, true);
 
-        // 👉 Gebruik altijd IDs via getAllContacts(true)
-        $allContactIds = $contactGroup->getAllContacts(true) ?: [];
-
-        // Zorg dat het echt een array is
-        if ($allContactIds instanceof \Illuminate\Support\Collection) {
-            $allContactIds = $allContactIds->toArray();
+        if (!$contacts || $contacts->isEmpty()) {
+            Log::info('ProcessSendingGroupEmail: geen contacten gevonden voor group', [
+                'email_id' => $this->email->id,
+                'contact_group_id' => $contactGroup->id,
+            ]);
+            return;
         }
-
-        // Uniek maken + opnieuw indexeren
-        $allContactIds = array_values(array_unique($allContactIds));
-        $allContactsCount = count($allContactIds);
 
         Log::info('prepareEmailForSending all contacts count BEFORE filter primaryEmailAddress', [
             'email_id' => $this->email->id,
-            'all_contacts_count' => $allContactsCount,
+            'contacts_total' => $contacts->count(),
         ]);
 
-        if ($allContactsCount === 0) {
-            Log::warning('prepareEmailForSending: group has no contacts', [
-                'email_id' => $this->email->id,
-                'contact_group_id' => $contactGroup->id,
-            ]);
-            return;
+        foreach ($contacts as $contact) {
+            // Kies hier je mailadres (bijv. primaire)
+            $emailAddress = $contact->primaryEmailAddress ?? null;
+
+            if (!$emailAddress) {
+                // Geen primair emailadres gevonden, eventueel loggen
+//                Log::info('ProcessSendingGroupEmail: geen primaryEmailAddress gevonden bij contact', [
+//                    'email_id' => $this->email->id,
+//                    'contact_group_id' => $contactGroup->id,
+//                    'contact_id' => $contact->id,
+//                ]);
+                continue;
+            }
+
+            // Dupes voorkomen: één row per (email, contact)
+            $contactEmail = ContactEmail::firstOrCreate(
+                [
+                    'email_id'   => $this->email->id,
+                    'contact_id' => $contact->id,
+                ],
+                [
+                    'email_address_id' => $emailAddress->id,
+                    'status_code'      => ContactEmail::STATUS_TO_SEND,
+                ]
+            );
+
+            if (! $contactEmail->wasRecentlyCreated) {
+                $dirty = false;
+
+                if ($contactEmail->email_address_id !== $emailAddress->id) {
+                    $contactEmail->email_address_id = $emailAddress->id;
+                    $dirty = true;
+                }
+
+                if ($contactEmail->status_code !== ContactEmail::STATUS_SENT &&
+                    $contactEmail->status_code !== ContactEmail::STATUS_TO_SEND) {
+                    $contactEmail->status_code = ContactEmail::STATUS_TO_SEND;
+                    $dirty = true;
+                }
+
+                if ($dirty) {
+                    $contactEmail->save();
+                }
+            }
         }
 
-        // 👉 Chunk size instelbaar via config, default 1000
-        $batchSize = Config::get('queue.email.contacts_group_chunk_size', 1000);
-
-        $contactsWithEmail = collect();
-
-        foreach (array_chunk($allContactIds, $batchSize) as $idChunk) {
-            $chunkContacts = Contact::whereIn('id', $idChunk)
-                ->with('primaryEmailAddress')
-                ->get()
-                ->filter(function ($contact) {
-                    return !!$contact->primaryEmailAddress;
-                });
-            $contactsWithEmail = $contactsWithEmail->merge($chunkContacts);
-        }
-
-        Log::info('prepareEmailForSending contacts count AFTER filter primaryEmailAddress', [
+        Log::info('ProcessSendingGroupEmail prepared contact_emails', [
             'email_id' => $this->email->id,
-            'contacts_with_primary_email_count' => $contactsWithEmail->count(),
+            'contacts_total' => $contacts->count(),
         ]);
-
-        if ($contactsWithEmail->isEmpty()) {
-            Log::warning('prepareEmailForSending: no contacts with primaryEmailAddress but group has members', [
-                'email_id' => $this->email->id,
-                'contact_group_id' => $contactGroup->id,
-                'all_contacts_count' => $allContactsCount,
-            ]);
-            // We laten de functie bewust verder lopen; sendNextChunk zal dan gewoon niks doen.
-        }
-
-        // 👉 Syncen en attachen contacts by group
-        $this->syncContactsByGroup($contactsWithEmail);
-        $this->attachGroupEmailAddressesFromGroup($contactsWithEmail);
-
-        Log::info('prepareEmailForSending after sync/attach', [
-            'email_id' => $this->email->id,
-            'contacts_pivot_count' => $this->email->contacts()->count(),
-            'group_email_addresses_count' => $this->email->groupEmailAddresses()->count(),
-        ]);
-
-        // html_body wrappen etc.
-        $this->email->html_body =
-            '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $this->email->subject . '</title></head><body>'
-            . $this->email->html_body . '</body></html>';
-
-        $this->email->save();
     }
 
     protected function markEmailAsSent()
@@ -257,81 +293,180 @@ class ProcessSendingGroupEmail implements ShouldQueue
         $this->email->save();
     }
 
-    protected function sendSingleMailToAllGroupContacts()
+    protected function sendSingleMailToAllGroupContacts(): void
     {
+        // Haal alle email_address_ids uit contact_email voor deze email
+        $emailAddressIds = ContactEmail::where('email_id', $this->email->id)
+            ->where('status_code', ContactEmail::STATUS_TO_SEND)
+            ->pluck('email_address_id')
+            ->filter()         // NULL eruit
+            ->unique()
+            ->values()
+            ->toArray();
+
+        if (empty($emailAddressIds)) {
+            Log::info('ProcessSendingGroupEmail: geen emailadressen gevonden voor single-mail-variant', [
+                'email_id' => $this->email->id,
+            ]);
+            return;
+        }
+
+        Log::info('ProcessSendingGroupEmail: sendSingleMailToAllGroupContacts start', [
+            'email_id' => $this->email->id,
+            'recipients_count' => count($emailAddressIds),
+        ]);
+
         try {
-            $emailAddressIds = $this->email->groupEmailAddresses()->pluck('email_addresses.id')->toArray();
             $to = EmailRecipientCollection::createFromValues($emailAddressIds);
 
+            // Eén enkele mail naar alle adressen in de groep
             (new SendSingleMail($this->email, $to, $this->user))->handle();
-        }catch (\Exception $e){
-            $this->errors++;
-        }
 
-        $this->email->groupEmailAddresses()->detach();
+            // Succes: markeer alle to-send als sent
+            ContactEmail::where('email_id', $this->email->id)
+                ->where('status_code', ContactEmail::STATUS_TO_SEND)
+                ->update([
+                    'status_code' => ContactEmail::STATUS_SENT,
+                    'updated_at'  => now(),
+                ]);
+
+        } catch (\Exception $e) {
+            Log::error('ProcessSendingGroupEmail: fout in sendSingleMailToAllGroupContacts', [
+                'email_id'   => $this->email->id,
+                'exception'  => $e->getMessage(),
+            ]);
+
+            // Alles wat nog to-send was, markeren als error
+            ContactEmail::where('email_id', $this->email->id)
+                ->where('status_code', ContactEmail::STATUS_TO_SEND)
+                ->update([
+                    'status_code' => ContactEmail::STATUS_ERROR,
+                    'updated_at'  => now(),
+                ]);
+
+            $this->errors[] = $e->getMessage();
+        }
     }
 
-    protected function sendNextChunk()
+    protected function sendNextChunk(): bool
     {
-        /**
-         * We send a maximum amount each time to prevent timeouts.
-         */
-        $groupEmailAddresses = $this->email->groupEmailAddresses()
-            ->limit(Config::get('queue.email.chunk_size'))
+        $chunkSize = config('queue.email.chunk_size', 1);
+
+        // Pak de volgende set te versturen items
+        /** @var \Illuminate\Support\Collection|\App\Eco\Contact\ContactEmail[] $rows */
+        $ids = ContactEmail::where('email_id', $this->email->id)
+            ->where('status_code', ContactEmail::STATUS_TO_SEND)
+            ->orderBy('id')
+            ->limit($chunkSize)
+            ->pluck('id');
+
+        if ($ids->isEmpty()) {
+//            Log::info('ProcessSendingGroupEmail: geen to-send rows meer', ['email_id' => $this->email->id]);
+            return false;
+        }
+
+        // 2) Claim: zet op processing
+        ContactEmail::whereIn('id', $ids)
+            ->where('status_code', ContactEmail::STATUS_TO_SEND)
+            ->update([
+                'status_code' => ContactEmail::STATUS_PROCESSING,
+                'updated_at'  => now(),
+            ]);
+
+
+        // 3) Laad de claimed rows en verstuur
+        $rows = ContactEmail::where('email_id', $this->email->id)
+            ->whereIn('id', $ids)
+            ->where('status_code', ContactEmail::STATUS_PROCESSING)
             ->get();
 
-//        $totalRemaining = $this->email->groupEmailAddresses()->count();
+        if ($rows->isEmpty()) {
+            // Niets meer te versturen → afronden
+//            Log::info('ProcessSendingGroupEmail: geen to-send rows meer', [
+//                'email_id' => $this->email->id,
+//            ]);
 
-//        Log::info('sendNextChunk before sending', [
-//            'email_id' => $this->email->id,
-//            'total_remaining_before_chunk' => $totalRemaining,
-//            'chunk_size' => $groupEmailAddresses->count(),
-//            'chunk_limit' => Config::get('queue.email.chunk_size'),
-//        ]);
-
-        foreach ($groupEmailAddresses as $emailAddress) {
-            try {
-                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
-            }catch (\Exception $e){
-                $this->errors++;
-                Log::error('sendNextChunk SendSingleMailToContact error', [
-                    'email_id' => $this->email->id,
-                    'email_address_id' => $emailAddress->id ?? null,
-                    'exception_message' => $e->getMessage(),
-                ]);
-            }
-
-            /**
-             * Email always detach from table otherwise the jobs
-             * can stay in a loop when error occur in try/catch while sending.
-             */
-            $this->email->groupEmailAddresses()->detach($emailAddress->id);
+            return false; // geen werk meer
         }
 
-//        $remainingAfter = $this->email->groupEmailAddresses()->count();
-
-//        Log::info('sendNextChunk after sending', [
+//        Log::info('ProcessSendingGroupEmail: fetched chunk', [
 //            'email_id' => $this->email->id,
-//            'total_remaining_after_chunk' => $remainingAfter,
-//            'errors_for_email_so_far' => $this->errors,
+//            'chunk_size' => $rows->count(),
+//            'chunk_limit' => $chunkSize,
+//            'remaining_after_fetch' => ContactEmail::where('email_id', $this->email->id)
+//                ->where('status_code', ContactEmail::STATUS_TO_SEND)
+//                ->count(),
 //        ]);
-    }
 
-    protected function syncContactsByGroup($contactsWithEmail)
-    {
-        $contactIds = $contactsWithEmail->pluck('id');
+        foreach ($rows as $row) {
+            try {
+                $emailAddress = $row->emailAddress;
 
-        /**
-         * Without detaching omdat bij het opstellen van de mail ook al "Te koppelen contacten" kunnen worden ingevoerd, deze moeten dan niet worden verwijderd.
-         */
-        $this->email->contacts()->syncWithoutDetaching($contactIds->unique()->toArray());
-    }
+                if (!$emailAddress) {
+                    // Geen geldig adres → markeer als error
+                    $row->status_code = ContactEmail::STATUS_ERROR;
+                    $row->save();
+                    $this->errors[] = "Geen EmailAddress voor contact_email id={$row->id}";
+                    continue;
+                }
 
-    protected function attachGroupEmailAddressesFromGroup($contactsWithEmail)
-    {
-        $emailAddressIds = $contactsWithEmail->pluck('primaryEmailAddress.id');
+                // Hier enkele mail to contact:
+                (new SendSingleMailToContact($this->email, $emailAddress, $this->user))->handle();
 
-        $this->email->groupEmailAddresses()->attach($emailAddressIds->unique()->toArray());
+                // Succes
+                $row->status_code = ContactEmail::STATUS_SENT;
+                $row->save();
+            } catch (\Throwable $e) {
+                Log::error('ProcessSendingGroupEmail: fout bij single mail', [
+                    'email_id'   => $this->email->id,
+                    'row_id'     => $row->id,
+                    'exception'  => $e->getMessage(),
+                ]);
+
+                $row->status_code = ContactEmail::STATUS_ERROR;
+                $row->save();
+
+                $this->errors[] = $e->getMessage();
+            }
+        }
+
+        // Check of er nog werk is
+        $remaining = ContactEmail::where('email_id', $this->email->id)
+            ->where('status_code', ContactEmail::STATUS_TO_SEND)
+            ->count();
+
+//        Log::info('ProcessSendingGroupEmail: chunk processed', [
+//            'email_id' => $this->email->id,
+//            'sent_total_so_far' => ContactEmail::where('email_id', $this->email->id)
+//                ->where('status_code', ContactEmail::STATUS_SENT)
+//                ->count(),
+//            'errors_in_chunk' => ContactEmail::where('email_id', $this->email->id)
+//                ->where('status_code', ContactEmail::STATUS_ERROR)
+//                ->count(),
+//            'remaining' => $remaining,
+//        ]);
+
+        if ($remaining > 0) {
+//            Log::info('ProcessSendingGroupEmail: redispatch next chunk', [
+//                'email_id' => $this->email->id,
+//                'errors_so_far' => count($this->errors),
+//                'remaining' => $remaining,
+//            ]);
+
+            // Nog niet klaar → volgende job
+            self::dispatch($this->email, $this->user, false, $this->errors)
+                ->afterCommit();
+
+            return true;  // er komt nog een vervolgjob
+        }
+
+        // Klaar, maar er waren mogelijk errors
+        Log::info('ProcessSendingGroupEmail: klaar voor email', [
+            'email_id' => $this->email->id,
+            'errors_total' => count($this->errors),
+        ]);
+
+        return false; // nu echt klaar
     }
 
 }

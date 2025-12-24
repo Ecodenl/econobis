@@ -193,7 +193,10 @@ class User extends Authenticatable
         $teamContactIds = [];
         foreach ($this->teams as $team) {
             foreach ($team->contactGroups as $contactGroup) {
-                $teamContactIds = array_merge($teamContactIds, $contactGroup->getAllContacts()->pluck('id')->toArray());
+                $teamContactIds = array_merge(
+                    $teamContactIds,
+                    $contactGroup->getAllContacts(true, false)
+                );
             }
         }
 

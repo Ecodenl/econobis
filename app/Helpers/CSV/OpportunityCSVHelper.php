@@ -119,6 +119,7 @@ class OpportunityCSVHelper
                 'measures_specific' => 'Maatregelen specifiek',
                 'intake.campaign.name' => 'Campagne',
                 'status.name' => 'Status',
+                'opportunity_code' => 'Kans code',
                 'amount' => 'Aantal',
                 'amount_of_quotation_requests' => 'Aantal offertes',
                 'quotation_text' => 'Toelichting op maatregel',

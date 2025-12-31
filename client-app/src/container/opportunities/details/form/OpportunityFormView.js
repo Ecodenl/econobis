@@ -15,6 +15,7 @@ const OpportunityFormView = props => {
         measureCategory,
         measures,
         amount,
+        opportunityCode,
     } = props.opportunity;
 
     return (
@@ -29,7 +30,7 @@ const OpportunityFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Maatregel - categorie'} value={measureCategory && measureCategory.name} />
-                <ViewText label={'Postcode'} value={(intake && intake.address) && intake.address.postalCode} />
+                <ViewText label={'Postcode'} value={intake && intake.address && intake.address.postalCode} />
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText
@@ -51,6 +52,12 @@ const OpportunityFormView = props => {
             </div>
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Aantal'} size={'col-sm-5'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
+                <ViewText
+                    label="Kans status"
+                    size={'col-sm-5'}
+                    value={opportunityCode}
+                    textToolTip={`Deze waarde kan alleen gevuld worden via de api/webhook zie handleiding API voor details`}
+                />
             </div>
 
             <div className="row" onClick={props.switchToEdit}>

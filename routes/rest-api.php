@@ -9,3 +9,8 @@ Route::middleware(['client:econobis-rest-api', 'throttle:30,1'])
     ->group(function () {
         Route::get('{contactPublicId}', [ContactController::class, 'getContact']);
     });
+Route::middleware(['auth:api', 'scopes:econobis-rest-api', 'throttle:30,1'])
+    ->prefix('contact')
+    ->group(function () {
+        Route::get('{contactPublicId}', [ContactController::class, 'getContact']);
+    });

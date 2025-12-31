@@ -306,18 +306,18 @@ class ExternalWebformController extends Controller
         }
         $this->checkMaxRequests($webform);
 
-        // Add opportunity to exitsting intake
+        // Add opportunity to existing intake
         if ($data['intake']['intake_id']) {
             $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
         }
-        // Add quotationrequest to exitsting opportunity
+        // Add quotationrequest to existing opportunity
         if ($data['opportunity']['opportunity_id']) {
             $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
         }
 
         // Update quotationrequest
         if ($data['quotation_request']['quotation_request_id']) {
-            $this->updateQuotationRequest($data['quotation_request'], $webform);
+            $this->updateQuotationRequest($data['quotation_request'], $data['opportunity'], $webform);
         }
 
         // after adding to existing intake and/or opportuntiy we are done
@@ -605,6 +605,7 @@ class ExternalWebformController extends Controller
             ],
             'opportunity' => [
                 'kans_id' => 'opportunity_id',
+                'kans_code' => 'opportunity_code',
             ],
             'quotation_request' => [
                 'kansactie_id' => 'quotation_request_id',
@@ -2548,6 +2549,15 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log("Kans met id " . $opportunity->id . " gevonden.");
             }
+            // Als kans_code is meegegeven, dan werken we die bij
+            if ($dataOpportunity['opportunity_code']) {
+                if($opportunity){
+                    $opportunity->opportunity_code = $dataOpportunity['opportunity_code'];
+                    $opportunity->save();
+                    $this->log('Kans code ' . $dataOpportunity['opportunity_code'] . ' bijgewerkt bij kans ' . $opportunity->number . ' (' . $opportunity->id. ').');
+                }
+            }
+
             $this->addQuotationRequestToOpportunity($dataQuotationRequest, $opportunity, $webform);
 
         } else {
@@ -4208,7 +4218,7 @@ class ExternalWebformController extends Controller
      * @return void
      * @throws WebformException
      */
-    private function updateQuotationRequest(array $dataQuotationRequest, Webform $webform): void
+    private function updateQuotationRequest(array $dataQuotationRequest, array $dataOpportunity, Webform $webform): void
     {
 
         if ($dataQuotationRequest['quotation_request_id']) {
@@ -4233,6 +4243,18 @@ class ExternalWebformController extends Controller
         // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
         // Die moeten we eerst even setten als we dus hier vanuit webform komen.
         $this->setAuthUserForObservers($webform);
+
+        // Als kans_code is meegegeven, dan werken we die bij
+        if ($dataOpportunity['opportunity_code']) {
+            if($quotationRequest->opportunity){
+                $quotationRequest->opportunity->opportunity_code = $dataOpportunity['opportunity_code'];
+                $quotationRequest->opportunity->save();
+                $this->log('Kans code ' . $dataOpportunity['opportunity_code'] . ' bijgewerkt bij kans ' . $quotationRequest->opportunity->number . ' (' . $quotationRequest->opportunity->id. ').');
+
+            } else {
+                $this->log('Geen kans gevonden bij kansactie id (' . $dataQuotationRequest['quotation_request_id'] . '). Kans code ' . $dataOpportunity['opportunity_code'] . ' wordt niet bijgewerkt.');
+            }
+        }
 
         $coachOrOrganisation = null;
         if($dataQuotationRequest['coach_or_organisation_id']) {

@@ -425,6 +425,10 @@ class TemplateVariableHelper
                 return $model->id;
             case 'id_encrypted':
                 return Crypt::encrypt($model->id);
+            case 'nummer':
+                return $model->number;
+            case 'code':
+                return $model->opportunity_code ?? '';
             case 'contact_naam':
                 return optional($model->intake)->contact->full_name;
             case 'contact_adres':
@@ -458,8 +462,6 @@ class TemplateVariableHelper
                 return  $model->evaluationRecommendOrganisation ? $model->evaluationRecommendOrganisation->name : 'Onbekend';
             case 'evaluatie_opmerking':
                 return $model->evaluation_note;
-            case 'nummer':
-                return $model->number;
 //            case 'offerteverzoek_bedrijf':
 //                return '';
 //            case 'offerteverzoek_contactpersoon':

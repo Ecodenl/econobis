@@ -9,6 +9,7 @@ return [
         'support@econobis.nl',
         'software@xaris.nl',
         'bar@mossy.nl',
+        'wim-test@mosmania.nl',
         // evt later meer:
     ],
 

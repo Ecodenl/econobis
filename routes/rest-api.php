@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\RestApi\Contact\ContactController;
 
 
-Route::middleware(['client:econobis-rest-api', 'throttle:30,1'])
+Route::middleware(['econobis.scope:econobis-rest-api', 'throttle:30,1'])
     ->prefix('contact')
     ->group(function () {
         Route::get('{contactPublicId}', [ContactController::class, 'getContact']);

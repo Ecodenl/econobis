@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Modal from '../../../../components/modal/Modal';
 import { deleteTeamDocumentCreatedFrom } from '../../../../actions/team/TeamDetailsActions';
 
-const TeamDetailsDocumentCreatedFormsDelete = props => {
+const TeamDetailsDocumentCreatedFromsDelete = props => {
     const confirmAction = () => {
         props.deleteTeamDocumentCreatedFrom(props.teamId, props.documentCreatedFromId);
         props.toggleDelete();
@@ -35,4 +35,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFormsDelete);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFromsDelete);

@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
-const TeamDetailsDocumentCreatedFormsView = props => {
+const TeamDetailsDocumentCreatedFromsView = props => {
     const { id, name } = props.documentCreatedFrom;
 
     return (
@@ -33,4 +33,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFormsView);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFromsView);

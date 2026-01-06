@@ -10,7 +10,7 @@ import InputSelect from '../../../../components/form/InputSelect';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 
-class TeamDetailsDocumentCreatedFormsNew extends Component {
+class TeamDetailsDocumentCreatedFromsNew extends Component {
     constructor(props) {
         super(props);
 
@@ -127,4 +127,4 @@ const mapDispatchToProps = dispatch => ({
     },
 });
 
-export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFormsNew);
+export default connect(mapStateToProps, mapDispatchToProps)(TeamDetailsDocumentCreatedFromsNew);

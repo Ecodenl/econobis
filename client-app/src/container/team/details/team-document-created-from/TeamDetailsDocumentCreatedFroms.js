@@ -1,16 +1,16 @@
 import React, { Component } from 'react';
 
-import TeamDetailsDocumentCreatedFromsNew from './TeamDetailsDocumentCreatedFormsNew';
+import TeamDetailsDocumentCreatedFromsNew from './TeamDetailsDocumentCreatedFromsNew';
 import Panel from '../../../../components/panel/Panel';
 import PanelBody from '../../../../components/panel/PanelBody';
 import PanelHeader from '../../../../components/panel/PanelHeader';
 import { connect } from 'react-redux';
-import TeamDetailsDocumentCreatedFormsList from './TeamDetailsDocumentCreatedFormsList';
+import TeamDetailsDocumentCreatedFromsList from './TeamDetailsDocumentCreatedFromsList';
 
 import Icon from 'react-icons-kit';
 import { plus } from 'react-icons-kit/fa/plus';
 
-class TeamDetailsDocumentCreatedForms extends Component {
+class TeamDetailsDocumentCreatedFroms extends Component {
     constructor(props) {
         super(props);
 
@@ -38,7 +38,7 @@ class TeamDetailsDocumentCreatedForms extends Component {
                 </PanelHeader>
                 <PanelBody>
                     <div className="col-md-12">
-                        <TeamDetailsDocumentCreatedFormsList />
+                        <TeamDetailsDocumentCreatedFromsList />
                     </div>
                     <div className="col-md-12 margin-10-top">
                         {this.state.showNew && (
@@ -57,4 +57,4 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(TeamDetailsDocumentCreatedForms);
+export default connect(mapStateToProps)(TeamDetailsDocumentCreatedFroms);

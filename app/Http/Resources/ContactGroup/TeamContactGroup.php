@@ -2,11 +2,9 @@
 
 namespace App\Http\Resources\ContactGroup;
 
-use App\Http\Resources\Contact\FullContact;
-use App\Http\Resources\User\FullUser;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class ContactGroupPeek extends JsonResource
+class TeamContactGroup extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -19,6 +17,7 @@ class ContactGroupPeek extends JsonResource
         return [
             'id' => $this->id,
             'name' => $this->name,
-            'closed' => $this->closed,        ];
+            'closed' => $this->closed,
+        ];
     }
 }

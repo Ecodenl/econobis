@@ -6,6 +6,7 @@ use App\Eco\Contact\Contact;
 use App\Eco\District\District;
 use App\Eco\Opportunity\OpportunityAction;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
+use App\Http\Resources\District\PeekDistrict;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -24,6 +25,13 @@ class DistrictController
                 'closed' => $district->closed,
             ];
         });
+    }
+
+    public function peek()
+    {
+        $districts = District::all();
+
+        return PeekDistrict::collection($districts);
     }
 
     public function show(District $district)

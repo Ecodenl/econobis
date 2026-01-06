@@ -12,8 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('team_district', function (Blueprint $table) {
-            $table->integer('district_id')->unsigned();
-            $table->foreign('district_id')->references('id')->on('districts');
+            $table->foreignId('district_id')->constrained('districts')->onDelete('cascade');
             $table->integer('team_id')->unsigned();
             $table->foreign('team_id')->references('id')->on('teams');
             $table->unique(['district_id','team_id']);

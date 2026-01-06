@@ -6,6 +6,7 @@ import { fetchTeamDetails } from '../../../actions/team/TeamDetailsActions';
 import TeamDetailsFormGeneral from './general/TeamDetailsFormGeneral';
 import TeamDetailsUsers from './team-users/TeamDetailsUsers';
 import TeamDetailsContactGroups from './team-contact-groups/TeamDetailsContactGroups';
+import TeamDetailsDistricts from './team-district/TeamDetailsDistricts';
 import TeamDetailsDocumentCreatedForms from './team-document-created-from/TeamDetailsDocumentCreatedForms';
 
 class TeamDetailsForm extends Component {
@@ -35,6 +36,7 @@ class TeamDetailsForm extends Component {
                 <TeamDetailsUsers />
                 <TeamDetailsContactGroups />
                 <TeamDetailsDocumentCreatedForms />
+                <TeamDetailsDistricts />
             </div>
         );
     }

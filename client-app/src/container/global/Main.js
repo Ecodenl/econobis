@@ -29,6 +29,8 @@ const Main = ({ children }) => {
     const meDetailsLoaded = useSelector(state => state.meDetails.isLoaded);
     const meDetailsHasError = useSelector(state => state.meDetails.hasError);
 
+    const isBlocking = useSelector(state => state.blockUI.blocked);
+
     useEffect(() => {
         if (authenticated) {
             dispatch(fetchMeDetails());
@@ -55,7 +57,7 @@ const Main = ({ children }) => {
     return (
         <BlockUi
             tag="div"
-            blocking={false}
+            blocking={isBlocking}
             className={'full-screen-loading'}
             message={'Moment geduld, de gegevens worden opgehaald'}
         >

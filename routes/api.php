@@ -360,7 +360,7 @@ Route::namespace('Api')
          * Districts
          */
         Route::get('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'index']);
-        Route::get('district/peek', [\App\Http\Controllers\Api\District\DistrictController::class, 'peek']);
+        Route::get('district/peek/{active?}', [\App\Http\Controllers\Api\District\DistrictController::class, 'peek']);
         Route::get('district/{district}', [\App\Http\Controllers\Api\District\DistrictController::class, 'show']);
         Route::get('district/{district}/calendar-items', [\App\Http\Controllers\Api\District\DistrictController::class, 'getCalendarItems']);
         Route::post('district', [\App\Http\Controllers\Api\District\DistrictController::class, 'create']);

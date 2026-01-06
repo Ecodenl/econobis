@@ -46,4 +46,9 @@ class District extends Model
         return $this->belongsToMany(Team::class, 'team_district');
     }
 
+    public function newEloquentBuilder($query): DistrictBuilder
+    {
+        return new DistrictBuilder($query);
+    }
+
 }

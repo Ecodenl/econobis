@@ -29,7 +29,7 @@ class TeamDetailsDistricts extends Component {
         return (
             <Panel>
                 <PanelHeader>
-                    <span className="h5 text-bold">Gekoppelde afspraak kalenders</span>
+                    <span className="h5 text-bold">Gekoppelde afspraakkalenders</span>
                     {this.props.permissions.createTeam && (
                         <a role="button" className="pull-right" onClick={this.toggleShowNew}>
                             <Icon size={14} icon={plus} />

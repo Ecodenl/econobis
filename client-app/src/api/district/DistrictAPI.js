@@ -32,7 +32,7 @@ export default {
             });
     },
 
-    peekDistricts: () => {
+    peekDistrictsForTeam: () => {
         return getAxiosInstance()
             .get(`${BASE_URL}/peek`)
             .then(function(response) {

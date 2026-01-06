@@ -18,7 +18,7 @@ const TeamDetailsDistrictsDelete = props => {
             confirmAction={() => confirmAction()}
             title="Verwijderen"
         >
-            <p>Wil je deze afspraak kalender ontkoppelen van dit team?</p>
+            <p>Wil je deze afspraakkalender ontkoppelen van dit team?</p>
         </Modal>
     );
 };

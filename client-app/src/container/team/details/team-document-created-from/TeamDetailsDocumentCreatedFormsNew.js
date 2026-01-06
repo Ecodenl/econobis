@@ -67,6 +67,12 @@ class TeamDetailsDocumentCreatedFormsNew extends Component {
     }
 
     render() {
+        const selectedIds = (this.props.selectedDocumentCreatedFroms || []).map(d => String(d.id));
+
+        const documentCreatedFromsToSelectFiltered = (this.props.documentCreatedFromsToSelect || []).filter(
+            d => !selectedIds.includes(String(d.id))
+        );
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -74,10 +80,10 @@ class TeamDetailsDocumentCreatedFormsNew extends Component {
                         <div className="row">
                             <InputText label={'Team'} name={'team'} value={this.props.teamName} readOnly={true} />
                             <InputSelect
-                                label={'Groep'}
+                                label={'Document gemaakt vanuit'}
                                 size={'col-sm-6'}
                                 name={'documentCreatedFromId'}
-                                options={this.props.documentCreatedFroms}
+                                options={documentCreatedFromsToSelectFiltered}
                                 optionName={'name'}
                                 value={this.state.documentCreatedFromId}
                                 onChangeAction={this.handleInputChange}
@@ -110,7 +116,8 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
-        documentCreatedFroms: state.systemData.documentCreatedFroms,
+        documentCreatedFromsToSelect: state.systemData.documentCreatedFroms,
+        selectedDocumentCreatedFroms: state.teamDetails.documentCreatedFroms,
     };
 };
 

@@ -7,7 +7,8 @@ const TeamDetailsDistrictsList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-11">Afspraak kalender</div>
+                <div className="col-sm-9">Afspraakkalender</div>
+                <div className="col-sm-2">Status</div>
                 <div className="col-sm-1" />
             </div>
             {props.districts && props.districts.length > 0 ? (
@@ -16,7 +17,7 @@ const TeamDetailsDistrictsList = props => {
                 })
             ) : (
                 <div>
-                    Geen afspraak kalenders gekoppeld. Gebruikers van dit team geautoriseerd voor alle afspraak
+                    Geen afspraakkalenders gekoppeld. Gebruikers van dit team geautoriseerd voor alle afspraak
                     kalenders!
                 </div>
             )}

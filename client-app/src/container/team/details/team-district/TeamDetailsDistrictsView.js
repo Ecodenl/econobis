@@ -5,7 +5,7 @@ import Icon from 'react-icons-kit';
 import { trash } from 'react-icons-kit/fa/trash';
 
 const TeamDetailsDistrictsView = props => {
-    const { id, name } = props.district;
+    const { id, name, closed } = props.district;
 
     return (
         <div
@@ -13,7 +13,9 @@ const TeamDetailsDistrictsView = props => {
             onMouseEnter={() => props.onLineEnter()}
             onMouseLeave={() => props.onLineLeave()}
         >
-            <div className="col-sm-11">{name}</div>
+            <div className="col-sm-9">{name}</div>
+
+            <div className="col-sm-2">{closed ? 'Gesloten' : 'Open'}</div>
             <div className="col-sm-1">
                 {props.showActionButtons && props.permissions.createTeam ? (
                     <a role="button" onClick={props.toggleDelete}>

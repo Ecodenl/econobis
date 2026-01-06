@@ -36,7 +36,7 @@ class TeamDetailsDistrictsNew extends Component {
     }
 
     componentDidMount() {
-        DistrictAPI.peekDistricts().then(payload => {
+        DistrictAPI.peekDistrictsForTeam().then(payload => {
             this.setState({ districtsToSelect: payload });
         });
     }
@@ -73,6 +73,12 @@ class TeamDetailsDistrictsNew extends Component {
     }
 
     render() {
+        const selectedIds = (this.props.selectedDistricts || []).map(d => String(d.id));
+
+        const districtsToSelectFiltered = (this.state.districtsToSelect || []).filter(
+            d => !selectedIds.includes(String(d.id))
+        );
+
         return (
             <form className="form-horizontal" onSubmit={this.handleSubmit}>
                 <Panel className={'panel-grey'}>
@@ -80,10 +86,10 @@ class TeamDetailsDistrictsNew extends Component {
                         <div className="row">
                             <InputText label={'Team'} name={'team'} value={this.props.teamName} readOnly={true} />
                             <InputSelect
-                                label={'Groep'}
+                                label={'Afspraakkalender'}
                                 size={'col-sm-6'}
                                 name={'districtId'}
-                                options={this.state.districtsToSelect}
+                                options={districtsToSelectFiltered}
                                 optionName={'name'}
                                 value={this.state.districtId}
                                 onChangeAction={this.handleInputChange}
@@ -116,6 +122,7 @@ const mapStateToProps = state => {
     return {
         teamId: state.teamDetails.id,
         teamName: state.teamDetails.name,
+        selectedDistricts: state.teamDetails.districts,
     };
 };
 

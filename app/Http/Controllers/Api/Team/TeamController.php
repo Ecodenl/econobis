@@ -18,7 +18,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
 use App\Http\Resources\ContactGroup\ContactGroupPeek;
-use App\Http\Resources\District\FullDistrict;
+use App\Http\Resources\District\TeamDistrict;
 use App\Http\Resources\Document\FullDocumentCreatedFrom;
 use App\Http\Resources\Team\FullTeam;
 use App\Http\Resources\Team\PeekTeam;
@@ -115,7 +115,7 @@ class TeamController extends ApiController
 
         $team->districts()->attach($district->id);
 
-        return FullDistrict::make($district);
+        return TeamDistrict::make($district);
     }
 
     public function attachDocumentCreatedFrom(Team $team, DocumentCreatedFrom $documentCreatedFrom)

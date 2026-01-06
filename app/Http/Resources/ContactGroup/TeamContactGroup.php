@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Resources\District;
+namespace App\Http\Resources\ContactGroup;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class FullDistrict extends JsonResource
+class TeamContactGroup extends JsonResource
 {
     /**
      * Transform the resource into an array.

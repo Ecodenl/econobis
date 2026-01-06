@@ -36,7 +36,7 @@ class TeamDetailsDistrictsNew extends Component {
     }
 
     componentDidMount() {
-        DistrictAPI.peekDistrictsForTeam().then(payload => {
+        DistrictAPI.peekDistricts().then(payload => {
             this.setState({ districtsToSelect: payload });
         });
     }

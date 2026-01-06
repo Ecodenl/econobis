@@ -1,12 +1,12 @@
 <?php
 
-namespace Database\Seeders;
+namespace Database\Seeders\Demo;
 
 use App\Eco\Contact\Contact;
-use App\Eco\EmailAddress\EmailAddress;
+use App\Eco\PhoneNumber\PhoneNumber;
 use Illuminate\Database\Seeder;
 
-class EmailAddressSeeder extends Seeder
+class PhoneNumbersSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -16,7 +16,8 @@ class EmailAddressSeeder extends Seeder
     public function run()
     {
         foreach(Contact::all() as $contact){
-            EmailAddress::factory()->count(2)->create(['contact_id' => $contact->id]);
+            PhoneNumber::factory()->count(5)
+                ->create(['contact_id' => $contact->id]);
         }
     }
 }

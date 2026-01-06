@@ -56,7 +56,7 @@ const OpportunityFormView = props => {
             <div className="row" onClick={props.switchToEdit}>
                 <ViewText label={'Aantal'} size={'col-sm-5'} value={amount} textToolTip={`aantal, m2 of Wattpiek`} />
                 <ViewText
-                    label="Kans status"
+                    label="Kans code"
                     size={'col-sm-5'}
                     value={opportunityCode}
                     textToolTip={`Deze waarde kan alleen gevuld worden via de api/webhook zie handleiding API voor details`}

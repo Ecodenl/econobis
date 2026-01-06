@@ -7,7 +7,8 @@ const TeamDetailsContactGroupsList = props => {
     return (
         <div>
             <div className="row border header">
-                <div className="col-sm-11">Groep naam</div>
+                <div className="col-sm-9">Groep naam</div>
+                <div className="col-sm-2">Status</div>
                 <div className="col-sm-1" />
             </div>
             {props.contactGroups && props.contactGroups.length > 0 ? (

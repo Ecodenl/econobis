@@ -262,7 +262,7 @@ class OpportunityFormEdit extends Component {
                     />
                     <ViewText
                         className={'col-sm-6 form-group'}
-                        label="Kans status"
+                        label="Kans code"
                         size={'col-sm-5'}
                         value={opportunityCode}
                         textToolTip={`Deze waarde kan alleen gevuld worden via de api/webhook zie handleiding API voor details`}

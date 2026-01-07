@@ -120,12 +120,13 @@ const OrderProductsFormEdit = props => {
                                                                   .priceNumberOfDecimals,
                                                       }
                                                   )
-                                                : '€ ' +
-                                                  props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
+                                                : props.orderProduct.product.currentPrice.price !== null
+                                                ? props.orderProduct.product.currentPrice.price.toLocaleString('nl', {
                                                       minimumFractionDigits: 2,
                                                       maximumFractionDigits:
                                                           props.orderProduct.product.currentPrice.priceNumberOfDecimals,
                                                   })
+                                                : ''
                                             : ''
                                     }
                                     readOnly={true}

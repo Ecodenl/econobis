@@ -20,6 +20,7 @@ use App\Http\Resources\ContactGroup\ContactGroupPeek;
 use App\Http\Resources\ContactGroup\FullContactGroup;
 use App\Http\Resources\ContactGroup\GridContactGroup;
 use App\Http\Resources\Task\SidebarTask;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Carbon;
@@ -351,7 +352,15 @@ class ContactGroupController extends Controller
     {
         set_time_limit(0);
 
-        $contactCSVHelper = new ContactCSVHelper($contactGroup->all_contacts, $contactGroup);
+        $contacts = $contactGroup->getAllContacts(false, true);
+
+        // Niks te exporteren of type/group niet van toepassing
+        if (!$contacts instanceof Collection || $contacts->isEmpty()) {
+            Log::info('No content response ');
+            return response()->noContent();
+        }
+
+        $contactCSVHelper = new ContactCSVHelper($contacts, $contactGroup);
 
         return $contactCSVHelper->downloadCSV();
     }

@@ -121,7 +121,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         Log::info('Test createAndSendRegistrationDocument voor participantMutationCode: ' . $request->participantMutationCode);
 
-        $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+        $responsibleUser = User::find(PortalSettings::first()?->responsible_user_id);
         $responsibleUser->occupation = '@portal-update@';
         Auth::setUser($responsibleUser);
 

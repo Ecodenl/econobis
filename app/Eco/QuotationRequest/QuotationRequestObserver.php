@@ -112,50 +112,86 @@ class QuotationRequestObserver
 //  wellicht aparte code_ref approved_client maken om kansactie op juiste status te zetten ?
         $dateApprovedClient = $quotationRequest->date_approved_client;
         $dateApprovedClientOriginal = $quotationRequest->getOriginal('date_approved_client');
-        if($dateApprovedClient != $dateApprovedClientOriginal)
+        $notApprovedClient = $quotationRequest->not_approved_client;
+        $notApprovedClientOriginal = $quotationRequest->getOriginal('not_approved_client');
+        if($dateApprovedClient != $dateApprovedClientOriginal || $notApprovedClient != $notApprovedClientOriginal)
         {
             $offerteverzoekAction = OpportunityAction::where('code_ref', 'quotation-request')->first();
-            if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
-                if($quotationRequest->date_approved_client){
-                    $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
-                    if($approvedStatus){
-                        $quotationRequest->status_id = $approvedStatus->id;
-                    }
+            if($notApprovedClient) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
                 }
-            }
-        }
-        $dateApprovedExternal = $quotationRequest->date_approved_external;
-        $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
-        if($dateApprovedExternal != $dateApprovedExternalOriginal)
-        {
-            if($quotationRequest->date_approved_external){
+                if($notApprovedStatus){
+                    $quotationRequest->date_approved_client = null;
+                }
+            } elseif($quotationRequest->date_approved_client){
                 $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
                 if($approvedStatus){
-                    $quotationRequest->status_id = $approvedStatus->id;
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
+                        $quotationRequest->status_id = $approvedStatus->id;
+                    }
+                    $quotationRequest->not_approved_client = false;
                 }
             } else {
-                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
-                if($notApprovedStatus){
-                    $quotationRequest->status_id = $notApprovedStatus->id;
+                $underReviewOccupantStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-occupant')->first();
+                if($underReviewOccupantStatus) {
+                    // todo WM : automatische status wijziging alleen voor offerteverzoek, nog niet voor budgetaanvraag.
+                    if($quotationRequest->opportunity_action_id == $offerteverzoekAction->id) {
+                        $quotationRequest->status_id = $underReviewOccupantStatus->id;
+                    }
                 }
             }
         }
         $dateApprovedProjectManager = $quotationRequest->date_approved_project_manager;
         $dateApprovedProjectManagerOriginal = $quotationRequest->getOriginal('date_approved_project_manager');
-        if($dateApprovedProjectManager != $dateApprovedProjectManagerOriginal)
+        $notApprovedProjectManager = $quotationRequest->not_approved_project_manager;
+        $notApprovedProjectManagerOriginal = $quotationRequest->getOriginal('not_approved_project_manager');
+        if($dateApprovedProjectManager != $dateApprovedProjectManagerOriginal || $notApprovedProjectManager != $notApprovedProjectManagerOriginal)
         {
-            if($quotationRequest->date_approved_project_manager){
-                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-approved')->first();
-                if($approvedStatus){
-                    $quotationRequest->status_id = $approvedStatus->id;
-                }
-            } else {
+            if($notApprovedProjectManager) {
                 $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-not-approved')->first();
                 if($notApprovedStatus){
                     $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_project_manager = null;
+                }
+            } elseif($quotationRequest->date_approved_project_manager){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'pm-approved')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_project_manager = false;
                 }
             }
         }
+
+        $dateApprovedExternal = $quotationRequest->date_approved_external;
+        $dateApprovedExternalOriginal = $quotationRequest->getOriginal('date_approved_external');
+        $notApprovedExternal = $quotationRequest->not_approved_external;
+        $notApprovedExternalOriginal = $quotationRequest->getOriginal('not_approved_external');
+        if($dateApprovedExternal != $dateApprovedExternalOriginal || $notApprovedExternal != $notApprovedExternalOriginal)
+        {
+            if($notApprovedExternal) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved')->first();
+                if($notApprovedStatus){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_external = null;
+                }
+            } elseif($quotationRequest->date_approved_external){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_external = false;
+                }
+            } else {
+                $underReviewExternalStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review')->first();
+                if($underReviewExternalStatus) {
+                    $quotationRequest->status_id = $underReviewExternalStatus->id;
+                }
+            }
+        }
+
         $dateExecuted = $quotationRequest->date_executed;
         $dateExecutedOriginal = $quotationRequest->getOriginal('date_executed');
         if($dateExecuted != $dateExecutedOriginal)
@@ -180,6 +216,29 @@ class QuotationRequestObserver
         }
         $dateApprovedDetermination = $quotationRequest->date_approved_determination;
         $dateApprovedDeterminationOriginal = $quotationRequest->getOriginal('date_approved_determination');
+        $notApprovedDetermination = $quotationRequest->not_approved_determination;
+        $notApprovedDeterminationOriginal = $quotationRequest->getOriginal('not_approved_determination');
+        if($dateApprovedDetermination != $dateApprovedDeterminationOriginal || $notApprovedDetermination != $notApprovedDeterminationOriginal)
+        {
+            if($notApprovedDetermination) {
+                $notApprovedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'not-approved-det')->first();
+                if($notApprovedStatus){
+                    $quotationRequest->status_id = $notApprovedStatus->id;
+                    $quotationRequest->date_approved_determination = null;
+                }
+            } elseif($quotationRequest->date_approved_determination){
+                $approvedStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'approved-det')->first();
+                if($approvedStatus){
+                    $quotationRequest->status_id = $approvedStatus->id;
+                    $quotationRequest->not_approved_determination = false;
+                }
+            } else {
+                $underReviewDetStatus = QuotationRequestStatus::where('opportunity_action_id', $quotationRequest->opportunity_action_id)->where('code_ref', 'under-review-det')->first();
+                if($underReviewDetStatus) {
+                    $quotationRequest->status_id = $underReviewDetStatus->id;
+                }
+            }
+        }
         if($dateApprovedDetermination != $dateApprovedDeterminationOriginal)
         {
             if($quotationRequest->date_approved_determination){

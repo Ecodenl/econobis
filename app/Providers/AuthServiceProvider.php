@@ -2,10 +2,14 @@
 
 namespace App\Providers;
 
-use App\Eco\Administration\Administration;
-use App\Eco\Administration\AdministrationPolicy;
+use App\Eco\Address\Address;
+use App\Eco\Address\AddressPolicy;
 use App\Eco\AddressDongle\AddressDongle;
 use App\Eco\AddressDongle\AddressDonglePolicy;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
+use App\Eco\AddressEnergySupplier\AddressEnergySupplierPolicy;
+use App\Eco\Administration\Administration;
+use App\Eco\Administration\AdministrationPolicy;
 use App\Eco\AuditTrail\AuditTrail;
 use App\Eco\AuditTrail\AuditTrailPolicy;
 use App\Eco\Campaign\Campaign;
@@ -33,13 +37,17 @@ use App\Eco\EmailTemplate\EmailTemplatePolicy;
 use App\Eco\FinancialOverview\FinancialOverview;
 use App\Eco\FinancialOverview\FinancialOverviewPolicy;
 use App\Eco\FreeFields\FreeFieldsField;
-use App\Eco\FreeFields\FreeFieldsPolicy;
+use App\Eco\FreeFields\FreeFieldsFieldLog;
+use App\Eco\FreeFields\FreeFieldsFieldLogPolicy;
+use App\Eco\FreeFields\FreeFieldsFieldPolicy;
 use App\Eco\HousingFile\HousingFile;
-use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\HousingFile\HousingFileLog;
 use App\Eco\HousingFile\HousingFileLogPolicy;
+use App\Eco\HousingFile\HousingFilePolicy;
 use App\Eco\Intake\Intake;
 use App\Eco\Intake\IntakePolicy;
+use App\Eco\IntakeSource\IntakeSource;
+use App\Eco\IntakeSource\IntakeSourcePolicy;
 use App\Eco\Invoice\Invoice;
 use App\Eco\Invoice\InvoicePolicy;
 use App\Eco\Jobs\JobsLog;
@@ -51,9 +59,9 @@ use App\Eco\Mailbox\MailboxPolicy;
 use App\Eco\Mailbox\MailgunDomain;
 use App\Eco\Mailbox\MailgunDomainPolicy;
 use App\Eco\Measure\Measure;
-use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Measure\MeasureCategoryPolicy;
+use App\Eco\Measure\MeasurePolicy;
 use App\Eco\Opportunity\Opportunity;
 use App\Eco\Opportunity\OpportunityPolicy;
 use App\Eco\Opportunity\OpportunityStatus;
@@ -62,10 +70,6 @@ use App\Eco\Order\Order;
 use App\Eco\Order\OrderPolicy;
 use App\Eco\Organisation\Organisation;
 use App\Eco\Organisation\OrganisationPolicy;
-use App\Eco\Address\Address;
-use App\Eco\Address\AddressPolicy;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplier;
-use App\Eco\AddressEnergySupplier\AddressEnergySupplierPolicy;
 use App\Eco\ParticipantMutation\ParticipantMutation;
 use App\Eco\ParticipantMutation\ParticipantMutationPolicy;
 use App\Eco\ParticipantProject\ObligationNumber;
@@ -90,14 +94,14 @@ use App\Eco\Project\Project;
 use App\Eco\Project\ProjectPolicy;
 use App\Eco\Project\ProjectRevenue;
 use App\Eco\Project\ProjectRevenuePolicy;
-use App\Eco\RevenuesKwh\RevenuesKwh;
-use App\Eco\RevenuesKwh\RevenuesKwhPolicy;
 use App\Eco\Project\ProjectValueCourse;
 use App\Eco\Project\ProjectValueCoursePolicy;
 use App\Eco\QuotationRequest\QuotationRequest;
 use App\Eco\QuotationRequest\QuotationRequestPolicy;
 use App\Eco\QuotationRequest\QuotationRequestStatus;
 use App\Eco\QuotationRequest\QuotationRequestStatusPolicy;
+use App\Eco\RevenuesKwh\RevenuesKwh;
+use App\Eco\RevenuesKwh\RevenuesKwhPolicy;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskPolicy;
 use App\Eco\Task\TaskType;
@@ -140,6 +144,7 @@ class AuthServiceProvider extends ServiceProvider
         Opportunity::class => OpportunityPolicy::class,
         Task::class => TaskPolicy::class,
         Intake::class => IntakePolicy::class,
+        IntakeSource::class => IntakeSourcePolicy::class,
         HousingFile::class => HousingFilePolicy::class,
         HousingFileLog::class => HousingFileLogPolicy::class,
         Campaign::class => CampaignPolicy::class,
@@ -150,7 +155,8 @@ class AuthServiceProvider extends ServiceProvider
         Email::class => EmailPolicy::class,
         EmailTemplate::class => EmailTemplatePolicy::class,
         AuditTrail::class => AuditTrailPolicy::class,
-        FreeFieldsField::class => FreeFieldsPolicy::class,
+        FreeFieldsField::class => FreeFieldsFieldPolicy::class,
+        FreeFieldsFieldLog::class => FreeFieldsFieldLogPolicy::class,
         Mailbox::class => MailboxPolicy::class,
         QuotationRequest::class => QuotationRequestPolicy::class,
         Team::class => TeamPolicy::class,

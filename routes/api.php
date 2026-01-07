@@ -29,7 +29,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 Route::post('password/email', 'Api\User\UserController@sendResetLinkEmail');
 Route::post('password/reset', 'Auth\ResetPasswordController@reset');
 Route::get('password/reset/{token}', [
-    'as' => 'password.reset',
+    'as' => 'api.password.reset',
     'uses' => 'Auth\ResetPasswordController@showResetForm'
 ]);
 
@@ -67,6 +67,11 @@ Route::namespace('Api')
         Route::post('/contacts/merge', 'Contact\ContactController@mergeContacts');
         Route::post('/contact/validate-import', 'Contact\ContactController@validateImport');
         Route::post('/contact/import', 'Contact\ContactController@import');
+        Route::post('/contact/validate-import-from-energy-supplier', 'Contact\ContactController@validateImportFromEnergySupplier');
+        Route::post('/contact/import-from-energy-supplier', 'Contact\ContactController@importFromEnergySupplier');
+        Route::post('/contact/update-contact-matches', 'Contact\ContactController@updateContactMatches');
+        Route::get('/contact/excel-contact-to-import', 'Contact\ContactToImportController@excelContactToImport');
+        Route::get('/contact/contact-to-imports-suppliers', 'Contact\ContactController@contactToImportsSuppliers');
         Route::post('contact/{contact}/owner/{user}/associate', 'Contact\ContactController@associateOwner');
         Route::get('/contact/{contact}', 'Contact\ContactController@show');
         Route::get('/contact/{contact}/addresses', 'Contact\ContactController@getContactWithAddresses');
@@ -78,6 +83,11 @@ Route::namespace('Api')
         Route::get('/contact/{contact}/make-hoomdossier', 'Contact\ContactController@makeHoomdossier');
         Route::get('/contact/{contact}/coach-attributes', 'Contact\ContactController@getCoachAttributes');
         Route::post('/contact/{contact}/coach-attributes', 'Contact\ContactController@updateCoachAttributes');
+
+        Route::get('/contact-to-imports/grid', 'Contact\ContactToImportController@index');
+        Route::get('/contact-to-imports/peek-with-status', 'Contact\ContactToImportController@peekWithStatus');
+        Route::post('/contact-to-imports/createContactsFromImport', 'Contact\ContactToImportController@createContactsFromImport');
+        Route::post('/contact-to-imports/updateContactsFromImport', 'Contact\ContactToImportController@updateContactsFromImport');
 
         Route::get('/intake/grid', 'Intake\IntakeController@grid');
         Route::get('/intake/amount-active', 'Intake\IntakeController@getAmountOfActiveIntakes');
@@ -156,6 +166,7 @@ Route::namespace('Api')
         Route::post('/user', 'User\UserController@store');
         Route::get('/user/{user}', 'User\UserController@show');
         Route::post('/user/{user}', 'User\UserController@update');
+        Route::post('/user/{user}/unblock', 'User\UserController@unblock');
         Route::get('/user/with-permission/{permission}', 'User\UserController@withPermission');
         Route::post('/user/{user}/roles/add/{role}', 'User\UserController@addRole');
         Route::post('/user/{user}/roles/remove/{role}', 'User\UserController@removeRole');
@@ -194,6 +205,7 @@ Route::namespace('Api')
         Route::post('/contact-note/{contactNote}', 'ContactNote\ContactNoteController@update');
         Route::post('/contact-note/{contactNote}/delete', 'ContactNote\ContactNoteController@destroy');
         Route::post('/contact-portal-user/{portalUser}', 'PortalUser\PortalUserController@update');
+        Route::post('/contact-portal-user/{portalUser}/unblock', 'PortalUser\PortalUserController@unblock');
         Route::post('/contact-portal-user/{portalUser}/delete', 'PortalUser\PortalUserController@destroy');
         Route::post('/contact-portal-user/{portalUser}/reset-two-factor', 'PortalUser\PortalUserController@resetTwoFactor');
 
@@ -341,7 +353,6 @@ Route::namespace('Api')
         Route::post('mailbox/{mailbox}', 'Mailbox\MailboxController@update');
         Route::post('mailbox/{mailbox}/users/add/{user}', 'Mailbox\MailboxController@addUser');
         Route::post('mailbox/{mailbox}/users/remove/{user}', 'Mailbox\MailboxController@removeUser');
-        Route::get('mailbox/{mailbox}/receive', 'Mailbox\MailboxController@receive');
         Route::get('mailbox/receive/from-mailboxes-user', 'Mailbox\MailboxController@receiveMailFromMailboxesUser');
         Route::get('mailbox/{mailbox}/make-primary', 'Mailbox\MailboxController@makePrimary');
 
@@ -422,6 +433,7 @@ Route::namespace('Api')
          * Email attachments
          */
         Route::get('email-attachment/{emailAttachment}/download', [EmailAttachmentController::class, 'download']);
+        Route::get('email-attachment/{emailAttachment}/contacts', [EmailAttachmentController::class, 'contactsFromEmail']);
         Route::post('email-attachment/{emailAttachment}/delete', [EmailAttachmentController::class, 'delete']);
         Route::post('email/{email}/add-documents-as-attachments', [EmailAttachmentController::class, 'addDocumentsAsAttachments']);
         Route::post('email/{email}/attachment', [EmailAttachmentController::class, 'store']);
@@ -431,6 +443,7 @@ Route::namespace('Api')
         Route::get('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@show');
         Route::get('email-template/with-user/{emailTemplate}', 'EmailTemplate\EmailTemplateController@showWithUser');
         Route::post('email-template', 'EmailTemplate\EmailTemplateController@store');
+        Route::post('email-template/{emailTemplate}/duplicate', 'EmailTemplate\EmailTemplateController@duplicate');
         Route::post('email-template/{emailTemplate}/delete', 'EmailTemplate\EmailTemplateController@destroy');
         Route::post('email-template/{emailTemplate}', 'EmailTemplate\EmailTemplateController@update');
 
@@ -493,6 +506,7 @@ Route::namespace('Api')
         Route::post('project/revenue', 'Project\ProjectRevenueController@store');
         Route::post('project/revenue/{projectRevenue}', 'Project\ProjectRevenueController@update');
         Route::post('project/revenue/{projectRevenue}/delete', 'Project\ProjectRevenueController@destroy');
+        Route::post('project/revenue/{projectRevenue}/confirm', 'Project\ProjectRevenueController@confirm');
 
         Route::get('project/revenues-kwh/{revenuesKwh}', 'Project\RevenuesKwhController@show');
         Route::get('project/revenues-kwh/{revenuesKwh}/report/{reportType}', 'Project\RevenuesKwhController@showForReport');
@@ -683,6 +697,9 @@ Route::namespace('Api')
         Route::post('cost-center/{costCenter}', 'CostCenter\CostCenterController@update');
         Route::post('cost-center/{costCenter}/delete', 'CostCenter\CostCenterController@destroy');
 
+        Route::get('source/jory', 'IntakeSource\IntakeSourceController@jory');
+        Route::post('source/{source}', 'IntakeSource\IntakeSourceController@update');
+
         Route::get('task-type/jory', 'Task\TaskTypeController@jory');
         Route::post('task-type/{taskType}', 'Task\TaskTypeController@update');
         Route::get('quotation-request-status/jory', 'QuotationRequest\QuotationRequestStatusController@jory');
@@ -752,6 +769,7 @@ Route::namespace('Api')
 
         Route::get('free-fields-field-records/get-values', 'FreeFields\FreeFieldsFieldRecordController@getValues');
         Route::post('free-fields-field-records/update-values', 'FreeFields\FreeFieldsFieldRecordController@updateValues');
+        Route::get('free-fields-field-log/excel/mutations', 'FreeFields\FreeFieldsFieldRecordController@excelLogMutations');
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');

@@ -14,6 +14,7 @@ use App\Eco\HousingFile\HousingFileHoomHousingStatus;
 use App\Eco\HousingFile\HousingFileHoomLink;
 use App\Eco\HousingFile\RoofType;
 use App\Eco\Intake\IntakeStatus;
+use App\Eco\IntakeSource\IntakeSource;
 use App\Eco\Measure\Measure;
 use App\Eco\Measure\MeasureCategory;
 use App\Eco\Occupation\Occupation;
@@ -119,6 +120,14 @@ class DynamicContactGroupFilter extends Model
                 }
                 return '';
             }
+            // intakeSource omzetten
+            if ($this->field == 'intakeSource'){
+                if($this->data){
+                    $intakeSource = IntakeSource::find($this->data);
+                    return $intakeSource->name_source;
+                }
+                return '';
+            }
             // intakeStatus omzetten
             if ($this->field == 'intakeStatus'){
                 if($this->data){
@@ -153,14 +162,24 @@ class DynamicContactGroupFilter extends Model
             }
             // housingFileFieldValue omzetten
             if ($this->field == 'housingFileFieldValue'){
-                if($this->data){
+                if(is_string($this->data) && $this->data !== ''){
                     $parentDynamicContactGroupFilter = $this->parentHousingFileFieldFilter();
+                    $arrayHousingFileHoomLinkSelectNoYesUnknownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_NO_YES_UNKNOWN_FIELDS)->pluck('id')->toArray();
+                    if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectNoYesUnknownFieldsIds ) ){
+                        $housingFileHoomLink = HousingFileHoomLink::find($parentDynamicContactGroupFilter->data);
+                        if($housingFileHoomLink){
+                            if($housingFileHoomLink->external_hoom_short_name == 'building-contract-type' || $housingFileHoomLink->external_hoom_short_name == 'monument') {
+                                return $this->data === '0' ? 'Nee' : ($this->data === '1' ? 'Ja' : ($this->data === '2' ? 'Onbekend' : 'Ongeldige waarde') );
+                            } else {
+                                return 'onbekend';
+                            }
+                        }
+                    }
                     $arrayHousingFileHoomLinkSelectDropdownFieldsIds = HousingFileHoomLink::whereIn('external_hoom_short_name', HousingFileHoomLink::SELECT_DROPDOWN_FIELDS)->pluck('id')->toArray();
-
                     if($parentDynamicContactGroupFilter && in_array($parentDynamicContactGroupFilter->data, $arrayHousingFileHoomLinkSelectDropdownFieldsIds ) ){
                         $housingFileHoomLink = HousingFileHoomLink::find($parentDynamicContactGroupFilter->data);
                         if($housingFileHoomLink){
-                            if($housingFileHoomLink->external_hoom_short_name == 'building-type-category') {
+                            if ($housingFileHoomLink->external_hoom_short_name == 'building-type-category') {
                                 return BuildingType::find($this->data)->name;
                             } elseif ($housingFileHoomLink->external_hoom_short_name == 'roof-type') {
                                 return RoofType::find($this->data)->name;

@@ -197,13 +197,13 @@ class EndPointGebruikController extends EndPointHoomDossierController
                 //0	Onbekend
                 switch ($value){
                     case 1:
-                        $housingFileValue = 1;
+                        $housingFileValue = "1";
                         break;
                     case 2:
-                        $housingFileValue = 0;
+                        $housingFileValue = "0";
                         break;
                     default:
-                        $housingFileValue = $value;
+                        $housingFileValue = "2";
                         break;
                 }
                 break;
@@ -213,10 +213,14 @@ class EndPointGebruikController extends EndPointHoomDossierController
                 // rented-private (Particuliere huur)
                 switch ($value){
                     case 'bought':
-                        $housingFileValue = 1;
+                        $housingFileValue = "1";
+                        break;
+                    case 'rented':
+                    case 'rented-private':
+                        $housingFileValue = "0";
                         break;
                     default:
-                        $housingFileValue = 0;
+                        $housingFileValue = "2";
                         break;
                 }
                 break;

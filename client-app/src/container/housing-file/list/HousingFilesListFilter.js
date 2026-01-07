@@ -163,11 +163,14 @@ const HousingFilesListFilter = props => {
                     onChange={onIsHouseForSaleChange}
                 >
                     <option />
-                    <option key={1} value={1}>
+                    <option key={'1'} value={'1'}>
                         Ja
                     </option>
-                    <option key={0} value={0}>
+                    <option key={'0'} value={'0'}>
                         Nee
+                    </option>
+                    <option key={'2'} value={'2'}>
+                        Onbekend
                     </option>
                 </select>
             </th>

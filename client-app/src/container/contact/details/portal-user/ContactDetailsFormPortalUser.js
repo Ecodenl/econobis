@@ -20,20 +20,6 @@ class ContactDetailsFormPortalUser extends Component {
         };
     }
 
-    onLineEnter = () => {
-        this.setState({
-            showActionButtons: true,
-            highlightLine: 'highlight-line',
-        });
-    };
-
-    onLineLeave = () => {
-        this.setState({
-            showActionButtons: false,
-            highlightLine: '',
-        });
-    };
-
     switchToEdit = () => {
         this.setState({
             showEdit: true,
@@ -55,6 +41,9 @@ class ContactDetailsFormPortalUser extends Component {
             <Panel>
                 <PanelHeader>
                     <span className="h5 text-bold">Portal gebruiker gegevens</span>
+                    {this.props?.portalUser?.blocked === true ? (
+                        <span style={{ color: 'red' }}> Geblokkeerd</span>
+                    ) : null}
                 </PanelHeader>
                 <PanelBody>
                     {!this.props.portalUser ? (
@@ -64,16 +53,12 @@ class ContactDetailsFormPortalUser extends Component {
                             </div>
                         </div>
                     ) : this.props.permissions.updateContactPortalUser && this.state.showEdit ? (
-                        <ContactDetailsFormPortalUserEdit switchToView={this.switchToView} />
-                    ) : (
-                        <ContactDetailsFormPortalUserView
-                            highlightLine={this.state.highlightLine}
-                            showActionButtons={this.state.showActionButtons}
-                            onLineEnter={this.onLineEnter}
-                            onLineLeave={this.onLineLeave}
-                            switchToEdit={this.switchToEdit}
+                        <ContactDetailsFormPortalUserEdit
+                            switchToView={this.switchToView}
                             toggleDelete={this.toggleDelete}
                         />
+                    ) : (
+                        <ContactDetailsFormPortalUserView switchToEdit={this.switchToEdit} />
                     )}
                     {this.props.permissions.deleteContactPortalUser && this.state.showDelete && (
                         <ContactDetailsFormPortalUserDelete closeDeleteItemModal={this.toggleDelete} />

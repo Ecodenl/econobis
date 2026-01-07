@@ -21,9 +21,9 @@ class PortalSettingsFormGeneralEdit extends Component {
         super(props);
 
         this.manageTechnicalPortalSettings = true;
-        // this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-        //     ? true
-        //     : false;
+        this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+            ? true
+            : false;
 
         this.state = {
             portalSettings: {
@@ -43,6 +43,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                 portalName: false,
                 cooperativeName: false,
                 portalWebsite: false,
+                portalLoginInfoText: false,
                 portalUrl: false,
                 responsibleUserId: false,
                 checkContactTaskResponsibleUserId: false,
@@ -232,6 +233,7 @@ class PortalSettingsFormGeneralEdit extends Component {
             portalName,
             cooperativeName,
             portalWebsite,
+            portalLoginInfoText,
             portalUrl,
             responsibleUserId,
             checkContactTaskResponsible,
@@ -482,6 +484,17 @@ class PortalSettingsFormGeneralEdit extends Component {
                             />
                         </div>
                         <div className="row">
+                            <InputText
+                                label="Portaal login informatie tekst"
+                                divSize={'col-sm-8'}
+                                name={'portalLoginInfoText'}
+                                value={portalLoginInfoText}
+                                onChangeAction={this.handleInputChange}
+                                error={this.state.errors.portalLoginInfoText}
+                                maxLength="255"
+                            />
+                        </div>
+                        <div className="row">
                             <InputReactSelect
                                 label="Standaard administratie / uitgevende instantie"
                                 divSize={'col-sm-8'}
@@ -493,6 +506,7 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.defaultAdministrationId}
                             />
                         </div>
+
                     </PanelBody>
 
                     <PanelBody>

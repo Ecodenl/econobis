@@ -17,6 +17,7 @@ class Sort extends RequestSort
     protected $fields = [
         'number',
         'address',
+        'postalCode',
         'createdAt',
         'desiredDate',
         'name',
@@ -46,6 +47,7 @@ class Sort extends RequestSort
         'areaName' => 'addressAreaName',
         'name' => 'contacts',
         'address' => 'address',
+        'postalCode' => 'address',
     ];
 
     protected function applyAmountOfQuotationRequestsSort($query, $data)
@@ -58,6 +60,13 @@ class Sort extends RequestSort
     protected function applyAddressSort($query, $data)
     {
         $query->orderBy('addresses.street', $data)->orderBy('addresses.number', $data)->orderBy('addresses.addition', $data);
+
+        return false;
+    }
+
+    protected function applyPostalCodeSort($query, $data)
+    {
+        $query->orderBy('addresses.postal_code', $data);
 
         return false;
     }

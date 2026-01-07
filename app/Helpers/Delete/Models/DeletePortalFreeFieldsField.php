@@ -13,8 +13,9 @@ use App\Helpers\Delete\DeleteInterface;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log;
 
+// todo WM check of deze nog/wel gebruikt wordt?
 /**
- * Class DeleteFreeFieldsField
+ * Class DeletePortalFreeFieldsField
  *
  * @package App\Helpers\Delete\Models
  */

@@ -25,6 +25,7 @@ const OpportunitiesListHead = props => {
             />
             <DataTableHeadTitleAndSort sortColumn={'name'} title={'Naam'} width={'11%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'address'} title={'Adres'} width={'11%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'postalCode'} title={'Postcode'} width={'5%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'measureCategory'}
                 title={'Maatregel categorie'}
@@ -34,12 +35,12 @@ const OpportunitiesListHead = props => {
             <DataTableHeadTitleAndSort
                 sortColumn={'measureName'}
                 title={'Maatregel specifiek'}
-                width={'13%'}
+                width={'12%'}
                 setSorts={setSorts}
             />
             <DataTableHeadTitleAndSort sortColumn={'campaign'} title={'Campagne'} width={'9%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort sortColumn={'areaName'} title={'Buurt'} width={'9%'} setSorts={setSorts} />
-            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kans'} width={'9%'} setSorts={setSorts} />
+            <DataTableHeadTitleAndSort sortColumn={'statusId'} title={'Status kans'} width={'5%'} setSorts={setSorts} />
             <DataTableHeadTitleAndSort
                 sortColumn={'amountOfQuotationRequests'}
                 title={'Aantal kansacties'}

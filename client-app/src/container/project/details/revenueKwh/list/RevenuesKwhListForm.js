@@ -38,7 +38,7 @@ const RevenuesKwhListForm = ({ permissions, projectId, projectStatus, revenuesKw
         <Panel>
             <PanelHeader>
                 <span className="h5 text-bold">Opbrengsten Kwh</span>
-                {permissions.manageFinancial && (
+                {permissions.manageProject && (
                     <React.Fragment>
                         <ButtonIcon
                             buttonClassName={'pull-right btn btn-link'}

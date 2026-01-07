@@ -40,6 +40,12 @@ class Project extends Model
         'uses_mollie' => 'bool',
     ];
 
+    public function newEloquentBuilder($query)
+    {
+        return new ProjectBuilder($query);
+    }
+
+
     //relations
 
     public function administration()

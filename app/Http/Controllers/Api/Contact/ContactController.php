@@ -4,12 +4,14 @@ namespace App\Http\Controllers\Api\Contact;
 
 use App\Eco\Contact\Contact;
 use App\Eco\Contact\ContactStatus;
+use App\Eco\Contact\ContactToImportSupplier;
 use App\Eco\User\User;
 use App\Helpers\Contact\ContactMergeException;
 use App\Helpers\Contact\ContactMerger;
 use App\Helpers\Delete\Models\DeleteContact;
 use App\Helpers\Hoomdossier\HoomdossierHelper;
 use App\Helpers\Import\ContactImportHelper;
+use App\Helpers\Import\ContactImportFromEnergySupplierHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\Contact\ContactPeekInspectionPerson;
 use App\Http\Resources\Contact\ContactWithAddressPeek;
@@ -93,6 +95,34 @@ class ContactController extends Controller
         set_time_limit(180);
         $contactImportHelper = new ContactImportHelper();
         return $contactImportHelper->import($request->file('attachment'));
+    }
+
+    public function validateImportFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->validateImport($request->file('attachment'), $request->input('supplierCodeRef'), $request->input('fileHeader'));
+    }
+
+    public function importFromEnergySupplier(Request $request){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->import($request->file('attachment'), $request->input('suppliercodeRef'), $request->input('warninglines'));
+    }
+
+    public function updateContactMatches(){
+        $this->authorize('import', Contact::class);
+        set_time_limit(300);
+        $contactImportFromEnergySupplierHelper = new ContactImportFromEnergySupplierHelper();
+        return $contactImportFromEnergySupplierHelper->updateContactMatches();
+    }
+
+    public function contactToImportsSuppliers (){
+        $this->authorize('import', Contact::class);
+        set_time_limit(180);
+        return ContactToImportSupplier::get();
     }
 
     public function destroy(Contact $contact)
@@ -384,8 +414,21 @@ class ContactController extends Controller
 //            $fromContact = $temp;
 //        }
 
+        //we store the Hoom account id in a separate variable because later it will be updated and we can't compair anymore
+        $toContactHoomAccountId = $toContact->hoom_account_id;
+        $fromContactHoomAccountId = $fromContact->hoom_account_id;
+
         try{
+
             (new ContactMerger($toContact, $fromContact))->merge();
+
+            if (!$toContactHoomAccountId && $fromContactHoomAccountId) {
+//                Log::info('in de if:  ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Het Hoom account id van het oude contact is overgenomen naar het nieuwe contact, u moet het contact_id ook handmatig in het Hoomdossier aanpassen'], 200);
+            } else {
+//                Log::info('in de else: ' . $toContactHoomAccountId . ' || ' .  $fromContactHoomAccountId);
+                return response()->json(['message' => 'Contacten zijn succesvol samengevoegd'], 200);
+            }
         }catch (ValidationException $e){
             return response()->json([
                 'status'=> 'error',

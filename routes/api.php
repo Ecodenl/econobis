@@ -778,6 +778,7 @@ Route::namespace('Api')
 
         Route::get('free-fields-field-records/get-values', 'FreeFields\FreeFieldsFieldRecordController@getValues');
         Route::post('free-fields-field-records/update-values', 'FreeFields\FreeFieldsFieldRecordController@updateValues');
+        Route::get('free-fields-field-log/excel/mutations', 'FreeFields\FreeFieldsFieldRecordController@excelLogMutations');
 
         Route::get('free-fields-field/free-fields-tables/peek', 'FreeFields\FreeFieldsTableController@peek');
         Route::get('free-fields-field/free-fields-field-formats/peek', 'FreeFields\FreeFieldsFieldFormatController@peek');

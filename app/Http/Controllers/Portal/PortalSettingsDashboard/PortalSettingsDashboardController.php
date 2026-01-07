@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Portal\PortalSettingsDashboard;
 
 use App\Eco\Contact\Contact;
 use App\Eco\PortalSettingsDashboard\PortalSettingsDashboard;
+use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\PortalSettingsDashboard\FullPortalSettingsDashboard;
 
@@ -28,6 +29,16 @@ class PortalSettingsDashboardController extends Controller
                     return true;
                 }
             }
+
+            return false;
+        });
+
+        // buttonLink placeholders vervangen
+        $validatedWidgets->transform(function ($widget) use ($contact) {
+            if (!empty($widget->button_link)) {
+                $widget->button_link = TemplateVariableHelper::replaceTemplateVariables($widget->button_link,'contact', $contact);
+            }
+            return $widget;
         });
 
         $portalSettingsDashboard->widgets = $validatedWidgets;

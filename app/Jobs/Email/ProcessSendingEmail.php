@@ -2,7 +2,7 @@
 
 namespace App\Jobs\Email;
 
-
+use App\Eco\Contact\ContactEmail;
 use App\Eco\Email\Email;
 use App\Eco\EmailAddress\EmailAddress;
 use App\Eco\Jobs\JobsLog;
@@ -20,7 +20,6 @@ class ProcessSendingEmail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected Email $email;
-
     protected User $user;
 
     public function __construct(Email $email, User $user)
@@ -31,11 +30,6 @@ class ProcessSendingEmail implements ShouldQueue
 
     public function handle()
     {
-        if ($this->email->contactGroup) {
-            ProcessSendingGroupEmail::dispatch($this->email, $this->user);
-            return;
-        }
-
         $jobLog = new JobsLog();
         $jobLog->value = 'Start e-mail(s) versturen.';
         $jobLog->user_id = $this->user->id;
@@ -43,13 +37,25 @@ class ProcessSendingEmail implements ShouldQueue
         $jobLog->save();
 
         $hasError = false;
-        try{
+
+        try {
             $this->prepareEmailForSending();
+
             $updatedEmail = $this->getMailJob()->handle();
+
             $this->markEmailAsSent($updatedEmail);
+            $this->markContactEmailsAsSent();
+
             $this->convertEmailAddressIdsToEmailAddresses();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             $hasError = true;
+
+            // ContactEmail op error zetten bij mislukte send
+            $this->markContactEmailsAsError($e);
+
+            Log::error('E-mail versturen mislukt: ' . $e->getMessage(), [
+                'email_id' => $this->email->id ?? null,
+            ]);
         }
 
         $jobLog = new JobsLog();
@@ -67,15 +73,21 @@ class ProcessSendingEmail implements ShouldQueue
         $jobLog->job_category_id = 'email';
         $jobLog->save();
 
-        Log::error('E-mail maken mislukt:' . $exception->getMessage());
+        Log::error('E-mail versturen mislukt: ' . $exception->getMessage(), [
+            'email_id' => $this->email->id ?? null,
+        ]);
     }
 
     protected function getMailJob()
     {
         $to = $this->email->getToRecipients();
 
-        if($to->hasSingleContact()){
-            return (new SendSingleMailToContact($this->email, $to->first()->getEmailAddressModel(), $this->user))
+        if ($to->hasSingleContact()) {
+            return (new SendSingleMailToContact(
+                $this->email,
+                $to->first()->getEmailAddressModel(),
+                $this->user
+            ))
                 ->setCC($this->email->getCcRecipients())
                 ->setBCC($this->email->getBccRecipients());
         }
@@ -87,12 +99,16 @@ class ProcessSendingEmail implements ShouldQueue
 
     protected function prepareEmailForSending()
     {
+        // 1) contacten + ContactEmail (STATUS_TO_SEND) klaarzetten
         $this->syncContactsByRecipients();
 
-        $this->email->html_body
-            = '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
-            . $this->email->subject . '</title></head><body>'
-            . $this->email->html_body . '</body></html>';
+        // 2) HTML wrappen (alleen als nog niet gebeurd)
+        if (! str_contains($this->email->html_body ?? '', '<!DOCTYPE html>')) {
+            $this->email->html_body =
+                '<!DOCTYPE html><html><head><meta http-equiv="content-type" content="text/html;charset=UTF-8"/><title>'
+                . $this->email->subject . '</title></head><body>'
+                . $this->email->html_body . '</body></html>';
+        }
 
         $this->email->save();
     }
@@ -108,22 +124,85 @@ class ProcessSendingEmail implements ShouldQueue
         $this->email->save();
     }
 
+    /**
+     * 1) Houd de pivot email->contacts in sync (zoals voorheen)
+     * 2) Bouw/refresh ContactEmail-records met status TO_SEND.
+     */
     protected function syncContactsByRecipients()
     {
         $email = $this->email;
 
+        // to / cc / bcc kunnen id's of plain strings zijn; we pakken alleen de numerieke (EmailAddress-id's)
         $emailAddressIds = collect()
             ->merge(collect($email->to))
             ->merge(collect($email->cc))
             ->merge(collect($email->bcc))
-            ->filter(function($idOrEmailAddress){
+            ->filter(function ($idOrEmailAddress) {
                 return is_numeric($idOrEmailAddress);
             })
+            ->map(fn($v) => (int) $v)
             ->unique();
 
-        $contactIds = EmailAddress::whereIn('id', $emailAddressIds)->pluck('contact_id');
+        if ($emailAddressIds->isEmpty()) {
+            // geen gekoppelde EmailAddresses → pivot leegmaken én ContactEmail opruimen
+            $email->contacts()->sync([]);
+            ContactEmail::where('email_id', $email->id)->delete();
 
-        $email->contacts()->sync($contactIds->unique()->toArray());
+            return;
+        }
+
+        // Alle betrokken EmailAddress + contact_id ophalen
+        $emailAddresses = EmailAddress::whereIn('id', $emailAddressIds)->get();
+
+        $contactIds = $emailAddresses
+            ->pluck('contact_id')
+            ->filter()   // null eruit
+            ->unique()
+            ->values();
+
+        // Pivot-relatie bijwerken (bestaand gedrag)
+        $email->contacts()->sync($contactIds->toArray());
+
+        // ContactEmail voor deze mail opschonen: alleen nog voor huidige contacten
+        ContactEmail::where('email_id', $email->id)
+            ->whereNotIn('contact_id', $contactIds)
+            ->delete();
+
+        // ContactEmail klaarzetten op STATUS_TO_SEND voor alle huidige ontvangers
+        foreach ($emailAddresses as $emailAddress) {
+            if (! $emailAddress->contact_id) {
+                continue;
+            }
+
+            ContactEmail::updateOrCreate(
+                [
+                    'email_id'   => $email->id,
+                    'contact_id' => $emailAddress->contact_id,
+                ],
+                [
+                    'email_address_id' => $emailAddress->id,
+                    'status_code'      => ContactEmail::STATUS_TO_SEND,
+                ]
+            );
+        }
+    }
+
+    /**
+     * Na succesvolle send: alle ContactEmail voor deze mail op SENT.
+     */
+    protected function markContactEmailsAsSent(): void
+    {
+        ContactEmail::where('email_id', $this->email->id)
+            ->update(['status_code' => ContactEmail::STATUS_SENT]);
+    }
+
+    /**
+     * Bij fout: alle ContactEmail voor deze mail op ERROR.
+     */
+    protected function markContactEmailsAsError(\Throwable $e): void
+    {
+        ContactEmail::where('email_id', $this->email->id)
+            ->update(['status_code' => ContactEmail::STATUS_ERROR]);
     }
 
     protected function convertEmailAddressIdsToEmailAddresses()

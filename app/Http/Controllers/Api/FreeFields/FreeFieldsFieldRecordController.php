@@ -11,10 +11,12 @@ namespace App\Http\Controllers\Api\FreeFields;
 use App\Eco\FreeFields\FreeFieldsField;
 use App\Eco\FreeFields\FreeFieldsFieldRecord;
 use App\Eco\FreeFields\FreeFieldsTable;
+use App\Eco\FreeFields\FreeFieldsFieldLog;
+use App\Helpers\Excel\FreeFieldsFieldLogExcelHelper;
 use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Auth;
 
 class FreeFieldsFieldRecordController extends ApiController
 {
@@ -40,22 +42,24 @@ class FreeFieldsFieldRecordController extends ApiController
         if( isset($request->get('data')['recordId']) && isset($request->get('data')['records']) ){
             $recordId = $request->get('data')['recordId'];
             $records = $request->get('data')['records'];
-            $this->updateRecordValues($recordId, $records);
+            $this->updateRecordValues($recordId, $records, 'econobis', null, Auth::user()->id);
 
         }
 
     }
-    public function updateValuesFromFreeFieldsContact($contactId, array $records)
+    public function updateValuesFromFreeFieldsContact($contactId, array $records, $changedFrom, $portalUserId)
     {
 //        $this->authorize('view', FreeFieldsField::class);
 
-        $this->updateRecordValues($contactId, $records);
+        $this->updateRecordValues($contactId, $records, $changedFrom, $portalUserId, null);
 
     }
-    private function updateRecordValues($recordId, array $records)
+    private function updateRecordValues($recordId, array $records, $changedFrom, $portalUserId, $userId)
     {
         foreach($records as $record) {
             $freeFieldsFieldRecord = FreeFieldsFieldRecord::where('table_record_id', $recordId)->where('field_id', $record['id'])->firstOrNew();
+            $freeFieldsFieldRecordValueOld = null;
+            $freeFieldsFieldRecordValueNew = null;
 
             // Id nog niet bekend, dan nieuw! Overnemen: field_id en table_record_id
             if(!isset($freeFieldsFieldRecord->id)) {
@@ -65,28 +69,52 @@ class FreeFieldsFieldRecordController extends ApiController
 
             switch ($record['fieldFormatType']) {
                 case 'boolean':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_boolean;
                     $freeFieldsFieldRecord->field_value_boolean = (bool)$record['fieldRecordValueBoolean'];
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_boolean;
                     break;
                 case 'text_short':
                 case 'text_long':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_text;
                     $freeFieldsFieldRecord->field_value_text = $record['fieldRecordValueText'];
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_text;
                     break;
                 case 'int':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_int;
                     $freeFieldsFieldRecord->field_value_int = $record['fieldRecordValueInt'] != '' ? (int) $record['fieldRecordValueInt'] : null;
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_int;
                     break;
                 case 'double_2_dec':
                 case 'amount_euro':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_double;
                     $freeFieldsFieldRecord->field_value_double = $record['fieldRecordValueDouble'] != '' ? (double) str_replace(',', '.', $record['fieldRecordValueDouble']) : null;
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_double;
                 break;
                 case 'date':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('Y-m-d')  : null;
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d')  : null;
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_datetime;
                     break;
                 case 'datetime':
+                    $freeFieldsFieldRecordValueOld = $freeFieldsFieldRecord->field_value_datetime ? Carbon::parse($freeFieldsFieldRecord->field_value_datetime)->format('Y-m-d H:i:s') : null;;
                     $freeFieldsFieldRecord->field_value_datetime = $record['fieldRecordValueDatetime'] ? Carbon::parse($record['fieldRecordValueDatetime'])->format('Y-m-d H:i:s') : null;
+                    $freeFieldsFieldRecordValueNew = $freeFieldsFieldRecord->field_value_datetime;
                     break;
             }
 
             $freeFieldsFieldRecord->save();
+
+            if($freeFieldsFieldRecordValueOld != $freeFieldsFieldRecordValueNew) {
+                FreeFieldsFieldLog::create([
+                    'changed_from' => $changedFrom,
+                    'portal_user_id' => $portalUserId,
+                    'user_id' => $userId,
+                    'free_fields_field_record_id' => $freeFieldsFieldRecord->id,
+                    'old_value' => $freeFieldsFieldRecordValueOld,
+                    'new_value' => $freeFieldsFieldRecordValueNew,
+                ]);
+            }
+
         }
     }
 
@@ -170,4 +198,21 @@ class FreeFieldsFieldRecordController extends ApiController
 
         return response()->json($freeFieldsFieldRecords);
     }
+
+
+    public function excelLogMutations()
+    {
+        $this->authorize('view', FreeFieldsFieldLog::class);
+
+        set_time_limit(0);
+        $freeFieldsFieldLogs = FreeFieldsFieldLog::where('changed_from', 'portal')->orderBy('updated_at')->get();
+        // Als je ook de andere changed_from wil (met 'econobis' erbij), dan where op changed_from weglaten.
+        // Er zou ook nog een 3e variant kunnen zijn: 'webform', maar loggen free fields vandaar uit is er nog niet.
+//        $freeFieldsFieldLogs = FreeFieldsFieldLog::orderBy('updated_at')->get();
+
+        $freeFieldsFieldLogHelper = new FreeFieldsFieldLogExcelHelper($freeFieldsFieldLogs);
+
+        return $freeFieldsFieldLogHelper->downloadExcel();
+    }
+
 }

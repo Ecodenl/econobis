@@ -77,7 +77,7 @@ class ContactController extends ApiController
         $updateUser->occupation = '@portal-update@';
         Auth::setUser($updateUser);
 
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($request, $portalUser) {
 
             $contact = Contact::find($request->id);
             $ibanOld = $contact->iban;
@@ -110,7 +110,7 @@ class ContactController extends ApiController
                     $this->updateAddress(ContactType::PERSON, $contact, $request['primaryAddress'], $currentAddressEnergySupplierElectricity, 'visit', $request->projectId);
                 }
                 if (isset($request['freeFieldsFieldRecords'])) {
-                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
                 }
             }
 
@@ -133,7 +133,7 @@ class ContactController extends ApiController
                     $this->updateAddress(ContactType::ORGANISATION, $contact, $request['invoiceAddress'], null, 'invoice', null);
                 }
                 if (isset($request['freeFieldsFieldRecords'])) {
-                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+                    $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
                 }
             }
 
@@ -168,10 +168,10 @@ class ContactController extends ApiController
         $updateUser->occupation = '@portal-update@';
         Auth::setUser($updateUser);
 
-        DB::transaction(function () use ($contact, $request) {
+        DB::transaction(function () use ($contact, $request, $portalUser) {
 
             $contact = Contact::find($contact->id);
-            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords']);
+            $this->updateFreeFieldsContact($contact, $request['freeFieldsFieldRecords'], $portalUser);
 
         });
 
@@ -896,7 +896,7 @@ class ContactController extends ApiController
 
     }
 
-    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData)
+    protected function updateFreeFieldsContact($contact, array $freeFieldsFieldRecordsData, $portalUser)
     {
         // Array to hold transformed records
         $updateValues = [];
@@ -950,7 +950,7 @@ class ContactController extends ApiController
 
         // Call updateValues with transformed data
         $controller = new FreeFieldsFieldRecordController();
-        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues);
+        $controller->updateValuesFromFreeFieldsContact($contact->id, $updateValues, 'portal', $portalUser->id);
     }
 
     protected function createTaskIbanChange(Contact $contact, $ibanOld, $ibanAttnOld)

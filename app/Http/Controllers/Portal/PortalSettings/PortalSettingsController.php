@@ -24,6 +24,10 @@ class PortalSettingsController extends Controller
     {
         return PortalSettings::first()?->show_new_at_cooperative_link ? PortalSettings::first()?->show_new_at_cooperative_link : false;
     }
+    protected function getPortalLoginInfoText()
+    {
+        return PortalSettings::first()?->portal_login_info_text ? PortalSettings::first()?->portal_login_info_text : '';
+    }
     protected function getNewAtCooperativeLinkText()
     {
         $cooperativeName = PortalSettings::first()?->cooperative_name;

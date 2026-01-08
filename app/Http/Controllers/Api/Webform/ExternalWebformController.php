@@ -306,18 +306,18 @@ class ExternalWebformController extends Controller
         }
         $this->checkMaxRequests($webform);
 
-        // Add opportunity to exitsting intake
+        // Add opportunity to existing intake
         if ($data['intake']['intake_id']) {
-            $this->addOpportunityToExistingIntake($data['intake'], $data['quotation_request'], $webform);
+            $this->addOpportunityToExistingIntake($data['intake'], $data['opportunity'], $data['quotation_request'], $webform);
         }
-        // Add quotationrequest to exitsting opportunity
+        // Add quotationrequest to existing opportunity
         if ($data['opportunity']['opportunity_id']) {
             $this->addQuotationRequestToExistingOpportunity($data['opportunity'], $data['quotation_request'], $webform);
         }
 
         // Update quotationrequest
         if ($data['quotation_request']['quotation_request_id']) {
-            $this->updateQuotationRequest($data['quotation_request'], $webform);
+            $this->updateQuotationRequest($data['quotation_request'], $data['opportunity'], $webform);
         }
 
         // after adding to existing intake and/or opportuntiy we are done
@@ -403,7 +403,7 @@ class ExternalWebformController extends Controller
 
             $this->addDongleToAddress($this->address, $data['dongle'], $webform);
 
-            $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['quotation_request'], $webform);
+            $intake = $this->addIntakeToAddress($this->address, $data['intake'], $data['opportunity'], $data['quotation_request'], $webform);
             $housingFile = $this->addHousingFileToAddress($this->address, $data['housing_file'], $webform);
 
             //freeFieldsFieldRecords address updaten
@@ -605,6 +605,7 @@ class ExternalWebformController extends Controller
             ],
             'opportunity' => [
                 'kans_id' => 'opportunity_id',
+                'kans_code' => 'opportunity_code',
             ],
             'quotation_request' => [
                 'kansactie_id' => 'quotation_request_id',
@@ -2357,7 +2358,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addIntakeToAddress(Address $address, array $dataIntake, array $dataQuotationRequest, Webform $webform)
+    protected function addIntakeToAddress(Address $address, array $dataIntake, array $dataOpportunity, array $dataQuotationRequest, Webform $webform)
     {
         if (!$dataIntake['intake_id'] && $dataIntake['campaign_id']) {
 
@@ -2439,7 +2440,7 @@ class ExternalWebformController extends Controller
             $saveOpportunity = null;
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
-                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataQuotationRequest, $webform);
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataOpportunity, $dataQuotationRequest, $webform);
                 if($firstOpportunity){
                     $saveOpportunity = clone $opportunity;
                     $firstOpportunity = false;
@@ -2453,7 +2454,7 @@ class ExternalWebformController extends Controller
             // indien intake status 'Afgesloten met kans' en er is specifieke maatregel meegegeven, dan ook meteen kans aanmaken.
             if($measure && $intakeStatus->id == $statusIdClosedWithOpportunity){
                 $this->log("Intake status 'Afgesloten met kans' meegegeven. Kans voor maatregel specifiek '" . $measure->name . "' aanmaken (status Actief)");
-                $opportunity = $this->addOpportunity($measure, $intake, $dataQuotationRequest, $webform);
+                $opportunity = $this->addOpportunity($measure, $intake, $dataOpportunity, $dataQuotationRequest, $webform);
                 if($firstOpportunity){
                     $saveOpportunity = clone $opportunity;
                 }
@@ -2493,7 +2494,7 @@ class ExternalWebformController extends Controller
         }
     }
 
-    protected function addOpportunityToExistingIntake(array $dataIntake, array $dataQuotationRequest, Webform $webform)
+    protected function addOpportunityToExistingIntake(array $dataIntake, array $dataOpportunity, array $dataQuotationRequest, Webform $webform)
     {
         if ($dataIntake['intake_id']) {
 
@@ -2532,7 +2533,7 @@ class ExternalWebformController extends Controller
             // Intake maatregelen meegegeven, aanmaken kansen (per intake maatregel)
             foreach ($intakeMeasures as $intakeMeasure) {
                 $this->log("Intake maatregelen meegegeven. Kans voor intake maatregel specifiek '" . $intakeMeasure->name . "' aanmaken (status Actief)");
-                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataQuotationRequest, $webform);
+                $opportunity = $this->addOpportunity($intakeMeasure, $intake, $dataOpportunity, $dataQuotationRequest, $webform);
             }
         } else {
             $this->log('Er is geen intake_id meegegeven, kans(en) bij intake niet aanmaken.');
@@ -2548,6 +2549,15 @@ class ExternalWebformController extends Controller
             } else {
                 $this->log("Kans met id " . $opportunity->id . " gevonden.");
             }
+            // Als kans_code is meegegeven, dan werken we die bij
+            if ($dataOpportunity['opportunity_code']) {
+                if($opportunity){
+                    $opportunity->opportunity_code = $dataOpportunity['opportunity_code'];
+                    $opportunity->save();
+                    $this->log('Kans code ' . $dataOpportunity['opportunity_code'] . ' bijgewerkt bij kans ' . $opportunity->number . ' (' . $opportunity->id. ').');
+                }
+            }
+
             $this->addQuotationRequestToOpportunity($dataQuotationRequest, $opportunity, $webform);
 
         } else {
@@ -2633,12 +2643,19 @@ class ExternalWebformController extends Controller
      * @param $measure
      * @param $intake
      */
-    protected function addOpportunity($measure, $intake, array $dataQuotationRequest, Webform $webform)
+    protected function addOpportunity($measure, $intake, array $dataOpportunity, array $dataQuotationRequest, Webform $webform)
     {
         $statusOpportunity = OpportunityStatus::where('code_ref', 'active')->first()->id;
+        // Als kans_code is meegegeven, dan werken we die bij
+        $opportunityCode = null;
+        if ($dataOpportunity['opportunity_code']) {
+                $opportunityCode = $dataOpportunity['opportunity_code'];
+        }
+
         $opportunity = null;
         if($statusOpportunity) {
             $opportunity = Opportunity::create([
+                'opportunity_code' => $opportunityCode,
                 'measure_category_id' => $measure->measureCategory->id,
                 'status_id' => $statusOpportunity,
                 'intake_id' => $intake->id,
@@ -2648,6 +2665,9 @@ class ExternalWebformController extends Controller
             ]);
             $opportunity->measures()->sync($measure->id);
             $this->log("Kans met id " . $opportunity->id . " aangemaakt met maatregel categorie '" . $measure->measureCategory->name . "' en maatregel specifiek '" . $measure->name . "' en gekoppeld aan intake id " . $intake->id . ".");
+            if($opportunityCode){
+                $this->log('Kans code bij deze nieuwe kans ' . $opportunityCode . '.');
+            }
 
             $this->addQuotationRequestToOpportunity($dataQuotationRequest, $opportunity, $webform);
 
@@ -4208,7 +4228,7 @@ class ExternalWebformController extends Controller
      * @return void
      * @throws WebformException
      */
-    private function updateQuotationRequest(array $dataQuotationRequest, Webform $webform): void
+    private function updateQuotationRequest(array $dataQuotationRequest, array $dataOpportunity, Webform $webform): void
     {
 
         if ($dataQuotationRequest['quotation_request_id']) {
@@ -4233,6 +4253,18 @@ class ExternalWebformController extends Controller
         // Voor aanmaak van Intake, Opportunity en/of QuotationRequest worden created by and updated by via observers altijd bepaald obv Auth::id
         // Die moeten we eerst even setten als we dus hier vanuit webform komen.
         $this->setAuthUserForObservers($webform);
+
+        // Als kans_code is meegegeven, dan werken we die bij
+        if ($dataOpportunity['opportunity_code']) {
+            if($quotationRequest->opportunity){
+                $quotationRequest->opportunity->opportunity_code = $dataOpportunity['opportunity_code'];
+                $quotationRequest->opportunity->save();
+                $this->log('Kans code ' . $dataOpportunity['opportunity_code'] . ' bijgewerkt bij kans ' . $quotationRequest->opportunity->number . ' (' . $quotationRequest->opportunity->id. ').');
+
+            } else {
+                $this->log('Geen kans gevonden bij kansactie id (' . $dataQuotationRequest['quotation_request_id'] . '). Kans code ' . $dataOpportunity['opportunity_code'] . ' wordt niet bijgewerkt.');
+            }
+        }
 
         $coachOrOrganisation = null;
         if($dataQuotationRequest['coach_or_organisation_id']) {

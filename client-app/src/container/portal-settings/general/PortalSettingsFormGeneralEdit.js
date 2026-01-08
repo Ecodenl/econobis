@@ -124,14 +124,6 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.newAtCooperativeLinkText = true;
             hasErrors = true;
         }
-        if (
-            portalSettings.portalActive &&
-            (portalSettings.allowRequestForDeleteButtonText === null ||
-                validator.isEmpty(portalSettings.allowRequestForDeleteButtonText))
-        ) {
-            errors.allowRequestForDeleteButtonText = true;
-            hasErrors = true;
-        }
         if (portalSettings.showNewAtCooperativeLink !== true) {
             portalSettings.newAtCooperativeLinkText = null;
         }

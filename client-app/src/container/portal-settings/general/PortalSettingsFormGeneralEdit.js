@@ -20,10 +20,10 @@ class PortalSettingsFormGeneralEdit extends Component {
     constructor(props) {
         super(props);
 
-        this.manageTechnicalPortalSettings = true;
-        this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
-            ? true
-            : false;
+        this.manageTechnicalPortalSettings =
+            this.props.meDetails.email == 'support@econobis.nl' || this.props.meDetails.email == 'software@xaris.nl'
+                ? true
+                : false;
 
         this.state = {
             portalSettings: {

@@ -117,6 +117,7 @@ class PortalSettingsFormGeneralEdit extends Component {
         }
         if (
             portalSettings.portalActive &&
+            portalSettings.showNewAtCooperativeLink === true &&
             (portalSettings.newAtCooperativeLinkText === null ||
                 validator.isEmpty(portalSettings.newAtCooperativeLinkText))
         ) {
@@ -131,6 +132,23 @@ class PortalSettingsFormGeneralEdit extends Component {
             errors.allowRequestForDeleteButtonText = true;
             hasErrors = true;
         }
+        if (portalSettings.showNewAtCooperativeLink !== true) {
+            portalSettings.newAtCooperativeLinkText = null;
+        }
+
+        if (
+            portalSettings.portalActive &&
+            portalSettings.showAllowRequestForDelete === true &&
+            (portalSettings.allowRequestForDeleteButtonText === null ||
+                validator.isEmpty(portalSettings.allowRequestForDeleteButtonText))
+        ) {
+            errors.allowRequestForDeleteButtonText = true;
+            hasErrors = true;
+        }
+        if (portalSettings.showAllowRequestForDelete !== true) {
+            portalSettings.allowRequestForDeleteButtonText = null;
+        }
+
         if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')) {
             errors.defaultContactGroupMemberId = true;
             hasErrors = true;

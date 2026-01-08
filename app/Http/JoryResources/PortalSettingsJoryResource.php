@@ -24,6 +24,7 @@ class PortalSettingsJoryResource extends JoryResource
         $this->field('portal_active')->filterable()->sortable();
         $this->field('portal_name')->filterable()->sortable();
         $this->field('cooperative_name')->filterable()->sortable();
+        $this->field('portal_login_info_text')->filterable()->sortable();
         $this->field('portal_website')->filterable()->sortable();
         $this->field('portal_url')->filterable()->sortable();
         $this->field('responsible_user_id')->filterable()->sortable();

@@ -6,7 +6,7 @@ use JosKolenberg\LaravelJory\Http\Controllers\JoryController;
 
 Route::get('portal-settings/portal-active', 'PortalSettings\PortalSettingsController@getPortalActive');
 Route::get('portal-settings/cooperative-name', 'PortalSettings\PortalSettingsController@getCooperativeName');
-Route::get('portal-setting/portal-login-info-text', 'PortalSettings\PortalSettingController@getPortalLoginInfoText');
+Route::get('portal-settings/portal-login-info-text', 'PortalSettings\PortalSettingsController@getPortalLoginInfoText');
 Route::get('portal-settings/show-new-at-cooperative-link', 'PortalSettings\PortalSettingsController@getShowNewAtCooperativeLink');
 Route::get('portal-settings/new-at-cooperative-link-text', 'PortalSettings\PortalSettingsController@getNewAtCooperativeLinkText');
 
@@ -42,7 +42,6 @@ Route::middleware(['auth:api', 'scopes:use-portal', 'two-factor-portal'])
         Route::get('/financial-overview-contact/{financialOverviewContact}/download', 'FinancialOverview\FinancialOverviewContactController@download');
 
         Route::get('/contact-groups', 'ContactGroup\ContactGroupController@index');
-        
 
         Route::post('/contact/{contact}/{project}/preview-document', 'Contact\ContactController@previewDocument');
         Route::post('/contact/{contact}/{project}/{participantProject}/preview-increase-document', 'Contact\ContactController@previewIncreaseDocument');

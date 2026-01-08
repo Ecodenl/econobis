@@ -117,20 +117,30 @@ class PortalSettingsFormGeneralEdit extends Component {
         }
         if (
             portalSettings.portalActive &&
+            portalSettings.showNewAtCooperativeLink === true &&
             (portalSettings.newAtCooperativeLinkText === null ||
                 validator.isEmpty(portalSettings.newAtCooperativeLinkText))
         ) {
             errors.newAtCooperativeLinkText = true;
             hasErrors = true;
         }
+        if (portalSettings.showNewAtCooperativeLink !== true) {
+            portalSettings.newAtCooperativeLinkText = null;
+        }
+
         if (
             portalSettings.portalActive &&
+            portalSettings.showAllowRequestForDelete === true &&
             (portalSettings.allowRequestForDeleteButtonText === null ||
                 validator.isEmpty(portalSettings.allowRequestForDeleteButtonText))
         ) {
             errors.allowRequestForDeleteButtonText = true;
             hasErrors = true;
         }
+        if (portalSettings.showAllowRequestForDelete !== true) {
+            portalSettings.allowRequestForDeleteButtonText = null;
+        }
+
         if (portalSettings.portalActive && validator.isEmpty(portalSettings.defaultContactGroupMemberId + '')) {
             errors.defaultContactGroupMemberId = true;
             hasErrors = true;
@@ -506,7 +516,6 @@ class PortalSettingsFormGeneralEdit extends Component {
                                 error={this.state.errors.defaultAdministrationId}
                             />
                         </div>
-
                     </PanelBody>
 
                     <PanelBody>

@@ -21,6 +21,7 @@ return new class extends Migration
             $table->boolean('portal_active');
             $table->string('portal_name')->nullable();
             $table->string('cooperative_name')->nullable();
+            $table->string('portal_login_info_text')->nullable();
             $table->string('portal_website')->nullable();
             $table->string('portal_url')->nullable();
             $table->unsignedInteger('responsible_user_id')->nullable();
@@ -80,6 +81,7 @@ return new class extends Migration
                     'portal_active' => $portalActive,
                     'portal_name' => !empty($this->get('portalName')) ? $this->get('portalName') : null,
                     'cooperative_name' => !empty($this->get('cooperativeName')) ? $this->get('portalWebsite') : null,
+                    'portal_login_info_text' => !empty($this->get('portalLoginInfoText')) ? $this->get('portalLoginInfoText') : null,
                     'portal_website' => !empty($this->get('portalWebsite')) ? $this->get('portalWebsite') : null,
                     'portal_url' => !empty($this->get('portalUrl')) ? $this->get('portalUrl') : null,
                     'responsible_user_id' => !empty($this->get('responsibleUserId')) ? $this->get('responsibleUserId') : null,
@@ -91,7 +93,7 @@ return new class extends Migration
                     'show_new_at_cooperative_link' => $showNewAtCooperativeLink,
                     'new_at_cooperative_link_text' => !empty($this->get('newAtCooperativeLinkText')) ? $this->get('newAtCooperativeLinkText') : null,
                     'show_allow_request_for_delete' => false,
-                    'allow_request_for_delete_text' => null,
+                    'allow_request_for_delete_button_text' => null,
                     'pcr_power_kwh_consumption_percentage' => !empty($this->get('pcrPowerKwhConsumptionPercentage')) ? $this->get('pcrPowerKwhConsumptionPercentage') * 100 : null,
                     'pcr_generating_capacity_one_solor_panel' => !empty($this->get('pcrGeneratingCapacityOneSolorPanel')) ? $this->get('pcrGeneratingCapacityOneSolorPanel') : null,
                     'default_contact_group_member_id' => !empty($this->get('defaultContactGroupMemberId')) ? $this->get('defaultContactGroupMemberId') : null,

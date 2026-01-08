@@ -14,6 +14,7 @@ export default {
                         'portalActive',
                         'portalName',
                         'cooperativeName',
+                        'portalLoginInfoText',
                         'portalWebsite',
                         'portalUrl',
                         'responsibleUserId',

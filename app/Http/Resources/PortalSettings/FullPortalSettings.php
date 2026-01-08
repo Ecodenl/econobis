@@ -20,6 +20,7 @@ class FullPortalSettings extends JsonResource
             'portalActive' => $this->portal_active,
             'portalName' => $this->portal_name,
             'cooperativeName' => $this->cooperative_name,
+            'portalLoginInfoText' => $this->portal_login_info_text,
             'portalWebsite' => $this->portal_website,
             'portalUrl' => $this->portal_url,
             'responsibleUserId' => $this->responsible_user_id,

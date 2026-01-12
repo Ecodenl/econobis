@@ -94,12 +94,6 @@ class DeleteEmailTemplate implements DeleteInterface
             array_push($this->errorMessage,'Ontkoppel template eerst in de volgende administraties: ' . implode(', ', $administrationNames));
         }
 
-        // Email template can not be deleted if it is used in portalsettings
-        $emailTemplateNewAccountId = PortalSettings::first()?->email_template_new_account_id;
-        if($this->emailTemplate->id == $emailTemplateNewAccountId){
-            array_push($this->errorMessage, "Dit email template wordt nog gebruikt in algemene portal instellingen.");
-        }
-
         // Email template can not be deleted if it is used in financial overviews
         $financialOverviewNames = FinancialOverview::where('email_template_financial_overview_id', $this->emailTemplate->id)->pluck('description')->toArray();
         if($financialOverviewNames){

@@ -186,6 +186,9 @@ class DeleteContact implements DeleteInterface
         foreach ($this->contact->responses as $response){
             $response->delete();
         }
+
+        $this->contact->manualEmails()->detach();
+        $this->contact->groups()->detach();
     }
 
     /**
@@ -193,12 +196,16 @@ class DeleteContact implements DeleteInterface
      */
     public function deleteRelations()
     {
-        if($this->contact->isPerson()) {
-            $this->contact->person->delete();
+        foreach ($this->contact->contactEmails as $response){
+            $response->delete();
         }
 
         foreach ($this->contact->emailAddresses as $emailAddress){
             $emailAddress->delete();
+        }
+
+        if($this->contact->isPerson()) {
+            $this->contact->person->delete();
         }
     }
 

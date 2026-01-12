@@ -2,9 +2,10 @@
 
 namespace App\Console\Commands\Checks;
 
-use App\Eco\ContactGroup\ContactGroup;
+use App\Eco\Contact\Contact;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
@@ -16,8 +17,7 @@ class checkSoftDeletedContactsInContactGroupPivot extends Command
      * @var string
      */
     protected $signature = 'contact:checkSoftDeletedContactsInContactGroupPivot {--recover=false}';
-    //protected $mailTo = 'xaris@econobis.nl';
-    protected $mailTo = 'patrick.koeman@xaris.nl';
+    protected $mailTo = 'xaris@econobis.nl';
 
     /**
      * The console command description.
@@ -63,7 +63,7 @@ class checkSoftDeletedContactsInContactGroupPivot extends Command
 
     private function sendMail($contactGroupsWithDeletedContactIds, $doRecover)
     {
-        $subject = 'Soft deleted contacten (ids) gevonden in contact groepen! - ' . \Config::get('app.APP_COOP_NAME');
+        $subject = 'Soft deleted contacten (ids) gevonden in contact groepen! (' . count($contactGroupsWithDeletedContactIds) . ') - ' . \Config::get('app.APP_COOP_NAME');
 
         $contactGroupsWithDeletedContactIdsHtml = "<p>De volgende contacten groepen id's hebben soft deleted contacten (ids) :</p>";
         if($doRecover){
@@ -71,8 +71,8 @@ class checkSoftDeletedContactsInContactGroupPivot extends Command
         }
         foreach ($contactGroupsWithDeletedContactIds as $contactGroupWithDeletedContactIds) {
             $contactGroupsWithDeletedContactIdsHtml .=
-                "Contact groep Id: " . $contactGroupWithDeletedContactIds['group-id'] . "</br>" .
-                "Contact id's: " . $contactGroupWithDeletedContactIds['deleted-contacts'] . "</br><br>"
+                "Contact groep: " . $contactGroupWithDeletedContactIds['group-id'] . " " . $contactGroupWithDeletedContactIds['group-name'] . " | " .
+                "Contact : " . $contactGroupWithDeletedContactIds['contact-id'] . " " . $contactGroupWithDeletedContactIds['contact-name'] . "</br>"
             ;
         }
 
@@ -97,26 +97,28 @@ class checkSoftDeletedContactsInContactGroupPivot extends Command
         $counter = 0;
         $contactGroupsReturn = [];
 
-        $contactGroups = ContactGroup::with(['contacts' => fn ($q) => $q->withTrashed()])->get();
+        $contactsTrashed = Contact::onlyTrashed()->pluck('id')->toArray();
 
-        foreach ($contactGroups as $contactGroup) {
-            $deletedContacts = [];
+        $contactGroupPivots = DB::table('contact_groups_pivot')
+            ->join('contact_groups', 'contact_groups.id', '=', 'contact_groups_pivot.contact_group_id')
+            ->join('contacts','contacts.id', '=', 'contact_groups_pivot.contact_id')
+            ->select('contact_group_id', 'contact_groups.name', 'contact_id', 'contacts.full_name')
+            ->whereIn('contact_id', $contactsTrashed)
+            ->get();
 
-            foreach ($contactGroup->contacts as $contact) {
-                if ($contact->trashed()) {
-                    $deletedContacts[] = $contact->id;
-
-                    if($doRecover) {
-                        $contactGroup->contacts()->detach($contact->id);
-                    }
-                }
+        foreach ($contactGroupPivots as $contactGroupPivot) {
+            if($doRecover) {
+//                Log::info('Detach van contactGroupPivot contactId ' . $contactGroupPivot->contact_id . ' en contactGroupId ' . $contactGroupPivot->contact_group_id);
+                DB::table('contact_groups_pivot')
+                    ->where('contact_id', $contactGroupPivot->contact_id)
+                    ->where('contact_group_id', $contactGroupPivot->contact_group_id)
+                    ->delete();
             }
-
-            if(count($deletedContacts) > 0) {
-                $contactGroupsReturn[$counter]['group-id'] = $contactGroup->id;
-                $contactGroupsReturn[$counter]['deleted-contacts'] = implode(',', $deletedContacts);
-                $counter++;
-            }
+            $contactGroupsReturn[$counter]['group-id'] = $contactGroupPivot->contact_group_id;
+            $contactGroupsReturn[$counter]['group-name'] = $contactGroupPivot->name;
+            $contactGroupsReturn[$counter]['contact-id'] = $contactGroupPivot->contact_id;
+            $contactGroupsReturn[$counter]['contact-name'] = $contactGroupPivot->full_name;
+            $counter++;
         }
 
         return $contactGroupsReturn;

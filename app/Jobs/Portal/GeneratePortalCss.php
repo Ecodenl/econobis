@@ -55,8 +55,8 @@ class GeneratePortalCss implements ShouldQueue
         }
     }
 
-    protected function getStore(): Valuestore
-    {
-        return Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
-    }
+//    protected function getStore(): Valuestore
+//    {
+//        return Valuestore::make(storage_path('app' . DIRECTORY_SEPARATOR . 'portal-settings.json'));
+//    }
 }

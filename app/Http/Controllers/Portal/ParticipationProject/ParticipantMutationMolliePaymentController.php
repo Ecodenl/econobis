@@ -9,7 +9,7 @@ use App\Eco\ParticipantMutation\ParticipantMutationStatus;
 use App\Eco\Task\Task;
 use App\Eco\Task\TaskType;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Workflow\TaskWorkflowHelper;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Controllers\Api\ContactGroup\ContactGroupController;
@@ -45,7 +45,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
             /**
              * Hackje; Tijdelijk user setten om alle observers tevreden te houden.
              */
-            $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+            $responsibleUser = PortalSettings::first()?->responsible_user_id;
             $responsibleUser->occupation = '@portal-update@';
             Auth::setUser($responsibleUser);
 
@@ -121,7 +121,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
     {
         Log::info('Test createAndSendRegistrationDocument voor participantMutationCode: ' . $request->participantMutationCode);
 
-        $responsibleUser = User::find(PortalSettings::get('responsibleUserId'));
+        $responsibleUser = User::find(PortalSettings::first()?->responsible_user_id);
         $responsibleUser->occupation = '@portal-update@';
         Auth::setUser($responsibleUser);
 
@@ -190,7 +190,7 @@ class ParticipantMutationMolliePaymentController extends ApiController
                 'value' => $participantMutation->getMollieAmountFormatted(),
             ],
             "description" => $participantMutation->participation->project->name . ' ' . config('app.name'),
-            "redirectUrl" => 'https://' . PortalSettings::get("portalUrl") . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,
+            "redirectUrl" => 'https://' . PortalSettings::first()?->portal_url . '/#/inschrijven/mollie-resultaat/' . $participantMutation->code,
         ];
 
         /**
@@ -224,8 +224,8 @@ class ParticipantMutationMolliePaymentController extends ApiController
             "Contact IBAN: " . $participantMutationMolliePayment->participantMutation->participation->contact->iban . "\n" .
             "Mollie betaling IBAN: " . $participantMutationMolliePayment->iban . "\n";
 
-        $checkContactTaskResponsibleUserId = PortalSettings::get('checkContactTaskResponsibleUserId');
-        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $checkContactTaskResponsibleUserId = PortalSettings::first()?->check_contact_task_responsible_user_id;
+        $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
         $taskTypeForPortal = TaskType::where('default_portal_task_type', true)->first();
 
         if($taskTypeForPortal){

@@ -13,7 +13,7 @@ use App\Eco\District\District;
 use App\Eco\Document\DocumentCreatedFrom;
 use App\Eco\Team\Team;
 use App\Eco\User\User;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\RequestQueries\Team\Grid\RequestQuery;
 
@@ -159,7 +159,7 @@ class TeamController extends ApiController
         $this->authorize('create', Team::class);
 
         // Team can not be deleted if it is used in portalsettings
-        $checkContactTaskResponsibleTeamId = PortalSettings::get('checkContactTaskResponsibleTeamId');
+        $checkContactTaskResponsibleTeamId = PortalSettings::first()?->check_contact_task_responsible_team_id;
         if($team->id == $checkContactTaskResponsibleTeamId){
             abort(412, 'Dit team wordt nog gebruikt in algemene portal instellingen.');
         }

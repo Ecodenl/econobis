@@ -1,16 +1,55 @@
 import getAxiosInstance from '../default-setup/AxiosInstance';
 
-const URL_PORTAL_SETTINGS = `setting`;
+const URL_PORTAL_SETTINGS = `portal-settings`;
 
 export default {
-    fetchPortalSettings: keys => {
-        const requestUrl = `${URL_PORTAL_SETTINGS}/multiple${keys}`;
+    fetchPortalSettingsDetails: id => {
+        const requestUrl = `jory/portal-settings/${id}`;
 
-        return getAxiosInstance().get(requestUrl);
+        return getAxiosInstance().get(requestUrl, {
+            params: {
+                jory: {
+                    fld: [
+                        'id',
+                        'portalActive',
+                        'portalName',
+                        'cooperativeName',
+                        'portalLoginInfoText',
+                        'portalWebsite',
+                        'portalUrl',
+                        'responsibleUserId',
+                        'contactResponsibleOwnerUserId',
+                        'checkContactTaskResponsibleUserId',
+                        'checkContactTaskResponsibleTeamId',
+                        'emailTemplateNewAccountId',
+                        'linkPrivacyPolicy',
+                        'showNewAtCooperativeLink',
+                        'newAtCooperativeLinkText',
+                        'showAllowRequestForDelete',
+                        'allowRequestForDeleteButtonText',
+                        'pcrPowerKwhConsumptionPercentage',
+                        'pcrGeneratingCapacityOneSolorPanel',
+                        'defaultContactGroupMemberId',
+                        'defaultContactGroupNoMemberId',
+                        'defaultAdministrationId',
+                    ],
+                    rlt: {
+                        responsibleUser: [],
+                        contactResponsibleOwnerUser: [],
+                        checkContactTaskResponsibleUser: [],
+                        checkContactTaskResponsibleTeam: [],
+                        emailTemplateNewAccount: [],
+                        defaultContactGroupMember: [],
+                        defaultContactGroupNoMember: [],
+                        defaultAdministration: [],
+                    },
+                },
+            },
+        });
     },
 
     updatePortalSettings: portalSettings => {
-        const requestUrl = `${URL_PORTAL_SETTINGS}`;
+        const requestUrl = `${URL_PORTAL_SETTINGS}/${portalSettings.id}`;
 
         return getAxiosInstance().post(requestUrl, portalSettings);
     },

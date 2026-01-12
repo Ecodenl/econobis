@@ -9,7 +9,7 @@ use App\Eco\Email\Email;
 use App\Eco\Mailbox\Mailbox;
 use App\Eco\Portal\PortalUser;
 use App\Eco\QuotationRequest\QuotationRequest;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Carbon\Carbon;
@@ -79,7 +79,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }
@@ -169,7 +169,7 @@ class QuotationRequestController
 
         $this->authorizeQuotationRequest($portalUser, $quotationRequest);
 
-        $responsibleUserId = PortalSettings::get('responsibleUserId');
+        $responsibleUserId = PortalSettings::first()?->responsible_user_id;
         if (!$responsibleUserId) {
             abort(501, 'Er is helaas een fout opgetreden (onbekende klanten portaal verantwoordelijke).');
         }

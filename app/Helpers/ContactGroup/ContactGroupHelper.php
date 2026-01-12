@@ -5,7 +5,7 @@ namespace App\Helpers\ContactGroup;
 use App\Eco\Contact\Contact;
 use App\Eco\ContactGroup\ContactGroup;
 use App\Eco\EmailTemplate\EmailTemplate;
-use App\Helpers\Settings\PortalSettings;
+use App\Eco\PortalSettings\PortalSettings;
 use App\Helpers\Template\TemplateVariableHelper;
 use App\Http\Resources\Email\Templates\GenericMailWithoutAttachment;
 use Illuminate\Support\Facades\Mail;
@@ -22,7 +22,7 @@ class ContactGroupHelper
         $this->contactGroup = $contactGroup;
         $this->contact = $contact;
         $this->responsibleUser = $contactGroup->responsibleUser;
-        $this->cooperativeName = PortalSettings::get('cooperativeName');
+        $this->cooperativeName = PortalSettings::first()?->cooperative_name;
     }
 
     public function processEmailNewContactToGroup(){

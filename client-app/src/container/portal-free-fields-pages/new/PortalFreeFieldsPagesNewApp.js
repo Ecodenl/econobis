@@ -18,12 +18,15 @@ function PortalFreeFieldsPagesNewApp() {
     function fetchPortalSetttings() {
         setIsLoading(true);
 
-        const keys = '?keys[]=portalUrl';
+        // todo WM: check / anders
+        //
+        const portalSettingsId = 1;
+
         axios
-            .all([PortalSettingsAPI.fetchPortalSettings(keys)])
+            .all([PortalSettingsAPI.fetchPortalSettingsDetails(portalSettingsId)])
             .then(
                 axios.spread(payloadPortalSettings => {
-                    setPortalUrl(payloadPortalSettings.data.portalUrl);
+                    setPortalUrl(payloadPortalSettings.data.data.portalUrl);
                     setIsLoading(false);
                 })
             )

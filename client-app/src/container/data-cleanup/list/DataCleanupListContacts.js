@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { trash, plus, refresh } from 'react-icons-kit/fa';
+import { trash, refresh } from 'react-icons-kit/fa';
 import Icon from 'react-icons-kit';
 import DataCleanupAPI from '../../../api/data-cleanup/DataCleanupAPI';
 import Modal from '../../../components/modal/Modal';
@@ -46,11 +46,11 @@ class DataCleanupListContacts extends Component {
     // Confirm action based on type
     confirmCleanup = () => {
         const { modalCleanupType } = this.state;
-        DataCleanupAPI.cleanupContacts(modalCleanupType)
+        DataCleanupAPI.executeCleanupItems(modalCleanupType)
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.props.fetchCleanupData();
+                    this.props.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
                         modalErrorMessage: payload,
@@ -73,12 +73,7 @@ class DataCleanupListContacts extends Component {
     };
 
     render() {
-        const {
-            showModal,
-            modalCleanupType,
-            modalErrorMessage,
-            excludedGroups,
-        } = this.state;
+        const { showModal, modalCleanupType, modalErrorMessage, excludedGroups } = this.state;
 
         const itemsTypes = ['contactsToDelete', 'contactsSoftDeleted'];
 
@@ -139,9 +134,7 @@ class DataCleanupListContacts extends Component {
                     {this.props.isLoading ? (
                         <tr>
                             <td></td>
-                            <td colSpan={5}>
-                                Gegevens aan het laden
-                            </td>
+                            <td colSpan={5}>Gegevens aan het laden</td>
                             <td></td>
                         </tr>
                     ) : (
@@ -154,15 +147,15 @@ class DataCleanupListContacts extends Component {
                                     </td>
                                     <td>{data[item]?.number_of_items_to_delete}</td>
                                     <td>
-                                        {item === 'contactsSoftDeleted' ? (
-                                            <a
-                                                role="button"
-                                                onClick={() => this.openModal(item)}
-                                                title={`verwijder ${data[item]?.name}`}
-                                            >
-                                                <Icon size={14} icon={trash} />
-                                            </a>
-                                        ) : null}
+                                        {/*{item === 'contactsSoftDeleted' ? (*/}
+                                        <a
+                                            role="button"
+                                            onClick={() => this.openModal(item)}
+                                            title={`verwijder ${data[item]?.name}`}
+                                        >
+                                            <Icon size={14} icon={trash} />
+                                        </a>
+                                        {/*) : null}*/}
                                         &nbsp;&nbsp;&nbsp;
                                         <a
                                             role="button"
@@ -172,16 +165,14 @@ class DataCleanupListContacts extends Component {
                                             <Icon size={14} icon={refresh} />
                                         </a>
                                     </td>
-                                    <td>{data[item]?.date_cleaned_up}</td>
                                     <td>{data[item]?.date_determined}</td>
+                                    <td>{data[item]?.date_cleaned_up}</td>
                                     <td></td>
                                 </tr>
                             ))}
                             <tr>
                                 <td></td>
-                                <td>
-                                    Contacten in deze groepen moeten worden uitgezonderd van opschonen
-                                </td>
+                                <td>Contacten in deze groepen moeten worden uitgezonderd van opschonen</td>
                                 <td></td>
                                 <td></td>
                                 <td></td>
@@ -192,9 +183,7 @@ class DataCleanupListContacts extends Component {
                             {!excludedGroups ? (
                                 <tr>
                                     <td></td>
-                                    <td>
-                                        Geen uitzonderingsgroepen
-                                    </td>
+                                    <td>Geen uitzonderingsgroepen</td>
                                     <td></td>
                                     <td></td>
                                     <td></td>
@@ -206,10 +195,7 @@ class DataCleanupListContacts extends Component {
                                 excludedGroups.map((group, idx) => (
                                     <tr>
                                         <td></td>
-                                        <td>
-                                            {' '}
-                                            - {group.contactGroupName}
-                                        </td>
+                                        <td> - {group.contactGroupName}</td>
                                         <td></td>
                                         <td></td>
                                         <td></td>
@@ -218,25 +204,25 @@ class DataCleanupListContacts extends Component {
                                     </tr>
                                 ))
                             )}
-                            <tr>
-                                <td></td>
-                                <td>
-                                    Netto contacten die geen orders, nota's, deelnames, intakes, kansen en
-                                    e-mailcorrespondentie hebben
-                                </td>
-                                {/*<td>{amountOfContactsToCleanupNet}</td>*/}
-                                <td>@@nog</td>
-                                <td>
-                                    <a role="button" onClick={() => this.openModal('contacts')}>
-                                        <Icon size={14} icon={trash} />
-                                    </a>
-                                    &nbsp;&nbsp;&nbsp;
-                                </td>
-                                {/*<td className="col-sm-2">{contactsLastCleanupDate}</td>*/}
-                                <td>@@nog</td>
-                                <td>@@nog</td>
-                                <td></td>
-                            </tr>
+                            {/*<tr>*/}
+                            {/*    <td></td>*/}
+                            {/*    <td>*/}
+                            {/*        Netto contacten die geen orders, nota's, deelnames, intakes, kansen en*/}
+                            {/*        e-mailcorrespondentie hebben*/}
+                            {/*    </td>*/}
+                            {/*    /!*<td>{amountOfContactsToCleanupNet}</td>*!/*/}
+                            {/*    <td>@@nog</td>*/}
+                            {/*    <td>*/}
+                            {/*        <a role="button" onClick={() => this.openModal('contacts')}>*/}
+                            {/*            <Icon size={14} icon={trash} />*/}
+                            {/*        </a>*/}
+                            {/*        &nbsp;&nbsp;&nbsp;*/}
+                            {/*    </td>*/}
+                            {/*    /!*<td className="col-sm-2">{contactsLastCleanupDate}</td>*!/*/}
+                            {/*    <td>@@nog</td>*/}
+                            {/*    <td>@@nog</td>*/}
+                            {/*    <td></td>*/}
+                            {/*</tr>*/}
                         </tbody>
                     )}
                 </table>

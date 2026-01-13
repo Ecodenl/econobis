@@ -13,6 +13,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteOrder
@@ -36,20 +37,29 @@ class DeleteOrder implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Orders', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            abort(501, 'Fout bij opschonen Orders. (meld dit bij Econobis support)');
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', ['ordersOneoff','ordersPeriodic'])->get();
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
 
-        foreach($cleanupItems as $cleanupItem) {
-            $cleanupItem->number_of_items_to_delete = 0;
-            $cleanupItem->date_cleaned_up = $dateToday;
-            $cleanupItem->save();
-        }
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
 
     /** Sets the model to delete
@@ -90,12 +100,12 @@ class DeleteOrder implements DeleteInterface
     {
         foreach ($this->order->invoices as $invoices){
             $deleteInvoice = new DeleteInvoice($invoices);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteInvoice->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteInvoice->delete() ?? [] ) );
         }
 
         foreach ($this->order->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

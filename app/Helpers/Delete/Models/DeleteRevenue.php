@@ -66,7 +66,7 @@ class DeleteRevenue implements DeleteInterface
     {
         foreach($this->projectRevenue->distribution as $distribution) {
                 $deleteRevenueDistribution = new DeleteRevenueDistribution($distribution);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+                $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
         }
     }
 

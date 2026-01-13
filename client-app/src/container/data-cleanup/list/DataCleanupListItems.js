@@ -14,14 +14,6 @@ class DataCleanupListItems extends Component {
             showModal: false,
             modalCleanupType: null,
             modalErrorMessage: '',
-
-            invoices: [],
-            ordersOneoff: [],
-            ordersPeriodic: [],
-            intakes: [],
-            opportunities: [],
-            participationsWithoutStatusDefinitive: [],
-            participationsFinished: [],
         };
     }
 
@@ -44,7 +36,8 @@ class DataCleanupListItems extends Component {
 
     // Confirm action based on type
     confirmCleanup = () => {
-        DataCleanupAPI.executeCleanupItems(this.state.modalCleanupType)
+        const { modalCleanupType } = this.state;
+        DataCleanupAPI.executeCleanupItems(modalCleanupType)
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
@@ -60,25 +53,26 @@ class DataCleanupListItems extends Component {
             });
     };
 
-    handleDataCleanupUpdateAmounts = cleanupType => {
-        DataCleanupAPI.updateAmounts(cleanupType)
-            .then(payload => {
-                if (payload.length === 0) {
-                    this.closeModal();
-                    this.props.fetchCleanupData(); // Refresh the data after cleanup
-                } else {
-                    this.setState({
-                        modalErrorMessage: payload,
-                    });
-                }
-            })
-            .catch(error => {
-                // this.props.setError(error.response.status, error.response.data.message);
-            });
-    };
+    // handleDataCleanupUpdateAmounts = cleanupType => {
+    //     DataCleanupAPI.updateAmounts(cleanupType)
+    //         .then(payload => {
+    //             if (payload.length === 0) {
+    //                 this.closeModal();
+    //                 this.props.fetchCleanupData(); // Refresh the data after cleanup
+    //             } else {
+    //                 this.setState({
+    //                     modalErrorMessage: payload,
+    //                 });
+    //             }
+    //         })
+    //         .catch(error => {
+    //             // this.props.setError(error.response.status, error.response.data.message);
+    //         });
+    // };
 
     render() {
         const { showModal, modalCleanupType, modalErrorMessage } = this.state;
+
         const itemsTypes = [
             'invoices',
             'ordersOneoff',
@@ -87,9 +81,12 @@ class DataCleanupListItems extends Component {
             'opportunities',
             'participationsWithoutStatusDefinitive',
             'participationsFinished',
+            'incomingEmails',
+            'outgoingEmails',
         ];
 
         const data = this.props.data;
+        console.log(data);
 
         return (
             <div>

@@ -75,12 +75,12 @@ class DeleteFinancialOverview implements DeleteInterface
     {
         foreach ($this->financialOverview->financialOverviewProjects as $financialOverviewProject){
             $deleteFinancialOverviewProject = new DeleteFinancialOverviewProject($financialOverviewProject);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewProject->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewProject->delete() ?? [] ) );
         }
 
         foreach ($this->financialOverview->financialOverviewContacts as $financialOverviewContact){
             $deleteFinancialOverviewContact = new DeleteFinancialOverviewContact($financialOverviewContact);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewContact->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewContact->delete() ?? [] ) );
         }
 
     }

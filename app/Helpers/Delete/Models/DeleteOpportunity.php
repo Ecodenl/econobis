@@ -12,6 +12,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteOpportunity
@@ -43,14 +44,25 @@ class DeleteOpportunity implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Kansen', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            abort(501, 'Fout bij opschonen Kansen. (meld dit bij Econobis support)');
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', 'opportunities')->first();
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
 
         $cleanupItem->number_of_items_to_delete = 0;
         $cleanupItem->date_cleaned_up = $dateToday;
@@ -94,18 +106,18 @@ class DeleteOpportunity implements DeleteInterface
     {
         foreach ($this->opportunity->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->opportunity->notes as $note) {
             $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         // 25-04-2024: Verwijderen mag niet meer als er nog kansacties onder hangen
 //        foreach ($this->opportunity->quotationRequests as $quotationRequest) {
 //            $deleteQuotationRequest = new DeleteQuotationRequest($quotationRequest);
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteQuotationRequest->delete());
+//            $this->errorMessage = array_merge($this->errorMessage, ( $deleteQuotationRequest->delete() ?? [] ) );
 //        }
     }
 

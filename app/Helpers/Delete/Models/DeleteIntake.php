@@ -13,6 +13,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteIntake
@@ -43,14 +44,25 @@ class DeleteIntake implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Intakes', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            abort(501, 'Fout bij opschonen Intakes. (meld dit bij Econobis support)');
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', 'intakes')->first();
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
 
         $cleanupItem->number_of_items_to_delete = 0;
         $cleanupItem->date_cleaned_up = $dateToday;
@@ -96,18 +108,18 @@ class DeleteIntake implements DeleteInterface
     {
         foreach ($this->intake->tasks as $task){
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->intake->notes as $note){
             $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         // 25-04-2024: Verwijderen mag niet meer als er nog kansen onder hangen
 //        foreach ($this->intake->opportunities as $opportunity){
 //            $deleteOpportunity = new DeleteOpportunity($opportunity);
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteOpportunity->delete());
+//            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOpportunity->delete() ?? [] ) );
 //        }
     }
 

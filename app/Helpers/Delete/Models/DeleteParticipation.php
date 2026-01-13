@@ -13,6 +13,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteParticipation
@@ -44,19 +45,33 @@ class DeleteParticipation implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup($type)
+    public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            $this->delete();
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Deelnames', [
+                'exception' => $exception->getMessage(),
+                'errorMessages' => implode(' | ', $this->errorMessage),
+            ]);
+
+        }
+
+        if(!empty($this->errorMessage)) {
+            return $this->errorMessage;
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
-        if($type === 'participationsFinished') {
-            $cooperation->cleanup_participations_termination_date_last_run_at = $dateToday;
-        } elseif ($type === 'participationsWithoutStatusDefinitive') {
-            $cooperation->cleanup_participations_change_date_last_run_at = $dateToday;
-        }
-        $cooperation->save();
+
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
+
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
+
     /** Main method for deleting this model and all it's relations
      *
      * @return array
@@ -89,21 +104,21 @@ class DeleteParticipation implements DeleteInterface
     {
         foreach ($this->participation->projectRevenueDistributions as $revenueDistribution){
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
         }
         foreach ($this->participation->revenueDistributionKwh as $revenueDistributionKwh){
             $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
         }
 
         foreach ($this->participation->tasks as $task){
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->participation->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
             $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewParticipantProject->delete() ?? [] ) );
         }
     }
 

@@ -8,8 +8,11 @@
 
 namespace App\Helpers\Delete\Models;
 
+use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteContact
@@ -44,6 +47,36 @@ class DeleteContact implements DeleteInterface
     public function __construct(Model $contact)
     {
         $this->contact = $contact;
+    }
+
+    /** If it's called by the cleanup functionality, we land on this function, else on the delete function
+     *
+     * @return array
+     * @throws
+     */
+    public function cleanup($cleanupType)
+    {
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Contacten', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            abort(501, 'Fout bij opschonen Contacten. (meld dit bij Econobis support)');
+        }
+
+        $dateToday = Carbon::now();
+        $cooperation = Cooperation::first();
+
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
+
+        $cleanupItem->number_of_items_to_delete = 0;
+        $cleanupItem->date_cleaned_up = $dateToday;
+        $cleanupItem->save();
     }
 
     /** Main method for deleting this model and all it's relations
@@ -107,46 +140,46 @@ class DeleteContact implements DeleteInterface
     {
         foreach ($this->contact->addresses as $address){
             $deleteAddress = new DeleteAddress($address);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteAddress->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddress->delete() ?? [] ) );
         }
 
         foreach ($this->contact->tasks as $task){
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         foreach ($this->contact->notes as $note){
             $deleteTask = new DeleteTask($note);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
 
         if($this->contact->isOrganisation()) {
             $deleteOrganisation = new DeleteOrganisation($this->contact->organisation);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOrganisation->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrganisation->delete() ?? [] ) );
         }
 
         foreach ($this->contact->projectRevenueDistributions as $revenueDistribution){
             $deleteRevenueDistribution = new DeleteRevenueDistribution($revenueDistribution);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistribution->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistribution->delete() ?? [] ) );
         }
         foreach ($this->contact->revenueDistributionKwh as $revenueDistributionKwh){
             $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($revenueDistributionKwh);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
         }
 
         foreach ($this->contact->orders as $order){
             $deleteOrder = new DeleteOrder($order);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteOrder->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteOrder->delete() ?? [] ) );
         }
 
         foreach ($this->contact->participations as $participation){
             $deleteParticipation = new DeleteParticipation($participation);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteParticipation->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteParticipation->delete() ?? [] ) );
         }
 
         foreach ($this->contact->intakes as $intake){
             $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteIntake->delete() ?? [] ) );
         }
 
         foreach ($this->contact->quotationRequests as $quotationRequest){

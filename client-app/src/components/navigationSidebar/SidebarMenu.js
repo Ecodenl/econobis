@@ -22,7 +22,6 @@ import { road } from 'react-icons-kit/icomoon/road';
 import { forward } from 'react-icons-kit/icomoon/forward';
 import { stopwatch } from 'react-icons-kit/icomoon/stopwatch';
 
-
 const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongleRegistration }) => (
     <div className="sidebar-menu" style={{ background: '$brand-primary', color: '#FFF', width: '240px' }}>
         <SideNav highlightColor="#FFF" highlightBgColor="#27AE60" defaultSelected="dashboard">
@@ -167,13 +166,13 @@ const SidebarMenu = ({ permissions, administrations, mailboxesInvalid, useDongle
                         </NavText>
                     </Nav>
 
-                    <Nav id="data-cleanup-email">
-                        <NavText>
-                            <Link className="sidebar-link" to="data-opschonen/e-mail">
-                                E-mailcorrespondentie
-                            </Link>
-                        </NavText>
-                    </Nav>
+                    {/*<Nav id="data-cleanup-email">*/}
+                    {/*    <NavText>*/}
+                    {/*        <Link className="sidebar-link" to="data-opschonen/e-mail">*/}
+                    {/*            E-mailcorrespondentie*/}
+                    {/*        </Link>*/}
+                    {/*    </NavText>*/}
+                    {/*</Nav>*/}
 
                     <Nav id="data-cleanup-contacts">
                         <NavText>

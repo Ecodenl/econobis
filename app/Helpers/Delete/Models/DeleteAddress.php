@@ -72,17 +72,17 @@ class DeleteAddress implements DeleteInterface
     {
         foreach ($this->address->addressEnergySuppliers as $addressEnergySupplier){
             $deleteAddressEnergySupplier = new DeleteAddressEnergySupplier($addressEnergySupplier);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteAddressEnergySupplier->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteAddressEnergySupplier->delete() ?? [] ) );
         }
 
         foreach ($this->address->intakes as $intake){
             $deleteIntake = new DeleteIntake($intake);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteIntake->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteIntake->delete() ?? [] ) );
         }
 
         foreach ($this->address->housingFiles as $housingFile){
             $deleteHousingFile = new DeleteHousingFile($housingFile);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteHousingFile->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteHousingFile->delete() ?? [] ) );
         }
     }
 

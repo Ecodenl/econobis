@@ -67,11 +67,11 @@ class DeleteRevenuesKwh implements DeleteInterface
     {
         foreach($this->revenuesKwh->distributionKwh as $distributionKwh) {
                 $deleteRevenueDistributionKwh = new DeleteRevenueDistributionKwh($distributionKwh);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteRevenueDistributionKwh->delete());
+                $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenueDistributionKwh->delete() ?? [] ) );
         }
         foreach($this->revenuesKwh->partsKwh as $partsKwh) {
                 $deleteRevenuePartsKwh = new DeleteRevenuePartsKwh($partsKwh);
-                $this->errorMessage = array_merge($this->errorMessage, $deleteRevenuePartsKwh->delete());
+                $this->errorMessage = array_merge($this->errorMessage, ( $deleteRevenuePartsKwh->delete() ?? [] ) );
         }
     }
 

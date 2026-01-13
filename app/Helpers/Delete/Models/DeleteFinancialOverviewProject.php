@@ -70,7 +70,7 @@ class DeleteFinancialOverviewProject implements DeleteInterface
         foreach ($this->financialOverviewProject->financialOverviewParticipantProjects as $financialOverviewParticipantProject){
             $deleteFinancialOverviewParticipantProject = new DeleteFinancialOverviewParticipantProject($financialOverviewParticipantProject);
             // this can resolve in a lot of messages, we not going to share them.
-//            $this->errorMessage = array_merge($this->errorMessage, $deleteFinancialOverviewParticipantProject->delete());
+//            $this->errorMessage = array_merge($this->errorMessage, ( $deleteFinancialOverviewParticipantProject->delete() ?? [] ) );
             $deleteFinancialOverviewParticipantProject->delete();
         }
 

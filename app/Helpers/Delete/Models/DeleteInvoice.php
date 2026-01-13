@@ -13,6 +13,7 @@ use App\Eco\Cooperation\Cooperation;
 use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteInvoice
@@ -42,14 +43,25 @@ class DeleteInvoice implements DeleteInterface
      * @return array
      * @throws
      */
-    public function cleanup()
+    public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Nota\'s', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            array_push($this->errorMessage, "Fout bij opschonen Nota's'. '(meld dit bij Econobis support)");
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();
 
-        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', 'invoices')->first();
+        $cleanupItem = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->first();
 
         $cleanupItem->number_of_items_to_delete = 0;
         $cleanupItem->date_cleaned_up = $dateToday;
@@ -91,7 +103,7 @@ class DeleteInvoice implements DeleteInterface
     {
         foreach ($this->invoice->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

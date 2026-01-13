@@ -14,6 +14,7 @@ use App\Helpers\Delete\DeleteInterface;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 /**
  * Class DeleteFreeFieldsField
@@ -42,7 +43,18 @@ class DeleteMail implements DeleteInterface
      */
     public function cleanup($cleanupType)
     {
-        $this->delete();
+        try{
+            $this->delete();
+            if(!empty($this->errorMessage)) {
+                return $this->errorMessage;
+            }
+        }catch (\Exception $exception){
+            Log::error('Fout bij opschonen Emails', [
+                'exception' => $exception->getMessage(),
+                'errormessages' => implode(' | ', $this->errorMessage),
+            ]);
+            abort(501, 'Fout bij opschonen Emails. (meld dit bij Econobis support)');
+        }
 
         $dateToday = Carbon::now();
         $cooperation = Cooperation::first();

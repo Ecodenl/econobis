@@ -41,7 +41,7 @@ class DataCleanupListItems extends Component {
             .then(payload => {
                 if (payload.length === 0) {
                     this.closeModal();
-                    this.props.fetchCleanupData();
+                    this.props.fetchCleanupData(); // Refresh the data after cleanup
                 } else {
                     this.setState({
                         modalErrorMessage: payload,
@@ -49,7 +49,7 @@ class DataCleanupListItems extends Component {
                 }
             })
             .catch(error => {
-                // Optionally handle error
+                // this.props.setError(error.response.status, error.response.data.message);
             });
     };
 

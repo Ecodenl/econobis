@@ -37,7 +37,7 @@ class CleanupItemHelper
         $cleanupItems = $cooperation->cleanupItems()->where('code_ref', $cleanupType)->get();
 
         foreach($cleanupItems as $cleanupItem) {
-            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
+            $numberItemsToDelete = $this->getNumberItemsToDelete($cooperation, $cleanupItem, $dateToday);
             $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
         }
 
@@ -63,7 +63,7 @@ class CleanupItemHelper
         $cleanupItems = $cooperation->cleanupItems()->whereIn('code_ref', $cleanupTypes)->get();
 
         foreach($cleanupItems as $cleanupItem) {
-            $numberItemsToDelete = $this->getNumberItemsToDelete($cleanupItem, $dateToday);
+            $numberItemsToDelete = $this->getNumberItemsToDelete($cooperation, $cleanupItem, $dateToday);
             $this->updateCleanupItem($numberItemsToDelete, $cleanupItem);
         }
 
@@ -88,7 +88,7 @@ class CleanupItemHelper
      * @param Carbon $dateToday
      * @return int
      */
-    private function getNumberItemsToDelete(mixed $cleanupItem, Carbon $dateToday): int
+    private function getNumberItemsToDelete(Cooperation $cooperation, mixed $cleanupItem, Carbon $dateToday): int
     {
         switch ($cleanupItem->code_ref) {
             case "invoices":
@@ -149,6 +149,7 @@ class CleanupItemHelper
                         $query->where('updated_at', '<', $participationsWithoutStatusDefinitiveCleanupOlderThen);
                     })
                     ->count();
+                Log::info('participationsWithoutStatusDefinitive: ' . $numberItemsToDelete);
                 break;
 
             case "participationsFinished":
@@ -166,6 +167,7 @@ class CleanupItemHelper
                         $query->where('revenues_kwh.status', '!=', 'processed');
                     })
                     ->count();
+                Log::info('participationsFinished: ' . $numberItemsToDelete);
                 break;
 
             case "incomingEmails":
@@ -181,6 +183,34 @@ class CleanupItemHelper
 
                 $numberItemsToDelete = Email::whereNull('date_removed')->where('folder', 'sent')->whereDate('created_at', '<', $outgoingMailsCleanupOlderThen)->count();
                 break;
+
+            case "contactsToDelete":
+                $contactsToDeleteCleanupYears = $cleanupItem->years_for_delete;
+                $contactsToDeleteCleanupOlderThen = $dateToday->copy()->subYears($contactsToDeleteCleanupYears);
+
+                $exceptionContactIds = [];
+                foreach ($cooperation->cleanupContactsExcludedGroups as $cleanupContactsExcludedGroup) {
+                    $exceptionContactIds = array_unique( array_merge($exceptionContactIds, $cleanupContactsExcludedGroup->contactGroup->getAllContacts(true)) );
+                }
+
+                $numberItemsToDelete = Contact::whereDate('created_at', '<', $contactsToDeleteCleanupOlderThen)
+                    ->whereDoesntHave('invoices')
+                    ->whereDoesntHave('orders')
+                    ->whereDoesntHave('intakes')
+//                ->whereDoesntHave('opportunities') // gaan via intakes
+                    ->whereDoesntHave('quotationRequests')
+                    ->whereDoesntHave('participations')
+                    ->whereNotIn('id', $exceptionContactIds)
+                    ->count();
+
+                break;
+
+            case "contactsSoftDeleted":
+                $numberItemsToDelete = Contact::onlyTrashed()->count();
+                break;
+
+            default:
+                abort(501, 'Fout bij opschonen items, onbekend item: '. $cleanupItem->code_ref);
 
         }
         return $numberItemsToDelete;

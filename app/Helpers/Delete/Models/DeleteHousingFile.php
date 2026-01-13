@@ -66,15 +66,15 @@ class DeleteHousingFile implements DeleteInterface
     {
         foreach ($this->housingFile->housingFileSpecifications as $specification) {
             $deleteSpecifiction = new DeleteHousingFileSpecification($specification);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteSpecifiction->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteSpecifiction->delete() ?? [] ) );
         }
         foreach ($this->housingFile->tasks as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
         foreach ($this->housingFile->notes as $task) {
             $deleteTask = new DeleteTask($task);
-            $this->errorMessage = array_merge($this->errorMessage, $deleteTask->delete());
+            $this->errorMessage = array_merge($this->errorMessage, ( $deleteTask->delete() ?? [] ) );
         }
     }
 

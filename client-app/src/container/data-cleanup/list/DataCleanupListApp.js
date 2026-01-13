@@ -110,16 +110,6 @@ class DataCleanupListApp extends Component {
                                 opportunities: this.state.opportunities,
                                 participationsWithoutStatusDefinitive: this.state.participationsWithoutStatusDefinitive,
                                 participationsFinished: this.state.participationsFinished,
-                            }}
-                            handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
-                            fetchCleanupData={this.fetchCleanupData}
-                            isLoading={this.state.isLoading}
-                        />
-                    );
-                case 'e-mail':
-                    return (
-                        <DataCleanupListEmails
-                            data={{
                                 incomingEmails: this.state.incomingEmails,
                                 outgoingEmails: this.state.outgoingEmails,
                             }}
@@ -128,6 +118,18 @@ class DataCleanupListApp extends Component {
                             isLoading={this.state.isLoading}
                         />
                     );
+                // case 'e-mail':
+                //     return (
+                //         <DataCleanupListEmails
+                //             data={{
+                //                 incomingEmails: this.state.incomingEmails,
+                //                 outgoingEmails: this.state.outgoingEmails,
+                //             }}
+                //             handleDataCleanupUpdateAmounts={this.handleDataCleanupUpdateAmounts}
+                //             fetchCleanupData={this.fetchCleanupData}
+                //             isLoading={this.state.isLoading}
+                //         />
+                //     );
                 case 'contacten':
                     return (
                         <DataCleanupListContacts
